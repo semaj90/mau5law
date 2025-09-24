@@ -3,18 +3,16 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <!--
   LegalSearchCombobox.svelte
-  
   Sophisticated legal search component with:
   - Vector search integration
-  - AI-powered suggestions  
+  - AI-powered suggestions
   - Multi-entity search (cases, evidence, precedents, statutes)
   - Real-time results with confidence scores
   - Advanced filtering capabilities
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { Combobox } from 'bits-ui';
   import { Search, FileText, Scale, Shield, Users, Zap, Clock } from 'lucide-svelte';
   import { debounce } from 'lodash-es';
@@ -45,41 +43,40 @@ https://svelte.dev/e/js_parse_error -->
     includeMetadata: boolean;
   }
   // Props
-  let { placeholder = $bindable()  }: { placeholder = $bindable() : unknown } = $props(); // "Search cases, precedents, statutes, evidence...";
-  let { value = $bindable()  }: { value = $bindable() : unknown } = $props(); // "";
-  let { categories = $bindable()  }: { categories = $bindable() : unknown } = $props(); // SearchOptions['categories'] = ['cases', 'evidence', 'precedents', 'statutes'];
-  let { enableVectorSearch = $bindable()  }: { enableVectorSearch = $bindable() : unknown } = $props(); // true;
-  let { aiSuggestions = $bindable()  }: { aiSuggestions = $bindable() : unknown } = $props(); // true;
-  let { maxResults = $bindable()  }: { maxResults = $bindable() : unknown } = $props(); // 20;
-  let { similarityThreshold = $bindable()  }: { similarityThreshold = $bindable() : unknown } = $props(); // 0.7;
-  let { includeMetadata = $bindable()  }: { includeMetadata = $bindable() : unknown } = $props(); // true;
-  let { disabled = $bindable()  }: { disabled = $bindable() : unknown } = $props(); // false;
+  let { placeholder = $bindable()  }: { placeholder = $bindable() : unknown } = $props(); // "Search cases, precedents, statutes, evidence..."
+  let { value = $bindable()  }: { value = $bindable() : unknown } = $props(); // ""
+  let { categories = $bindable()  }: { categories = $bindable() : unknown } = $props(); // SearchOptions['categories'] = ['cases', 'evidence', 'precedents', 'statutes']
+  let { enableVectorSearch = $bindable()  }: { enableVectorSearch = $bindable() : unknown } = $props(); // true
+  let { aiSuggestions = $bindable()  }: { aiSuggestions = $bindable() : unknown } = $props(); // true
+  let { maxResults = $bindable()  }: { maxResults = $bindable() : unknown } = $props(); // 20
+  let { similarityThreshold = $bindable()  }: { similarityThreshold = $bindable() : unknown } = $props(); // 0.7
+  let { includeMetadata = $bindable()  }: { includeMetadata = $bindable() : unknown } = $props(); // true
+  let { disabled = $bindable()  }: { disabled = $bindable() : unknown } = $props(); // false
   let { class: className = $bindable("")  }: { class: className = $bindable("") : unknown } = $props();
   // State
   let open = $state(false);
-  let inputValue = value;
+  let inputValue = valu;
   let searchResults = $state<SearchResult[] >([]);
   let isLoading = $state(false);
   let selectedResult = $state<SearchResult | null >(null);
   let recentSearches = $state<string[] >([]);
   let suggestions = $state<string[] >([]);
   // Event dispatcher
-  
   // Icons for different types
   const typeIcons = {
-    caseItem: Scale,
-    evidence: Shield,
-    precedent: FileText,
-    statute: FileText,;
-    criminal: Users,;
+    caseItem: Scale
+    evidence: Shield
+    precedent: FileText
+    statute: FileText
+    criminal: Users
     document: FileText;
   };
   const typeColors = {
     caseItem: 'text-blue-600',
-    evidence: 'text-red-600', 
+    evidence: 'text-red-600',
     precedent: 'text-purple-600',
-    statute: 'text-green-600',;
-    criminal: 'text-orange-600',;
+    statute: 'text-green-600',
+    criminal: 'text-orange-600',
     document: 'text-gray-600';
   };
   // Load recent searches from localStorage
@@ -102,9 +99,9 @@ https://svelte.dev/e/js_parse_error -->
     isLoading = true;
     try {
       const searchParams = new URLSearchParams({
-        q: query,
-        limit: maxResults.toString(),;
-        threshold: similarityThreshold.toString(),;
+        q: query
+        limit: maxResults.toString(),
+        threshold: similarityThreshold.toString(),
         categories: categories.join(','),
         vectorSearch: enableVectorSearch.toString(),
         aiSuggestions: aiSuggestions.toString(),
@@ -113,13 +110,13 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch(`/api/search/legal?${searchParams}`);
       const data = await (response as { json?: unknown }).json();
       if ((data as { toString?: unknown; success?: unknown; results?: unknown; error?: unknown; suggestions?: unknown }).success) {
-        searchResults = (data as { toString?: unknown; success?: unknown; results?: unknown; error?: unknown; suggestions?: unknown }).results.map((result: unknown) => ({
+        searchResults = (data as { toString?: unknown; success?: unknown; results?: unknown; error?: unknown; suggestions?: unknown }).results.map((result: unknown) => ({,
           id: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).id,
           title: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).title || (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).content?.substring(0, 100) + '...',
           type: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).type || 'document',
           content: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).content || (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).summary || '',
           score: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).score || (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).similarity || 0,
-          metadata: {;
+          metadata: {
             date: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).createdAt || (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).date,
             jurisdiction: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).jurisdiction,
             status: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).status,
@@ -156,8 +153,8 @@ https://svelte.dev/e/js_parse_error -->
   // Handle input changes
   function handleInputChange(event: Event) {
     const target = event.target as HTMLInputElement;
-    inputValue = target.value;
-    value = inputValue;
+    inputValue = target.valu;
+    value = inputValu;
     if (inputValue) {
       performSearch(inputValue);
     } else {
@@ -167,8 +164,8 @@ https://svelte.dev/e/js_parse_error -->
   // Handle result selection
   function handleSelect(result: SearchResult) {
     selectedResult = result;
-    inputValue = (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).title;
-    value = inputValue;
+    inputValue = (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).titl;
+    value = inputValu;
     open = false;
     // Add to recent searches
     if (!recentSearches.includes.title)) {
@@ -183,23 +180,21 @@ https://svelte.dev/e/js_parse_error -->
     value = "";
     selectedResult = null;
     searchResults = [];
-    ondispatch?.();
+    // ondispatch removed;
   }
   // Get display results (includes recent searches when no query)
   let displayResults = $derived(inputValue.length < 2 );
     ? recentSearches.map(search => ({
         id: `recent-${search}`,
-        title: search,
+        title: search
         type: 'recent' as any,
-        content: 'Recent search',;
-        score: 1,;
+        content: 'Recent search',
+        score: 1,
         metadata: })) as SearchResult[]
-    : searchResults;
+    : searchResult;
 </script>
-
 <div class={cn("relative w-full", className)}>
   <Combobox.Root bind:open bind:inputValue {disabled} class="w-full">
-    
     <!-- Search Input -->
     <div class="relative">
       <Combobox.Input
@@ -213,7 +208,6 @@ https://svelte.dev/e/js_parse_error -->
         {placeholder} oninput={handleInputChange}
         autocomplete="off"
       />
-      
       <!-- Search Icon -->
       <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
         {#if isLoading}
@@ -224,7 +218,6 @@ https://svelte.dev/e/js_parse_error -->
           <Search class="h-5 w-5" />
         {/if}
       </div>
-      
       <!-- Clear Button -->
       {#if inputValue}
         <button
@@ -238,7 +231,6 @@ https://svelte.dev/e/js_parse_error -->
         </button>
       {/if}
     </div>
-    
     <!-- Results Dropdown -->
     <Combobox.Content
       class={cn(
@@ -250,7 +242,6 @@ https://svelte.dev/e/js_parse_error -->
       )}
       sideOffset={4}
     >
-      
       <!-- Search Categories Filter -->
       {#if inputValue.length >= 2}
         <div class="border-b border-gray-100 p-3">
@@ -275,7 +266,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       {/if}
-      
       <!-- Results List -->
       <div class="max-h-80 overflow-auto p-1">
         {#if displayResults.length === 0 && inputValue.length >= 2}
@@ -308,7 +298,6 @@ https://svelte.dev/e/js_parse_error -->
                 {/each}
               </div>
             {/if}
-            
             <!-- AI Suggestions -->
             {#if suggestions.length > 0}
               <div>
@@ -321,7 +310,7 @@ https://svelte.dev/e/js_parse_error -->
                     value={suggestion}
                     class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                     onclick={() => {
-                      inputValue = suggestion;
+                      inputValue = suggestio;
                       performSearch(suggestion);
                     }}
                   >
@@ -347,7 +336,6 @@ https://svelte.dev/e/js_parse_error -->
               <div class={cn("flex-shrink-0 mt-1", typeColors[(result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).type] || 'text-gray-500')}>
                 <svelte:component this={typeIcons[(result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).type] || FileText} class="h-4 w-4" />
               </div>
-              
               <!-- Content -->
               <div class="flex-1 min-w-0">
                 <div class="flex items-center justify-between">
@@ -360,14 +348,12 @@ https://svelte.dev/e/js_parse_error -->
                     </span>
                   {/if}
                 </div>
-                
                 <!-- Content Preview -->
                 {#if (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).content}
                   <p class="text-gray-600 text-xs mt-1 line-clamp-2">
                     {(result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).content.substring(0, 120)}...
                   </p>
                 {/if}
-                
                 <!-- Metadata -->
                 {#if (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).metadata && ((result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).metadata.date || (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).metadata.status || (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).metadata.jurisdiction)}
                   <div class="flex items-center space-x-2 mt-2">
@@ -388,7 +374,6 @@ https://svelte.dev/e/js_parse_error -->
                     {/if}
                   </div>
                 {/if}
-                
                 <!-- Highlights -->
                 {#if (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).highlights && (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).highlights.length > 0}
                   <div class="mt-1 text-xs text-yellow-700">
@@ -402,21 +387,18 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         {/if}
       </div>
-      
       <!-- Footer with search stats -->
       {#if searchResults.length > 0}
         <div class="border-t border-gray-100 p-2">
           <p class="text-xs text-gray-500 text-center">
-            {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} 
+            {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
             {#if enableVectorSearch}• AI-powered search{/if}
           </p>
         </div>
       {/if}
-      
     </Combobox.Content>
   </Combobox.Root>
 </div>
-
 <style>
   .line-clamp-2 {
     display: -webkit-box;

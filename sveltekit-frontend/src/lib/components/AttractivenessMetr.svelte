@@ -1,16 +1,13 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than onc;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
-  import {   } from "svelte";
   let { score = $bindable()  }: { score = $bindable() : any } = $props(); // number = 5; // Current attractiveness score (1-10)
-  let { label = $bindable()  }: { label = $bindable() : any } = $props(); // string = 'Attractiveness Rating';
-  let { readOnly = $bindable()  }: { readOnly = $bindable() : any } = $props(); // boolean = false;
-  let { showDescription = $bindable()  }: { showDescription = $bindable() : any } = $props(); // boolean = true;
-  let { size = $bindable()  }: { size = $bindable() : any } = $props(); // 'sm' | 'md' | 'lg' = 'md';
+  let { label = $bindable()  }: { label = $bindable() : any } = $props(); // string = 'Attractiveness Rating'
+  let { readOnly = $bindable()  }: { readOnly = $bindable() : any } = $props(); // boolean = false
+  let { showDescription = $bindable()  }: { showDescription = $bindable() : any } = $props(); // boolean = true
+  let { size = $bindable()  }: { size = $bindable() : any } = $props(); // 'sm' | 'md' | 'lg' = 'md'
   // Events now handled via props in Svelte 5
   //
   let hoveredScore = $state<number | null >(null);
@@ -42,12 +39,11 @@ https://svelte.dev/e/props_duplicate -->
   }
   let displayScore = $derived(hoveredScore !== null ? hoveredScore : score);
   let sizeClasses = $derived({
-    sm: 'w-4 h-4',;
-    md: 'w-6 h-6', ;
+    sm: 'w-4 h-4',
+    md: 'w-6 h-6',
     lg: 'w-8 h-8';
   });
 </script>
-
 <div class="mx-auto px-4 max-w-7xl">
   <div class="mx-auto px-4 max-w-7xl">
     <span class="mx-auto px-4 max-w-7xl">{label}:</span>
@@ -56,13 +52,11 @@ https://svelte.dev/e/props_duplicate -->
       <span class="mx-auto px-4 max-w-7xl">({descriptions[displayScore as keyof typeof descriptions]})</span>
     {/if}
   </div>
-
   <div class="mx-auto px-4 max-w-7xl">
     {#each Array(10) as _, i}
       {@const rating = i + 1}
       {@const isActive = rating <= displayScore}
       {@const isHovered = hoveredScore !== null && rating <= hoveredScore}
-
       <button
         type="button"
         class="mx-auto px-4 max-w-7xl"
@@ -87,7 +81,6 @@ https://svelte.dev/e/props_duplicate -->
       </button>
     {/each}
   </div>
-
   {#if !readOnly}
     <div class="mx-auto px-4 max-w-7xl">
       <input
@@ -100,31 +93,24 @@ https://svelte.dev/e/props_duplicate -->
     </div>
   {/if}
 </div>
-
 <style>
-  .star-button {;
+  .star-button {
     color: #d1d5db;
     border: none;
     background: transparent;
     padding: 0;
   }
-
   .star-button.active {
     color: #fbbf24;
   }
-
   .star-button.hovered {
     color: #fcd34d;
   }
-
   .star-button:not(.active):hover {
     color: #fef3c7;
   }
-
   .star-button:disabled {
     opacity: 0.7;
   }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

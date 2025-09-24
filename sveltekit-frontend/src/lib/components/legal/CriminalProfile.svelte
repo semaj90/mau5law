@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`
+<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`,
 https://svelte.dev/e/const_tag_invalid_placement -->
 <!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>` or `<Component>` -->
 <!-- Criminal Profile Component for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { User, Calendar, MapPin, AlertTriangle, Shield, Eye, FileText, Fingerprint, Camera } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   export interface CriminalRecord {
@@ -12,18 +11,17 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     offense: string;
     date: Date;
     jurisdiction: string;
-    disposition: 'convicted' | 'acquitted' | 'dismissed' | 'pending' | 'sealed';
+    disposition: ;
+'convicted' | 'acquitted' | 'dismissed' | 'pending' | 'sealed';
     sentence?: string;
     caseNumber?: string;
   }
-
   export interface BiometricData {
     fingerprints?: string[];
     dnaProfile?: string;
     facialRecognition?: string;
     voicePrint?: string;
   }
-
   export interface CriminalProfile {
     id: string;
     personalInfo: {
@@ -63,9 +61,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     warrants?: Array;
     notes?: string;
   }
-
   export interface CriminalProfileProps {
-    profile: CriminalProfile;
+    profile: CriminalProfil;
     viewMode?: 'full' | 'summary' | 'identification';
     showSensitiveInfo?: boolean;
     interactive?: boolean;
@@ -74,7 +71,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     onViewMugshot?: (mugshotUrl: string) => void;
     class?: string;
   }
-
   let {
     profile,
     viewMode = 'full',
@@ -85,34 +81,30 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     onViewMugshot,
     class: className = '';
   }: CriminalProfileProps = $props();
-
   // Risk level configurations
   const riskConfig = {
     low: { label: 'Low Risk', class: 'bg-green-500/20 text-green-400 border-green-500/30' },
     medium: { label: 'Medium Risk', class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
-    high: { label: 'High Risk', class: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },;
+    high: { label: 'High Risk', class: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
     extreme: { label: 'Extreme Risk', class: 'bg-red-500/20 text-red-400 border-red-500/30' }
   };
-
   // Status configurations
   const statusConfig = {
     at_large: { label: 'At Large', class: 'bg-red-500/20 text-red-400', icon: AlertTriangle },
     incarcerated: { label: 'Incarcerated', class: 'bg-gray-500/20 text-gray-400', icon: Shield },
     on_parole: { label: 'On Parole', class: 'bg-yellow-500/20 text-yellow-400', icon: Eye },
     probation: { label: 'Probation', class: 'bg-blue-500/20 text-blue-400', icon: FileText },
-    deceased: { label: 'Deceased', class: 'bg-gray-500/20 text-gray-400', icon: User },;
+    deceased: { label: 'Deceased', class: 'bg-gray-500/20 text-gray-400', icon: User },
     cleared: { label: 'Cleared', class: 'bg-green-500/20 text-green-400', icon: Shield }
   };
-
   // Disposition configurations
   const dispositionConfig = {
     convicted: { label: 'Convicted', class: 'bg-red-500/20 text-red-400' },
     acquitted: { label: 'Acquitted', class: 'bg-green-500/20 text-green-400' },
     dismissed: { label: 'Dismissed', class: 'bg-blue-500/20 text-blue-400' },
-    pending: { label: 'Pending', class: 'bg-yellow-500/20 text-yellow-400' },;
+    pending: { label: 'Pending', class: 'bg-yellow-500/20 text-yellow-400' },
     sealed: { label: 'Sealed', class: 'bg-gray-500/20 text-gray-400' }
   };
-
   // Calculate age
   let age = $derived(() => {
     const today = new Date());
@@ -122,42 +114,36 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
-    return age;
+    return ag;
   });
-
   // Active warrants
   let activeWarrants = $derived(() => {
     return profile.warrants?.filter(warrant => warrant.status === 'active') || [];
   });
-
   // Recent criminal activity
   let recentRecords = $derived(() => {
     return profile.criminalHistory
       .sort((a, b) => b.date.getTime() - a.date.getTime())
       .slice(0, 5);
   });
-
   function formatDate(date: Date): string {
     return date.toLocaleDateString('en-US', {
-      year: 'numeric',;
-      month: 'short',;
+      year: 'numeric',
+      month: 'short',
       day: 'numeric';
     });
   }
-
   function maskSSN(ssn: string): string {
     if (!showSensitiveInfo) {
       return `***-**-${ssn.slice(-4)}`;
     }
-    return ssn;
+    return s;
   }
-
   function getFullName(): string {
     const { firstName, lastName } = profile.personalInfo;
     return `${firstName} ${lastName}`;
   }
 </script>
-
 <div className={cn(
   'criminal-profile bg-yorha-bg-secondary border border-yorha-border rounded-lg overflow-hidden',
   profile.currentStatus === 'at_large' && 'border-red-500/30',
@@ -186,7 +172,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           </div>
         {/if}
       </div>
-
       <!-- Profile Info -->
       <div class="flex-1 min-w-0">
         <div class="flex items-start justify-between mb-2">
@@ -198,7 +183,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               ID: {profile.id} • Age: {age}
             </div>
           </div>
-
           <!-- Current Status -->
           {@const statusInfo = statusConfig[profile.currentStatus]}
           {@const StatusIcon = statusInfo.icon}
@@ -209,7 +193,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             </span>
           </div>
         </div>
-
         <!-- Aliases -->
         {#if profile.personalInfo.aliases?.length}
           <div class="mb-2">
@@ -219,7 +202,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             </span>
           </div>
         {/if}
-
         <!-- Risk Assessment -->
         <div class="flex items-center gap-4 text-xs font-mono">
           <div class="flex items-center gap-2">
@@ -231,13 +213,11 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               {riskConfig[profile.riskAssessment.riskLevel].label}
             </span>
           </div>
-
           {#if profile.riskAssessment.flightRisk}
             <span class="px-2 py-0.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded">
               FLIGHT RISK
             </span>
           {/if}
-
           {#if profile.riskAssessment.violentHistory}
             <span class="px-2 py-0.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded">
               VIOLENT HISTORY
@@ -246,7 +226,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         </div>
       </div>
     </div>
-
     <!-- Active Warrants Alert -->
     {#if activeWarrants.length > 0}
       <div class="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded">
@@ -262,7 +241,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       </div>
     {/if}
   </div>
-
   <!-- Profile Content -->
   <div class="p-4 space-y-4">
     <!-- Personal Information -->
@@ -311,7 +289,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             </div>
           {/if}
         </div>
-
         <!-- Distinguishing Marks -->
         {#if profile.personalInfo.distinguishingMarks?.length}
           <div class="mt-3">
@@ -327,7 +304,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
       </div>
     {/if}
-
     <!-- Identification -->
     {#if viewMode === 'full' || viewMode === 'identification'}
       <div>
@@ -354,7 +330,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             </div>
           {/if}
         </div>
-
         <!-- Biometric Data -->
         {#if profile.identification.biometrics}
           <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
@@ -382,14 +357,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
       </div>
     {/if}
-
     <!-- Criminal History -->
     {#if viewMode === 'full' || viewMode === 'summary'}
       <div>
         <h3 class="text-sm font-semibold text-yorha-text-primary font-mono mb-3 uppercase">
           Criminal History ({profile.criminalHistory.length} record{profile.criminalHistory.length !== 1 ? 's' : ''})
         </h3>
-        
         {#if recentRecords.length === 0}
           <p class="text-sm text-yorha-text-secondary font-mono">No criminal records found</p>
         {:else}
@@ -415,13 +388,11 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                     {dispositionConfig[record.disposition].label}
                   </span>
                 </div>
-                
                 {#if record.sentence}
                   <p class="text-xs text-yorha-text-secondary font-mono">
                     Sentence: {record.sentence}
                   </p>
                 {/if}
-
                 {#if interactive && onViewFullRecord}
                   <button
                     onclick={() => onViewFullRecord?.(record.id)}
@@ -432,7 +403,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                 {/if}
               </div>
             {/each}
-
             {#if profile.criminalHistory.length > 5}
               <div class="text-center">
                 <span class="text-xs font-mono text-yorha-text-secondary">
@@ -444,7 +414,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
       </div>
     {/if}
-
     <!-- Additional Notes -->
     {#if profile.notes && viewMode === 'full'}
       <div>
@@ -459,7 +428,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       </div>
     {/if}
   </div>
-
   <!-- Footer Actions -->
   {#if interactive && onUpdateProfile}
     <div class="px-4 py-3 bg-yorha-bg-tertiary border-t border-yorha-border">
@@ -474,9 +442,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     </div>
   {/if}
 </div>
-
 <style>
-  .criminal-profile {;
+  .criminal-profile {
     transition: all 0.2s ease;
   }
 </style>

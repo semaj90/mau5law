@@ -5,7 +5,6 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
   import { fileUploadSchema } from '$lib/schemas/file-upload.js';
@@ -20,21 +19,20 @@
     onUploadError?: (error: string) => void;
     preserveExistingFlow?: boolean; // New prop to maintain existing RAG flow
   }
-  let { 
-    data, 
-    caseId = '', 
+  let {
+    data,
+    caseId = '',
     onUploadComplete,
     onUploadError,
     preserveExistingFlow = true // Default to preserve existing enhanced flow
   }: Props = $props();
-
   // Enhanced form leveraging Superforms' built-in validation
   const { form, errors, enhance, submitting, message, delayed } = superForm((data as { form?: unknown; som_cluster?: unknown }).form, {
     validators: zod(fileUploadSchema),
     dataType: 'form', // Use FormData for file uploads
     multipleSubmits: 'prevent',
     clearOnSubmit: 'errors-and-message',
-    invalidateAll: false,
+    invalidateAll: false
     onSubmit: ({ formData, cancel }) => {
       // Superforms handles validation automatically
       if (!selectedFile) {
@@ -44,9 +42,9 @@
       // Add enhanced processing metadata to form
       if (preserveExistingFlow && (ocrResults || legalAnalysis || semanticEmbeddings)) {
         formData.set('enhancedAnalysis', JSON.stringify({
-          ocr: ocrResults,;
-          legal: legalAnalysis,;
-          semantic: semanticEmbeddings,
+          ocr: ocrResults
+          legal: legalAnalysis
+          semantic: semanticEmbeddings
           preserveFlow: true;
         }));
       }
@@ -69,7 +67,6 @@
       onUploadError?.((result as { type?: unknown; data?: unknown; error?: unknown }).error?.message || 'Unexpected error occurred');
     }
   });
-
   // State management
   let selectedFile: File | null = $state(null);
   let filePreview: string | null = $state(null);
@@ -82,10 +79,9 @@
   let showProcessingDetails = $state(false);
   // XState evidence processing actor for the existing flow
   let evidenceActor = $state<ReturnType<typeof createActor> | null>(null);
-
   // Enhanced file selection with Superforms integration
   async function handleFileSelect(file: File) {
-    selectedFile = file;
+    selectedFile = fil;
     // Clear previous results and errors
     ocrResults = null;
     legalAnalysis = null;
@@ -116,7 +112,6 @@
       await runPreliminaryAnalysis(file);
     }
   }
-
   // Validate file using your existing logic
   function validateFile(file: File): boolean {
     const maxSize = 100 * 1024 * 1024; // 100MB
@@ -139,7 +134,6 @@
     }
     return true;
   }
-
   // Run preliminary analysis using your existing OCR + LegalBERT flow
   async function runPreliminaryAnalysis(file: File) {
     processingStage = 'Starting preliminary analysis...';
@@ -150,7 +144,7 @@
         const formData = new FormData();
         formData.append('file', file);
         const ocrResponse = await fetch('/api/ocr/extract', {
-          method: 'POST',;
+          method: 'POST',
           body: formData;
         });
         if (ocrResponse.ok) {
@@ -163,12 +157,12 @@
         processingStage = 'Running LegalBERT analysis...';
         const textContent = ocrResults?.text || await file.text();
         const legalResponse = await fetch('/api/ai/legal-analysis', {
-          method: 'POST',;
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ;
-            text: textContent,
-            includeEmbeddings: true,
-            includeConcepts: true,
+            text: textContent
+            includeEmbeddings: true
+            includeConcepts: true
             includeClassification: true;
           })
         });
@@ -181,15 +175,15 @@
       if (legalAnalysis) {
         processingStage = 'Generating semantic embeddings...';
         const ragResponse = await fetch('/api/semantic-analysis', {
-          method: 'POST',;
-          body: new URLSearchParams({;
+          method: 'POST',
+          body: new URLSearchParams({,
             text: ocrResults?.text || await file.text();
           })
         });
         if (ragResponse.ok) {
           semanticEmbeddings = await ragResponse.json();
-          processingStage = `Semantic analysis complete: ${semanticEmbeddings.data?.som_cluster ? 
-            `Clustered to region [${semanticEmbeddings.data.som_cluster.x},${semanticEmbeddings.data.som_cluster.y}]` : 
+          processingStage = `Semantic analysis complete: ${semanticEmbeddings.data?.som_cluster ?
+            `Clustered to region [${semanticEmbeddings.data.som_cluster.x},${semanticEmbeddings.data.som_cluster.y}]` :
             'Vector embeddings generated'}`;
         }
       }
@@ -199,7 +193,6 @@
       processingStage = 'Analysis failed - will proceed with basic upload';
     }
   }
-
   // Enhanced webhook processing preserving your existing RAG flow
   async function triggerWebhookProcessing(uploadResult: unknown, formData: FormData) {
     try {
@@ -210,16 +203,16 @@
         documentId: uploadResult.documentId,
         caseId: $form.caseId,
         filename: selectedFile?.name,
-        preserveEnhancedFlow: preserveExistingFlow,;
+        preserveEnhancedFlow: preserveExistingFlow
         analysis: {
-          ocr: ocrResults,
-          legal: legalAnalysis,
-          semantic: semanticEmbeddings,;
+          ocr: ocrResults
+          legal: legalAnalysis
+          semantic: semanticEmbeddings
           metadata: {
             title: $form.title,
             evidenceType: $form.evidenceType,
-            description: $form.description,;
-            tags: $form.tags?.split.map(tag => tag.trim()).filter(Boolean),;
+            description: $form.description,
+            tags: $form.tags?.split.map(tag => tag.trim()).filter(Boolean),
             flags: {
               enableAiAnalysis: $form.enableAiAnalysis,
               enableOcr: $form.enableOcr,
@@ -229,52 +222,47 @@
           }
         }
       };
-
       // Trigger multiple processing endpoints to preserve your existing flow
       const processingPromises = [];
-
       // 1. Your enhanced semantic architecture Go service
       processingPromises.push(
         fetch('http://localhost:8095/api/intelligent-todos', {
-          method: 'POST',;
-          headers: { 'Content-Type': 'application/json' },;
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(webhookPayload);
         }).catch(error => console.warn('Semantic architecture processing failed:', error))
       );
-
-      // 2. Enhanced RAG service integration 
+      // 2. Enhanced RAG service integration
       if (uploadResult.documentId) {
         processingPromises.push(
           fetch('http://localhost:8094/api/rag/document-ingest', {
-            method: 'POST',;
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            body: JSON.stringify({,
               documentId: uploadResult.documentId,
               caseId: $form.caseId,
-              text: ocrResults?.text,;
-              embeddings: semanticEmbeddings?.data?.embeddings,;
+              text: ocrResults?.text,
+              embeddings: semanticEmbeddings?.data?.embeddings,
               metadata: webhookPayload.analysis.metadata;
             })
           }).catch(error => console.warn('RAG ingestion failed:', error))
         );
       }
-
       // 3. LegalBERT processing webhook
       if (legalAnalysis) {
         processingPromises.push(
           fetch('/api/webhooks/legal-processing', {
-            method: 'POST',;
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            body: JSON.stringify({,
               event: 'legal_analysis_complete',
-              documentId: uploadResult.documentId,;
-              analysis: legalAnalysis,
+              documentId: uploadResult.documentId,
+              analysis: legalAnalysis
               preserveFlow: true;
             })
           }).catch(error => console.warn('Legal processing webhook failed:', error))
         );
       }
-
       // Execute all processing in parallel (non-blocking)
       await Promise.allSettled(processingPromises);
       processingStage = 'Enhanced processing pipeline triggered successfully';
@@ -283,7 +271,6 @@
       processingStage = 'Upload complete - enhanced processing may have partial failures';
     }
   }
-
   // File input handlers
   function onFileChange(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -292,7 +279,6 @@
       handleFileSelect(file);
     }
   }
-
   function onDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
@@ -301,16 +287,13 @@
       handleFileSelect(file);
     }
   }
-
   function onDragOver(event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
-
   function onDragLeave() {
     dragOver = false;
   }
-
   function removeFile() {
     selectedFile = null;
     filePreview = null;
@@ -320,7 +303,6 @@
     processingStage = '';
     $form.file = undefined as any;
   }
-
   function formatFileSize(bytes: number): string {
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
@@ -328,13 +310,10 @@
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>
-
 <!-- bits-ui Dialog provides functionality, nes.css provides retro styling -->
 <Dialog.Root bind:open={showProcessingDetails}>
-  
   <div class="nes-container with-title enhanced-legal-upload">
     <p class="title">🏛️ LEGAL AI DOCUMENT PROCESSOR</p>
-    
     <div class="upload-header">
       <div class="nes-text">
         Enhanced Legal Document Upload System
@@ -349,14 +328,12 @@
         <span class="nes-badge" class:is-success={preserveExistingFlow}>
           <span class="is-success">🎯</span> RAG Pipeline
         </span>
-        
         <!-- Processing Details Modal Trigger -->
         <Dialog.Trigger class="nes-btn is-small">
           📊 Details
         </Dialog.Trigger>
       </div>
     </div>
-
   <form method="POST" action="?/upload" use:enhance enctype="multipart/form-data">
     <!-- Case ID - NES.css styled -->
     <div class="nes-field">
@@ -375,7 +352,6 @@
         <div class="nes-text is-error">{$errors.caseId}</div>
       {/if}
     </div>
-
     <!-- Enhanced File Upload Area - NES.css styled -->
     <div class="nes-field">
       <label class="nes-text">📎 Document Upload *</label>
@@ -399,7 +375,6 @@
           accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.tiff" onchange={onFileChange}
           style="display: none"
         />
-
         {#if selectedFile}
           <div class="file-preview">
             <div class="file-info">
@@ -416,12 +391,10 @@
                 </button>
               </div>
             </div>
-            
             <!-- Analysis Results Preview -->
             {#if preserveExistingFlow && (ocrResults || legalAnalysis || semanticEmbeddings)}
               <div class="analysis-preview">
                 <h4>Preliminary Analysis Results</h4>
-                
                 {#if ocrResults}
                   <div class="analysis-section">
                     <strong>OCR Results:</strong>
@@ -433,12 +406,11 @@
                     </div>
                   </div>
                 {/if}
-                
                 {#if legalAnalysis}
                   <div class="analysis-section">
                     <strong>LegalBERT Analysis:</strong>
                     <div class="legal-stats">
-                      {legalAnalysis.entities?.length || 0} entities • 
+                      {legalAnalysis.entities?.length || 0} entities •
                       {legalAnalysis.concepts?.length || 0} concepts •
                       {legalAnalysis.sentiment?.classification || 'neutral'} sentiment
                     </div>
@@ -451,12 +423,11 @@
                     {/if}
                   </div>
                 {/if}
-                
                 {#if semanticEmbeddings}
                   <div class="analysis-section">
                     <strong>Semantic Analysis:</strong>
                     <div class="semantic-stats">
-                      {semanticEmbeddings.data?.som_cluster ? 
+                      {semanticEmbeddings.data?.som_cluster ?
                         `Clustered to region [${semanticEmbeddings.data.som_cluster.x},${semanticEmbeddings.data.som_cluster.y}]` :
                         'Vector embeddings generated'
                       }
@@ -481,12 +452,10 @@
           </div>
         {/if}
       </div>
-      
       {#if $errors.file}
         <div class="nes-text is-error">{$errors.file}</div>
       {/if}
     </div>
-
     <!-- Processing Status - NES.css styled -->
     {#if processingStage}
       <div class="nes-container is-rounded is-dark">
@@ -496,7 +465,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Document Metadata - NES.css styled -->
     <div class="form-row">
       <div class="nes-field">
@@ -510,7 +478,6 @@
           class="nes-input"
         />
       </div>
-
       <div class="nes-field">
         <label for="evidenceType" class="nes-text">🏷️ Evidence Type</label>
         <div class="nes-select">
@@ -532,7 +499,6 @@
         </div>
       </div>
     </div>
-
     <!-- Description - NES.css styled -->
     <div class="nes-field">
       <label for="description" class="nes-text">📋 Description</label>
@@ -545,7 +511,6 @@
         class="nes-textarea"
       ></textarea>
     </div>
-
     <!-- Tags - NES.css styled -->
     <div class="nes-field">
       <label for="tags" class="nes-text">🏷️ Tags (comma-separated)</label>
@@ -558,7 +523,6 @@
         class="nes-input"
       />
     </div>
-
     <!-- AI Processing Options - NES.css styled -->
     <div class="nes-container is-rounded">
       <p class="nes-text">🤖 AI Processing Options</p>
@@ -601,7 +565,6 @@
         </label>
       </div>
     </div>
-
     <!-- Submit Button - NES.css styled -->
     <div class="form-actions">
       <button
@@ -620,14 +583,12 @@
           {preserveExistingFlow ? '🚀 Upload & Analyze with Enhanced RAG' : '📤 Upload Document'}
         {/if}
       </button>
-      
       {#if preserveExistingFlow && (ocrResults || legalAnalysis || semanticEmbeddings)}
         <div class="nes-container is-rounded is-success enhanced-status">
           <span class="nes-text">✨ Enhanced analysis ready - your existing RAG flow will be preserved</span>
         </div>
       {/if}
     </div>
-
     <!-- Messages - NES.css styled -->
     {#if $message}
       <div class="nes-container is-rounded is-success form-message">
@@ -635,9 +596,7 @@
       </div>
     {/if}
   </form>
-  
   </div>
-
   <!-- Processing Details Modal - bits-ui Dialog with nes.css styling -->
   <Dialog.Portal>
     <Dialog.Overlay class="fixed inset-0 bg-black/50 z-50" />
@@ -651,7 +610,6 @@
             ✕
           </Dialog.Close>
         </div>
-
         <div class="dialog-content">
           {#if ocrResults}
             <div class="nes-container is-rounded">
@@ -694,7 +652,6 @@
               </div>
             </div>
           {/if}
-
           {#if legalAnalysis}
             <div class="nes-container is-rounded">
               <p class="nes-text">🧠 LegalBERT Analysis</p>
@@ -728,7 +685,6 @@
               </div>
             </div>
           {/if}
-
           {#if semanticEmbeddings}
             <div class="nes-container is-rounded">
               <p class="nes-text">🎯 Semantic Analysis</p>
@@ -745,7 +701,6 @@
               </div>
             </div>
           {/if}
-
           {#if !ocrResults && !legalAnalysis && !semanticEmbeddings}
             <div class="nes-container is-rounded is-dark">
               <p class="nes-text">No processing data available yet. Upload a document to see detailed analysis.</p>
@@ -755,32 +710,27 @@
       </div>
     </Dialog.Content>
   </Dialog.Portal>
-
 </Dialog.Root>
-
 <style>
   /* bits-ui + nes.css integration styles */
-  .enhanced-legal-upload {;
+  .enhanced-legal-upload {
     max-width: 900px;
     margin: 2rem auto;
     font-family: 'Press Start 2P', monospace;
   }
-
   .upload-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 2rem;
     flex-wrap: wrap;
     gap: 1rem;
   }
-
   .feature-indicators {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
   }
-
   /* Custom nes.css enhancements for file upload */
   .file-upload-area {
     cursor: pointer;
@@ -791,18 +741,15 @@
     justify-content: center;
     text-align: center;
   }
-
   .file-upload-area:hover {
     transform: translateY(-2px);
     box-shadow: 4px 4px 0px #000;
   }
-
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
-
   /* NES.css checkbox styling */
   .checkbox-group {
     display: grid;
@@ -810,21 +757,18 @@
     gap: 1rem;
     margin-top: 1rem;
   }
-
   /* File preview with retro styling */
   .file-preview {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .file-info {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
     flex-wrap: wrap;
   }
-
   .image-preview {
     width: 100px;
     height: 100px;
@@ -832,7 +776,6 @@
     image-rendering: pixelated;
     border: 4px solid #000;
   }
-
   .file-icon {
     width: 100px;
     height: 100px;
@@ -843,37 +786,30 @@
     border: 4px solid #000;
     background: #fff;
   }
-
   .file-details {
     flex: 1;
     min-width: 200px;
   }
-
   .file-name {
     font-size: 0.75rem;
     margin-bottom: 0.5rem;
     word-break: break-all;
   }
-
   .file-size {
     font-size: 0.6rem;
     margin-bottom: 0.5rem;
     opacity: 0.8;
   }
-
   .remove-file {
     font-size: 0.6rem;
   }
-
   /* Processing status with retro styling */
-
   .processing-indicator {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.75rem;
   }
-
   /* Submit button styling */
   .submit-button {
     width: 100%;
@@ -881,16 +817,13 @@
     padding: 1rem;
     margin-top: 1rem;
   }
-
   .form-actions {
     margin-top: 2rem;
   }
-
   .enhanced-status {
     margin-top: 1rem;
     font-size: 0.6rem;
   }
-
   /* Upload prompt styling */
   .upload-prompt {
     display: flex;
@@ -899,56 +832,46 @@
     gap: 1rem;
     padding: 2rem;
   }
-
   .upload-icon {
     font-size: 3rem;
     opacity: 0.7;
   }
-
   .upload-text {
     text-align: center;
     font-size: 0.75rem;
   }
-
   .upload-hint {
     font-size: 0.6rem;
     margin-top: 0.5rem;
   }
-
   /* Dialog styling */
   .dialog-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 1rem;
     border-bottom: 4px solid #000;
   }
-
   .dialog-content {
     max-height: 60vh;
     overflow-y: auto;
   }
-
   .analysis-details {
     margin-top: 1rem;
   }
-
   .concept-list {
     margin-top: 1rem;
   }
-
   .semantic-visualization {
     text-align: center;
     padding: 1rem;
   }
-
   /* Retro animations */
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-
   .spinner {
     width: 16px;
     height: 16px;
@@ -958,23 +881,19 @@
     animation: spin 1s linear infinite;
     display: inline-block;
   }
-
   /* Responsive design */
   @media (max-width: 768px) {
     .enhanced-legal-upload {
       margin: 1rem;
       max-width: none;
     }
-    
     .form-row {
       grid-template-columns: 1fr;
     }
-    
     .upload-header {
       flex-direction: column;
       text-align: center;
     }
-    
     .file-info {
       flex-direction: column;
       text-align: center;

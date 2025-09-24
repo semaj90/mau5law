@@ -3,7 +3,6 @@
   import Button from '$lib/components/ui/enhanced-bits';
   import { ArrowLeft, Shield } from "lucide-svelte";
 </script>
-
 <svelte:head>
   <title>Security Dashboard - WardenNet Detective Mode</title>
   <meta
@@ -11,7 +10,6 @@
     content="Monitor system security events, health status, and security metrics"
   />
 </svelte:head>
-
 <div class="space-y-4">
   <!-- Header -->
   <div class="space-y-4">
@@ -19,7 +17,6 @@
       <Button class="bits-btn" variant="ghost" size="sm">
 <ArrowLeft class="space-y-4" />
         Back to Dashboard
-
     </a>
     <div>
       <h1 class="space-y-4">
@@ -31,8 +28,6 @@
       </p>
     </div>
   </div>
-
   <!-- Security Monitoring Dashboard -->
   <SecurityMonitoringDashboard />
 </div>
-

@@ -1,13 +1,11 @@
 // Shared Legal AI metadata type used by tests and services
-// This is a flexible, backward-compatible shape that maps to the current PNGEmbedExtractor metadata;
+// This is a flexible, backward-compatible shape that maps to the current PNGEmbedExtractor metadata
 }
-
 export interface LegalAIMetadataEntity {
   name: string;
   type: string;
   confidence: number;
 }
-
 export interface LegalAIClassifications {
   documentType?: string;
   jurisdiction?: string;
@@ -15,15 +13,13 @@ export interface LegalAIClassifications {
   confidentiality?: string;
   [key: string]: unknown;
 }
-
 export interface ProcessingStep {
   step: string;
   durationMs?: number; // legacy tests use durationMs
   duration_ms?: number; // new extractor uses duration_ms
   success: boolean;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface LegalAIMetadata {
   // Legacy/test fields
   processingId?: string;
@@ -41,10 +37,9 @@ export interface LegalAIMetadata {
   processingChain: ProcessingStep[];
   semanticHash?: string; // legacy
   embeddings?: { semantic_hash?: string; text_embedding?: number[] };
-  additionalData?: Record<string, any>;
-
+  additionalData?: { [key: string]: any };
   // Compatibility aliases for PNG extractor expectations
-  evidence_id?: string; // mapped from processingId or provided directly;
+  evidence_id?: string; // mapped from processingId or provided directly
   analysis_results?: {
     confidence: number;
     classifications: string[] | LegalAIClassifications[keyof LegalAIClassifications][];
@@ -55,5 +50,4 @@ export interface LegalAIMetadata {
     summary: string;
   };
 }
-
 export type { LegalAIMetadata as DefaultLegalAIMetadata };

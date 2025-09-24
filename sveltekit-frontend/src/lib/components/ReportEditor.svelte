@@ -1,19 +1,16 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than onc;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { browser } from "$app/environment";
   import type { CitationPoint, Report, ReportSection } from "$lib/data/types";
   import { onDestroy, onMount } from 'svelte';
-
-  let { report = $bindable()  }: { report = $bindable() : unknown } = $props(); // Report | null = null;
-  let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string;
-  let { onSave = $bindable()  }: { onSave = $bindable() : unknown } = $props(); // (report: Report) => Promise<void> = async () => ;
-  let { autoSaveEnabled = $bindable()  }: { autoSaveEnabled = $bindable() : unknown } = $props(); // true;
-  let { readOnly = $bindable()  }: { readOnly = $bindable() : unknown } = $props(); // false;
-
+  let { report = $bindable()  }: { report = $bindable() : unknown } = $props(); // Report | null = null
+  let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string
+  let { onSave = $bindable()  }: { onSave = $bindable() : unknown } = $props(); // (report: Report) => Promise<void> = async () =>
+  let { autoSaveEnabled = $bindable()  }: { autoSaveEnabled = $bindable() : unknown } = $props(); // true
+  let { readOnly = $bindable()  }: { readOnly = $bindable() : unknown } = $props(); // false
   let editorElement: HTMLDivElement;
   let citationSidebar: HTMLDivElement;
   let isDirty = $state(false);
@@ -23,23 +20,19 @@ https://svelte.dev/e/props_duplicate -->
   let wordCount = $state(0);
   let characterCount = $state(0);
   let estimatedReadTime = $state(0);
-
   // Report state
   let title = report?.title || "Untitled Report";
   let content = report?.content || "";
   let sections = $state<ReportSection[] >([]);
   let selectedCitations = $state<CitationPoint[] >([]);
   let availableCitations = $state<CitationPoint[] >([]);
-
   // AI suggestions state
   let aiSuggestions = $state<string[] >([]);
   let showAiPanel = $state(false);
   let isGeneratingAi = $state(false);
-
   // Selection and cursor state
   let currentSelection = $state<Range | null >(null);
   let cursorPosition = $state(0);
-
   $effect(() => {
     if (browser && editorElement) {
       setupEditor();
@@ -50,60 +43,48 @@ https://svelte.dev/e/props_duplicate -->
       setupAutoSave();
   }
   });
-
   onDestroy(() => {
     if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
   }
   });
-
   function setupEditor() {
     if (!editorElement) return;
-
     // Make contenteditable and set initial content
     editorElement.contentEditable = readOnly ? "false" : "true";
     editorElement.innerHTML = content;
-
     // Add event listeners for content changes
     editorElement.addEventListener("input", handleContentChange);
     editorElement.addEventListener("paste", handlePaste);
     editorElement.addEventListener("keydown", handleKeyDown);
     editorElement.addEventListener("selectionchange", handleSelectionChange);
-
     // Add focus/blur handlers
     editorElement.addEventListener("focus", handleFocus);
     editorElement.addEventListener("blur", handleBlur);
-
     // Initialize word count
     updateWordCount();
   }
   function handleContentChange(event: Event) {
     if (readOnly) return;
-
     content = editorElement.innerHTML;
     isDirty = true;
     updateWordCount();
-
     // Reset auto-save timer
     scheduleAutoSave();
-
     // Generate AI suggestions if enabled
     if (content.length > 100) {
       debounceAiSuggestions();
   }}
   function handlePaste(event: ClipboardEvent) {
     if (readOnly) return;
-
     event.preventDefault();
     const text = event.clipboardData?.getData("text/plain") || "";
-
     // Insert plain text to avoid formatting issues
     document.execCommand("insertText", false, text);
     handleContentChange(event);
   }
   function handleKeyDown(event: KeyboardEvent) {
     if (readOnly) return;
-
     // Handle keyboard shortcuts
     if (event.ctrlKey || event.metaKey) {
       switch (event.key) {
@@ -150,7 +131,6 @@ https://svelte.dev/e/props_duplicate -->
   }}
   function formatText(command: string) {
     if (readOnly) return;
-
     document.execCommand(command, false);
     handleContentChange(new Event("input"));
   }
@@ -170,10 +150,8 @@ https://svelte.dev/e/props_duplicate -->
       `[data-citation-id="${citationId}"]`
     );
     citationTokens.forEach((token) => token.remove());
-
     // Remove from selected citations
     selectedCitations = selectedCitations.filter((c) => c.id !== citationId);
-
     handleContentChange(new Event("input"));
   }
   function insertCitationPrompt() {
@@ -191,10 +169,8 @@ https://svelte.dev/e/props_duplicate -->
   }}
   function loadReportContent() {
     if (!report) return;
-
-    title = report.title;
+    title = report.titl;
     content = report.content || "";
-
     if (editorElement) {
       editorElement.innerHTML = content;
   }
@@ -205,14 +181,12 @@ https://svelte.dev/e/props_duplicate -->
   function extractExistingCitations() {
     const citationTokens = editorElement.querySelectorAll(".citation-token");
     const citationIds: string[] = [];
-
     citationTokens.forEach((token) => {
       const citationId = token.getAttribute("data-citation-id");
       if (citationId) {
         citationIds.push(citationId);
   }
     });
-
     // Load full citation data
     selectedCitations = availableCitations.filter((c) =>
       citationIds.includes(c.id)
@@ -229,7 +203,6 @@ https://svelte.dev/e/props_duplicate -->
   }
   function scheduleAutoSave() {
     if (!autoSaveEnabled) return;
-
     if (autoSaveTimer) {
       clearTimeout(autoSaveTimer);
   }
@@ -239,15 +212,13 @@ https://svelte.dev/e/props_duplicate -->
   }
   async function saveReport() {
     if (!isDirty || isLoading) return;
-
     isLoading = true;
-
     try {
       const reportData: Partial<Report> = {
         ...report,
         title,
         content: editorElement.innerHTML,
-        caseId,;
+        caseId,
         metadata: {
           ...(report?.metadata && typeof report.metadata === "object"
             ? report.metadata: ),
@@ -256,15 +227,13 @@ https://svelte.dev/e/props_duplicate -->
         },
         updatedAt: new Date(),
       };
-
       const response = await fetch("/api/reports", {
-        method: report ? "PUT" : "POST",;
+        method: report ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
-        },;
-        body: JSON.stringify(reportData),;
+        },
+        body: JSON.stringify(reportData),
       });
-
       if (response.ok) {
         const savedReport = await response.json();
         report = savedReport;
@@ -281,7 +250,6 @@ https://svelte.dev/e/props_duplicate -->
       isLoading = false;
   }}
   let aiSuggestionTimer = $state<NodeJS.Timeout | null >(null);
-
   function debounceAiSuggestions() {
     if (aiSuggestionTimer) {
       clearTimeout(aiSuggestionTimer);
@@ -292,22 +260,19 @@ https://svelte.dev/e/props_duplicate -->
   }
   async function generateAiSuggestions() {
     if (isGeneratingAi) return;
-
     isGeneratingAi = true;
-
     try {
       const response = await fetch("/api/ai/suggestions", {
-        method: "POST",;
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({;
+        body: JSON.stringify({,
           content: editorElement.textContent,
           caseId,
-          reportType: report?.reportType || "prosecution_memo",;
+          reportType: report?.reportType || "prosecution_memo",
         }),
       });
-
       if (response.ok) {
         const suggestions = await response.json();
         aiSuggestions = suggestions.suggestions || [];
@@ -319,13 +284,12 @@ https://svelte.dev/e/props_duplicate -->
   }}
   function insertAiSuggestion(suggestion: string) {
     if (readOnly) return;
-
     if (currentSelection) {
-      const range = currentSelection;
+      const range = currentSelectio;
       range.insertNode(range.createContextualFragment(suggestion));
       range.collapse(false);
     } else {
-      editorElement.innerHTML += suggestion;
+      editorElement.innerHTML += suggestio;
   }
     handleContentChange(new Event("input"));
     aiSuggestions = [];
@@ -339,7 +303,6 @@ https://svelte.dev/e/props_duplicate -->
     }, 30000);
   }
 </script>
-
 <div class="container mx-auto px-4">
   <!-- Header with title and controls -->
   <div class="container mx-auto px-4">
@@ -349,14 +312,12 @@ https://svelte.dev/e/props_duplicate -->
       placeholder="Report Title"
       disabled={readOnly}
     />
-
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <span class="container mx-auto px-4">{wordCount} words</span>
         <span class="container mx-auto px-4">{characterCount} characters</span>
         <span class="container mx-auto px-4">{estimatedReadTime} min read</span>
       </div>
-
       <div class="container mx-auto px-4">
         {#if isLoading}
           <span class="container mx-auto px-4">Saving...</span>
@@ -366,7 +327,6 @@ https://svelte.dev/e/props_duplicate -->
           <span class="container mx-auto px-4">Unsaved changes</span>
         {/if}
       </div>
-
       <div class="container mx-auto px-4">
         <button
           class="container mx-auto px-4"
@@ -384,7 +344,6 @@ https://svelte.dev/e/props_duplicate -->
       </div>
     </div>
   </div>
-
   <!-- Main editing area -->
   <div class="container mx-auto px-4">
     <!-- Formatting toolbar -->
@@ -421,7 +380,6 @@ https://svelte.dev/e/props_duplicate -->
         </button>
       </div>
     {/if}
-
     <!-- Content editor -->
     <div
       bind:this={editorElement}
@@ -432,7 +390,6 @@ https://svelte.dev/e/props_duplicate -->
       aria-label="Report content editor"
     ></div>
   </div>
-
   <!-- Citation sidebar -->
   <div;
     bind:this={citationSidebar}
@@ -446,12 +403,10 @@ https://svelte.dev/e/props_duplicate -->
         onclick={() => (citationSidebar.style.display = "none")}>×</button
       >
     </div>
-
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <input type="text" placeholder="Search citations..." />
       </div>
-
       <div class="container mx-auto px-4">
         {#each availableCitations as citation}
           <div class="container mx-auto px-4">
@@ -468,7 +423,6 @@ https://svelte.dev/e/props_duplicate -->
       </div>
     </div>
   </div>
-
   <!-- AI suggestions panel -->
   {#if showAiPanel}
     <div class="container mx-auto px-4">
@@ -478,7 +432,6 @@ https://svelte.dev/e/props_duplicate -->
           >×</button
         >
       </div>
-
       <div class="container mx-auto px-4">
         {#if isGeneratingAi}
           <div class="container mx-auto px-4">Generating suggestions...</div>
@@ -500,7 +453,6 @@ https://svelte.dev/e/props_duplicate -->
       </div>
     </div>
   {/if}
-
   <!-- Selected citations display -->
   {#if selectedCitations.length > 0}
     <div class="container mx-auto px-4">
@@ -517,10 +469,9 @@ https://svelte.dev/e/props_duplicate -->
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
-  .report-editor-container {;
+  .report-editor-container {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -580,14 +531,14 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 6px;
     cursor: pointer;
     font-size: 14px;
-    transition: all 0.2s;
+    transition: all 0.2;
 }
   .btn-primary {
     background: #3b82f6;
     border-color: #3b82f6;
     color: white;
 }
-  .btn-primary:hover:not(:disabled) {
+  .btn-primary:hover:not(:disabled) {,
     background: #2563eb;
 }
   .btn-primary:disabled {
@@ -623,9 +574,9 @@ https://svelte.dev/e/props_duplicate -->
     background: white;
     cursor: pointer;
     font-size: 14px;
-    transition: all 0.2s;
+    transition: all 0.2;
 }
-  .formatting-toolbar button:hover {;
+  .formatting-toolbar button:hover {
     background: #f3f4f6;
 }
   .separator {
@@ -650,7 +601,7 @@ https://svelte.dev/e/props_duplicate -->
 }
   /* Citation token styling */
   .content-editor :global(.citation-token) {
-    background: #dbeafe;
+    background: #dbeaf;
     color: #1d4ed8;
     padding: 2px 6px;
     border-radius: 4px;
@@ -660,8 +611,8 @@ https://svelte.dev/e/props_duplicate -->
     cursor: pointer;
     white-space: nowrap;
 }
-  .content-editor :global(.citation-token:hover) {
-    background: #bfdbfe;
+  .content-editor :global($1) {
+    background: #bfdbf;
 }
   .citation-sidebar {
     position: absolute;
@@ -675,7 +626,7 @@ https://svelte.dev/e/props_duplicate -->
 }
   .sidebar-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 16px;
     border-bottom: 1px solid #e2e8f0;
@@ -730,7 +681,7 @@ https://svelte.dev/e/props_duplicate -->
 }
   .panel-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 12px 16px;
     border-bottom: 1px solid #e2e8f0;
@@ -771,7 +722,7 @@ https://svelte.dev/e/props_duplicate -->
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    background: #dbeafe;
+    background: #dbeaf;
     padding: 4px 8px;
     border-radius: 4px;
     margin: 2px;
@@ -791,6 +742,4 @@ https://svelte.dev/e/props_duplicate -->
     font-style: italic;
 }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

@@ -1,11 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
-  import {   } from "svelte";
   interface Props {
     class?: string;
     ratio?: "golden" | "thirds" | "half" | "custom";
@@ -18,7 +15,6 @@ https://svelte.dev/e/js_parse_error -->
     maxSidebarWidth?: string;
     gap?: string;
   }
-
   let {
     class: className = "",
     ratio = "golden",
@@ -31,9 +27,6 @@ https://svelte.dev/e/js_parse_error -->
     maxSidebarWidth = "400px",
     gap = "1rem";
   }: Props = $props();
-
-  
-
   // Calculate flex values based on ratio
   let calculatedMainFlex = $state<number;
   let calculatedSidebarFlex = $state<number// TODO: Convert to $derived: {
@@ -65,19 +58,17 @@ https://svelte.dev/e/js_parse_error -->
       toggleSidebar();
   }}
 </script>
-
 <svelte:window keydown={handleKeydown} />
-
 <div
   class="container mx-auto px-4"
-  class:collapsed;
+  class: collapsed;
   class:sidebar-left={sidebarPosition === "left"}
 >
   {#if sidebarPosition === "left"}
     <aside
       class="container mx-auto px-4"
       class:collapsed
-      style=";
+      style="
         flex: {collapsed ? '0' : calculatedSidebarFlex}
         min-width: {collapsed ? '0' : minSidebarWidth}
         max-width: {collapsed ? '0' : maxSidebarWidth};
@@ -87,7 +78,6 @@ https://svelte.dev/e/js_parse_error -->
       <div class="container mx-auto px-4" class:hidden={collapsed}>
         {@render sidebar?.()}
       </div>
-
       {#if collapsible}
         <button
           class="container mx-auto px-4"
@@ -101,16 +91,14 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </aside>
   {/if}
-
   <main class="container mx-auto px-4" style="flex: {calculatedMainFlex};">
     {@render children}
   </main>
-
   {#if sidebarPosition === "right"}
     <aside
       class="container mx-auto px-4"
       class:collapsed
-      style=";
+      style="
         flex: {collapsed ? '0' : calculatedSidebarFlex}
         min-width: {collapsed ? '0' : minSidebarWidth}
         max-width: {collapsed ? '0' : maxSidebarWidth}
@@ -120,7 +108,6 @@ https://svelte.dev/e/js_parse_error -->
       <div class="container mx-auto px-4" class:hidden={collapsed}>
         {@render sidebar?.()}
       </div>
-
       {#if collapsible}
         <button
           class="container mx-auto px-4"
@@ -135,8 +122,7 @@ https://svelte.dev/e/js_parse_error -->
     </aside>
   {/if}
 </div>
-
-<style>/* @unocss-include */ .golden-layout {;
+<style>/* @unocss-include */ .golden-layout {
     display: flex;
     height: 100%;
     min-height: 0;
@@ -257,4 +243,3 @@ https://svelte.dev/e/js_parse_error -->
     background: var(--pico-muted-color, #6b7280);
 }
 </style>
-

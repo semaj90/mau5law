@@ -1,12 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Svelte 5 runes pattern
   let inputText = $state('');
   let result: string | null = $state(null);
   let loading = $state(false);
   let error: string | null = $state(null);
-
   async function analyzeWWWH() {
     if (!inputText.trim()) return;
     loading = true;
@@ -14,13 +12,13 @@
     result = null;
     try {
       const res = await fetch('/api/ai/wwwh', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: inputText })
       });
       const data = await res.json();
       if (res.ok) {
-        result = data.analysis;
+        result = data.analysi;
       } else {
         error = data.error || 'Unknown error';
       }
@@ -31,7 +29,6 @@
     }
   }
 </script>
-
 <div class="wwwh-analyzer uno-max-w-2xl uno-mx-auto uno-my-8 uno-p-4 uno-bg-white uno-border uno-border-gray-200 uno-rounded-lg">
   <h3 class="uno-font-bold uno-text-lg uno-mb-2">WWWH (Who, What, When, How) Analyzer</h3>
   <textarea
@@ -63,11 +60,7 @@
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
   /* UnoCSS utility classes used above, no custom CSS needed. */
 </style>
-
-
-

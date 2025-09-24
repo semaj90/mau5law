@@ -1,17 +1,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import type {    Snippet    } from 'svelte';
   	import { Select as BitsSelect } from 'bits-ui';
-  	import {   } from "svelte";
   	import { cn } from '$lib/utils';
-
   	interface SelectOption {
   		value: string;
   		label: string;
   		disabled?: boolean;
   	}
-
   	interface Props {
   		options: SelectOption[];
   		value?: string;
@@ -53,19 +49,16 @@
   		option,
   		name,
   		required = false,
-  		'aria-label': ariaLabel,
-  		'aria-labelledby': ariaLabelledBy,
+  		'aria-label': ariaLabel
+  		'aria-labelledby': ariaLabelledBy
   		'data-testid': testId;
   	}: Props = $props();
-  	
-
   	function handleValueChange(newValue: string | undefined) {
   		if (onValueChange) {
   			onValueChange(newValue);
   		}
   		ondispatch?.({ value: newValue });
   	}
-
   	function handleOpenChange(newOpen: boolean) {
   		if (onOpenChange) {
   			onOpenChange(newOpen);
@@ -80,18 +73,16 @@
   	let displayText = $derived(() => {
   		if (value) {
   			const option = options.find(opt => opt.value === value);
-  			return option?.label || value;
+  			return option?.label || valu;
   		}
   		return placeholder;
   	});
-  	type $$Props = Props;
+  	type $$Props = Prop;
 </script>
-
 <!-- Hidden input for form submission -->
 {#if name}
 	<input type="hidden" {name} value={value || ''} />
 {/if}
-
 <BitsSelect.Root {value} {open} {disabled} onValueChange={handleValueChange} onOpenChange={handleOpenChange}>
 	<!-- Trigger -->
 	<BitsSelect.Trigger
@@ -106,7 +97,6 @@
 			<BitsSelect.Value placeholder={placeholder}>
 				{displayText}
 			</BitsSelect.Value>
-			
 			<!-- Arrow -->
 			<BitsSelect.Icon class="ml-2 h-4 w-4 opacity-50">
 				<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="h-4 w-4">
@@ -115,7 +105,6 @@
 			</BitsSelect.Icon>
 		{/if}
 	</BitsSelect.Trigger>
-
 	<!-- Content -->
 	<BitsSelect.Portal>
 		<BitsSelect.Content
@@ -137,7 +126,6 @@
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
 							</svg>
 						</BitsSelect.ItemIndicator>
-						
 						<BitsSelect.ItemText class="truncate">
 							{optionItem.label}
 						</BitsSelect.ItemText>

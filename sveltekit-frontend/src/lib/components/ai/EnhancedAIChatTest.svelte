@@ -1,7 +1,6 @@
 <!-- Enhanced AI Chat Test Component - Svelte 5 with bits-ui and shadcn-svelte -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { browser } from '$app/environment';
   import { onMount, tick } from 'svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
@@ -27,7 +26,6 @@
     Download,
     Trash2,
   } from 'lucide-svelte';
-
   // Props using Svelte 5 runes
   let { open = $bindable(false),
     caseId = undefined,
@@ -37,39 +35,34 @@
     caseId?: string;
     title?: string;
   } = $props();
-
   // State using Svelte 5 runes
   let messages = $state<
     Array()
   >([]);
-
   let currentMessage = $state('');
   let isLoading = $state(false);
   let isConnected = $state(false);
   let connectionStatus = $state<'checking' | 'connected' | 'error'>('checking');
   let messagesContainer: HTMLElement = $state(undefined as any);
   let inputElement: HTMLInputElement = $state(undefined as any);
-
   // Check system status on mount
   $effect(() => {
     (async () => {
 if (browser) {
       await checkSystemHealth();
-
       // Add welcome message
       messages = [
         {
           id: 'welcome',
           role: 'assistant',
           content: `Hello! I'm your enhanced AI legal assistant powered by Gemma3 running on your RTX 3060 Ti GPU. I can help you with:\n\n• Legal research and case analysis\n• Document review and interpretation\n• Evidence analysis and timeline creation\n• Legal precedent research\n• Case strategy development\n\nWhat would you like to explore today?`,
-          timestamp: new Date(),;
+          timestamp: new Date(),
           metadata: {
-            provider: 'local',;
-            model: 'gemma3-legal-enhanced',;
+            provider: 'local',
+            model: 'gemma3-legal-enhanced',
           },
         },
       ];
-
       // Auto-focus input
       tick().then(() => {
         if (inputElement) {
@@ -90,7 +83,7 @@ if (browser) {
         connectionStatus = isConnected ? 'connected' : 'error';
       } else {
         // Fallback: try to reach Ollama directly
-        const ollamaResponse = await fetch('http://localhost:11434/api/version');
+        const ollamaResponse = await fetch('http://localhost:11434/api/version')
         if (ollamaResponse.ok) {
           isConnected = true;
           connectionStatus = 'connected';
@@ -103,7 +96,7 @@ if (browser) {
       console.error('Health check failed:', error);
       // Try direct Ollama connection as fallback
       try {
-        const ollamaResponse = await fetch('http://localhost:11434/api/version');
+        const ollamaResponse = await fetch('http://localhost:11434/api/version')
         if (ollamaResponse.ok) {
           isConnected = true;
           connectionStatus = 'connected';
@@ -116,110 +109,93 @@ if (browser) {
       }
     }
   }
-
   // Send message to AI
   async function sendMessage() {
     if (!currentMessage.trim() || isLoading) return;
-
     const userMessage = {
       id: crypto.randomUUID(),
-      role: 'user' as const,;
-      content: currentMessage.trim(),;
-      timestamp: new Date(),;
+      role: 'user' as const,
+      content: currentMessage.trim(),
+      timestamp: new Date(),
     };
-
     const loadingMessage = {
       id: 'loading',
       role: 'assistant' as const,
-      content: 'Thinking...',;
-      timestamp: new Date(),;
-      loading: true,;
+      content: 'Thinking...',
+      timestamp: new Date(),
+      loading: true
     };
-
     // Add messages and clear input
     messages = [...messages, userMessage, loadingMessage];
-    const messageContent = currentMessage;
+    const messageContent = currentMessag;
     currentMessage = '';
     isLoading = true;
-
     // Scroll to bottom
     await tick();
     scrollToBottom();
-
     try {
       const response = await fetch('/api/chat', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           messages: [
             {
-              role: 'system',;
+              role: 'system',
               content: `You are an expert legal AI assistant with access to legal databases and case law. You are running locally on an RTX 3060 Ti GPU using the Gemma3-legal-enhanced model. Provide accurate, helpful legal information while noting that you provide general information only and not legal advice.${caseId ? ` Context: Case ID ${caseId}` : ''}`,
             },
             ...messages
               .filter((m) => !m.loading && !m.error)
               .map((m) => ({
                 role: m.role,
-                content: m.content,;
+                content: m.content,
               })),
             {
-              role: 'user',;
-              content: messageContent,;
+              role: 'user',
+              content: messageContent
             },
           ],
         }),
       });
-
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-
       // Handle streaming response
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
-
       // Remove loading message
       messages = messages.filter((m) => m.id !== 'loading');
-
       // Create assistant message
       const assistantMessage = {
         id: crypto.randomUUID(),
         role: 'assistant' as const,
         content: '',
-        timestamp: new Date(),;
+        timestamp: new Date(),
         metadata: {
-          provider: 'local',;
-          model: 'gemma3-legal-enhanced',;
-          gpu: 'RTX 3060 Ti',;
+          provider: 'local',
+          model: 'gemma3-legal-enhanced',
+          gpu: 'RTX 3060 Ti',
         },
       };
-
       messages = [...messages, assistantMessage];
-
       if (reader) {
   let fullContent = $state('');
-
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-
           const chunk = decoder.decode(value, { stream: true });
           const lines = chunk.split('\n');
-
           for (const line of lines) {
             if (line.trim() && line.startsWith('data: ')) {
               try {
                 const data = JSON.parse(line.slice(6));
                 if (data.message?.content) {
                   fullContent += data.message.content;
-
                   // Update the last message
                   messages = messages.map((m) =>
                     m.id === assistantMessage.id ? { ...m, content: fullContent } : m
                   );
-
                   await tick();
                   scrollToBottom();
                 }
@@ -232,24 +208,22 @@ if (browser) {
       }
     } catch (error) {
       console.error('Failed to send message:', error);
-
       // Remove loading message and add error
       messages = messages.filter((m) => m.id !== 'loading');
       messages = [
         ...messages,
         {
           id: crypto.randomUUID(),
-          role: 'assistant',;
+          role: 'assistant',
           content: `I apologize, but I encountered an error: ${error.message}. Please check that the Ollama service is running and try again.`,
-          timestamp: new Date(),;
-          error: true,;
+          timestamp: new Date(),
+          error: true
         },
       ];
     } finally {
       isLoading = false;
     }
   }
-
   // Handle Enter key
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -257,14 +231,12 @@ if (browser) {
       sendMessage();
     }
   }
-
   // Scroll to bottom of messages
   function scrollToBottom() {
     if (messagesContainer) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }
-
   // Clear conversation
   function clearMessages() {
     messages = [
@@ -272,27 +244,24 @@ if (browser) {
         id: 'welcome',
         role: 'assistant',
         content: 'Conversation cleared. How can I help you today?',
-        timestamp: new Date(),;
+        timestamp: new Date(),
         metadata: {
-          provider: 'local',;
-          model: 'gemma3-legal-enhanced',;
+          provider: 'local',
+          model: 'gemma3-legal-enhanced',
         },
       },
     ];
   }
-
   // Download conversation
   function downloadConversation() {
     const data = {
       timestamp: new Date().toISOString(),
-      caseId,;
-      messages: messages.filter((m) => !m.loading),;
+      caseId,
+      messages: messages.filter((m) => !m.loading),
     };
-
     const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: 'application/json',;
+      type: 'application/json',
     });
-
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -300,21 +269,19 @@ if (browser) {
     a.click();
     URL.revokeObjectURL(url);
   }
-
   // Connection status component
   function getStatusIcon() {
     switch (connectionStatus) {
       case 'checking':
         return Loader2;
       case 'connected':
-        return CheckCircle;
+        return CheckCircl;
       case 'error':
-        return XCircle;
+        return XCircl;
       default:
-        return XCircle;
+        return XCircl;
     }
   }
-
   function getStatusColor() {
     switch (connectionStatus) {
       case 'checking':
@@ -328,7 +295,6 @@ if (browser) {
     }
   }
 </script>
-
 <Dialog.Root bind:open>
   <Dialog.Trigger>
     <Button variant="ghost" class="gap-2 bits-btn bits-btn">
@@ -336,7 +302,6 @@ if (browser) {
       {title}
 </Button>
   </Dialog.Trigger>
-
   <Dialog.Portal>
     <Dialog.Overlay class="fixed inset-0 bg-black/50 z-50" />
     <Dialog.Content
@@ -351,12 +316,10 @@ if (browser) {
               {title}
             </Dialog.Title>
           </div>
-
           {#if caseId}
             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {caseId}</span>
           {/if}
         </div>
-
         <div class="flex items-center gap-2">
           <!-- Status Indicator -->
           <div class="flex items-center gap-2 px-2 py-1 rounded-md bg-white/50">
@@ -376,7 +339,6 @@ if (browser) {
             {/snippet}
             {@render statusIndicator()}
           </div>
-
           <!-- Action Buttons -->
           <Button class="bits-btn"
             variant="ghost"
@@ -395,7 +357,6 @@ if (browser) {
           </Dialog.Close>
         </div>
       </div>
-
       <!-- Messages -->
       <ScrollArea class="flex-1 p-4">
         <div bind:this={messagesContainer} class="space-y-4">
@@ -407,7 +368,6 @@ if (browser) {
                   <Bot class="h-4 w-4 text-blue-600" />
                 </div>
               {/if}
-
               <div
                 class="max-w-[80%] p-3 {message.role === 'user'
                   ? 'bg-blue-600 text-white'
@@ -417,7 +377,6 @@ if (browser) {
                 <div class="text-sm whitespace-pre-wrap">
                   {message.content}
                 </div>
-
                 {#if message.metadata}
                   <div class="flex items-center gap-2 mt-2 pt-2 border-t border-current/20">
                     <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.metadata.model || 'AI'}</span>
@@ -429,12 +388,10 @@ if (browser) {
                     {/if}
                   </div>
                 {/if}
-
                 <div class="text-xs opacity-70 mt-1">
                   {message.timestamp.toLocaleTimeString()}
                 </div>
               </div>
-
               {#if message.role === 'user'}
                 <div
                   class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
@@ -445,7 +402,6 @@ if (browser) {
           {/each}
         </div>
       </ScrollArea>
-
       <!-- Input -->
       <div class="p-4 border-t bg-gray-50">
         <div class="flex gap-2">
@@ -467,7 +423,6 @@ if (browser) {
             {/if}
 </Button>
         </div>
-
         <div class="flex items-center justify-between mt-2">
           <div class="text-xs text-gray-500">
             {#if isConnected}
@@ -482,24 +437,19 @@ if (browser) {
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
-<style>/* Custom styles for enhanced appearance */ :global(.chat-message-content) {;
+<style>/* Custom styles for enhanced appearance */ :global(.chat-message-content) {
     line-height: 1.6;
   }
-
   :global(.chat-message-content p) {
     margin-bottom: 0.5rem;
   }
-
-  :global(.chat-message-content p:last-child) {;
+  :global(.chat-message-content p:last-child) {
     margin-bottom: 0;
   }
-
   :global(.chat-message-content ul, .chat-message-content ol) {
     margin: 0.5rem 0;
     padding-left: 1.5rem;
   }
-
   :global(.chat-message-content code) {
     background: rgba(0, 0, 0, 0.1);
     padding: 0.125rem 0.25rem;
@@ -507,7 +457,6 @@ if (browser) {
     font-family: 'Courier New', monospace;
     font-size: 0.875em;
   }
-
   :global(.chat-message-content blockquote) {
     border-left: 4px solid currentColor;
     padding-left: 1rem;
@@ -515,5 +464,3 @@ if (browser) {
     opacity: 0.8;
   }
 </style>
-
-

@@ -1,9 +1,7 @@
 // Search State Machine - XState v5 compatible
 // Manages legal document and case search with history and analytics
-
 import { createMachine, assign, fromPromise } from 'xstate';
 }
-
 export interface SearchContext {
   query: string;
   filters: {
@@ -27,13 +25,12 @@ export interface SearchContext {
   error: string | null;
   isLoading: boolean;
 }
-
 export const searchMachine = createMachine({
   id: 'search',
   initial: 'idle',
   types: {
-    context: Record<string, any> as SearchContext,;
-    events: Record<string, any> as 
+    context: { [key: string]: any } as SearchContext,
+    events: { [key: string]: any } as
       | { type: 'SEARCH'; data: any }
       | { type: 'UPDATE_QUERY'; query: string }
       | { type: 'UPDATE_FILTERS'; filters: any }
@@ -44,7 +41,7 @@ export const searchMachine = createMachine({
   },
   context: {
     query: '',
-    filters: Record<string, any>,
+    filters: { [key: string]: any },
     results: [],
     searchHistory: [],
     analytics: {
@@ -52,8 +49,8 @@ export const searchMachine = createMachine({
       searchTime: 0,
       relevanceScore: 0
     },
-    validationErrors: Record<string, any>,
-    error: null,
+    validationErrors: { [key: string]: any },
+    error: null
     isLoading: false
   },
   states: {
@@ -61,7 +58,7 @@ export const searchMachine = createMachine({
       entry: assign({ isLoading: false }),
       on: {
         UPDATE_QUERY: {
-          actions: assign({
+          actions: assign({,
             query: ({ event }) => event.query,
             error: null
           })
@@ -80,9 +77,9 @@ export const searchMachine = createMachine({
     },
     loadingHistory: {
       invoke: {
-        id: 'loadSearchHistory',;
+        id: 'loadSearchHistory',
         src: fromPromise(async () => {
-          // Load search history from localStorage or API;
+          // Load search history from localStorage or API
           try {
             const stored = localStorage.getItem('legal-ai:search-history');
             return stored ? JSON.parse(stored) : [];
@@ -92,13 +89,13 @@ export const searchMachine = createMachine({
         }),
         onDone: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             searchHistory: ({ event }) => event.output || []
           })
         },
         onError: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             error: 'Failed to load search history'
           })
         }
@@ -106,45 +103,39 @@ export const searchMachine = createMachine({
     },
     validating: {
       invoke: {
-        id: 'validateSearch',;
+        id: 'validateSearch',
         src: fromPromise(async ({ input }: { input: SearchContext }) => {
           const errors: Record<string, string[]> = {};
-          
           if (!input.query?.trim() && !Object.keys(input.filters).length) {
             errors.query = ['Please enter a search query or select filters'];
           }
-          
           if (input.query && input.query.length > 200) {
             errors.query = ['Search query too long (max 200 characters)'];
           }
-          
-          // Validate date range;
+          // Validate date range
           if (input.filters.dateRange?.from && input.filters.dateRange?.to) {
             const fromDate = new Date(input.filters.dateRange.from);
             const toDate = new Date(input.filters.dateRange.to);
-            
             if (fromDate > toDate) {
               errors.dateRange = ['Start date must be before end date'];
             }
           }
-          
           if (Object.keys(errors).length > 0) {
             throw { validationErrors: errors };
           }
-          
           return { query: input.query, filters: input.filters };
         }),
         input: ({ context }) => context,
         onDone: {
           target: 'searching',
-          actions: assign({
-            validationErrors: Record<string, any>,
+          actions: assign({,
+            validationErrors: { [key: string]: any },
             error: null
           })
         },
         onError: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             validationErrors: ({ event }) => (event as any).error?.validationErrors || {},
             error: 'Search validation failed'
           })
@@ -154,20 +145,18 @@ export const searchMachine = createMachine({
     searching: {
       entry: assign({ isLoading: true }),
       invoke: {
-        id: 'performSearch',;
+        id: 'performSearch',
         src: fromPromise(async ({ input }: { input: SearchContext }) => {
           const startTime = Date.now();
-          
           // Build search parameters
           const searchParams = new URLSearchParams();
           if (input.query) searchParams.append('query', input.query);
-          
-          // Add filters;
+          // Add filters
           Object.entries(input.filters).forEach(([key, value]) => {
             if (Array.isArray(value)) {
               searchParams.append(key, value.join(',');
             } else if (typeof value === 'object' && value !== null) {
-              // Handle date range;
+              // Handle date range
               if (key === 'dateRange') {
                 if ((value as any).from) searchParams.append('dateStart', (value as any).from);
                 if ((value as any).to) searchParams.append('dateEnd', (value as any).to);
@@ -176,25 +165,21 @@ export const searchMachine = createMachine({
               searchParams.append(key, String(value);
             }
           });
-          
-          // Perform search API call;
+          // Perform search API call
           const response = await fetch(`/api/search/legal?${searchParams}`, {
-            method: 'GET',;
+            method: 'GET',
             headers: {
               'Content-Type': 'application/json'
             }
           });
-          
           if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.error || `Search failed: HTTP ${response.status}`);
           }
-          
           const data = await response.json();
           const searchTime = Date.now() - startTime;
-          
           return {
-            results: data.results || [],;
+            results: data.results || [],
             analytics: {
               totalResults: data.total || 0,
               searchTime,
@@ -204,15 +189,15 @@ export const searchMachine = createMachine({
         }),
         input: ({ context }) => context,
         onDone: {
-          target: 'results',;
+          target: 'results',
           actions: [;
             assign({
               results: ({ event }) => event.output.results,
-              analytics: ({ event }) => event.output.analytics,;
-              error: null,
+              analytics: ({ event }) => event.output.analytics,
+              error: null
               isLoading: false
             }),
-            // Save to search history;
+            // Save to search history
             ({ context }) => {
               if (context.query) {
                 const history = [...new Set([context.query, ...context.searchHistory])].slice(0, 10);
@@ -227,7 +212,7 @@ export const searchMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({
+          actions: assign({,
             error: ({ event }) => (event as any).error?.message || 'Search failed',
             isLoading: false
           })
@@ -240,13 +225,13 @@ export const searchMachine = createMachine({
         SEARCH: 'validating',
         UPDATE_QUERY: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             query: ({ event }) => event.query
           })
         },
         UPDATE_FILTERS: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             filters: ({ context, event }) => ({
               ...context.filters,
               ...event.filters
@@ -255,10 +240,10 @@ export const searchMachine = createMachine({
         },
         CLEAR_RESULTS: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             results: [],
             query: '',
-            filters: Record<string, any>,
+            filters: { [key: string]: any },
             analytics: {
               totalResults: 0,
               searchTime: 0,
@@ -274,8 +259,8 @@ export const searchMachine = createMachine({
         SEARCH: 'validating',
         CLEAR_RESULTS: {
           target: 'idle',
-          actions: assign({
-            error: null,;
+          actions: assign({,
+            error: null
             results: []
           })
         }
@@ -283,5 +268,4 @@ export const searchMachine = createMachine({
     }
   }
 });
-
 export default searchMachine;

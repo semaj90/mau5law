@@ -3,11 +3,9 @@
  * Supports multiple providers: Stable Diffusion WebUI, ComfyUI, Ollama
  * Production-ready with Windows native support
  */
-
 import { json, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
 interface ImageGenerationRequest {
   prompt: string
   negativePrompt?: string
@@ -20,7 +18,6 @@ interface ImageGenerationRequest {
   style?: 'realistic' | 'artistic' | 'anime' | 'sketch' | 'legal-diagram' | 'evidence-recreation'
   provider?: 'stable-diffusion-webui' | 'comfyui' | 'ollama-vision' | 'fallback'
 }
-
 // Provider configurations
 const PROVIDERS = {
   'stable-diffusion-webui': {
@@ -39,7 +36,6 @@ const PROVIDERS = {
     healthCheck: '/api/tags'
   }
 }
-
 async function checkProviderHealth(provider: keyof typeof PROVIDERS): Promise<boolean> {
   try {
     const config = PROVIDERS[provider]
@@ -52,28 +48,22 @@ async function checkProviderHealth(provider: keyof typeof PROVIDERS): Promise<bo
     return false
   }
 }
-
 async function enhancePromptWithLegal(prompt: string, style?: string): Promise<string> {
   try {
     const enhancementRequest = {
       model: 'gemma3-legal',
       prompt: `Enhance this image generation prompt for legal/evidence documentation: "${prompt}"
-      
 Style: ${style || 'realistic'}
-
 Provide a detailed, professional prompt suitable for legal documentation. Include technical and artistic details while maintaining accuracy.
-
 Enhanced prompt:`,
       stream: false
     }
-
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(enhancementRequest),
       signal: AbortSignal.timeout(30000)
     })
-
     if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
       const result = await (response as { ok?: any; json?: any; statusText?: any }).json()
       return (result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).response?.trim() || prompt
@@ -81,13 +71,10 @@ Enhanced prompt:`,
   } catch (error) {
     console.warn('Failed to enhance prompt:', error)
   }
-  
   return prompt
 }
-
 async function generateWithStableDiffusion(request: ImageGenerationRequest): Promise<any> {
   const config = PROVIDERS['stable-diffusion-webui']
-  
   const payload = {
     prompt: request.prompt,
     negative_prompt: request.negativePrompt || "blurry, low quality, distorted, text, watermark",
@@ -100,20 +87,16 @@ async function generateWithStableDiffusion(request: ImageGenerationRequest): Pro
     batch_size: 1,
     n_iter: 1
   }
-
   const response = await fetch(`${config.url}${config.endpoint}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
     signal: AbortSignal.timeout(60000)
   })
-
   if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
     throw new Error(`Stable Diffusion API error: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`)
   }
-
   const result = await (response as { ok?: any; json?: any; statusText?: any }).json()
-  
   return {
     imageBase64: (result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).images[0],
     metadata: {
@@ -123,10 +106,8 @@ async function generateWithStableDiffusion(request: ImageGenerationRequest): Pro
     }
   }
 }
-
 async function generateWithComfyUI(request: ImageGenerationRequest): Promise<any> {
   const config = PROVIDERS['comfyui']
-  
   // Simplified ComfyUI workflow
   const workflow = {
     "1": {
@@ -148,18 +129,15 @@ async function generateWithComfyUI(request: ImageGenerationRequest): Promise<any
       "class_type": "KSampler"
     }
   }
-
   const response = await fetch(`${config.url}${config.endpoint}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ prompt: workflow }),
     signal: AbortSignal.timeout(60000)
   })
-
   if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
     throw new Error(`ComfyUI API error: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`)
   }
-
   // Note: Real ComfyUI would require polling for completion
   return {
     imageBase64: null, // Would be actual ComfyUI result
@@ -170,31 +148,24 @@ async function generateWithComfyUI(request: ImageGenerationRequest): Promise<any
     }
   }
 }
-
 async function generateWithOllama(request: ImageGenerationRequest): Promise<any> {
   const descriptionPrompt = `Create a detailed visual description for: "${request.prompt}"
-  
 Please provide a comprehensive description including composition, colors, lighting, style, and key visual elements for ${request.style || 'realistic'} style.
-
 Visual Description:`
-
   const response = await fetch('http://localhost:11434/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
+    body: JSON.stringify({,
       model: 'gemma3-legal',
-      prompt: descriptionPrompt,
+      prompt: descriptionPrompt
       stream: false
     }),
     signal: AbortSignal.timeout(30000)
   })
-
   if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
     throw new Error(`Ollama API error: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`)
   }
-
   const result = await (response as { ok?: any; json?: any; statusText?: any }).json()
-  
   // Generate a text-based placeholder image
   const canvas = createTextPlaceholder(
     request.prompt,
@@ -202,9 +173,8 @@ Visual Description:`
     request.width || 512,
     request.height || 512
   )
-
   return {
-    imageBase64: canvas,
+    imageBase64: canvas
     metadata: {
       seed: request.seed || -1,
       model: 'Ollama (Text Description)',
@@ -213,7 +183,6 @@ Visual Description:`
     }
   }
 }
-
 function createTextPlaceholder(prompt: string, description: string, width: number, height: number): string {
   // This would use Canvas API in a real Node.js environment
   // For now, return a data URL for a simple colored rectangle
@@ -235,10 +204,8 @@ function createTextPlaceholder(prompt: string, description: string, width: numbe
     </foreignObject>
     <text x="50%" y="${height - 10}" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Arial" font-size="10">Local Image Generation Service</text>
   </svg>`
-
   return `data:image/svg+xml;base64,${Buffer.from(canvas).toString('base64')}`
 }
-
 function createFallbackImage(prompt: string, width: number, height: number): string {
   const svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -256,36 +223,28 @@ function createFallbackImage(prompt: string, width: number, height: number): str
     </foreignObject>
     <text x="50%" y="${height - 20}" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12">Fallback Generator</text>
   </svg>`
-
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: ImageGenerationRequest = await request.json()
-    
     if (!body.prompt?.trim()) {
       throw error(400, 'Prompt is required')
     }
-
     const startTime = Date.now()
-    
     // Enhance prompt with legal context
     const enhancedPrompt = await enhancePromptWithLegal(body.prompt, body.style)
-    
     const enhancedRequest: ImageGenerationRequest = {
       ...body,
-      prompt: enhancedPrompt,
+      prompt: enhancedPrompt
       width: body.width || 512,
       height: body.height || 512,
       steps: body.steps || 20,
       cfgScale: body.cfgScale || 7.5,
       seed: body.seed || Math.floor(Math.random() * 1000000)
     }
-
     let result: any
     let provider = body.provider
-
     // Auto-select provider if not specified
     if (!provider) {
       if (await checkProviderHealth('stable-diffusion-webui')) {
@@ -298,7 +257,6 @@ export const POST: RequestHandler = async ({ request }) => {
         provider = 'fallback'
       }
     }
-
     // Generate image based on provider
     try {
       switch (provider) {
@@ -330,21 +288,19 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: {
           seed: enhancedRequest.seed,
           model: 'Fallback Generator (Error)',
-          parameters: enhancedRequest,
+          parameters: enhancedRequest
           error: providerError instanceof Error ? providerError.message: 'Unknown error'
         }
       }
       provider = 'fallback'
     }
-
     const processingTime = Date.now() - startTime
-
     const response = {
       id: `img_${Date.now()}`,
       imageUrl: (result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).imageBase64 || createFallbackImage(enhancedRequest.prompt, enhancedRequest.width!, enhancedRequest.height!),
       prompt: enhancedRequest.prompt,
       originalPrompt: body.prompt,
-      parameters: enhancedRequest,
+      parameters: enhancedRequest
       timestamp: new Date().toISOString(),
       processingTime,
       provider,
@@ -356,24 +312,18 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       }
     }
-
     return json(response)
-
   } catch (err) {
     console.error('Image generation error:', err)
-    
     if (err instanceof Error && err.message.includes('400')) {
       throw error(400, err.message)
     }
-    
     throw error(500, `Image generation failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
 }
-
 export const GET: RequestHandler = async () => {
   // Return provider status
   const providerStatus = {}
-  
   for (const [name, config] of Object.entries(PROVIDERS)) {
     try {
       const isHealthy = await checkProviderHealth(name as keyof typeof PROVIDERS)
@@ -382,9 +332,8 @@ export const GET: RequestHandler = async () => {
       providerStatus[name] = 'error'
     }
   }
-
   return json({
-    providers: providerStatus,
+    providers: providerStatus
     fallback: 'available'
   })
 }

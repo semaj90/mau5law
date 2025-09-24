@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from 'bits-ui';
   // import * as Dialog from 'bits-ui'; // Removed melt dependency
   import { fly, fade } from 'svelte/transition';
@@ -16,7 +15,7 @@
   //   elements: { trigger, overlay, content, title, description, close },
   //   states: { open }
   // } = createDialog({
-  //   forceVisible: true,
+  //   forceVisible: true
   // })
   // Demo data
   const demoCase = {
@@ -31,19 +30,16 @@
   const statuses = ['active', 'pending', 'closed', 'archived']
   const priorities = ['critical', 'high', 'medium', 'low']
 </script>
-
 <div class="min-h-screen bg-nier-white dark:bg-nier-black transition-colors duration-500">
   <!-- Header -->
   <nav class="nier-nav px-6 py-4">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <h1 class="text-2xl font-display nier-heading">NieR: Legal System</h1>
-      
       <div class="flex items-center gap-6">
         <a href="#" class="nav-item">Cases</a>
         <a href="#" class="nav-item">Evidence</a>
         <a href="#" class="nav-item">Analytics</a>
         <a href="#" class="nav-item">AI Assistant</a>
-        
         <button
           onclick={() => isDarkMode = !isDarkMode}
           class="nier-button-outline px-4 py-2 rounded-lg"
@@ -54,7 +50,6 @@
       </div>
     </div>
   </nav>
-
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto p-6 space-y-8">
     <!-- Hero Section -->
@@ -66,7 +61,6 @@
         Powered by YoRHa Combat Data Analysis
       </p>
     </section>
-
     <!-- Tabs -->
     <div class="flex gap-2 border-b nier-divider">
       {#each ['overview', 'components', 'forms', 'cards'] as tab}
@@ -83,14 +77,12 @@
         </button>
       {/each}
     </div>
-
     <!-- Tab Content -->
     <div class="space-y-8">
       {#if activeTab === 'overview'}
         <!-- Color Palette -->
         <section class="nier-nier-bits-card p-8">
           <h3 class="text-2xl font-display nier-heading mb-6">Color System</h3>
-          
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <!-- NieR Colors -->
             <div class="space-y-2">
@@ -110,7 +102,6 @@
                 </div>
               </div>
             </div>
-            
             <!-- Harvard Colors -->
             <div class="space-y-2">
               <h4 class="font-semibold text-nier-gray dark:text-nier-silver">Harvard Palette</h4>
@@ -129,7 +120,6 @@
                 </div>
               </div>
             </div>
-            
             <!-- Digital Colors -->
             <div class="space-y-2">
               <h4 class="font-semibold text-nier-gray dark:text-nier-silver">Digital Accent</h4>
@@ -148,7 +138,6 @@
                 </div>
               </div>
             </div>
-            
             <!-- Gradients -->
             <div class="space-y-2">
               <h4 class="font-semibold text-nier-gray dark:text-nier-silver">Gradients</h4>
@@ -161,12 +150,10 @@
           </div>
         </section>
       {/if}
-
       {#if activeTab === 'components'}
         <!-- Buttons -->
         <section class="nier-nier-bits-card p-8">
           <h3 class="text-2xl font-display nier-heading mb-6">Button Components</h3>
-          
           <div class="flex flex-wrap gap-4">
             <button class="nier-button-primary">Primary Action</button>
             <button class="nier-button-crimson">Crimson Action</button>
@@ -176,18 +163,15 @@
               Outline Action
             </button>
           </div>
-          
           <div class="mt-6 p-4 bg-nier-white/50 dark:bg-nier-black/50 rounded-lg">
             <code class="text-sm font-mono text-digital-green">
               class="nier-button-primary"
             </code>
           </div>
         </section>
-
         <!-- Badges -->
         <section class="nier-nier-bits-card p-8">
           <h3 class="text-2xl font-display nier-heading mb-6">Status Badges</h3>
-          
           <div class="flex flex-wrap gap-3">
             <span class="nier-badge-success">Active</span>
             <span class="nier-badge-warning">Pending</span>
@@ -195,11 +179,9 @@
             <span class="nier-badge-info">Information</span>
           </div>
         </section>
-
         <!-- Interactive Elements -->
         <section class="nier-nier-bits-card p-8">
           <h3 class="text-2xl font-display nier-heading mb-6">Interactive Elements</h3>
-          
           <!-- Melt UI Dialog Example -->
           <button
             class="nier-button-crimson"
@@ -207,13 +189,11 @@
           >
             Open Modal Dialog
           </button>
-          
           {#if showModal}
             <div
               class="nier-modal-overlay"
               transitifade={{ duration: 200 }}
 ></div>
-            
             <div
               class="nier-modal"
               /* transition removed */}
@@ -224,7 +204,6 @@
               <p class="text-nier-gray dark:text-nier-silver mb-6">
                 This is a NieR: Automata styled modal dialog using Melt UI.
               </p>
-              
               <div class="flex gap-4 justify-end">
                 <button class="nier-button-outline px-4 py-2" onclick={() => showModal = false}>
                   Cancel
@@ -237,12 +216,10 @@
           {/if}
         </section>
       {/if}
-
       {#if activeTab === 'forms'}
         <!-- Form Elements -->
         <section class="nier-nier-bits-card p-8">
           <h3 class="text-2xl font-display nier-heading mb-6">Form Elements</h3>
-          
           <div class="space-y-6 max-w-md">
             <!-- Input Field -->
             <div>
@@ -255,7 +232,6 @@
                 class="nier-input"
               />
             </div>
-            
             <!-- Select Dropdown -->
             <div>
               <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver" for="-status-">
@@ -269,7 +245,6 @@
                 {/each}
               </select>
             </div>
-            
             <!-- Textarea -->
             <div>
               <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver" for="-case-description-">
@@ -280,7 +255,6 @@
                 class="nier-input resize-none"
               ></textarea>
             </div>
-            
             <!-- Checkbox Group -->
             <div>
               <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver">
@@ -301,7 +275,6 @@
           </div>
         </section>
       {/if}
-
       {#if activeTab === 'cards'}
         <!-- Case Card -->
         <section class="grid md:grid-cols-2 gap-6">
@@ -314,7 +287,6 @@
               </div>
               <span class="nier-badge-success">{demoCase.status}</span>
             </div>
-            
             <div class="grid grid-cols-3 gap-4 mb-4">
               <div class="text-center">
                 <p class="text-2xl font-bold text-harvard-crimson dark:text-digital-green">
@@ -333,7 +305,6 @@
                 <p class="text-xs text-nier-gray dark:text-nier-silver">Created</p>
               </div>
             </div>
-            
             <div class="flex gap-2">
               <button class="nier-button-primary text-sm px-4 py-2">
                 View Details
@@ -343,7 +314,6 @@
               </button>
             </div>
           </div>
-          
           <!-- Evidence Card -->
           <div class="evidence-item">
             <div class="flex items-start gap-4">
@@ -366,27 +336,23 @@
             </div>
           </div>
         </section>
-        
         <!-- AI Assistant Card -->
         <section class="nier-panel p-6">
           <h3 class="text-xl font-display nier-heading mb-4">AI Legal Assistant</h3>
-          
           <div class="space-y-4">
             <!-- Assistant Message -->
             <div class="ai-chat-assistant">
               <p class="text-sm">
-                I've analyzed the case files. There are 3 key patterns in the evidence 
+                I've analyzed the case files. There are 3 key patterns in the evidence
                 that suggest a connection to the previous investigation.
               </p>
             </div>
-            
             <!-- User Message -->
             <div class="ai-chat-user">
               <p class="text-sm">
                 Can you elaborate on the connection patterns?
               </p>
             </div>
-            
             <!-- Thinking Indicator -->
             <div class="ai-thinking">
               <div class="flex gap-1">
@@ -397,7 +363,6 @@
               <span class="text-sm">AI is analyzing...</span>
             </div>
           </div>
-          
           <div class="mt-6 flex gap-2">
             <input
               type="text"
@@ -411,7 +376,6 @@
         </section>
       {/if}
     </div>
-
     <!-- Footer -->
     <footer class="mt-16 py-8 border-t nier-divider text-center">
       <p class="text-sm text-nier-gray dark:text-nier-silver">
@@ -420,18 +384,13 @@
     </footer>
   </main>
 </div>
-
 <style>
   /* @unocss-include */
   /* Add any component-specific styles here */
-  :global(body) {;
+  :global(body) {
     transition: background-color 0.5s ease;
   }
-  
   :global(.dark) {
     color-scheme: dark;
   }
 </style>
-
-
-

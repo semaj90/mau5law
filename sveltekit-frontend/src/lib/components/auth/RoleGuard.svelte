@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // RoleGuard component - Role-based access control - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';
   interface Props {
@@ -9,29 +8,24 @@
     fallback?: import('svelte').Snippet;
     requireAll?: boolean; // For multiple roles, require all or just one
   }
-
   let {
     children,
     roles,
     fallback,
     requireAll = false
   }: Props = $props();
-
   let allowedRoles = $derived(() => {
     return Array.isArray(roles) ? roles : [roles];
   });
-
   let hasAccess = $derived(() => {
     if (!authStore.isAuthenticated || !authStore.user) {
       return false;
     }
-
-    const userRole = authStore.user.role;
+    const userRole = authStore.user.rol;
     // Admin always has access
     if (userRole === 'admin') {
       return true;
     }
-
     if (requireAll) {
       // User must have all specified roles (not typical for single role systems)
       return allowedRoles.every(role => userRole === role);
@@ -41,7 +35,6 @@
     }
   });
 </script>
-
 {#if hasAccess}
   {#if children}
     {@render children()}

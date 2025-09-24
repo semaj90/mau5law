@@ -3,8 +3,6 @@
   import { Command } from 'bits-ui';
   import { Search, FileText, Users, Calendar, Gavel } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  import {   } from "svelte";
-
   // Exported props (use Svelte-style exports instead of $props/$bindable)
   let { open = $bindable(),
     onOpenChange = $bindable(),
@@ -12,17 +10,14 @@
     class: className = $bindable();
     }: { open = $bindable(),
     onOpenChange = $bindable(),
-    placeholder = $bindable(),;
+    placeholder = $bindable(),
     class: className = $bindable()
   : unknown } = $props();
-
-  
-
   // Mock data for legal AI platform
   const mockCommands = [
     {
       group: 'Cases',
-      icon: Gavel,;
+      icon: Gavel
       items: [
         { id: 'case-1', title: 'State v. Johnson', description: 'Active criminal case', keywords: ['criminal', 'theft', 'johnson'] },
         { id: 'case-2', title: 'Smith v. Corporation', description: 'Civil litigation', keywords: ['civil', 'corporate', 'smith'] },
@@ -31,7 +26,7 @@
     },
     {
       group: 'Evidence',
-      icon: FileText,;
+      icon: FileText
       items: [
         { id: 'evidence-1', title: 'Security Footage 2024-01-15', description: 'Video evidence', keywords: ['video', 'security', 'footage'] },
         { id: 'evidence-2', title: 'Financial Records', description: 'Bank statements', keywords: ['financial', 'bank', 'records'] },
@@ -40,7 +35,7 @@
     },
     {
       group: 'People',
-      icon: Users,;
+      icon: Users
       items: [
         { id: 'person-1', title: 'John Smith', description: 'Defendant in case #2024-001', keywords: ['defendant', 'smith'] },
         { id: 'person-2', title: 'Detective Rodriguez', description: 'Lead investigator', keywords: ['detective', 'rodriguez', 'investigator'] },
@@ -48,8 +43,8 @@
       ]
     },
     {
-      group: 'Documents',;
-      icon: FileText,;
+      group: 'Documents',
+      icon: FileText
       items: [
         { id: 'doc-1', title: 'Motion to Dismiss', description: 'Filed 2024-01-20', keywords: ['motion', 'dismiss', 'filing'] },
         { id: 'doc-2', title: 'Search Warrant', description: 'Authorized 2024-01-18', keywords: ['warrant', 'search', 'authorized'] },
@@ -57,18 +52,15 @@
       ]
     }
   ];
-
   function handleSelect(item: unknown) {
     ondispatch?.(item);
     open = false;
   }
-
   function handleOpenChange(newOpen: boolean) {
-    open = newOpen;
+    open = newOpe;
     onOpenChange?.(newOpen);
   }
 </script>
-
 <Command.Root
   bind:open
   openChange={handleOpenChange}
@@ -85,19 +77,16 @@
       class="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:nes-text is-disabled disabled:cursor-not-allowed disabled:opacity-50 font-mono"
     />
   </div>
-
   <Command.List class="max-h-[300px] overflow-y-auto overflow-x-hidden legal-command-list">
     <Command.Empty class="py-6 text-center text-sm nes-text is-disabled font-mono">
       No results found.
     </Command.Empty>
-
     {#each mockCommands as group}
       <Command.Group class="legal-command-group">
         <Command.GroupHeading class="px-2 py-1.5 text-xs font-medium nes-text is-disabled font-mono uppercase tracking-wider flex items-center gap-2">
           <group.icon class="h-3 w-3" />
           {group.group}
         </Command.GroupHeading>
-
         {#each group.items as item}
           <Command.Item
             value={(item as { title?: unknown; description?: unknown; keywords?: unknown }).title + ' ' + (item as { title?: unknown; description?: unknown; keywords?: unknown }).description + ' ' + (item as { title?: unknown; description?: unknown; keywords?: unknown }).keywords.join(' ')}
@@ -117,31 +106,25 @@
     {/each}
   </Command.List>
 </Command.Root>
-
 <style>
   /* Legal AI Command Palette Styling */
   :global(.legal-command-palette) {
     @apply bg-yorha-bg-primary border border-yorha-border shadow-xl;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }
-
   :global(.legal-command-header) {
     @apply border-yorha-border bg-yorha-bg-secondary;
   }
-
   :global(.legal-command-list) {
     @apply bg-yorha-bg-primary;
   }
-
   :global(.legal-command-group) {
     @apply border-yorha-border;
   }
-
   :global(.legal-command-item) {
     @apply hover:bg-yorha-bg-hover text-yorha-text-primary;
     @apply transition-colors duration-150;
   }
-
   :global(.legal-command-item[aria-selected="true"]) {
     @apply bg-yorha-accent text-yorha-text-accent;
   }

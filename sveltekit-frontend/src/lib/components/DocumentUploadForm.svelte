@@ -1,11 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { fade, slide } from 'svelte/transition';
   import type { OCRResult } from '$lib/services/ocr-processor';
   import type { DocumentUploadFormProps } from '$lib/types/component-props.js';
-
   // Outbound component events (modern callback props)
   interface DocumentUploadEvents {
     next: { step: 'documents'; data: InternalFormData };
@@ -14,13 +12,11 @@
   }
   // SvelteKit 2 / Svelte 5 helpers (before $props() destructure)
   type ProcessingStatus = 'pending' | 'processing' | 'completed' | 'error';
-
   interface InternalFormData {
     uploaded_files: File[];
     ocr_results: OCRResult[];
-    processing_status: ProcessingStatus;
+    processing_status: ProcessingStatu;
   }
-
   function createDefaultFormData(): InternalFormData {
     return {
       uploaded_files: [],
@@ -41,7 +37,7 @@
     onSaveDraft,
     class: className = '',
     id,
-    'data-testid': testId,
+    'data-testid': testId
     formData = $bindable(createDefaultFormData());
   }: DocumentUploadFormProps & {
     formData?: {
@@ -57,7 +53,6 @@ let dragActive = $state(false);
 let fileInput: HTMLInputElement = $state(undefined as any);
 let uploadProgress = $state<Record<string, number>(0)>( );
 let processingErrors = $state<Record<string, string>('')>( );
-
   // Accepted file types (combine user allowedTypes with a canonical set; de-dupe)
   const canonicalTypes = [
     'application/pdf',
@@ -66,11 +61,9 @@ let processingErrors = $state<Record<string, string>('')>( );
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ];
   const acceptedTypes: string[] = Array.from(new Set([ ...canonicalTypes, ...allowedTypes ]));
-
   function isValidFileType(file: File): boolean {
     return acceptedTypes.includes(file.type);
   }
-
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -78,42 +71,34 @@ let processingErrors = $state<Record<string, string>('')>( );
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     dragActive = true;
   }
-
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
     if (!(event.currentTarget as Element)?.contains(event.relatedTarget as Node)) {
       dragActive = false;
     }
   }
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     dragActive = false;
-
     const files = Array.from(event.dataTransfer?.files || []);
     handleFileSelection(files);
   }
-
   function handleFileInputChange(event: Event) {
     const input = event.target as HTMLInputElement;
     const files = Array.from(input.files || []);
     handleFileSelection(files);
   }
-
   async function handleFileSelection(files: File[]) {
     if (files.length === 0) return;
-
     // Enforce maxFiles before adding new ones
     const remainingSlots = maxFiles - formData.uploaded_files.length;
     if (remainingSlots <= 0) {
       return;
     }
-
     const slice = files.slice(0, remainingSlots);
     const rejectedForOverflow = files.length - slice.length;
     if (rejectedForOverflow > 0) {
@@ -122,7 +107,6 @@ let processingErrors = $state<Record<string, string>('')>( );
         processingErrors = { ...processingErrors, [f.name]: `Exceeded maximum file limit (${maxFiles})` };
       }
     }
-
     const validFiles = slice.filter(file => {
       if (!isValidFileType(file)) {
         processingErrors = {
@@ -140,11 +124,9 @@ let processingErrors = $state<Record<string, string>('')>( );
       }
       return true;
     });
-
     if (formData) {
       formData.uploaded_files = [...formData.uploaded_files, ...validFiles];
     }
-
     // Process files immediately if they're documents
     for (const file of validFiles) {
       if (file.type === 'application/pdf' || file.type.startsWith('image/')) {
@@ -152,44 +134,36 @@ let processingErrors = $state<Record<string, string>('')>( );
       }
     }
   }
-
   async function processFile(file: File) {
     if (formData) {
       formData.processing_status = 'processing';
     }
-
     try {
       uploadProgress = { ...uploadProgress, [file.name]: 0 };
-
       // Simulate progress updates (non-leaky loop)
       for (let p = 10; p <= 90; p += 10) {
         await new Promise(r => setTimeout(r, 150));
         uploadProgress = { ...uploadProgress, [file.name]: p };
       }
-
       // Create mock OCR result for File object (browser environment)
       const ocrResult: OCRResult = {
         text: `Mock OCR text for ${file.name}`,
         confidence: 0.95,
-        pages: [],;
-        metadata: {;
+        pages: [],
+        metadata: {
           title: file.name,
           creation_date: new Date(),
           page_count: 1,
           file_size: file.size,
-          content_type: file.type;
+          content_type: file.typ;
         },
         processing_time: 100
       };
-
       uploadProgress = { ...uploadProgress, [file.name]: 100 };
-
       formData.ocr_results = [...formData.ocr_results, ocrResult];
-
       const newErrors = { ...processingErrors };
       delete newErrors[file.name];
-      processingErrors = newErrors;
-
+      processingErrors = newError;
     } catch (error) {
       console.error('OCR processing failed:', error);
       processingErrors = {
@@ -197,57 +171,46 @@ let processingErrors = $state<Record<string, string>('')>( );
         [file.name]: `Processing failed: ${error instanceof Error ? error.message: 'Unknown error'}`
       };
     }
-
     // Check if all files are processed
     const processedCount = formData.ocr_results.length;
     const totalDocuments = formData.uploaded_files.filter(f =>
       f.type === 'application/pdf' || f.type.startsWith('image/')
     ).length;
-
     if (processedCount === totalDocuments) {
       formData.processing_status = 'completed';
       onUploadComplete?.({ caseId, files: formData.uploaded_files, ocr_results: formData.ocr_results });
     }
   }
-
   function removeFile(index: number) {
     const removedFile = formData.uploaded_files[index];
     formData.uploaded_files = formData.uploaded_files.filter((_, i) => i !== index);
-
     // Remove corresponding OCR result
     formData.ocr_results = formData.ocr_results.filter(item => item.metadata).title !== removedFile.name
     );
-
     // Clear any errors for this file
     const newErrors = { ...processingErrors };
     delete newErrors[removedFile.name];
-    processingErrors = newErrors;
+    processingErrors = newError;
   }
-
   function handleNext() {
     if (formData.uploaded_files.length === 0) {
       alert('Please upload at least one document before proceeding.');
       return;
     }
-
     onNext?.({ step: 'documents', data: formData });
   }
-
   function handlePrevious() {
     onPrevious?.({ step: 'documents' });
   }
-
   function handleSaveDraft() {
     onSaveDraft?.({ step: 'documents', data: formData });
   }
-
   function getFileIcon(fileType: string): string {
     if (fileType === 'application/pdf') return '📄';
     if (fileType.startsWith('image/')) return '🖼️';
     if (fileType.includes('word')) return '📝';
     return '📎';
   }
-
   function getProcessingStatusColor(status: string): string {
     switch (status) {
       case 'pending': return 'text-gray-500';
@@ -258,13 +221,11 @@ let processingErrors = $state<Record<string, string>('')>( );
     }
   }
 </script>
-
 <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transition:fade>
   <div class="mb-8">
     <h2 class="text-2xl font-bold text-gray-900 mb-2">Document Upload</h2>
     <p class="text-gray-600">Upload legal documents, contracts, evidence, and other case materials</p>
   </div>
-
   <!-- File Drop Zone -->
   <div
     class="border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-200";
@@ -292,7 +253,6 @@ let processingErrors = $state<Record<string, string>('')>( );
       </div>
     </div>
   </div>
-
   <input;
     bind:this={fileInput}
     type="file"
@@ -301,19 +261,16 @@ let processingErrors = $state<Record<string, string>('')>( );
     onchange={handleFileInputChange}
     class="hidden"
   />
-
   <!-- Uploaded Files List -->
   {#if formData.uploaded_files.length > 0}
     <div class="mt-8" transition:slide>
       <h3 class="text-lg font-medium text-gray-900 mb-4">
         Uploaded Files ({formData.uploaded_files.length})
       </h3>
-
       <div class="space-y-3">
         {#each formData.uploaded_files as file, index}
           {@const progress = uploadProgress[file.name] || 0}
           {@const error = processingErrors[file.name]}
-
           <div class="border border-gray-200 rounded-lg p-4" transition:fade>
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3 flex-1">
@@ -323,7 +280,6 @@ let processingErrors = $state<Record<string, string>('')>( );
                   <p class="text-sm text-gray-500">{formatFileSize(file.size)}</p>
                 </div>
               </div>
-
               <div class="flex items-center space-x-3">
                 <!-- Processing Status -->
                 {#if file.type === 'application/pdf' || file.type.startsWith('image/')}
@@ -339,7 +295,6 @@ let processingErrors = $state<Record<string, string>('')>( );
                     {/if}
                   </div>
                 {/if}
-
                 <button class="nes-btn"
                   onclick={() => removeFile(index)}
                   class="p-1 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
@@ -348,7 +303,6 @@ let processingErrors = $state<Record<string, string>('')>( );
                 </button>
               </div>
             </div>
-
             <!-- Progress Bar -->
             {#if progress > 0 && progress < 100}
               <div class="mt-3">
@@ -361,7 +315,6 @@ let processingErrors = $state<Record<string, string>('')>( );
                 <p class="text-xs text-gray-500 mt-1">{progress}% complete</p>
               </div>
             {/if}
-
             <!-- Error Message -->
             {#if error}
               <div class="mt-3 text-sm text-red-600 bg-red-50 p-2 rounded">
@@ -373,14 +326,12 @@ let processingErrors = $state<Record<string, string>('')>( );
       </div>
     </div>
   {/if}
-
   <!-- OCR Results Summary -->
   {#if formData.ocr_results.length > 0}
     <div class="mt-8" transition:slide>
       <h3 class="text-lg font-medium text-gray-900 mb-4">
         OCR Processing Results ({formData.ocr_results.length})
       </h3>
-
       <div class="bg-green-50 border border-green-200 rounded-lg p-4">
         <div class="flex items-center">
           <span class="text-green-600 text-xl mr-3">✅</span>
@@ -398,7 +349,6 @@ let processingErrors = $state<Record<string, string>('')>( );
       </div>
     </div>
   {/if}
-
   <!-- Processing Status Indicator -->
   {#if formData.processing_status === 'processing'}
     <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4" transition:fade>
@@ -411,7 +361,6 @@ let processingErrors = $state<Record<string, string>('')>( );
       </div>
     </div>
   {/if}
-
   <!-- Error Summary -->
   {#if Object.keys(errors).length > 0}
     <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4" transition:fade>
@@ -423,7 +372,6 @@ let processingErrors = $state<Record<string, string>('')>( );
       </ul>
     </div>
   {/if}
-
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 mt-8 border-t border-gray-200">
     <Button
@@ -432,7 +380,6 @@ let processingErrors = $state<Record<string, string>('')>( );
     >
 ← Previous
 </Button>
-
     <div class="flex space-x-3">
       <Button
         onclick={handleSaveDraft}
@@ -440,7 +387,6 @@ let processingErrors = $state<Record<string, string>('')>( );
       >
 Save Draft
 </Button>
-
       <Button
         onclick={handleNext}
         disabled={formData.uploaded_files.length === 0 || formData.processing_status === 'processing'}
@@ -451,5 +397,3 @@ Next: Evidence Analysis →
     </div>
   </div>
 </div>
-
-

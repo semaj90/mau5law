@@ -2,12 +2,9 @@
 import { users } from "$lib/server/db/index"
 import { eq } from 'drizzle-orm'
 import { apiResponse, transformUserForFrontend } from '$lib/utils/case-transform'
-
 import { json } from "@sveltejs/kit"
 import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
-
-
 export const GET: RequestHandler = async ({ locals }) => {
   const authUser = locals.user
   if (!authUser?.id) {
@@ -20,12 +17,12 @@ export const GET: RequestHandler = async ({ locals }) => {
     const user = await db.query.users.findFirst({
       where: eq(usersAny.id, authUser.id),
       columns: {
-        id: true,
-        email: true,
+        id: true
+        email: true
         username: true, // database field
         first_name: true, // database field
         last_name: true, // database field
-        role: true,
+        role: true
         avatar_url: true, // database field
         created_at: true, // database field
         updated_at: true, // database field
@@ -33,15 +30,13 @@ export const GET: RequestHandler = async ({ locals }) => {
         email_verified: true, // database field
       }
     })
-
     if (!user) {
       return json({ error: 'User not found' }, { status: 404 })
     }
     // Transform snake_case database fields to camelCase for frontend
     const frontendUser = transformUserForFrontend(user)
-
     return json({
-      success: true,
+      success: true
       user: {
         ...frontendUser,
         avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.png'
@@ -52,7 +47,6 @@ export const GET: RequestHandler = async ({ locals }) => {
     return json({ error: 'Failed to fetch profile' }, { status: 500 })
   }
 }
-
 export const PUT: RequestHandler = async ({ request, locals }) => {
   if (!locals.user) {
     return json({ error: 'Not authenticated' }, { status: 401 })
@@ -61,11 +55,9 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     // Frontend sends camelCase data
     const frontendData = await request.json()
     const { firstName, lastName, email } = frontendData
-
     if (!email) {
       return json({ error: 'Email is required' }, { status: 400 })
     }
-
     // Update user profile in database using snake_case fields
     const usersAny: any = users
     const authUser = locals.user
@@ -89,16 +81,13 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
         created_at: usersAny.created_at, // snake_case database field
         updated_at: usersAny.updated_at, // snake_case database field
       })
-
     if (!updatedUser) {
       return json({ error: 'Failed to update profile' }, { status: 500 })
     }
-
     // Transform snake_case database result to camelCase for frontend
     const frontendUser = transformUserForFrontend(updatedUser)
-
     return json({
-      success: true,
+      success: true
       user: {
         ...frontendUser,
         avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.svg'

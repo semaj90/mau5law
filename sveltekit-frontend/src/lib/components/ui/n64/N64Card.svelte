@@ -3,7 +3,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove syntax -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount,   } from "svelte";
   import type { Snippet } from 'svelte';
   // Svelte 5 props interface
@@ -41,7 +40,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     webgpuMode?: boolean;
     renderDistance?: 'near' | 'medium' | 'far';
   }
-
   let {
     children,
     title,
@@ -76,33 +74,27 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     webgpuMode = false,
     renderDistance = 'medium';
   }: Props = $props();
-
   // Events now handled via props in Svelte 5
-  // 
-
+  //
   let cardElement: HTMLElement;
   let container: HTMLDivElement;
   let isHovered = $state(false);
   let isPressed = $state(false);
   let audioContext: AudioContext | null = null;
   let spatialPanner: PannerNode | null = null;
-
   // Performance state
   let webglContext: WebGLRenderingContext | null = null;
   let webgpuDevice: GPUDevice | null = null;
   let frameCount = $state(0);
   let lastFrameTime = $state(0);
-
   // 3D transformation state
   let rotationX = $state(0);
   let rotationY = $state(0);
   let translateZ = $state(0);
   let mouseX = $state(0);
   let mouseY = $state(0);
-
   // Generate unique IDs
   const componentId = `n64-card-${Math.random.toString-substr(2, 9)}`;
-
   // Dynamic CSS classes based on props
   const cardClasses = $derived(() => {
     const classes = ['n64-card'];
@@ -131,7 +123,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     if (reducedMotion) classes.push('reduced-motion');
     return classes.join(' ');
   });
-
   // Dynamic inline styles for 3D transformations
   const cardStyles = $derived(() => {
     const depthZ = getDepthValue(depthEffect);
@@ -147,7 +138,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       --frame-time: ${frameCount * 0.016};
     `;
   });
-
   function getDepthValue(depth: string): number {
     const depthMap = {
       'shallow': 5,
@@ -157,7 +147,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     };
     return depthMap[depth] || 15;
   }
-
   // Initialize audio and GPU contexts
   $effect(() => {
     (async () => {
@@ -173,17 +162,14 @@ if (spatialAudio && typeof window !== 'undefined') {
         console.warn('N64Card: Spatial audio initialization failed:', error);
       }
     }
-
     // Initialize GPU contexts for advanced rendering
     if (gpuAcceleration && container) {
       await initializeGPUContext();
     }
-
     // Start animation loop for PBR materials and ultra mesh complexity
     if (materialType === 'pbr' || meshComplexity === 'ultra' || depthEffect === 'extreme') {
       requestAnimationFrame(animationLoop);
     }
-
     return () => {
       if (audioContext) {
         audioContext.close();
@@ -191,7 +177,6 @@ if (spatialAudio && typeof window !== 'undefined') {
     };
     })();
   });
-
   async function initializeGPUContext() {
     if (webgpuMode && 'gpu' in navigator) {
       try {
@@ -204,7 +189,6 @@ if (spatialAudio && typeof window !== 'undefined') {
         console.warn('N64Card: WebGPU initialization failed, falling back to WebGL');
       }
     }
-
     // Fallback to WebGL
     if (!webgpuDevice) {
       const canvas = document.createElement('canvas');
@@ -214,7 +198,6 @@ if (spatialAudio && typeof window !== 'undefined') {
       }
     }
   }
-
   function animationLoop(timestamp: number) {
     frameCount++;
     lastFrameTime = timestamp;
@@ -229,7 +212,6 @@ if (spatialAudio && typeof window !== 'undefined') {
       requestAnimationFrame(animationLoop);
     }
   }
-
   function handleMouseMove(event: MouseEvent) {
     if (!hoverable || reducedMotion) return;
     const rect = cardElement.getBoundingClientRect();
@@ -241,25 +223,22 @@ if (spatialAudio && typeof window !== 'undefined') {
     mouseY = deltaY;
     // Update 3D rotation based on mouse position
     const maxRotation = 15;
-    rotationY = deltaX * maxRotation;
-    rotationX = -deltaY * maxRotation;
+    rotationY = deltaX * maxRotatio;
+    rotationX = -deltaY * maxRotatio;
     // Update depth translation
     translateZ = Math.abs(deltaX * deltaY) * 5;
-
     // Update spatial audio position
     if (spatialPanner) {
       spatialPanner.positionX.setValueAtTime(deltaX * 10, audioContext!.currentTime);
       spatialPanner.positionY.setValueAtTime(deltaY * 10, audioContext!.currentTime);
     }
   }
-
   function handleMouseEnter() {
     if (!hoverable) return;
     isHovered = true;
     playSpatialSound('hover', 880, 0.03);
-    ondispatch?.();
+    // ondispatch removed;
   }
-
   function handleMouseLeave() {
     if (!hoverable) return;
     isHovered = false;
@@ -268,27 +247,23 @@ if (spatialAudio && typeof window !== 'undefined') {
     translateZ = 0;
     mouseX = 0;
     mouseY = 0;
-    ondispatch?.();
+    // ondispatch removed;
   }
-
   function handleMouseDown() {
     if (!clickable) return;
     isPressed = true;
     playSpatialSound('press', 220, 0.1);
   }
-
   function handleMouseUp() {
     if (!clickable) return;
     isPressed = false;
     playSpatialSound('release', 440, 0.05);
   }
-
   function handleClick(event: MouseEvent) {
     if (!clickable) return;
     playSpatialSound('click', 660, 0.08);
     onClick?.(event);
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -300,23 +275,18 @@ if (spatialAudio && typeof window !== 'undefined') {
       }
     }
   }
-
   function playSpatialSound(type: string, frequency: number, volume: number) {
     if (!spatialAudio || !audioContext || !spatialPanner || reducedMotion) return;
-
     try {
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-
       oscillator.type = 'triangle';
       oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
       gainNode.gain.setValueAtTime(0, audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
       gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
-
       oscillator.connect(gainNode);
       gainNode.connect(spatialPanner);
-
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.2);
     } catch (error) {
@@ -324,13 +294,12 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
   }
 </script>
-
-<div 
+<div
   bind:this={container}
   class="n64-nier-bits-card-container {className}"
   style={cardStyles()}
 >
-  <article;
+  <articl;
     bind:this={cardElement}
     class={cardClasses()}
     {role}
@@ -349,26 +318,21 @@ if (spatialAudio && typeof window !== 'undefined') {
     <div class="n64-nier-bits-card-overlay" aria-hidden="true">
       <!-- Depth effect layer -->
       <div class="depth-layer depth-{depthEffect}"></div>
-      
       <!-- Texture filtering layer -->
       <div class="texture-filter-layer filter-{textureFiltering}"></div>
-      
       <!-- Anti-aliasing layer -->
       {#if antiAliasing !== 'none'}
         <div class="aa-layer aa-{antiAliasing}"></div>
       {/if}
-      
       <!-- Fog effect layer -->
       {#if fogEffect}
         <div class="fog-layer"></div>
       {/if}
-      
       <!-- Shadow layer -->
       {#if shadowCasting}
         <div class="shadow-layer"></div>
       {/if}
     </div>
-
     <!-- Card Header -->
     {#if title || subtitle}
       <header class="n64-nier-bits-yorha-panel-header">
@@ -380,39 +344,35 @@ if (spatialAudio && typeof window !== 'undefined') {
         {/if}
       </header>
     {/if}
-
     <!-- Card Content -->
     <div class="n64-nier-bits-yorha-panel-content">
       {#if children}
         {@render children()}
       {/if}
     </div>
-
     <!-- Parallax depth indicators -->
     {#if parallaxDepth > 0}
       <div class="parallax-indicators" aria-hidden="true">
         {#each Array(Math.min(parallaxDepth, 5)) as _, i}
-          <div 
-            class="parallax-layer" 
+          <div
+            class="parallax-layer"
             style="transform: translateZ({-i * 3}px); opacity: {1 - (i * 0.15)};"
           ></div>
         {/each}
       </div>
     {/if}
-
     <!-- Selection indicator -->
     {#if selectable}
-      <div 
-        class="selection-indicator" 
+      <div
+        class="selection-indicator"
         class:visible={selected}
         aria-hidden="true"
       ></div>
     {/if}
   </article>
 </div>
-
 <style>
-  .n64-card-container {;
+  .n64-card-container {
     position: relative;
     display: inline-block;
     font-family: 'Press Start 2P', monospace;
@@ -427,10 +387,8 @@ if (spatialAudio && typeof window !== 'undefined') {
     color: #e0e0e0;
     border: 2px solid #505050;
 /* N64-style 3D depth transformation */ transform: perspective(1000px) rotateX(var(--rotation-x, 0deg)) rotateY(var(--rotation-y, 0deg)) translateZ(var(--translate-z, 0px));
-    
     transform-origin: center center;
     transform-style: preserve-3d;
-    
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 box-shadow: 0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 2) rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.1), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
   }
@@ -439,13 +397,11 @@ box-shadow: 0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 2) rgba(0, 0, 0, 
     border-color: #505050;
 box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
-
   .material-phong .n64-card {
 background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 50%, #0a0a0a 100%);
     border-color: #707070;
 box-shadow: 0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 2) rgba(0, 0, 0, 0.4), inset 0 3px 6px rgba(255, 255, 255, 0.15), inset 0 -3px 6px rgba(0, 0, 0, 0.3);
   }
-
   .material-pbr .n64-card {
 background: linear-gradient(145deg, hsl(calc(var(--frame-time, 0) * 10 + 240), 20%, 16%) 0%, hsl(calc(var(--frame-time, 0) * 10 + 240), 25%, 10%) 50%, hsl(calc(var(--frame-time, 0) * 10 + 240), 30%, 6%) 100%);
     border-color: hsl(calc(var(--frame-time, 0) * 10 + 240), 50%, 50%);
@@ -454,15 +410,12 @@ box-shadow: 0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 3) rgba(0, 0, 0, 
 /* Mesh complexity variations */ .mesh-low .n64-card {
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
   }
-
   .mesh-medium .n64-card {
 clip-path: polygon( 0% 0%, 95% 0%, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0% 95%, 0% 5% );
   }
-
   .mesh-high .n64-card {
 clip-path: polygon( 0% 0%, 90% 0%, 95% 3%, 100% 10%, 100% 90%, 97% 95%, 90% 100%, 10% 100%, 5% 97%, 0% 90%, 0% 10%, 3% 5% );
   }
-
   .mesh-ultra .n64-card {
 clip-path: polygon( 0% 0%, 80% 0%, 85% 2%, 90% 5%, 95% 8%, 98% 12%, 100% 20%, 100% 80%, 98% 88%, 95% 92%, 90% 95%, 85% 98%, 80% 100%, 20% 100%, 15% 98%, 10% 95%, 5% 92%, 2% 88%, 0% 80%, 0% 20%, 2% 12%, 5% 8%, 10% 5%, 15% 2% );
   }
@@ -479,7 +432,6 @@ clip-path: polygon( 0% 0%, 80% 0%, 85% 2%, 90% 5%, 95% 8%, 98% 12%, 100% 20%, 10
     pointer-events: none;
     z-index: 1;
   }
-
   .depth-layer {
     position: absolute;
     top: 0;
@@ -488,7 +440,6 @@ clip-path: polygon( 0% 0%, 80% 0%, 85% 2%, 90% 5%, 95% 8%, 98% 12%, 100% 20%, 10
     bottom: 0;
 background: linear-gradient( 135deg, rgba(255, 255, 255, 0.1) 0%, transparent 30%, transparent 70%, rgba(0, 0, 0, 0.2) 100% );
   }
-
   .texture-filter-layer {
     position: absolute;
     top: 0;
@@ -496,19 +447,15 @@ background: linear-gradient( 135deg, rgba(255, 255, 255, 0.1) 0%, transparent 30
     right: 0;
     bottom: 0;
   }
-
   .filter-nearest .texture-filter-layer {
 background: repeating-linear-gradient( 45deg, transparent 0px, rgba(255, 255, 255, 0.01) 1px, transparent 2px );
   }
-
   .filter-bilinear .texture-filter-layer {
 background: radial-gradient( circle at 25% 25%, rgba(255, 255, 255, 0.02) 0%, transparent 50% ), radial-gradient( circle at 75% 75%, rgba(255, 255, 255, 0.02) 0%, transparent 50% );
   }
-
   .filter-trilinear .texture-filter-layer {
 background: conic-gradient( from 0deg at 50% 50%, rgba(255, 215, 0, 0.02), rgba(0, 255, 65, 0.02), rgba(255, 0, 65, 0.02), rgba(0, 127, 255, 0.02), rgba(255, 215, 0, 0.02) );
   }
-
   .filter-anisotropic .texture-filter-layer {
 background: linear-gradient( calc(var(--mouse-x, 0) * 45deg + 45deg), rgba(255, 215, 0, 0.03) 0%, transparent 25%, rgba(0, 255, 65, 0.03) 50%, transparent 75%, rgba(255, 0, 65, 0.03) 100% );
     animation: anisotropic-sweep 4s ease-in-out infinite;
@@ -520,11 +467,9 @@ background: linear-gradient( calc(var(--mouse-x, 0) * 45deg + 45deg), rgba(255, 
     right: -1px;
     bottom: -1px;
   }
-
   .aa-fxaa .aa-layer {
 background: linear-gradient(45deg, rgba(255, 255, 255, 0.005) 0%, transparent 50%), linear-gradient(-45deg, rgba(255, 255, 255, 0.005) 0%, transparent 50%);
   }
-
   .aa-msaa .aa-layer {
 background: radial-gradient( ellipse at top left, rgba(255, 255, 255, 0.01) 0%, transparent 25% ), radial-gradient( ellipse at top right, rgba(255, 255, 255, 0.01) 0%, transparent 25% ), radial-gradient( ellipse at bottom left, rgba(255, 255, 255, 0.01) 0%, transparent 25% ), radial-gradient( ellipse at bottom right, rgba(255, 255, 255, 0.01) 0%, transparent 25% );
   }
@@ -554,7 +499,6 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
     padding-bottom: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-
   .n64-card-title {
     font-size: 14px;
     font-weight: normal;
@@ -564,7 +508,6 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
     margin: 0 0 8px 0;
     text-shadow: 0 0 4px rgba(255, 215, 0, 0.5);
   }
-
   .n64-card-subtitle {
     font-size: 10px;
     color: #b0b0b0;
@@ -586,7 +529,6 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
     pointer-events: none;
     z-index: 0;
   }
-
   .parallax-layer {
     position: absolute;
     top: 2px;
@@ -611,7 +553,6 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
     z-index: 10;
 box-shadow: 0 0 15px rgba(0, 255, 65, 0.5), inset 0 0 15px rgba(0, 255, 65, 0.2);
   }
-
   .selection-indicator.visible {
     opacity: 1;
     transform: scale(1);
@@ -620,11 +561,9 @@ box-shadow: 0 0 15px rgba(0, 255, 65, 0.5), inset 0 0 15px rgba(0, 255, 65, 0.2)
     border-color: #909090;
 box-shadow: 0 calc(var(--depth-z, 15px) + 5px) calc((var(--depth-z, 15px) + 5px) * 2) rgba(0, 0, 0, 0.4), inset 0 3px 6px rgba(255, 255, 255, 0.2), inset 0 -3px 6px rgba(0, 0, 0, 0.3);
   }
-
   .n64-card.clickable:active {
 transform: perspective(1000px) rotateX(calc(var(--rotation-x, 0deg) + 2deg)) rotateY(var(--rotation-y, 0deg)) translateZ(calc(var(--translate-z, 0px) - 3px));
   }
-
   .n64-card.selected {
     border-color: #00ff41;
     color: #ffffff;
@@ -634,22 +573,18 @@ box-shadow: 0 calc(var(--depth-z, 15px) + 3px) calc((var(--depth-z, 15px) + 3px)
     background: #1a1a1a;
     box-shadow: 0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 2) rgba(0, 0, 0, 0.3);
   }
-
   .lighting-gouraud .n64-card {
     background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
   }
-
   .lighting-phong .n64-card {
 background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
   }
-
   .lighting-blinn-phong .n64-card {
 background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, transparent 40%), radial-gradient(ellipse at 75% 75%, rgba(255, 255, 255, 0.08) 0%, transparent 60%), linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
   }
 /* Render distance optimizations */ .distance-near {
     will-change: transform;
   }
-
   .distance-medium {
     will-change: transform, box-shadow;
   }
@@ -663,19 +598,16 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     backface-visibility: hidden;
     will-change: transform, box-shadow, border-color;
   }
-
   .webgpu-active .n64-card {
     image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
+    image-rendering: crisp-edge;
   }
 /* Mobile optimizations */ .mobile-optimized .n64-card {
     padding: 16px;
   }
-
   .mobile-optimized .n64-card-title {
     font-size: 12px;
   }
-
   .mobile-optimized .n64-card-content {
     font-size: 11px;
   }
@@ -687,11 +619,9 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
 /* Interactive states */ .n64-card.clickable {
     cursor: pointer;
   }
-
   .n64-card.selectable {
     cursor: pointer;
   }
-
   .n64-card:focus-visible {
     outline: 2px solid #ffd700;
     outline-offset: 4px;
@@ -703,7 +633,6 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     75% { filter: hue-rotate(270deg); }
     100% { filter: hue-rotate(360deg); }
   }
-
   @keyframes fog-drift {
     0% { transform: translateY(0px) translateX(0px); }
     33% { transform: translateY(-1px) translateX(1px); }

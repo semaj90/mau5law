@@ -1,7 +1,6 @@
 /**
  * RabbitMQ Types for Legal AI Processing
  */
-
 export type JobType =
   // Original types
   | 'document-analysis'
@@ -23,7 +22,6 @@ export type JobType =
   | 'relationship-mapping'
   | 'pattern-detection'
   | 'forensic-timeline';
-
 export type JobStatus =
   | 'pending'
   | 'queued'
@@ -33,20 +31,18 @@ export type JobStatus =
   | 'cancelled'
   | 'retrying';
 }
-
 export interface JobDefinition {
   id: string;
   type: JobType;
   priority: number;
-  payload: Record<string, any>;
-  metadata?: Record<string, any>;
+  payload: { [key: string]: any };
+  metadata?: { [key: string]: any };
   dependencies?: string[];
   createdAt: Date;
   updatedAt: Date;
   retryCount?: number;
   maxRetries?: number;
 }
-
 export interface ProcessingMetrics {
   totalJobs: number;
   completedJobs: number;
@@ -58,23 +54,20 @@ export interface ProcessingMetrics {
   queueDepth: number;
   activeWorkers: number;
 }
-
 export interface QueueConfig {
   name: string;
   durable: boolean;
   autoDelete: boolean;
   exclusive: boolean;
-  arguments?: Record<string, any>;
+  arguments?: { [key: string]: any };
 }
-
 export interface ExchangeConfig {
   name: string;
   type: 'direct' | 'topic' | 'fanout' | 'headers';
   durable: boolean;
   autoDelete: boolean;
-  arguments?: Record<string, any>;
+  arguments?: { [key: string]: any };
 }
-
 export interface RabbitMQConnection {
   host: string;
   port: number;

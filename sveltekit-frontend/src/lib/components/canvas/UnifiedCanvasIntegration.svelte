@@ -4,13 +4,11 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { writable } from 'svelte/store';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
   import CanvasBoard from '$lib/components/yorha/CanvasBoard.svelte';
   import Button from '$lib/components/ui/enhanced-bits';
-  
   interface Props {
     caseId?: string;
     enableYoRHaBoard?: boolean;
@@ -32,7 +30,7 @@
   let yorhaCanvasBoardRef: any;
   // State management
   const canvasState = writable({
-    mode: initialMode,
+    mode: initialMode
     evidenceObjects: [],
     drawingObjects: [],
     selectedObjects: [],
@@ -56,14 +54,14 @@
       canvasState.update(state => ({
         ...state,
         evidenceObjects,
-        drawingObjects: yorhaDrawings,
+        drawingObjects: yorhaDrawings
         lastSync: Date.now()
       }));
       canvasObjects = [...evidenceObjects, ...yorhaDrawings];
       // Dispatch sync event
       ondispatch?.({
         evidenceObjects,
-        drawingObjects: yorhaDrawings,
+        drawingObjects: yorhaDrawings
         totalObjects: canvasObjects.length,
         timestamp: Date.now();
       });
@@ -76,7 +74,7 @@
   }
   // Mode switching
   function switchMode(newMode: 'evidence' | 'drawing' | 'both') {
-    currentMode = newMode;
+    currentMode = newMod;
     if (newMode === 'drawing' || newMode === 'both') {
       showYoRHaBoard = true;
     } else {
@@ -84,7 +82,7 @@
     }
     canvasState.update(state => ({
       ...state,
-      mode: newMode;
+      mode: newMod;
     }));
     ondispatch?.({ mode: newMode });
   }
@@ -131,24 +129,24 @@
       drawingObjects: [],
       selectedObjects: []
     }));
-    ondispatch?.();
+    // ondispatch removed;
   }
   function exportCanvasState() {
     const state = {
       timestamp: Date.now(),
       caseId,
-      mode: currentMode,
+      mode: currentMode
       evidenceObjects: canvasObjects.filter(obj => obj.type !== 'drawing'),
       drawings: canvasObjects.filter(obj => obj.type === 'drawing'),
-      canvasJson: evidenceCanvasRef?.getCanvasJSON(),;
+      canvasJson: evidenceCanvasRef?.getCanvasJSON(),
       metadata: {
         objectCount: canvasObjects.length,
-        lastSync: Date.now(),;
+        lastSync: Date.now(),
         version: '1.0';
       }
     };
     ondispatch?.(state);
-    return state;
+    return stat;
   }
   // Initialize
   $effect(() => {
@@ -162,7 +160,6 @@
     }
   });
 </script>
-
 <div class="unified-canvas-integration">
   <!-- Mode Control Header -->
   <div class="canvas-mode-header">
@@ -170,7 +167,6 @@
       <h2>🎮 UNIFIED EVIDENCE CANVAS</h2>
       <span class="mode-indicator">MODE: {currentMode.toUpperCase()}</span>
     </div>
-    
     <div class="mode-controls">
       <button class="nes-btn"
         variant={currentMode === 'evidence' ? 'default' : 'outline'}
@@ -180,16 +176,14 @@
       >
         📁 Evidence Only
       </button>
-      
       <button class="nes-btn"
         variant={currentMode === 'drawing' ? 'default' : 'outline'}
-        size="sm" 
+        size="sm"
         onclick={() => switchMode('drawing')}
         class="bits-btn mode-btn"
       >
         🎨 Drawing Only
       </button>
-      
       <button class="nes-btn"
         variant={currentMode === 'both' ? 'default' : 'outline'}
         size="sm"
@@ -198,7 +192,6 @@
       >
         🔄 Both
       </button>
-      
       <Button
         variant="ghost"
         size="sm"
@@ -207,7 +200,6 @@
         class="sync-btn bits-btn"
       >
 {syncInProgress ? '🔄 Syncing...' : '🔄 Sync'}
-
       <Button
         variant="ghost"
         size="sm"
@@ -215,13 +207,10 @@
         class="clear-btn bits-btn"
       >
 🗑️ Clear
-
     </div>
   </div>
-  
   <!-- Canvas Container -->
   <div class="canvas-container" class:split-view={splitView && currentMode === 'both'}>
-    
     <!-- Evidence Canvas -->
     {#if enableEvidenceCanvas && (currentMode === 'evidence' || currentMode === 'both')}
       <div class="evidence-canvas-section" class:full-width={!splitView || currentMode === 'evidence'}>
@@ -238,7 +227,6 @@
         />
       </div>
     {/if}
-    
     <!-- YoRHa Canvas Board -->
     {#if enableYoRHaBoard && showYoRHaBoard}
       <div class="yorha-canvas-section" class:full-width={!splitView || currentMode === 'drawing'}>
@@ -255,9 +243,7 @@
         />
       </div>
     {/if}
-    
   </div>
-  
   <!-- Canvas Status Bar -->
   <div class="canvas-status-bar">
     <div class="status-info">
@@ -267,7 +253,6 @@
       </span>
       <span class="mode-display">Mode: {currentMode}</span>
     </div>
-    
     <div class="status-actions">
       <button
         onclick={exportCanvasState}
@@ -275,13 +260,11 @@
         title="Export Canvas State"
       >
         💾 Export
-
     </div>
   </div>
 </div>
-
 <style>
-  .unified-canvas-integration {;
+  .unified-canvas-integration {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -290,16 +273,14 @@
     font-family: 'Courier New', monospace;
     overflow: hidden;
   }
-  
   .canvas-mode-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 1rem 2rem;
     background: rgba(0, 255, 136, 0.1);
     border-bottom: 2px solid #00ff88;
   }
-  
   .mode-title h2 {
     font-size: 1.5rem;
     font-weight: bold;
@@ -307,19 +288,16 @@
     text-shadow: 0 0 10px #00ff88;
     letter-spacing: 2px;
   }
-  
   .mode-indicator {
     font-size: 0.9rem;
     opacity: 0.7;
     margin-left: 1rem;
   }
-  
   .mode-controls {
     display: flex;
     gap: 0.5rem;
     align-items: center;
   }
-  
   .mode-btn, .sync-btn, .clear-btn {
     background: transparent;
     border: 2px solid #00ff88;
@@ -331,22 +309,18 @@
     font-size: 0.8rem;
     font-weight: bold;
   }
-  
   .mode-btn:hover, .sync-btn:hover, .clear-btn:hover {
     background: rgba(0, 255, 136, 0.1);
     box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
   }
-  
   .canvas-container {
     flex: 1;
     display: flex;
     overflow: hidden;
   }
-  
   .canvas-container.split-view {
     flex-direction: row;
   }
-  
   .evidence-canvas-section,
   .yorha-canvas-section {
     flex: 1;
@@ -354,37 +328,31 @@
     flex-direction: column;
     min-width: 0;
   }
-  
   .evidence-canvas-section.full-width,
   .yorha-canvas-section.full-width {
     flex: none;
     width: 100%;
   }
-  
   .canvas-container.split-view .evidence-canvas-section {
     border-right: 2px solid #00ff88;
   }
-  
   .canvas-status-bar {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 0.5rem 2rem;
     background: rgba(0, 0, 0, 0.8);
     border-top: 1px solid #00ff88;
     font-size: 0.8rem;
   }
-  
   .status-info {
     display: flex;
     gap: 2rem;
   }
-  
   .sync-status.syncing {
     color: #ffaa00;
     animation: pulse 1s ease-in-out infinite;
   }
-  
   .export-btn {
     background: transparent;
     border: 1px solid #00ff88;
@@ -395,33 +363,27 @@
     font-size: 0.7rem;
     transition: all 0.3s ease;
   }
-  
   .export-btn:hover {
     background: rgba(0, 255, 136, 0.1);
   }
-  
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   }
-  
   /* Responsive design */
   @media (max-width: 768px) {
     .canvas-mode-header {
       flex-direction: column;
       gap: 1rem;
     }
-    
     .mode-controls {
       width: 100%;
       justify-content: center;
       flex-wrap: wrap;
     }
-    
     .canvas-container.split-view {
       flex-direction: column;
     }
-    
     .canvas-container.split-view .evidence-canvas-section {
       border-right: none;
       border-bottom: 2px solid #00ff88;

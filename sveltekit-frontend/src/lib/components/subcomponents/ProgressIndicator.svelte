@@ -1,12 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Progress Indicator Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {   } from "svelte";
-
     interface Props {
         steps?: unknown[];
         currentStep?: number;
@@ -16,17 +13,12 @@ https://svelte.dev/e/js_parse_error -->
             warnings: string[];
         }>;
     }
-
     let { steps = [], currentStep = 0, validationResults = }: Props = $props();
-
-    
-
     function handleStepClick(stepIndex: number): void {
         if (stepIndex <= currentStep || !steps[stepIndex].required) {
             ondispatch?.(stepIndex);
         }
     }
-
     function getStepStatus(stepIndex: number): 'completed' | 'current' | 'pending' | 'error' | 'warning' {
         if (stepIndex < currentStep) {
             const validation = validationResults[stepIndex];
@@ -41,10 +33,8 @@ https://svelte.dev/e/js_parse_error -->
             return 'pending';
         }
     }
-
     function getStepIcon(stepIndex: number): string {
         const status = getStepStatus(stepIndex);
-
         switch (status) {
             case 'completed':
                 return 'check';
@@ -58,10 +48,8 @@ https://svelte.dev/e/js_parse_error -->
                 return 'circle';
         }
     }
-
     let progressPercentage = $derived(Math.round((currentStep / (steps.length - 1)) * 100));
 </script>
-
 <div class="progress-indicator bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
     <!-- Progress bar -->
     <div class="w-full bg-gray-200 dark:bg-gray-700 h-1">
@@ -70,7 +58,6 @@ https://svelte.dev/e/js_parse_error -->
             style="width: {progressPercentage}%"
         />
     </div>
-
     <!-- Steps navigation -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <nav aria-label="Progress">
@@ -79,7 +66,6 @@ https://svelte.dev/e/js_parse_error -->
                     {@const status = getStepStatus(index)}
                     {@const icon = getStepIcon(index)}
                     {@const isClickable = index <= currentStep || !step.required}
-
                     <li class="flex-1 min-w-0">
                         <button
                             onclick={() => handleStepClick(index)}
@@ -97,7 +83,6 @@ https://svelte.dev/e/js_parse_error -->
                                            {status === 'error' ? 'bg-red-100 dark:bg-red-900' : ''}
                                            {status === 'warning' ? 'bg-yellow-100 dark:bg-yellow-900' : ''}
                                            {status === 'pending' ? 'bg-gray-100 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600' : ''}">
-
                                     {#if icon === 'check'}
                                         <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
@@ -116,15 +101,13 @@ https://svelte.dev/e/js_parse_error -->
                                         <div class="w-3 h-3 rounded-full bg-gray-400 dark:bg-gray-500"></div>
                                     {/if}
                                 </div>
-
                                 <!-- Step number badge for smaller screens -->
-                                <div class="absolute -top-1 -right-1 w-4 h-4 bg-gray-100 dark:bg-gray-700 rounded-full
+                                <div class="absolute -top-1 -right-1 w-4 h-4 bg-gray-100 dark: bg-gray-700 rounded-full
                                            flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-400;
                                            lg:hidden">
                                     {index + 1}
                                 </div>
                             </div>
-
                             <!-- Step content -->
                             <div class="ml-3 min-w-0 flex-1">
                                 <div class="flex items-center space-x-2">
@@ -132,23 +115,19 @@ https://svelte.dev/e/js_parse_error -->
                                              {status === 'current' ? 'text-blue-600 dark:text-blue-400' : ''}">
                                         {step.title}
                                     </p>
-
                                     {#if step.required}
                                         <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
                                             Required
                                         </span>
                                     {/if}
-
                                     <!-- Estimated time badge -->
                                     <span class="hidden lg:inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
                                         ~{step.estimatedTime}m
                                     </span>
                                 </div>
-
                                 <p class="hidden lg:block text-xs text-gray-500 dark:text-gray-400 truncate mt-1">
                                     {step.description}
                                 </p>
-
                                 <!-- Validation messages -->
                                 {#if validationResults[index]}
                                     {@const validation = validationResults[index]}
@@ -164,7 +143,6 @@ https://svelte.dev/e/js_parse_error -->
                                 {/if}
                             </div>
                         </button>
-
                         <!-- Connector line -->
                         {#if index < steps.length - 1}
                             <div class="hidden lg:block absolute top-1/2 right-0 transform translate-x-2 -translate-y-1/2">
@@ -175,7 +153,6 @@ https://svelte.dev/e/js_parse_error -->
                 {/each}
             </ol>
         </nav>
-
         <!-- Mobile step counter -->
         <div class="lg:hidden mt-3 text-center">
             <span class="text-sm text-gray-500 dark:text-gray-400">
@@ -184,11 +161,8 @@ https://svelte.dev/e/js_parse_error -->
         </div>
     </div>
 </div>
-
 <style>
-    .progress-indicator li {;
+    .progress-indicator li {
         position: relative;
     }
 </style>
-
-

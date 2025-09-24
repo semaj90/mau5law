@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { enhance } from '$app/forms';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import Button from '$lib/components/ui/enhanced-bits';
@@ -16,7 +15,6 @@
   import { scale, fade } from 'svelte/transition';
   import { quartOut } from 'svelte/easing';
   import type { EnhancedAuthFormProps } from '$lib/types/component-props.js';
-
   let { mode = $bindable('login'),
     open = $bindable(false),
     onOpenChange,
@@ -27,45 +25,42 @@
     id,
     'data-testid': testId;
    }: EnhancedAuthFormProps = $props();
-
   // Enhanced Svelte 5 reactive state
   let formData = $state({
-    email: '',;
+    email: '',
     password: '',
     confirmPassword: '',
     firstName: '',
     lastName: '',
-    acceptTerms: false,
+    acceptTerms: false
     rememberMe: false;
   });
   let formState = $state({
-    loading: false,;
-    error: '',;
+    loading: false
+    error: '',
     success: '',
     passwordStrength: 0,
-    showPassword: false,
-    showConfirmPassword: false,
-    emailExists: false,
+    showPassword: false
+    showConfirmPassword: false
+    emailExists: false
     verificationSent: false;
   });
-
   // Form element references for focus management
   let emailInput: HTMLInputElement = $state(undefined as any);
   let passwordInput: HTMLInputElement = $state(undefined as any);
   let firstNameInput: HTMLInputElement = $state(undefined as any);
-
   // Enhanced validation with security requirements
   let validation = $derived(() => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const hasValidEmail = emailRegex.test(formData.email);
-    const hasStrongPassword = formData.password.length >= 8 && 
+    const hasStrongPassword = formData.password.length >= 8 &&
       /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(formData.password);
     if (mode === 'register') {
       const passwordsMatch = formData.confirmPassword === formData.password;
       const hasName = formData.firstName.trim.length >= 2 && formData.lastName.trim.length >= 2;
-      const termsAccepted = formData.acceptTerms;
+      const termsAccepted = formData.acceptTerm;
       return {
-        isValid: hasValidEmail && hasStrongPassword && passwordsMatch && hasName && termsAccepted,
+        isValid: hasValidEmail && hasStrongPassword && passwordsMatch && hasName && termsAccepted
         hasValidEmail,
         hasStrongPassword,
         passwordsMatch,
@@ -76,13 +71,12 @@
     return {
       isValid: hasValidEmail && formData.password.length >= 6,
       hasValidEmail,
-      hasStrongPassword: true,
-      passwordsMatch: true,
-      hasName: true,
+      hasStrongPassword: true
+      passwordsMatch: true
+      hasName: true
       termsAccepted: true
     };
   });
-
   // Password strength calculation
   let passwordStrength = $derived(() => {
     const password = formData.password;
@@ -95,78 +89,68 @@
     if (/[@$!%*?&]/.test(password)) strength += 10;
     return Math.min(strength, 100);
   });
-
   // Real-time email validation
   async function checkEmailExists() {
     if (!validation.hasValidEmail) return;
     try {
       const response = await fetch('/api/auth/check-email', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email })
       });
       const result = await (response as { json?: any; ok?: any }).json();
-      formState.emailExists = (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).exists;
+      formState.emailExists = (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).exist;
     } catch (error) {
       console.error('Email check failed:', error);
     }
   }
-
   // Enhanced form submission with comprehensive security
   async function handleSubmit(event: Event) {
     const form = event.target as HTMLFormElement;
     formState.loading = true;
     formState.error = '';
     formState.success = '';
-
     try {
       // Security context for AI analysis
       const authContext = {
         mode,
-        email: formData.email,;
+        email: formData.email,
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent,
         ipAddress: await getClientIP(),
         passwordStrength: passwordStrength;
       };
-
       // AI-powered security analysis
       const securityAnalysis = await mcpGPUOrchestrator.routeAPIRequest(
         '/api/security/analyze-login-attempt',
         authContext,
         { userId: null, securityLevel: 'authentication' }
       );
-
       if (securityAnalysis?.riskLevel === 'high') {
         formState.error = 'Security check failed. Please try again later.';
         return;
       }
-
       const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
       const response = await fetch(endpoint, {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
-        },;
+        },
         body: JSON.stringify({
           ...formData,
           securityContext: authContext
         })
       });
-
       const result = await (response as { json?: any; ok?: any }).json();
-
       if ((response as { json?: any; ok?: any }).ok) {
         formState.success = (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).message || `${mode === 'login' ? 'Login' : 'Registration'} successful!`;
         if (mode === 'register' && (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).requiresVerification) {
           formState.verificationSent = true;
           formState.success = 'Please check your email to verify your account.';
         }
-
         // Log successful authentication
         await logAuthEvent('success', authContext, result);
-
         // Close dialog after delay
         setTimeout(() => {
           resetForm();
@@ -184,7 +168,6 @@
       formState.loading = false;
     }
   }
-
   // Helper functions
   async function getClientIP(): Promise<string> {
     try {
@@ -195,15 +178,14 @@
       return 'unknown';
     }
   }
-
   async function logAuthEvent(type: 'success' | 'failed', context: any, result: any) {
     try {
       await mcpGPUOrchestrator.processLegalDocument(
         `Authentication ${type}: ${mode} for ${formData.email}`,
         {
-          includeRAG: false,
-          includeGraph: true,
-          generateSummary: false,;
+          includeRAG: false
+          includeGraph: true
+          generateSummary: false
           metadata: { context, result }
         }
       );
@@ -211,29 +193,27 @@
       console.error('Failed to log auth event:', error);
     }
   }
-
   function resetForm() {
     formData = {
-      email: '',;
+      email: '',
       password: '',
       confirmPassword: '',
       firstName: '',
       lastName: '',
-      acceptTerms: false,
+      acceptTerms: false
       rememberMe: false;
     };
     formState = {
-      loading: false,;
-      error: '',;
+      loading: false
+      error: '',
       success: '',
       passwordStrength: 0,
-      showPassword: false,
-      showConfirmPassword: false,
-      emailExists: false,
+      showPassword: false
+      showConfirmPassword: false
+      emailExists: false
       verificationSent: false;
     };
   }
-
   function toggleMode() {
     mode = mode === 'login' ? 'register' : 'login';
     formState.error = '';
@@ -243,13 +223,12 @@
     formData.lastName = '';
     formData.acceptTerms = false;
   }
-
   async function handleGuestLogin() {
     if (!allowGuestMode) return;
     formState.loading = true;
     try {
       const response = await fetch('/api/auth/guest', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
       const result = await (response as { json?: any; ok?: any }).json();
@@ -263,20 +242,17 @@
       formState.loading = false;
     }
   }
-
   // Effects for enhanced UX
   $effect(() => {
     if (open && emailInput) {
       setTimeout(() => emailInput?.focus(), 100);
     }
   });
-
   $effect(() => {
     if (onOpenChange) {
       onOpenChange(open);
     }
   });
-
   // Real-time email validation effect
   $effect(() => {
     if (formData.email && mode === 'register') {
@@ -285,13 +261,12 @@
     }
   });
 </script>
-
 <Dialog.Root bind:open>
   <Dialog.Portal>
-    <Dialog.Overlay 
-      class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" 
+    <Dialog.Overlay
+      class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
     />
-    <Dialog.Content 
+    <Dialog.Content
       class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-6 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg"
       openautofocus={(e) => {
         e.preventDefault();
@@ -304,13 +279,12 @@
           {mode === 'login' ? 'Welcome back' : 'Create your account'}
         </Dialog.Title>
         <Dialog.Description class="text-sm nes-text is-disabled">
-          {mode === 'login' 
+          {mode === 'login'
             ? 'Access your legal case management system with AI-powered analysis'
             : 'Join the next generation of legal professionals with AI assistance'
           }
         </Dialog.Description>
       </div>
-
       <form onsubmit={handleSubmit} class="space-y-4">
         <!-- Success Message -->
         {#if formState.success}
@@ -323,7 +297,6 @@
             </div>
           </Alert>
         {/if}
-
         <!-- Error Message -->
         {#if formState.error}
           <Alert variant="error">
@@ -335,13 +308,12 @@
             </div>
           </Alert>
         {/if}
-
         <!-- Name Fields (Register Only) -->
         {#if mode === 'register'}
           <div class="grid grid-cols-2 gap-4" transitiscale={{ duration: 300, easing: quartOut }}>
             <div class="space-y-2">
               <Label for="firstName">First Name *</Label>
-              <Input 
+              <Input
                 bind:this={firstNameInput}
                 id="firstName"
                 name="firstName"
@@ -358,7 +330,7 @@
             </div>
             <div class="space-y-2">
               <Label for="lastName">Last Name *</Label>
-              <Input 
+              <Input
                 id="lastName"
                 name="lastName"
                 type="text"
@@ -371,12 +343,11 @@
             </div>
           </div>
         {/if}
-
         <!-- Email Field -->
         <div class="space-y-2">
           <Label for="email">Email Address *</Label>
           <div class="relative">
-            <Input 
+            <Input
               bind:this={emailInput}
               id="email"
               name="email"
@@ -395,12 +366,11 @@
             <p class="text-xs text-red-500">Please enter a valid email address</p>
           {/if}
         </div>
-
         <!-- Password Field -->
         <div class="space-y-2">
           <Label for="password">Password *</Label>
           <div class="relative">
-            <Input 
+            <Input
               bind:this={passwordInput}
               id="password"
               name="password"
@@ -428,7 +398,6 @@
               {/if}
             </button>
           </div>
-          
           {#if mode === 'register' && formData.password}
             <div class="space-y-1" transitifade={{ duration: 200 }}>
               <div class="flex items-center justify-between text-xs">
@@ -450,13 +419,12 @@
             </div>
           {/if}
         </div>
-
         <!-- Confirm Password (Register Only) -->
         {#if mode === 'register'}
           <div class="space-y-2" transitiscale={{ duration: 300, easing: quartOut }}>
             <Label for="confirmPassword">Confirm Password *</Label>
             <div class="relative">
-              <Input 
+              <Input
                 id="confirmPassword"
                 name="confirmPassword"
                 type={formState.showConfirmPassword ? 'text' : 'password'}
@@ -488,26 +456,24 @@
             {/if}
           </div>
         {/if}
-
         <!-- Terms and Remember Me -->
         <div class="space-y-3">
           {#if mode === 'register'}
             <div class="flex items-center space-x-2">
-              <Checkbox 
+              <Checkbox
                 id="terms"
                 bind:checked={formData.acceptTerms}
                 required
               />
               <Label for="terms" class="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                I agree to the <a href="/terms" class="text-primary hover:underline">Terms of Service</a> 
+                I agree to the <a href="/terms" class="text-primary hover:underline">Terms of Service</a>
                 and <a href="/privacy" class="text-primary hover:underline">Privacy Policy</a>
               </Label>
             </div>
           {/if}
-          
           {#if mode === 'login'}
             <div class="flex items-center space-x-2">
-              <Checkbox 
+              <Checkbox
                 id="remember"
                 bind:checked={formData.rememberMe}
               />
@@ -517,10 +483,9 @@
             </div>
           {/if}
         </div>
-
         <!-- Submit Button -->
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           class="w-full bits-btn bits-btn"
           disabled={formState.loading || !validation.isValid}
         >
@@ -532,10 +497,9 @@
           {:else}
             {mode === 'login' ? 'Sign In' : 'Create Account'}
           {/if}
-
         <!-- Guest Mode -->
         {#if allowGuestMode && mode === 'login'}
-          <Button 
+          <Button
             type="button"
             variant="ghost"
             class="w-full bits-btn bits-btn"
@@ -543,25 +507,21 @@
             disabled={formState.loading}
           >
 Continue as Guest
-
         {/if}
-
         <!-- Mode Toggle -->
         <div class="text-center">
-          <button 
+          <button
             type="button"
             onclick={toggleMode}
             class="text-sm text-primary hover:underline"
             disabled={formState.loading}
           >
-            {mode === 'login' 
-              ? "Don't have an account? Sign up" 
+            {mode === 'login'
+              ? "Don't have an account? Sign up"
               : "Already have an account? Sign in"
             }
-
         </div>
       </form>
-
       <!-- Demo Accounts Notice -->
       {#if mode === 'login'}
         <div class="border-t pt-4">
@@ -572,7 +532,6 @@ Continue as Guest
           </div>
         </div>
       {/if}
-
       <!-- Close Button -->
       <Dialog.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:nes-text is-disabled">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -583,15 +542,13 @@ Continue as Guest
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
-  :global(.animate-in) {;
-    animation-duration: 200ms;
+  :global(.animate-in) {
+    animation-duration: 200m;
     animation-fill-mode: both;
   }
-  
   :global(.animate-out) {
-    animation-duration: 150ms;
+    animation-duration: 150m;
     animation-fill-mode: both;
   }
 </style>

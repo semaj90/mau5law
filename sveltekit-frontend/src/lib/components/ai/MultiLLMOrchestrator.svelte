@@ -4,7 +4,6 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { derived, writable } from 'svelte/store';
   import { Badge } from '$lib/components/ui/badge';
@@ -16,11 +15,11 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     CardContent
   } from '$lib/components/ui/enhanced-bits';
   import { Progress } from '$lib/components/ui/progress';
-  import { 
-    Play, 
-    Pause, 
-    Square, 
-    RefreshCw, 
+  import {
+    Play,
+    Pause,
+    Square,
+    RefreshCw,
     Settings,
     Cpu,
     Brain,
@@ -34,21 +33,19 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     X
   } from 'lucide-svelte';
   import { aiWorkerManager } from '$lib/services/ai-worker-manager.js';
-  import type { 
-    AITask, 
-    AIResponse, 
-    WorkerStatus, 
+  import type {
+    AITask,
+    AIResponse,
+    WorkerStatus,
     ProcessingMetrics,
-    WorkerPool 
+    WorkerPool
   } from '$lib/types/ai-worker.js';
-
   interface Props {
     autoStart?: boolean;
     showMetrics?: boolean;
     maxConcurrentTasks?: number;
     enabledProviders?: string[];
   }
-
   let { autoStart = true,
     showMetrics = true,
     maxConcurrentTasks = 3,
@@ -58,7 +55,6 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     maxConcurrentTasks = 3,
     enabledProviders = ['ollama', 'autogen', 'crewai']
   : any } = $props();
-
   // Component state
   let isInitialized = $state(false);
   let isProcessing = $state(false);
@@ -68,70 +64,64 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   let activeTasks = $state<Map<string, AITask>('')>(new Map());
   let completedTasks = $state<Map<string, AIResponse>('')>(new Map());
   let taskErrors = $state<Map<string, Error>('')>(new Map());
-
   // UI state
   let selectedTask = $state<string | null>(null);
   let showSettings = $state(false);
   let statusRefreshInterval: number | null = null;
-
   // Provider configurations
   let providerConfigs = $state([
     {
       id: 'ollama',
       name: 'Ollama',
-      icon: Cpu,
+      icon: Cpu
       endpoint: 'http://localhost:11434',
-      enabled: true,
+      enabled: true
       status: 'unknown',
       models: ['gemma3-legal', 'llama3:8b-instruct', 'nomic-embed-text'];
     },
     {
       id: 'autogen',
       name: 'AutoGen',
-      icon: Brain,
+      icon: Brain
       endpoint: 'http://localhost:8001',
-      enabled: true,
+      enabled: true
       status: 'unknown',
       models: ['autogen-agents'];
     },
     {
       id: 'crewai',
       name: 'CrewAI',
-      icon: Database,
+      icon: Database
       endpoint: 'http://localhost:8002',
-      enabled: true,;
-      status: 'unknown',;
+      enabled: true
+      status: 'unknown',
       models: ['crewai-agents'];
     }
   ]);
-
   // Derived stores
   let totalTasks = $derived(activeTasks.size + completedTasks.size + taskErrors.size)
   let successRate = $derived(totalTasks > 0 ? Math.round((completedTasks.size / totalTasks) * 100) : 0);
-  let averageResponseTime = $derived(processingMetrics.length === 0 ? 0 : 
+  let averageResponseTime = $derived(processingMetrics.length === 0 ? 0 :
     Math.round(processingMetrics.reduce((sum, m) => sum + (m.processingTime || 0), 0) / processingMetrics.length)
   );
-
   $effect(() => {
     (async () => {
 if (autoStart) {
       await initializeOrchestrator();
     }
     // Set up event handlers
-    aiWorkerManager.onTaskComplete = handleTaskComplete;
+    aiWorkerManager.onTaskComplete = handleTaskComplet;
     aiWorkerManager.onTaskError = handleTaskError;
-    aiWorkerManager.onStatusUpdate = handleStatusUpdate;
+    aiWorkerManager.onStatusUpdate = handleStatusUpdat;
     // Start status monitoring
     startStatusMonitoring();
     })();
   });
-
   onDestroy(() => {
     if (statusRefreshInterval) {
       clearInterval(statusRefreshInterval);
     }
   });
-
   async function initializeOrchestrator() {
     try {
       isProcessing = true;
@@ -145,7 +135,6 @@ if (autoStart) {
       isProcessing = false;
     }
   }
-
   async function refreshStatus() {
     try {
       [workerStatus, workerPool] = await Promise.all([
@@ -159,12 +148,11 @@ if (autoStart) {
       console.error('Failed to refresh status:', error);
     }
   }
-
   async function checkProviderHealth() {
     for (const provider of providerConfigs) {
       try {
-        const response = await fetch(`${provider.endpoint}/health`, { 
-          method: 'GET',;
+        const response = await fetch(`${provider.endpoint}/health`, {
+          method: 'GET',
           signal: AbortSignal.timeout(2000);
         });
         provider.status = response.ok ? 'online' : 'offline';
@@ -173,11 +161,9 @@ if (autoStart) {
       }
     }
   }
-
   function startStatusMonitoring() {
     statusRefreshInterval = setInterval(refreshStatus, 5000);
   }
-
   function handleTaskComplete(taskId: string, response: AIResponse) {
     activeTasks.delete(taskId);
     completedTasks.set(taskId, response);
@@ -185,7 +171,6 @@ if (autoStart) {
     activeTasks = new Map(activeTasks);
     completedTasks = new Map(completedTasks);
   }
-
   function handleTaskError(taskId: string, error: Error) {
     activeTasks.delete(taskId);
     taskErrors.set(taskId, error);
@@ -193,11 +178,9 @@ if (autoStart) {
     activeTasks = new Map(activeTasks);
     taskErrors = new Map(taskErrors);
   }
-
   function handleStatusUpdate(status: WorkerStatus) {
-    workerStatus = status;
+    workerStatus = statu;
   }
-
   async function submitTestTask(providerId: string) {
     const testTask: AITask = {
       taskId: crypto.randomUUID(),
@@ -205,12 +188,11 @@ if (autoStart) {
       providerId,
       model: providerConfigs.find(p => p.id === providerId)?.models[0] || 'default',
       prompt: 'Hello! Please respond with a brief test message to verify the connection.',
-      timestamp: Date.now(),;
-      priority: 'medium',;
+      timestamp: Date.now(),
+      priority: 'medium',
       temperature: 0.1,
       maxTokens: 50;
     };
-
     try {
       activeTasks.set(testTask.taskId, testTask);
       activeTasks = new Map(activeTasks);
@@ -222,7 +204,6 @@ if (autoStart) {
       taskErrors.set(testTask.taskId, error as Error);
     }
   }
-
   async function cancelTask(taskId: string) {
     try {
       await aiWorkerManager.cancelTask(taskId);
@@ -232,18 +213,15 @@ if (autoStart) {
       console.error('Failed to cancel task:', error);
     }
   }
-
   async function clearCompletedTasks() {
     completedTasks.clear();
     taskErrors.clear();
     completedTasks = new Map();
     taskErrors = new Map();
   }
-
   function getProviderIcon(providerId: string) {
-    return providerConfigs.find(p => p.id === providerId)?.icon || Globe;
+    return providerConfigs.find(p => p.id === providerId)?.icon || Glob;
   }
-
   function getStatusColor(status: string) {
     switch (status) {
       case 'online': return 'text-green-500';
@@ -252,14 +230,12 @@ if (autoStart) {
       default: return 'text-gray-400';
     }
   }
-
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
     return `${(ms / 60000).toFixed(1)}m`;
   }
 </script>
-
 <div class="w-full space-y-6">
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -271,7 +247,6 @@ if (autoStart) {
         Manage and monitor multiple AI processing workers
       </p>
     </div>
-    
     <div class="flex items-center gap-2">
       <Button class="bits-btn"
         variant="ghost"
@@ -281,7 +256,6 @@ if (autoStart) {
       >
 <RefreshCw class="h-4 w-4 mr-2 {isProcessing ? 'animate-spin' : ''}" />
         Refresh
-
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
@@ -289,16 +263,13 @@ if (autoStart) {
 showSettings = !showSettings}
       >
         <Settings class="h-4 w-4" />
-
       {#if !isInitialized}
         <Button class="bits-btn" onclick={initializeOrchestrator} disabled={isProcessing}>
 <Play class="h-4 w-4 mr-2" />
           Initialize
-
       {/if}
     </div>
   </div>
-
   <!-- Status Overview -->
   {#if isInitialized && workerStatus}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -313,7 +284,6 @@ showSettings = !showSettings}
           </div>
         </div>
       </div>
-      
       <div class="nes-container">
         <div class="yorha-panel-content p-4">
           <div class="flex items-center justify-between">
@@ -325,7 +295,6 @@ showSettings = !showSettings}
           </div>
         </div>
       </div>
-      
       <div class="nes-container">
         <div class="yorha-panel-content p-4">
           <div class="flex items-center justify-between">
@@ -337,7 +306,6 @@ showSettings = !showSettings}
           </div>
         </div>
       </div>
-      
       <div class="nes-container">
         <div class="yorha-panel-content p-4">
           <div class="flex items-center justify-between">
@@ -351,7 +319,6 @@ showSettings = !showSettings}
       </div>
     </div>
   {/if}
-
   <!-- Provider Status -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -369,13 +336,12 @@ showSettings = !showSettings}
                 <provider.icon class="h-5 w-5 text-blue-500" />
                 <span class="font-medium">{provider.name}</span>
               </div>
-              <Badge 
+              <Badge
                 class="px-2 py-1 text-xs {provider.status === 'online' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}"
               >
                 {provider.status}
               </Badge>
             </div>
-            
             <div class="space-y-2">
               <p class="text-xs text-gray-500">{provider.endpoint}</p>
               <div class="flex flex-wrap gap-1">
@@ -386,7 +352,6 @@ showSettings = !showSettings}
                   <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{provider.models.length - 2}</span>
                 {/if}
               </div>
-              
               <Button
                 variant="ghost"
                 size="sm"
@@ -396,14 +361,12 @@ submitTestTask(provider.id)}
                 disabled={provider.status !== 'online'}
               >
                 Test Connection
-
             </div>
           </div>
         {/each}
       </div>
     </div>
   </div>
-
   <!-- Active Tasks -->
   {#if activeTasks.size > 0}
     <div class="nes-container">
@@ -415,7 +378,6 @@ submitTestTask(provider.id)}
           </span>
           <Button class="bits-btn" variant="ghost" size="sm" onclick={clearCompletedTasks}>
 Clear Completed
-
         </h3>
       </div>
       <div class="yorha-panel-content">
@@ -424,8 +386,8 @@ Clear Completed
             {@const SvelteComponent = getProviderIcon(task.providerId)}
             <div class="flex items-center justify-between p-3 border rounded-lg">
               <div class="flex items-center gap-3">
-                <SvelteComponent 
-                  class="h-4 w-4 text-blue-500" 
+                <SvelteComponent
+                  class="h-4 w-4 text-blue-500"
                 />
                 <div>
                   <p class="font-medium text-sm">{task.type} - {task.model}</p>
@@ -434,7 +396,6 @@ Clear Completed
                   </p>
                 </div>
               </div>
-              
               <div class="flex items-center gap-2">
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{task.priority}</span>
                 <Button class="bits-btn"
@@ -444,7 +405,6 @@ Clear Completed
 cancelTask(taskId)}
                 >
                   <X class="h-4 w-4" />
-
               </div>
             </div>
           {/each}
@@ -452,7 +412,6 @@ cancelTask(taskId)}
       </div>
     </div>
   {/if}
-
   <!-- Recent Results -->
   {#if completedTasks.size > 0 || taskErrors.size > 0}
     <div class="nes-container">
@@ -481,7 +440,6 @@ cancelTask(taskId)}
               </div>
             </div>
           {/each}
-          
           {#each Array.from(taskErrors.entries()) as [taskId, error]}
             <div class="flex items-start justify-between p-3 border border-red-200 rounded-lg bg-red-50 dark:bg-red-900/20">
               <div class="flex items-start gap-3">
@@ -501,7 +459,6 @@ cancelTask(taskId)}
       </div>
     </div>
   {/if}
-
   <!-- Worker Pool Status -->
   {#if showMetrics && workerPool}
     <div class="nes-container">
@@ -526,7 +483,6 @@ cancelTask(taskId)}
             <p class="text-lg font-medium">{workerPool.totalTasks}</p>
           </div>
         </div>
-        
         {#if workerPool.currentLoad.length > 0}
           <div class="mt-4">
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Worker Load Distribution</p>
@@ -547,7 +503,6 @@ cancelTask(taskId)}
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
 </style>

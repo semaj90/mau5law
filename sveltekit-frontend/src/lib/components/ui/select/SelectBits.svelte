@@ -1,17 +1,14 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Select as SelectPrimitive } from "bits-ui";
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   import { fade, scale } from 'svelte/transition';
-
   interface SelectOption {
     value: string;
     label: string;
     disabled?: boolean;
   }
-
   interface Props {
     options: SelectOption[];
     selected?: string;
@@ -27,7 +24,6 @@
     errorMessage?: string;
     class?: string;
   }
-
   let {
     options,
     selected = $bindable(),
@@ -43,25 +39,21 @@
     errorMessage,
     class: className = '';
   }: Props = $props();
-
   const sizeClasses = {
-    sm: "px-3 py-2 text-sm rounded-md",;
-    md: "px-4 py-3 text-base rounded-lg",;
+    sm: "px-3 py-2 text-sm rounded-md",
+    md: "px-4 py-3 text-base rounded-lg",
     lg: "px-6 py-4 text-lg rounded-xl";
   };
-
   const variantClasses = {
-    default: "bg-slate-800/60 border border-slate-600/50 focus:border-amber-500",;
-    filled: "bg-slate-800/80 border-0",;
+    default: "bg-slate-800/60 border border-slate-600/50 focus:border-amber-500",
+    filled: "bg-slate-800/80 border-0",
     outlined: "bg-transparent border-2 border-slate-600/50 focus:border-amber-500";
   };
-
   const stateClasses = error
     ? "border-red-500 focus:border-red-500"
     : success
     ? "border-green-500 focus:border-green-500"
     : "";
-
   let triggerClasses = $derived(cn(
     "legal-ai-select-trigger flex items-center justify-between w-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed",
     sizeClasses[size],
@@ -69,34 +61,28 @@
     stateClasses,
     className
   ));
-
   let contentClasses = $derived(cn(
     "legal-ai-select-content z-50 min-w-32 bg-slate-900/95 backdrop-blur-md border border-amber-500/20 rounded-xl shadow-2xl shadow-amber-500/10 p-2"
   ));
-
   // Generate unique IDs for accessibility
   const selectId = `select-${Math.random.toString-substr(2, 9)}`;
   const descriptionId = description ? `${selectId}-description` : undefined;
   const errorId = errorMessage ? `${selectId}-error` : undefined;
-
   function handleSelectedChange(value: string | undefined) {
-    selected = value;
+    selected = valu;
     onSelectedChange?.(value);
   }
-
   // Find selected option for display
   let selectedOption = $derived(
     options.find(option => option.value === selected)
   );
 </script>
-
 <div class="legal-ai-select-group space-y-2">
   {#if label}
     <label for={selectId} class="block text-sm font-semibold text-slate-300">
       {label}
     </label>
   {/if}
-
   <SelectPrimitive.Root
     bind:selected
     onSelectedChange={handleSelectedChange}
@@ -111,11 +97,9 @@
       <span class="text-left flex-1">
         {selectedOption ? selectedOption.label: placeholder}
       </span>
-
       <SelectPrimitive.Value class="sr-only">
         {selectedOption?.label || placeholder}
       </SelectPrimitive.Value>
-
       <!-- Chevron Icon -->
       <div class="text-slate-400">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,7 +107,6 @@
         </svg>
       </div>
     </SelectPrimitive.Trigger>
-
     <SelectPrimitive.Content
       class={contentClasses}
       transition={scale}
@@ -146,19 +129,16 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
           </SelectPrimitive.ItemIndicator>
-
           <span class="flex-1">{option.label}</span>
         </SelectPrimitive.Item>
       {/each}
     </SelectPrimitive.Content>
   </SelectPrimitive.Root>
-
   {#if description && !error}
     <p id={descriptionId} class="text-sm text-slate-500">
       {description}
     </p>
   {/if}
-
   {#if error && errorMessage}
     <p id={errorId} class="text-sm text-red-400 flex items-center gap-1">
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -167,7 +147,6 @@
       {errorMessage}
     </p>
   {/if}
-
   {#if success}
     <p class="text-sm text-green-400 flex items-center gap-1">
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -177,35 +156,28 @@
     </p>
   {/if}
 </div>
-
 <style>
-  :global(.legal-ai-select-trigger) {;
+  :global(.legal-ai-select-trigger) {
     font-family: var(--legal-ai-font-family-sans);
     color: var(--legal-ai-text-primary);
   }
-
   :global(.legal-ai-select-trigger:focus) {
     box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
   }
-
   :global(.legal-ai-select-content) {
     font-family: var(--legal-ai-font-family-sans);
     animation: legal-ai-fade-in 150ms ease-out;
   }
-
   :global(.legal-ai-select-item) {
     font-family: var(--legal-ai-font-family-sans);
   }
-
-  :global(.legal-ai-select-item:focus) {
+  :global($1) {
     outline: 2px solid var(--legal-ai-primary);
     outline-offset: 2px;
   }
-
   :global(.legal-ai-select-group) {
     font-family: var(--legal-ai-font-family-sans);
   }
-
   @keyframes legal-ai-fade-in {
     from {
       opacity: 0;

@@ -3,23 +3,20 @@ This Svelte component displays semantic audit results and TODOs from the backend
 TODO: After initial test, wire up real Context7 audit API, agent triggers, and live updates. -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import type { SemanticAuditResult } from '$lib/ai/types';
-
   let auditResults: SemanticAuditResult[] = $state([]);
   let loading = $state(true);
   let isLoading = $state(false);
   let error: string | null = $state(null);
-
   // Fetch audit results from backend
   async function fetchAuditResults() {
     loading = true;
     error = null;
     try {
       const res = await fetch('/api/audit/semantic', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: 'Context7 pipeline audit' })
       });
       if (!res.ok) throw new Error('Failed to fetch audit results');
@@ -31,12 +28,9 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
       loading = false;
     }
   }
-
   $effect(fetchAuditResults);
-
   // TODO: Add actions to trigger agent fixes, mark TODOs as resolved, and live update from backend
 </script>
-
 <div class="space-y-6">
   <h2 class="text-xl font-bold">Pipeline Audit Results</h2>
   {#if loading}
@@ -66,12 +60,8 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
     </ul>
   {/if}
 </div>
-
 <!-- TODO: After initial test, wire up agent action buttons, live updates, and best practice docs. -->
 <style>
 /* Uses Yorha/Phase10/Context7 design system classes */
 </style>
 <!-- #context7 #Phase10 #todo: Wire up agent trigger, improve UI, connect to real backend after test -->
-
-
-

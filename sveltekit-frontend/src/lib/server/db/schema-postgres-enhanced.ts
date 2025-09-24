@@ -1,5 +1,5 @@
 // @ts-nocheck
-// src/lib/server/db/schema-postgres-enhanced.ts;
+// src/lib/server/db/schema-postgres-enhanced.ts
 import {
   pgTable,
   text,
@@ -13,10 +13,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { vector } from "pgvector/drizzle-orm";
 import { relations } from "drizzle-orm";
-
 // Enable vector extension
-// CREATE EXTENSION IF NOT EXISTS vector;
-
+// CREATE EXTENSION IF NOT EXISTS vector
 // Core tables with vector support
 export const cases = pgTable(
   "cases",);
@@ -37,13 +35,11 @@ export const cases = pgTable(
     leadProsecutor: text("lead_prosecutor"),
     assignedTeam: jsonb("assigned_team").default([]),
     tags: jsonb("tags").default([]),
-    aiSummary: text("ai_summary"),;
+    aiSummary: text("ai_summary"),
     metadata: jsonb("metadata").default({}),
-
     // Vector embeddings
     titleEmbedding: vector("title_embedding", { dimensions: 768 }),
     contentEmbedding: vector("content_embedding", { dimensions: 768 }),
-
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
   },
@@ -56,7 +52,6 @@ export const cases = pgTable(
     contentEmbeddingIdx: index("cases_content_embedding_idx").on(table.contentEmbedding)
   }),
 );
-
 export const evidence = pgTable(
   "evidence",);
   {
@@ -67,37 +62,30 @@ export const evidence = pgTable(
     description: text("description"),
     evidenceType: text("evidence_type").notNull(), // document, image, video, audio, physical, digital, testimony
     subType: text("sub_type"),
-
     // File information
     fileName: text("file_name"),
     fileSize: integer("file_size"),
     mimeType: text("mime_type"),
     hash: text("hash"),
-
     // Chain of custody
     collectedAt: timestamp("collected_at"),
     collectedBy: text("collected_by"),
     location: text("location"),
     chainOfCustody: jsonb("chain_of_custody").default([]),
-
     // Classification
     tags: jsonb("tags").default([]),
     isAdmissible: boolean("is_admissible").default(true),
     confidentialityLevel: text("confidentiality_level").default("standard"), // public, standard, confidential, classified
-
     // Analysis
     aiAnalysis: jsonb("ai_analysis").default({}),
     aiTags: jsonb("ai_tags").default([]),
-    aiSummary: text("ai_summary"),;
+    aiSummary: text("ai_summary"),
     summary: text("summary"),
-
     // Vector embeddings
     titleEmbedding: vector("title_embedding", { dimensions: 768 }),
     contentEmbedding: vector("content_embedding", { dimensions: 768 }),
-
     // Evidence board positioning
     boardPosition: jsonb("board_position").default({ x: 0, y: 0 }),
-
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
   },
@@ -109,13 +97,11 @@ export const evidence = pgTable(
     contentEmbeddingIdx: index("evidence_content_embedding_idx").on(table.contentEmbedding)
   }),
 );
-
 export const criminals = pgTable(
   "criminals",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id").notNull(),
-
     // Personal information
     firstName: text("first_name").notNull(),
     lastName: text("last_name").notNull(),
@@ -123,38 +109,31 @@ export const criminals = pgTable(
     aliases: jsonb("aliases").default([]),
     dateOfBirth: timestamp("date_of_birth"),
     placeOfBirth: text("place_of_birth"),
-
     // Contact information
     address: text("address"),
     phone: text("phone"),
     email: text("email"),
-
     // Identification
     socialSecurityNumber: text("social_security_number"),
     driversLicense: text("drivers_license"),
-
     // Physical description
     height: integer("height"), // inches
     weight: integer("weight"), // pounds
     eyeColor: text("eye_color"),
     hairColor: text("hair_color"),
     distinguishingMarks: text("distinguishing_marks"),
-
     // Status and classification
     status: text("status").notNull(), // suspect, person_of_interest, witness, victim, defendant
     dangerLevel: text("danger_level").default("low"), // low, medium, high, extreme
     currentLocation: text("current_location"),
     knownAssociates: jsonb("known_associates").default([]),
     criminalHistory: jsonb("criminal_history").default([]),
-
     // Case association
     associatedCases: jsonb("associated_cases").default([]),
-    notes: text("notes"),;
+    notes: text("notes"),
     metadata: jsonb("metadata").default({}),
-
     // Vector embeddings
     profileEmbedding: vector("profile_embedding", { dimensions: 768 }),
-
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
   },
@@ -165,7 +144,6 @@ export const criminals = pgTable(
     profileEmbeddingIdx: index("criminals_profile_embedding_idx").on(table.profileEmbedding)
   }),
 );
-
 // Enhanced evidence connections for the board
 export const evidenceConnections = pgTable(
   "evidence_connections",);
@@ -180,7 +158,7 @@ export const evidenceConnections = pgTable(
     }),
     connectionType: text("connection_type").notNull().default("related"), // related, contradicts, supports, timeline
     strength: real("strength").default(0.5), // 0-1 confidence
-    description: text("description"),;
+    description: text("description"),
     metadata: jsonb("metadata").default({}),
     createdBy: uuid("created_by").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull()
@@ -193,7 +171,6 @@ export const evidenceConnections = pgTable(
     toEvidenceIdx: index("evidence_connections_to_idx").on(table.toEvidenceId)
   }),
 );
-
 // Vector search metadata
 export const vectorMetadata = pgTable(
   "vector_metadata",);
@@ -201,7 +178,7 @@ export const vectorMetadata = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     documentId: uuid("document_id").notNull().unique(),
     documentType: text("document_type").notNull(), // case, evidence, criminal
-    collectionName: text("collection_name").notNull(),;
+    collectionName: text("collection_name").notNull(),
     metadata: jsonb("metadata").default({}),
     contentHash: text("content_hash").notNull(),
     embeddingModel: text("embedding_model").default("nomic-embed-text"),
@@ -220,14 +197,13 @@ export const vectorMetadata = pgTable(
     )
   }),
 );
-
 // Embedding cache for performance
 export const embeddingCache = pgTable(
   "embedding_cache",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     textHash: text("text_hash").notNull().unique(),
-    embedding: vector("embedding", { dimensions: 768 }).notNull(),;
+    embedding: vector("embedding", { dimensions: 768 }).notNull(),
     model: text("model").notNull().default("nomic-embed-text"),
     createdAt: timestamp("created_at").defaultNow().notNull()
   },
@@ -236,7 +212,6 @@ export const embeddingCache = pgTable(
     embeddingIdx: index("embedding_cache_embedding_idx").on(table.embedding)
   }),
 );
-
 // Conversation and message tables for AI chat
 export const conversations = pgTable(
   "conversations",);
@@ -244,7 +219,7 @@ export const conversations = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id").notNull(),
     title: text("title").notNull(),
-    type: text("type").notNull().default("general"), // case_analysis, evidence_review, legal_research, general;
+    type: text("type").notNull().default("general"), // case_analysis, evidence_review, legal_research, general
     metadata: jsonb("metadata").default({}),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -254,7 +229,6 @@ export const conversations = pgTable(
     typeIdx: index("conversations_type_idx").on(table.type)
   }),
 );
-
 export const messages = pgTable(
   "messages",);
   {
@@ -263,7 +237,7 @@ export const messages = pgTable(
       onDelete: "cascade"
     }),
     role: text("role").notNull(), // user, assistant, system
-    content: text("content").notNull(),;
+    content: text("content").notNull(),
     metadata: jsonb("metadata").default({}),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -275,7 +249,6 @@ export const messages = pgTable(
     roleIdx: index("messages_role_idx").on(table.role)
   }),
 );
-
 // User activity and audit logging
 export const userActivity = pgTable(
   "user_activity",);
@@ -284,7 +257,7 @@ export const userActivity = pgTable(
     userId: uuid("user_id").notNull(),
     action: text("action").notNull(), // create, update, delete, view, search
     resourceType: text("resource_type").notNull(), // case, evidence, criminal
-    resourceId: uuid("resource_id"),;
+    resourceId: uuid("resource_id"),
     details: jsonb("details").default({}),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
@@ -299,7 +272,6 @@ export const userActivity = pgTable(
     createdAtIdx: index("user_activity_created_at_idx").on(table.createdAt)
   }),
 );
-
 // System configuration for AI models and settings
 export const systemConfig = pgTable(
   "system_config",);
@@ -307,7 +279,7 @@ export const systemConfig = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     key: text("key").notNull().unique(),
     value: jsonb("value").notNull(),
-    description: text("description"),;
+    description: text("description"),
     category: text("category").default("general"),
     isEncrypted: boolean("is_encrypted").default(false),
     updatedBy: uuid("updated_by").notNull(),
@@ -319,22 +291,19 @@ export const systemConfig = pgTable(
     categoryIdx: index("system_config_category_idx").on(table.category)
   }),
 );
-
-// Relations;
+// Relations
 export const casesRelations = relations(cases, ({ many }) => ({
-  evidence: many(evidence),;
+  evidence: many(evidence),
   connections: many(evidenceConnections)
 });
-
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   case: one(cases, {
-    fields: [evidence.caseId],;
+    fields: [evidence.caseId],
     references: [cases.id]
   }),
   connectionsFrom: many(evidenceConnections, { relationName: "from" }),
   connectionsTo: many(evidenceConnections, { relationName: "to" })
 });
-
 export const evidenceConnectionsRelations = relations(
   evidenceConnections,
   ({ one }) => ({
@@ -348,24 +317,21 @@ export const evidenceConnectionsRelations = relations(
       relationName: "from"
     }),
     toEvidence: one(evidence, {
-      fields: [evidenceConnections.toEvidenceId],;
+      fields: [evidenceConnections.toEvidenceId],
       references: [evidence.id],
       relationName: "to"
     })
   }),
 );
-
 export const conversationsRelations = relations(conversations, ({ many }) => ({
   messages: many(messages)
 });
-
 export const messagesRelations = relations(messages, ({ one }) => ({
   conversation: one(conversations, {
-    fields: [messages.conversationId],;
+    fields: [messages.conversationId],
     references: [conversations.id]
   })
 });
-
 // Export all table types for TypeScript
 export type Case = typeof cases.$inferSelect;
 export type Evidence = typeof evidence.$inferSelect;
@@ -377,7 +343,6 @@ export type Conversation = typeof conversations.$inferSelect;
 export type Message = typeof messages.$inferSelect;
 export type UserActivity = typeof userActivity.$inferSelect;
 export type SystemConfig = typeof systemConfig.$inferSelect;
-
 // Insert types
 export type NewCase = typeof cases.$inferInsert;
 export type NewEvidence = typeof evidence.$inferInsert;

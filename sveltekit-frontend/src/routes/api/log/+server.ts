@@ -1,8 +1,6 @@
 
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
-
 // Simple stub for logQueue
 const logQueue = {
   add: async (data: any) => {
@@ -10,15 +8,12 @@ const logQueue = {
     return Promise.resolve()
   }
 }
-
 export async function POST({ request }): Promise<any> {
   try {
     const logData = await request.json()
     console.log('Received log data:', logData)
-
     // Add the log data to the BullMQ queue
     await logQueue.add('processLog', logData)
-
     return json({ status: 'success', message: 'Log received and queued' }, { status: 200 })
   } catch (error: any) {
     console.error('Error processing log:', error)

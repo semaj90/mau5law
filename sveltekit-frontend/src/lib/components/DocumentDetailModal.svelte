@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Document Detail Modal - Cache-First Hybrid Architecture
-  
   Implements the complete "Graph on a Texture" concept with:
   1. Cache-first strategy using IndexedDB
   2. Server-side processing for complex analysis
@@ -13,19 +12,16 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { fade, fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
   import { db } from '$lib/db/dexie-integration.js';
   import { logger } from '$lib/logging/structured-logger.js';
   import { unifiedStore } from '$lib/storage/unified-dimensional-store.js';
   // Component props
-  let { documentId = $bindable()  }: { documentId = $bindable() : any } = $props(); // string;
-  let { isOpen = $bindable()  }: { isOpen = $bindable() : any } = $props(); // false;
-  let { onClose = $bindable()  }: { onClose = $bindable() : any } = $props(); // (() => void) | null = null;
-  
-
+  let { documentId = $bindable()  }: { documentId = $bindable() : any } = $props(); // string
+  let { isOpen = $bindable()  }: { isOpen = $bindable() : any } = $props(); // false
+  let { onClose = $bindable()  }: { onClose = $bindable() : any } = $props(); // (() => void) | null = null
   // ========================================================================
   // STATE MANAGEMENT
   // ========================================================================
@@ -34,22 +30,20 @@ https://svelte.dev/e/js_parse_error -->
     title: string;
     content: string;
     document_type: string;
-    metadata: Record<string, any>;
+    metadata: { [key: string]: any };
     created_at: string;
     updated_at: string;
     has_embedding: boolean;
     content_hash?: string;
   }
-
   interface RelatedDocument {
     id: string;
     title: string;
     content: string;
     documentType: string;
     similarity: number;
-    metadata: Record<string, any>;
+    metadata: { [key: string]: any };
   }
-
   interface GraphConnection {
     type: string;
     targetId: string;
@@ -57,7 +51,6 @@ https://svelte.dev/e/js_parse_error -->
     relationship_strength: number;
     connection_type: string;
   }
-
   // Component state
   let document = $state<DocumentDetail | null >(null);
   let relatedDocuments = $state<RelatedDocument[] >([]);
@@ -71,11 +64,9 @@ https://svelte.dev/e/js_parse_error -->
   let serverResponseTime = $state(0);
   let activeTab = $state('document');
   let enableGPUAnalysis = $state(false);
-
   // ========================================================================
   // CACHE-FIRST DATA LOADING STRATEGY
   // ========================================================================
-
   /**
    * Cache-first document loading with fallback to server
    * Implements the hybrid architecture pattern
@@ -86,16 +77,14 @@ https://svelte.dev/e/js_parse_error -->
     loading = true;
     error = null;
     cacheHit = false;
-
     try {
       // Step 1: Check IndexedDB cache first (Fast Path)
       if (!forceRefresh) {
         await logger.logPerformance({
           operation: 'cache_lookup_start',
-          documentId: docId,
+          documentId: docId
           startTime: Date.now();
         });
-
         const cachedData = await db.getCache(`document_detail_${docId}`);
         if (cachedData) {
           // Cache hit - populate UI immediately
@@ -103,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
           cacheHit = true;
           await logger.logPerformance({
             operation: 'cache_hit',
-            documentId: docId,
+            documentId: docId
             processingTime: performance.now() - startTime,
             cacheSize: JSON.stringify(length);
           });
@@ -112,17 +101,16 @@ https://svelte.dev/e/js_parse_error -->
           return;
         }
       }
-
       // Step 2: Fetch from server (Slow Path)
       await loadFromServer(docId, forceRefresh);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message: 'Unknown error';
-      error = errorMessage;
+      error = errorMessag;
       await logger.logError({
-        error: errorMessage,
+        error: errorMessage
         context: 'document_detail_load',
-        documentId: docId,;
-        severity: 'medium',;
+        documentId: docId
+        severity: 'medium',
         category: 'ui';
       });
     } finally {
@@ -130,7 +118,6 @@ https://svelte.dev/e/js_parse_error -->
       serverResponseTime = performance.now() - startTime;
     }
   }
-
   /**
    * Load document data from server with comprehensive analysis
    */
@@ -138,40 +125,35 @@ https://svelte.dev/e/js_parse_error -->
     const serverStartTime = performance.now();
     await logger.logAPIRequest({
       requestId: crypto.randomUUID(),
-      method: 'GET',;
+      method: 'GET',
       endpoint: `/api/document/${docId}`,
       userAgent: navigator.userAgent,
-      ipAddress: 'client',;
+      ipAddress: 'client',
       headers: { 'Cache-Control': forceRefresh ? 'no-cache' : 'max-age=300' }
     });
-
     const url = `/api/document/${docId}${enableGPUAnalysis ? '?gpu=true' : ''}`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Server error: ${response.status} ${response.statusText}`);
     }
-
     const data = await response.json();
     if (!data.success) {
       throw new Error(data.error || 'Server returned error');
     }
-
     // Populate UI from server response
     document = data.document;
     relatedDocuments = data.related_documents || [];
     graphConnections = data.graph_connections || [];
     caseAssociations = data.case_associations || [];
-    gpuAnalysis = data.gpu_analysis;
+    gpuAnalysis = data.gpu_analysi;
     metadata = data.enhanced_metadata;
-
     // Update unified store for cross-component sync
     await unifiedStore.updateDocumentCache(docId, {
-      document: document,
+      document: document
       relatedDocuments,
-      graphConnections,;
+      graphConnections,
       timestamp: Date.now();
     });
-
     // Cache for next time with intelligent TTL
     const cacheData = {
       document,
@@ -183,26 +165,22 @@ https://svelte.dev/e/js_parse_error -->
       cached_at: Date.now(),
       cache_source: 'server'
     };
-
     const ttl = data.cache_instructions?.cache_duration || 5 * 60 * 1000; // 5 minutes
     await db.setCache(`document_detail_${docId}`, cacheData, ttl);
-
-    const serverTime = performance.now() - serverStartTime;
+    const serverTime = performance.now() - serverStartTim;
     await logger.logAPIResponse({
       requestId: crypto.randomUUID(),
       statusCode: 200,
       responseSize: JSON.stringify(length),
-      processingTime: serverTime,
+      processingTime: serverTime
       success: true;
     });
-
     // Emit events for graph updates
     ondispatch?.({ documentId: docId, data: cacheData });
     if (graphConnections.length > 0) {
       ondispatch?.({ connections: graphConnections });
     }
   }
-
   /**
    * Background server refresh for cache warming
    */
@@ -211,14 +189,12 @@ https://svelte.dev/e/js_parse_error -->
       // Use a shorter timeout for background requests
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
-
       const url = `/api/document/${docId}?background=true`;
-      const response = await fetch(url, { 
-        signal: controller.signal,;
+      const response = await fetch(url, {
+        signal: controller.signal,
         headers: { 'X-Background-Request': 'true' }
       });
       clearTimeout(timeoutId);
-
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
@@ -228,12 +204,11 @@ https://svelte.dev/e/js_parse_error -->
             relatedDocuments: data.related_documents || [],
             graphConnections: data.graph_connections || [],
             caseAssociations: data.case_associations || [],
-            gpuAnalysis: data.gpu_analysis,;
+            gpuAnalysis: data.gpu_analysis,
             metadata: data.enhanced_metadata,
             cached_at: Date.now(),
             cache_source: 'background_refresh';
           };
-
           await db.setCache(`document_detail_${docId}`, cacheData, 5 * 60 * 1000);
         }
       }
@@ -242,7 +217,6 @@ https://svelte.dev/e/js_parse_error -->
       console.debug('Background refresh failed:', err);
     }
   }
-
   /**
    * Populate UI from cached data
    */
@@ -251,35 +225,30 @@ https://svelte.dev/e/js_parse_error -->
     relatedDocuments = cachedData.relatedDocuments || [];
     graphConnections = cachedData.graphConnections || [];
     caseAssociations = cachedData.caseAssociations || [];
-    gpuAnalysis = cachedData.gpuAnalysis;
+    gpuAnalysis = cachedData.gpuAnalysi;
     metadata = cachedData.metadata;
   }
-
   // ========================================================================
   // INTERACTION HANDLERS
   // ========================================================================
-
   /**
    * Handle related document click with cache-first strategy
    */
   async function handleRelatedDocumentClick(relatedDoc: RelatedDocument): Promise<void> {
     await logger.logUserAction({
-      action: 'click',;
+      action: 'click',
       target: 'related_document',
-      documentId: relatedDoc.id,;
+      documentId: relatedDoc.id,
       metadata: { similarity: relatedDoc.similarity, source_document: documentId }
     });
-
     // Emit node selection event for graph updates
-    ondispatch?.({ 
-      nodeId: relatedDoc.id, 
-      documentId: relatedDoc.id 
+    ondispatch?.({
+      nodeId: relatedDoc.id,
+      documentId: relatedDoc.id
     });
-
     // Load the clicked document
     await loadDocumentData(relatedDoc.id);
   }
-
   /**
    * Handle graph connection click
    */
@@ -287,28 +256,25 @@ https://svelte.dev/e/js_parse_error -->
     await logger.logUserAction({
       action: 'click',
       target: 'graph_connection',
-      documentId: connection.targetId,;
-      metadata: { 
-        connection_type: connection.connection_type,;
+      documentId: connection.targetId,
+      metadata: {
+        connection_type: connection.connection_type,
         strength: connection.relationship_strength,
         source_document: documentId ;
       }
     });
-
     // For now, show connection details (in production, might navigate to target)
     alert(`Graph Connection: ${connection.type}\nTarget: ${connection.targetTitle}\nStrength: ${connection.relationship_strength}`);
   }
-
   /**
    * Toggle GPU analysis and refresh
    */
   async function toggleGPUAnalysis(): Promise<void> {
-    enableGPUAnalysis = !enableGPUAnalysis;
+    enableGPUAnalysis = !enableGPUAnalysi;
     if (enableGPUAnalysis && !gpuAnalysis) {
       await loadDocumentData(documentId, true); // Force refresh with GPU
     }
   }
-
   /**
    * Close modal and cleanup
    */
@@ -325,22 +291,18 @@ https://svelte.dev/e/js_parse_error -->
     error = null;
     activeTab = 'document';
   }
-
   // ========================================================================
   // LIFECYCLE
   // ========================================================================
-
   $effect(() => {
     if (documentId) {
       loadDocumentData(documentId);
     }
   });
-
   // Reactive loading when documentId changes
   // TODO: Convert to $derived: if (documentId && isOpen) {
     loadDocumentData(documentId)
   }
-
   // Helper functions
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 B';
@@ -349,18 +311,15 @@ https://svelte.dev/e/js_parse_error -->
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   function formatTimestamp(timestamp: string): string {
     return new Date(timestamp).toLocaleString();
   }
-
   function getSimilarityColor(similarity: number): string {
     if (similarity >= 0.9) return 'text-green-600 bg-green-50';
     if (similarity >= 0.7) return 'text-blue-600 bg-blue-50';
     if (similarity >= 0.5) return 'text-yellow-600 bg-yellow-50';
     return 'text-gray-600 bg-gray-50';
   }
-
   function getStrengthColor(strength: number): string {
     if (strength >= 0.8) return 'border-green-500 bg-green-50';
     if (strength >= 0.6) return 'border-blue-500 bg-blue-50';
@@ -368,10 +327,9 @@ https://svelte.dev/e/js_parse_error -->
     return 'border-gray-500 bg-gray-50';
   }
 </script>
-
 <!-- Modal Overlay -->
 {#if isOpen}
-  <div 
+  <div
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
     transitifade={{ duration: 200 }}
     onclick|self={handleClose}
@@ -380,11 +338,10 @@ https://svelte.dev/e/js_parse_error -->
     aria-labelledby="document-detail-title"
   >
     <!-- Modal Content -->
-    <div 
+    <div
       class="bg-white rounded-lg shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden"
       /* transition removed */}
     >
-      
       <!-- Header -->
       <div class="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
         <div class="flex-1">
@@ -399,13 +356,11 @@ https://svelte.dev/e/js_parse_error -->
               </svg>
               {document?.document_type || 'Unknown'}
             </span>
-            
             {#if cacheHit}
               <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
                 ⚡ Cache Hit
               </span>
             {/if}
-            
             {#if serverResponseTime > 0}
               <span class="text-xs text-gray-500">
                 {serverResponseTime.toFixed(0)}ms
@@ -413,20 +368,18 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
         </div>
-        
         <!-- Controls -->
         <div class="flex items-center gap-2">
           <button
             type="button"
             onclick={toggleGPUAnalysis}
-            class="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500";
+            class="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover: bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500";
             class:bg-blue-50={enableGPUAnalysis}
             class:text-blue-700={enableGPUAnalysis}
             class:border-blue-300={enableGPUAnalysis}
           >
             🚀 GPU Analysis
           </button>
-          
           <button
             type="button"
             onclick={() => loadDocumentData(documentId, true)}
@@ -435,7 +388,6 @@ https://svelte.dev/e/js_parse_error -->
           >
             {loading ? '⟳' : '↻'} Refresh
           </button>
-          
           <button
             type="button"
             onclick={handleClose}
@@ -447,7 +399,6 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         </div>
       </div>
-
       <!-- Loading State -->
       {#if loading}
         <div class="flex items-center justify-center p-12">
@@ -459,7 +410,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       {/if}
-
       <!-- Error State -->
       {#if error}
         <div class="p-6">
@@ -481,11 +431,9 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       {/if}
-
       <!-- Content -->
       {#if document && !loading}
         <div class="flex-1 overflow-hidden">
-          
           <!-- Tab Navigation -->
           <div class="border-b border-gray-200 bg-gray-50">
             <nav class="flex space-x-8 px-6" aria-label="Tabs">
@@ -499,7 +447,7 @@ https://svelte.dev/e/js_parse_error -->
                 <button
                   type="button"
                   onclick={() => activeTab = tab.id}
-                  class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-blue-500";
+                  class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap focus: outline-none focus:ring-2 focus:ring-blue-500";
                   class:border-blue-500={activeTab === tab.id}
                   class:text-blue-600={activeTab === tab.id}
                   class:border-transparent={activeTab !== tab.id}
@@ -521,10 +469,8 @@ https://svelte.dev/e/js_parse_error -->
               {/each}
             </nav>
           </div>
-
           <!-- Tab Content -->
           <div class="flex-1 overflow-y-auto max-h-[60vh] p-6">
-            
             <!-- Document Tab -->
             {#if activeTab === 'document'}
               <div class="space-y-6">
@@ -555,7 +501,6 @@ https://svelte.dev/e/js_parse_error -->
                     </dd>
                   </div>
                 </div>
-
                 <!-- Content -->
                 <div>
                   <h3 class="text-lg font-semibold text-gray-900 mb-3">Document Content</h3>
@@ -563,7 +508,6 @@ https://svelte.dev/e/js_parse_error -->
                     <pre class="text-sm text-gray-700 whitespace-pre-wrap font-mono leading-relaxed">{document.content}</pre>
                   </div>
                 </div>
-
                 <!-- Metadata -->
                 {#if document.metadata && Object.keys(errors).length > 0}
                   <div>
@@ -575,12 +519,10 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
               </div>
             {/if}
-
             <!-- Related Documents Tab -->
             {#if activeTab === 'related'}
               <div class="space-y-4">
                 <h3 class="text-lg font-semibold text-gray-900">Related Documents</h3>
-                
                 {#if relatedDocuments.length === 0}
                   <div class="text-center py-8 text-gray-500">
                     <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -621,12 +563,10 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
               </div>
             {/if}
-
             <!-- Graph Connections Tab -->
             {#if activeTab === 'connections'}
               <div class="space-y-4">
                 <h3 class="text-lg font-semibold text-gray-900">Graph Connections</h3>
-                
                 {#if graphConnections.length === 0}
                   <div class="text-center py-8 text-gray-500">
                     <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -668,12 +608,10 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
               </div>
             {/if}
-
             <!-- Case Associations Tab -->
             {#if activeTab === 'cases'}
               <div class="space-y-4">
                 <h3 class="text-lg font-semibold text-gray-900">Case Associations</h3>
-                
                 {#if caseAssociations.length === 0}
                   <div class="text-center py-8 text-gray-500">
                     <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -719,7 +657,6 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
               </div>
             {/if}
-
             <!-- GPU Analysis Tab -->
             {#if activeTab === 'analysis'}
               <div class="space-y-4">
@@ -735,7 +672,6 @@ https://svelte.dev/e/js_parse_error -->
                     </button>
                   {/if}
                 </div>
-                
                 {#if !enableGPUAnalysis}
                   <div class="text-center py-8 text-gray-500">
                     <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -769,7 +705,6 @@ https://svelte.dev/e/js_parse_error -->
                         </div>
                       </div>
                     </div>
-
                     {#if gpuAnalysis.legalAnalysis}
                       <div class="p-4 bg-white border border-gray-200 rounded-lg">
                         <h4 class="font-semibold text-gray-900 mb-2">Legal Analysis</h4>
@@ -786,9 +721,8 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
-
 <style>
-  .line-clamp-2 {;
+  .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

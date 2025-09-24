@@ -4,7 +4,6 @@
 -->
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-
   interface Props {
     variant?: 'a' | 'b' | 'c-up' | 'c-down' | 'c-left' | 'c-right' | 'start' | 'z' | 'l' | 'r' | 'custom';
     size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -27,7 +26,6 @@
     onmouseup?: (event: MouseEvent) => void;
     children?: any;
   }
-
   let {
     variant = 'a',
     size = 'md',
@@ -48,9 +46,7 @@
     children,
     ...restProps
   }: Props = $props();
-
   const dispatch = createEventDispatcher();
-
   // N64 button color scheme
   const buttonColors = {
     'a': '#0066ff', // Blue A button
@@ -65,7 +61,6 @@
     'r': '#666666', // Gray R shoulder
     'custom': customColor || '#0066ff'
   };
-
   // Button labels
   const buttonLabels = {
     'a': 'A',
@@ -80,7 +75,6 @@
     'r': 'R',
     'custom': ''
   };
-
   // Dynamic classes
   let buttonClasses = $derived(() => {
     const base = 'n64-button';
@@ -91,7 +85,6 @@
     const glowClass = glowing ? 'n64-button--glowing' : '';
     const priorityClass = priority ? `n64-button--priority-${priority}` : '';
     const evidenceClass = evidenceAction ? `n64-button--evidence-${evidenceAction}` : '';
-
     return [
       base,
       variantClass,
@@ -104,25 +97,21 @@
       className
     ].filter(Boolean).join(' ');
   });
-
   // Button styling
   let buttonStyle = $derived(() => {
     const color = buttonColors[variant];
     const baseStyle = `--n64-color: ${color}; --n64-color-dark: ${darkenColor(color, 0.3)};`;
-    return style ? `${baseStyle} ${style}` : baseStyle;
+    return style ? `${baseStyle} ${style}` : baseStyl;
   });
-
   // Sound effects
   function playSound(type: 'press' | 'release' | 'error') {
     if (!soundEnabled || typeof window === 'undefined') return;
-
     try {
       const soundMap = {
         press: '/sounds/n64-button-press.mp3',
         release: '/sounds/n64-button-release.mp3',
         error: '/sounds/n64-error.mp3'
       };
-
       const audio = new Audio(soundMap[type]);
       audio.volume = 0.4;
       audio.play().catch(() => {
@@ -132,50 +121,39 @@
       // Ignore audio errors
     }
   }
-
   // Haptic feedback
   function triggerVibration(pattern: number[] = [50]) {
     if (!vibrationEnabled || !navigator.vibrate) return;
     navigator.vibrate(pattern);
   }
-
   // Event handlers
   function handleMouseDown(event: MouseEvent) {
     if (disabled) {
       playSound('error');
       return;
     }
-
     pressed = true;
     playSound('press');
     triggerVibration([30]);
-
     dispatch('mousedown', event);
     onmousedown?.(event);
   }
-
   function handleMouseUp(event: MouseEvent) {
     if (disabled) return;
-
     pressed = false;
     playSound('release');
-
     dispatch('mouseup', event);
     onmouseup?.(event);
   }
-
   function handleClick(event: MouseEvent) {
     if (disabled) return;
-
     // Special handling for evidence actions
     if (evidenceAction) {
       dispatch('evidenceAction', { action: evidenceAction, confidence, priority });
     }
-
     dispatch('click', event);
     onclick?.(event);
   }
-
   // Utility function to darken color
   function darkenColor(color: string, factor: number): string {
     // Simple color darkening - in production would use a proper color library
@@ -183,15 +161,12 @@
     const r = parseInt(hex.substr(0, 2), 16);
     const g = parseInt(hex.substr(2, 2), 16);
     const b = parseInt(hex.substr(4, 2), 16);
-
     const newR = Math.floor(r * (1 - factor));
     const newG = Math.floor(g * (1 - factor));
     const newB = Math.floor(b * (1 - factor));
-
     return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
   }
 </script>
-
 <button
   class={buttonClasses}
   style={buttonStyle}
@@ -209,13 +184,11 @@
       {:else}
         <span class="n64-button__label">{buttonLabels[variant]}</span>
       {/if}
-
       {#if confidence !== undefined}
         <div class="n64-button__confidence" title="Confidence: {Math.round(confidence * 100)}%">
           {Math.round(confidence * 100)}%
         </div>
       {/if}
-
       {#if evidenceAction}
         <div class="n64-button__evidence-icon" title="Evidence Action: {evidenceAction}">
           {#if evidenceAction === 'analyze'}
@@ -230,14 +203,12 @@
         </div>
       {/if}
     </div>
-
     <!-- Priority indicator -->
     {#if priority === 'critical'}
       <div class="n64-button__priority-pulse"></div>
     {/if}
   </div>
 </button>
-
 <style>
   .n64-button {
     position: relative;
@@ -251,12 +222,10 @@
     text-transform: uppercase;
     outline: none;
   }
-
   .n64-button:focus-visible {
     outline: 3px solid #ffff00;
     outline-offset: 3px;
   }
-
   .n64-button__surface {
     position: relative;
     background: var(--n64-color);
@@ -265,7 +234,6 @@
     transition: all 0.1s ease;
     overflow: hidden;
   }
-
   .n64-button__content {
     position: relative;
     z-index: 2;
@@ -278,51 +246,41 @@
     color: white;
     text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
   }
-
   /* Size variants */
   .n64-button--sm .n64-button__surface {
     width: 2.5rem;
     height: 2.5rem;
   }
-
   .n64-button--sm .n64-button__label {
     font-size: 0.75rem;
   }
-
   .n64-button--md .n64-button__surface {
     width: 3.5rem;
     height: 3.5rem;
   }
-
   .n64-button--md .n64-button__label {
     font-size: 1rem;
   }
-
   .n64-button--lg .n64-button__surface {
     width: 4.5rem;
     height: 4.5rem;
   }
-
   .n64-button--lg .n64-button__label {
     font-size: 1.25rem;
   }
-
   .n64-button--xl .n64-button__surface {
     width: 6rem;
     height: 6rem;
   }
-
   .n64-button--xl .n64-button__label {
     font-size: 1.5rem;
   }
-
   /* Button-specific shapes */
   .n64-button--start .n64-button__surface {
     border-radius: 8px;
     width: 4rem;
     height: 1.5rem;
   }
-
   .n64-button--z .n64-button__surface,
   .n64-button--l .n64-button__surface,
   .n64-button--r .n64-button__surface {
@@ -330,7 +288,6 @@
     width: 3rem;
     height: 1.2rem;
   }
-
   /* C-button cluster styling */
   .n64-button--c-up .n64-button__surface,
   .n64-button--c-down .n64-button__surface,
@@ -339,27 +296,23 @@
     width: 2rem;
     height: 2rem;
   }
-
   /* Pressed state */
   .n64-button--pressed .n64-button__surface {
     background: var(--n64-color-dark);
     transform: scale(0.95) translateY(2px);
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.4);
   }
-
   /* Disabled state */
   .n64-button--disabled {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
   }
-
   /* Glowing effect */
   .n64-button--glowing .n64-button__surface {
     animation: n64-glow 2s ease-in-out infinite alternate;
     box-shadow: 0 0 20px var(--n64-color);
   }
-
   @keyframes n64-glow {
     from {
       box-shadow: 0 0 10px var(--n64-color);
@@ -368,17 +321,14 @@
       box-shadow: 0 0 30px var(--n64-color), 0 0 40px var(--n64-color);
     }
   }
-
   /* Priority indicators */
   .n64-button--priority-high .n64-button__surface {
     border-color: #ff8800;
   }
-
   .n64-button--priority-critical .n64-button__surface {
     border-color: #ff0000;
     animation: critical-pulse 1s ease-in-out infinite;
   }
-
   @keyframes critical-pulse {
     0%, 100% {
       border-color: #ff0000;
@@ -389,7 +339,6 @@
       box-shadow: 0 0 0 8px rgba(255, 0, 0, 0);
     }
   }
-
   .n64-button__priority-pulse {
     position: absolute;
     top: -4px;
@@ -401,7 +350,6 @@
     animation: priority-pulse 2s ease-in-out infinite;
     pointer-events: none;
   }
-
   @keyframes priority-pulse {
     0% {
       opacity: 1;
@@ -412,24 +360,19 @@
       transform: scale(1.2);
     }
   }
-
   /* Evidence action styling */
   .n64-button--evidence-analyze .n64-button__surface {
     border-color: #00aaff;
   }
-
   .n64-button--evidence-classify .n64-button__surface {
     border-color: #aa00ff;
   }
-
   .n64-button--evidence-correlate .n64-button__surface {
     border-color: #ff00aa;
   }
-
   .n64-button--evidence-submit .n64-button__surface {
     border-color: #00ff00;
   }
-
   /* Confidence indicator */
   .n64-button__confidence {
     position: absolute;
@@ -443,7 +386,6 @@
     font-weight: normal;
     z-index: 3;
   }
-
   /* Evidence action icon */
   .n64-button__evidence-icon {
     position: absolute;
@@ -459,48 +401,40 @@
     font-size: 0.7rem;
     z-index: 3;
   }
-
   /* Hover effects */
   .n64-button:hover:not(.n64-button--disabled) .n64-button__surface {
     filter: brightness(1.1);
     transform: translateY(-1px);
   }
-
   /* Active state */
   .n64-button:active:not(.n64-button--disabled) .n64-button__surface {
     transform: scale(0.95) translateY(2px);
     background: var(--n64-color-dark);
   }
-
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
     .n64-button,
     .n64-button__surface {
       transition: none;
     }
-
     .n64-button--glowing .n64-button__surface {
       animation: none;
     }
-
     .n64-button--priority-critical .n64-button__surface {
       animation: none;
     }
   }
-
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .n64-button__surface {
       border-width: 6px;
       border-color: #000000;
     }
-
     .n64-button__content {
       color: #ffffff;
       text-shadow: 3px 3px 0 #000000;
     }
   }
-
   /* Print styles */
   @media print {
     .n64-button {

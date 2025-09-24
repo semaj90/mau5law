@@ -1,11 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
-https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class',
+https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     columns?: number;
     expandedColumns?: number;
@@ -27,7 +26,6 @@ https://svelte.dev/e/js_parse_error -->
     onexpand
   }: Props = $props();
   let class = $state("");
-  ;
   let isExpanded = $state(false);
   let containerElement = $state<HTMLDivElementfunction handleMouseEnter() {
     if (expandOnHover) {
@@ -51,12 +49,11 @@ https://svelte.dev/e/js_parse_error -->
   }}
   let currentColumns = $derived(isExpanded ? expandedColumns : columns);
 </script>
-
 <div
   bind:this={containerElement}
   class="space-y-4"
   class:expanded={isExpanded}
-  style=";
+  style="
     --columns: {currentColumns};
     --gap: {gap};
     --expand-duration: {expandDuration};
@@ -70,7 +67,6 @@ https://svelte.dev/e/js_parse_error -->
 >
   {@render children}
 </div>
-
 <style>/* @unocss-include */ .expand-grid {
     display: grid;
     grid-template-columns: repeat(var(--columns), 1fr);
@@ -100,7 +96,7 @@ https://svelte.dev/e/js_parse_error -->
   .expand-grid.expanded :global(.grid-item) {
     transform: scale(1.02);
 }
-  .expand-grid :global(.grid-item:hover) {
+  .expand-grid :global($1) {
     transform: scale(1.05);
     z-index: 10;
 }
@@ -116,4 +112,3 @@ https://svelte.dev/e/js_parse_error -->
       grid-template-columns: 1fr;
 }}
 </style>
-

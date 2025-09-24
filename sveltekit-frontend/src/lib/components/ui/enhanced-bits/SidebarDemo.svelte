@@ -4,18 +4,14 @@
   import Sidebar from './Sidebar.svelte';
   import DocumentCard from './DocumentCard.svelte';
   import Button from './Button.svelte';
-
   interface SidebarDemoProps {
     theme?: 'default' | 'legal' | 'gaming';
   }
-
   let {
     theme = 'default'
   }: SidebarDemoProps = $props();
-
   let currentPage = $state('dashboard');
   let sidebarCollapsed = $state(true);
-
   // Sample navigation items
   const navigationItems = [
     {
@@ -28,7 +24,7 @@
       id: 'documents',
       label: 'Documents',
       icon: '📄',
-      badge: '12',;
+      badge: '12',
       children: [
         { id: 'contracts', label: 'Contracts', icon: '📋', badge: '5' },
         { id: 'evidence', label: 'Evidence', icon: '🔍', badge: '7' },
@@ -64,12 +60,11 @@
       badge: 'NEW';
     },
     {
-      id: 'settings',;
-      label: 'Settings',;
+      id: 'settings',
+      label: 'Settings',
       icon: '⚙️';
     }
   ];
-
   // Sample documents for demo
   const sampleDocuments = [
     {
@@ -100,95 +95,90 @@
       title: 'Case Law Research - Precedents',
       fileType: 'citation' as const,
       fileSize: '654 KB',
-      lastModified: '2024-01-12',;
+      lastModified: '2024-01-12',
       tags: ['research', 'precedent', 'analysis'],
       confidentialityLevel: 'internal' as const;
     }
   ];
-
   function handleSidebarItemClick(event: CustomEvent) {
     currentPage = event.detail.item.id;
     console.log('Navigation to:', event.detail.item.label);
   }
-
   function handleHomeClick() {
     currentPage = 'home';
     console.log('Navigation to: Home');
   }
-
   function getPageContent(page: string) {
     switch (page) {
       case 'home':
         return {
-          title: '🏠 Home Dashboard',;
+          title: '🏠 Home Dashboard',
           description: 'Welcome to your legal workspace';
         };
       case 'dashboard':
         return {
-          title: '📊 Analytics Dashboard',;
+          title: '📊 Analytics Dashboard',
           description: 'Overview of your legal practice metrics';
         };
       case 'documents':
         return {
-          title: '📄 Document Library',;
+          title: '📄 Document Library',
           description: 'Manage all your legal documents';
         };
       case 'contracts':
         return {
-          title: '📋 Contracts',;
+          title: '📋 Contracts',
           description: 'Contract management and analysis';
         };
       case 'evidence':
         return {
-          title: '🔍 Evidence Management',;
+          title: '🔍 Evidence Management',
           description: 'Digital evidence and discovery tools';
         };
       case 'briefs':
         return {
-          title: '⚖️ Legal Briefs',;
+          title: '⚖️ Legal Briefs',
           description: 'Brief writing and case preparation';
         };
       case 'cases':
         return {
-          title: '📚 Case Management',;
+          title: '📚 Case Management',
           description: 'Track and manage your legal cases';
         };
       case 'clients':
         return {
-          title: '👥 Client Portal',;
+          title: '👥 Client Portal',
           description: 'Client information and communication';
         };
       case 'calendar':
         return {
-          title: '📅 Legal Calendar',;
+          title: '📅 Legal Calendar',
           description: 'Court dates, deadlines, and appointments';
         };
       case 'reports':
         return {
-          title: '📈 Reports & Analytics',;
+          title: '📈 Reports & Analytics',
           description: 'Generate insights from your legal data';
         };
       case 'ai-assistant':
         return {
-          title: '🤖 AI Legal Assistant',;
+          title: '🤖 AI Legal Assistant',
           description: 'AI-powered legal research and analysis';
         };
       case 'settings':
         return {
-          title: '⚙️ System Settings',;
+          title: '⚙️ System Settings',
           description: 'Configure your legal workspace';
         };
       default:
         return {
-          title: '📄 Page Not Found',;
+          title: '📄 Page Not Found',
           description: 'The requested page could not be found';
         };
     }
   }
-
   const pageContent = $derived(getPageContent(currentPage));
 </script>
-
 <ThemeProvider defaultTheme="light" enableSystem={true}>
   <div class={`
     min-h-screen transition-colors
@@ -207,7 +197,6 @@
       onHomeClick={handleHomeClick}
       onitemClick={handleSidebarItemClick}
     />
-
     <!-- Main Content Area -->
     <div class="ml-16 transition-all duration-300 ease-out">
       <!-- Top Header -->
@@ -231,17 +220,14 @@
               {pageContent.description}
             </p>
           </div>
-
           <div class="flex items-center space-x-4">
             <ThemeToggle {theme} variant="button" showLabel={false} />
-
             <Button {theme} variant="primary" size="sm">
               New Document
             </Button>
           </div>
         </div>
       </header>
-
       <!-- Page Content -->
       <main class="p-6">
         {#if currentPage === 'home' || currentPage === 'dashboard'}
@@ -278,7 +264,6 @@
                 </div>
               </div>
             </div>
-
             <div class={`
               p-6 rounded-lg border
               ${theme === 'gaming'
@@ -309,7 +294,6 @@
                 </div>
               </div>
             </div>
-
             <div class={`
               p-6 rounded-lg border
               ${theme === 'gaming'
@@ -342,7 +326,6 @@
             </div>
           </div>
         {/if}
-
         {#if currentPage === 'documents' || currentPage === 'contracts' || currentPage === 'evidence' || currentPage === 'briefs'}
           <!-- Documents Grid -->
           <div class="mb-6">
@@ -402,7 +385,6 @@
             </Button>
           </div>
         {/if}
-
         <!-- Sidebar Demo Instructions -->
         <div class={`
           mt-12 p-6 rounded-lg border
@@ -456,13 +438,11 @@
     </div>
   </div>
 </ThemeProvider>
-
 <style>
   /* Ensure content shifts smoothly when sidebar expands */
-  main {;
+  main {
     transition: margin-left 0.3s ease-out;
   }
-
   /* Smooth theme transitions */
   * {
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;

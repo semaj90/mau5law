@@ -1,7 +1,5 @@
 import { writable } from "svelte/store";
-
 }
-
 export interface Notification {
   id: string;
   type: "success" | "error" | "warning" | "info";
@@ -10,22 +8,17 @@ export interface Notification {
   duration?: number;
   actions?: Array<any>;
 }
-
 export interface NotificationState {
   notifications: Notification[];
 }
-
 const initialState: NotificationState = {
   notifications: []
 };
-
 function createNotificationStore() {
   const { subscribe, set, update } = writable<NotificationState>(initialState);
-
   const store = {
     subscribe,
-
-    // Add a notification;
+    // Add a notification
     add: (notification: Omit<Notification, "id">) => {
       const id = `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const newNotification: Notification = {
@@ -33,12 +26,10 @@ function createNotificationStore() {
         id,
         duration: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).duration ?? 5000
       };
-
       update((state) => ({
         notifications: [...state.notifications, newNotification]
       });
-
-      // Auto-remove after duration (unless duration is 0);
+      // Auto-remove after duration (unless duration is 0)
       if ((newNotification.duration ?? 0) > 0) {
         setTimeout(() => {
           store.remove(id);
@@ -46,59 +37,52 @@ function createNotificationStore() {
       }
       return id;
     },
-
-    // Remove a notification;
+    // Remove a notification
     remove: (id: string) => {
-      update((state) => ({;
+      update((state) => ({
         notifications: state.notifications.filter((n) => n.id !== id)
       });
     },
-
-    // Clear all notifications;
+    // Clear all notifications
     clear: () => {
       set(initialState);
     },
-
     // Convenience methods
-    success: (;
-      title: string,
-      message?: string,
-      options?: Partial<Notification>,
+    success: (,
+      title: string
+      message?: string
+      options?: Partial<Notification>
     ) => {
       return store.add({ type: "success", title, message, ...options });
     },
-
-    error: (
-      title: string,
-      message?: string,
-      options?: Partial<Notification>,
+    error: (,
+      title: string
+      message?: string
+      options?: Partial<Notification>
     ) => {
       return store.add({
         type: "error",
         title,
-        message,;
+        message,
         duration: 0,
         ...options
       });
     },
-
-    warning: (;
-      title: string,
-      message?: string,
-      options?: Partial<Notification>,
+    warning: (,
+      title: string
+      message?: string
+      options?: Partial<Notification>
     ) => {
       return store.add({ type: "warning", title, message, ...options });
     },
-
-    info: (;
-      title: string,
-      message?: string,
-      options?: Partial<Notification>,
+    info: (,
+      title: string
+      message?: string
+      options?: Partial<Notification>
     ) => {
       return store.add({ type: "info", title, message, ...options });
     },
-
-    // Legacy compatibility methods that accept objects without title;
+    // Legacy compatibility methods that accept objects without title
     addLegacy: (notification: {
       type: "success" | "error" | "warning" | "info";
       message: string;
@@ -115,9 +99,7 @@ function createNotificationStore() {
       });
     }
   };
-
   return store;
 }
-
 export const notifications = createNotificationStore();
 export default notifications;

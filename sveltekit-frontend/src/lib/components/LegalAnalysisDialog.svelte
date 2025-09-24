@@ -9,21 +9,15 @@
  * Integrates with legalCaseStore for case selection and analysis.
  */
 // Svelte 5 runes are auto-imported
-
 <script lang="ts">
-
-
   import { Dialog, Select, Button, Badge, Progress } from 'bits-ui';
   import { legalCaseStore } from '$lib/stores/legal-case.store.svelte';
   import type { LegalCase } from '$lib/types/legal';
-
   interface Props {
     open: boolean;
     onOpenChange: (open: boolean) => void;
   }
-
   let { open = $bindable(), onOpenChange = () => {} }: Props = $props();
-
   // Store access
   const {
     filteredCases,
@@ -33,51 +27,41 @@
     selectCase,
     analyzeCase,
     loadCases
-  } = legalCaseStore;
-
+  } = legalCaseStor;
   // Load cases when component mounts
   $effect(() => {
     if (filteredCases().length === 0) {
       loadCases();
     }
   });
-
   let selectedCaseForAnalysis = $state<string | null>(null);
   let analysisProgress = $state(0);
   let analysisStatus = $state<'idle' | 'analyzing' | 'complete' | 'error'>('idle');
-
   async function handleAnalysis() {
     if (!selectedCaseForAnalysis) return;
-
     analysisStatus = 'analyzing';
     analysisProgress = 0;
-
     try {
       // Progress updates for real analysis
       const progressInterval = setInterval(() => {
         analysisProgress = Math.min(analysisProgress + 8, 85);
       }, 300);
-
       // Call the real API endpoint through the store
       await analyzeCase(selectedCaseForAnalysis);
-
       clearInterval(progressInterval);
       analysisProgress = 100;
       analysisStatus = 'complete';
-
       // Auto-close after showing success
       setTimeout(() => {
         onOpenChange(false);
         analysisStatus = 'idle';
         analysisProgress = 0;
       }, 3000);
-
     } catch (error) {
       analysisStatus = 'error';
       console.error('Analysis failed:', error);
     }
   }
-
   function getRiskBadgeVariant(level: string) {
     switch (level) {
       case 'CRITICAL': return 'destructive';
@@ -88,7 +72,6 @@
     }
   }
 </script>
-
 <Dialog.Root {open} {onOpenChange}>
   <Dialog.Trigger>
     <Button class="legal-action-btn bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn">
@@ -99,7 +82,6 @@
       Analyze Case Documents
     </Button>
   </Dialog.Trigger>
-
   <Dialog.Content class="legal-dialog max-w-2xl w-full bg-white border border-gray-200 rounded-lg shadow-xl">
     <Dialog.Header class="border-b border-gray-100 p-6">
       <Dialog.Title class="text-xl font-semibold text-gray-900">
@@ -109,7 +91,6 @@
         Select a case to perform AI-powered legal analysis with compliance checking.
       </Dialog.Description>
     </Dialog.Header>
-
     <div class="p-6 space-y-6">
       <!-- Case Selection -->
       <div class="space-y-3">
@@ -141,7 +122,6 @@
           </Select.Content>
         </Select.Root>
       </div>
-
       <!-- Analysis Progress -->
       {#if analysisStatus === 'analyzing'}
         <div class="space-y-3">
@@ -168,20 +148,17 @@
           </div>
         </div>
       {/if}
-
       <!-- Analysis Results -->
       {#if selectedCaseForAnalysis && aiInsights[selectedCaseForAnalysis] && analysisStatus === 'complete'}
         {@const insights = aiInsights[selectedCaseForAnalysis]}
         <div class="space-y-4 border-t border-gray-100 pt-4">
           <h3 class="font-medium text-gray-900">Analysis Results</h3>
-
           <!-- Summary -->
           {#if insights.summary}
             <div class="p-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-md">
               <p class="text-sm text-blue-800">{insights.summary}</p>
             </div>
           {/if}
-
           <!-- Risk Assessment -->
           {#if insights.riskLevel}
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
@@ -191,7 +168,6 @@
               </Badge>
             </div>
           {/if}
-
           <!-- Compliance Status -->
           {#if insights.complianceStatus}
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md">
@@ -201,7 +177,6 @@
               </Badge>
             </div>
           {/if}
-
           <!-- Similar Cases -->
           {#if insights.similarCases && insights.similarCases.length > 0}
             <div class="space-y-2">
@@ -218,7 +193,6 @@
               </div>
             </div>
           {/if}
-
           <!-- Key Findings -->
           {#if insights.keyFindings && insights.keyFindings.length > 0}
             <div class="space-y-2">
@@ -233,7 +207,6 @@
               </ul>
             </div>
           {/if}
-
           <!-- Recommendations -->
           {#if insights.recommendations && insights.recommendations.length > 0}
             <div class="space-y-2">
@@ -248,7 +221,6 @@
               </ul>
             </div>
           {/if}
-
           <!-- Timeline -->
           {#if insights.timeline && insights.timeline.length > 0}
             <div class="space-y-2">
@@ -267,7 +239,6 @@
           {/if}
         </div>
       {/if}
-
       <!-- Error State -->
       {#if analysisStatus === 'error'}
         <div class="p-4 bg-red-50 border border-red-200 rounded-md">
@@ -283,7 +254,6 @@
         </div>
       {/if}
     </div>
-
     <Dialog.Footer class="border-t border-gray-100 p-6 flex justify-end space-x-3">
       <Button class="bits-btn"
         variant="ghost"
@@ -292,7 +262,6 @@ onOpenChange(false)}
         disabled={loading.analysis}
       >
         Cancel
-
       <Button
         onclick={handleAnalysis}
         disabled={!selectedCaseForAnalysis || loading.analysis || analysisStatus === 'analyzing'}
@@ -312,16 +281,13 @@ onOpenChange(false)}
         {:else}
           Start Analysis
         {/if}
-
     </Dialog.Footer>
   </Dialog.Content>
 </Dialog.Root>
-
 <style>
-  .legal-dialog {;
+  .legal-dialog {
     animation: dialog-content-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-
   @keyframes dialog-content-show {
     from {
       opacity: 0;
@@ -332,14 +298,11 @@ onOpenChange(false)}
       transform: translate(-50%, -50%) scale(1);
     }
   }
-
   .legal-action-btn {
     transition: all 0.2s ease-in-out;
   }
-
   .legal-action-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
   }
 </style>
-

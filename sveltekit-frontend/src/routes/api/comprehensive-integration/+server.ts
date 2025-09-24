@@ -1,6 +1,5 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 interface SystemHealthResponse {
   system_overview: {
     healthy_services: number
@@ -20,12 +19,10 @@ interface SystemHealthResponse {
     load_average: number
   }
 }
-
 interface APIOperationRequest {
   operation: string
   data?: any
 }
-
 interface APIOperationResponse {
   success: boolean
   operation: string
@@ -33,7 +30,6 @@ interface APIOperationResponse {
   timestamp: string
   processing_time?: number
 }
-
 async function getSystemHealth(): Promise<SystemHealthResponse> {
   const services = [
     { name: 'SvelteKit Frontend', port: 5173 },
@@ -48,7 +44,6 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
     { name: 'Qdrant Vector DB', port: 6333 },
     { name: 'NATS Messaging', port: 4222 }
   ]
-
   // Simulate health checks
   const serviceResults = services.map(service => {
     const isHealthy = Math.random() > 0.1; // 90% chance of being healthy
@@ -58,17 +53,15 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
       response_time: Math.floor(Math.random() * 500) + 10
     }
   })
-
   const healthyCount = serviceResults.filter(item => item.length)
-
   return {
     system_overview: {
-      healthy_services: healthyCount,
+      healthy_services: healthyCount
       total_services: services.length,
       uptime_hours: Math.floor(process.uptime() / 3600),
       last_updated: new Date().toISOString()
     },
-    services: serviceResults,
+    services: serviceResults
     performance: {
       cpu_usage: Math.random() * 80 + 10,
       memory_usage: Math.random() * 70 + 20,
@@ -81,17 +74,14 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
     }
   }
 }
-
 async function performOperation(operation: string, data?: any): Promise<APIOperationResponse> {
   const startTime = Date.now()
-  
   try {
     let result: any = {}
-
     switch (operation) {
       case 'system_optimization':
         // Simulate system optimization
-        await new Promise(resolve => setTimeout(resolve, 1000)
+        await new Promise(resolve => setTimeout(resolve, 1000))
         result = {
           optimization_applied: [
             'Memory cache cleared',
@@ -103,7 +93,6 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
           memory_freed: '2.3 GB'
         }
         break
-
       case 'context7_integration':
         // Simulate Context7 integration check
         await new Promise(resolve => setTimeout(resolve, 800)
@@ -115,7 +104,6 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
           cache_hit_ratio: '89%'
         }
         break
-
       case 'real_time_analysis':
         // Simulate real-time analysis
         await new Promise(resolve => setTimeout(resolve, 1200)
@@ -127,7 +115,6 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
           accuracy_score: '94.7%'
         }
         break
-
       case 'legal_research':
         // Simulate legal research operation
         await new Promise(resolve => setTimeout(resolve, 1500)
@@ -139,7 +126,6 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
           similarity_matches_found: 234
         }
         break
-
       case 'vector_search_test':
         // Simulate vector search test
         await new Promise(resolve => setTimeout(resolve, 600)
@@ -151,29 +137,24 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
           results_returned: 50
         }
         break
-
       default:
         result = {
           message: `Operation '${operation}' completed successfully`,
           data: data || {}
         }
     }
-
     const processingTime = Date.now() - startTime
-
     return {
-      success: true,
+      success: true
       operation,
       result,
       timestamp: new Date().toISOString(),
       processing_time: processingTime
     }
-
   } catch (error) {
     console.error(`Operation ${operation} failed:`, error)
-    
     return {
-      success: false,
+      success: false
       operation,
       result: {
         error: String(error),
@@ -184,7 +165,6 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
     }
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const systemHealth = await getSystemHealth()
@@ -194,27 +174,23 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({ error: 'Failed to get system health' }, { status: 500 })
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json() as APIOperationRequest
     const { operation, data } = body
-
     if (!operation) {
       return json({ error: 'Operation is required' }, { status: 400 })
     }
-
     const result = await performOperation(operation, data)
     return json(result)
-
   } catch (error) {
     console.error('API operation failed:', error)
     return json()
-      { 
-        success: false,
+      {
+        success: false
         error: 'Failed to process operation',
         timestamp: new Date().toISOString()
-      }, 
+      },
       { status: 500 }
     )
   }

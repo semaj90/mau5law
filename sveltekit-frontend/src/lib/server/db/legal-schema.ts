@@ -1,7 +1,6 @@
 // Enhanced legal AI database schema with pgvector support
 import { pgTable, serial, text, timestamp, real, integer, boolean, jsonb } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
-
 // Legal queries table - stores all AI interactions
 export const legal_queries = pgTable('legal_queries', {
   id: serial('id').primaryKey(),
@@ -14,12 +13,11 @@ export const legal_queries = pgTable('legal_queries', {
   status: text('status').notNull().default('pending'), // pending, processing, completed, failed
   error_message: text('error_message'),
   user_ip: text('user_ip'),
-  similar_docs_count: integer('similar_docs_count').default(0),;
+  similar_docs_count: integer('similar_docs_count').default(0),
   timestamp: timestamp('timestamp').defaultNow(),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow()
 });
-
 // Legal documents table with vector embeddings (matching existing structure)
 export const legal_documents = pgTable('legal_documents', {
   id: serial('id').primaryKey(),
@@ -27,23 +25,21 @@ export const legal_documents = pgTable('legal_documents', {
   title: text('title'), // varchar(500) in existing
   content: text('content'),
   document_type: text('document_type'), // varchar(100) in existing
-  metadata: jsonb('metadata'),;
+  metadata: jsonb('metadata'),
   embedding: sql`vector(512)`, // matching existing 512-dimensional
   embedding_gemma: sql`vector(512)`, // existing gemma embedding field
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow()
 });
-
 // Query embeddings table - for similarity search
 export const embeddings = pgTable('embeddings', {
   id: serial('id').primaryKey(),
   query_id: integer('query_id').references(() => legal_queries.id),
-  document_id: integer('document_id').references(() => legal_documents.id),;
+  document_id: integer('document_id').references(() => legal_documents.id),
   embedding: sql`vector(512)`, // matching existing 512-dimensional
   embedding_type: text('embedding_type').default('query'), // query, document, chunk
   created_at: timestamp('created_at').defaultNow()
 });
-
 // Legal cases table - for case law management
 export const legal_cases = pgTable('legal_cases', {
   id: serial('id').primaryKey(),
@@ -57,12 +53,11 @@ export const legal_cases = pgTable('legal_cases', {
   holding: text('holding'),
   facts: text('facts'),
   legal_issues: text('legal_issues'),
-  embedding: sql`vector(512)`,;
+  embedding: sql`vector(512)`,
   metadata: jsonb('metadata'),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow()
 });
-
 // Legal entities table - parties, companies, individuals
 export const legal_entities = pgTable('legal_entities', {
   id: serial('id').primaryKey(),
@@ -70,12 +65,11 @@ export const legal_entities = pgTable('legal_entities', {
   entity_type: text('entity_type'), // person, corporation, government, court, etc.
   description: text('description'),
   contact_info: jsonb('contact_info'),
-  aliases: text('aliases').array(),;
+  aliases: text('aliases').array(),
   metadata: jsonb('metadata'),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow()
 });
-
 // Document-entity relationships
 export const document_entities = pgTable('document_entities', {
   id: serial('id').primaryKey(),
@@ -86,18 +80,16 @@ export const document_entities = pgTable('document_entities', {
   extracted_by: text('extracted_by').default('ai'), // ai, manual, imported
   created_at: timestamp('created_at').defaultNow()
 });
-
 // Legal topics/tags for categorization
 export const legal_topics = pgTable('legal_topics', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
   description: text('description'),
   parent_topic_id: integer('parent_topic_id').references(() => legal_topics.id),
-  topic_level: integer('topic_level').default(1), // 1=top level, 2=subcategory, etc.;
+  topic_level: integer('topic_level').default(1), // 1=top level, 2=subcategory, etc.
   embedding: sql`vector(512)`,
   created_at: timestamp('created_at').defaultNow()
 });
-
 // Document-topic relationships
 export const document_topics = pgTable('document_topics', {
   id: serial('id').primaryKey(),
@@ -107,7 +99,6 @@ export const document_topics = pgTable('document_topics', {
   assigned_by: text('assigned_by').default('ai'), // ai, manual
   created_at: timestamp('created_at').defaultNow()
 });
-
 // AI model performance tracking
 export const model_performance = pgTable('model_performance', {
   id: serial('id').primaryKey(),
@@ -118,47 +109,40 @@ export const model_performance = pgTable('model_performance', {
   avg_tokens_per_response: real('avg_tokens_per_response'),
   success_rate: real('success_rate'),
   user_satisfaction: real('user_satisfaction'), // if we collect feedback
-  date: timestamp('date').defaultNow(),;
+  date: timestamp('date').defaultNow(),
   metadata: jsonb('metadata'),
   created_at: timestamp('created_at').defaultNow()
 });
-
 // User feedback on AI responses
 export const query_feedback = pgTable('query_feedback', {
   id: serial('id').primaryKey(),
-  query_id: integer('query_id').references(() => legal_queries.id),;
+  query_id: integer('query_id').references(() => legal_queries.id),
   rating: integer('rating'), // 1-5 stars
   feedback_text: text('feedback_text'),
   is_helpful: boolean('is_helpful'),
   user_ip: text('user_ip'),
   created_at: timestamp('created_at').defaultNow()
 });
-
 // System configuration for AI settings
 export const ai_config = pgTable('ai_config', {
   id: serial('id').primaryKey(),
   config_key: text('config_key').notNull(),
   config_value: text('config_value'),
-  config_type: text('config_type').default('string'), // string, number, boolean, json;
+  config_type: text('config_type').default('string'), // string, number, boolean, json
   description: text('description'),
   is_active: boolean('is_active').default(true),
   updated_by: text('updated_by').default('system'),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow()
 });
-
 // Export types for TypeScript
 export type LegalQuery = typeof legal_queries.$inferSelect;
 export type NewLegalQuery = typeof legal_queries.$inferInsert;
-
 export type LegalDocument = typeof legal_documents.$inferSelect;
 export type NewLegalDocument = typeof legal_documents.$inferInsert;
-
 export type LegalCase = typeof legal_cases.$inferSelect;
 export type NewLegalCase = typeof legal_cases.$inferInsert;
-
 export type LegalEntity = typeof legal_entities.$inferSelect;
 export type NewLegalEntity = typeof legal_entities.$inferInsert;
-
 export type LegalTopic = typeof legal_topics.$inferSelect;
 export type NewLegalTopic = typeof legal_topics.$inferInsert;

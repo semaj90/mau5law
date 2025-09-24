@@ -4,7 +4,6 @@ import type { RouteDefinition } from '$lib/data/routes-config';
 import { getConsolidatableRoutes, enhanceRouteDiscovery } from '$lib/utils/route-discovery';
 import * as fs from 'fs';
 import * as path from 'path';
-
 export interface SystemHealthData {
   system_overview: {
     healthy_services: number;
@@ -19,9 +18,8 @@ export interface SystemHealthData {
     disk_usage: number;
   };
 }
-
 export interface UserSession {
-  user: {;
+  user: {
     id: string;
     email: string;
     firstName?: string;
@@ -35,7 +33,6 @@ export interface UserSession {
   } | null;
   isAuthenticated: boolean;
 }
-
 export interface RoutePageData {
   systemHealth: SystemHealthData | null;
   userSession: UserSession;
@@ -43,7 +40,7 @@ export interface RoutePageData {
   recentOperations: Array<any>;
   routeInventory?: {
     generated: string;
-    counts: {;
+    counts: {
       config: number;
       fileBased: number;
       api: number;
@@ -57,7 +54,6 @@ export interface RoutePageData {
     consolidatableRoutes: RouteDefinition[];
   } | null;
 }
-
 async function checkServiceHealth(): Promise<SystemHealthData> {
   const services = [
     { name: 'PostgreSQL', port: 5433 },
@@ -69,7 +65,6 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
     { name: 'MinIO', port: 9000 },
     { name: 'Qdrant', port: 6333 }
   ];
-
   const fetchWithFallback = async (url: string, opts?: any, timeoutMs = 2000) => {
     const globalFetch = (globalThis as any).fetch;
     const fetchFn = globalFetch ?? (await import('node-fetch')).default;
@@ -78,7 +73,6 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
       new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs))
     ]);
   };
-
   const serviceResults = await Promise.allSettled(services.map(async (service) => {
       try {
         const startTime = Date.now();
@@ -95,21 +89,18 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
           } catch {
             response = null;
           }
-
           const responseTime = Date.now() - startTime;
-
           return {
             ...service,
             status: response && (response as { ok?: any }).ok ? ('healthy' as const) : ('degraded' as const),
             response_time: responseTime
           };
         }
-
         const responseTime = Date.now() - startTime;
         return {
           ...service,
           status: 'healthy' as const,
-          response_time: responseTime || 50,
+          response_time: responseTime || 50
         };
       } catch (err) {
         return {
@@ -120,11 +111,9 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
       }
     })
   );
-
   const healthyServices = serviceResults.filter(
     (result) => (result as { status?: any; value?: any }).status === 'fulfilled' && (result as { status?: any; value?: any }).value.status === 'healthy'
   ).length;
-
   return {
     system_overview: {
       healthy_services: healthyServices,
@@ -138,7 +127,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
             name: 'Unknown Service',
             status: 'down' as const
           }
-    ),;
+    ),
     performance: {
       cpu_usage: Math.random() * 80 + 10,
       memory_usage: Math.random() * 70 + 20,
@@ -146,17 +135,14 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
     }
   };
 }
-
 async function getUserSession(cookies: any): Promise<UserSession> {
   const sessionToken = cookies.get('session_token') || cookies.get('auth_token');
-
   if (!sessionToken) {
     return {
       user: null,
       isAuthenticated: false
     };
   }
-
   try {
     const mockUser = {
       id: 'user_123',
@@ -168,15 +154,14 @@ async function getUserSession(cookies: any): Promise<UserSession> {
         theme: 'dark',
         language: 'en',
         notifications: {
-          email: true,
-          push: true,;
+          email: true
+          push: true
           sms: false
         }
       }
     };
-
     return {
-      user: mockUser,
+      user: mockUser
       isAuthenticated: true
     };
   } catch (error) {
@@ -187,11 +172,9 @@ async function getUserSession(cookies: any): Promise<UserSession> {
     };
   }
 }
-
 export const load: PageServerLoad = async ({ url, cookies, depends }) => {
   depends('routes:health');
   depends('routes:session');
-
   try {
     const [systemHealth, userSession] = await Promise.all([
       checkServiceHealth().catch((error) => {
@@ -200,7 +183,6 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
       }),
       getUserSession(cookies)
     ]);
-
     const recentOperations = [
       {
         operation: 'System Health Check',
@@ -223,28 +205,23 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
       {
         operation: 'API Endpoint Validation',
         timestamp: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
-        status: 'success' as const,;
+        status: 'success' as const,
         protocol: 'http'
       }
     ];
-
     // Enhanced route loading with discovery system integration
     let allRoutes = [];
     let consolidatableRoutes = [];
-
     try {
       const { allRoutes: importedRoutes } = await import('$lib/data/routes-config');
       allRoutes = importedRoutes || [];
-
       // Integrate route discovery system following SvelteKit 2 best practices
       try {
         consolidatableRoutes = getConsolidatableRoutes();
         const routeDiscoveryData = enhanceRouteDiscovery();
-
         // Merge consolidatable routes that aren't already in the main config
         const existingRoutePaths = new Set(allRoutes.map(r => r.route));
         const newRoutes = consolidatableRoutes.filter(route => !existingRoutePaths.has(route.route));
-
         if (newRoutes.length > 0) {
           allRoutes = [...allRoutes, ...newRoutes];
           console.log(`🗺️ Route Discovery: Added ${newRoutes.length} consolidatable routes`);
@@ -257,7 +234,6 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
       console.error('Failed to import routes config:', error);
       allRoutes = [];
     }
-
     // Enhanced route inventory with consolidatable routes tracking
     let routeInventory: RoutePageData['routeInventory'] = null;
     try {
@@ -269,7 +245,7 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
         routeInventory = {
           generated: parsed.generated,
           counts: {
-            ...parsed.counts,;
+            ...parsed.counts,
             consolidatable: consolidatableRoutes.length
           },
           configMissingFiles: parsed.configMissingFiles || [],
@@ -281,11 +257,10 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
     } catch (e) {
       console.error('Failed to load ROUTE_MAP_EXPORT.json', e);
     }
-
     return {
       systemHealth,
       userSession,
-      availableRoutes: allRoutes,
+      availableRoutes: allRoutes
       recentOperations,
       routeInventory
     } satisfies RoutePageData;

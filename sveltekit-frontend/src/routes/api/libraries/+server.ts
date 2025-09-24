@@ -1,14 +1,10 @@
 
 import type { RequestHandler } from './$types.js'
-
 /*
  * Library Sync API Endpoints - Step 6 & 7 Integration
  */
-
-
 import { librarySyncService } from "$lib/services/library-sync-service"
 import { URL } from "url"
-
 // GET /api/libraries - Search libraries
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -18,30 +14,26 @@ export const GET: RequestHandler = async ({ url }) => {
       | "context7"
       | "npm"
       | undefined
-
     const libraries = await librarySyncService.searchLibraries(query, source)
-
     return json({
-      success: true,
+      success: true
       libraries,
       count: libraries.length
     })
   } catch (error: any) {
     console.error("Failed to search libraries:", error)
     return json({
-        success: false,
+        success: false
         error: "Failed to search libraries"
       },)
       { status: 500 }
     )
   }
 }
-
 // POST /api/libraries/sync - Trigger manual sync
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { source } = await request.json()
-
     if (source === "github") {
       await librarySyncService.syncGitHubLibraries()
     } else if (source === "context7") {
@@ -51,15 +43,14 @@ export const POST: RequestHandler = async ({ request }) => {
     } else {
       await librarySyncService.syncAllLibraries()
     }
-
     return json({
-      success: true,
+      success: true
       message: `Libraries synced successfully${source ? ` for ${source}` : ""}`
     })
   } catch (error: any) {
     console.error("Failed to sync libraries:", error)
     return json({
-        success: false,
+        success: false
         error: "Failed to sync libraries"
       },)
       { status: 500 }

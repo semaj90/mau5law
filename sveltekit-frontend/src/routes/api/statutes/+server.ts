@@ -1,8 +1,6 @@
 
 import { json } from "@sveltejs/kit"
 import type { RequestHandler } from './$types.js'
-
-
 export const GET: RequestHandler = async () => {
   try {
     // Mock statutes data - replace with actual database query
@@ -39,25 +37,21 @@ export const GET: RequestHandler = async () => {
         updatedAt: new Date(Date.now() - 172800000).toISOString()
       }
     ]
-
     return json(statutes)
   } catch (error: any) {
     console.error("Error fetching statutes:", error)
     return json({ error: "Failed to fetch statutes" }, { status: 500 })
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const data = await request.json()
-
     // Mock response - replace with actual database insertion
     const newStatute = {
       id: Math.random().toString(36).substring(2, 11),
       ...data,
       updatedAt: new Date().toISOString()
     }
-
     return json(newStatute, { status: 201 })
   } catch (error: any) {
     console.error("Error creating statute:", error)

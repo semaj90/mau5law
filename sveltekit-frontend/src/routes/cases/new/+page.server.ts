@@ -1,11 +1,9 @@
 import type { Actions } from './$types.js';
-
 import { cases } from "$lib/server/db/schema-postgres";
 import { fail, redirect } from "@sveltejs/kit";
 import { randomUUID } from "crypto";
 import { db } from "$lib/server/db";
-
-export const actions: Actions = {;
+export const actions: Actions = {
   create: async ({ request, locals }) => {
     const form = await request.formData();
     const title = form.get("title")?.toString();
@@ -13,7 +11,6 @@ export const actions: Actions = {;
     const dangerScore = Number(form.get("dangerScore")) || 0;
     const status = form.get("status")?.toString() || "open";
     const aiSummary = form.get("aiSummary")?.toString() || null;
-
     if (!title || !description) {
       return fail(400, { error: "Title and description are required." });
     }
@@ -21,11 +18,9 @@ export const actions: Actions = {;
     // Get session from Auth.js
     const user = locals.user;
     const createdBy = user?.id;
-
     if (!createdBy) {
       return fail(401, { error: "Not authenticated." });
     }
-    
     // TypeScript assertion: createdBy is guaranteed to be string after null check
     const userId: string = createdBy;
     try {

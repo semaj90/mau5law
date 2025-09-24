@@ -1,13 +1,11 @@
 import * as path from 'path';
 import * as crypto from 'crypto';
 import { z } from 'zod';
-
 // src/lib/stores/multiStepFormMachine.ts - XState v5 Multi-step Forms with Superforms & Zod
 import { setup, createActor, assign, fromPromise } from 'xstate';
 import { cases, evidence } from '../server/db/schema-unified.js';
 import { db } from '../server/db/drizzle.js';
-
-// Zod Validation Schemas;
+// Zod Validation Schemas
 export const CaseFormSchema = z.object({
   // Step 1: Basic Information
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -15,25 +13,21 @@ export const CaseFormSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
   incidentDate: z.string().optional(),
   location: z.string().optional(),
-
-  // Step 2: Classification,
+  // Step 2: Classification
   priority: z.enum(["low", "medium", "high", "urgent"]),
   status: z.enum(["open", "closed", "pending", "archived", "under_review"]),
   category: z.string().min(1, "Category is required"),
   dangerScore: z.number().min(0).max(10).default(0),
   estimatedValue: z.number().optional(),
   jurisdiction: z.string().optional(),
-
-  // Step 3: Assignment,
+  // Step 3: Assignment
   leadProsecutor: z.string().optional(),
   assignedTeam: z.array(z.string()).default([]),
   tags: z.array(z.string()).default([]),
-
   // Step 4: Additional Details
-  aiSummary: z.string().optional(),;
+  aiSummary: z.string().optional(),
   metadata: z.record(z.any()).default({})
 });
-
 export const EvidenceFormSchema = z.object({
   // Step 1: Evidence Details
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -48,33 +42,28 @@ export const EvidenceFormSchema = z.object({
     "testimony"
   ]),
   subType: z.string().optional(),
-
   // Step 2: File Information
   fileName: z.string().optional(),
   fileSize: z.number().optional(),
   mimeType: z.string().optional(),
   hash: z.string().optional(),
-
   // Step 3: Chain of Custody
   collectedAt: z.string().optional(),
   collectedBy: z.string().optional(),
   location: z.string().optional(),
   chainOfCustody: z.array(z.any()).default([]),
-
-  // Step 4: Classification,
+  // Step 4: Classification
   tags: z.array(z.string()).default([]),
   isAdmissible: z.boolean().default(true),
   confidentialityLevel: z
     .enum(["public", "standard", "confidential", "classified"])
     .default("standard"),
-
-  // Step 5: Analysis,
+  // Step 5: Analysis
   aiAnalysis: z.record(z.any()).default({}),
   aiTags: z.array(z.string()).default([]),
-  aiSummary: z.string().optional(),;
+  aiSummary: z.string().optional(),
   summary: z.string().optional()
 });
-
 export const CriminalFormSchema = z.object({
   // Step 1: Personal Information
   firstName: z.string().min(1, "First name is required"),
@@ -83,23 +72,19 @@ export const CriminalFormSchema = z.object({
   aliases: z.array(z.string()).default([]),
   dateOfBirth: z.string().optional(),
   placeOfBirth: z.string().optional(),
-
   // Step 2: Contact Information
   address: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().email().optional().or(z.literal("")),
-
-  // Step 3: Identification,
+  // Step 3: Identification
   socialSecurityNumber: z.string().optional(),
   driversLicense: z.string().optional(),
-
   // Step 4: Physical Description
   height: z.number().optional(),
   weight: z.number().optional(),
   eyeColor: z.string().optional(),
   hairColor: z.string().optional(),
   distinguishingMarks: z.string().optional(),
-
   // Step 5: Status & Classification
   status: z.enum([
     "suspect",
@@ -112,116 +97,110 @@ export const CriminalFormSchema = z.object({
   currentLocation: z.string().optional(),
   knownAssociates: z.array(z.string()).default([]),
   criminalHistory: z.array(z.any()).default([]),
-
   // Step 6: Case Association
   associatedCases: z.array(z.string()).default([]),
-  notes: z.string().optional(),;
+  notes: z.string().optional(),
   metadata: z.record(z.any()).default({})
 });
-
-// Form step validation schemas;
+// Form step validation schemas
 export const CaseFormSteps = {
-  step1: CaseFormSchema.pick({
-    title: true,
-    caseNumber: true,
-    description: true,
-    incidentDate: true,
+  step1: CaseFormSchema.pick({,
+    title: true
+    caseNumber: true
+    description: true
+    incidentDate: true
     location: true
   }),
-  step2: CaseFormSchema.pick({
-    priority: true,
-    status: true,
-    category: true,
-    dangerScore: true,
-    estimatedValue: true,
+  step2: CaseFormSchema.pick({,
+    priority: true
+    status: true
+    category: true
+    dangerScore: true
+    estimatedValue: true
     jurisdiction: true
   }),
-  step3: CaseFormSchema.pick({
-    leadProsecutor: true,
-    assignedTeam: true,
+  step3: CaseFormSchema.pick({,
+    leadProsecutor: true
+    assignedTeam: true
     tags: true
   }),
-  step4: CaseFormSchema.pick({
-    aiSummary: true,;
+  step4: CaseFormSchema.pick({,
+    aiSummary: true
     metadata: true
   })
 };
-
 export const EvidenceFormSteps = {
-  step1: EvidenceFormSchema.pick({
-    title: true,
-    description: true,
-    evidenceType: true,
+  step1: EvidenceFormSchema.pick({,
+    title: true
+    description: true
+    evidenceType: true
     subType: true
   }),
-  step2: EvidenceFormSchema.pick({
-    fileName: true,
-    fileSize: true,
-    mimeType: true,
+  step2: EvidenceFormSchema.pick({,
+    fileName: true
+    fileSize: true
+    mimeType: true
     hash: true
   }),
-  step3: EvidenceFormSchema.pick({
-    collectedAt: true,
-    collectedBy: true,
-    location: true,
+  step3: EvidenceFormSchema.pick({,
+    collectedAt: true
+    collectedBy: true
+    location: true
     chainOfCustody: true
   }),
-  step4: EvidenceFormSchema.pick({
-    tags: true,
-    isAdmissible: true,
+  step4: EvidenceFormSchema.pick({,
+    tags: true
+    isAdmissible: true
     confidentialityLevel: true
   }),
-  step5: EvidenceFormSchema.pick({
-    aiAnalysis: true,
-    aiTags: true,
-    aiSummary: true,;
+  step5: EvidenceFormSchema.pick({,
+    aiAnalysis: true
+    aiTags: true
+    aiSummary: true
     summary: true
   })
 };
-
 export const CriminalFormSteps = {
-  step1: CriminalFormSchema.pick({
-    firstName: true,
-    lastName: true,
-    middleName: true,
-    aliases: true,
-    dateOfBirth: true,
+  step1: CriminalFormSchema.pick({,
+    firstName: true
+    lastName: true
+    middleName: true
+    aliases: true
+    dateOfBirth: true
     placeOfBirth: true
   }),
-  step2: CriminalFormSchema.pick({
-    address: true,
-    phone: true,
+  step2: CriminalFormSchema.pick({,
+    address: true
+    phone: true
     email: true
   }),
-  step3: CriminalFormSchema.pick({
-    socialSecurityNumber: true,
+  step3: CriminalFormSchema.pick({,
+    socialSecurityNumber: true
     driversLicense: true
   }),
-  step4: CriminalFormSchema.pick({
-    height: true,
-    weight: true,
-    eyeColor: true,
-    hairColor: true,
+  step4: CriminalFormSchema.pick({,
+    height: true
+    weight: true
+    eyeColor: true
+    hairColor: true
     distinguishingMarks: true
   }),
-  step5: CriminalFormSchema.pick({
-    status: true,
-    dangerLevel: true,
-    currentLocation: true,
-    knownAssociates: true,
+  step5: CriminalFormSchema.pick({,
+    status: true
+    dangerLevel: true
+    currentLocation: true
+    knownAssociates: true
     criminalHistory: true
   }),
-  step6: CriminalFormSchema.pick({
-    associatedCases: true,
-    notes: true,;
+  step6: CriminalFormSchema.pick({,
+    associatedCases: true
+    notes: true
     metadata: true
   })
 };
-
-// Database operations;
+// Database operations
 const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string; data: any } }) => {
     const { formType, data } = input;
-
     try {
       switch (formType) {
         case "case":
@@ -235,7 +214,6 @@ const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string
             })
             .returning();
           return { success: true, id: newCase.id, data: newCase };
-
         case "evidence":
           const [newEvidence] = await db
             .insert(evidence);
@@ -247,7 +225,6 @@ const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string
             })
             .returning();
           return { success: true, id: newEvidence.id, data: newEvidence };
-
         case "criminal":
           const [newCriminal] = await db
             // TODO: verify correct table name; placeholder symbol 'criminals' was likely corrupted
@@ -261,7 +238,6 @@ const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string
             })
             .returning();
           return { success: true, id: newCriminal.id, data: newCriminal };
-
         default:
           throw new Error(`Unknown form type: ${formType}`);
       }
@@ -271,15 +247,12 @@ const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string
     }
   },
 );
-
-// Vector embedding integration;
+// Vector embedding integration
 const generateEmbeddings = fromPromise(async ({ input }: { input: { formType: string; data: any; id: string } }) => {
     const { formType, data, id } = input;
-
     try {
       // Create searchable text content
       let searchableContent = "";
-
       switch (formType) {
         case "case":
           searchableContent = `${data.title} ${data.description} ${data.category} ${data.tags?.join(" ") || ""}`;
@@ -291,25 +264,22 @@ const generateEmbeddings = fromPromise(async ({ input }: { input: { formType: st
           searchableContent = `${data.firstName} ${data.lastName} ${data.aliases?.join(" ") || ""} ${data.notes || ""}`;
           break;
       }
-
-      // Generate embeddings using Ollama or other embedding service;
+      // Generate embeddings using Ollama or other embedding service
       const response = await fetch("/api/embeddings/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: searchableContent,
+        body: JSON.stringify({,
+          text: searchableContent
           metadata: {
             id,
-            type: formType,;
+            type: formType
             timestamp: new Date().toISOString()
           }
         })
       });
-
       if (!response.ok) {
         throw new Error("Failed to generate embeddings");
       }
-
       const embeddings = await response.json();
       return { success: true, embeddings };
     } catch (error: any) {
@@ -318,27 +288,26 @@ const generateEmbeddings = fromPromise(async ({ input }: { input: { formType: st
     }
   },
 );
-
-// Multi-step form machine setup;
+// Multi-step form machine setup
 export const multiStepFormMachine = setup({
-  types: {;
-    context: Record<string, any> as {
+  types: {
+    context: { [key: string]: any } as {
       formType: "case" | "evidence" | "criminal";
       currentStep: number;
       totalSteps: number;
-      formData: Record<string, any>;
-      stepData: Record<string, any>;
+      formData: { [key: string]: any };
+      stepData: { [key: string]: any };
       errors: Record<string, string[]>;
       isValid: boolean;
       isSubmitting: boolean;
       submitResult: any;
       userId: string;
     },
-    events: Record<string, any> as
-      | { type: "NEXT"; stepData: Record<string, any> }
+    events: { [key: string]: any } as
+      | { type: "NEXT"; stepData: { [key: string]: any } }
       | { type: "PREVIOUS" }
       | { type: "GOTO_STEP"; step: number }
-      | { type: "UPDATE_STEP_DATA"; data: Record<string, any> }
+      | { type: "UPDATE_STEP_DATA"; data: { [key: string]: any } }
       | { type: "VALIDATE_STEP" }
       | { type: "SUBMIT" }
       | { type: "RESET" }
@@ -355,12 +324,12 @@ export const multiStepFormMachine = setup({
     formType: "case",
     currentStep: 1,
     totalSteps: 4,
-    formData: Record<string, any>,
-    stepData: Record<string, any>,
-    errors: Record<string, any>,
-    isValid: false,
-    isSubmitting: false,
-    submitResult: null,
+    formData: { [key: string]: any },
+    stepData: { [key: string]: any },
+    errors: { [key: string]: any },
+    isValid: false
+    isSubmitting: false
+    submitResult: null
     userId: ""
   },
   states: {
@@ -368,20 +337,20 @@ export const multiStepFormMachine = setup({
       on: {
         NEXT: {
           target: "validating",
-          actions: assign({
+          actions: assign({,
             stepData: ({ event }) => event.stepData
           })
         },
         PREVIOUS: {
           actions: assign({
             currentStep: ({ context }) => Math.max(1, context.currentStep - 1),
-            errors: Record<string, any>
+            errors: { [key: string]: any }
           })
         },
         GOTO_STEP: {
           actions: assign({
             currentStep: ({ event }) => event.step,
-            errors: Record<string, any>
+            errors: { [key: string]: any }
           })
         },
         UPDATE_STEP_DATA: {
@@ -392,7 +361,7 @@ export const multiStepFormMachine = setup({
             })
           })
         },
-        SET_FORM_TYPE: {;
+        SET_FORM_TYPE: {
           actions: assign({
             formType: ({ event }) => event.formType,
             currentStep: 1,
@@ -408,9 +377,9 @@ export const multiStepFormMachine = setup({
                   return 4;
               }
             },
-            formData: Record<string, any>,
-            stepData: Record<string, any>,
-            errors: Record<string, any>
+            formData: { [key: string]: any },
+            stepData: { [key: string]: any },
+            errors: { [key: string]: any }
           })
         },
         SUBMIT: {
@@ -420,10 +389,10 @@ export const multiStepFormMachine = setup({
         RESET: {
           actions: assign({
             currentStep: 1,
-            formData: Record<string, any>,
-            stepData: Record<string, any>,
-            errors: Record<string, any>,
-            isValid: false,
+            formData: { [key: string]: any },
+            stepData: { [key: string]: any },
+            errors: { [key: string]: any },
+            isValid: false
             submitResult: null
           })
         }
@@ -431,15 +400,14 @@ export const multiStepFormMachine = setup({
     },
     validating: {
       entry: assign({
-        isValid: false,
-        errors: Record<string, any>
-      }),;
+        isValid: false
+        errors: { [key: string]: any }
+      }),
       always: [;
         {
-          target: "editing",;
+          target: "editing",
           guard: ({ context }) => {
             const { formType, currentStep, stepData } = context;
-
             try {
               // Validate current step data
               let stepSchema;
@@ -456,7 +424,6 @@ export const multiStepFormMachine = setup({
                 default:
                   return false;
               }
-
               stepSchema.parse(stepData);
               return true;
             } catch (error: any) {
@@ -475,23 +442,22 @@ export const multiStepFormMachine = setup({
               return false;
             }
           },
-          actions: assign({
-            isValid: true,
+          actions: assign({,
+            isValid: true
             formData: ({ context }) => ({
               ...context.formData,
               ...context.stepData
             }),
             currentStep: ({ context }) =>
               Math.min(context.totalSteps, context.currentStep + 1),
-            stepData: Record<string, any>,
-            errors: Record<string, any>
+            stepData: { [key: string]: any },
+            errors: { [key: string]: any }
           })
         },
         {
-          target: "editing",;
+          target: "editing",
           actions: assign(({ context }) => {
             const { formType, currentStep, stepData } = context;
-
             try {
               let stepSchema;
               switch (formType) {
@@ -505,9 +471,8 @@ export const multiStepFormMachine = setup({
                   stepSchema = CriminalFormSteps[`step${currentStep}`];
                   break;
               }
-
               stepSchema.parse(stepData);
-              return { isValid: true, errors: Record<string, any> };
+              return { isValid: true, errors: { [key: string]: any } };
             } catch (error: any) {
               if (error instanceof z.ZodError) {
                 const fieldErrors: Record<string, string[]> = {};
@@ -521,7 +486,7 @@ export const multiStepFormMachine = setup({
                 return { isValid: false, errors: fieldErrors };
               }
               return {
-                isValid: false,
+                isValid: false
                 errors: { general: ["Validation failed"] }
               };
             }
@@ -545,15 +510,15 @@ export const multiStepFormMachine = setup({
         }),
         onDone: {
           target: "generating_embeddings",
-          actions: assign({
+          actions: assign({,
             submitResult: ({ event }) => event.output
           })
         },
         onError: {
           target: "submit_error",
-          actions: assign({
+          actions: assign({,
             submitResult: ({ event }) => ({
-              success: false,
+              success: false
               error: event.error
             }),
             isSubmitting: false
@@ -574,18 +539,18 @@ export const multiStepFormMachine = setup({
         }),
         onDone: {
           target: "success",
-          actions: assign({
-            isSubmitting: false,
+          actions: assign({,
+            isSubmitting: false
             submitResult: ({ context, event }) => ({
               ...context.submitResult,
               embeddings: event.output
             })
           })
         },
-        onError: {;
-          target: "success", // Continue even if embeddings fail;
-          actions: assign({
-            isSubmitting: false,
+        onError: {
+          target: "success", // Continue even if embeddings fail
+          actions: assign({,
+            isSubmitting: false
             submitResult: ({ context, event }) => ({
               ...context.submitResult,
               embeddingsError: event.error
@@ -598,12 +563,12 @@ export const multiStepFormMachine = setup({
       on: {
         RESET: {
           target: "editing",
-          actions: assign({
+          actions: assign({,
             currentStep: 1,
-            formData: Record<string, any>,
-            stepData: Record<string, any>,
-            errors: Record<string, any>,
-            isValid: false,
+            formData: { [key: string]: any },
+            stepData: { [key: string]: any },
+            errors: { [key: string]: any },
+            isValid: false
             submitResult: null
           })
         }
@@ -616,13 +581,13 @@ export const multiStepFormMachine = setup({
         },
         RESET: {
           target: "editing",
-          actions: assign({
+          actions: assign({,
             currentStep: 1,
-            formData: Record<string, any>,
-            stepData: Record<string, any>,;
-            errors: Record<string, any>,
-            isValid: false,
-            submitResult: null,
+            formData: { [key: string]: any },
+            stepData: { [key: string]: any },
+            errors: { [key: string]: any },
+            isValid: false
+            submitResult: null
             isSubmitting: false
           })
         }
@@ -630,10 +595,9 @@ export const multiStepFormMachine = setup({
     }
   }
 });
-
 // Helper functions for Svelte components
 export function createMultiStepFormActor(
-  userId: string,
+  userId: string
   formType: "case" | "evidence" | "criminal" = "case";
 ) {
   const actor = createActor(multiStepFormMachine, {
@@ -643,11 +607,9 @@ export function createMultiStepFormActor(
       totalSteps: formType === "case" ? 4 : formType === "evidence" ? 5 : 6
     }
   });
-
   actor.start();
   return actor;
 }
-
 export function getStepSchema(formType: string, step: number) {
   switch (formType) {
     case "case":
@@ -660,7 +622,6 @@ export function getStepSchema(formType: string, step: number) {
       throw new Error(`Unknown form type: ${formType}`);
   }
 }
-
 export function getFullSchema(formType: string) {
   switch (formType) {
     case "case":
@@ -673,21 +634,19 @@ export function getFullSchema(formType: string) {
       throw new Error(`Unknown form type: ${formType}`);
   }
 }
-
-// Export types for TypeScript;
+// Export types for TypeScript
 export type MultiStepFormContext = {
   formType: "case" | "evidence" | "criminal";
   currentStep: number;
   totalSteps: number;
-  formData: Record<string, any>;
-  stepData: Record<string, any>;
+  formData: { [key: string]: any };
+  stepData: { [key: string]: any };
   errors: Record<string, string[]>;
   isValid: boolean;
   isSubmitting: boolean;
   submitResult: any;
   userId: string;
 };
-
 export type CaseFormData = z.infer<typeof CaseFormSchema>;
 export type EvidenceFormData = z.infer<typeof EvidenceFormSchema>;
 export type CriminalFormData = z.infer<typeof CriminalFormSchema>;

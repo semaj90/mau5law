@@ -1,9 +1,7 @@
 /**
  * AI Assistant Types - Complete type definitions for multi-backend AI system
  */
-
 export type Backend = 'tensorRT-llm' | 'ollama' | 'webasm' | 'go-micro' | 'gemma' | 'openai' | 'azure' | 'anthropic' | 'local-llm' | 'custom-api' | 'google-palm' | 'cohere' | 'ai21' | 'llama2-server';
-
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
@@ -22,7 +20,6 @@ export interface ChatMessage {
     cacheHit?: boolean;
   };
 }
-
 export interface AssistantConfig {
   temperature: number;
   maxTokens: number;
@@ -31,7 +28,6 @@ export interface AssistantConfig {
   autoSwitchBackend: boolean;
   persistHistory: boolean;
 }
-
 export interface ChatSession {
   id: string;
   title?: string;
@@ -45,7 +41,6 @@ export interface ChatSession {
     averageResponseTime: number;
   };
 }
-
 export interface BackendResponse {
   text: string;
   model: string;
@@ -57,7 +52,6 @@ export interface BackendResponse {
   processingNodes?: string[];
   cacheHit?: boolean;
 }
-
 export interface BackendHealth {
   backend: Backend;
   healthy: boolean;
@@ -67,13 +61,11 @@ export interface BackendHealth {
   capabilities?: string[];
   loadLevel?: 'low' | 'medium' | 'high' | 'critical';
 }
-
 export interface SearchResult {
   item: ChatMessage;
   score?: number;
   matches?: any[];
 }
-
 export interface ContextualEmbedding {
   id: string;
   content: string;
@@ -86,7 +78,6 @@ export interface ContextualEmbedding {
     importance?: number;
   };
 }
-
 export interface SemanticSearchResult {
   id: string;
   content: string;
@@ -94,8 +85,7 @@ export interface SemanticSearchResult {
   metadata?: any;
   context?: string;
 }
-
-// Postgres/pgvector types;
+// Postgres/pgvector types
 export interface VectorSearchQuery {
   query: string;
   embedding?: number[];
@@ -107,7 +97,6 @@ export interface VectorSearchQuery {
     dateRange?: [number, number];
   };
 }
-
 export interface VectorSearchResult {
   id: string;
   content: string;
@@ -115,8 +104,7 @@ export interface VectorSearchResult {
   timestamp: number;
   metadata?: any;
 }
-
-// Loki.js specific types;
+// Loki.js specific types
 export interface LokiMessage extends ChatMessage {
   $loki?: number;
   meta?: {
@@ -125,8 +113,7 @@ export interface LokiMessage extends ChatMessage {
     version: number;
   };
 }
-
-// Fuse.js configuration;
+// Fuse.js configuration
 export interface FuseSearchOptions {
   keys: string[];
   includeScore: boolean;
@@ -134,8 +121,7 @@ export interface FuseSearchOptions {
   includeMatches: boolean;
   limit?: number;
 }
-
-// Performance monitoring;
+// Performance monitoring
 export interface PerformanceMetrics {
   backend: Backend;
   averageLatency: number;
@@ -144,7 +130,6 @@ export interface PerformanceMetrics {
   lastUpdated: number;
   healthScore: number;
 }
-
 export interface BackendCapabilities {
   name: Backend;
   maxTokens: number;
@@ -162,8 +147,7 @@ export interface BackendCapabilities {
     currency: string;
   };
 }
-
-// Legal context specific types;
+// Legal context specific types
 export interface LegalContext {
   domain: 'contracts' | 'deeds' | 'litigation' | 'compliance' | 'general';
   jurisdiction?: string;
@@ -172,24 +156,22 @@ export interface LegalContext {
   caseId?: string;
   documentIds?: string[];
 }
-
 export interface LegalAnalysisResult {
   summary: string;
   keyPoints: string[];
-  risks: {;
+  risks: {
     level: 'low' | 'medium' | 'high' | 'critical';
     description: string;
     recommendation?: string;
   }[];
-  citations: {;
+  citations: {
     type: 'statute' | 'case_law' | 'regulation' | 'contract';
     citation: string;
     relevance: number;
   }[];
   confidence: number;
 }
-
-// WebGPU and CUDA integration types;
+// WebGPU and CUDA integration types
 export interface GPUAcceleration {
   enabled: boolean;
   device?: 'webgpu' | 'cuda' | 'opencl';
@@ -201,15 +183,13 @@ export interface GPUAcceleration {
     throughput: number;
   };
 }
-
 export interface WebGPUConfig {
   maxBufferSize: number;
   preferredLimits?: Record<string, number>;
   enableOptimizations: boolean;
   fallbackToCPU: boolean;
 }
-
-// Go microservice types;
+// Go microservice types
 export interface GoMicroRequest {
   service: string;
   method: string;
@@ -221,7 +201,6 @@ export interface GoMicroRequest {
     backoffMs: number;
   };
 }
-
 export interface GoMicroResponse {
   success: boolean;
   data?: any;
@@ -233,8 +212,7 @@ export interface GoMicroResponse {
     retryCount?: number;
   };
 }
-
-// WebAssembly specific types;
+// WebAssembly specific types
 export interface WebASMConfig {
   modelPath: string;
   contextLength: number;
@@ -243,7 +221,6 @@ export interface WebASMConfig {
   memorySize: number;
   cacheSize: number;
 }
-
 export interface WebASMResponse {
   text: string;
   tokensGenerated: number;
@@ -253,10 +230,8 @@ export interface WebASMResponse {
   cacheHit: boolean;
   processingPath: 'cpu' | 'gpu' | 'hybrid';
 }
-
 // Export formats
 export type ExportFormat = 'json' | 'markdown' | 'pdf' | 'docx' | 'csv';
-
 export interface ExportOptions {
   format: ExportFormat;
   includeMetadata: boolean;
@@ -267,8 +242,7 @@ export interface ExportOptions {
     hasLegalContext?: boolean;
   };
 }
-
-// Real-time features;
+// Real-time features
 export interface RealtimeConfig {
   enableVoiceInput: boolean;
   enableVoiceOutput: boolean;
@@ -281,15 +255,13 @@ export interface RealtimeConfig {
     pitch: number;
   };
 }
-
 export interface VoiceInputResult {
   text: string;
   confidence: number;
   language: string;
   duration: number;
 }
-
-// Integration with existing legal platform;
+// Integration with existing legal platform
 export interface LegalPlatformIntegration {
   evidenceId?: string;
   caseId?: string;
@@ -302,8 +274,7 @@ export interface LegalPlatformIntegration {
     share: boolean;
   };
 }
-
-// Cache optimization types;
+// Cache optimization types
 export interface CacheStrategy {
   type: 'lru' | 'lfu' | 'ttl' | 'hybrid';
   maxSize: number;
@@ -311,7 +282,6 @@ export interface CacheStrategy {
   compressionEnabled: boolean;
   persistToDisk: boolean;
 }
-
 export interface CacheMetrics {
   hitRate: number;
   missRate: number;
@@ -321,9 +291,7 @@ export interface CacheMetrics {
   memoryUsage: number;
   diskUsage: number;
 }
-
 // === Svelte 5 Integration Enhancements ===
-
 /**
  * Svelte 5 reactive store for AI assistant state
  */
@@ -334,7 +302,6 @@ export interface AIAssistantReactiveState {
   activeBackend: Backend;
   error: string | null;
 }
-
 /**
  * Event handlers for Svelte 5 components
  */
@@ -345,7 +312,6 @@ export interface AIAssistantEventHandlers {
   onBackendChanged?: (backend: Backend) => void;
   onError?: (error: string) => void;
 }
-
 /**
  * Component props interface for Svelte 5
  */
@@ -357,7 +323,6 @@ export interface AIAssistantProps {
   readonly?: boolean;
   autoFocus?: boolean;
 }
-
 /**
  * Type guards for runtime validation
  */
@@ -365,17 +330,14 @@ export const isChatMessage = (value: unknown): value is ChatMessage => {
   return typeof value === 'object' && value !== null &&
     'id' in value && 'role' in value && 'content' in value;
 };
-
 export const isBackendResponse = (value: unknown): value is BackendResponse => {
   return typeof value === 'object' && value !== null &&
     'text' in value && 'backend' in value && 'model' in value;
 };
-
 export const isLegalContext = (value: unknown): value is LegalContext => {
   return typeof value === 'object' && value !== null &&
     'domain' in value && 'confidentiality' in value;
 };
-
 /**
  * Enhanced streaming response interface
  */
@@ -387,7 +349,6 @@ export interface StreamingResponse {
   backend: Backend;
   timestamp: number;
 }
-
 /**
  * WebGPU integration for enhanced performance
  */
@@ -397,10 +358,8 @@ export interface WebGPUAIConfig extends WebGPUConfig {
   batchSize: number;
   precision: 'fp16' | 'fp32' | 'int8';
 }
-
 // === Re-exports for compatibility ===
 export type { ChatMessage as AIMessage };
 export type { ChatSession as AISession };
 export type { BackendResponse as AIResponse };
 export type { LegalContext as AILegalContext };
-

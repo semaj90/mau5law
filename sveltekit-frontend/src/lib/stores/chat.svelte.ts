@@ -3,7 +3,6 @@
 //
 // Note: This file uses Svelte 5 runes in a .svelte.ts module.
 // The Svelte compiler will transform $state/$derived appropriately.
-
 import type {
   ChatMessage,
   ChatSession,
@@ -12,13 +11,10 @@ import type {
   UserActivity,
   RAGContext
 } from "$lib/types/ai-chat";
-
 // Internal shapes
-
 // Map of sessionId -> messages
 export type SessionMap = Map<string, ChatMessage[]>;
-
-// Core state - using a store object pattern for Svelte 5 runes;
+// Core state - using a store object pattern for Svelte 5 runes
 const chatStore = (() => {
   let sessions = $state<ChatSession[]>([]);
   let sessionMessages = $state<SessionMap>(new Map();
@@ -27,7 +23,6 @@ const chatStore = (() => {
   let isTyping = $state(false);
   let userActivity = $state<UserActivity[]>([]);
   let recommendations = $state<Recommendation[]>([]);
-
   return {
     get sessions() { return sessions; },
     set sessions(value) { sessions = value; },
@@ -45,8 +40,7 @@ const chatStore = (() => {
     set recommendations(value) { recommendations = value; }
   };
 })();
-
-// Export individual properties for backward compatibility;
+// Export individual properties for backward compatibility
 export const sessions = {
   get value() { return chatStore.sessions; },
   set value(val) { chatStore.sessions = val; }
@@ -75,17 +69,14 @@ export const recommendations = {
   get value() { return chatStore.recommendations; },
   set value(val) { chatStore.recommendations = val; }
 };
-
 // Deriveds
 export const currentSession = $derived(
   chatStore.sessions.find((s) => s.id === chatStore.currentSessionId) ?? null
 );
-
 export const currentMessages = $derived(
   chatStore.currentSessionId ? (chatStore.sessionMessages.get(chatStore.currentSessionId) ?? []) : []
 );
-
-// Session helpers;
+// Session helpers
 export function createSession(input: {
   id: string;
   title?: string;
@@ -97,9 +88,9 @@ export function createSession(input: {
     id: input.id,
     title: input.title ?? "New Chat",
     created: input.created ?? now,
-    updated: now,
+    updated: now
     messageCount: 0,
-    status: "active",;
+    status: "active",
     context: input.context
   };
   chatStore.sessions = [session, ...chatStore.sessions.filter((s) => s.id !== session.id)];
@@ -109,11 +100,9 @@ export function createSession(input: {
   chatStore.currentSessionId = session.id;
   return session;
 }
-
 export function switchSession(id: string) {
   if (chatStore.sessions.some((s) => s.id === id)) chatStore.currentSessionId = id;
 }
-
 export function addMessage(msg: ChatMessage) {
   const list = chatStore.sessionMessages.get(msg.sessionId) ?? [];
   list.push(msg);
@@ -126,8 +115,7 @@ export function addMessage(msg: ChatMessage) {
     chatStore.sessions = [updated, ...chatStore.sessions.filter((s) => s.id !== updated.id)];
   }
 }
-
-// Presence tracking;
+// Presence tracking
 export function setUserActivity(activity: UserActivity) {
   const i = chatStore.userActivity.findIndex(
     (a) => a.userId === activity.userId && a.sessionId === activity.sessionId
@@ -135,18 +123,16 @@ export function setUserActivity(activity: UserActivity) {
   if (i === -1) chatStore.userActivity.push(activity);
   else chatStore.userActivity[i] = activity;
 }
-
 export function clearStaleActivity(staleMs = 60_000) {
   const cutoff = Date.now() - staleMs;
   chatStore.userActivity = chatStore.userActivity.filter((a) => a.lastSeen >= cutoff);
 }
-
-// Time-aware context window selection (recency + role weighting);
+// Time-aware context window selection (recency + role weighting)
 export function getContextWindow(opts: {
   sessionId: string;
   maxTokens?: number; // soft budget
   maxMessages?: number;
-  halfLifeMinutes?: number; // recency decay half-life;
+  halfLifeMinutes?: number; // recency decay half-life
 }) {
   const {
     sessionId,
@@ -162,13 +148,11 @@ export function getContextWindow(opts: {
   };
   const roleWeight = (role: ChatMessage["role"]) =>
     role === "assistant" ? 1.0 : role === "user" ? 0.9 : 0.5;
-
   const scored = messages.map((m) => ({
-    msg: m,;
+    msg: m
     score: decay(m.timestamp) * roleWeight(m.role),
     estTokens: Math.ceil(m.content.length / 4)
   });
-
   // Sort by weighted recency, then take until budgets hit
   scored.sort((a, b) => b.score - a.score);
   const out: ChatMessage[] = [];
@@ -183,12 +167,10 @@ export function getContextWindow(opts: {
   out.sort((a, b) => a.timestamp - b.timestamp);
   return out;
 }
-
 // Realtime (WebSocket + optional SSE)
 let ws: WebSocket | null = null;
 let heartbeat: number | null = null;
 let es: EventSource | null = null;
-
 export function connectRealtimeWS(
   url = typeof location !== "undefined";
     ? (() => {
@@ -240,7 +222,6 @@ export function connectRealtimeWS(
     chatStore.connectionStatus = "error";
   }
 }
-
 export function connectRealtimeSSE(
   url = typeof location !== "undefined" ? `${location.origin}/api/realtime` : "";
 ) {
@@ -266,19 +247,17 @@ export function connectRealtimeSSE(
     chatStore.connectionStatus = "error";
   }
 }
-
 export function sendRealtime(payload: any) {
   if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(payload);
-  // For SSE, send via fetch POST to /api/realtime;
+  // For SSE, send via fetch POST to /api/realtime
   if (!ws && typeof fetch !== "undefined") {
     fetch("/api/realtime", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },;
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     }).catch(() => {});
   }
 }
-
 export function disconnectRealtime() {
   if (heartbeat) clearInterval(heartbeat);
   if (ws && ws.readyState === WebSocket.OPEN) ws.close();

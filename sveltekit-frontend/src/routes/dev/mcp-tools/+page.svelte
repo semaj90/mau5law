@@ -1,12 +1,10 @@
 <script lang="ts">
   import MCPToolsDemo from '$lib/components/dev/MCPToolsDemo.svelte';
 </script>
-
 <svelte:head>
   <title>Context7 MCP Tools - Legal AI Development</title>
   <meta name="description" content="Test and explore Context7 MCP tools for stack analysis and best practices" />
 </svelte:head>
-
 <main class="min-h-screen bg-gray-50">
   <div class="max-w-7xl mx-auto py-8">
     <div class="mb-8 text-center">
@@ -14,16 +12,13 @@
         Context7 MCP Tools Integration
       </h1>
       <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-        Comprehensive toolset for SvelteKit legal AI development with stack analysis, 
+        Comprehensive toolset for SvelteKit legal AI development with stack analysis,
         best practices generation, and intelligent integration suggestions.
       </p>
     </div>
-
     <MCPToolsDemo />
-
     <div class="mt-12 bg-white border border-gray-200 rounded-lg p-6">
       <h2 class="text-xl font-semibold mb-4">Integration Status</h2>
-      
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="space-y-3">
           <h3 class="font-medium text-gray-900">🔧 MCP Server</h3>
@@ -35,7 +30,6 @@
             <li>✅ Integration suggestions</li>
           </ul>
         </div>
-
         <div class="space-y-3">
           <h3 class="font-medium text-gray-900">🤖 AI Systems</h3>
           <ul class="space-y-1 text-sm text-gray-600">
@@ -46,7 +40,6 @@
             <li>✅ Gemma3 Legal model integration</li>
           </ul>
         </div>
-
         <div class="space-y-3">
           <h3 class="font-medium text-gray-900">📚 Documentation</h3>
           <ul class="space-y-1 text-sm text-gray-600">
@@ -58,7 +51,6 @@
           </ul>
         </div>
       </div>
-
       <div class="mt-6 p-4 bg-blue-50 rounded-md">
         <h4 class="font-medium text-blue-900 mb-2">Available Tools</h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -80,7 +72,6 @@
         </div>
       </div>
     </div>
-
     <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold text-yellow-800 mb-2">Next Steps</h3>
       <ol class="list-decimal list-inside space-y-2 text-yellow-700">

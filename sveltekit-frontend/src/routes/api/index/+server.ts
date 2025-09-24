@@ -1,12 +1,10 @@
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 import { cache } from '$lib/server/cache/redis'
-
 // Small ingest endpoint: text -> cache key -> queued to backends (stub)
 export const POST: RequestHandler = async ({ request }) => {
   const body = await request.json()
   const { text, model = 'nomic-embed-text', tags = [], id, embedding } = body || {}
-
   // If embedding is provided, index immediately (fan-out best effort)
   if (id && Array.isArray(embedding) && embedding.length) {
     try {
@@ -23,7 +21,6 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ ok: false, error: String(e) }, { status: 500 })
     }
   }
-
   if (!text) return json({ error: 'Missing text' }, { status: 400 })
   const key = `ingest:${model}:${btoa(text).slice(0, 32)}`
   await cache.set(key, { text, model, tags }, 10 * 60 * 1000)

@@ -1,4 +1,4 @@
-// User analytics store for Button tracking;
+// User analytics store for Button tracking
 export const userAnalyticsStore = {
   trackButtonClick: (event: any) => {
     // Simple analytics tracking implementation

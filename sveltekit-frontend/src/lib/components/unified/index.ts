@@ -1,6 +1,6 @@
 /**
  * Unified UI Kit - Phase 14
- * 
+ *
  * Perfect integration of bits-ui v2 + Melt Svelte 5 + UnoCSS
  * Features:
  * - GPU-accelerated animations with WebGL/WebGPU
@@ -8,11 +8,9 @@
  * - NES-style memory constraints and pixel effects
  * - Real-time collaboration support
  */
-
 export { default as UnifiedButton } from './UnifiedButton.svelte';
 export { default as UnifiedDialog } from './UnifiedDialog.svelte';
-
-// Export types for TypeScript support;
+// Export types for TypeScript support
 export type UnifiedButtonProps = {
   variant?: 'primary' | 'secondary' | 'legal' | 'evidence' | 'case' | 'ghost';
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -31,7 +29,6 @@ export type UnifiedButtonProps = {
   onclick?: (event: MouseEvent) => void;
   class?: string;
 };
-
 export type UnifiedDialogProps = {
   open?: boolean;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';

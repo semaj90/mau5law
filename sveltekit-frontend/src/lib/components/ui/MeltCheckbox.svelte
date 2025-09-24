@@ -1,13 +1,10 @@
 <script lang="ts">
   	import type {    Snippet    } from 'svelte';
   	import { Checkbox as BitsCheckbox } from 'bits-ui';
-  	import {   } from "svelte";
   	import { cn } from '$lib/utils';
-
   	type CheckedState = boolean | 'indeterminate';
-
   	interface Props {
-  		checked?: CheckedState;
+  		checked?: CheckedStat;
   		disabled?: boolean;
   		required?: boolean;
   		// Form integration
@@ -40,14 +37,12 @@
   		label,
   		description,
   		children,
-  		'aria-label': ariaLabel,
-  		'aria-labelledby': ariaLabelledBy,
-  		'aria-describedby': ariaDescribedBy,
-  		'data-testid': testId,
-  		onCheckedChange;
+  		'aria-label': ariaLabel
+  		'aria-labelledby': ariaLabelledBy
+  		'aria-describedby': ariaDescribedBy
+  		'data-testid': testId
+  		onCheckedChang;
   	}: Props = $props();
-  	
-
   	function handleCheckedChange(newChecked: CheckedState) {
   		if (onCheckedChange) {
   			onCheckedChange(newChecked);
@@ -57,9 +52,8 @@
   	// Default checkbox styles
   	const checkboxClass = cn(
   		'peer h-4 w-4 shrink-0 rounded-sm border border-gray-300 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-gray-900 data-[state=checked]:text-gray-50 data-[state=indeterminate]:bg-gray-900 data-[state=indeterminate]:text-gray-50 dark:border-gray-600 dark:ring-offset-gray-950 dark:focus-visible:ring-gray-800 dark:data-[state=checked]:bg-gray-50 dark:data-[state=checked]:text-gray-900 dark:data-[state=indeterminate]:bg-gray-50 dark:data-[state=indeterminate]:text-gray-900', className);
-  	type $$Props = Props;
+  	type $$Props = Prop;
 </script>
-
 <!-- Hidden input for form submission -->
 {#if name}
 	<input
@@ -70,7 +64,6 @@
 		style="display: none;"
 	/>
 {/if}
-
 <div class="flex items-center space-x-2">
 	<!-- Checkbox -->
 	<BitsCheckbox.Root
@@ -96,11 +89,9 @@
 				</svg>
 			{/if}
 		</BitsCheckbox.Indicator>
-		
 		<!-- Hidden native input -->
 		<BitsCheckbox.Input />
 	</BitsCheckbox.Root>
-	
 	<!-- Label and description -->
 	{#if children}
 		<div class="grid gap-1.5 leading-none">
@@ -109,7 +100,7 @@
 	{:else if label || description}
 		<div class="grid gap-1.5 leading-none">
 			{#if label}
-				<label 
+				<label
 					for={id}
 					class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 				>

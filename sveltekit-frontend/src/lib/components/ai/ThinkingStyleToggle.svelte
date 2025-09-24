@@ -1,7 +1,6 @@
 <!-- Enhanced ThinkingStyleToggle with Nier Automata + Harvard Crimson Theme -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   let {
     enabled = $bindable(false),
     loading = false,
@@ -19,7 +18,6 @@
     onconfigure?: () => void;
     onupgrade?: () => void;
   } = $props();
-
   import { fade, slide, scale } from 'svelte/transition';
   import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
   import Button from '$lib/components/ui/enhanced-bits';
@@ -28,12 +26,11 @@
   let showConfig = $state(false);
   let thinkingDepth = $state('detailed');
   let focusAreas = $state({
-    precedents: true,
-    evidence: true,;
-    compliance: true,;
+    precedents: true
+    evidence: true
+    compliance: true
     alternatives: false;
   });
-
   let iconSize = $derived(size === 'sm' ? 16 : size === 'md' ? 20 : 24);
   let buttonClass = $derived(cn(
     'thinking-toggle',
@@ -42,7 +39,6 @@
     loading ? 'loading' : '',
     !premium ? 'premium-required' : ''
   ));
-
   function handleToggle() {
     if (!premium) {
       onupgrade?.();
@@ -60,7 +56,6 @@
     onupgrade?.();
   }
 </script>
-
 <div class="thinking-style-control">
   <!-- Main Toggle Button -->
   <div
@@ -90,7 +85,6 @@
           <Zap size={iconSize} class="text-current" />
         {/if}
       </div>
-
       <span class="toggle-text ml-2">
         {#if loading}
           Analyzing...
@@ -100,12 +94,10 @@
           Quick Mode
         {/if}
       </span>
-
       {#if premium && enabled}
         <Crown size={12} class="ml-2 text-harvard-gold opacity-80" />
       {/if}
 </Button>
-
     <!-- Configuration Button -->
     {#if premium}
       <Button
@@ -118,7 +110,6 @@
 <Settings size={14} />
 </Button>
     {/if}
-
     <!-- Info Button for non-premium users -->
     {#if !premium}
       <Button
@@ -130,7 +121,6 @@
 <Info size={14} class="text-harvard-gold" />
 </Button>
     {/if}
-
     <!-- Tooltip -->
     {#if showTooltip}
       <div
@@ -177,7 +167,6 @@
       </div>
     {/if}
   </div>
-
   <!-- Configuration Panel -->
   {#if showConfig && premium}
     <div
@@ -188,7 +177,6 @@
         <h4 class="text-foreground font-semibold">Thinking Style Configuration</h4>
         <p class="nes-text is-disabled text-sm">Customize AI reasoning parameters</p>
       </div>
-
       <div class="config-content space-y-4">
         <!-- Reasoning Depth -->
         <div class="setting-group">
@@ -205,7 +193,6 @@
             <option value="comprehensive">Comprehensive (10+ steps)</option>
           </select>
         </div>
-
         <!-- Focus Areas -->
         <div class="setting-group">
           <label class="setting-label">Focus Areas</label>
@@ -245,7 +232,6 @@
           </div>
         </div>
       </div>
-
       <div class="config-actions">
         <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 showConfig = false}>
@@ -257,7 +243,6 @@ Save Configuration
       </div>
     </div>
   {/if}
-
   <!-- Premium Upgrade Banner -->
   {#if !premium}
     <div
@@ -277,10 +262,9 @@ Upgrade Now
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
-  .thinking-style-control {;
+  .thinking-style-control {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -458,9 +442,7 @@ Upgrade Now
     background: linear-gradient(45deg, var(--color-accent-crimson), transparent, var(--color-accent-gold));
     border-radius: inherit;
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: exclude;
+    mask-composite: exclud;
     opacity: 0.6;
 }
 </style>
-
-

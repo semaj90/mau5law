@@ -1,5 +1,4 @@
 // Interface and property augmentations to fix common missing property errors
-
 // Augment common interfaces with missing properties
 declare global {
   interface Document {
@@ -7,15 +6,13 @@ declare global {
     document_chunks?: any;
   }
 }
-
-// Drizzle ORM result augmentations;
+// Drizzle ORM result augmentations
 declare global {
   interface RowList<T> {
     rows: T;
   }
 }
-
-// Redis client augmentations;
+// Redis client augmentations
 declare module 'ioredis' {
   interface Redis {
     ping?(): Promise<string>;
@@ -25,16 +22,14 @@ declare module 'ioredis' {
     on?(event: string, cb: (...args: any[]) => void): void;
   }
 }
-
-// XState type augmentations;
+// XState type augmentations
 declare global {
   interface AssignArgs<TContext, TEvent, TAction, TExpressionEvent, TActor> {
     userContext?: any;
     error?: any;
   }
 }
-
-// AI Service augmentations;
+// AI Service augmentations
 declare global {
   interface AIService {
     taskId?: string;
@@ -43,31 +38,26 @@ declare global {
     activeRequests?: number;
     queueLength?: number;
   }
-
   interface WorkerStatus {
     activeRequests?: number;
     queueLength?: number;
   }
-
   interface WorkerMessage {
     taskId?: string;
   }
 }
-
-// Cache service augmentations;
+// Cache service augmentations
 declare global {
   interface CacheOptions {
     ttl: number;
     contentType?: string;
   }
-  
-  // Worker message types;
+  // Worker message types
   interface WorkerMessage {
     taskId?: string;
     type: "error" | "status" | "result" | "task" | "TASK_STARTED" | "TASK_COMPLETED" | "TASK_ERROR" | "TASK_CANCELLED" | "STATUS_UPDATE";
     data?: unknown;
   }
-  
   // Enrichment job interface
   interface EnrichmentJob {
     id: string;
@@ -80,8 +70,7 @@ declare global {
     data: Record<string, unknown>;
   }
 }
-
-// QdrantClient augmentations;
+// QdrantClient augmentations
 declare module '@qdrant/qdrant-js' {
   interface QdrantClient {
     baseUrl?: string;
@@ -89,7 +78,6 @@ declare module '@qdrant/qdrant-js' {
     retrieve?(collection: string, ids: string[]): Promise<any>;
   }
 }
-
 // Connection interface for AMQP
 declare global {
   interface Connection {
@@ -102,8 +90,7 @@ declare global {
     close?(): void;
   }
 }
-
-// LokiJS types;
+// LokiJS types
 declare global {
   namespace loki {
     interface LokiMemoryAdapter {
@@ -111,20 +98,16 @@ declare global {
     }
   }
 }
-
-// Ollama types;
+// Ollama types
 declare global {
   interface OllamaResponse {
     content?: string;
   }
-
   interface ChatRequest {
     model?: string;
     maxTokens?: number;
   }
-
   interface ChatStreamOptions {
     createStream?: any;
   }
 }
-

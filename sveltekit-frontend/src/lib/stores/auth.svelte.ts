@@ -1,11 +1,9 @@
 // Modern authentication store using Svelte 5 runes
 // Integrates with Lucia, MCP GPU orchestrator, and legal AI features
-
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
 }
-
 export interface User {
   id: string;
   email: string;
@@ -19,66 +17,55 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
 }
-
 export interface AuthState {
   user: User | null;
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
 }
-
-// Reactive authentication state using $state rune (browser-only);
+// Reactive authentication state using $state rune (browser-only)
 const authState = browser ? $state<AuthState>({
-  user: null,
-  loading: false,
-  error: null,
+  user: null
+  loading: false
+  error: null
   isAuthenticated: false
 }) : {
-  user: null,
-  loading: false,;
-  error: null,
+  user: null
+  loading: false
+  error: null
   isAuthenticated: false
 };
-
-// Derived state functions for common auth checks;
+// Derived state functions for common auth checks
 export function isAdmin(): boolean {
   return authState.user?.role === 'admin' || authState.user?.role === 'lead_prosecutor' || false;
 }
-
 export function canCreateCases(): boolean {
-  return authState.user?.role === 'admin' || 
-         authState.user?.role === 'lead_prosecutor' || 
+  return authState.user?.role === 'admin' ||
+         authState.user?.role === 'lead_prosecutor' ||
          authState.user?.role === 'prosecutor' || false;
 }
-
 export function canViewEvidence(): boolean {
   return authState.isAuthenticated;
 }
-
-// Auth service with reactive methods;
+// Auth service with reactive methods
 export class AuthService {
-  // Get current state (reactive);
+  // Get current state (reactive)
   get state() {
     return authState;
   }
-
-  // Initialize auth state (checks existing session);
+  // Initialize auth state (checks existing session)
   async initialize() {
     if (!browser) return;
-    
     authState.loading = true;
     authState.error = null;
-
     try {
       const response = await fetch('/api/auth/me', {
         credentials: 'include'
       });
-
       if ((response as { ok?: any; json?: any }).ok) {
         const { user } = await (response as { ok?: any; json?: any }).json();
         authState.user = user;
         authState.isAuthenticated = true;
-        
         // Log successful session restore with AI analytics
         await mcpGPUOrchestrator.routeAPIRequest(
           '/api/analytics/session-restore',)
@@ -98,72 +85,60 @@ export class AuthService {
       authState.loading = false;
     }
   }
-
-  // Login with email and password;
+  // Login with email and password
   async login(email: string, password: string): Promise<any> {
     authState.loading = true;
     authState.error = null;
-
     try {
       // Import session manager dynamically to avoid circular imports
       const { sessionManager } = await import('./sessionManager.svelte.js');
-
-      // Pre-login security analysis using GPU orchestrator;
+      // Pre-login security analysis using GPU orchestrator
       const securityContext = {
         email,
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent,
         ipInfo: await this.getClientInfo()
       };
-
       await mcpGPUOrchestrator.routeAPIRequest(
         '/api/security/pre-login-analysis',
         securityContext,)
         { securityLevel: 'authentication' }
       );
-
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, password }),;
+        body: JSON.stringify({ email, password }),
         credentials: 'include'
       });
-
       const result = await (response as { ok?: any; json?: any }).json();
-
       if ((response as { ok?: any; json?: any }).ok) {
         authState.user = (result as { user?: any; error?: any }).user;
         authState.isAuthenticated = true;
         authState.error = null;
-
         // Start session management with XState
         const sessionId = `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         await sessionManager.startSession((result as { user?: any; error?: any }).user, sessionId);
-
         // Post-login AI analysis for user behavior patterns
         await mcpGPUOrchestrator.processLegalDocument(
           `Successful login: ${email} at ${new Date().toISOString()}`,
           {
             userId: (result as { user?: any; error?: any }).user.id,
-            includeRAG: false,
-            includeGraph: true,
+            includeRAG: false
+            includeGraph: true
             generateSummary: false
           }
         );
-
         return { success: true };
       } else {
         authState.error = (result as { user?: any; error?: any }).error;
-        
         // Log failed login attempt for security monitoring
         await mcpGPUOrchestrator.routeAPIRequest(
           '/api/security/failed-login',)
           { ...securityContext, error: (result as { user?: any; error?: any }).error },
           { securityLevel: 'high' }
         );
-
         return { success: false, error: (result as { user?: any; error?: any }).error };
       }
     } catch (error: any) {
@@ -175,8 +150,7 @@ export class AuthService {
       authState.loading = false;
     }
   }
-
-  // Register new user;
+  // Register new user
   async register(userData: {
     email: string;
     password: string;
@@ -185,49 +159,42 @@ export class AuthService {
   }): Promise<any> {
     authState.loading = true;
     authState.error = null;
-
     try {
-      // Pre-registration analysis;
+      // Pre-registration analysis
       const registrationContext = {
         email: userData.email,
         firstName: userData.firstName,
-        lastName: userData.lastName,;
+        lastName: userData.lastName,
         timestamp: new Date().toISOString()
       };
-
       await mcpGPUOrchestrator.routeAPIRequest(
         '/api/analytics/registration-attempt',
         registrationContext,)
         { analyticsLevel: 'registration' }
       );
-
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(userData),;
+        body: JSON.stringify(userData),
         credentials: 'include'
       });
-
       const result = await (response as { ok?: any; json?: any }).json();
-
       if ((response as { ok?: any; json?: any }).ok) {
         authState.user = (result as { user?: any; error?: any }).user;
         authState.isAuthenticated = true;
         authState.error = null;
-
         // Log successful registration with AI context
         await mcpGPUOrchestrator.processLegalDocument(
           `New user registration: ${userData.email}`,);
           {
             userId: (result as { user?: any; error?: any }).user.id,
-            includeRAG: false,
-            includeGraph: true,
+            includeRAG: false
+            includeGraph: true
             generateSummary: true
           }
         );
-
         return { success: true };
       } else {
         authState.error = (result as { user?: any; error?: any }).error;
@@ -242,20 +209,17 @@ export class AuthService {
       authState.loading = false;
     }
   }
-
-  // Logout current user;
+  // Logout current user
   async logout() {
     authState.loading = true;
-
     try {
       // Import session manager dynamically
       const { sessionManager } = await import('./sessionManager.svelte.js');
-
-      // Log logout event for analytics;
+      // Log logout event for analytics
       if (authState.user) {
         await mcpGPUOrchestrator.routeAPIRequest(
           '/api/analytics/logout',);
-          { 
+          {
             userId: authState.user.id,
             timestamp: new Date().toISOString(),
             sessionDuration: this.calculateSessionDuration()
@@ -263,20 +227,16 @@ export class AuthService {
           { userId: authState.user.id, analyticsLevel: 'session' }
         );
       }
-
       // End session management
       await sessionManager.endSession();
-
       const response = await fetch('/api/auth/logout', {
-        method: 'POST',;
+        method: 'POST',
         credentials: 'include'
       });
-
       // Clear state regardless of response
       authState.user = null;
       authState.isAuthenticated = false;
       authState.error = null;
-
       // Redirect to login page
       await goto('/login');
     } catch (error: any) {
@@ -288,39 +248,32 @@ export class AuthService {
       authState.loading = false;
     }
   }
-
-  // Update user profile;
+  // Update user profile
   async updateProfile(updates: Partial<User>): Promise<any> {
     if (!authState.user) return { success: false, error: 'Not authenticated' };
-
     authState.loading = true;
-
     try {
       const response = await fetch('/api/auth/profile', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(updates),;
+        body: JSON.stringify(updates),
         credentials: 'include'
       });
-
       const result = await (response as { ok?: any; json?: any }).json();
-
       if ((response as { ok?: any; json?: any }).ok) {
         authState.user = { ...authState.user, ...result.user };
-        
         // Log profile update for audit trail
         await mcpGPUOrchestrator.routeAPIRequest(
           '/api/analytics/profile-update',);
-          { 
+          {
             userId: authState.user.id,
-            changes: Object.keys(updates),;
+            changes: Object.keys(updates),
             timestamp: new Date().toISOString()
           },
           { userId: authState.user.id, analyticsLevel: 'profile' }
         );
-
         return { success: true };
       } else {
         authState.error = (result as { user?: any; error?: any }).error;
@@ -335,25 +288,21 @@ export class AuthService {
       authState.loading = false;
     }
   }
-
-  // Check if user has specific permission;
+  // Check if user has specific permission
   hasPermission(permission: string): boolean {
     if (!authState.user) return false;
-
     const rolePermissions = {
       admin: ['all'],
       lead_prosecutor: ['manage_cases', 'view_all_evidence', 'assign_tasks', 'generate_reports'],
       prosecutor: ['create_cases', 'manage_own_cases', 'view_evidence', 'generate_reports'],
       investigator: ['view_cases', 'add_evidence', 'view_evidence'],
-      analyst: ['view_cases', 'analyze_evidence', 'generate_reports'],;
+      analyst: ['view_cases', 'analyze_evidence', 'generate_reports'],
       viewer: ['view_cases', 'view_evidence']
     };
-
     const userPermissions = rolePermissions[authState.user.role as keyof typeof rolePermissions] || [];
     return userPermissions.includes('all') || userPermissions.includes(permission);
   }
-
-  // Require authentication (for use in components);
+  // Require authentication (for use in components)
   requireAuth(): User {
     if (!authState.isAuthenticated || !authState.user) {
       goto('/login');
@@ -361,37 +310,32 @@ export class AuthService {
     }
     return authState.user;
   }
-
-  // Private helper methods;
+  // Private helper methods
   private async getClientInfo() {
     try {
-      // Get basic client information for security analysis;
+      // Get basic client information for security analysis
       return {
         screen: `${screen.width}x${screen.height}`,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        language: navigator.language,;
+        language: navigator.language,
         platform: navigator.platform
       };
     } catch {
       return {};
     }
   }
-
   private calculateSessionDuration(): number {
     // Calculate session duration in minutes
     // This would need to be tracked from login time
     return 0; // Placeholder
   }
 }
-
 // Create singleton auth service
 export const authService = new AuthService();
-;
-// Initialize auth state when module loads;
+// Initialize auth state when module loads
 if (browser) {
   authService.initialize();
 }
-
 // Export reactive getters for use in components
 export const user = () => authState.user;
 export const isAuthenticated = () => authState.isAuthenticated;

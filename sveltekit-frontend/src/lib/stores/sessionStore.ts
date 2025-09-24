@@ -2,23 +2,19 @@
  * Global Session Store - Lucia v3 Integration (Svelte 5)
  * Provides app-wide session management with persistent storage and fallback mechanisms
  */
-
 import { browser } from '$app/environment';
-
 // Types based on Lucia v3 and app.d.ts
 export interface User {
   id: string;
   email?: string;
   role: 'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer' | 'user';
 }
-
 export interface Session {
   id: string;
   user: User;
   fresh?: boolean;
   expiresAt?: Date;
 }
-
 export interface SessionState {
   user: User | null;
   session: Session | null;
@@ -26,33 +22,30 @@ export interface SessionState {
   isLoading: boolean;
   lastSyncAt: number;
 }
-
 // Create reactive session store using Svelte 5 runes
 const createSessionStore = () => {
   // Initialize with empty state using $state
   let sessionState = $state<SessionState>({
-    user: null,;
-    session: null,
-    isAuthenticated: false,
-    isLoading: true,
+    user: null
+    session: null
+    isAuthenticated: false
+    isLoading: true
     lastSyncAt: 0
   });
-
   return {
     // Getter for reactive access
     get state() {
       return sessionState;
     },
-
     // Initialize session from page store or fallback mechanisms
     init: (pageData?: any) => {
       if (pageData?.user && pageData?.session) {
         // Primary: Use SvelteKit page data (most reliable)
         sessionState = {
-          user: pageData.user,;
+          user: pageData.user,
           session: pageData.session,
           isAuthenticated: !!pageData.user,
-          isLoading: false,
+          isLoading: false
           lastSyncAt: Date.now()
         };
       } else {
@@ -60,17 +53,15 @@ const createSessionStore = () => {
         restoreSessionFromStorage();
       }
     },
-
     // Update session state
     setSession: (user: User | null, session: Session | null) => {
       sessionState = {
         user,
         session,
         isAuthenticated: !!user,
-        isLoading: false,
+        isLoading: false
         lastSyncAt: Date.now()
       };
-
       // Persist to localStorage for faster subsequent loads
       if (browser && user) {
         try {
@@ -84,17 +75,15 @@ const createSessionStore = () => {
         }
       }
     },
-
     // Clear session
     clearSession: () => {
       sessionState = {
-        user: null,;
-        session: null,
-        isAuthenticated: false,
-        isLoading: false,
+        user: null
+        session: null
+        isAuthenticated: false
+        isLoading: false
         lastSyncAt: Date.now()
       };
-
       // Clear persistent storage
       if (browser) {
         try {
@@ -109,33 +98,30 @@ const createSessionStore = () => {
         }
       }
     },
-
     // Force refresh from server
     refreshSession: async () => {
       sessionState.isLoading = true;
-
       try {
         const response = await fetch('/api/auth/session');
         if (response.ok) {
           const data = await response.json();
           if (data?.user) {
             sessionState = {
-              user: data.user,;
+              user: data.user,
               session: data.session || { id: 'server', user: data.user },
-              isAuthenticated: true,
-              isLoading: false,
+              isAuthenticated: true
+              isLoading: false
               lastSyncAt: Date.now()
             };
             return data.user;
           }
         }
-
         // No valid session found
         sessionState = {
-          user: null,;
-          session: null,
-          isAuthenticated: false,
-          isLoading: false,
+          user: null
+          session: null
+          isAuthenticated: false
+          isLoading: false
           lastSyncAt: Date.now()
         };
         return null;
@@ -145,32 +131,27 @@ const createSessionStore = () => {
         return null;
       }
     },
-
     // Get current user for upload operations
     getCurrentUser: (): User | null => {
       return sessionState.user;
     }
   };
 };
-
 // Fallback session restoration from various storage mechanisms
 function restoreSessionFromStorage() {
   if (!browser) return;
-
   try {
     // 1) Check localStorage cache first (fastest)
     const cached = localStorage.getItem('legal_ai_session_cache');
     if (cached) {
       const parsedCache = JSON.parse(cached);
       const cacheAge = Date.now() - (parsedCache.cachedAt || 0);
-
       // Use cache if less than 5 minutes old
       if (cacheAge < 5 * 60 * 1000 && parsedCache.user) {
         sessionStore.setSession(parsedCache.user, parsedCache.session);
         return;
       }
     }
-
     // 2) Check window globals (some apps expose session)
     const win = window as any;
     const candidate = win?.__PERSISTED_SESSION || win?.__SESSION || win?.__LUCIA_SESSION;
@@ -178,7 +159,6 @@ function restoreSessionFromStorage() {
       sessionStore.setSession(candidate.user, candidate.session || { id: 'global', user: candidate.user });
       return;
     }
-
     // 3) Check other localStorage keys
     const altSession = localStorage.getItem('session') || localStorage.getItem('auth');
     if (altSession) {
@@ -188,28 +168,22 @@ function restoreSessionFromStorage() {
         return;
       }
     }
-
     // 4) Last resort: Try server refresh
     sessionStore.refreshSession();
-
   } catch (error) {
     console.warn('Session restoration failed:', error);
     sessionStore.clearSession();
   }
 }
-
 // Export singleton store
 export const sessionStore = createSessionStore();
-
 // Helper functions for accessing reactive state
 export const getUser = () => sessionStore.state.user;
 export const getIsAuthenticated = () => sessionStore.state.isAuthenticated;
 export const getIsLoading = () => sessionStore.state.isLoading;
-
 // Utility functions for upload operations
 export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; uploaderEmail: string | null } => {
   const currentUser = sessionStore.getCurrentUser();
-
   if (currentUser?.id) {
     return {
       uploadedBy: currentUser.id,
@@ -217,7 +191,6 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
       uploaderEmail: currentUser.email || null
     };
   }
-
   // Try fallback mechanisms synchronously
   if (browser) {
     try {
@@ -231,7 +204,6 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
           uploaderEmail: candidate.user.email || null
         };
       }
-
       // Check localStorage
       const stored = localStorage.getItem('legal_ai_session_cache') ||
                     localStorage.getItem('session') ||
@@ -250,7 +222,6 @@ export const getUserForUpload = (): { uploadedBy: string; uploaderRole: string; 
       console.warn('Fallback session lookup failed:', e);
     }
   }
-
   // Return anonymous fallback
   return {
     uploadedBy: 'anonymous',

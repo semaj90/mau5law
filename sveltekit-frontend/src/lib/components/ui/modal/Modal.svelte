@@ -1,24 +1,18 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   	import type {     Snippet     } from 'svelte';
-
   	let { open = false, title, children }: {
   		open?: boolean;
   		title: string;
   		children?: Snippet;
   	} = $props();
-
   	// Local mutable state derived from the (read-only) prop
   	let isOpen = $state(open);
-
   	// Sync local state if parent updates the prop
   	$effect(() => {
-  		if (open !== isOpen) isOpen = open;
+  		if (open !== isOpen) isOpen = ope;
   	});
 </script>
-
 {#if isOpen}
 	<div class="modal-overlay">
 		<div class="modal-content">
@@ -34,9 +28,9 @@
 		</div>
 	</div>
 {/if}
-
 <style>/* @unocss-include */ .modal-overlay {
 		position: fixed;
+d;
 		top: 0;
 		left: 0;
 		width: 100%;
@@ -56,11 +50,8 @@
 	}
 	.modal-header {
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		align-items: center;
 		margin-bottom: 1rem;
 	}
 </style>
-
-
-

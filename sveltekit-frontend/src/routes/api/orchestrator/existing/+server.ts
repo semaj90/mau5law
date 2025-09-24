@@ -1,14 +1,12 @@
 // API using existing services - no new Docker downloads
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 interface QueryRequest {
   query: string
   context?: any[]
 }
-
 interface HealthResponse {
-  overall_status: 'healthy' | 'degraded' | 'critical'
+  overall_status: 'healthy' | 'degraded' | 'critical',
   services: Array<any>
   existing_infrastructure: {
     redis: boolean
@@ -21,11 +19,9 @@ interface HealthResponse {
     L3_REDIS: { status: string }
   }
 }
-
 // Simple health check for existing services
 async function checkExistingServices() {
   const services = []
-  
   // Check existing Redis (port 6379)
   try {
     // Redis is confirmed running from docker ps
@@ -36,26 +32,23 @@ async function checkExistingServices() {
     })
   } catch {
     services.push({
-      service: 'Existing Redis Cache', 
+      service: 'Existing Redis Cache',
       status: 'down' as const,
       details: 'Connection failed'
     })
   }
-  
   // Check existing PostgreSQL (port 5433)
   services.push({
     service: 'Existing PostgreSQL + pgvector',
     status: 'healthy' as const,
     details: 'Port 5433 - Legal document storage'
   })
-  
   // Check for Ollama
   try {
-    const response = await fetch('http://localhost:11434/api/tags', { 
+    const response = await fetch('http://localhost:11434/api/tags', {
       method: 'GET',
       signal: AbortSignal.timeout(2000)
     })
-    
     services.push({
       service: 'Existing Ollama Service',
       status: response.ok ? 'healthy' as const : 'down' as const,
@@ -68,14 +61,11 @@ async function checkExistingServices() {
       details: 'Port 11434 - Not responding'
     })
   }
-  
   return services
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const services = await checkExistingServices()
   const healthyCount = services.filter(item => item.length)
-  
   const response: HealthResponse = {
     overall_status: healthyCount === services.length ? 'healthy' : healthyCount > 0 ? 'degraded' : 'critical',
     services,
@@ -90,40 +80,32 @@ export const GET: RequestHandler = async ({ url }) => {
       L3_REDIS: { status: 'Existing Redis cache operational' }
     }
   }
-  
   return json(response)
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now()
-  
   try {
     const { query, context }: QueryRequest = await request.json()
-    
     if (!query?.trim()) {
       return json({ error: 'Query required' }, { status: 400 })
     }
-
     // Simple classification
     const isLegal = /\b(law|legal|court|contract|liability|negligence|statute|case|tort|constitutional|jurisdiction)\b/i.test(query)
     const isEmbedding = /\b(embedding|vector|similar|semantic|search)\b/i.test(query)
-    
     let answer: string
     let modelUsed: string
     let memoryBank: string
-    
     // Use your actual Ollama models
     if (isEmbedding) {
       try {
         const response = await fetch('http://localhost:11434/api/embeddings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          body: JSON.stringify({,
             model: 'embeddinggemma:latest',
             prompt: query
           })
         })
-
         if (response.ok) {
           const data = await response.json()
           answer = `Generated ${data.embedding?.length || 'N/A'}-dimensional embedding vector using embeddinggemma:latest\n\nQuery: "${query}"\n\nEmbedding created successfully for semantic analysis and document similarity matching.\n\n🎮 Nintendo Memory: Using L1_EMBEDDINGGEMMA bank`
@@ -140,10 +122,9 @@ export const POST: RequestHandler = async ({ request }) => {
     } else {
       // Use gemma3-legal for both legal and general queries
       const model = 'gemma3-legal:latest'
-      const prompt = isLegal 
+      const prompt = isLegal
         ? `You are a legal AI assistant. Provide comprehensive legal analysis for: ${query}\n\nConsider relevant laws, precedents, and practical implications. Structure your response with clear legal reasoning.`
         : `Answer this question clearly and concisely: ${query}`
-
       try {
         const response = await fetch('http://localhost:11434/api/generate', {
           method: 'POST',
@@ -154,7 +135,6 @@ export const POST: RequestHandler = async ({ request }) => {
             stream: false
           })
         })
-
         if (response.ok) {
           const data = await response.json()
           answer = data.response || 'Response generated successfully'
@@ -167,20 +147,13 @@ export const POST: RequestHandler = async ({ request }) => {
         // Fallback response
         if (isLegal) {
           answer = `**Legal Analysis (Fallback Mode):**
-
 **Query:** ${query}
-
 **Analysis:**
 This legal matter requires consideration of several key factors:
-
 1. **Jurisdictional Considerations:** The applicable law will depend on the specific jurisdiction and legal framework involved.
-
 2. **Precedential Authority:** Relevant case law and statutory provisions should be consulted for authoritative guidance.
-
 3. **Risk Assessment:** Potential legal implications and liability exposure should be carefully evaluated.
-
 **Important Notice:** This is a fallback response. For comprehensive analysis, ensure gemma3-legal:latest is accessible.
-
 🎮 Nintendo Memory: Using L2 cache fallback`
         } else {
           answer = `${query}\n\nBased on available information, this typically involves standard approaches and established practices. Specific details may vary based on context.\n\n🎮 Nintendo Memory: Using L2 cache fallback`
@@ -189,12 +162,11 @@ This legal matter requires consideration of several key factors:
         memoryBank = 'L2_SYSTEM_FALLBACK'
       }
     }
-
     const response = {
       answer,
-      model_used: modelUsed,
-      cache_hit: false,
-      memory_bank_used: memoryBank,
+      model_used: modelUsed
+      cache_hit: false
+      memory_bank_used: memoryBank
       response_time_ms: Date.now() - startTime,
       cost_saved: 0,
       classification: {
@@ -206,13 +178,11 @@ This legal matter requires consideration of several key factors:
         bank_switches: 1,
         memory_pressure: 'low',
         cache_efficiency: 95.2,
-        ollama_models_used: true,
+        ollama_models_used: true
         available_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'nomic-embed-text:latest']
       }
     }
-
     return json(response)
-    
   } catch (error) {
     return json({
       error: 'Query processing failed',

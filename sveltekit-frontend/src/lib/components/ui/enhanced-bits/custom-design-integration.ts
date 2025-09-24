@@ -1,12 +1,9 @@
 // Custom Design Integration System for Enhanced-Bits
 // SSR-Safe design token management and custom styling
-
 import type { CustomDesignTokens, CustomComponentConfig } from './index';
-
 // ======================================================================
 // DESIGN SYSTEM INTEGRATION
 // ======================================================================
-
 export interface DesignSystem {
   name: string;
   tokens: CustomDesignTokens;
@@ -15,9 +12,8 @@ export interface DesignSystem {
   animations: AnimationConfig;
   breakpoints: BreakpointConfig;
 }
-
 export interface AnimationConfig {
-  duration: {;
+  duration: {
     fast: string;
     normal: string;
     slow: string;
@@ -29,7 +25,6 @@ export interface AnimationConfig {
   };
   transitions: Record<string, string>;
 }
-
 export interface BreakpointConfig {
   sm: string;
   md: string;
@@ -37,11 +32,9 @@ export interface BreakpointConfig {
   xl: string;
   '2xl': string;
 }
-
 // ======================================================================
 // PRE-BUILT DESIGN SYSTEMS
 // ======================================================================
-
 export const NESDesignSystem: DesignSystem = {
   name: 'NES Legal AI',
   tokens: {
@@ -115,12 +108,11 @@ export const NESDesignSystem: DesignSystem = {
   breakpoints: {
     sm: '640px',
     md: '768px',
-    lg: '1024px',;
+    lg: '1024px',
     xl: '1280px',
     '2xl': '1536px',
   }
 };
-
 export const MinimalDesignSystem: DesignSystem = {
   name: 'Minimal Clean',
   tokens: {
@@ -194,19 +186,17 @@ export const MinimalDesignSystem: DesignSystem = {
   breakpoints: {
     sm: '640px',
     md: '768px',
-    lg: '1024px',;
+    lg: '1024px',
     xl: '1280px',
     '2xl': '1536px',
   }
 };
-
 // ======================================================================
 // DESIGN SYSTEM UTILITIES
 // ======================================================================
-
 export function createDesignSystem(
-  name: string,
-  customTokens: Partial<CustomDesignTokens>,;
+  name: string
+  customTokens: Partial<CustomDesignTokens>
   options: {
     baseSystem?: DesignSystem;
     animations?: Partial<AnimationConfig>;
@@ -214,7 +204,6 @@ export function createDesignSystem(
   } = {}
 ): DesignSystem {
   const baseSystem = options.baseSystem || NESDesignSystem;
-
   return {
     name,
     tokens: {
@@ -225,59 +214,46 @@ export function createDesignSystem(
     },
     cssVariables: { ...baseSystem.cssVariables },
     components: { ...baseSystem.components },
-    animations: { ...baseSystem.animations, ...options.animations },;
+    animations: { ...baseSystem.animations, ...options.animations },
     breakpoints: { ...baseSystem.breakpoints, ...options.breakpoints },
   };
 }
-
 export function generateCSSVariables(designSystem: DesignSystem): string {
   const { tokens, cssVariables } = designSystem;
-
   let css = ':root {\n';
-
   // Add design tokens as CSS variables
   Object.entries(tokens.colors).forEach(([key, value]) => {
     css += `  --enhanced-bits-${key}: ${value};\n`;
   });
-
   Object.entries(tokens.spacing).forEach(([key, value]) => {
     css += `  --enhanced-bits-spacing-${key}: ${value};\n`;
   });
-
   Object.entries(tokens.typography.fontSize).forEach(([key, value]) => {
     css += `  --enhanced-bits-text-${key}: ${value};\n`;
   });
-
   // Add pre-defined CSS variables
   Object.entries(cssVariables).forEach(([key, value]) => {
     css += `  ${key}: ${value};\n`;
   });
-
   css += '}\n';
-
   return css;
 }
-
 export function applyDesignSystemToDocument(designSystem: DesignSystem): void {
   const css = generateCSSVariables(designSystem);
-
   // Remove existing enhanced-bits styles
   const existingStyle = document.getElementById('enhanced-bits-design-system');
   if (existingStyle) {
     existingStyle.remove();
   }
-
   // Add new styles
   const styleElement = document.createElement('style');
   styleElement.id = 'enhanced-bits-design-system';
   styleElement.textContent = css;
   document.head.appendChild(styleElement);
 }
-
 // ======================================================================
 // COMPONENT STYLING UTILITIES
 // ======================================================================
-
 export function createComponentVariant(
   baseStyles: Record<string, string>,
   variant: 'nes' | 'minimal' | 'custom',
@@ -296,29 +272,25 @@ export function createComponentVariant(
       fontFamily: 'var(--minimal-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
       borderRadius: 'var(--minimal-border-radius, 0.5rem)',
       boxShadow: 'var(--minimal-shadow, 0 1px 3px 0 rgba(0, 0, 0, 0.1))',
-    },;
+    },
     custom: {}
   };
-
   return {
     ...baseStyles,
     ...variantStyles[variant],
     ...customStyles
   };
 }
-
 export function withResponsiveStyles(
   baseStyles: Record<string, string>,
   responsiveStyles: Record<string, Record<string, string>>,
   breakpoints: BreakpointConfig = NESDesignSystem.breakpoints
 ): string {
   let css = '';
-
   // Base styles
   Object.entries(baseStyles).forEach(([property, value]) => {
     css += `${property}: ${value}; `;
   });
-
   // Responsive styles
   Object.entries(responsiveStyles).forEach(([breakpoint, styles]) => {
     if (breakpoints[breakpoint as keyof BreakpointConfig]) {
@@ -329,23 +301,20 @@ export function withResponsiveStyles(
       css += '} ';
     }
   });
-
   return css;
 }
-
 // ======================================================================
 // ACCESSIBILITY & THEME UTILITIES
 // ======================================================================
-
 export function createAccessibleColorPalette(baseColor: string): {
   50: string;
-  100: string;
+  100: string
   200: string;
-  300: string;
+  300: string
   400: string;
-  500: string;
+  500: string
   600: string;
-  700: string;
+  700: string
   800: string;
   900: string;
 } {
@@ -357,14 +326,13 @@ export function createAccessibleColorPalette(baseColor: string): {
     200: `color-mix(in srgb, ${baseColor} 30%, white)`,
     300: `color-mix(in srgb, ${baseColor} 40%, white)`,
     400: `color-mix(in srgb, ${baseColor} 60%, white)`,
-    500: baseColor,
+    500: baseColor
     600: `color-mix(in srgb, ${baseColor} 80%, black)`,
     700: `color-mix(in srgb, ${baseColor} 60%, black)`,
     800: `color-mix(in srgb, ${baseColor} 40%, black)`,
     900: `color-mix(in srgb, ${baseColor} 20%, black)`,
   };
 }
-
 export function validateAccessibility(designSystem: DesignSystem): {
   isValid: boolean;
   warnings: string[];
@@ -372,45 +340,37 @@ export function validateAccessibility(designSystem: DesignSystem): {
 } {
   const warnings: string[] = [];
   const errors: string[] = [];
-
   // Check contrast ratios (simplified)
   const { colors } = designSystem.tokens;
-
   // Check if colors are distinguishable
   if (colors.primary === colors.secondary) {
     errors.push('Primary and secondary colors are identical');
   }
-
   // Check font size accessibility
   const { fontSize } = designSystem.tokens.typography;
   if (parseFloat(fontSize.base) < 0.875) {
     warnings.push('Base font size may be too small for accessibility');
   }
-
   return {
     isValid: errors.length === 0,
     warnings,
     errors
   };
 }
-
 // ======================================================================
 // SSR-SAFE THEME PROVIDER
 // ======================================================================
-
 export interface ThemeContext {
   designSystem: DesignSystem;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
   applyCustomTheme: (tokens: Partial<CustomDesignTokens>) => void;
 }
-
 export function createThemeContext(initialSystem: DesignSystem = NESDesignSystem): ThemeContext {
   let currentSystem = initialSystem;
   let isDarkMode = false;
-
   return {
-    designSystem: currentSystem,
+    designSystem: currentSystem
     isDarkMode,
     toggleDarkMode() {
       isDarkMode = !isDarkMode;
@@ -418,11 +378,10 @@ export function createThemeContext(initialSystem: DesignSystem = NESDesignSystem
       const darkTokens = isDarkMode ? {
         colors: {
           ...currentSystem.tokens.colors,
-          primary: '#00ff41',;
+          primary: '#00ff41',
           secondary: '#ff6b35',
         }
       } : currentSystem.tokens;
-
       applyDesignSystemToDocument({ ...currentSystem, tokens: darkTokens });
     },
     applyCustomTheme(tokens: Partial<CustomDesignTokens>) {

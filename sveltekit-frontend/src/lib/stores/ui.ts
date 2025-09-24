@@ -1,29 +1,24 @@
 // Removed Node crypto import to avoid SSR polyfill issues; using globalThis.crypto
-
 // Context menu state and store
 import type { Writable } from 'svelte/store';
 import { writable, derived } from "svelte/store";
 import { browser } from "$app/environment";
 }
-
 export interface ContextMenuState {
   show: boolean;
   x: number;
   y: number;
   item: any | null;
 }
-
 const defaultContextMenuState: ContextMenuState = {
-  show: false,
+  show: false
   x: 0,
-  y: 0,;
+  y: 0,
   item: null
 };
-
 export const contextMenuStore: Writable<ContextMenuState> = writable({
   ...defaultContextMenuState
 });
-
 export const contextMenuActions = {
   open: (x: number, y: number, item: any) => {
     contextMenuStore.set({ show: true, x, y, item });
@@ -35,45 +30,36 @@ export const contextMenuActions = {
     contextMenuStore.update((s) => ({ ...s, ...state });
   }
 };
-
 // Theme system
 export const theme = writable<"light" | "dark" | "auto">("auto");
 export const colorScheme = writable<"blue" | "green" | "purple" | "orange">("blue");
-
 export type NotificationData = {
   type: "success" | "error" | "warning" | "info";
   title: string;
   message: string;
   duration?: number;
 };
-
 export type Notification = NotificationData & {
   id: string;
 };
-
 // UI State stores
 export const notifications = writable<Notification[]>([]);
 export const modals = writable({});
-
 export const loading = writable({});
-
 export const sidebar = writable({
-  isOpen: false,
-  width: 280,;
+  isOpen: false
+  width: 280,
   collapsed: false
 });
-
-// Animation preferences;
+// Animation preferences
 export const motion = writable({
-  reduceMotion: false,
-  duration: "normal" as "fast" | "normal" | "slow",;
+  reduceMotion: false
+  duration: "normal" as "fast" | "normal" | "slow",
   spring: true
 });
-
 // Component state
 export const forms = writable({});
-
-// Derived stores;
+// Derived stores
 export const isDarkMode = derived(theme, ($theme) => {
   if (browser) {
     if ($theme === "auto") {
@@ -83,26 +69,23 @@ export const isDarkMode = derived(theme, ($theme) => {
   }
   return false;
 });
-
 export type FormField = {
   value: any;
   error?: string;
   touched?: boolean;
   isRequired?: boolean;
 };
-
 export type FormState = {
   fields: Record<string, FormField>;
   isDirty: boolean;
   isValid: boolean;
   submitCount: number;
   errors: Record<string, string>;
-  values: Record<string, any>;
+  values: { [key: string]: any };
 };
-
-// Store actions;
+// Store actions
 export const uiStore = {
-  // Notifications;
+  // Notifications
   notify: (notification: NotificationData) => {
     const id = (globalThis as any).crypto?.randomUUID?.() || (() => {
       const arr = new Uint8Array(16);
@@ -115,7 +98,6 @@ export const uiStore = {
     })();
     const fullNotification: Notification = { ...notification, id };
     notifications.update((list) => [...list, fullNotification]);
-
     if ((notification as { duration?: any }).duration !== 0) {
       setTimeout(() => {
         notifications.update((list) => list.filter((n) => n.id !== id);
@@ -123,31 +105,25 @@ export const uiStore = {
     }
     return id;
   },
-
   dismissNotification: (id: string) => {
     notifications.update((list) => list.filter((n) => n.id !== id);
   },
-
-  // Modals;
+  // Modals
   openModal: (modalId: string) => {
     modals.update((state) => ({ ...state, [modalId]: true });
   },
-
   closeModal: (modalId: string) => {
     modals.update((state) => ({ ...state, [modalId]: false });
   },
-
-  // Loading states;
+  // Loading states
   setLoading: (key: string, isLoading: boolean) => {
     loading.update((state) => ({ ...state, [key]: isLoading });
   },
-
-  // Sidebar;
+  // Sidebar
   toggleSidebar: () => {
     sidebar.update((state) => ({ ...state, isOpen: !state.isOpen });
   },
-
-  // Forms;
+  // Forms
   updateForm: (formId: string, updates: Partial<FormState>) => {
     forms.update((state) => ({
       ...state,
@@ -155,5 +131,4 @@ export const uiStore = {
     });
   }
 };
-
 export default uiStore;

@@ -1,18 +1,13 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 // Enhanced Evidence Processing Component
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import { , onMount, onDestroy } from 'svelte';
-
-  
-
+  import { onMount, onDestroy } from 'svelte';
   import { createActor } from 'xstate';
   import { uploadMachine, getFileProgress, getAllFilesStatus, getOverallProgress } from '$lib/machines/uploadMachine';
   import type { ProgressMsg } from '$lib/types/progress';
-  
   interface Props {
     evidenceId: string;
     steps?: string[];
@@ -20,7 +15,6 @@ https://svelte.dev/e/js_parse_error -->
     onComplete?: (result: unknown) => void;
     onError?: (error: unknown) => void;
   }
-
   let {
     evidenceId,
     steps = ['ocr', 'embedding', 'analysis'],
@@ -28,7 +22,6 @@ https://svelte.dev/e/js_parse_error -->
     onComplete,
     onError
   } = $props<Props>();
-
   // Machine actor
   let uploadActor = createActor(uploadMachine);
   // Reactive state
@@ -42,12 +35,10 @@ https://svelte.dev/e/js_parse_error -->
   let hasError = $derived(fileProgress.status === 'error' || context.lastError);
   let isProcessing = $derived(currentState === 'processing');
   let isComplete = $derived(fileProgress.status === 'done');
-
   // Local state
   let showDetails = $state(false);
   let showLogs = $state(false);
   let processingLogs = $state<Array() >([]);
-
   $effect(() => {
     uploadActor.start();
     // Subscribe to machine state changes
@@ -75,74 +66,62 @@ https://svelte.dev/e/js_parse_error -->
       startProcessing();
     }
   });
-
   onDestroy(() => {
     uploadActor.stop();
   });
-
   function addLog(message: string, type: 'info' | 'error' | 'success' = 'info') {
     processingLogs = [
       ...processingLogs,
-      {;
+      {
         timestamp: new Date().toLocaleTimeString(),
         message,
-        type;
+        typ;
       }
     ].slice(-50); // Keep last 50 logs
   }
-
   async function startProcessing() {
     try {
       addLog('Starting evidence processing...', 'info');
       // Make API call to start processing
       const response = await fetch('/api/evidence/process', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidenceId,
           steps
         })
       });
-
       if (!response.ok) {
         throw new Error(`Failed to start processing: ${response.statusText}`);
       }
-
       const data = await response.json();
       const sessionId = data.sessionId;
-
       addLog(`Session created: ${sessionId}`, 'info');
-
       // Start the machine with the session ID
       uploadActor.send({
         type: 'START_PROCESS',
         sessionId,
         fileId: evidenceId;
       });
-
     } catch (error) {
       console.error('❌ Failed to start processing:', error);
       addLog(`Failed to start: ${error.message}`, 'error');
       onError?.(error);
     }
   }
-
   function cancelProcessing() {
     uploadActor.send({ type: 'CANCEL', fileId: evidenceId });
     addLog('Cancelling processing...', 'info');
   }
-
   function retry() {
     uploadActor.send({ type: 'RETRY' });
     addLog('Retrying processing...', 'info');
   }
-
   function reset() {
     uploadActor.send({ type: 'RESET' });
     processingLogs = [];
     addLog('Reset complete', 'info');
   }
-
   function getStepIcon(step: string): string {
     switch (step) {
       case 'ocr': return '🔍';
@@ -152,7 +131,6 @@ https://svelte.dev/e/js_parse_error -->
       default: return '⚙️';
     }
   }
-
   function getStatusColor(status: string): string {
     switch (status) {
       case 'done': return 'text-green-600';
@@ -162,7 +140,6 @@ https://svelte.dev/e/js_parse_error -->
       default: return 'text-gray-600';
     }
   }
-
   function formatFragment(fragment: unknown): string {
     if (!fragment) return '';
     if (typeof fragment === 'string') return fragment;
@@ -172,7 +149,6 @@ https://svelte.dev/e/js_parse_error -->
     return JSON.stringify(fragment, null, 2);
   }
 </script>
-
 <div class="evidence-processor border rounded-lg p-6 bg-white shadow-sm">
   <!-- Header -->
   <div class="flex items-center justify-between mb-4">
@@ -185,7 +161,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
         <h3 class="text-lg font-semibold">Evidence Processing</h3>
       </div>
-      
       {#if isProcessing}
         <div class="flex items-center space-x-2">
           <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
@@ -193,7 +168,6 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       {/if}
     </div>
-
     <!-- Action Buttons -->
     <div class="flex items-center space-x-2">
       {#if currentState === 'idle'}
@@ -204,7 +178,6 @@ https://svelte.dev/e/js_parse_error -->
           Start Processing
         </button>
       {/if}
-
       {#if isProcessing}
         <button
           onclick={cancelProcessing}
@@ -213,7 +186,6 @@ https://svelte.dev/e/js_parse_error -->
           Cancel
         </button>
       {/if}
-
       {#if hasError}
         <button
           onclick={retry}
@@ -222,7 +194,6 @@ https://svelte.dev/e/js_parse_error -->
           Retry
         </button>
       {/if}
-
       <button
         onclick={() => showDetails = !showDetails}
         class="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
@@ -231,14 +202,12 @@ https://svelte.dev/e/js_parse_error -->
       </button>
     </div>
   </div>
-
   <!-- Progress Overview -->
   <div class="mb-6">
     <div class="flex items-center justify-between mb-2">
       <span class="text-sm font-medium text-gray-700">Overall Progress</span>
       <span class="text-sm text-gray-600">{overallProgress}%</span>
     </div>
-    
     <div class="w-full bg-gray-200 rounded-full h-2">
       <div
         class="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
@@ -246,7 +215,6 @@ https://svelte.dev/e/js_parse_error -->
       ></div>
     </div>
   </div>
-
   <!-- Current Step Info -->
   {#if fileProgress.step}
     <div class="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
@@ -267,7 +235,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       </div>
-
       <!-- Show fragment data if available -->
       {#if fileProgress.fragment}
         <div class="mt-3 p-3 bg-white rounded border">
@@ -279,7 +246,6 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   {/if}
-
   <!-- Error Display -->
   {#if hasError}
     <div class="mb-4 p-4 bg-red-50 rounded-lg border border-red-200">
@@ -292,7 +258,6 @@ https://svelte.dev/e/js_parse_error -->
       </p>
     </div>
   {/if}
-
   <!-- Success Display -->
   {#if isComplete}
     <div class="mb-4 p-4 bg-green-50 rounded-lg border border-green-200">
@@ -301,7 +266,6 @@ https://svelte.dev/e/js_parse_error -->
         <h4 class="font-medium text-green-900">Processing Complete</h4>
       </div>
       <p class="text-green-700 mt-1">Evidence has been successfully processed through all steps.</p>
-      
       {#if fileProgress.result}
         <details class="mt-3">
           <summary class="cursor-pointer text-green-800 font-medium">View Results</summary>
@@ -312,7 +276,6 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   {/if}
-
   <!-- Detailed Information Panel -->
   {#if showDetails}
     <div class="border-t pt-4">
@@ -351,7 +314,6 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </div>
         </div>
-
         <!-- Connection Status -->
         <div>
           <h4 class="font-medium text-gray-900 mb-2">Connection Status</h4>
@@ -371,7 +333,6 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
         </div>
-
         <!-- Processing Logs -->
         <div>
           <div class="flex items-center justify-between mb-2">
@@ -383,7 +344,6 @@ https://svelte.dev/e/js_parse_error -->
               {showLogs ? 'Hide' : 'Show'} Logs
             </button>
           </div>
-          
           {#if showLogs}
             <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm max-h-64 overflow-y-auto">
               {#each processingLogs as log}
@@ -394,14 +354,12 @@ https://svelte.dev/e/js_parse_error -->
                   </span>
                 </div>
               {/each}
-              
               {#if processingLogs.length === 0}
                 <div class="text-gray-500 italic">No logs yet...</div>
               {/if}
             </div>
           {/if}
         </div>
-
         <!-- Reset Button -->
         <div class="pt-4 border-t">
           <button
@@ -415,12 +373,9 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-
 <style>
   .evidence-processor {
     /* Custom styles if needed */
   }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

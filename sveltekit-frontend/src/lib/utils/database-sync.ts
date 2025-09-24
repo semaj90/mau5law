@@ -1,8 +1,7 @@
 
 // Comprehensive Database Synchronization Utility
-// Ensures all CRUD operations maintain perfect sync with PostgreSQL database;
+// Ensures all CRUD operations maintain perfect sync with PostgreSQL database
 }
-
 export interface SyncOptions {
   retryAttempts?: number;
   retryDelay?: number;
@@ -23,7 +22,6 @@ export class DatabaseSyncManager {
   private static instance: DatabaseSyncManager;
   private syncQueue: Map<string, unknown[]> = new Map();
   private pendingOperations: Set<string> = new Set();
-
   private endpoints: Record<string, EntityEndpoints> = {
     cases: {
       list: "/api/cases",
@@ -78,11 +76,10 @@ export class DatabaseSyncManager {
       create: "/api/canvas-states",
       read: "/api/canvas-states",
       update: "/api/canvas-states",
-      delete: "/api/canvas-states",;
+      delete: "/api/canvas-states",
       patch: "/api/canvas-states"
     }
   };
-
   public static getInstance(): DatabaseSyncManager {
     if (!DatabaseSyncManager.instance) {
       DatabaseSyncManager.instance = new DatabaseSyncManager();
@@ -91,37 +88,31 @@ export class DatabaseSyncManager {
   }
   // CREATE operations with database sync
   async create<T>(
-    entity: string,
-    data: any,;
+    entity: string
+    data: any
     options: SyncOptions = {},
   ): Promise<T> {
     const operationId = this.generateOperationId("create", entity);
-
     try {
       this.pendingOperations.add(operationId);
-
       // Validate data before sending
       this.validateCreateData(entity, data);
-
       const response = await this.makeRequest(
         this.endpoints[entity].create,
         "POST",
         data,
         options,
       );
-
       if (!response.ok) {
         throw new Error(`Failed to create ${entity}: ${response.statusText}`);
       }
       const result = await response.json();
-
-      // Validate response if enabled;
+      // Validate response if enabled
       if (options.validateResponse) {
         this.validateResponseData(entity, result, "create");
       }
       // Update local cache if needed
       this.updateLocalCache(entity, "create", result);
-
       options.onSuccess?.(result);
       return result;
     } catch (error: any) {
@@ -133,16 +124,14 @@ export class DatabaseSyncManager {
   }
   // READ operations with caching and sync
   async read<T>(
-    entity: string,
-    id?: string,
-    params: Record<string, any> = {},;
+    entity: string
+    id?: string
+    params: { [key: string]: any } = {},
     options: SyncOptions = {},
   ): Promise<T> {
     const operationId = this.generateOperationId("read", entity, id);
-
     try {
       this.pendingOperations.add(operationId);
-
       let url = this.endpoints[entity].read;
       if (id) {
         url += `/${id}`;
@@ -154,24 +143,20 @@ export class DatabaseSyncManager {
           searchParams.append(key, String(value);
         }
       });
-
       if (searchParams.toString()) {
         url += `?${searchParams.toString()}`;
       }
       const response = await this.makeRequest(url, "GET", null, options);
-
       if (!response.ok) {
         throw new Error(`Failed to read ${entity}: ${response.statusText}`);
       }
       const result = await response.json();
-
-      // Validate response if enabled;
+      // Validate response if enabled
       if (options.validateResponse) {
         this.validateResponseData(entity, result, "read");
       }
       // Update local cache
       this.updateLocalCache(entity, "read", result, id);
-
       options.onSuccess?.(result);
       return result;
     } catch (error: any) {
@@ -183,42 +168,36 @@ export class DatabaseSyncManager {
   }
   // UPDATE operations with optimistic updates
   async update<T>(
-    entity: string,
-    id: string,
-    data: any,;
+    entity: string
+    id: string
+    data: any
     options: SyncOptions = {},
   ): Promise<T> {
     const operationId = this.generateOperationId("update", entity, id);
-
     try {
       this.pendingOperations.add(operationId);
-
-      // Optimistic update if enabled;
+      // Optimistic update if enabled
       if (options.enableOptimisticUpdates) {
         this.updateLocalCache(entity, "update", { id, ...data }, id);
       }
       // Validate data before sending
       this.validateUpdateData(entity, data);
-
       const url = `${this.endpoints[entity].update}/${id}`;
       const response = await this.makeRequest(url, "PUT", data, options);
-
       if (!response.ok) {
-        // Revert optimistic update if failed;
+        // Revert optimistic update if failed
         if (options.enableOptimisticUpdates) {
           this.revertOptimisticUpdate(entity, id);
         }
         throw new Error(`Failed to update ${entity}: ${response.statusText}`);
       }
       const result = await response.json();
-
-      // Validate response if enabled;
+      // Validate response if enabled
       if (options.validateResponse) {
         this.validateResponseData(entity, result, "update");
       }
       // Update local cache with server response
       this.updateLocalCache(entity, "update", result, id);
-
       options.onSuccess?.(result);
       return result;
     } catch (error: any) {
@@ -230,34 +209,28 @@ export class DatabaseSyncManager {
   }
   // PATCH operations for partial updates
   async patch<T>(
-    entity: string,
-    id: string,
-    data: any,;
+    entity: string
+    id: string
+    data: any
     options: SyncOptions = {},
   ): Promise<T> {
     const operationId = this.generateOperationId("patch", entity, id);
-
     try {
       this.pendingOperations.add(operationId);
-
       let url = this.endpoints[entity].patch || this.endpoints[entity].update;
-
-      // Handle different patch URL patterns;
+      // Handle different patch URL patterns
       if (entity === "evidence" || entity === "canvasStates") {
         url += `?id=${id}`;
       } else {
         url += `/${id}`;
       }
       const response = await this.makeRequest(url, "PATCH", data, options);
-
       if (!response.ok) {
         throw new Error(`Failed to patch ${entity}: ${response.statusText}`);
       }
       const result = await response.json();
-
       // Update local cache
       this.updateLocalCache(entity, "patch", result, id);
-
       options.onSuccess?.(result);
       return result;
     } catch (error: any) {
@@ -269,33 +242,27 @@ export class DatabaseSyncManager {
   }
   // DELETE operations with confirmation
   async delete<T>(
-    entity: string,
-    id: string,;
+    entity: string
+    id: string
     options: SyncOptions = {},
   ): Promise<T> {
     const operationId = this.generateOperationId("delete", entity, id);
-
     try {
       this.pendingOperations.add(operationId);
-
       let url = this.endpoints[entity].delete;
-
-      // Handle different delete URL patterns;
+      // Handle different delete URL patterns
       if (entity === "evidence" || entity === "canvasStates") {
         url += `?id=${id}`;
       } else {
         url += `/${id}`;
       }
       const response = await this.makeRequest(url, "DELETE", null, options);
-
       if (!response.ok) {
         throw new Error(`Failed to delete ${entity}: ${response.statusText}`);
       }
       const result = await response.json();
-
       // Remove from local cache
       this.updateLocalCache(entity, "delete", null, id);
-
       options.onSuccess?.(result);
       return result;
     } catch (error: any) {
@@ -307,10 +274,9 @@ export class DatabaseSyncManager {
   }
   // Batch operations for multiple entities
   async batchOperation(
-    operations: Array<any>,
+    operations: Array<any>
   ): Promise<any[]> {
     const results: any[] = [];
-
     for (const op of operations) {
       try {
         let result;
@@ -338,10 +304,9 @@ export class DatabaseSyncManager {
     }
     return results;
   }
-  // Validation methods;
+  // Validation methods
   private validateCreateData(entity: string, data: any): void {
     const requiredFields = this.getRequiredFields(entity, "create");
-
     for (const field of requiredFields) {
       if (!data[field]) {
         throw new Error(
@@ -351,20 +316,20 @@ export class DatabaseSyncManager {
     }
   }
   private validateUpdateData(entity: string, data: any): void {
-    // Ensure we have some data to update;
+    // Ensure we have some data to update
     if (!data || Object.keys(data).length === 0) {
       throw new Error(`No data provided for ${entity} update`);
     }
   }
   private validateResponseData(
-    entity: string,
-    data: any,;
-    operation: string,
+    entity: string
+    data: any
+    operation: string
   ): void {
     if (!data) {
       throw new Error(`No data returned from ${entity} ${operation} operation`);
     }
-    // Validate that essential fields are present;
+    // Validate that essential fields are present
     if (operation !== "delete" && !data.id) {
       throw new Error(`No ID returned from ${entity} ${operation} operation`);
     }
@@ -389,38 +354,34 @@ export class DatabaseSyncManager {
       users: {
         create: ["email", "password"]
       },
-      canvasStates: {;
+      canvasStates: {
         create: ["name", "canvasData"]
       }
     };
-
     return requiredFields[entity]?.[operation] || [];
   }
   // Helper methods
   private async makeRequest(
-    url: string,
-    method: string,
-    data: any,
-    options: SyncOptions,
+    url: string
+    method: string
+    data: any
+    options: SyncOptions
   ): Promise<Response> {
     const requestOptions: RequestInit = {
-      method,;
+      method,
       headers: {
         "Content-Type": "application/json"
       }
     };
-
     if (data && (method === "POST" || method === "PUT" || method === "PATCH")) {
       requestOptions.body = JSON.stringify(data);
     }
     let response: Response;
     let attempt = 0;
     const maxAttempts = options.retryAttempts || 3;
-
     while (attempt < maxAttempts) {
       try {
         response = await fetch(url, requestOptions);
-
         if (response.ok || attempt === maxAttempts - 1) {
           return response;
         }
@@ -438,36 +399,34 @@ export class DatabaseSyncManager {
     throw new Error("Maximum retry attempts reached");
   }
   private generateOperationId(
-    operation: string,;
-    entity: string,
-    id?: string,
+    operation: string
+    entity: string
+    id?: string
   ): string {
     return `${operation}-${entity}-${id || "new"}-${Date.now()}`;
   }
   private updateLocalCache(
-    entity: string,
-    operation: string,;
-    data: any,
-    id?: string,
+    entity: string
+    operation: string
+    data: any
+    id?: string
   ): void {
     // Implement local cache updates based on operation
     // This could integrate with your state management system
-
     if (typeof window !== "undefined") {
       const cacheKey = `sync-cache-${entity}`;
       const cache = JSON.parse(localStorage.getItem(cacheKey) || "{}");
-
       switch (operation) {
         case "create":
           cache[data.id] = data;
           break;
         case "update":
-        case "patch":;
+        case 'patch':
           if (id && cache[id]) {
             cache[id] = { ...cache[id], ...data };
           }
           break;
-        case "delete":;
+        case 'delete':
           if (id && cache[id]) {
             delete cache[id];
           }
@@ -483,7 +442,7 @@ export class DatabaseSyncManager {
   private delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms);
   }
-  // Status methods;
+  // Status methods
   isPending(entity?: string): boolean {
     if (entity) {
       return Array.from(this.pendingOperations).some((op) =>
@@ -495,7 +454,7 @@ export class DatabaseSyncManager {
   getPendingOperations(): string[] {
     return Array.from(this.pendingOperations);
   }
-  // Cleanup method;
+  // Cleanup method
   cleanup(): void {
     this.syncQueue.clear();
     this.pendingOperations.clear();
@@ -503,8 +462,7 @@ export class DatabaseSyncManager {
 }
 // Convenience wrapper functions
 export const dbSync = DatabaseSyncManager.getInstance();
-;
-// Entity-specific helper functions;
+// Entity-specific helper functions
 export const CasesAPI = {
   list: (params?: unknown, options?: SyncOptions) =>
     dbSync.read("cases", undefined, params, options),
@@ -515,11 +473,10 @@ export const CasesAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.update("cases", id, data, options),
   patch: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("cases", id, data, options),;
+    dbSync.patch("cases", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("cases", id, options)
 };
-
 export const EvidenceAPI = {
   list: (params?: unknown, options?: SyncOptions) =>
     dbSync.read("evidence", undefined, params, options),
@@ -528,11 +485,10 @@ export const EvidenceAPI = {
   create: (data: any, options?: SyncOptions) =>
     dbSync.create("evidence", data, options),
   update: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("evidence", id, data, options),;
+    dbSync.patch("evidence", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("evidence", id, options)
 };
-
 export const ReportsAPI = {
   list: (params?: unknown, options?: SyncOptions) =>
     dbSync.read("reports", undefined, params, options),
@@ -543,11 +499,10 @@ export const ReportsAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.update("reports", id, data, options),
   patch: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("reports", id, data, options),;
+    dbSync.patch("reports", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("reports", id, options)
 };
-
 export const CriminalsAPI = {
   list: (params?: unknown, options?: SyncOptions) =>
     dbSync.read("criminals", undefined, params, options),
@@ -558,11 +513,10 @@ export const CriminalsAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.update("criminals", id, data, options),
   patch: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("criminals", id, data, options),;
+    dbSync.patch("criminals", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("criminals", id, options)
 };
-
 export const ActivitiesAPI = {
   list: (params?: unknown, options?: SyncOptions) =>
     dbSync.read("activities", undefined, params, options),
@@ -573,11 +527,10 @@ export const ActivitiesAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.update("activities", id, data, options),
   patch: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("activities", id, data, options),;
+    dbSync.patch("activities", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("activities", id, options)
 };
-
 export const UsersAPI = {
   list: (params?: unknown, options?: SyncOptions) =>
     dbSync.read("users", undefined, params, options),
@@ -588,11 +541,10 @@ export const UsersAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.update("users", id, data, options),
   patch: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("users", id, data, options),;
+    dbSync.patch("users", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("users", id, options)
 };
-
 export const CanvasAPI = {
   list: (params?: unknown, options?: SyncOptions) =>
     dbSync.read("canvasStates", undefined, params, options),
@@ -603,9 +555,8 @@ export const CanvasAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.update("canvasStates", id, data, options),
   patch: (id: string, data: any, options?: SyncOptions) =>
-    dbSync.patch("canvasStates", id, data, options),;
+    dbSync.patch("canvasStates", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
     dbSync.delete("canvasStates", id, options)
 };
-
 export default DatabaseSyncManager;

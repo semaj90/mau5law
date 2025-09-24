@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components;
+<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on component;
 https://svelte.dev/e/component_invalid_directive -->
 <!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components -->
 <!--
@@ -7,16 +7,15 @@ https://svelte.dev/e/component_invalid_directive -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-  import { 
-    BarChart3, 
-    TrendingUp, 
+  import {
+    BarChart3,
+    TrendingUp,
     TrendingDown,
-    Users, 
-    Star, 
-    AlertCircle, 
+    Users,
+    Star,
+    AlertCircle,
     RefreshCw,
     Download,
     Filter,
@@ -27,7 +26,6 @@ https://svelte.dev/e/component_invalid_directive -->
     ThumbsUp,
     ThumbsDown
   } from 'lucide-svelte';
-
   // Component state
   let isLoading = $state(true);
   let error = $state<string | null>(null);
@@ -44,15 +42,14 @@ https://svelte.dev/e/component_invalid_directive -->
     },
     breakdown: [],
     insights: [],
-    recommendations: [],;
+    recommendations: [],
     trends: {
-      daily: [],;
+      daily: [],
       hourly: [];
     },
     userSegments: [],
     topIssues: []
   });
-
   // Filters
   const timeframeOptions = [
     { value: '1d', label: 'Last 24 hours' },
@@ -60,7 +57,6 @@ https://svelte.dev/e/component_invalid_directive -->
     { value: '30d', label: 'Last 30 days' },
     { value: '90d', label: 'Last 90 days' }
   ];
-
   const ratingTypeOptions = [
     { value: 'all', label: 'All Types' },
     { value: 'response_quality', label: 'Response Quality' },
@@ -69,7 +65,6 @@ https://svelte.dev/e/component_invalid_directive -->
     { value: 'ai_accuracy', label: 'AI Accuracy' },
     { value: 'performance', label: 'Performance' }
   ];
-
   $effect(() => {
     loadDashboardData();
     // Auto-refresh every 5 minutes
@@ -78,10 +73,8 @@ https://svelte.dev/e/component_invalid_directive -->
         loadDashboardData(true);
       }
     }, 5 * 60 * 1000);
-
     return () => clearInterval(refreshInterval);
   });
-
   /**
    * Load dashboard analytics data
    */
@@ -92,19 +85,15 @@ https://svelte.dev/e/component_invalid_directive -->
       isLoading = true;
     }
     error = null;
-
     try {
       const response = await fetch(
         `/api/v1/feedback?action=analytics&timeframe=${selectedTimeframe}&ratingType=${selectedRatingType}`
       );
-
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-
       const data = await response.json();
       dashboardData = data.data || ;
-
     } catch (err: unknown) {
       console.error('❌ Failed to load feedback analytics:', err);
       error = err.message || 'Failed to load analytics data';
@@ -113,7 +102,6 @@ https://svelte.dev/e/component_invalid_directive -->
       refreshing = false;
     }
   }
-
   /**
    * Export analytics data
    */
@@ -122,11 +110,9 @@ https://svelte.dev/e/component_invalid_directive -->
       const response = await fetch(
         `/api/v1/feedback?action=export&timeframe=${selectedTimeframe}&ratingType=${selectedRatingType}`
       );
-
       if (!response.ok) {
         throw new Error('Export failed');
       }
-
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -140,7 +126,6 @@ https://svelte.dev/e/component_invalid_directive -->
       console.error('❌ Export failed:', err);
     }
   }
-
   /**
    * Get trend indicator component
    */
@@ -151,7 +136,6 @@ https://svelte.dev/e/component_invalid_directive -->
       default: return TrendingUp;
     }
   }
-
   /**
    * Get trend color class
    */
@@ -162,14 +146,12 @@ https://svelte.dev/e/component_invalid_directive -->
       default: return 'text-gray-600';
     }
   }
-
   /**
    * Format rating as percentage
    */
   function formatRatingPercentage(rating: number): string {
     return Math.round(rating * 20) + '%';
   }
-
   /**
    * Get star rating display
    */
@@ -177,7 +159,6 @@ https://svelte.dev/e/component_invalid_directive -->
     return '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
   }
 </script>
-
 <div class="feedback-analytics-dashboard">
   <!-- Header -->
   <header class="dashboard-header">
@@ -189,7 +170,6 @@ https://svelte.dev/e/component_invalid_directive -->
           <p class="text-gray-600">User experience insights and performance metrics</p>
         </div>
       </div>
-
       <div class="header-actions">
         <div class="filters">
           <select bind:value={selectedTimeframe} onchange={loadDashboardData} class="filter-select">
@@ -197,23 +177,20 @@ https://svelte.dev/e/component_invalid_directive -->
               <option value={option.value}>{option.label}</option>
             {/each}
           </select>
-
           <select bind:value={selectedRatingType} onchange={loadDashboardData} class="filter-select">
             {#each ratingTypeOptions as option}
               <option value={option.value}>{option.label}</option>
             {/each}
           </select>
         </div>
-
-        <button 
-          onclick={() => loadDashboardData(true)} 
+        <button
+          onclick={() => loadDashboardData(true)}
           disabled={refreshing}
           class="action-button refresh-button"
         >
           <RefreshCw class="w-4 h-4" class:animate-spin={refreshing} />
           {refreshing ? 'Refreshing...' : 'Refresh'}
         </button>
-
         <button onclick={exportData} class="action-button export-button">
           <Download class="w-4 h-4" />
           Export Data
@@ -221,7 +198,6 @@ https://svelte.dev/e/component_invalid_directive -->
       </div>
     </div>
   </header>
-
   {#if error}
     <div class="error-banner" transition:fade>
       <AlertCircle class="w-5 h-5" />
@@ -235,7 +211,6 @@ https://svelte.dev/e/component_invalid_directive -->
       </button>
     </div>
   {/if}
-
   {#if isLoading}
     <div class="loading-state">
       <div class="loading-spinner"></div>
@@ -260,7 +235,6 @@ https://svelte.dev/e/component_invalid_directive -->
               <span>vs last period</span>
             </div>
           </div>
-
           <!-- Average Rating -->
           <div class="metric-nier-bits-card">
             <div class="metric-header">
@@ -276,7 +250,6 @@ https://svelte.dev/e/component_invalid_directive -->
               <span class="percentage">({formatRatingPercentage(dashboardData.overview?.averageRating || 0)})</span>
             </div>
           </div>
-
           <!-- Completion Rate -->
           <div class="metric-nier-bits-card">
             <div class="metric-header">
@@ -287,13 +260,12 @@ https://svelte.dev/e/component_invalid_directive -->
               {Math.round(dashboardData.overview?.completionRate || 0)}%
             </div>
             <div class="progress-bar">
-              <div 
-                class="progress-fill" 
+              <div
+                class="progress-fill"
                 style="width: {Math.round(dashboardData.overview?.completionRate || 0)}%"
               ></div>
             </div>
           </div>
-
           <!-- Satisfaction Score -->
           <div class="metric-nier-bits-card">
             <div class="metric-header">
@@ -315,7 +287,6 @@ https://svelte.dev/e/component_invalid_directive -->
           </div>
         </div>
       </section>
-
       <!-- Rating Breakdown -->
       <section class="breakdown-section" /* transition removed */}>
         <h2 class="section-title">Rating Breakdown by Category</h2>
@@ -326,13 +297,11 @@ https://svelte.dev/e/component_invalid_directive -->
                 <h3 class="breakdown-title">{category.ratingType.replace.toUpperCase()}</h3>
                 <div class="breakdown-count">{category.count} ratings</div>
               </div>
-              
               <div class="breakdown-metrics">
                 <div class="breakdown-rating">
                   <span class="rating-value">{category.avgRating.toFixed(1)}</span>
                   <span class="rating-stars">{getStarRating(category.avgRating)}</span>
                 </div>
-                
                 <div class="breakdown-change">
                   {#if category.improvement > 0}
                     <ArrowUpRight class="w-4 h-4 text-green-600" />
@@ -345,14 +314,13 @@ https://svelte.dev/e/component_invalid_directive -->
                   {/if}
                 </div>
               </div>
-
               <div class="rating-distribution">
                 {#each [5, 4, 3, 2, 1] as rating}
                   <div class="rating-bar">
                     <span class="rating-label">{rating}★</span>
                     <div class="bar">
-                      <div 
-                        class="bar-fill rating-{rating}" 
+                      <div
+                        class="bar-fill rating-{rating}"
                         style="width: {(category.distribution?.[rating] || 0)}%"
                       ></div>
                     </div>
@@ -364,7 +332,6 @@ https://svelte.dev/e/component_invalid_directive -->
           {/each}
         </div>
       </section>
-
       <!-- Insights and Recommendations -->
       <section class="insights-section" /* transition removed */}>
         <div class="insights-grid">
@@ -398,7 +365,6 @@ https://svelte.dev/e/component_invalid_directive -->
               {/each}
             </div>
           </div>
-
           <!-- System Recommendations -->
           <div class="recommendations-nier-bits-card">
             <h2 class="section-title">
@@ -426,7 +392,6 @@ https://svelte.dev/e/component_invalid_directive -->
           </div>
         </div>
       </section>
-
       <!-- Top Issues -->
       {#if dashboardData.topIssues?.length}
         <section class="issues-section" /* transition removed */}>
@@ -465,14 +430,12 @@ https://svelte.dev/e/component_invalid_directive -->
     </main>
   {/if}
 </div>
-
 <style>
-  .feedback-analytics-dashboard {;
+  .feedback-analytics-dashboard {
     min-height: 100vh;
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     padding: 2rem;
   }
-
   .dashboard-header {
     background: white;
     border-radius: 12px;
@@ -480,33 +443,28 @@ https://svelte.dev/e/component_invalid_directive -->
     margin-bottom: 2rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
-
   .header-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
   }
-
   .header-title {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .header-actions {
     display: flex;
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
   }
-
   .filters {
     display: flex;
     gap: 0.5rem;
   }
-
   .filter-select {
     padding: 0.5rem 1rem;
     border: 1px solid #d1d5db;
@@ -514,7 +472,6 @@ https://svelte.dev/e/component_invalid_directive -->
     background: white;
     font-size: 0.875rem;
   }
-
   .action-button {
     display: flex;
     align-items: center;
@@ -523,29 +480,24 @@ https://svelte.dev/e/component_invalid_directive -->
     border-radius: 6px;
     font-weight: 500;
     font-size: 0.875rem;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
   .refresh-button {
     background: #3b82f6;
     color: white;
     border: none;
   }
-
-  .refresh-button:hover:not(:disabled) {
+  .refresh-button:hover:not(:disabled) {,
     background: #2563eb;
   }
-
   .export-button {
     background: #10b981;
     color: white;
     border: none;
   }
-
   .export-button:hover {
     background: #059669;
   }
-
   .error-banner {
     background: #fef2f2;
     border: 1px solid #fecaca;
@@ -557,7 +509,6 @@ https://svelte.dev/e/component_invalid_directive -->
     gap: 1rem;
     color: #dc2626;
   }
-
   .retry-button {
     display: flex;
     align-items: center;
@@ -570,7 +521,6 @@ https://svelte.dev/e/component_invalid_directive -->
     font-size: 0.875rem;
     margin-left: auto;
   }
-
   .loading-state {
     display: flex;
     flex-direction: column;
@@ -579,7 +529,6 @@ https://svelte.dev/e/component_invalid_directive -->
     padding: 4rem;
     color: #6b7280;
   }
-
   .loading-spinner {
     width: 2rem;
     height: 2rem;
@@ -589,75 +538,63 @@ https://svelte.dev/e/component_invalid_directive -->
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
   }
-
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
-
   .dashboard-main {
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
-
   .overview-section {
     background: white;
     border-radius: 12px;
     padding: 2rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
-
   .overview-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
   }
-
   .metric-card {
     padding: 1.5rem;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
   }
-
   .metric-header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 1rem;
   }
-
   .metric-icon {
     width: 1.25rem;
     height: 1.25rem;
   }
-
   .metric-label {
     font-size: 0.875rem;
     color: #6b7280;
     font-weight: 500;
   }
-
   .metric-value {
     font-size: 2rem;
     font-weight: bold;
     color: #1f2937;
     margin-bottom: 0.5rem;
   }
-
   .metric-unit {
     font-size: 1rem;
     color: #6b7280;
     font-weight: normal;
   }
-
   .metric-trend {
     display: flex;
     align-items: center;
     gap: 0.25rem;
     font-size: 0.75rem;
   }
-
   .metric-detail {
     display: flex;
     align-items: center;
@@ -665,7 +602,6 @@ https://svelte.dev/e/component_invalid_directive -->
     font-size: 0.875rem;
     color: #6b7280;
   }
-
   .progress-bar {
     width: 100%;
     height: 4px;
@@ -673,13 +609,11 @@ https://svelte.dev/e/component_invalid_directive -->
     border-radius: 2px;
     overflow: hidden;
   }
-
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981 0%, #059669 100%);
     transition: width 0.3s ease;
   }
-
   .section-title {
     display: flex;
     align-items: center;
@@ -689,68 +623,57 @@ https://svelte.dev/e/component_invalid_directive -->
     color: #1f2937;
     margin-bottom: 1.5rem;
   }
-
   .breakdown-section, .insights-section, .issues-section {
     background: white;
     border-radius: 12px;
     padding: 2rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
-
   .breakdown-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
   }
-
   .breakdown-card {
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 1.5rem;
     background: #fafafa;
   }
-
   .breakdown-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .breakdown-title {
     font-weight: 600;
     color: #1f2937;
   }
-
   .breakdown-count {
     font-size: 0.875rem;
     color: #6b7280;
   }
-
   .breakdown-metrics {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .breakdown-rating {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
-
   .rating-value {
     font-size: 1.5rem;
     font-weight: bold;
     color: #1f2937;
   }
-
   .rating-stars {
     color: #fbbf24;
     font-size: 0.875rem;
   }
-
   .breakdown-change {
     display: flex;
     align-items: center;
@@ -758,25 +681,21 @@ https://svelte.dev/e/component_invalid_directive -->
     font-size: 0.875rem;
     font-weight: 500;
   }
-
   .rating-distribution {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .rating-bar {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.75rem;
   }
-
   .rating-label {
     width: 2rem;
     color: #6b7280;
   }
-
   .bar {
     flex: 1;
     height: 4px;
@@ -784,89 +703,74 @@ https://svelte.dev/e/component_invalid_directive -->
     border-radius: 2px;
     overflow: hidden;
   }
-
   .bar-fill {
     height: 100%;
     transition: width 0.3s ease;
   }
-
   .bar-fill.rating-5 { background: #10b981; }
   .bar-fill.rating-4 { background: #84cc16; }
   .bar-fill.rating-3 { background: #eab308; }
   .bar-fill.rating-2 { background: #f97316; }
   .bar-fill.rating-1 { background: #ef4444; }
-
   .rating-percentage {
     width: 2.5rem;
     text-align: right;
     color: #6b7280;
   }
-
   .insights-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 2rem;
   }
-
   .insights-card, .recommendations-card {
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 1.5rem;
     background: #fafafa;
   }
-
   .insights-list, .recommendations-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .insight-item, .recommendation-item {
     padding: 1rem;
     background: white;
     border-radius: 6px;
     border: 1px solid #e5e7eb;
   }
-
   .insight-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.5rem;
   }
-
   .insight-title {
     font-weight: 600;
     color: #1f2937;
   }
-
   .insight-confidence {
     font-size: 0.75rem;
-    background: #dbeafe;
+    background: #dbeaf;
     color: #1e40af;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
   }
-
   .insight-description {
     color: #6b7280;
     margin-bottom: 0.5rem;
   }
-
   .insight-recommendations {
     font-size: 0.875rem;
   }
-
   .insight-recommendations ul {
     margin: 0.5rem 0;
     padding-left: 1rem;
   }
-
   .recommendation-item {
     display: flex;
     gap: 1rem;
   }
-
   .recommendation-priority {
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
@@ -874,37 +778,30 @@ https://svelte.dev/e/component_invalid_directive -->
     font-weight: 600;
     white-space: nowrap;
   }
-
   .recommendation-priority.priority-high {
     background: #fecaca;
     color: #dc2626;
   }
-
   .recommendation-priority.priority-medium {
     background: #fed7aa;
     color: #ea580c;
   }
-
   .recommendation-priority.priority-low {
     background: #bbf7d0;
     color: #047857;
   }
-
   .recommendation-content {
     flex: 1;
   }
-
   .recommendation-title {
     font-weight: 600;
     color: #1f2937;
     margin-bottom: 0.5rem;
   }
-
   .recommendation-description {
     color: #6b7280;
     margin-bottom: 0.75rem;
   }
-
   .recommendation-action {
     background: #3b82f6;
     color: white;
@@ -913,13 +810,11 @@ https://svelte.dev/e/component_invalid_directive -->
     border-radius: 4px;
     font-size: 0.875rem;
   }
-
   .issues-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .issue-item {
     display: flex;
     gap: 1rem;
@@ -928,7 +823,6 @@ https://svelte.dev/e/component_invalid_directive -->
     border-radius: 6px;
     border: 1px solid #e5e7eb;
   }
-
   .issue-rank {
     display: flex;
     align-items: center;
@@ -941,66 +835,53 @@ https://svelte.dev/e/component_invalid_directive -->
     font-weight: bold;
     font-size: 0.875rem;
   }
-
   .issue-content {
     flex: 1;
   }
-
   .issue-title {
     font-weight: 600;
     color: #1f2937;
     margin-bottom: 0.5rem;
   }
-
   .issue-description {
     color: #6b7280;
     margin-bottom: 0.75rem;
   }
-
   .issue-stats {
     display: flex;
     gap: 1rem;
     font-size: 0.875rem;
   }
-
   .issue-count {
     color: #dc2626;
     font-weight: 500;
   }
-
   .issue-impact {
     color: #ea580c;
   }
-
   .issue-trend {
     display: flex;
     align-items: center;
     gap: 0.25rem;
   }
-
   .percentage {
     color: #9ca3af;
     font-size: 0.75rem;
   }
-
   @media (max-width: 768px) {
     .feedback-analytics-dashboard {
       padding: 1rem;
     }
-
     .header-content {
       flex-direction: column;
       align-items: stretch;
     }
-
     .overview-cards {
       grid-template-columns: 1fr;
     }
-
     .breakdown-grid {
       grid-template-columns: 1fr;
     }
-
     .insights-grid {
       grid-template-columns: 1fr;
     }

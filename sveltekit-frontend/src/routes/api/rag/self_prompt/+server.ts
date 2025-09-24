@@ -4,11 +4,9 @@ import { getRedisService } from '$lib/server/redis/redis-service'
 import { db } from '$lib/server/database'
 import { getEmbedding } from '$lib/server/services/embedding-service'
 import postgres from 'postgres'
-
 interface Passage { id: string; text: string; pagerank?: number; }
 const sql = (db as any).session?.client as ReturnType<typeof postgres> | undefined
 const REDIS_TTL_SECONDS = 300
-
 async function initialVectorSearch(query: string, k: number): Promise<Passage[]> {
   if (!sql) return []
   try {
@@ -67,7 +65,6 @@ function composePrompt(userQuery: string, core: Passage[], neighbors: Passage[],
   const neighborText = neighbors.slice(0, 8).map((p,i)=>`[REL ${i+1} ${p.id}] ${trim(p.text)}`).join('\n')
   return `User Intent: ${userQuery}\nKey Concepts: ${concepts.join(', ')}\nCore Passages:\n${coreText}\nRelated Passages:\n${neighborText}\nInstructions: Provide a comprehensive legal answer citing the most relevant clauses. Emphasize accuracy and legal context.`
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   const t0 = performance.now()
   const { query, k = 5, neighborK = 12, useCache = true } = await request.json()

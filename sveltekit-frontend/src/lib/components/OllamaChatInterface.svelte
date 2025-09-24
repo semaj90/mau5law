@@ -1,7 +1,6 @@
 <!-- OllamaChatInterface.svelte - Svelte 5 + SvelteKit 2.0 Enhanced AI Chat -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import TokenUsageManager from "$lib/components/TokenUsageManager.svelte";
   import { Badge } from "$lib/components/ui/badge";
   import Button from '$lib/components/ui/enhanced-bits';
@@ -28,7 +27,6 @@
     Zap,
   } from "lucide-svelte";
   import { onMount, tick } from "svelte";
-
   // Props
   interface Props {
     caseId?: string;
@@ -36,63 +34,52 @@
     useRAG?: boolean;
     className?: string;
   }
-
   let {
     caseId = undefined,
     model = "gemma3-legal",
     useRAG = true,
     className = "",
   }: Props = $props();
-
   // Reactive state using Svelte 5 runes
   let message = $state("");
   let isLoading = $state(false);
   let showSettings = $state(false);
   let temperature = $state(0.7);
   let streamMode = $state(false);
-
   // Chat history and UI state
   let chatHistory = $state<
     Array()
   >([]);
-
   let chatContainer: HTMLElement;
   let tokenManager: TokenUsageManager;
   let ollamaStatus = $state<"unknown" | "healthy" | "unhealthy">("unknown");
   let availableModels = $state<string[]>([]);
-
   // Error and success states
   let errorMessage = $state("");
   let successMessage = $state("");
-
   // Reactive computations
   let canSend = $derived(message.trim.length > 0 && !isLoading);
   let messageCount = $derived(chatHistory.length);
   let lastResponse = $derived(
     chatHistory.find((msg) => msg.type === "assistant" && msg.performance)
   );
-
   // Initialize component
   $effect(() => {
     (async () => {
 await checkOllamaHealth();
     await loadAvailableModels();
-
     // Auto-scroll setup
     return () => {
       // Cleanup if needed
     };
     })();
   });
-
   // Health check function
   async function checkOllamaHealth() {
     try {
       const response = await fetch("/api/chat", { method: "GET" });
       const data = await response.json();
-
       ollamaStatus = data.status === "healthy" ? "healthy" : "unhealthy";
-
       if (data.models) {
         availableModels = data.models.map((m: unknown) => m.name);
       }
@@ -101,62 +88,52 @@ await checkOllamaHealth();
       console.error("Health check failed:", error);
     }
   }
-
   async function loadAvailableModels() {
     // Models are loaded in health check
   }
-
   // Send message function
   async function sendMessage() {
     if (!canSend) return;
-
     const userMessage = message.trim();
     const messageId = Date.now.toString();
-
     // Add user message to history
     chatHistory.push({
-      id: messageId,
-      type: "user",;
-      content: userMessage,;
-      timestamp: new Date(),;
+      id: messageId
+      type: "user",
+      content: userMessage
+      timestamp: new Date(),
     });
-
     // Clear input and set loading
     message = "";
     isLoading = true;
     errorMessage = "";
-
     try {
       const chatRequest: ChatRequest = {
-        message: userMessage,
+        message: userMessage
         model,
-        temperature,;
-        stream: streamMode,
+        temperature,
+        stream: streamMode
         caseId,
-        useRAG,;
+        useRAG,
       };
-
       const response = await fetch("/api/chat", {
-        method: "POST",;
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: [{ role: "user", content: userMessage }],
-          model,;
-          stream: streamMode,
+          model,
+          stream: streamMode
           sessionId: caseId;
         }),
       });
-
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-
       if (streamMode) {
         await handleStreamingResponse(response, messageId);
       } else {
         await handleNormalResponse(response, messageId);
       }
-
       // Auto-scroll to bottom
       await tick();
       scrollToBottom();
@@ -164,69 +141,59 @@ await checkOllamaHealth();
       console.error("Chat error:", error);
       errorMessage =
         error instanceof Error ? error.message: "Unknown error occurred";
-
       // Add error message to chat
       chatHistory.push.toString(),
-        type: "assistant",;
-        content: `❌ Error: ${errorMessage}`,;
-        timestamp: new Date(),;
+        type: "assistant",
+        content: `❌ Error: ${errorMessage}`,
+        timestamp: new Date(),
       });
     } finally {
       isLoading = false;
     }
   }
-
   async function handleNormalResponse(response: Response, messageId: string) {
     const data: ChatResponse = await response.json();
-
     chatHistory.push({
       id: messageId + "_response",
       type: "assistant",
       content: data.response,
-      timestamp: new Date(),;
-      performance: data.performance,;
+      timestamp: new Date(),
+      performance: data.performance,
       suggestions: data.suggestions,
-      relatedCases: data.relatedCases,;
+      relatedCases: data.relatedCases,
     });
-
     // Record token usage in TokenUsageManager
     if (tokenManager && data.performance) {
       tokenManager.recordTokenUsage({
         promptTokens: data.performance.promptTokens || 0,
         responseTokens: data.performance.tokens || 0,
-        model: model,;
-        prompt: chatHistory[chatHistory.length - 2]?.content || "",;
+        model: model
+        prompt: chatHistory[chatHistory.length - 2]?.content || "",
         response: data.response,
-        processingTime: data.performance.duration || 0,;
+        processingTime: data.performance.duration || 0,
       });
     }
   }
-
   async function handleStreamingResponse(
-    response: Response,
+    response: Response
     messageId: string
   ) {
     const reader = response.body?.getReader();
     if (!reader) throw new Error("No response body");
-
     let assistantMessageIndex = chatHistory.length;
-
     // Add placeholder message
     chatHistory.push({
       id: messageId + "_response",
-      type: "assistant",;
-      content: "",;
-      timestamp: new Date(),;
+      type: "assistant",
+      content: "",
+      timestamp: new Date(),
     });
-
     try {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
         const chunk = new TextDecoder().decode(value);
         chatHistory[assistantMessageIndex].content += chunk;
-
         // Auto-scroll during streaming
         await tick();
         scrollToBottom();
@@ -235,42 +202,35 @@ await checkOllamaHealth();
       reader.releaseLock();
     }
   }
-
   function scrollToBottom() {
     if (chatContainer) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
   }
-
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
-
   function selectSuggestion(suggestion: string) {
     message = suggestion;
   }
-
   function clearChat() {
     chatHistory = [];
     errorMessage = "";
     successMessage = "";
   }
-
   function exportChat() {
     const chatData = {
       timestamp: new Date().toISOString(),
       model,
-      caseId,;
-      messages: chatHistory,;
+      caseId,
+      messages: chatHistory
     };
-
     const blob = new Blob([JSON.stringify(chatData, null, 2)], {
-      type: "application/json",;
+      type: "application/json",
     });
-
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -278,7 +238,6 @@ await checkOllamaHealth();
     a.click();
     URL.revokeObjectURL(url);
   }
-
   // Reactive effects
   $effect(() => {
     if (ollamaStatus === "healthy") {
@@ -287,7 +246,6 @@ await checkOllamaHealth();
     }
   });
 </script>
-
 <!-- Chat Interface -->
 <div class="ollama-chat-interface {className}">
   <!-- Header with Status -->
@@ -303,7 +261,6 @@ await checkOllamaHealth();
             {ollamaStatus}
           </Badge>
         </h3>
-
         <div class="flex items-center gap-2">
           <!-- Model Selector -->
           <select bind:value={model} class="text-sm border rounded px-2 py-1">
@@ -311,7 +268,6 @@ await checkOllamaHealth();
               <option value={modelName}>{modelName}</option>
             {/each}
           </select>
-
           <!-- Settings Toggle -->
           <Button class="bits-btn"
             variant="ghost"
@@ -321,7 +277,6 @@ await checkOllamaHealth();
           >
             <Settings class="w-4 h-4" />
 </Button>
-
           <!-- Health Check -->
           <Button class="bits-btn"
             variant="ghost"
@@ -333,7 +288,6 @@ await checkOllamaHealth();
 </Button>
         </div>
       </div>
-
       <!-- Performance Metrics -->
       {#if lastResponse?.performance}
         <div class="flex items-center gap-4 text-xs nes-text is-disabled">
@@ -350,7 +304,6 @@ await checkOllamaHealth();
         </div>
       {/if}
     </div>
-
     <!-- Advanced Settings -->
     {#if showSettings}
       <div class="yorha-panel-content pt-0 border-t">
@@ -378,7 +331,6 @@ await checkOllamaHealth();
       </div>
     {/if}
   </div>
-
   <!-- Token Usage Manager -->
   <TokenUsageManager
     bind:this={tokenManager}
@@ -386,7 +338,6 @@ await checkOllamaHealth();
     class="mb-4"
     data-testid="token-usage-manager"
   />
-
   <!-- Status Messages -->
   {#if errorMessage}
     <div
@@ -396,7 +347,6 @@ await checkOllamaHealth();
       <span class="text-red-800">{errorMessage}</span>
     </div>
   {/if}
-
   {#if successMessage}
     <div
       class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2"
@@ -405,7 +355,6 @@ await checkOllamaHealth();
       <span class="text-green-800">{successMessage}</span>
     </div>
   {/if}
-
   <!-- Chat History -->
   <div class="flex-1 mb-4 nes-container">
     <ScrollArea class="h-[600px] p-6" bind:viewport={chatContainer}>
@@ -424,7 +373,6 @@ await checkOllamaHealth();
             <div class="text-xs nes-text is-disabled mb-2 px-2 {msg.type === 'user' ? 'text-right' : 'text-left'}">
               {msg.timestamp.toLocaleTimeString()} • {msg.timestamp.toLocaleDateString()}
             </div>
-
             <div
               class="inline-block max-w-[85%] {msg.type === 'user'
                 ? 'bg-blue-600 text-white rounded-2xl rounded-br-md shadow-md'
@@ -434,7 +382,6 @@ await checkOllamaHealth();
                 : "chat-message"}
             >
               <div class="whitespace-pre-wrap text-[15px] leading-relaxed">{msg.content}</div>
-
               <!-- Performance Info for Assistant Messages -->
               {#if msg.type === "assistant" && msg.performance}
                 <div class="text-xs opacity-60 mt-3 pt-2 border-t border-gray-300">
@@ -444,7 +391,6 @@ await checkOllamaHealth();
                 </div>
               {/if}
             </div>
-
             <!-- Suggestions -->
             {#if msg.suggestions && msg.suggestions.length > 0}
               <div class="mt-3 flex flex-wrap gap-2">
@@ -461,7 +407,6 @@ selectSuggestion(suggestion)}
                 {/each}
               </div>
             {/if}
-
             <!-- Related Cases -->
             {#if msg.relatedCases && msg.relatedCases.length > 0}
               <div class="mt-2">
@@ -476,7 +421,6 @@ selectSuggestion(suggestion)}
           </div>
         {/each}
       {/if}
-
       <!-- Loading Indicator -->
       {#if isLoading}
         <div class="flex items-center gap-2 nes-text is-disabled">
@@ -486,7 +430,6 @@ selectSuggestion(suggestion)}
       {/if}
     </ScrollArea>
   </div>
-
   <!-- Input Area -->
   <div class="flex gap-3 p-4 bg-white border-t border-gray-200 rounded-b-lg">
     <div class="flex-1">
@@ -499,7 +442,6 @@ selectSuggestion(suggestion)}
         data-testid="chat-input"
       />
     </div>
-
     <Button
       onclick={sendMessage}
       disabled={!canSend || ollamaStatus !== "healthy"}
@@ -514,7 +456,6 @@ selectSuggestion(suggestion)}
         <span>Send</span>
       {/if}
 </Button>
-
     <!-- Additional Actions -->
     <Button class="bits-btn"
       variant="ghost"
@@ -523,7 +464,6 @@ selectSuggestion(suggestion)}
     >
 Clear
 </Button>
-
     <Button class="bits-btn"
       variant="ghost"
       onclick={exportChat}
@@ -532,7 +472,6 @@ Clear
 Export
 </Button>
   </div>
-
   <!-- Chat Stats -->
   {#if messageCount > 0}
     <div class="mt-4 text-xs nes-text is-disabled text-center">
@@ -542,9 +481,8 @@ Export
     </div>
   {/if}
 </div>
-
 <style>
-  .ollama-chat-interface {;
+  .ollama-chat-interface {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -554,28 +492,22 @@ Export
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     padding: 1rem;
   }
-
   .ollama-chat-interface :global(.scroll-area) {
     max-height: 24rem;
     overflow-y: auto;
   }
-
   /* Custom scrollbar */
-  .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar) {
+  .ollama-chat-interface :global($1) {
     width: 0.5rem;
   }
-
   .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar-track) {
     background-color: #f5f5f5;
   }
-
   .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar-thumb) {
     background-color: #d1d5db;
     border-radius: 0.25rem;
   }
-
   .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar-thumb:hover) {
     background-color: #9ca3af;
   }
 </style>
-

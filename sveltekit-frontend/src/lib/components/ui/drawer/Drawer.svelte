@@ -2,29 +2,22 @@
 https://svelte.dev/e/render_tag_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call expressions -->
 <script lang="ts">
-  import {   } from "svelte";
   import { X } from "lucide-svelte";
-
-  let { open = $bindable()   }: { open = $bindable() : unknown } = $props(); // false;
-  let { title = $bindable()  }: { title = $bindable() : unknown } = $props(); // "";
-  let { description = $bindable()  }: { description = $bindable() : unknown } = $props(); // "";
-  let { side = $bindable()  }: { side = $bindable() : unknown } = $props(); // "left" | "right" | "top" | "bottom" = "right";
-  let { size = $bindable()  }: { size = $bindable() : unknown } = $props(); // "sm" | "md" | "lg" | "xl" = "md";
-
-  
-
+  let { open = $bindable()   }: { open = $bindable() : unknown } = $props(); // false
+  let { title = $bindable()  }: { title = $bindable() : unknown } = $props(); // ""
+  let { description = $bindable()  }: { description = $bindable() : unknown } = $props(); // ""
+  let { side = $bindable()  }: { side = $bindable() : unknown } = $props(); // "left" | "right" | "top" | "bottom" = "right"
+  let { size = $bindable()  }: { size = $bindable() : unknown } = $props(); // "sm" | "md" | "lg" | "xl" = "md"
   function handleClose() {
     open = false;
-    ondispatch?.();
+    // ondispatch removed;
   }
-
   function handleBackdropClick(e: MouseEvent) {
     if (e.target === e.currentTarget) {
       handleClose();
     }
   }
 </script>
-
 {#if open}
   <div
     class="drawer-overlay"
@@ -51,16 +44,15 @@ https://svelte.dev/e/render_tag_invalid_expression -->
           <X size="24" />
         </button>
       </div>
-
       <div class="drawer-body">
         {@render children}
       </div>
     </div>
   </div>
 {/if}
-
 <style>/* @unocss-include */ .drawer-overlay {
     position: fixed;
+d;
     top: 0;
     left: 0;
     right: 0;
@@ -93,7 +85,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   }
   .drawer-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: flex-start;
     margin-bottom: 20px;
   }
@@ -117,4 +109,3 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     background: #f5f5f5;
   }
 </style>
-

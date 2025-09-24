@@ -1,41 +1,34 @@
 /**
  * WebAssembly Chat API - Fallback for Ollama
- * 
+ *
  * Provides local LLM inference using WebAssembly when Ollama is unavailable
  * Uses llama.cpp compiled to WebAssembly for client-side processing
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 // WebAssembly LLM service interface
 interface WasmLLMService {
   initialize(): Promise<void>
   generateResponse(prompt: string, options: any): AsyncGenerator<string, void, unknown>
   isAvailable(): boolean
 }
-
 // Mock WebAssembly LLM service (replace with actual implementation)
 class MockWasmLLM implements WasmLLMService {
   private initialized = false
-  
   async initialize(): Promise<void> {
     // Initialize WebAssembly model
     console.log('Initializing WebAssembly LLM...')
     await new Promise(resolve => setTimeout(resolve, 1000); // Simulate loading
     this.initialized = true
   }
-  
   isAvailable(): boolean {
     return this.initialized
   }
-  
   async *generateResponse(prompt: string, options: any): AsyncGenerator<string, void, unknown> {
     if (!this.initialized) {
       yield "WebAssembly model not initialized. Please wait..."
       return
     }
-
     // Mock streaming response with legal-focused content
     const responses = [
       "I understand you're working on a legal matter. ",
@@ -49,17 +42,14 @@ class MockWasmLLM implements WasmLLMService {
       "For more detailed analysis, I recommend connecting to the full Ollama service. ",
       "Would you like me to help identify specific areas that need further investigation?"
     ]
-
     for (let i = 0; i < responses.length; i++) {
       await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200)
       yield responses[i]
     }
   }
 }
-
 // Global WebAssembly service instance
 let wasmService: WasmLLMService | null = null
-
 // Initialize service
 async function getWasmService(): Promise<WasmLLMService> {
   if (!wasmService) {
@@ -68,7 +58,6 @@ async function getWasmService(): Promise<WasmLLMService> {
   }
   return wasmService
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
@@ -82,33 +71,27 @@ export const POST: RequestHandler = async ({ request }) => {
       conversationId,
       context = []
     } = body
-
     if (!message) {
       return json({
-        success: false,
+        success: false
         error: 'Message is required'
       }, { status: 400 })
     }
-
     // Get WebAssembly service
     const wasm = await getWasmService()
-    
     if (!wasm.isAvailable()) {
       return json({
-        success: false,
+        success: false
         error: 'WebAssembly LLM service not available'
       }, { status: 503 })
     }
-
     // Build context-aware prompt
     let fullPrompt = ''
-    
     if (systemPrompt) {
       fullPrompt += `${systemPrompt}\n\n`
     } else {
       fullPrompt += `You are a legal AI assistant running in WebAssembly mode. Provide helpful legal guidance while acknowledging your limitations compared to full-scale models.\n\n`
     }
-
     // Add conversation context
     if (context.length > 0) {
       fullPrompt += 'Previous conversation:\n'
@@ -117,9 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
       })
       fullPrompt += '\n'
     }
-
     fullPrompt += `User: ${message}\nAssistant: `
-
     // For streaming responses
     if (stream) {
       const encoder = new TextEncoder()
@@ -131,7 +112,7 @@ export const POST: RequestHandler = async ({ request }) => {
               text: '',
               metadata: {
                 type: 'sources',
-                sources: [{
+                sources: [{,
                   type: 'system',
                   content: 'WebAssembly Legal Assistant',
                   confidence: 0.7
@@ -139,27 +120,23 @@ export const POST: RequestHandler = async ({ request }) => {
               }
             }
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(initialChunk)}\n\n`)
-
             // Stream response
             const responseGenerator = wasm.generateResponse(fullPrompt, {
               temperature,
               maxTokens
             })
-
             for await (const chunk of responseGenerator) {
               const streamChunk = {
-                text: chunk,
+                text: chunk
                 metadata: {
                   type: 'text',
                   confidence: 0.75,
                   model: 'webassembly-llm'
                 }
               }
-              
               const data = `data: ${JSON.stringify(streamChunk)}\n\n`
               controller.enqueue(encoder.encode(data)
             }
-
             // Send completion marker
             controller.enqueue(encoder.encode('data: [DONE]\n\n')
             controller.close()
@@ -174,7 +151,6 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         }
       })
-
       return new Response(readable, {
         headers: {
           'Content-Type': 'text/event-stream',
@@ -184,25 +160,22 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       })
     }
-
     // For non-streaming responses
     let fullResponse = ''
     const responseGenerator = wasm.generateResponse(fullPrompt, {
       temperature,
       maxTokens
     })
-
     for await (const chunk of responseGenerator) {
       fullResponse += chunk
     }
-
     return json({
-      success: true,
-      response: fullResponse,
+      success: true
+      response: fullResponse
       metadata: {
         model: 'webassembly-llm',
         confidence: 0.75,
-        sources: [{
+        sources: [{,
           type: 'system',
           content: 'WebAssembly Legal Assistant',
           confidence: 0.7
@@ -212,26 +185,23 @@ export const POST: RequestHandler = async ({ request }) => {
         note: 'Response generated using WebAssembly fallback. Connect to Ollama for enhanced capabilities.'
       }
     })
-
   } catch (error: any) {
     console.error('WebAssembly chat API error:', error)
     return json({
-      success: false,
+      success: false
       error: 'Failed to process chat request in WebAssembly mode',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
   }
 }
-
 export const GET: RequestHandler = async () => {
   try {
     const wasm = await getWasmService()
-    
     return json({
-      success: true,
+      success: true
       status: wasm.isAvailable() ? 'available' : 'unavailable',
       capabilities: {
-        streaming: true,
+        streaming: true
         models: ['webassembly-llm'],
         features: [
           'Basic legal guidance',
@@ -250,7 +220,7 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: 'WebAssembly service error',
       details: error.message
     }, { status: 500 })

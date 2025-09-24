@@ -1,12 +1,9 @@
 
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
 const DEFAULT_INTERVAL = 3000
 }
-
 export interface StreamMetricEnvelope { type: string; data: any; ts: string }
-
 function collectMetrics() {
   return {
     cpu: 5 + Math.random() * 25,
@@ -16,7 +13,6 @@ function collectMetrics() {
     timestamp: Date.now()
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const intervalMs = Number(url.searchParams.get('interval') || DEFAULT_INTERVAL)
   const stream = new ReadableStream<Uint8Array>({

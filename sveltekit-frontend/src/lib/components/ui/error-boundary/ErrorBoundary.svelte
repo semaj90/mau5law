@@ -1,11 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import Button from 'bits-ui';
   import { Card } from 'bits-ui';
-  import ModernButton from '$lib/components/ui/button/Button.svelte';
+  import ModernButton from '$lib/components/ui/Button.svelte';
   interface Props {
     fallback?: unknown;
     children: unknown;
@@ -18,17 +17,17 @@
   // Error logging
   function logError(err: Error, context?: unknown) {
     const errorData = {
-      id: errorId,
+      id: errorId
       message: err.message,
-      stack: err.stack,;
-      url: $page.url.pathname,;
+      stack: err.stack,
+      url: $page.url.pathname,
       timestamp: new Date().toISOString(),
       userAgent: globalThis.navigator?.userAgent,
       context;
     };
     console.error('YoRHa Error Boundary:', errorData);
     // In production, send to error tracking service
-    // fetch('/api/errors', { method: 'POST', body: JSON.stringify(errorData) });
+    // fetch('/api/errors', { method: 'POST', body: JSON.stringify(errorData) })
     onError?.(err, errorData);
   }
   // Global error handler
@@ -72,7 +71,6 @@
     };
   });
 </script>
-
 {#if hasError && error}
   <!-- Error State -->
   <div class="min-h-screen bg-nier-bg-primary text-nier-text-primary flex items-center justify-center p-golden-lg">
@@ -93,7 +91,6 @@
           The YoRHa Legal AI system encountered an unexpected error. Our androids are investigating the issue.
         </div.Description>
       </div.Header>
-      
       <div.Content class="space-y-golden-lg nes-container">
         <!-- Error Details -->
         <div class="bg-nier-bg-tertiary border border-nier-border-muted rounded p-golden-md">
@@ -104,19 +101,15 @@
             <div class="grid grid-cols-4 gap-2">
               <span class="text-nier-text-secondary">ID:</span>
               <span class="col-span-3 text-red-400">{errorId}</span>
-              
               <span class="text-nier-text-secondary">Message:</span>
               <span class="col-span-3 text-nier-text-primary">{error.message}</span>
-              
               <span class="text-nier-text-secondary">Location:</span>
               <span class="col-span-3 text-nier-text-primary">{$page.url.pathname}</span>
-              
               <span class="text-nier-text-secondary">Time:</span>
               <span class="col-span-3 text-nier-text-primary">{new Date().toLocaleString()}</span>
             </div>
           </div>
         </div>
-        
         <!-- Stack Trace (Development) -->
         {#if error.stack && globalThis.location?.hostname === 'localhost'}
           <details class="bg-nier-bg-tertiary border border-nier-border-muted rounded p-golden-md">
@@ -126,26 +119,23 @@
             <pre class="font-mono text-xs text-nier-text-primary mt-golden-sm overflow-x-auto whitespace-pre-wrap">{error.stack}</pre>
           </details>
         {/if}
-        
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-golden-sm justify-center">
-          <ModernButton 
+          <ModernButton
             onclick={resetError}
             variant="primary"
             class="bg-gradient-to-r from-nier-accent-warm to-nier-accent-cool text-nier-bg-primary"
           >
             Try Again
           </ModernButton>
-          
-          <ModernButton 
+          <ModernButton
             onclick={reloadPage}
             variant="ghost"
             class="border-nier-accent-cool text-nier-accent-cool hover:bg-nier-accent-cool hover:text-nier-bg-primary"
           >
             Reload Page
           </ModernButton>
-          
-          <ModernButton 
+          <ModernButton
             href="/"
             variant="ghost"
             class="text-nier-text-secondary hover:text-nier-accent-warm hover:bg-nier-bg-tertiary"
@@ -153,11 +143,10 @@
             Go Home
           </ModernButton>
         </div>
-        
         <!-- Support Information -->
         <div class="text-center pt-golden-lg border-t border-nier-border-muted">
           <p class="text-xs text-nier-text-muted">
-            If this error persists, please contact the YoRHa support team with error ID: 
+            If this error persists, please contact the YoRHa support team with error ID:
             <code class="text-red-400 font-mono">{errorId}</code>
           </p>
         </div>
@@ -169,18 +158,15 @@
 {:else}
   {@render children()}
 {/if}
-
-<style>/* Ensure error boundary styles don't interfere with global styles */ details summary::-webkit-details-marker {;
+<style>/* Ensure error boundary styles don't interfere with global styles */ details summary::-webkit-details-marker {
     display: none;
   }
-  
-  details summary::before {;
+  details summary::before {
     content: '▶';
     margin-right: 0.5rem;
     transition: transform 0.2s ease;
   }
-  
-  details[open] summary::before {;
+  details[open] summary::before {
     transform: rotate(90deg);
   }
 </style>

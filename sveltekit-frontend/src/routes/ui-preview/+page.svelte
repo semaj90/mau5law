@@ -2,19 +2,16 @@
   // Enhanced UI Preview with Session-Aware Components
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
-
   // NES UI Components
   import Button from '$lib/components/nes/Button.svelte';
   import Card from '$lib/components/nes/Card.svelte';
   import Dialog from '$lib/components/nes/Dialog.svelte';
   import Avatar from '$lib/components/nes/Avatar.svelte';
-
   // Global Components
   import GlobalSidebar from '$lib/components/GlobalSidebar.svelte';
-
   // Stores and Utilities
   // Note: sessionStore may not be available, using mock data instead
-  // import { sessionActions, user, isAuthenticated } from '$lib/stores/sessionStore.svelte';
+  // import { sessionActions, user, isAuthenticated } from '$lib/stores/sessionStore.svelte'
   import { userStats } from '$lib/stores/userDataStore.svelte.js';
   import {
     formatRelativeTime,
@@ -25,20 +22,17 @@
     getPriorityColor,
     getStatusColor
   } from '$lib/utils/formatting';
-
   // Component state
   let showDialog = $state(false);
   let selectedTab = $state('buttons');
   let showSidebar = $state(true);
   let mockSessionActive = $state(false);
-
   // Mock user data for demo
   let mockUser = $state({
-    id: 'demo-user-123',;
-    email: 'demo@legalai.com',;
+    id: 'demo-user-123',
+    email: 'demo@legalai.com',
     role: 'prosecutor' as const;
   });
-
   interface TabItem { id: string; label: string }
   const tabs: TabItem[] = [
     { id: 'buttons', label: 'Buttons' },
@@ -49,38 +43,31 @@
     { id: 'formatting', label: 'Formatting' },
     { id: 'sidebar', label: 'Global Sidebar' }
   ];
-
   function openDialog() { showDialog = true }
   function closeDialog() { showDialog = false }
-
   const buttonVariants = ['primary','success','warning','error','info','disabled'] as const
   type ButtonVariant = typeof buttonVariants[number]
-
   const avatarSizes = ['small','medium','large'] as const
   type AvatarSize = typeof avatarSizes[number]
-
   // Mock session actions for demo
   const mockSessionActions = {
     setSession: (user: any, session: any) => console.log('Mock setSession:', user, session),
-    clearSession: () => console.log('Mock clearSession'),;
+    clearSession: () => console.log('Mock clearSession'),
     init: (data: any) => console.log('Mock init:', data);
   };
-
   // Session demo functions
   function simulateLogin() {
     mockSessionActive = true;
     mockSessionActions.setSession(mockUser, {
-      id: 'demo-session-123',;
-      user: mockUser,;
+      id: 'demo-session-123',
+      user: mockUser
       fresh: true;
     });
   }
-
   function simulateLogout() {
     mockSessionActive = false;
     mockSessionActions.clearSession();
   }
-
   // Initialize page store data simulation
   onMount(() => {
     // Initialize session store with page data (simulated)
@@ -88,7 +75,6 @@
       mockSessionActions.init($page.data);
     }
   });
-
   // Mock reactive data with conditionals
   let currentUser = $derived(mockSessionActive ? mockUser : null);
   let authenticated = $derived(mockSessionActive);
@@ -109,7 +95,6 @@
     totalCitations: 0,
     totalReports: 0
   });
-
   // Mock data for formatting demos
   const mockTimestamps = [
     new Date(),
@@ -119,7 +104,6 @@
     new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
     new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 1 month ago
   ];
-
   const mockFilenames = [
     'contract_analysis_report_final_v3.pdf',
     'evidence_photo_001_crime_scene.jpg',
@@ -128,18 +112,15 @@
     'legal_precedent_research_notes.txt',
     'deposition_video_plaintiff_testimony.mp4'
   ];
-
   const mockCases = [
     { title: 'Corporate Fraud Investigation - Multinational Tech Company', status: 'open', priority: 'high' },
     { title: 'Contract Dispute Resolution', status: 'pending', priority: 'medium' },
     { title: 'Criminal Defense - Armed Robbery Case', status: 'closed', priority: 'critical' },
     { title: 'Family Law Custody Battle', status: 'open', priority: 'low' }
   ];
-
   let focusReady = false;
   $effect(() => { focusReady = true });
 </script>
-
 <style>
   .layout { display: grid; gap: 1.25rem; padding: 1.5rem; }
   .tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
@@ -154,7 +135,6 @@
   h2.section { margin: 0 0 .75rem; font-size: .9rem; letter-spacing: .5px; }
   .section-wrap { padding: 1rem; border: 2px dashed #ccc; border-radius: 8px; background: #fff; }
   .meta { font-size: .65rem; opacity: .7; margin-top: .4rem; }
-
   /* Session Demo Styles */
   .session-controls { display: flex; flex-direction: column; gap: 1rem; }
   .status-display { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
@@ -165,7 +145,6 @@
   .stat-card { text-align: center; padding: 0.5rem; }
   .stat-number { display: block; font-weight: bold; font-size: 1.2rem; color: #007bff; }
   .stat-label { display: block; font-size: 0.8rem; opacity: 0.8; }
-
   /* Formatting Demo Styles */
   .formatting-demos { display: flex; flex-direction: column; gap: 1.5rem; }
   .demo-group h3 { margin: 0 0 0.75rem; font-size: 0.9rem; }
@@ -182,7 +161,6 @@
   .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem; }
   .case-title { font-weight: bold; }
   .case-meta { display: flex; gap: 0.5rem; }
-
   /* Sidebar Demo Styles */
   .sidebar-controls { display: flex; flex-direction: column; gap: 1rem; }
   .control-group { display: flex; gap: 1rem; align-items: center; }
@@ -193,10 +171,8 @@
   .integration-notes ol { margin: 0.5rem 0; padding-left: 1.5rem; }
   .integration-notes li { margin: 0.25rem 0; }
 </style>
-
 <div class="layout">
   <h1>NES UI Preview</h1>
-
   <nav class="tabs" aria-label="Preview Tabs">
     {#each tabs as t}
       <button
@@ -206,7 +182,6 @@
       >{t.label}</button>
     {/each}
   </nav>
-
   {#if selectedTab === 'buttons'}
     <section class="section-wrap">
       <h2 class="section">Buttons</h2>
@@ -220,7 +195,6 @@
       </div>
     </section>
   {/if}
-
   {#if selectedTab === 'avatars'}
     <section class="section-wrap">
       <h2 class="section">Avatars</h2>
@@ -234,7 +208,6 @@
       </div>
     </section>
   {/if}
-
   {#if selectedTab === 'dialog'}
     <section class="section-wrap">
       <h2 class="section">Dialog</h2>
@@ -251,7 +224,6 @@
       {/if}
     </section>
   {/if}
-
   {#if selectedTab === 'cards'}
     <section class="section-wrap">
       <h2 class="section">Cards</h2>
@@ -268,11 +240,9 @@
       </div>
     </section>
   {/if}
-
   {#if selectedTab === 'session'}
     <section class="section-wrap">
       <h2 class="section">Session Management Demo</h2>
-
       <div class="session-controls">
         <h3>Current Session Status:</h3>
         <div class="status-display">
@@ -286,7 +256,6 @@
             </div>
           {/if}
         </div>
-
         <div class="session-actions">
           {#if !authenticated}
             <Button variant="primary" onclick={simulateLogin}>Simulate Login</Button>
@@ -295,7 +264,6 @@
           {/if}
           <Button variant="info" onclick={() => console.log('Mock refresh session')}>Refresh Session</Button>
         </div>
-
         <div class="user-stats">
           <h4>User Data Stats:</h4>
           <div class="stats-grid-demo">
@@ -320,11 +288,9 @@
       </div>
     </section>
   {/if}
-
   {#if selectedTab === 'formatting'}
     <section class="section-wrap">
       <h2 class="section">Formatting Utilities</h2>
-
       <div class="formatting-demos">
         <div class="demo-group">
           <h3>Timestamp Formatting:</h3>
@@ -340,7 +306,6 @@
             {/each}
           </div>
         </div>
-
         <div class="demo-group">
           <h3>Filename Truncation:</h3>
           <div class="filename-examples">
@@ -353,7 +318,6 @@
             {/each}
           </div>
         </div>
-
         <div class="demo-group">
           <h3>Case Title & Status Formatting:</h3>
           <div class="case-examples">
@@ -375,11 +339,9 @@
       </div>
     </section>
   {/if}
-
   {#if selectedTab === 'sidebar'}
     <section class="section-wrap">
       <h2 class="section">Global Sidebar Demo</h2>
-
       <div class="sidebar-controls">
         <h3>Sidebar Configuration:</h3>
         <div class="control-group">
@@ -392,7 +354,6 @@
             <span>Show Sidebar</span>
           </label>
         </div>
-
         <div class="sidebar-info">
           <p class="nes-text">The GlobalSidebar component provides:</p>
           <ul class="feature-list">
@@ -406,7 +367,6 @@
             <li>💾 Persistent storage and caching</li>
           </ul>
         </div>
-
         <div class="integration-notes nes-container">
           <h4>Integration Notes:</h4>
           <p>To use GlobalSidebar app-wide:</p>
@@ -421,7 +381,6 @@
     </section>
   {/if}
 </div>
-
 <!-- Conditional Global Sidebar Demo -->
 {#if selectedTab === 'sidebar' && showSidebar}
   <GlobalSidebar

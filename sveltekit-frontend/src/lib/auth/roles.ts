@@ -1,6 +1,5 @@
 // Role-based Access Control (RBAC) System for Legal AI Platform
 // Defines user roles, permissions, and access control logic
-
 export type UserRole =
   | 'admin'
   | 'lead_prosecutor'
@@ -9,7 +8,6 @@ export type UserRole =
   | 'investigator'
   | 'analyst'
   | 'viewer';
-
 export type Permission =
   | 'create_case'
   | 'edit_case'
@@ -40,25 +38,23 @@ export type Permission =
   | 'view_audit_logs'
   | 'manage_integrations';
 }
-
 export interface RoleDefinition {
   name: UserRole;
   displayName: string;
   description: string;
   permissions: Permission[];
-  hierarchyLevel: number; // Higher number = more authority
+  hierarchyLevel: number; // Higher number = more authority,
   canDelegate: boolean;
   maxCasesAssigned?: number;
 }
-
-// Role definitions with complete permission sets;
+// Role definitions with complete permission sets
 export const ROLES: Record<UserRole, RoleDefinition> = {
   admin: {
     name: 'admin',
     displayName: 'System Administrator',
     description: 'Full system access with all administrative privileges',
     hierarchyLevel: 100,
-    canDelegate: true,
+    canDelegate: true
     permissions: [
       'create_case', 'edit_case', 'delete_case', 'view_case',
       'upload_evidence', 'edit_evidence', 'delete_evidence', 'view_evidence',
@@ -70,13 +66,12 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       'configure_system', 'view_audit_logs', 'manage_integrations'
     ]
   },
-
   lead_prosecutor: {
     name: 'lead_prosecutor',
     displayName: 'Lead Prosecutor',
     description: 'Senior prosecutor with case management and team oversight responsibilities',
     hierarchyLevel: 80,
-    canDelegate: true,
+    canDelegate: true
     maxCasesAssigned: 50,
     permissions: [
       'create_case', 'edit_case', 'delete_case', 'view_case',
@@ -87,13 +82,12 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       'assign_cases', 'approve_reports'
     ]
   },
-
   prosecutor: {
     name: 'prosecutor',
     displayName: 'Prosecutor',
     description: 'Licensed attorney handling prosecution cases',
     hierarchyLevel: 60,
-    canDelegate: false,
+    canDelegate: false
     maxCasesAssigned: 30,
     permissions: [
       'create_case', 'edit_case', 'view_case',
@@ -103,13 +97,12 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       'view_criminals', 'edit_criminals'
     ]
   },
-
   paralegal: {
     name: 'paralegal',
     displayName: 'Paralegal',
     description: 'Legal assistant with case preparation and evidence management duties',
     hierarchyLevel: 40,
-    canDelegate: false,
+    canDelegate: false
     maxCasesAssigned: 20,
     permissions: [
       'view_case', 'edit_case',
@@ -119,13 +112,12 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       'view_criminals'
     ]
   },
-
   investigator: {
     name: 'investigator',
     displayName: 'Criminal Investigator',
     description: 'Law enforcement investigator with evidence collection responsibilities',
     hierarchyLevel: 50,
-    canDelegate: false,
+    canDelegate: false
     maxCasesAssigned: 15,
     permissions: [
       'view_case', 'edit_case',
@@ -134,13 +126,12 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       'manage_criminals', 'edit_criminals', 'view_criminals'
     ]
   },
-
   analyst: {
     name: 'analyst',
     displayName: 'Data Analyst',
     description: 'Specialized analyst with advanced AI and data analysis capabilities',
     hierarchyLevel: 45,
-    canDelegate: false,
+    canDelegate: false
     maxCasesAssigned: 25,
     permissions: [
       'view_case', 'view_evidence',
@@ -149,21 +140,19 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
       'view_criminals'
     ]
   },
-
   viewer: {
     name: 'viewer',
     displayName: 'Viewer',
     description: 'Read-only access for supervisors and auditors',
     hierarchyLevel: 10,
-    canDelegate: false,;
+    canDelegate: false
     permissions: [
       'view_case', 'view_evidence', 'view_report',
       'view_users', 'view_criminals'
     ]
   }
 };
-
-// Permission categories for UI organization;
+// Permission categories for UI organization
 export const PERMISSION_CATEGORIES = {
   case_management: {
     name: 'Case Management',
@@ -194,12 +183,11 @@ export const PERMISSION_CATEGORIES = {
     permissions: ['system_admin', 'access_admin_panel', 'configure_system', 'view_audit_logs', 'manage_integrations'] as Permission[]
   },
   data_export: {
-    name: 'Data Export',;
+    name: 'Data Export',
     permissions: ['export_data'] as Permission[]
   }
 };
-
-// Access control utility functions;
+// Access control utility functions
 export class AccessControl {
   /**
    * Check if a user has a specific permission
@@ -208,21 +196,18 @@ export class AccessControl {
     const role = ROLES[userRole];
     return role ? role.permissions.includes(permission) : false;
   }
-
   /**
    * Check if a user has any of the specified permissions
    */;
   static hasAnyPermission(userRole: UserRole, permissions: Permission[]): boolean {
     return permissions.some(permission => this.hasPermission(userRole, permission);
   }
-
   /**
    * Check if a user has all of the specified permissions
    */;
   static hasAllPermissions(userRole: UserRole, permissions: Permission[]): boolean {
     return permissions.every(permission => this.hasPermission(userRole, permission);
   }
-
   /**
    * Get all permissions for a role
    */;
@@ -230,7 +215,6 @@ export class AccessControl {
     const role = ROLES[userRole];
     return role ? [...role.permissions] : [];
   }
-
   /**
    * Check if one role has higher authority than another
    */;
@@ -239,7 +223,6 @@ export class AccessControl {
     const targetHierarchy = ROLES[targetRole]?.hierarchyLevel || 0;
     return userHierarchy > targetHierarchy;
   }
-
   /**
    * Check if a user can delegate tasks (assign work to others)
    */;
@@ -247,7 +230,6 @@ export class AccessControl {
     const role = ROLES[userRole];
     return role ? role.canDelegate: false;
   }
-
   /**
    * Get the maximum number of cases a user can be assigned
    */;
@@ -255,47 +237,40 @@ export class AccessControl {
     const role = ROLES[userRole];
     return role ? role.maxCasesAssigned || null : null;
   }
-
   /**
    * Check if a user can access a specific resource based on ownership and permissions
    */
   static canAccessResource(
-    userRole: UserRole,
-    permission: Permission,
-    resourceOwnerId?: string,
-    userId?: string,
+    userRole: UserRole
+    permission: Permission
+    resourceOwnerId?: string
+    userId?: string
     isPublic?: boolean;
   ): boolean {
-    // Check if user has the required permission;
+    // Check if user has the required permission
     if (!this.hasPermission(userRole, permission)) {
       return false;
     }
-
-    // If resource is public and user has permission, allow access;
+    // If resource is public and user has permission, allow access
     if (isPublic) {
       return true;
     }
-
-    // If no ownership info provided, rely on permission check;
+    // If no ownership info provided, rely on permission check
     if (!resourceOwnerId || !userId) {
       return true;
     }
-
-    // Allow access if user owns the resource;
+    // Allow access if user owns the resource
     if (resourceOwnerId === userId) {
       return true;
     }
-
     // For certain permissions, check if user has higher authority
     const restrictedPermissions: Permission[] = ['delete_case', 'delete_evidence', 'delete_report'];
     if (restrictedPermissions.includes(permission)) {
       // Only admin or lead prosecutors can delete others' resources
       return userRole === 'admin' || userRole === 'lead_prosecutor';
     }
-
     return true;
   }
-
   /**
    * Get user-friendly permission description
    */;
@@ -330,10 +305,8 @@ export class AccessControl {
       view_audit_logs: 'View system audit logs and activity',
       manage_integrations: 'Manage external system integrations'
     };
-
     return descriptions[permission] || permission.replace(/_/g, ' ').toLowerCase();
   }
-
   /**
    * Get roles that have a specific permission
    */;
@@ -342,29 +315,25 @@ export class AccessControl {
       this.hasPermission(role, permission)
     );
   }
-
   /**
    * Check if role can be assigned by current user
    */;
   static canAssignRole(currentUserRole: UserRole, targetRole: UserRole): boolean {
-    // Only admin can assign admin role;
+    // Only admin can assign admin role
     if (targetRole === 'admin') {
       return currentUserRole === 'admin';
     }
-
     // Users can only assign roles with lower or equal hierarchy
     return this.hasHigherAuthority(currentUserRole, targetRole) ||
            ROLES[currentUserRole]?.hierarchyLevel === ROLES[targetRole]?.hierarchyLevel;
   }
 }
-
-// Default permissions for quick checks;
+// Default permissions for quick checks
 export const DEFAULT_PERMISSIONS = {
   PUBLIC: ['view_case', 'view_evidence', 'view_report'] as Permission[],
   AUTHENTICATED: ['view_case', 'view_evidence', 'view_report', 'ai_analysis'] as Permission[],
   STAFF: ['view_case', 'view_evidence', 'view_report', 'ai_analysis', 'vector_search'] as Permission[]
 };
-
 // Role hierarchy for UI display
 export const ROLE_HIERARCHY: UserRole[] = [
   'admin',
@@ -375,6 +344,5 @@ export const ROLE_HIERARCHY: UserRole[] = [
   'paralegal',
   'viewer'
 ];
-
 // Export utilities
 export default AccessControl;

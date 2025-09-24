@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be uniqu;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!--
@@ -7,7 +7,6 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import {
     Button,
@@ -16,8 +15,6 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-
-
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
   import type {
     VectorSearchResult,
@@ -25,7 +22,6 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     SemanticAnalysisResult,
     VectorIntelligenceState
   } from '$lib/services/vector-intelligence-service.js';
-
   // Component state
   let searchQuery = $state('');
   let analysisContent = $state('');
@@ -33,19 +29,16 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
   let selectedMode = $state<'search' | 'recommendations' | 'analysis'>('search');
   let selectedUserRole = $state<'prosecutor' | 'detective' | 'admin' | 'user'>('prosecutor');
   let selectedCaseType = $state<'criminal' | 'civil' | 'corporate' | 'general'>('criminal');
-
   // Results state
   let searchResults = $state<VectorSearchResult[]>([]);
   let recommendations = $state<IntelligenceRecommendation[]>([]);
   let semanticAnalysis = $state<SemanticAnalysisResult | null>(null);
   let systemHealth = $state<VectorIntelligenceState | null>(null);
-
   // UI state
   let isProcessing = $state(false);
   let processingStage = $state('');
   let activeTab = $state<'search' | 'recommendations' | 'analysis' | 'health'>('search');
   let showAdvancedOptions = $state(false);
-
   // Demo data
   const demoSearchQueries = [
     {
@@ -64,12 +57,11 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
       category: 'Compliance';
     },
     {
-      query: 'witness testimony consistency analysis methods',;
-      description: 'Evidence evaluation techniques',;
+      query: 'witness testimony consistency analysis methods',
+      description: 'Evidence evaluation techniques',
       category: 'Evidence Analysis';
     }
   ];
-
   const demoRecommendationContexts = [
     {
       context: 'I need to prepare a comprehensive case strategy for a high-profile criminal trial involving multiple defendants and complex evidence chains.',
@@ -82,61 +74,49 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
       description: 'Digital forensics investigation';
     },
     {
-      context: 'We need to optimize our case management workflow to handle the increasing caseload more efficiently while maintaining quality.',;
-      role: 'admin',;
+      context: 'We need to optimize our case management workflow to handle the increasing caseload more efficiently while maintaining quality.',
+      role: 'admin',
       description: 'Workflow optimization analysis';
     }
   ];
-
   const demoAnalysisContent = [
     {
       content: `EMPLOYMENT AGREEMENT
-
 This Employment Agreement ("Agreement") is entered into on January 15, 2024, between TechCorp Industries, a Delaware corporation ("Company"), and John Smith ("Employee").
-
 1. POSITION AND DUTIES
 Employee shall serve as Senior Software Engineer and shall perform such duties as assigned by the Company. Employee agrees to devote full business time and attention to the Company's business.
-
 2. COMPENSATION
 Company shall pay Employee a base salary of $150,000 per year, payable in accordance with Company's standard payroll practices.
-
 3. CONFIDENTIALITY
 Employee acknowledges that during employment, Employee may have access to confidential information. Employee agrees to maintain strict confidentiality.
-
 4. TERMINATION
 This Agreement may be terminated by either party with thirty (30) days written notice.`,
       description: 'Employment contract for legal analysis',
       type: 'Contract';
     },
     {
-      content: `INCIDENT REPORT - Case #2024-CR-1892
-
+      content: `INCIDENT REPORT - Case #2024-CR-1892,
 Date: March 8, 2024
 Location: 1425 Oak Street, Downtown District
 Reporting Officer: Detective Sarah Johnson
-
 SUMMARY:
 Responded to reports of suspected break-in at residential property. Upon arrival, discovered evidence of forced entry through rear window. Victim John Doe reported missing electronics valued at approximately $3,500.
-
 EVIDENCE COLLECTED:
 - Fingerprints from window frame
 - Footprint impressions in garden
 - Security camera footage from neighboring property
 - Witness statements from two neighbors
-
 SUSPECTS:
-Investigation ongoing. Similar pattern matches recent break-ins in the area.`,;
-      description: 'Criminal incident report for analysis',;
+Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
+      description: 'Criminal incident report for analysis',
       type: 'Incident Report';
     }
   ];
-
   $effect(() => {
     (async () => {
 await loadSystemHealth();
     })();
   });
-
   async function loadSystemHealth() {
     try {
       systemHealth = await vectorIntelligenceService.getSystemHealth();
@@ -144,28 +124,23 @@ await loadSystemHealth();
       console.error('Failed to load system health:', error);
     }
   }
-
   async function performSearch() {
     if (!searchQuery.trim() || isProcessing) return;
-
     isProcessing = true;
     processingStage = 'Performing semantic search...';
     searchResults = [];
-
     try {
       const results = await vectorIntelligenceService.semanticSearch({
-        query: searchQuery,;
-        threshold: 0.7,;
+        query: searchQuery
+        threshold: 0.7,
         limit: 10,
-        includeMetadata: true,
+        includeMetadata: true
         contextFilter: {
           evidenceType: selectedCaseType
         }
       });
-
-      searchResults = results;
+      searchResults = result;
       processingStage = 'Search completed';
-
     } catch (error) {
       console.error('Search failed:', error);
       processingStage = `Search failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
@@ -173,37 +148,32 @@ await loadSystemHealth();
       isProcessing = false;
     }
   }
-
   async function generateRecommendations() {
     if (!recommendationContext.trim() || isProcessing) return;
-
     isProcessing = true;
     processingStage = 'Generating intelligent recommendations...';
     recommendations = [];
-
     try {
       const result = await vectorIntelligenceService.generateRecommendations({
-        context: recommendationContext,
+        context: recommendationContext
         userProfile: {
-          role: selectedUserRole,
+          role: selectedUserRole
           experience: 'senior',
           specialization: ['legal-analysis', 'case-management'];
         },
         currentCase: {
           id: 'DEMO-2024-001',
-          type: selectedCaseType,
+          type: selectedCaseType
           priority: 'high',
           status: 'active';
-        },;
+        },
         preferences: {
           preferredActions: ['research', 'analysis', 'documentation'],
           workflowStyle: 'systematic'
         }
       });
-
       recommendations = result;
       processingStage = 'Recommendations generated';
-
     } catch (error) {
       console.error('Recommendation generation failed:', error);
       processingStage = `Failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
@@ -211,19 +181,15 @@ await loadSystemHealth();
       isProcessing = false;
     }
   }
-
   async function performSemanticAnalysis() {
     if (!analysisContent.trim() || isProcessing) return;
-
     isProcessing = true;
     processingStage = 'Performing semantic analysis...';
     semanticAnalysis = null;
-
     try {
       const result = await vectorIntelligenceService.analyzeSemantics(analysisContent);
       semanticAnalysis = result;
       processingStage = 'Analysis completed';
-
     } catch (error) {
       console.error('Semantic analysis failed:', error);
       processingStage = `Analysis failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
@@ -231,33 +197,28 @@ await loadSystemHealth();
       isProcessing = false;
     }
   }
-
   function loadDemoQuery(query: string) {
     searchQuery = query;
     activeTab = 'search';
   }
-
   function loadDemoContext(context: string, role: string) {
     recommendationContext = context;
     selectedUserRole = role as any;
     activeTab = 'recommendations';
   }
-
   function loadDemoContent(content: string) {
     analysisContent = content;
     activeTab = 'analysis';
   }
-
   function getRecommendationIcon(type: string) {
     switch (type) {
       case 'action': return Target;
       case 'insight': return Lightbulb;
-      case 'warning': return AlertTriangle;
+      case 'warning': return AlertTriangl;
       case 'opportunity': return TrendingUp;
       default: return FileText;
     }
   }
-
   function getRecommendationColor(type: string) {
     switch (type) {
       case 'action': return 'recommendation-action';
@@ -267,10 +228,9 @@ await loadSystemHealth();
       default: return 'recommendation-item';
     }
   }
-
   function getEntityIcon(type: string) {
     switch (type) {
-      case 'person': return Users;
+      case 'person': return User;
       case 'organization': return Network;
       case 'location': return Target;
       case 'date': return Clock;
@@ -278,7 +238,6 @@ await loadSystemHealth();
       default: return Tag;
     }
   }
-
   function getEntityColor(type: string) {
     switch (type) {
       case 'person': return 'semantic-entity-person';
@@ -289,13 +248,11 @@ await loadSystemHealth();
       default: return 'semantic-entity-tag';
     }
   }
-
   function getConfidenceColor(confidence: number) {
     if (confidence >= 0.8) return 'vector-confidence-high';
     if (confidence >= 0.6) return 'vector-confidence-medium';
     return 'vector-confidence-low';
   }
-
   function getHealthColor(health: string) {
     switch (health) {
       case 'excellent': return 'text-green-600';
@@ -306,7 +263,6 @@ await loadSystemHealth();
     }
   }
 </script>
-
 <div class="w-full max-w-7xl mx-auto p-6 space-y-6">
   <!-- Header -->
   <div class="text-center space-y-4">
@@ -317,7 +273,6 @@ await loadSystemHealth();
       Experience the power of Phase 4 Vector Intelligence with semantic search, AI recommendations,
       and advanced document analysis for legal professionals.
     </p>
-
     <div class="flex items-center justify-center gap-4 flex-wrap">
       <Badge class="bits-badge-default flex items-center gap-1">
         <Brain class="h-3 w-3" />
@@ -337,7 +292,6 @@ await loadSystemHealth();
       </Badge>
     </div>
   </div>
-
   <!-- Demo Examples -->
   <div class="bits-nier-bits-card nes-container">
     <div class="yorha-panel-header bits-nier-bits-yorha-panel-header">
@@ -364,7 +318,6 @@ await loadSystemHealth();
             </div>
           {/each}
         </div>
-
         <!-- Recommendation Examples -->
         <div class="space-y-3">
           <h3 class="font-semibold text-sm flex items-center gap-2">
@@ -379,7 +332,6 @@ await loadSystemHealth();
             </div>
           {/each}
         </div>
-
         <!-- Analysis Examples -->
         <div class="space-y-3">
           <h3 class="font-semibold text-sm flex items-center gap-2">
@@ -397,7 +349,6 @@ await loadSystemHealth();
       </div>
     </div>
   </div>
-
   <!-- Tab Navigation -->
   <div class="flex items-center justify-center space-x-1 bg-muted p-1 rounded-lg w-fit mx-auto">
     <Button class="bits-btn"
@@ -441,7 +392,6 @@ activeTab = 'health'}
       Health
 </Button>
   </div>
-
   <!-- Processing Indicator -->
   {#if isProcessing}
     <div class="bits-nier-bits-card nes-container">
@@ -453,7 +403,6 @@ activeTab = 'health'}
       </div>
     </div>
   {/if}
-
   <!-- Tab Content -->
   {#if activeTab === 'search'}
     <!-- Semantic Search Tab -->
@@ -475,7 +424,6 @@ activeTab = 'health'}
               class="vector-search-input min-h-[80px] w-full p-2 border rounded"
             ></textarea>
           </div>
-
           {#if showAdvancedOptions}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
@@ -489,7 +437,6 @@ activeTab = 'health'}
               </div>
             </div>
           {/if}
-
           <div class="flex items-center gap-2">
             <Button
               onclick={performSearch}
@@ -515,7 +462,6 @@ showAdvancedOptions = !showAdvancedOptions}
           </div>
         </div>
       </div>
-
       <!-- Search Results -->
       {#if searchResults.length > 0}
         <div class="bits-nier-bits-card nes-container">
@@ -543,11 +489,9 @@ showAdvancedOptions = !showAdvancedOptions}
                       <Badge class="bits-badge-outline text-xs">{(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).source}</Badge>
                     </div>
                   </div>
-
                   <p class="text-sm nes-text is-disabled mb-3">
                     {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).content.substring(0, 200)}...
                   </p>
-
                   {#if (result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).highlights?.length > 0}
                     <div class="space-y-1">
                       <p class="text-xs font-medium">Highlights:</p>
@@ -558,7 +502,6 @@ showAdvancedOptions = !showAdvancedOptions}
                       {/each}
                     </div>
                   {/if}
-
                   <div class="vector-metadata-grid mt-3">
                     <span>Relevance: {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).relevanceScore.toFixed(2)}</span>
                     <span>Similarity: {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).similarity.toFixed(3)}</span>
@@ -572,7 +515,6 @@ showAdvancedOptions = !showAdvancedOptions}
         </div>
       {/if}
     </div>
-
   {:else if activeTab === 'recommendations'}
     <!-- AI Recommendations Tab -->
     <div class="space-y-6">
@@ -593,7 +535,6 @@ showAdvancedOptions = !showAdvancedOptions}
               class="vector-search-input min-h-[100px] w-full p-2 border rounded"
             ></textarea>
           </div>
-
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="bits-label">Your Role</label>
@@ -609,7 +550,6 @@ showAdvancedOptions = !showAdvancedOptions}
                 </SelectContent>
               </Select>
             </div>
-
             <div class="space-y-2">
               <label class="bits-label">Case Type</label>
               <Select bind:value={selectedCaseType}>
@@ -625,7 +565,6 @@ showAdvancedOptions = !showAdvancedOptions}
               </Select>
             </div>
           </div>
-
           <Button
             onclick={generateRecommendations}
             disabled={isProcessing || !recommendationContext.trim()}
@@ -641,7 +580,6 @@ showAdvancedOptions = !showAdvancedOptions}
 </Button>
         </div>
       </div>
-
       <!-- Recommendations Results -->
       {#if recommendations.length > 0}
         <div class="bits-nier-bits-card nes-container">
@@ -679,9 +617,7 @@ showAdvancedOptions = !showAdvancedOptions}
                       <Badge class="bits-badge-outline text-xs">{rec.priority}</Badge>
                     </div>
                   </div>
-
                   <p class="recommendation-description">{rec.description}</p>
-
                   {#if rec.actionItems}
                     <div class="space-y-2 mb-3">
                       {#if rec.actionItems.immediate?.length > 0}
@@ -697,7 +633,6 @@ showAdvancedOptions = !showAdvancedOptions}
                       {/if}
                     </div>
                   {/if}
-
                   <div class="recommendation-actions">
                     <span>Impact: {rec.estimatedImpact?.successProbability || 'N/A'}%</span>
                     <span>Time: {rec.estimatedImpact?.timeToComplete || 'N/A'}min</span>
@@ -710,7 +645,6 @@ showAdvancedOptions = !showAdvancedOptions}
         </div>
       {/if}
     </div>
-
   {:else if activeTab === 'analysis'}
     <!-- Semantic Analysis Tab -->
     <div class="space-y-6">
@@ -730,7 +664,6 @@ showAdvancedOptions = !showAdvancedOptions}
               class="vector-search-input min-h-[150px]"
             />
           </div>
-
           <Button
             onclick={performSemanticAnalysis}
             disabled={isProcessing || !analysisContent.trim()}
@@ -746,7 +679,6 @@ showAdvancedOptions = !showAdvancedOptions}
 </Button>
         </div>
       </div>
-
       <!-- Analysis Results -->
       {#if semanticAnalysis}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -775,7 +707,6 @@ showAdvancedOptions = !showAdvancedOptions}
               {/if}
             </div>
           </div>
-
           <!-- Themes -->
           <div class="bits-nier-bits-card nes-container">
             <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
@@ -807,7 +738,6 @@ showAdvancedOptions = !showAdvancedOptions}
               {/if}
             </div>
           </div>
-
           <!-- Relationships -->
           <div class="bits-nier-bits-card nes-container">
             <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
@@ -833,7 +763,6 @@ showAdvancedOptions = !showAdvancedOptions}
               {/if}
             </div>
           </div>
-
           <!-- Complexity Metrics -->
           <div class="bits-nier-bits-card nes-container">
             <div class="yorha-panel-header bits-nier-bits-yorha-panel-header" variant="default" legal={true}>
@@ -856,7 +785,6 @@ showAdvancedOptions = !showAdvancedOptions}
                     ></div>
                   </div>
                 </div>
-
                 <div class="space-y-2">
                   <div class="flex justify-between text-sm">
                     <span>Technical Level</span>
@@ -869,7 +797,6 @@ showAdvancedOptions = !showAdvancedOptions}
                     ></div>
                   </div>
                 </div>
-
                 <div class="space-y-2">
                   <div class="flex justify-between text-sm">
                     <span>Legal Complexity</span>
@@ -882,9 +809,7 @@ showAdvancedOptions = !showAdvancedOptions}
                     ></div>
                   </div>
                 </div>
-
                 <Separator class="bits-separator" />
-
                 <div class="space-y-1 text-sm">
                   <div class="flex justify-between">
                     <span>Overall Sentiment</span>
@@ -899,7 +824,6 @@ showAdvancedOptions = !showAdvancedOptions}
         </div>
       {/if}
     </div>
-
   {:else if activeTab === 'health'}
     <!-- System Health Tab -->
     <div class="space-y-6">
@@ -931,7 +855,6 @@ showAdvancedOptions = !showAdvancedOptions}
                   </div>
                 </div>
               </div>
-
               <div class="border nes-container">
                 <div class="yorha-panel-content p-4">
                   <div class="flex items-center justify-between">
@@ -945,7 +868,6 @@ showAdvancedOptions = !showAdvancedOptions}
                   </div>
                 </div>
               </div>
-
               <div class="border nes-container">
                 <div class="yorha-panel-content p-4">
                   <div class="flex items-center justify-between">
@@ -959,7 +881,6 @@ showAdvancedOptions = !showAdvancedOptions}
                   </div>
                 </div>
               </div>
-
               <div class="border nes-container">
                 <div class="yorha-panel-content p-4">
                   <div class="flex items-center justify-between">
@@ -974,12 +895,9 @@ showAdvancedOptions = !showAdvancedOptions}
                 </div>
               </div>
             </div>
-
             <Separator class="bits-separator my-6" />
-
             <div class="space-y-4">
               <h3 class="text-lg font-semibold">System Information</h3>
-
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div class="space-y-2">
                   <div class="flex justify-between">
@@ -993,7 +911,6 @@ showAdvancedOptions = !showAdvancedOptions}
                     </Badge>
                   </div>
                 </div>
-
                 <div class="space-y-2">
                   <div class="flex justify-between">
                     <span class="nes-text is-disabled">Last Update:</span>
@@ -1018,9 +935,6 @@ showAdvancedOptions = !showAdvancedOptions}
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
 </style>
-
-

@@ -5,9 +5,7 @@ import { users } from '$lib/server/db/schema-postgres'
 import { eq } from 'drizzle-orm'
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
 }
-
 export interface WorkflowTest {
   name: string
   description: string
@@ -16,11 +14,10 @@ export interface WorkflowTest {
   error?: string
   details?: any
 }
-
 export interface WorkflowValidationResponse {
   timestamp: string
   overall: {
-    status: 'healthy' | 'degraded' | 'failed'
+    status: 'healthy' | 'degraded' | 'failed',
     score: number
     totalTests: number
     passed: number
@@ -36,15 +33,13 @@ export interface WorkflowValidationResponse {
   }
   processingTime: number
 }
-
 // Helper to run a test with timing
 async function runTest(
-  name: string,
-  description: string,
+  name: string
+  description: string
   testFn: () => Promise<any>
 ): Promise<WorkflowTest> {
   const startTime = Date.now()
-
   try {
     const result = await testFn()
     return {
@@ -64,7 +59,6 @@ async function runTest(
     }
   }
 }
-
 // Helper to skip a test
 function skipTest(name: string, description: string, reason: string): WorkflowTest {
   return {
@@ -74,14 +68,11 @@ function skipTest(name: string, description: string, reason: string): WorkflowTe
     error: `Skipped: ${reason}`
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now()
   const skipIntegrationTests = url.searchParams.get('skip_integration') === 'true'
-
   try {
     productionLogger.info('🔄 Running end-to-end workflow validation...')
-
     // User Management Workflow Tests
     const userManagementTests: WorkflowTest[] = await Promise.all([
       runTest(
@@ -98,12 +89,10 @@ export const GET: RequestHandler = async ({ url }) => {
             role: 'prosecutor' as const,
             isActive: true
           }
-
           // Simulate user registration validation
           if (!testUser.email || !testUser.name) {
             throw new Error('Required fields missing')
           }
-
           return {
             message: 'User registration validation passed',
             requiredFields: ['email', 'name', 'firstName', 'lastName'],
@@ -111,7 +100,6 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         }
       ),
-
       runTest(
         'User Authentication Flow',
         'Validate authentication system integration',
@@ -123,19 +111,16 @@ export const GET: RequestHandler = async ({ url }) => {
             '/api/auth/register',
             '/api/auth/session'
           ]
-
           return {
             message: 'Authentication endpoints configured',
-            endpoints: authEndpoints,
+            endpoints: authEndpoints
             sessionProvider: 'lucia-auth',
             security: ['bcrypt', 'csrf-protection', 'rate-limiting']
           }
         }
       ),
-
       runTest('User Profile Management', 'Test user profile CRUD operations', async () => {
         if (!db) throw new Error('Database not available')
-
         // Test database schema for user profiles
         return {
           message: 'User profile schema validated',
@@ -145,7 +130,6 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       })
     ])
-
     // Document Processing Workflow Tests
     const documentProcessingTests: WorkflowTest[] = await Promise.all([
       runTest('File Upload Integration', 'Test document upload and storage workflow', async () => {
@@ -158,13 +142,12 @@ export const GET: RequestHandler = async ({ url }) => {
         ])
         return {
           message: 'Document upload system configured',
-          endpoints: uploadEndpoints,
+          endpoints: uploadEndpoints
           storage: 'MinIO (port 9000)',
           processors: ['OCR', 'Text Extraction', 'Metadata Extraction'],
           supportedFormats: ['PDF', 'DOC', 'DOCX', 'TXT', 'IMAGE']
         }
       }),
-
       runTest(
         'Document Processing Pipeline',
         'Validate document analysis and indexing',
@@ -175,19 +158,16 @@ export const GET: RequestHandler = async ({ url }) => {
             'Vector Service v2.0 (8095)',
             'GPU Indexer (8220)'
           ]
-
           return {
             message: 'Document processing pipeline operational',
-            services: processingServices,
+            services: processingServices
             pipeline: ['Upload', 'Extract', 'Analyze', 'Embed', 'Index', 'Store'],
             aiModels: ['gemma3-legal', 'nomic-embed-text']
           }
         }
       ),
-
       runTest('Document Metadata Storage', 'Test legal document metadata schema', async () => {
         if (!db) throw new Error('Database not available')
-
         return {
           message: 'Legal document metadata schema ready',
           tables: ['legal_documents', 'document_analysis', 'vector_embeddings'],
@@ -196,7 +176,6 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       })
     ])
-
     // AI Features Workflow Tests
     const aiFeatureTests: WorkflowTest[] = await Promise.all([
       runTest('AI Chat Integration', 'Test AI-powered legal chat functionality', async () => {
@@ -208,7 +187,7 @@ export const GET: RequestHandler = async ({ url }) => {
         ])
         return {
           message: 'AI chat system operational',
-          endpoints: aiEndpoints,
+          endpoints: aiEndpoints
           models: {
             primary: 'gemma3-legal (Ollama)',
             embedding: 'nomic-embed-text',
@@ -222,7 +201,6 @@ export const GET: RequestHandler = async ({ url }) => {
           ]
         }
       }),
-
       runTest(
         'RAG System Integration',
         'Validate Retrieval-Augmented Generation workflow',
@@ -240,7 +218,6 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         }
       ),
-
       runTest('Legal AI Analysis', 'Test specialized legal document analysis', async () => {
         const legalFeatures = [
           'Contract Analysis',
@@ -249,16 +226,14 @@ export const GET: RequestHandler = async ({ url }) => {
           'Risk Assessment',
           'Citation Verification'
         ]
-
         return {
           message: 'Legal AI analysis capabilities active',
-          features: legalFeatures,
+          features: legalFeatures
           models: 'Domain-specific legal training',
           accuracy: 'High confidence scoring with variance matrices'
         }
       })
     ])
-
     // Vector Search Workflow Tests
     const vectorSearchTests: WorkflowTest[] = await Promise.all([
       runTest(
@@ -277,7 +252,6 @@ export const GET: RequestHandler = async ({ url }) => {
           })
         }
       ),
-
       runTest(
         'Semantic Search Capabilities',
         'Validate semantic document search functionality',
@@ -288,17 +262,15 @@ export const GET: RequestHandler = async ({ url }) => {
             '/api/search/legal',
             '/api/vector-search'
           ]
-
           return {
             message: 'Semantic search fully functional',
-            endpoints: searchEndpoints,
+            endpoints: searchEndpoints
             features: ['Cosine Similarity', 'Hybrid Search', 'Faceted Search', 'Relevance Ranking'],
             indexing: 'Real-time with batch processing'
           }
         }
       )
     ])
-
     // Integration Tests (can be skipped for faster execution)
     const integrationTests: WorkflowTest[] = skipIntegrationTests
       ? [
@@ -331,13 +303,12 @@ export const GET: RequestHandler = async ({ url }) => {
               ])
               return {
                 message: 'Complete workflow integration validated',
-                steps: workflow,
+                steps: workflow
                 duration: '< 5 seconds end-to-end',
                 reliability: '99.9% uptime target'
               }
             }
           ),
-
           runTest('Performance Benchmarks', 'Validate system performance metrics', async () => {
             return {
               message: 'Performance benchmarks passed',
@@ -352,7 +323,6 @@ export const GET: RequestHandler = async ({ url }) => {
             }
           })
         ])
-
     // Calculate overall results
     const allTests = [
       ...userManagementTests,
@@ -361,21 +331,18 @@ export const GET: RequestHandler = async ({ url }) => {
       ...vectorSearchTests,
       ...integrationTests
     ]
-
     const totalTests = allTests.length
     const passed = allTests.filter((t) => t.status === 'passed').length
     const failed = allTests.filter((t) => t.status === 'failed').length
     const skipped = allTests.filter((t) => t.status === 'skipped').length
-
     const score = totalTests > 0 ? Math.round((passed / totalTests) * 100) : 0
     let overallStatus: 'healthy' | 'degraded' | 'failed' = 'healthy'
     if (score < 60) overallStatus = 'failed'
     else if (score < 80) overallStatus = 'degraded'
-
     const response: WorkflowValidationResponse = {
       timestamp: new Date().toISOString(),
       overall: {
-        status: overallStatus,
+        status: overallStatus
         score,
         totalTests,
         passed,
@@ -383,23 +350,21 @@ export const GET: RequestHandler = async ({ url }) => {
         skipped
       },
       workflows: {
-        userManagement: userManagementTests,
-        documentProcessing: documentProcessingTests,
-        aiFeatures: aiFeatureTests,
-        vectorSearch: vectorSearchTests,
+        userManagement: userManagementTests
+        documentProcessing: documentProcessingTests
+        aiFeatures: aiFeatureTests
+        vectorSearch: vectorSearchTests
         integration: integrationTests
       },
       processingTime: Date.now() - startTime
     }
-
     productionLogger.info(
       `✅ Workflow validation completed: ${overallStatus} (${score}%) - tests ${passed}/${totalTests} (failed: ${failed}, skipped: ${skipped}) in ${Date.now() - startTime}ms`
     )
-
     return json(response, {
       status: overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503,
       headers: {
-        'X-Workflow-Status': overallStatus,
+        'X-Workflow-Status': overallStatus
         'X-Test-Score': score.toString(),
         'X-Test-Count': `${passed}/${totalTests}`,
         'X-Processing-Time': `${Date.now() - startTime}ms`,
@@ -409,7 +374,6 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message: 'Unknown workflow validation error'
     productionLogger.error(`Workflow validation failed: ${msg}`)
-
     return json()
       {
         timestamp: new Date().toISOString(),
@@ -429,17 +393,14 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 // POST endpoint for running specific workflow tests
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now()
-
   try {
     const { workflow, action } = await request.json()
-
     if (!workflow) {
       return json({
-          success: false,
+          success: false
           error: 'Workflow parameter required',
           availableWorkflows: [
             'userManagement',
@@ -452,35 +413,30 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       )
     }
-
     switch (action) {
       case 'test_user_flow': {
         // Simulate complete user workflow
         const result = await simulateUserWorkflow()
-
         return json({
-          success: true,
+          success: true
           message: 'User workflow simulation completed',
-          data: result,
+          data: result
           processingTime: Date.now() - startTime
         })
       }
-
       case 'test_document_processing': {
         // Test document processing pipeline
         const result = await testDocumentProcessingPipeline()
-
         return json({
-          success: true,
+          success: true
           message: 'Document processing pipeline tested',
-          data: result,
+          data: result
           processingTime: Date.now() - startTime
         })
       }
-
       default:
-        return json({
-            success: false,
+        return json({,
+            success: false
             error: 'Invalid action',
             availableActions: ['test_user_flow', 'test_document_processing']
           },)
@@ -490,7 +446,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: 'Workflow test failed',
         details: error instanceof Error ? error.message: 'Unknown error',
         processingTime: Date.now() - startTime
@@ -499,7 +455,6 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // Simulate complete user workflow
 async function simulateUserWorkflow(): Promise<any> {
   const steps = [
@@ -511,7 +466,6 @@ async function simulateUserWorkflow(): Promise<any> {
     { step: 'Search & Discovery', status: 'completed', duration: 200 },
     { step: 'Report Generation', status: 'completed', duration: 800 }
   ]
-
   return {
     workflow: 'Complete User Journey',
     steps,
@@ -519,7 +473,6 @@ async function simulateUserWorkflow(): Promise<any> {
     success: true
   }
 }
-
 // Test document processing pipeline
 async function testDocumentProcessingPipeline(): Promise<any> {
   const stages = [
@@ -531,7 +484,6 @@ async function testDocumentProcessingPipeline(): Promise<any> {
     { stage: 'Index Storage', status: 'passed', latency: 150 },
     { stage: 'Search Ready', status: 'passed', latency: 100 }
   ]
-
   return {
     pipeline: 'Document Processing',
     stages,

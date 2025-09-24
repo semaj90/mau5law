@@ -2,7 +2,6 @@ import type { RequestHandler } from './$types.js'
 import { db } from '$lib/server/db/drizzle'
 import { users } from '$lib/server/db/schema-postgres'
 import { authService, lucia } from '$lib/server/auth'
-
 export const POST: RequestHandler = async ({ request, cookies }) => {
   const { email, password, firstName, lastName } = await request.json()
   if (!email || !password) return new Response('Missing fields', { status: 400 })

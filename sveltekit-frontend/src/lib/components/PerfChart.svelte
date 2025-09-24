@@ -1,13 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     points?: number[];
     width?: number;
     height?: number;
     color?: string;
   }
-
   let { points = [], width = 160, height = 50, color = '#2563eb' }: Props = $props();
   let capped = $derived(points.slice(-60)); // last 60 samples
   let max = $derived(Math.max(1, ...capped));
@@ -23,4 +21,3 @@
 <style>
   svg { display:block }
 </style>
-

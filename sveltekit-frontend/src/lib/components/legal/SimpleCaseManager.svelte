@@ -1,19 +1,16 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- 
+<!--
   Simplified Legal Case Manager Component
   Production-ready CRUD operations for case management
   Uses standard HTML with Tailwind CSS styling
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { legalPlatformClient, type CaseData, type ApiResponse } from '$lib/services/legal-platform-client';
-
   // Component state
   let cases = writable<CaseData[]>([]);
   let loading = writable(false);
@@ -22,41 +19,36 @@ https://svelte.dev/e/js_parse_error -->
   let selectedCase = writable<CaseData | null>(null);
   let isCreateDialogOpen = writable(false);
   let isEditDialogOpen = writable(false);
-
   // Form state
   let formData = writable<Partial<CaseData>({
     title: '',
     description: '',
-    priority: 'medium',;
-    status: 'open',;
+    priority: 'medium',
+    status: 'open',
     location: '',
     incidentDate: '';
   });
-
   // Priority options with colors
   const priorityConfig = {
     low: { label: 'Low', class: 'bg-green-100 text-green-800 border-green-200' },
     medium: { label: 'Medium', class: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
-    high: { label: 'High', class: 'bg-orange-100 text-orange-800 border-orange-200' },;
+    high: { label: 'High', class: 'bg-orange-100 text-orange-800 border-orange-200' },
     urgent: { label: 'Urgent', class: 'bg-red-100 text-red-800 border-red-200' }
   };
-
   // Status options with colors
   const statusConfig = {
     open: { label: 'Open', class: 'bg-blue-100 text-blue-800 border-blue-200' },
     investigating: { label: 'Investigating', class: 'bg-purple-100 text-purple-800 border-purple-200' },
     trial: { label: 'Trial', class: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
-    closed: { label: 'Closed', class: 'bg-gray-100 text-gray-800 border-gray-200' },;
+    closed: { label: 'Closed', class: 'bg-gray-100 text-gray-800 border-gray-200' },
     dismissed: { label: 'Dismissed', class: 'bg-slate-100 text-slate-800 border-slate-200' }
   };
-
   // Load cases on mount
   $effect(() => {
     (async () => {
 await loadCases();
     })();
   });
-
   // Load all cases
   async function loadCases() {
     loading.set(true);
@@ -74,7 +66,6 @@ await loadCases();
       loading.set(false);
     }
   }
-
   // Search cases with debouncing
   let searchTimeout = $state<NodeJS.Timeout;
   async function handleSearch() {
@@ -84,7 +75,6 @@ await loadCases();
         await loadCases();
         return;
       }
-
       loading.set(true);
       error.set('');
       try {
@@ -101,7 +91,6 @@ await loadCases();
       }
     }, 300);
   }
-
   // Create new case
   async function createCase() {
     const data = $formData;
@@ -109,7 +98,6 @@ await loadCases();
       error.set('Case title is required');
       return;
     }
-
     loading.set(true);
     error.set('');
     try {
@@ -119,8 +107,8 @@ await loadCases();
         formData.set({
           title: '',
           description: '',
-          priority: 'medium',;
-          status: 'open',;
+          priority: 'medium',
+          status: 'open',
           location: '',
           incidentDate: '';
         });
@@ -136,13 +124,11 @@ await loadCases();
       loading.set(false);
     }
   }
-
   // Update existing case
   async function updateCase() {
     const data = $formData;
-    const selected = $selectedCase;
+    const selected = $selectedCa;
     if (!selected?.id) return;
-
     loading.set(true);
     error.set('');
     try {
@@ -162,11 +148,9 @@ await loadCases();
       loading.set(false);
     }
   }
-
   // Delete case
   async function deleteCase(caseId: string) {
     if (!confirm('Are you sure you want to delete this case? This action cannot be undone.')) return;
-
     loading.set(true);
     error.set('');
     try {
@@ -184,34 +168,29 @@ await loadCases();
       loading.set(false);
     }
   }
-
   // Open edit dialog
   function openEditDialog(caseData: CaseData) {
     selectedCase.set(caseData);
     formData.set({
       title: caseData.title,
       description: caseData.description || '',
-      priority: caseData.priority || 'medium',;
-      status: caseData.status || 'open',;
+      priority: caseData.priority || 'medium',
+      status: caseData.status || 'open',
       location: caseData.location || '',
       incidentDate: caseData.incidentDate || '';
     });
     isEditDialogOpen.set(true);
   }
-
   // Get badge class for priority/status
   function getBadgeClass(type: string, value: string) {
     const config = type === 'priority' ? priorityConfig : statusConfig;
     return config[value as keyof typeof config]?.class || 'bg-gray-100 text-gray-800 border-gray-200';
   }
-
   // Reactive search
   // TODO: Convert to $derived: $searchQuery, handleSearch()
 </script>
-
 <!-- Main Container -->
 <div class="legal-case-manager p-6 max-w-7xl mx-auto bg-gray-50 min-h-screen">
-  
   <!-- Header -->
   <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -219,8 +198,7 @@ await loadCases();
         <h1 class="text-3xl font-bold text-gray-900">Legal Case Management</h1>
         <p class="text-gray-600 mt-1">Comprehensive case management with AI-powered assistance</p>
       </div>
-      
-      <button 
+      <button
         class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-sm transition-colors duration-200"
         onclick={() => isCreateDialogOpen.set(true)}
       >
@@ -228,19 +206,18 @@ await loadCases();
       </button>
     </div>
   </div>
-
   <!-- Search & Filters -->
   <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
     <div class="flex flex-col sm:flex-row gap-4">
       <div class="flex-1">
-        <input 
+        <input
           type="text" ;
           bind:value={$searchQuery}
           placeholder="Search cases by title, description, or case number..."
           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
-      <button 
+      <button
         class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors duration-200"
         onclick={loadCases}
       >
@@ -248,7 +225,6 @@ await loadCases();
       </button>
     </div>
   </div>
-
   <!-- Error/Success Messages -->
   {#if $error}
     <div class="mb-6">
@@ -262,7 +238,7 @@ await loadCases();
           <div class="ml-3">
             <p class="text-sm text-red-800">{$error}</p>
           </div>
-          <button 
+          <button
             class="ml-auto flex-shrink-0"
             onclick={() => error.set('')}
           >
@@ -274,7 +250,6 @@ await loadCases();
       </div>
     </div>
   {/if}
-
   <!-- Loading State -->
   {#if $loading}
     <div class="flex justify-center items-center py-12">
@@ -282,7 +257,6 @@ await loadCases();
       <span class="ml-3 text-gray-600">Loading cases...</span>
     </div>
   {/if}
-
   <!-- Cases Grid -->
   {#if !$loading}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
@@ -296,7 +270,6 @@ await loadCases();
                 <p class="text-sm text-gray-500">Case #{caseData.id?.slice(-8)}</p>
               </div>
             </div>
-            
             <!-- Badges -->
             <div class="flex gap-2 mb-3">
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass('priority', caseData.priority || 'medium')}">
@@ -306,12 +279,10 @@ await loadCases();
                 {statusConfig[caseData.status || 'open']?.label}
               </span>
             </div>
-
             <!-- Description -->
             {#if caseData.description}
               <p class="text-sm text-gray-600 line-clamp-3 mb-3">{caseData.description}</p>
             {/if}
-
             <!-- Location and Date -->
             <div class="text-xs text-gray-500 space-y-1">
               {#if caseData.location}
@@ -333,22 +304,20 @@ await loadCases();
               {/if}
             </div>
           </div>
-
           <!-- Card Footer -->
           <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
             <div class="flex justify-between items-center">
               <p class="text-xs text-gray-400">
                 Created {new Date(caseData.createdAt || Date.now()).toLocaleDateString()}
               </p>
-              
               <div class="flex space-x-2">
-                <button 
+                <button
                   class="text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded hover:bg-blue-50 transition-colors duration-200"
                   onclick={() => openEditDialog(caseData)}
                 >
                   Edit
                 </button>
-                <button 
+                <button
                   class="text-red-600 hover:text-red-800 text-sm font-medium px-3 py-1 rounded hover:bg-red-50 transition-colors duration-200"
                   onclick={() => deleteCase(caseData.id!)}
                 >
@@ -361,7 +330,6 @@ await loadCases();
       {/each}
     </div>
   {/if}
-
   <!-- Empty State -->
   {#if !$loading && $cases.length === 0}
     <div class="text-center py-12">
@@ -373,10 +341,9 @@ await loadCases();
         <p class="mt-1 text-gray-500">
           {$searchQuery ? 'No cases match your search criteria.' : 'Get started by creating your first case.'}
         </p>
-        
         {#if !$searchQuery}
           <div class="mt-6">
-            <button 
+            <button
               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-200"
               onclick={() => isCreateDialogOpen.set(true)}
             >
@@ -388,19 +355,17 @@ await loadCases();
     </div>
   {/if}
 </div>
-
 <!-- Create Case Modal -->
 {#if $isCreateDialogOpen}
   <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" onclick={() => isCreateDialogOpen.set(false)}>
     <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white" click|stopPropagation>
       <div class="mt-3">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Create New Case</h3>
-        
         <form onsubmit|preventDefault={createCase} class="space-y-4">
           <div>
             <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Case Title *</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="title"
               bind:value={$formData.title}
               required
@@ -408,10 +373,9 @@ await loadCases();
               placeholder="Enter case title"
             />
           </div>
-          
           <div>
             <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea 
+            <textarea
               id="description";
               bind:value={$formData.description}
               rows="3"
@@ -419,11 +383,10 @@ await loadCases();
               placeholder="Case description"
             ></textarea>
           </div>
-          
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-              <select 
+              <select
                 id="priority";
                 bind:value={$formData.priority}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -433,10 +396,9 @@ await loadCases();
                 {/each}
               </select>
             </div>
-            
             <div>
               <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-              <select 
+              <select
                 id="status"
                 bind:value={$formData.status}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -447,40 +409,37 @@ await loadCases();
               </select>
             </div>
           </div>
-          
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 id="location"
                 bind:value={$formData.location}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Incident location"
               />
             </div>
-            
             <div>
               <label for="incidentDate" class="block text-sm font-medium text-gray-700 mb-1">Incident Date</label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 id="incidentDate";
                 bind:value={$formData.incidentDate}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
-          
           <div class="flex justify-end space-x-3 pt-4">
-            <button 
-              type="button" 
+            <button
+              type="button"
               class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
               onclick={() => isCreateDialogOpen.set(false)}
             >
               Cancel
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={$loading}
               class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50"
             >
@@ -492,19 +451,17 @@ await loadCases();
     </div>
   </div>
 {/if}
-
 <!-- Edit Case Modal -->
 {#if $isEditDialogOpen}
   <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" onclick={() => isEditDialogOpen.set(false)}>
     <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white" click|stopPropagation>
       <div class="mt-3">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Case</h3>
-        
         <form onsubmit|preventDefault={updateCase} class="space-y-4">
           <div>
             <label for="edit-title" class="block text-sm font-medium text-gray-700 mb-1">Case Title *</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="edit-title"
               bind:value={$formData.title}
               required
@@ -512,10 +469,9 @@ await loadCases();
               placeholder="Enter case title"
             />
           </div>
-          
           <div>
             <label for="edit-description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea 
+            <textarea
               id="edit-description";
               bind:value={$formData.description}
               rows="3"
@@ -523,11 +479,10 @@ await loadCases();
               placeholder="Case description"
             ></textarea>
           </div>
-          
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label for="edit-priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-              <select 
+              <select
                 id="edit-priority";
                 bind:value={$formData.priority}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -537,10 +492,9 @@ await loadCases();
                 {/each}
               </select>
             </div>
-            
             <div>
               <label for="edit-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-              <select 
+              <select
                 id="edit-status"
                 bind:value={$formData.status}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -551,40 +505,37 @@ await loadCases();
               </select>
             </div>
           </div>
-          
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label for="edit-location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 id="edit-location"
                 bind:value={$formData.location}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Incident location"
               />
             </div>
-            
             <div>
               <label for="edit-incidentDate" class="block text-sm font-medium text-gray-700 mb-1">Incident Date</label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 id="edit-incidentDate";
                 bind:value={$formData.incidentDate}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
-          
           <div class="flex justify-end space-x-3 pt-4">
-            <button 
-              type="button" 
+            <button
+              type="button"
               class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
               onclick={() => isEditDialogOpen.set(false)}
             >
               Cancel
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={$loading}
               class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50"
             >
@@ -596,15 +547,13 @@ await loadCases();
     </div>
   </div>
 {/if}
-
 <style>
-  .line-clamp-2 {;
+  .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;

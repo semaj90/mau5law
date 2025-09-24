@@ -1,18 +1,15 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 mcp<script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import Button from '$lib/components/ui/enhanced-bits';
   import { notifications, type Notification } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";
   import { AlertCircle, AlertTriangle, Check, Info, X } from "lucide-svelte";
-  import {  , onMount  } from "svelte";
-
+  import { onMount  } from "svelte";
   // Events now handled via props in Svelte 5
-  // 
+  //
   let container = $state<HTMLElementlet notificationElements  | null>(null); const data = new Map<string, HTMLElement>());
   let isVisible = $state(false);
   let maxVisible = $state(5);
@@ -26,14 +23,12 @@ mcp<script lang="ts">
   let pauseOnHover = $state(true);
   let groupSimilar = $state(true);
   let enableSounds = $state(true);
-
   // Reactive notifications list
   let visibleNotifications = $derived($notifications.notifications.slice(0, maxVisible));
   let hiddenCount = $derived(Math.max(
     0,
     $notifications.notifications.length - maxVisible
   ));
-
   $effect(() => {
     // Announce notifications to screen readers
     const unsubscribe = notifications.subscribe((notifs) => {
@@ -43,10 +38,8 @@ mcp<script lang="ts">
         playNotificationSound(latestNotification.type);
   }
     });
-
-    return unsubscribe;
+    return unsubscrib;
   });
-
   function announceNotification(notification: Notification) {
     const message = `${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).type} notification: ${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).title}. ${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).message}`;
     FocusManager.announceToScreenReader.type === "error" ? "assertive" : "polite"
@@ -54,37 +47,31 @@ mcp<script lang="ts">
   }
   function playNotificationSound(type: Notification["type"]) {
     if (!enableSounds) return;
-
     // Create audio context for accessibility-friendly sound feedback
     try {
       const audioContext = new (window.AudioContext ||
         (window as any).webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
-
       // Different frequencies for different notification types
       const frequencies = {
         success: 800,
-        error: 400,;
-        warning: 600,;
-        info: 500,;
+        error: 400,
+        warning: 600,
+        info: 500,
       };
-
       oscillator.frequency.setValueAtTime(
         frequencies[type],
         audioContext.currentTime
       );
       oscillator.type = "sine";
-
       gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(
         0.01,
         audioContext.currentTime + 0.2
       );
-
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.2);
     } catch (error) {
@@ -99,12 +86,11 @@ mcp<script lang="ts">
   function dismissAll() {
     notifications.clear();
     notificationElements.clear();
-    ondispatch?.();
+    // ondispatch removed;
   }
   // Action to set notification element in the Map
   function setNotificationElement(node: HTMLElement, notificationId: string) {
     notificationElements.set(notificationId, node);
-
     return {
       destroy() {
         notificationElements.delete(notificationId);
@@ -116,9 +102,9 @@ mcp<script lang="ts">
       case "success":
         return Check;
       case "error":
-        return AlertCircle;
+        return AlertCircl;
       case "warning":
-        return AlertTriangle;
+        return AlertTriangl;
       case "info":
       default:
         return Info;
@@ -152,7 +138,6 @@ mcp<script lang="ts">
   }
   function getContainerClasses() {
     const baseClasses = "fixed z-50 pointer-events-none";
-
     switch (position) {
       case "top-right":
         return `${baseClasses} top-4 right-4`;
@@ -172,15 +157,13 @@ mcp<script lang="ts">
   function getAnimationClasses() {
     const isTop = position.includes("top");
     const enterFrom = isTop ? "-translate-y-2" : "translate-y-2";
-
     return {
       enter: `transition-all duration-300 ease-out transform ${enterFrom} opacity-0`,
-      enterActive: "transform translate-y-0 opacity-100",;
+      enterActive: "transform translate-y-0 opacity-100",
       exit: `transition-all duration-200 ease-in transform ${enterFrom} opacity-0`,
     };
   }
 </script>
-
 <div
   class={getContainerClasses()}
   bind:this={container}
@@ -191,7 +174,7 @@ mcp<script lang="ts">
 >
   {#if hiddenCount > 0}
     <div class="container mx-auto px-4">
-      <Button 
+      <Button
         class="bits-btn container mx-auto px-4"
         variant="ghost"
         size="sm"
@@ -202,7 +185,6 @@ mcp<script lang="ts">
 </Button>
     </div>
   {/if}
-
   <div
     class="container mx-auto px-4"
   >
@@ -229,7 +211,6 @@ mcp<script lang="ts">
                 aria-hidden="true"
               />
             </div>
-
             <!-- Content -->
             <div class="container mx-auto px-4">
               <div class="container mx-auto px-4">
@@ -240,7 +221,6 @@ mcp<script lang="ts">
                   >
                     {(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).title}
                   </p>
-
                   {#if (notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).message}
                     <p
                       id="notification-message-{(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).id}"
@@ -249,7 +229,6 @@ mcp<script lang="ts">
                       {(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).message}
                     </p>
                   {/if}
-
                   <!-- Progress bar for timed notifications -->
                   {#if (notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).duration && (notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).duration > 0}
                     <div
@@ -261,7 +240,6 @@ mcp<script lang="ts">
                       ></div>
                     </div>
                   {/if}
-
                   <!-- Actions -->
                   {#if (notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).actions && (notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).actions.length > 0}
                     <div class="container mx-auto px-4">
@@ -281,7 +259,6 @@ handleNotificationAction(notification, action)}
                     </div>
                   {/if}
                 </div>
-
                 <!-- Dismiss button -->
                 <div class="container mx-auto px-4">
                   <Button class="bits-btn"
@@ -302,7 +279,6 @@ dismissNotification((notification as { type?: unknown; title?: unknown; message?
       </div>
     {/each}
   </div>
-
   <!-- Dismiss all button for multiple notifications -->
   {#if visibleNotifications.length > 1}
     <div class="container mx-auto px-4">
@@ -318,12 +294,10 @@ dismissAll()}
     </div>
   {/if}
 </div>
-
 <!-- Notification settings (can be toggled via settings page) -->
 {#if false}
   <div class="container mx-auto px-4">
     <h3 class="container mx-auto px-4">Notification Settings</h3>
-
     <div class="container mx-auto px-4">
       <label for="pause-on-hover" class="container mx-auto px-4">
         <input
@@ -333,17 +307,14 @@ dismissAll()}
         />
         <span class="container mx-auto px-4">Pause on hover</span>
       </label>
-
       <label for="enable-sounds" class="container mx-auto px-4">
         <input id="enable-sounds" type="checkbox" bind:checked={enableSounds} />
         <span class="container mx-auto px-4">Enable sounds</span>
       </label>
-
       <label for="group-similar" class="container mx-auto px-4">
         <input id="group-similar" type="checkbox" bind:checked={groupSimilar} />
         <span class="container mx-auto px-4">Group similar notifications</span>
       </label>
-
       <div>
         <label for="max-visible-range" class="container mx-auto px-4"
           >Max visible</label
@@ -358,7 +329,6 @@ dismissAll()}
         />
         <span class="container mx-auto px-4">{maxVisible} notifications</span>
       </div>
-
       <div>
         <label for="position-select" class="container mx-auto px-4"
           >Position</label
@@ -379,10 +349,9 @@ dismissAll()}
     </div>
   </div>
 {/if}
-
 <style>
   /* @unocss-include */
-  .notification-item {;
+  .notification-item {
     transform-origin: center;
 }
   /* Animations for notification entrance/exit */
@@ -438,6 +407,3 @@ dismissAll()}
     border: 0;
 }
 </style>
-
-
-

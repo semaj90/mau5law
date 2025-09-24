@@ -1,12 +1,11 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
+https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components;
+<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on component;
 https://svelte.dev/e/component_invalid_directive -->
 <!-- NieR: Automata Themed Rich Text Editor using bits-ui -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     content?: unknown;
     placeholder?: unknown;
@@ -15,7 +14,6 @@ https://svelte.dev/e/component_invalid_directive -->
     content = "",
     placeholder = "Initialize data input..."
   }: Props = $props();
-
   import { Editor } from "@tiptap/core";
   import StarterKit from "@tiptap/starter-kit";
   import { onMount } from "svelte";
@@ -25,11 +23,11 @@ https://svelte.dev/e/component_invalid_directive -->
   let editor = $state<Editor | null >(null);
   let editorElement = $state({}) {
     editor = new Editor({
-      element: editorElement,;
+      element: editorElement
       extensions: [StarterKit],
       content,
       editorProps: {
-        attributes: {;
+        attributes: {
           class: "nier-editor-content focus:outline-none";
         }
       }
@@ -41,33 +39,28 @@ https://svelte.dev/e/component_invalid_directive -->
     { value: "Inter", label: "Inter" }
   ];
 </script>
-
 <div class="nier-panel">
   <!-- Toolbar -->
   <div class="nier-toolbar">
     <div class="nier-toolbar-group">
-      <Button 
-        variant="ghost" 
-        size="sm" 
+      <Button
+        variant="ghost"
+        size="sm"
         class="nier-toolbar-btn bits-btn bits-btn"
         onclick={() =>
 editor?.commands.undo()}
       >
         ↶
-
-      <Button 
-        variant="ghost" 
-        size="sm" 
+      <Button
+        variant="ghost"
+        size="sm"
         class="nier-toolbar-btn bits-btn bits-btn"
         onclick={() =>
 editor?.commands.redo()}
       >
         ↷
-
     </div>
-    
     <Separator orientation="vertical" class="nier-toolbar-separator" />
-    
     <div class="nier-toolbar-group">
       <SelectRoot>
         <SelectTrigger class="nier-select">
@@ -75,8 +68,8 @@ editor?.commands.redo()}
         </SelectTrigger>
         <SelectContent class="nier-dropdown-content">
           {#each fontOptions as font}
-            <SelectItem 
-              value={font.value} 
+            <SelectItem
+              value={font.value}
               class="nier-dropdown-item"
             >
               {font.label}
@@ -85,47 +78,39 @@ editor?.commands.redo()}
         </SelectContent>
       </SelectRoot>
     </div>
-    
     <Separator orientation="vertical" class="nier-toolbar-separator" />
-    
     <div class="nier-toolbar-group">
-      <Button 
-        variant="ghost" 
-        size="sm" 
+      <Button
+        variant="ghost"
+        size="sm"
         class="nier-toolbar-btn bits-btn bits-btn"
         class:active={editor?.isActive('bold')}
         onclick={() =>
 editor?.chain.focus().toggleBold.run()}
       >
         <strong>B</strong>
-
-      <Button 
-        variant="ghost" 
-        size="sm" 
+      <Button
+        variant="ghost"
+        size="sm"
         class="nier-toolbar-btn bits-btn bits-btn";
         class:active={editor?.isActive('italic')}
         onclick={() =>
 editor?.chain.focus().toggleItalic.run()}
       >
         <em>I</em>
-
     </div>
   </div>
-  
   <!-- Editor -->
   <div class="nier-editor">
     <div bind:this={editorElement}></div>
   </div>
-  
   <!-- Status Bar -->
   <div class="nier-status-bar">
     <span>STATUS: OPERATIONAL</span>
     <span>DATA INTEGRITY: 100%</span>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   /* @import '../styles/nier-design-system.css'; */
 </style>
-

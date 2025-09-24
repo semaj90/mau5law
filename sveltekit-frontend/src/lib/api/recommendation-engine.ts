@@ -2,7 +2,6 @@
  * 🎯 Recommendation Engine API Client
  * Client-side functions for accessing recommendation APIs
  */
-
 interface RecentCaseResponse {
   success: boolean;
   data: RecentCase[];
@@ -16,7 +15,6 @@ interface RecentCaseResponse {
     cacheExpiry: number;
   };
 }
-
 interface RecentCase {
   id: string;
   title: string;
@@ -35,34 +33,27 @@ interface RecentCase {
     lastActivity: string;
   };
 }
-
 /**
  * Fetch recent cases from recommendation engine
  */
 export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
   try {
     const response = await fetch(`/api/recommendations/recent-cases?limit=${limit}`, {
-      method: 'GET',;
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     });
-
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
     const result: RecentCaseResponse = await response.json();
-
     if (!result.success) {
       throw new Error('API returned error status');
     }
-
     return result.data;
-
   } catch (error) {
     console.error('Failed to fetch recent cases:', error);
-
     // Return fallback data to prevent UI from breaking
     return [
       {
@@ -74,7 +65,7 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
         priority: 150,
         caseType: 'litigation',
         urgency: 'high',
-        glyphSignature: 'fb001',;
+        glyphSignature: 'fb001',
         metadata: {
           clientName: 'Sample Client',
           practiceArea: 'General Practice',
@@ -86,12 +77,11 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
     ];
   }
 }
-
 /**
  * Update case recommendation data
  */
 export async function updateCaseRecommendation(
-  caseId: string,
+  caseId: string
   action: 'access' | 'boost' | 'dismiss'
 ): Promise<boolean> {
   try {
@@ -99,26 +89,22 @@ export async function updateCaseRecommendation(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      },;
+      },
       body: JSON.stringify({
         caseId,
         action
       })
     });
-
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
     const result = await response.json();
     return result.success;
-
   } catch (error) {
     console.error('Failed to update case recommendation:', error);
     return false;
   }
 }
-
 /**
  * Search cases using fuzzy search
  */
@@ -128,26 +114,22 @@ export async function searchCases(query: string, limit: number = 10): Promise<Re
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      },;
+      },
       body: JSON.stringify({
         query,
         limit
       })
     });
-
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
     const result = await response.json();
     return result.success ? result.data : [];
-
   } catch (error) {
     console.error('Failed to search cases:', error);
     return [];
   }
 }
-
 /**
  * Get recommendations based on user context
  */
@@ -164,17 +146,14 @@ export async function getContextualRecommendations(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      },;
+      },
       body: JSON.stringify(context)
     });
-
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
     const result = await response.json();
     return result.success ? result.data : [];
-
   } catch (error) {
     console.error('Failed to get contextual recommendations:', error);
     return [];

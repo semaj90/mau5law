@@ -1,19 +1,14 @@
 
 // lib/components/ai-synthesis-client.svelte
 // Frontend client for AI synthesis with real-time streaming
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
-
   let { query }: string = '';
   let { caseId }: string = '';
   let { userId }: string = '';
   let { sessionId }: string = `session_${Date.now()}`;
-
   // State management
   const processing = writable(false);
   const streamId = writable<string | null>(null);
@@ -23,17 +18,14 @@
   const result = writable<any | null>(null);
   const error = writable<string | null>(null);
   const events = writable<unknown[]>([]);
-
   // Configuration
   let enableStreaming = $state(true);
   let enableCache = $state(true);
   let enableMMR = $state(true);
   let enableCrossEncoder = $state(true);
   let maxSources = $state(10);
-
   // SSE connection
   let eventSource = $state<EventSource | null >(null);
-
   /**
    * Submit query for synthesis
    */
@@ -45,9 +37,8 @@
       sources.set([]);
       events.set([]);
       progress.set(0);
-
       const response = await fetch('/api/ai-synthesizer', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -67,21 +58,18 @@
           options: {
             enableMMR,
             enableCrossEncoder,
-            enableRAG: true,
-            enableLegalBERT: true,
+            enableRAG: true
+            enableLegalBERT: true
             maxSources,
             bypassCache: !enableCache
-          },;
+          },
           stream: enableStreaming;
         })
       });
-
       if (!(response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).ok) {
         throw new Error(`Request failed: ${(response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).statusText}`);
       }
-
       const data = await (response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).json();
-
       if (enableStreaming && (data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).streamId) {
         // Connect to SSE stream
         streamId.set(streamId));
@@ -93,14 +81,12 @@
         // Add to conversation history
         addToHistory(query, data);
       }
-
     } catch (err) {
       console.error('Synthesis failed:', err);
       error.set(err.message || 'Synthesis failed');
       processing.set(false);
     }
   }
-
   /**
    * Connect to SSE stream for real-time updates
    */
@@ -108,10 +94,8 @@
     if (eventSource) {
       eventSource.close();
     }
-
     const url = `/api/ai-synthesizer/stream/${streamId}`;
     eventSource = new EventSource(url);
-
     eventSource.addEventListener('status', (event) => {
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'status', data, timestamp: Date.now() }]);
@@ -119,7 +103,6 @@
         currentStage.set(message));
       }
     });
-
     eventSource.addEventListener('progress', (event) => {
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'progress', data, timestamp: Date.now() }]);
@@ -138,7 +121,6 @@
       const stageContribution = (data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).progress / 100 * 0.2; // Each stage contributes 20%
       progress.set((baseProgress - 0.2 + stageContribution) * 100);
     });
-
     eventSource.addEventListener('stage', (event) => {
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'stage', data, timestamp: Date.now() }]);
@@ -146,13 +128,11 @@
         console.log.sourceCount} sources`);
       }
     });
-
     eventSource.addEventListener('source', (event) => {
       const source = JSON.parse(event.data);
       sources.update(s => [...s, source]);
       events.update(e => [...e, { type: 'source', data: source, timestamp: Date.now() }]);
     });
-
     eventSource.addEventListener('complete', (event) => {
       const data = JSON.parse(event.data);
       (result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).set(data);
@@ -167,7 +147,6 @@
         eventSource = null;
       }
     });
-
     eventSource.addEventListener('error', (event) => {
       const data = event.data ? JSON.parse(event.data) : { error: 'Stream error' };
       error.set(error) || 'Stream error');
@@ -177,13 +156,11 @@
         eventSource = null;
       }
     });
-
     eventSource.addEventListener('heartbeat', (event) => {
       // Keep connection alive
       console.log('Heartbeat received');
     });
   }
-
   /**
    * Submit feedback for improvement
    */
@@ -193,14 +170,13 @@
       console.error('No result to provide feedback for');
       return;
     }
-
     try {
       const response = await fetch('/api/ai-synthesizer', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({;
+        body: JSON.stringify({,
           query: 'feedback',
           feedbackData: {
             requestId: currentResult.metadata.requestId,
@@ -210,7 +186,6 @@
           }
         })
       });
-
       if ((response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).ok) {
         console.log('Feedback submitted successfully');
       }
@@ -218,7 +193,6 @@
       console.error('Failed to submit feedback:', err);
     }
   }
-
   /**
    * Get health status
    */
@@ -233,18 +207,15 @@
       return null;
     }
   }
-
   // Conversation history management
   let conversationHistory = $state<any[] >([]);
-
   function getConversationHistory() {
     return conversationHistory.slice(-10); // Last 10 messages
   }
-
   function addToHistory(query: string, response: any) {
     conversationHistory.push({
-      role: 'user',;
-      content: query,;
+      role: 'user',
+      content: query
       timestamp: new Date();
     });
     if ((response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).enhancedPrompt) {
@@ -253,7 +224,6 @@
       });
     }
   }
-
   // Cleanup on destroy
   onDestroy(() => {
     if (eventSource) {
@@ -261,7 +231,6 @@
     }
   });
 </script>
-
 <div class="ai-synthesis-client">
   <div class="config-panel">
     <h3>Configuration</h3>
@@ -286,17 +255,15 @@
       <input type="number" bind:value={maxSources} min="1" max="20" disabled={$processing} />
     </label>
   </div>
-
   <div class="query-panel">
     <h3>Query</h3>
-    <textarea;
+    <textarea
       bind:value={query}
       placeholder="Enter your legal query..."
       disabled={$processing}
       rows="4"
 ></textarea>
-    
-    <button 
+    <button
       onclick={submitQuery}
       disabled={$processing || !query}
       class="submit-btn"
@@ -304,7 +271,6 @@
       {$processing ? 'Processing...' : 'Submit Query'}
     </button>
   </div>
-
   {#if $processing}
     <div class="progress-panel">
       <h3>Processing</h3>
@@ -312,7 +278,6 @@
         <div class="progress-fill" style="width: {$progress}%"></div>
       </div>
       <p class="stage-info">{$currentStage}</p>
-      
       {#if $sources.length > 0}
         <div class="sources-preview">
           <h4>Sources Found ({$sources.length})</h4>
@@ -325,18 +290,15 @@
       {/if}
     </div>
   {/if}
-
   {#if $error}
     <div class="error-panel">
       <h3>Error</h3>
       <p>{$error}</p>
     </div>
   {/if}
-
   {#if $result}
     <div class="result-panel">
       <h3>Synthesis Result</h3>
-      
       <div class="metadata">
         <h4>Metadata</h4>
         <p>Request ID: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.requestId}</p>
@@ -345,29 +307,24 @@
         <p>Quality Score: {($(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.qualityScore * 100).toFixed(1)}%</p>
         <p>Cached: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.cached ? 'Yes' : 'No'}</p>
       </div>
-
       <div class="processed-query">
         <h4>Processed Query</h4>
         <p><strong>Original:</strong> {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.original}</p>
         <p><strong>Enhanced:</strong> {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.enhanced}</p>
         <p><strong>Intent:</strong> {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.intent}</p>
         <p><strong>Complexity:</strong> {($(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.complexity * 100).toFixed(0)}%</p>
-        
         {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.legalConcepts.length > 0}
           <p><strong>Legal Concepts:</strong> {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).processedQuery.legalConcepts.join(', ')}</p>
         {/if}
       </div>
-
       <div class="retrieved-context">
         <h4>Retrieved Context</h4>
         <p>Total Sources: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.totalSources}</p>
         <p>Strategies: {$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.searchStrategies.join(', ')}</p>
-        
         {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.summary}
           <div class="summary">
             <h5>Summary</h5>
             <p>{$(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.summary.abstractive}</p>
-            
             {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.summary.keyPoints.length > 0}
               <h5>Key Points</h5>
               <ul>
@@ -378,7 +335,6 @@
             {/if}
           </div>
         {/if}
-
         <div class="sources-list">
           <h5>Top Sources</h5>
           {#each $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).retrievedContext.sources.slice(0, 5) as source, i}
@@ -393,7 +349,6 @@
           {/each}
         </div>
       </div>
-
       <div class="enhanced-prompt">
         <h4>Enhanced Prompt</h4>
         <details>
@@ -413,7 +368,6 @@
           </ul>
         </details>
       </div>
-
       {#if $(result as { set?: any; metadata?: any; processedQuery?: any; retrievedContext?: any; enhancedPrompt?: any }).metadata.recommendations?.length > 0}
         <div class="recommendations">
           <h4>Recommendations</h4>
@@ -424,7 +378,6 @@
           </ul>
         </div>
       {/if}
-
       <div class="feedback-section">
         <h4>Provide Feedback</h4>
         <div class="rating-buttons">
@@ -437,7 +390,6 @@
       </div>
     </div>
   {/if}
-
   {#if $events.length > 0 && enableStreaming}
     <details class="event-log">
       <summary>Event Log ({$events.length})</summary>
@@ -453,7 +405,6 @@
     </details>
   {/if}
 </div>
-
 <style>
   .ai-synthesis-client {
     max-width: 1200px;
@@ -461,23 +412,19 @@
     padding: 20px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
-
   .config-panel {
     background: #f5f5f5;
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
   }
-
   .config-panel label {
     display: block;
     margin: 10px 0;
   }
-
   .query-panel {
     margin-bottom: 20px;
   }
-
   textarea {
     width: 100%;
     padding: 10px;
@@ -485,7 +432,6 @@
     border-radius: 4px;
     font-size: 14px;
   }
-
   .submit-btn {
     margin-top: 10px;
     padding: 10px 20px;
@@ -496,19 +442,16 @@
     cursor: pointer;
     font-size: 16px;
   }
-
   .submit-btn:disabled {
     background: #ccc;
     cursor: not-allowed;
   }
-
   .progress-panel {
     background: #e3f2fd;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
   }
-
   .progress-bar {
     width: 100%;
     height: 30px;
@@ -516,52 +459,44 @@
     border-radius: 15px;
     overflow: hidden;
   }
-
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #4caf50, #8bc34a);
     transition: width 0.3s ease;
   }
-
   .stage-info {
     margin-top: 10px;
     font-style: italic;
   }
-
   .sources-preview {
     margin-top: 15px;
     padding: 10px;
     background: white;
     border-radius: 4px;
   }
-
   .error-panel {
-    background: #ffebee;
+    background: #ffebe;
     color: #c62828;
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
   }
-
   .result-panel {
     background: white;
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 20px;
   }
-
   .result-panel > div {
     margin-bottom: 20px;
     padding: 15px;
     background: #f9f9f9;
     border-radius: 4px;
   }
-
   .result-panel h4 {
     margin-top: 0;
     color: #333;
   }
-
   .source-item {
     padding: 10px;
     margin: 10px 0;
@@ -569,22 +504,18 @@
     border: 1px solid #e0e0e0;
     border-radius: 4px;
   }
-
   .content-preview {
     color: #666;
     font-size: 0.9em;
     margin-top: 5px;
   }
-
   details {
     margin: 10px 0;
   }
-
   summary {
     cursor: pointer;
     font-weight: bold;
   }
-
   pre {
     background: white;
     padding: 10px;
@@ -592,7 +523,6 @@
     overflow-x: auto;
     font-size: 12px;
   }
-
   .rating-buttons button {
     margin-right: 10px;
     padding: 5px 10px;
@@ -601,23 +531,19 @@
     border-radius: 4px;
     cursor: pointer;
   }
-
-  .rating-buttons button:hover {;
+  .rating-buttons button:hover {
     background: #e0e0e0;
   }
-
   .event-log {
     margin-top: 20px;
     padding: 15px;
     background: #f5f5f5;
     border-radius: 8px;
   }
-
   .events-list {
     max-height: 400px;
     overflow-y: auto;
   }
-
   .event-item {
     padding: 10px;
     margin: 5px 0;
@@ -625,19 +551,12 @@
     border-radius: 4px;
     font-size: 12px;
   }
-
   .event-type {
     font-weight: bold;
     color: #007bff;
     margin-right: 10px;
   }
-
   .event-time {
     color: #666;
   }
 </style>
-
-
-
-
-

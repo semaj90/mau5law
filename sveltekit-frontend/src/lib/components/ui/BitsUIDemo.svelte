@@ -1,7 +1,6 @@
 <!-- Comprehensive Bits-UI Demo for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import BitsDialog from './dialog/BitsDialog.svelte';
   import BitsSelect from './select/BitsSelect.svelte';
   import BitsInput from './input/BitsInput.svelte';
@@ -13,7 +12,6 @@
   let caseName = $state('');
   let clientName = $state('');
   let searchQuery = $state('');
-
   // Sample data for legal app
   const caseTypes = [
     { value: 'criminal', label: 'Criminal Law' },
@@ -23,13 +21,11 @@
     { value: 'intellectual', label: 'Intellectual Property' },
     { value: 'employment', label: 'Employment Law' }
   ];
-
   const sampleCases = [
     { id: '1', name: 'Smith vs. Johnson', type: 'Civil Litigation', status: 'Active' },
     { id: '2', name: 'Corporate Merger - TechCorp', type: 'Corporate Law', status: 'Pending' },
     { id: '3', name: 'Patent Dispute - Innovation Inc', type: 'Intellectual Property', status: 'Active' }
   ];
-
   function handleCreateCase() {
     console.log('Creating caseItem:', { caseName, clientName, selectedCaseType });
     showDialog = false;
@@ -39,7 +35,6 @@
     selectedCaseType = '';
   }
 </script>
-
 <div class="p-6 space-y-8 max-w-6xl mx-auto bg-yorha-bg-primary min-h-screen">
   <!-- Header -->
   <div class="text-center space-y-2">
@@ -50,7 +45,6 @@
       Modern Svelte 5 components with bits-ui primitives
     </p>
   </div>
-
   <!-- Search Bar Demo -->
   <section class="space-y-4">
     <h2 class="text-xl font-semibold text-yorha-text-primary font-mono">
@@ -68,7 +62,6 @@
       />
     </div>
   </section>
-
   <!-- Form Components Demo -->
   <section class="space-y-4">
     <h2 class="text-xl font-semibold text-yorha-text-primary font-mono">
@@ -85,7 +78,6 @@
         leftIcon={() => FileText}
         description="Unique identifier for this case"
       />
-
       <!-- Select Demo -->
       <div class="space-y-2">
         <label class="block text-sm font-medium text-yorha-text-primary font-mono">
@@ -103,13 +95,11 @@
       </div>
     </div>
   </section>
-
   <!-- Dialog Demo -->
   <section class="space-y-4">
     <h2 class="text-xl font-semibold text-yorha-text-primary font-mono">
       💬 Dialog Components
     </h2>
-
     <!-- Dialog Trigger Button -->
     <Button class="bits-btn"
       variant="primary"
@@ -119,7 +109,6 @@ showDialog = true}
     >
       <Plus class="w-4 h-4 mr-2" />
       Create New Case
-
     <!-- Dialog Component -->
     <BitsDialog
       bind:open={showDialog}
@@ -138,7 +127,6 @@ showDialog = true}
             required
             leftIcon={() => FileText}
           />
-
           <!-- Client Name Input -->
           <BitsInput
             bind:value={clientName}
@@ -148,7 +136,6 @@ showDialog = true}
             required
             leftIcon={() => Users}
           />
-
           <!-- Case Type Select -->
           <div class="space-y-2">
             <label class="block text-sm font-medium text-yorha-text-primary font-mono">
@@ -163,7 +150,6 @@ showDialog = true}
           </div>
         </div>
       {/snippet}
-
       {#snippet footer()}
         <Button class="bits-btn"
           variant="ghost"
@@ -171,24 +157,20 @@ showDialog = true}
 showDialog = false}
         >
           Cancel
-
         <Button class="bits-btn"
           variant="primary"
           onclick={handleCreateCase}
           disabled={!caseName || !clientName || !selectedCaseType}
         >
 Create Case
-
       {/snippet}
     </BitsDialog>
   </section>
-
   <!-- Cases List Demo -->
   <section class="space-y-4">
     <h2 class="text-xl font-semibold text-yorha-text-primary font-mono">
       📊 Case Management
     </h2>
-
     <div class="grid gap-4">
       {#each sampleCases as sampleCase}
         <div class="border border-yorha-border bg-yorha-bg-secondary rounded-lg p-4">
@@ -204,17 +186,14 @@ Create Case
             <div class="flex gap-2">
               <Button class="bits-btn" variant="ghost" size="sm">
 <Eye class="w-4 h-4" />
-
               <Button class="bits-btn" variant="ghost" size="sm">
 <Edit class="w-4 h-4" />
-
             </div>
           </div>
         </div>
       {/each}
     </div>
   </section>
-
   <!-- Component Status -->
   <section class="space-y-4 border-t border-yorha-border pt-6">
     <h2 class="text-xl font-semibold text-yorha-text-primary font-mono">

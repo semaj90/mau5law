@@ -1,9 +1,7 @@
 <script lang="ts">
-
   import { getContext } from "svelte";
   import { writable } from "svelte/store";
   import type { SelectContext } from "./types";
-
   interface Props {
     class_?: string;
     children?: import('svelte').Snippet;
@@ -12,17 +10,15 @@
     class_ = "",
     children
   }: Props = $props();
-
   const context =
     getContext<SelectContext>("select") ||
     ({
-      open: writable(false),;
+      open: writable(false),
       selected: writable(null),
       onSelect: () => ,
       onToggle: () => } satisfies SelectContext);
   const { open } = context;
 </script>
-
 {#if $open}
   <div class="space-y-4" role="listbox">
     {#if children}
@@ -30,7 +26,6 @@
     {/if}
   </div>
 {/if}
-
 <style>/* @unocss-include */ .select-content {
     position: absolute;
     top: 100%;
@@ -45,4 +40,3 @@
     overflow-y: auto;
 }
 </style>
-

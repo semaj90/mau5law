@@ -1,25 +1,20 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
   import { Button, Card } from '$lib/components/ui/enhanced-bits';
   import { onMount } from 'svelte';
-
   let pageLoaded = $state(false);
   let showWelcome = $state(true);
-
   $effect(() => {
     pageLoaded = true;
     // Auto-hide welcome after 3 seconds
     setTimeout(() => showWelcome = false, 3000);
   });
 </script>
-
 <svelte:head>
   <title>Evidence Board - Legal AI Assistant</title>
   <meta name="description" content="AI-powered evidence management with Ollama integration" />
 </svelte:head>
-
 <div class="evidence-page-container">
   {#if showWelcome && pageLoaded}
     <div class="welcome-banner animate-fade-in">
@@ -58,7 +53,6 @@
       </div>
     </div>
   {/if}
-
   {#if pageLoaded}
     <EnhancedEvidenceBoard />
   {:else}
@@ -69,13 +63,11 @@
     </div>
   {/if}
 </div>
-
 <style>
   .evidence-page-container {
     min-height: 100vh;
     position: relative;
   }
-
   .welcome-banner {
     position: fixed;
     top: 20px;
@@ -86,11 +78,9 @@
     border: 2px solid #00ff41;
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   }
-
   .animate-fade-in {
     animation: fadeInSlide 0.5s ease-out;
   }
-
   @keyframes fadeInSlide {
     from {
       opacity: 0;
@@ -101,14 +91,12 @@
       transform: translateX(0);
     }
   }
-
   .welcome-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     margin: 8px 0;
   }
-
   .stat {
     display: flex;
     flex-direction: column;
@@ -118,21 +106,18 @@
     border: 1px solid rgba(0, 255, 65, 0.3);
     border-radius: 4px;
   }
-
   .stat-label {
     font-size: 10px;
     color: #888;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-
   .stat-value {
     font-size: 12px;
     font-weight: bold;
     color: #00ff41;
     margin-top: 2px;
   }
-
   .loading-screen {
     display: flex;
     flex-direction: column;
@@ -142,7 +127,6 @@
     background: #f5f5f5;
     color: #666;
   }
-
   .loading-spinner {
     width: 40px;
     height: 40px;
@@ -152,10 +136,8 @@
     animation: spin 1s linear infinite;
     margin-bottom: 16px;
   }
-
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
 </style>
-

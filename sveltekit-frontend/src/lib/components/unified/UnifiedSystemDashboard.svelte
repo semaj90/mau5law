@@ -1,27 +1,25 @@
-<!-- 
+<!--
 Unified System Dashboard
 Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   // System status and metrics stores
   const systemStatus = writable({
     status: 'unknown',
-    services: ,;
+    services: ,
     metrics: {
       totalProcessed: 0,
-      gpuProcessed: 0, 
+      gpuProcessed: 0,
       cpuProcessed: 0,
       averageGPUTime: 0,
       averageCPUTime: 0,
       errorRate: 0
     },
     activeJobs: { gpu: 0, cpu: 0 },
-    uptime: 0,;
+    uptime: 0,
     version: '2.0.0';
   });
   const processingResults = writable([]);
@@ -47,16 +45,16 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
   let testDocument = $state({
     id: 'demo_doc_' + Date.now(),
     title: 'Sample Legal Contract Analysis',
-    content: `This is a demonstration legal document for testing the unified processing system. 
+    content: `This is a demonstration legal document for testing the unified processing system.
     AGREEMENT made this day between Party A and Party B, whereas the parties agree to the following terms and conditions:
     1. SCOPE OF WORK: Party A shall provide legal consulting services
     2. COMPENSATION: Payment terms as specified herein
     3. CONFIDENTIALITY: All information shall remain confidential
     4. TERMINATION: This agreement may be terminated with 30 days notice
-    This document demonstrates the integration of GPU-accelerated processing with the standard production pipeline.`,;
+    This document demonstrates the integration of GPU-accelerated processing with the standard production pipeline.`,
     metadata: {
       document_type: 'contract',
-      court_level: 'appellate',;
+      court_level: 'appellate',
       jurisdiction: 'federal',
       practice_areas: ['contract', 'commercial'],
       estimated_complexity: 'medium';
@@ -66,8 +64,8 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
   // Processing options
   let processingOptions = $state({
     priority: 0.8,
-    forceGPU: false,
-    batchMode: false,;
+    forceGPU: false
+    batchMode: false
     query: { query: 'legal contract analysis', keywords: ['contract', 'agreement'] }
   });
   $effect(() => {
@@ -97,11 +95,11 @@ await refreshSystemStatus();
     isProcessing.set(true);
     try {
       const response = await fetch('/api/unified/process', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          document: testDocument,;
-          options: processingOptions;
+        body: JSON.stringify({,
+          document: testDocument
+          options: processingOption;
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -109,8 +107,8 @@ await refreshSystemStatus();
         if ((data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).success) {
           // Add to results
           processingResults.update(results => [{
-            timestamp: Date.now(),;
-            document: testDocument,;
+            timestamp: Date.now(),
+            document: testDocument
             result: (data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).result,
             processingTime: (data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).result.processingTime
           }, ...results.slice(0, 9)]); // Keep last 10 results
@@ -145,7 +143,6 @@ await refreshSystemStatus();
     return path === 'gpu' ? '🔥' : '⚙️';
   }
 </script>
-
 <div class="unified-dashboard p-6 bg-gray-900 text-white min-h-screen">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
@@ -153,7 +150,6 @@ await refreshSystemStatus();
       <h1 class="text-3xl font-bold mb-2">🚀 Unified Legal AI System Dashboard</h1>
       <p class="text-gray-400">Phase 2 GPU Acceleration + Production Pipeline Integration</p>
     </div>
-    
     <!-- System Status Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
       <!-- Overall Status -->
@@ -167,7 +163,6 @@ await refreshSystemStatus();
             </span>
           </div>
         {/each}
-        
         <div class="mt-4 pt-4 border-t border-gray-700">
           <div class="flex justify-between">
             <span>Services Healthy:</span>
@@ -183,11 +178,9 @@ await refreshSystemStatus();
           </div>
         </div>
       </div>
-      
       <!-- Processing Metrics -->
       <div class="bg-gray-800 rounded-lg p-6">
         <h3 class="text-lg font-semibold mb-4">📊 Processing Metrics</h3>
-        
         <div class="space-y-3">
           <div>
             <div class="flex justify-between text-sm text-gray-400 mb-1">
@@ -195,7 +188,6 @@ await refreshSystemStatus();
               <span>{$systemStatus.metrics.totalProcessed}</span>
             </div>
           </div>
-          
           <div>
             <div class="flex justify-between text-sm mb-1">
               <span class="text-purple-400">🔥 GPU Processed</span>
@@ -206,25 +198,22 @@ await refreshSystemStatus();
               <span>{$systemStatus.metrics.cpuProcessed}</span>
             </div>
           </div>
-          
           <div>
             <div class="flex justify-between text-sm text-gray-400 mb-1">
               <span>GPU Efficiency</span>
               <span>{$performanceMetrics.gpuEfficiency}%</span>
             </div>
             <div class="w-full bg-gray-700 rounded-full h-2">
-              <div class="bg-purple-500 h-2 rounded-full transition-all duration-300" 
+              <div class="bg-purple-500 h-2 rounded-full transition-all duration-300"
                    style="width: {$performanceMetrics.gpuEfficiency}%"></div>
             </div>
           </div>
-          
           <div>
             <div class="flex justify-between text-sm text-gray-400 mb-1">
               <span>Avg Processing Time</span>
               <span>{Math.round($performanceMetrics.avgProcessingTime)}ms</span>
             </div>
           </div>
-          
           <div>
             <div class="flex justify-between text-sm text-gray-400 mb-1">
               <span>Error Rate</span>
@@ -233,11 +222,9 @@ await refreshSystemStatus();
           </div>
         </div>
       </div>
-      
       <!-- Active Jobs -->
       <div class="bg-gray-800 rounded-lg p-6">
         <h3 class="text-lg font-semibold mb-4">⚡ Active Jobs</h3>
-        
         <div class="space-y-4">
           <div>
             <div class="flex justify-between items-center mb-2">
@@ -245,24 +232,22 @@ await refreshSystemStatus();
               <span class="text-2xl font-bold text-purple-400">{$systemStatus.activeJobs.gpu}</span>
             </div>
             <div class="w-full bg-gray-700 rounded-full h-2">
-              <div class="bg-purple-500 h-2 rounded-full transition-all duration-300" 
+              <div class="bg-purple-500 h-2 rounded-full transition-all duration-300"
                    style="width: {($systemStatus.activeJobs.gpu / 8) * 100}%"></div>
             </div>
             <div class="text-xs text-gray-500 mt-1">Max: 8 concurrent</div>
           </div>
-          
           <div>
             <div class="flex justify-between items-center mb-2">
               <span class="text-blue-400">⚙️ CPU Jobs</span>
               <span class="text-2xl font-bold text-blue-400">{$systemStatus.activeJobs.cpu}</span>
             </div>
             <div class="w-full bg-gray-700 rounded-full h-2">
-              <div class="bg-blue-500 h-2 rounded-full transition-all duration-300" 
+              <div class="bg-blue-500 h-2 rounded-full transition-all duration-300"
                    style="width: {($systemStatus.activeJobs.cpu / 32) * 100}%"></div>
             </div>
             <div class="text-xs text-gray-500 mt-1">Max: 32 concurrent</div>
           </div>
-          
           <div class="pt-2 border-t border-gray-700">
             <div class="flex justify-between text-sm text-gray-400">
               <span>System Load</span>
@@ -272,13 +257,11 @@ await refreshSystemStatus();
         </div>
       </div>
     </div>
-    
     <!-- Document Processing Test -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
       <!-- Processing Controls -->
       <div class="bg-gray-800 rounded-lg p-6">
         <h3 class="text-lg font-semibold mb-4">🧪 Document Processing Test</h3>
-        
         <div class="space-y-4">
           <div>
             <label class="block text-sm text-gray-400 mb-2" for="priority-affects-gpu">Priority (affects GPU routing)</label><input id="priority-affects-gpu" type="range" min="0" max="1" step="0.1" bind:value={processingOptions.priority}
@@ -289,12 +272,10 @@ await refreshSystemStatus();
               <span>High (GPU)</span>
             </div>
           </div>
-          
           <div>
             <label class="block text-sm text-gray-400 mb-2" for="document-title">Document Title</label><input id="document-title" type="text" bind:value={testDocument.title}
                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white">
           </div>
-          
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm text-gray-400 mb-2" for="document-type">Document Type</label><select id="document-type" bind:value={testDocument.metadata.document_type}
@@ -306,7 +287,6 @@ await refreshSystemStatus();
                 <option value="regulation">Regulation</option>
               </select>
             </div>
-            
             <div>
               <label class="block text-sm text-gray-400 mb-2" for="court-level">Court Level</label><select id="court-level" bind:value={testDocument.metadata.court_level}
                       class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white">
@@ -317,9 +297,8 @@ await refreshSystemStatus();
               </select>
             </div>
           </div>
-          
           <button onclick={processDocument} disabled={$isProcessing}
-                  class="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 ;
+                  class="w-full py-3 px-4 bg-purple-600 hover: bg-purple-700 disabled:bg-gray-600 ;
                          disabled:cursor-not-allowed rounded-lg font-medium transition-colors">
             {#if $isProcessing}
               <div class="flex items-center justify-center">
@@ -332,11 +311,9 @@ await refreshSystemStatus();
           </button>
         </div>
       </div>
-      
       <!-- Processing Results -->
       <div class="bg-gray-800 rounded-lg p-6">
         <h3 class="text-lg font-semibold mb-4">📋 Recent Processing Results</h3>
-        
         <div class="space-y-3 max-h-96 overflow-y-auto">
           {#each $processingResults as result}
             <div class="bg-gray-700 rounded-lg p-4">
@@ -351,11 +328,9 @@ await refreshSystemStatus();
                   {new Date((result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).timestamp).toLocaleTimeString()}
                 </span>
               </div>
-              
               <div class="text-sm text-gray-300 mb-2">
                 {(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).document.title}
               </div>
-              
               <div class="grid grid-cols-3 gap-2 text-xs">
                 <div>
                   <span class="text-gray-400">Time:</span>
@@ -370,7 +345,6 @@ await refreshSystemStatus();
                   <span class="text-white ml-1">{((result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).result.analysis.confidence * 100).toFixed(1)}%</span>
                 </div>
               </div>
-              
               {#if (result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).result.metadata.gpuUtilization > 0}
                 <div class="mt-2 text-xs">
                   <span class="text-purple-400">GPU Utilization:</span>
@@ -386,30 +360,25 @@ await refreshSystemStatus();
         </div>
       </div>
     </div>
-    
     <!-- Integration Status -->
     <div class="bg-gray-800 rounded-lg p-6">
       <h3 class="text-lg font-semibold mb-4">🔗 System Integration Status</h3>
-      
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="text-center">
           <div class="text-3xl mb-2">🔥</div>
           <div class="font-medium text-purple-400">GPU Processing</div>
           <div class="text-sm text-gray-400">Phase 2 Complete</div>
         </div>
-        
         <div class="text-center">
           <div class="text-3xl mb-2">🧠</div>
           <div class="font-medium text-blue-400">Neural Dashboard</div>
           <div class="text-sm text-gray-400">Real-time Monitoring</div>
         </div>
-        
         <div class="text-center">
           <div class="text-3xl mb-2">⚙️</div>
           <div class="font-medium text-green-400">Production Pipeline</div>
           <div class="text-sm text-gray-400">RabbitMQ + Redis + PostgreSQL</div>
         </div>
-        
         <div class="text-center">
           <div class="text-3xl mb-2">🚀</div>
           <div class="font-medium text-orange-400">HTTP/3 QUIC</div>
@@ -419,27 +388,22 @@ await refreshSystemStatus();
     </div>
   </div>
 </div>
-
 <style>
-  .unified-dashboard {;
+  .unified-dashboard {
     font-family: 'Inter', system-ui, sans-serif;
   }
-  
   /* Custom scrollbar for results */
   .max-h-96::-webkit-scrollbar {
     width: 6px;
   }
-  
   .max-h-96::-webkit-scrollbar-track {
     background: #374151;
     border-radius: 3px;
   }
-  
   .max-h-96::-webkit-scrollbar-thumb {
     background: #6b7280;
     border-radius: 3px;
   }
-  
   .max-h-96::-webkit-scrollbar-thumb:hover {
     background: #9ca3af;
   }

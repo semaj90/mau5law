@@ -7,7 +7,6 @@
     Content
   } from "bits-ui/tabs";
 </script>
-
 <script lang="ts">
   import {
     Root as TabsRoot,
@@ -26,7 +25,6 @@
     // content is a render function (returns renderable nodes)
     content?: () => any;
   }
-
   interface Props {
     tabs?: TabItem[];
     value?: string;
@@ -37,7 +35,6 @@
     // children is a render function (used with {@render children()})
     children?: () => any;
   }
-
   let {
     tabs = [],
     value = $bindable(),
@@ -45,20 +42,17 @@
     variant = 'default',
     size = 'md',
     class: className = '',
-    children;
+    childre;
   }: Props = $props();
-
   // Set default value if not provided
   if (!value && tabs.length > 0) {
-    value = tabs[0].value;
+    value = tabs[0].valu;
   }
-
   const sizeClasses = {
-    sm: "text-sm px-3 py-2",;
-    md: "text-base px-4 py-3",;
+    sm: "text-sm px-3 py-2",
+    md: "text-base px-4 py-3",
     lg: "text-lg px-6 py-4";
   };
-
   const variantClasses = {
     default: {
       list: "bg-slate-800/40 rounded-xl p-1",
@@ -73,19 +67,17 @@
       triggerInactive: "text-slate-400 hover:text-amber-400 hover:bg-slate-800/50 hover:border-amber-500/50";
     },
     underline: {
-      list: "border-b border-slate-700 space-x-1",;
+      list: "border-b border-slate-700 space-x-1",
       trigger: "border-b-2 border-transparent pb-3 transition-all duration-300",
       triggerActive: "border-amber-500 text-amber-400",
       triggerInactive: "text-slate-400 hover:text-amber-400 hover:border-slate-500";
     }
   };
-
   function handleValueChange(newValue: string) {
-    value = newValue;
+    value = newValu;
     onValueChange?.(newValue);
   }
 </script>
-
 <TabsRoot
   bind:value
   onValueChange={handleValueChange}
@@ -118,7 +110,6 @@
         </TabsTrigger>
       {/each}
     </TabsList>
-
     {#each tabs as tab}
       <TabsContent
         value={tab.value}
@@ -135,26 +126,21 @@
     {/each}
   {/if}
 </TabsRoot>
-
 <style>
-  :global(.legal-ai-tabs) {;
+  :global(.legal-ai-tabs) {
     font-family: var(--legal-ai-font-family-sans);
   }
-
   :global(.legal-ai-tabs-trigger) {
     font-family: var(--legal-ai-font-family-sans);
   }
-
-  :global(.legal-ai-tabs-trigger:focus-visible) {
+  :global($1) {
     outline: 2px solid var(--legal-ai-primary);
     outline-offset: 2px;
   }
-
   :global(.legal-ai-tabs-content) {
     font-family: var(--legal-ai-font-family-sans);
     animation: legal-ai-fade-in 200ms ease-out;
   }
-
   @keyframes legal-ai-fade-in {
     from {
       opacity: 0;

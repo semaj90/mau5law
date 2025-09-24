@@ -1,17 +1,13 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be uniqu;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   // ======================================================================
   // ENHANCED LEGAL AI DEMO COMPONENT
   // Demonstrating real-time AI processing with XState + Loki.js integration
   // ======================================================================
-
   import { onMount, onDestroy } from 'svelte';
-
   // Enhanced stores and machines
   import {
     evidenceProcessingStore,
@@ -23,18 +19,15 @@ https://svelte.dev/e/attribute_duplicate -->
     systemHealthStore,
     initializeEnhancedMachines
   } from '$lib/stores/enhancedStateMachines';
-
   // Create local store for vector similarity since it's not exported
   import { writable } from 'svelte/store';
   const vectorSimilarityStore = writable([]);
-
   import {
     enhancedLoki,
     enhancedLokiStore,
     cacheStatsStore,
     cacheHealthStore
   } from '$lib/stores/enhancedLokiStore';
-
   // UI Components
   import {
     Card,
@@ -44,7 +37,6 @@ https://svelte.dev/e/attribute_duplicate -->
   } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
-
   // ======================================================================
   // COMPONENT STATE
   // ======================================================================
@@ -53,7 +45,6 @@ https://svelte.dev/e/attribute_duplicate -->
   let selectedCaseId = $state('demo-case-001');
   let processingActive = $state(false);
   let realTimeUpdates = $state<any[]>([]);
-
   // Demo evidence samples
   const demoEvidences = [
     {
@@ -72,17 +63,15 @@ https://svelte.dev/e/attribute_duplicate -->
     },
     {
       id: 'evidence-003',
-      fileName: 'forensic-report.txt',;
-      content: 'DNA analysis of samples collected from the scene shows a 99.7% match with the defendant. Fingerprint analysis reveals partial prints on the door handle and window frame.',;
+      fileName: 'forensic-report.txt',
+      content: 'DNA analysis of samples collected from the scene shows a 99.7% match with the defendant. Fingerprint analysis reveals partial prints on the door handle and window frame.',
       type: 'forensic_evidence',
       caseId: selectedCaseId;
     }
   ];
-
   // ======================================================================
   // REACTIVE STATEMENTS
   // ======================================================================
-
   let currentProcessing = $derived($currentlyProcessingStore || null);
   let processingResults = $derived($processingResultsStore || []);
   let aiRecommendations = $derived($aiRecommendationsStore || []);
@@ -92,20 +81,16 @@ https://svelte.dev/e/attribute_duplicate -->
   let cacheStats = $derived($cacheStatsStore || { hits: 0, misses: 0, evictions: 0, syncOperations: 0, lastSync: null });
   let cacheHealth = $derived($cacheHealthStore || { health: 'unknown', hitRate: 0 });
   let streamingConnected = $derived($streamingStore?.isStreaming || false);
-
   // ======================================================================
   // INITIALIZATION
   // ======================================================================
-
   $effect(() => {
     (async () => {
 try {
       // Initialize enhanced Loki database
       await enhancedLoki.init();
-
       // Initialize state machines
       machines = await initializeEnhancedMachines();
-
       // Subscribe to real-time updates
       if (machines?.streamingActor) {
         machines.streamingActor.subscribe((state: unknown) => {
@@ -115,13 +100,11 @@ try {
     })();
   });
       }
-
       console.log('Enhanced Legal AI system initialized successfully');
     } catch (error) {
       console.error('Failed to initialize enhanced system:', error);
     }
   });
-
   onDestroy(() => {
     if (machines) {
       machines.evidenceActor?.stop();
@@ -129,14 +112,11 @@ try {
     }
     enhancedLoki.destroy();
   });
-
   // ======================================================================
   // EVENT HANDLERS
   // ======================================================================
-
   async function addCustomEvidence() {
     if (!evidenceText.trim() || !machines?.evidenceActor) return;
-
     const evidence = {
       id: `evidence-${Date.now()}`,
       updatedAt: new Date(),
@@ -147,87 +127,74 @@ try {
       tags: [],
       aiSummary: '',
       aiTags: [],
-      caseId: selectedCaseId,
+      caseId: selectedCaseId
       criminalId: '',
       evidenceType: 'document',
       fileType: 'text',
       subType: 'custom',
-      fileUrl: null,
+      fileUrl: null
       fileName: 'custom-evidence.txt',
       fileSize: evidenceText.length,
       mimeType: 'text/plain',
-      hash: null,
+      hash: null
       chainOfCustody: [],
       collectedAt: new Date(),
       collectedBy: '',
       labAnalysis: ,
       aiAnalysis: ,
-      isAdmissible: false,
+      isAdmissible: false
       confidentialityLevel: 'internal',
       canvasPosition: ,
-      uploadedBy: null,
+      uploadedBy: null
       uploadedAt: new Date(),
       content: evidenceText.trim(),
-      type: 'custom',;
+      type: 'custom',
       confidence: 0,
       relationships: [];
     };
-
     // Add to state machine for processing
     machines.evidenceActor.send({
       type: 'ADD_EVIDENCE',
-      evidence;
+      evidenc;
     });
-
     // Cache in Loki
     await enhancedLoki.evidence.add(evidence);
-
     evidenceText = '';
     processingActive = true;
   }
-
   async function addDemoEvidence(demoEvidence: unknown) {
     if (!machines?.evidenceActor) return;
-
     machines.evidenceActor.send({
-      type: 'ADD_EVIDENCE',;
+      type: 'ADD_EVIDENCE',
       evidence: demoEvidence;
     });
-
     await enhancedLoki.evidence.add(demoEvidence);
     processingActive = true;
   }
-
   function checkSystemHealth() {
     if (machines?.evidenceActor) {
       machines.evidenceActor.send({ type: 'HEALTH_CHECK' });
     }
   }
-
   function syncCache() {
     if (machines?.evidenceActor) {
       machines.evidenceActor.send({ type: 'SYNC_CACHE' });
     }
   }
-
   function clearErrors() {
     if (machines?.evidenceActor) {
       machines.evidenceActor.send({ type: 'CLEAR_ERRORS' });
     }
   }
-
   function clearCache() {
     enhancedLoki.clearCache();
   }
-
   // ======================================================================
   // UTILITY FUNCTIONS
   // ======================================================================
-
   function formatTimestamp(date: Date | string) {
     return new Date(date).toLocaleTimeString();
   }
-
   function getHealthBadgeColor(health: string) {
     switch (health) {
       case 'healthy': return 'bg-green-500';
@@ -236,7 +203,6 @@ try {
       default: return 'bg-gray-500';
     }
   }
-
   function getCacheHealthColor(health: string) {
     switch (health) {
       case 'excellent': return 'text-green-600';
@@ -247,14 +213,11 @@ try {
     }
   }
 </script>
-
 <!-- ====================================================================== -->
 <!-- ENHANCED LEGAL AI DEMO INTERFACE -->
 <!-- ====================================================================== -->
-
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
   <div class="max-w-7xl mx-auto space-y-6">
-
     <!-- Header with System Status -->
     <div class="bg-white rounded-lg shadow-sm border p-6">
       <div class="flex items-center justify-between">
@@ -275,19 +238,16 @@ try {
         </div>
       </div>
     </div>
-
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
       <!-- Left Column: Evidence Input & Processing -->
       <div class="space-y-6">
-
         <!-- Evidence Input -->
         <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary">Add Evidence</h3>
           </div>
           <div class="yorha-panel-content space-y-4">
-            <Textarea;
+            <Textarease;
               bind:value={evidenceText}
               placeholder="Enter evidence content..."
               rows={4}
@@ -325,7 +285,6 @@ try {
             {/each}
           </div>
         </div>
-
         <!-- System Controls -->
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -347,10 +306,8 @@ try {
           </div>
         </div>
       </div>
-
       <!-- Middle Column: Processing Results -->
       <div class="space-y-6">
-
         <!-- Currently Processing -->
         {#if currentProcessing}
           <div class="nes-container">
@@ -371,7 +328,6 @@ try {
             </div>
           </div>
         {/if}
-
         <!-- Processing Results -->
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -402,7 +358,6 @@ try {
             {/if}
           </div>
         </div>
-
         <!-- AI Recommendations -->
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -430,10 +385,8 @@ try {
           </div>
         </div>
       </div>
-
       <!-- Right Column: Vector Search & Graph -->
       <div class="space-y-6">
-
         <!-- Vector Similarity Matches -->
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -460,7 +413,6 @@ try {
             {/if}
           </div>
         </div>
-
         <!-- Graph Relationships -->
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -495,7 +447,6 @@ try {
             {/if}
           </div>
         </div>
-
         <!-- Cache Statistics -->
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -538,7 +489,6 @@ try {
         </div>
       </div>
     </div>
-
     <!-- Real-time Updates Footer -->
     {#if realTimeUpdates.length > 0}
       <div class="nes-container">
@@ -559,45 +509,34 @@ try {
         </div>
       </div>
     {/if}
-
   </div>
 </div>
-
 <style>
   /* Custom animations for processing indicators */
   @keyframes pulse-processing {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   }
-
   .processing-indicator {
     animation: pulse-processing 2s infinite;
   }
-
   /* Smooth transitions for dynamic content */
   .transition-all {
     transition: all 0.3s ease-in-out;
   }
-
   /* Custom scrollbar for better UX */
   .overflow-y-auto::-webkit-scrollbar {
     width: 4px;
   }
-
   .overflow-y-auto::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 2px;
   }
-
   .overflow-y-auto::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 2px;
   }
-
   .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
 </style>
-
-
-

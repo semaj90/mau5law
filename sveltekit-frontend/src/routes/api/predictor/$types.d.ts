@@ -1,15 +1,11 @@
 // Type definitions for predictor API endpoints
-
 import type { RequestEvent } from '@sveltejs/kit'
-
 export type RequestHandler = (event: RequestEvent) => Response | Promise<Response>
 }
-
 export interface PredictionResult {
   action: string
   p: number
 }
-
 export interface PredictorStats {
   totalTransitions: number
   uniqueActions: number
@@ -18,7 +14,6 @@ export interface PredictorStats {
   pendingUpdates: number
   redisConnected: boolean
 }
-
 export interface RecordActionRequest {
   userId: string
   action: string
@@ -28,7 +23,6 @@ export interface RecordActionRequest {
     timestamp?: number
   }
 }
-
 export interface PredictActionRequest {
   action: string
   context?: {
@@ -38,7 +32,6 @@ export interface PredictActionRequest {
   topK?: number
   enhancedMode?: boolean
 }
-
 export interface RecordActionResponse {
   success: boolean
   action: string
@@ -47,7 +40,6 @@ export interface RecordActionResponse {
   stats: Partial<PredictorStats>
   timestamp: number
 }
-
 export interface PredictActionResponse {
   action: string
   predictions: PredictionResult[]
@@ -62,9 +54,8 @@ export interface PredictActionResponse {
   }
   timestamp: number
 }
-
 export interface BulkPredictResponse {
-  results: Array<{
+  results: Array<{,
     action: string
     predictions: PredictionResult[]
     context: any

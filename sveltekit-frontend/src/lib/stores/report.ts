@@ -1,9 +1,7 @@
 import crypto from "crypto";
-
 import { writable, derived, type Writable } from "svelte/store";
 // Orphaned content: import type { Writable as WritableType
-
-// Evidence types;
+// Evidence types
 export interface Evidence {
   id: string;
   type: "document" | "image" | "video" | "audio" | "link";
@@ -11,16 +9,16 @@ export interface Evidence {
   description?: string;
   url?: string;
   file?: File;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   tags?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
-// Report structure;
+// Report structure
 export interface Report {
   id: string;
   title: string;
-  content: string; // TinyMCE HTML content
+  content: string; // TinyMCE HTML content,
   attachedEvidence: Evidence[];
   metadata: {
     createdAt: Date;
@@ -36,7 +34,7 @@ export interface Report {
     layout: "single" | "dual" | "masonry";
   };
 }
-// Default report;
+// Default report
 const defaultReport: Report = {
   id: crypto.randomUUID(),
   title: "Untitled Report",
@@ -46,46 +44,42 @@ const defaultReport: Report = {
     createdAt: new Date(),
     updatedAt: new Date(),
     version: 1,
-    status: "draft",;
+    status: "draft",
     tags: []
   }
   }); const settings = {
-    autoSave: true,
-    theme: "light",;
+    autoSave: true
+    theme: "light",
     layout: "single"
   }
 };
-
 // Main report store
 export const report: Writable<Report> = writable(defaultReport);
-// Editor state;
+// Editor state
 export const editorState = writable({
-  isEditing: false,
-  hasUnsavedChanges: false,
+  isEditing: false
+  hasUnsavedChanges: false
   lastSaved: new Date(),
   wordCount: 0,
   selectedText: "",
   cursorPosition: 0
 });
-
-// UI state for report editing;
+// UI state for report editing
 export const reportUI = writable({
-  sidebarOpen: true,
+  sidebarOpen: true
   sidebarWidth: 300,
-  evidencePanelOpen: true,
+  evidencePanelOpen: true
   evidencePanelHeight: 400,
-  toolbarCollapsed: false,
+  toolbarCollapsed: false
   fullscreen: false
 });
-
 // Derived stores
 export const reportTitle = derived(report, ($report) => $report.title);
 export const reportContent = derived(report, ($report) => $report.content);
 export const attachedEvidence = derived(report, ($report) => $report.attachedEvidence);
 export const reportMetadata = derived(report, ($report) => $report.metadata);
 export const hasUnsavedChanges = derived(editorState, ($state) => $state.hasUnsavedChanges);
-
-// Actions;
+// Actions
 export const reportActions = {
   updateTitle: (title: string) => {
     report.update((r) => ({
@@ -95,7 +89,6 @@ export const reportActions = {
     });
     editorState.update((s) => ({ ...s, hasUnsavedChanges: true });
   },
-
   updateContent: (content: string) => {
     report.update((r) => ({
       ...r,
@@ -104,14 +97,13 @@ export const reportActions = {
     });
     editorState.update((s) => ({
       ...s,
-      hasUnsavedChanges: true,
+      hasUnsavedChanges: true
       wordCount: content
         .replace(/<[^>]*>/g, "")
         .trim()
         .split(/\s+/).length
     });
   },
-
   addEvidence: (evidence: Omit<Evidence, "id" | "createdAt" | "updatedAt">) => {
     const newEvidence: Evidence = {
       ...evidence,
@@ -119,7 +111,6 @@ export const reportActions = {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-
     report.update((r) => ({
       ...r,
       attachedEvidence: [...r.attachedEvidence, newEvidence],
@@ -127,7 +118,6 @@ export const reportActions = {
     });
     editorState.update((s) => ({ ...s, hasUnsavedChanges: true });
   },
-
   removeEvidence: (evidenceId: string) => {
     report.update((r) => ({
       ...r,
@@ -136,16 +126,14 @@ export const reportActions = {
     });
     editorState.update((s) => ({ ...s, hasUnsavedChanges: true });
   },
-
   reorderEvidence: (newOrder: Evidence[]) => {
     report.update((r) => ({
       ...r,
-      attachedEvidence: newOrder,
+      attachedEvidence: newOrder
       metadata: { ...r.metadata, updatedAt: new Date() }
     });
     editorState.update((s) => ({ ...s, hasUnsavedChanges: true });
   },
-
   updateSettings: (settings: Partial<Report["settings"]>) => {
     report.update((r) => ({
       ...r
@@ -153,39 +141,34 @@ export const reportActions = {
       metadata: { ...r.metadata, updatedAt: new Date() }
     });
   },
-
   save: async () => {
-    // TODO: Implement actual save logic (API call);
+    // TODO: Implement actual save logic (API call)
     editorState.update((s) => ({
       ...s,
-      hasUnsavedChanges: false,
+      hasUnsavedChanges: false
       lastSaved: new Date()
     });
   },
-
   load: (reportData: Report) => {
     report.set(reportData);
     editorState.update((s) => ({
       ...s,
-      hasUnsavedChanges: false,
+      hasUnsavedChanges: false
       lastSaved: new Date()
     });
   },
-
   reset: () => {
     report.set(defaultReport);
     editorState.update((s) => ({
       ...s,
-      hasUnsavedChanges: false,
+      hasUnsavedChanges: false
       lastSaved: new Date()
     });
   }
 };
-
-// Auto-save functionality;
+// Auto-save functionality
 export const setupAutoSave = (intervalMs: number = 30000) => {
   let autoSaveInterval: NodeJS.Timeout;
-
   const unsubscribe = report.subscribe(($report) => {
     if ($report.settings.autoSave) {
       clearInterval(autoSaveInterval);
@@ -198,7 +181,6 @@ export const setupAutoSave = (intervalMs: number = 30000) => {
       }, intervalMs);
     }
   });
-
   return () => {
     clearInterval(autoSaveInterval);
     unsubscribe();

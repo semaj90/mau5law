@@ -1,19 +1,13 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than onc;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Enhanced Case Form with proper schema mapping -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { notifications } from "$lib/stores/notification";
   import type { User } from "$lib/types/user";
-  import {   } from "svelte";
   import type { Case } from "$lib/types/index";
-
   let { case_ = $bindable(), user = $bindable() } = $props();
-
-  
-
   // Form data matching the database schema
   let formData = $state({
     title: case_?.title || "",
@@ -31,13 +25,12 @@ https://svelte.dev/e/props_duplicate -->
     estimatedValue: case_?.estimatedValue || "",
     jurisdiction: case_?.jurisdiction || "",
     leadProsecutor: case_?.leadProsecutor || user?.id || "",
-    assignedTeam: case_?.assignedTeam || [],;
-    tags: case_?.tags || [],;
-    metadata: case_?.metadata || ,;
+    assignedTeam: case_?.assignedTeam || [],
+    tags: case_?.tags || [],
+    metadata: case_?.metadata ||
   });
   let loading = $state(false);
   let errors = $state<Record<string, string>('') >( );
-
   // Form validation
   function validateForm() {
     errors = {};
@@ -59,14 +52,13 @@ https://svelte.dev/e/props_duplicate -->
   async function handleSubmit() {
     if (!validateForm()) {
       notifications.add({
-        type: "error",;
-        title: "Validation Error",;
-        message: "Please fix the form errors before submitting.",;
+        type: "error",
+        title: "Validation Error",
+        message: "Please fix the form errors before submitting.",
       });
       return;
   }
     loading = true;
-
     try {
       // Prepare data for API - match schema exactly
       const apiData = {
@@ -82,35 +74,32 @@ https://svelte.dev/e/props_duplicate -->
         dangerScore: Number(formData.dangerScore),
         estimatedValue: formData.estimatedValue
           ? Number(formData.estimatedValue)
-          : null,
+          : null
         jurisdiction: formData.jurisdiction.trim(),
         leadProsecutor: formData.leadProsecutor || user.id,
-        assignedTeam: formData.assignedTeam,;
-        tags: formData.tags,;
+        assignedTeam: formData.assignedTeam,
+        tags: formData.tags,
         metadata: {
           ...formData.metadata,
           formVersion: "2.0",
           lastModified: new Date().toISOString(),
         },
       };
-
       // Defensive: always check for valid API data before fetch
       if (!apiData.title || !apiData.caseNumber) {
         throw new Error("Missing required fields");
   }
       const url = case_ ? `/api/cases/${case_.id}` : "/api/cases";
       const method = case_ ? "PUT" : "POST";
-
       const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
-        },;
-        body: JSON.stringify(apiData),;
+        },
+        body: JSON.stringify(apiData),
       });
-
       // Defensive: handle non-JSON error responses
-      let savedCase;
+      let savedCa;
       try {
         savedCase = await response.json();
       } catch (e) {
@@ -120,20 +109,19 @@ https://svelte.dev/e/props_duplicate -->
         throw new Error(savedCase?.error || "Failed to save case");
   }
       notifications.add({
-        type: "success",;
-        title: case_ ? "Case Updated" : "Case Created",;
+        type: "success",
+        title: case_ ? "Case Updated" : "Case Created",
         message: `Case "${savedCase.title}" has been ${case_ ? "updated" : "created"} successfully.`,
       });
-
       dispatch(case_ ? "updated" : "created", savedCase);
     } catch (error) {
       console.error("Error saving caseItem:", error);
       notifications.add({
-        type: "error",;
-        title: "Save Error",;
+        type: "error",
+        title: "Save Error",
         message:
           error instanceof Error
-            ? error.message: "Failed to save case. Please try again.",;
+            ? error.message: "Failed to save case. Please try again.",
       });
     } finally {
       loading = false;
@@ -143,7 +131,6 @@ https://svelte.dev/e/props_duplicate -->
   function addTag() {
     const tagInput = document.getElementById("new-tag") as HTMLInputElement;
     const newTag = tagInput?.value.trim();
-
     if (newTag && !formData.tags.includes(newTag)) {
       formData.tags = [...formData.tags, newTag];
       tagInput.value = "";
@@ -158,7 +145,6 @@ https://svelte.dev/e/props_duplicate -->
       "new-member"
     ) as HTMLInputElement;
     const newMember = memberInput?.value.trim();
-
     if (newMember && !formData.assignedTeam.includes(newMember)) {
       formData.assignedTeam = [...formData.assignedTeam, newMember];
       memberInput.value = "";
@@ -168,13 +154,11 @@ https://svelte.dev/e/props_duplicate -->
     formData.assignedTeam = formData.assignedTeam.filter((m) => m !== member);
   }
 </script>
-
 <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="container mx-auto px-4">
   <div class="container mx-auto px-4">
     <!-- Basic Information -->
     <section class="container mx-auto px-4">
       <h3>Basic Information</h3>
-
       <div class="container mx-auto px-4">
         <label for="title" class="container mx-auto px-4">Case Title</label>
         <input
@@ -189,7 +173,6 @@ https://svelte.dev/e/props_duplicate -->
           <span class="container mx-auto px-4">{errors.title}</span>
         {/if}
       </div>
-
       <div class="container mx-auto px-4">
         <label for="caseNumber" class="container mx-auto px-4">Case Number</label>
         <input
@@ -204,7 +187,6 @@ https://svelte.dev/e/props_duplicate -->
           <span class="container mx-auto px-4">{errors.caseNumber}</span>
         {/if}
       </div>
-
       <div class="container mx-auto px-4">
         <label for="name">Case Name (Optional)</label>
         <input
@@ -214,7 +196,6 @@ https://svelte.dev/e/props_duplicate -->
           placeholder="Alternative case name"
         />
       </div>
-
       <div class="container mx-auto px-4">
         <label for="description">Description</label>
         <textarea
@@ -225,11 +206,9 @@ https://svelte.dev/e/props_duplicate -->
         ></textarea>
       </div>
     </section>
-
     <!-- Case Details -->
     <section class="container mx-auto px-4">
       <h3>Case Details</h3>
-
       <div class="container mx-auto px-4">
         <div class="container mx-auto px-4">
           <label for="priority">Priority</label>
@@ -240,7 +219,6 @@ https://svelte.dev/e/props_duplicate -->
             <option value="urgent">Urgent</option>
           </select>
         </div>
-
         <div class="container mx-auto px-4">
           <label for="status">Status</label>
           <select id="status" bind:value={formData.status}>
@@ -252,7 +230,6 @@ https://svelte.dev/e/props_duplicate -->
           </select>
         </div>
       </div>
-
       <div class="container mx-auto px-4">
         <label for="category">Category</label>
         <input
@@ -262,7 +239,6 @@ https://svelte.dev/e/props_duplicate -->
           placeholder="e.g., Criminal, Civil, Administrative"
         />
       </div>
-
       <div class="container mx-auto px-4">
         <div class="container mx-auto px-4">
           <label for="dangerScore">Danger Score (0-10)</label>
@@ -278,7 +254,6 @@ https://svelte.dev/e/props_duplicate -->
             <span class="container mx-auto px-4">{errors.dangerScore}</span>
           {/if}
         </div>
-
         <div class="container mx-auto px-4">
           <label for="estimatedValue">Estimated Value ($)</label>
           <input
@@ -295,11 +270,9 @@ https://svelte.dev/e/props_duplicate -->
         </div>
       </div>
     </section>
-
     <!-- Location & Timeline -->
     <section class="container mx-auto px-4">
       <h3>Location & Timeline</h3>
-
       <div class="container mx-auto px-4">
         <label for="incidentDate">Incident Date</label>
         <input
@@ -308,7 +281,6 @@ https://svelte.dev/e/props_duplicate -->
           bind:value={formData.incidentDate}
         />
       </div>
-
       <div class="container mx-auto px-4">
         <label for="location">Location</label>
         <input
@@ -318,7 +290,6 @@ https://svelte.dev/e/props_duplicate -->
           placeholder="Incident location"
         />
       </div>
-
       <div class="container mx-auto px-4">
         <label for="jurisdiction">Jurisdiction</label>
         <input
@@ -329,11 +300,9 @@ https://svelte.dev/e/props_duplicate -->
         />
       </div>
     </section>
-
     <!-- Team & Tags -->
     <section class="container mx-auto px-4">
       <h3>Team & Tags</h3>
-
       <!-- Assigned Team -->
       <div class="container mx-auto px-4">
         <label for="new-member">Assigned Team</label>
@@ -347,7 +316,6 @@ https://svelte.dev/e/props_duplicate -->
           />
           <button type="button" onclick={() => addTeamMember()}>Add</button>
         </div>
-
         {#if formData.assignedTeam.length > 0}
           <div class="container mx-auto px-4">
             {#each formData.assignedTeam as member}
@@ -361,7 +329,6 @@ https://svelte.dev/e/props_duplicate -->
           </div>
         {/if}
       </div>
-
       <!-- Tags -->
       <div class="container mx-auto px-4">
         <label for="new-tag">Tags</label>
@@ -375,7 +342,6 @@ https://svelte.dev/e/props_duplicate -->
           />
           <button type="button" onclick={() => addTag()}>Add</button>
         </div>
-
         {#if formData.tags.length > 0}
           <div class="container mx-auto px-4">
             {#each formData.tags as tag}
@@ -389,10 +355,9 @@ https://svelte.dev/e/props_duplicate -->
       </div>
     </section>
   </div>
-
   <!-- Form Actions -->
   <div class="container mx-auto px-4">
-    <button type="button" onclick={() => ondispatch?.()}> Cancel </button>
+    <button type="button" onclick={() => // ondispatch removed}> Cancel </button>
     <button type="submit" disabled={loading} class="container mx-auto px-4">
       {#if loading}
         Saving...
@@ -402,10 +367,9 @@ https://svelte.dev/e/props_duplicate -->
     </button>
   </div>
 </form>
-
 <style>
   /* @unocss-include */
-  .enhanced-case-form {;
+  .enhanced-case-form {
     max-width: 800px;
     margin: 0 auto;
     background: white;
@@ -454,11 +418,11 @@ https://svelte.dev/e/props_duplicate -->
     font-size: 1rem;
     transition:
       border-color 0.2s,
-      box-shadow 0.2s;
+      box-shadow 0.2;
 }
-  input:focus,
-  select:focus,;
-  textarea:focus {;
+  input: focus
+  select: focus
+  textarea:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -488,9 +452,9 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.875rem;
-    transition: background-color 0.2s;
+    transition: background-color 0.2;
 }
-  .tag-input button:hover {;
+  .tag-input button:hover {
     background: #2563eb;
 }
   .tags-list {
@@ -521,9 +485,9 @@ https://svelte.dev/e/props_duplicate -->
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: background-color 0.2s;
+    transition: background-color 0.2;
 }
-  .tag button:hover {;
+  .tag button:hover {
     background: #d1d5db;
     color: #374151;
 }
@@ -543,9 +507,9 @@ https://svelte.dev/e/props_duplicate -->
     color: #374151;
     cursor: pointer;
     font-size: 1rem;
-    transition: all 0.2s;
+    transition: all 0.2;
 }
-  .form-actions button:hover {;
+  .form-actions button:hover {
     background: #f9fafb;
 }
   .form-actions button.primary {
@@ -557,7 +521,7 @@ https://svelte.dev/e/props_duplicate -->
     background: #2563eb;
     border-color: #2563eb;
 }
-  .form-actions button:disabled {;
+  .form-actions button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
@@ -573,6 +537,4 @@ https://svelte.dev/e/props_duplicate -->
 }
 }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

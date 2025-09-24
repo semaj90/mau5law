@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     noteId?: string;
     title?: string;
@@ -18,25 +17,23 @@
     canEdit?: boolean;
     onSave?: (data: unknown) => void;
   }
-
-  const { 
-    noteId = "", 
-    title = "", 
-    content = "", 
-    markdown = "", 
-    html = "", 
-    contentJson = null, 
-    noteType = "general", 
-    tags = [], 
-    userId = "", 
-    caseId = undefined, 
-    createdAt = new Date(), 
-    isOpen = false, 
-    mode = "view", 
-    canEdit = true, 
-    onSave = undefined 
+  const {
+    noteId = "",
+    title = "",
+    content = "",
+    markdown = "",
+    html = "",
+    contentJson = null,
+    noteType = "general",
+    tags = [],
+    userId = "",
+    caseId = undefined,
+    createdAt = new Date(),
+    isOpen = false,
+    mode = "view",
+    canEdit = true,
+    onSave = undefined
   }: Props = $props();
-
   import { Bookmark, BookmarkCheck, Calendar, Edit3, Eye, Tag, User as UserIcon, X } from "lucide-svelte";
   import { marked } from "marked";
   import { fade, fly } from "svelte/transition";
@@ -45,7 +42,6 @@
     saveNoteForLater,
   } from '$lib/stores/saved-notes';
   import RichTextEditor from "./RichTextEditor.svelte";
-
   // Local state for mutable values that need to change
   let localMode = $state(mode);
   let localTitle = $state(title);
@@ -55,37 +51,18 @@
   let localTags = $state([...tags]);
   let localContentJson = $state(contentJson);
   let localIsOpen = $state(isOpen);
-
   // Props
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
   let isSaved = false;
   let editedContent = content;
-  let editedTitle = title;
+  let editedTitle = titl;
   let editedTags: string[] = [...tags];
   let newTag = "";
-
   // Reactive display HTML from html or markdown
   // TODO: Convert to $derived: displayHtml = html || (markdown ? marked.parse(markdown) : "")
-
   async function handleSaveForLater() {
     try {
       await saveNoteForLater({
-        id: noteId,
+        id: noteId
         title,
         content,
         markdown,
@@ -94,7 +71,7 @@
         noteType,
         tags,
         userId,
-        caseId,;
+        caseId,
       });
       isSaved = true;
       setTimeout(() => (isSaved = false), 2000);
@@ -102,7 +79,6 @@
       console.error("Failed to save note:", error);
     }
   }
-
   async function handleRemoveFromSaved() {
     try {
       await removeSavedNote(noteId);
@@ -111,7 +87,6 @@
       console.error("Failed to remove note:", error);
     }
   }
-
   function addTag() {
     const trimmed = newTag.trim();
     if (trimmed && !editedTags.includes(trimmed)) {
@@ -119,62 +94,53 @@
       newTag = "";
     }
   }
-
   function removeTag(tag: string) {
     editedTags = editedTags.filter((t) => t !== tag);
   }
-
   function handleEditorSave(event: CustomEvent) {
     const {
-      html: newHtml,;
-      markdown: newMarkdown,;
-      json: newJson,;
+      html: newHtml
+      markdown: newMarkdown
+      json: newJson
     } = event.detail;
-
     const updatedNote = {
-      id: noteId,
-      title: editedTitle,
-      content: newMarkdown || newHtml,
-      markdown: newMarkdown,;
-      html: newHtml,
-      contentJson: newJson,
-      noteType,;
-      tags: editedTags,
+      id: noteId
+      title: editedTitle
+      content: newMarkdown || newHtml
+      markdown: newMarkdown
+      html: newHtml
+      contentJson: newJson
+      noteType,
+      tags: editedTags
       userId,
-      caseId,;
+      caseId,
     };
-
     onSave?.(updatedNote);
     localMode = "view";
-
     // Update local data
-    localTitle = editedTitle;
+    localTitle = editedTitl;
     localContent = newMarkdown || newHtml;
-    localMarkdown = newMarkdown;
+    localMarkdown = newMarkdow;
     localHtml = newHtml;
-    localContentJson = newJson;
+    localContentJson = newJso;
     localTags = [...editedTags];
   }
-
   function startEdit() {
     localMode = "edit";
     editedContent = content;
-    editedTitle = title;
+    editedTitle = titl;
     editedTags = [...tags];
   }
-
   function cancelEdit() {
     localMode = "view";
     editedContent = content;
-    editedTitle = title;
+    editedTitle = titl;
     editedTags = [...tags];
   }
-
   function closeModal() {
     localIsOpen = false;
   }
 </script>
-
 {#if localIsOpen}
   <div class="space-y-4" transitionfade={{ duration: 150 }}>
     <div class="space-y-4" transitionfly={{ y: -20, duration: 200 }}>
@@ -192,20 +158,16 @@
               {localTitle || "Untitled Note"}
             </h2>
           {/if}
-
           <div class="space-y-4">
             <Calendar class="space-y-4" />
             {createdAt instanceof Date ? createdAt.toLocaleDateString() : new Date(createdAt).toLocaleDateString()}
-
             {#if userId}
               <UserIcon class="space-y-4" />
               <span class="space-y-4">{userId}</span>
             {/if}
-
             <span class="space-y-4">{noteType}</span>
           </div>
         </div>
-
         <div class="space-y-4">
           {#if canEdit}
             {#if localMode === "view"}
@@ -226,7 +188,6 @@
                 Cancel
               </button>
             {/if}
-
           <button
             type="button"
             class="space-y-4"
@@ -239,7 +200,6 @@
               <Bookmark class="space-y-4" />
             {/if}
           </button>
-
           <button
             type="button"
             class="space-y-4"
@@ -250,12 +210,10 @@
           </button>
         </div>
       </div>
-
       <!-- Tags Section -->
       <div class="space-y-4">
         <div class="space-y-4">
           <Tag class="space-y-4" />
-
           {#if localMode === "edit"}
             {#each editedTags as tag}
               <span class="space-y-4">
@@ -269,7 +227,6 @@
                 </button>
               </span>
             {/each}
-
             <input
               bind:value={newTag}
               onkeydown={(e) => e.key === "Enter" && addTag()}
@@ -283,7 +240,6 @@
           {/if}
         </div>
       </div>
-
       <!-- Content -->
       <div class="space-y-4">
         {#if localMode === "edit"}
@@ -302,7 +258,6 @@
           <div class="space-y-4">No content available</div>
         {/if}
       </div>
-
       <!-- Footer -->
       {#if localMode === "view"}
         <div class="space-y-4">
@@ -313,7 +268,6 @@
               <span>General note</span>
             {/if}
           </div>
-
           <div class="space-y-4">
             <Eye class="space-y-4" />
             <span class="space-y-4">Read-only</span>
@@ -323,4 +277,3 @@
     </div>
   </div>
 {/if}
-

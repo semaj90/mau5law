@@ -10,7 +10,6 @@
     Input
   } from '$lib/components/ui/enhanced-bits';
   import { createLegalChatInterface } from '$lib/components/ui/enhanced-bits/builders/custom-legal-components';
-
   interface ChatMessage {
     id: string;
     sender: 'assistant' | 'detective' | 'system';
@@ -18,14 +17,12 @@
     timestamp: string;
     isTyping?: boolean;
   }
-
   interface SidebarItem {
     icon: string;
     label: string;
     count?: number;
     active?: boolean;
   }
-
   // Gaming-style state
   let messages = $state<ChatMessage[]>([
     {
@@ -42,17 +39,15 @@
     },
     {
       id: '3',
-      sender: 'assistant',;
-      content: 'Hello, Detective! I am 9S, your retro AI investigation assistant. How can',;
+      sender: 'assistant',
+      content: 'Hello, Detective! I am 9S, your retro AI investigation assistant. How can',
       timestamp: '19:02:57';
     }
   ]);
-
   let currentInput = $state('');
   let isTyping = $state(false);
   let systemStatus = $state('Online');
   let currentTime = $state('19:02');
-
   // Sidebar navigation items
   let sidebarItems = $state<SidebarItem[]>([
     { icon: '🏠', label: 'COMMAND CENTER', active: true },
@@ -64,28 +59,22 @@
     { icon: '💻', label: 'TERMINAL', active: false },
     { icon: '⚙️', label: 'SYSTEM CONFIGURATION' }
   ]);
-
   // Enhanced chat builder
   const chatBuilder = createLegalChatInterface({
     practiceArea: 'litigation',
     confidentiality: 'privileged';
   });
-
   let messagesContainer: HTMLElement;
-
   // Update time periodically
   onMount(() => {
     const updateTime = () => {
       const now = new Date();
       currentTime = now.toTimeString().slice(0, 5);
     };
-
     updateTime();
     const interval = setInterval(updateTime, 1000);
-
     return () => clearInterval(interval);
   });
-
   // Auto-scroll to bottom
   $effect(() => {
     if (messagesContainer && messages.length > 0) {
@@ -94,49 +83,42 @@
       }, 100);
     }
   });
-
   async function sendMessage() {
     if (!currentInput.trim()) return;
-
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      sender: 'detective',;
-      content: currentInput,;
+      sender: 'detective',
+      content: currentInput
       timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0');
     };
-
     messages.push(userMessage);
     const input = currentInput;
     currentInput = '';
-
     // Start typing indicator
     isTyping = true;
     const typingMessage: ChatMessage = {
       id: 'typing',
-      sender: 'assistant',;
-      content: '9S is ANALYZING...',;
+      sender: 'assistant',
+      content: '9S is ANALYZING...',
       timestamp: currentTime + ':' + (new Date().getSeconds() + 1).toString().padStart(2, '0'),
       isTyping: true;
     };
     messages.push(typingMessage);
-
     // Simulate AI response
     setTimeout(() => {
       // Remove typing indicator
       messages = messages.filter(m => m.id !== 'typing');
       isTyping = false;
-
       // Add AI response
       const aiResponse: ChatMessage = {
         id: crypto.randomUUID(),
-        sender: 'assistant',;
-        content: generateDetectiveResponse(input),;
+        sender: 'assistant',
+        content: generateDetectiveResponse(input),
         timestamp: currentTime + ':' + (new Date().getSeconds() + 2).toString().padStart(2, '0');
       };
       messages.push(aiResponse);
     }, 2000);
   }
-
   function generateDetectiveResponse(input: string): string {
     const responses = [
       `Analyzing your query: "${input}". Accessing legal database and case precedents...`,
@@ -147,21 +129,18 @@
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }
-
   function selectSidebarItem(index: number) {
     sidebarItems = sidebarItems.map((item, i) => ({
       ...item,
       active: i === index;
     }));
   }
-
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       sendMessage();
     }
   }
 </script>
-
 <div class="yorha-detective-interface">
   <!-- Sidebar Navigation -->
   <div class="sidebar">
@@ -176,7 +155,6 @@
       </div>
       <div class="interface-subtitle">Investigation Interface</div>
     </div>
-
     <nav class="sidebar-nav">
       {#each sidebarItems as item, index}
         <button
@@ -196,7 +174,6 @@
         </button>
       {/each}
     </nav>
-
     <div class="system-status">
       <div class="status-item">
         <span class="status-label">Online</span>
@@ -207,7 +184,6 @@
       </div>
     </div>
   </div>
-
   <!-- Main Content Area -->
   <div class="main-content">
     <!-- Header -->
@@ -216,7 +192,6 @@
         <h1 class="header-title">YORHA COMMAND CENTER</h1>
         <div class="header-subtitle">Detective Interface • Neural Network Active</div>
       </div>
-
       <div class="header-right">
         <div class="search-section">
           <Input
@@ -231,14 +206,12 @@
           </select>
           <Button class="search-btn">🔍</Button>
         </div>
-
         <div class="auth-section">
           <Button class="auth-btn">🔑 LOGIN</Button>
           <Button class="auth-btn">📝 REGISTER</Button>
         </div>
       </div>
     </header>
-
     <!-- AI Chat Interface -->
     <div class="chat-interface">
       <div class="chat-header">
@@ -246,14 +219,12 @@
           <span class="terminal-prompt">></span>
           <span class="title-text">AI CHAT INTERFACE</span>
         </div>
-
         <div class="chat-controls">
           <Button class="control-btn">⭐ TERMINAL</Button>
           <Button class="control-btn active">🤖 AI CHAT</Button>
           <Button class="control-btn">🗑️ CLEAR</Button>
         </div>
       </div>
-
       <div class="chat-body">
         <div class="system-header">
           <div class="system-status-line">
@@ -264,7 +235,6 @@
             YoRHa AI Assistant Online - Detective Support System Active
           </div>
         </div>
-
         <div class="messages-container" bind:this={messagesContainer}>
           {#each messages as message (message.id)}
             <div
@@ -287,7 +257,6 @@
               </div>
             </div>
           {/each}
-
           <!-- User Status -->
           <div class="user-status">
             <div class="user-info">
@@ -298,7 +267,6 @@
             <div class="user-activity">hey</div>
           </div>
         </div>
-
         <div class="chat-input-area">
           <div class="input-container">
             <span class="input-prompt">🕵️</span>
@@ -322,9 +290,8 @@
     </div>
   </div>
 </div>
-
 <style>
-  .yorha-detective-interface {;
+  .yorha-detective-interface {
     display: flex;
     height: 100vh;
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
@@ -332,7 +299,6 @@
     font-family: 'Courier New', monospace;
     overflow: hidden;
   }
-
   /* Sidebar Styles */
   .sidebar {
     width: 250px;
@@ -341,41 +307,34 @@
     display: flex;
     flex-direction: column;
   }
-
   .sidebar-header {
     padding: 1.5rem 1rem;
     border-bottom: 2px solid #555555;
   }
-
   .logo-section {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 0.5rem;
   }
-
   .logo-icon {
     font-size: 1.5rem;
     color: #00ff41;
   }
-
   .logo-text {
     flex: 1;
   }
-
   .logo-title {
     font-size: 1.125rem;
     font-weight: bold;
     color: #ffffff;
     line-height: 1;
   }
-
   .logo-subtitle {
     font-size: 0.75rem;
     color: #cccccc;
     line-height: 1;
   }
-
   .sidebar-toggle {
     background: transparent;
     border: 1px solid #555555;
@@ -383,17 +342,14 @@
     padding: 0.25rem;
     font-size: 0.75rem;
   }
-
   .interface-subtitle {
     font-size: 0.75rem;
     color: #999999;
   }
-
   .sidebar-nav {
     flex: 1;
     padding: 1rem 0;
   }
-
   .nav-item {
     display: flex;
     align-items: center;
@@ -409,27 +365,22 @@
     transition: all 0.2s ease;
     border-left: 3px solid transparent;
   }
-
   .nav-item:hover {
     background: rgba(255, 255, 255, 0.05);
     color: #ffffff;
   }
-
   .nav-item.active {
     background: rgba(0, 255, 65, 0.1);
     border-left-color: #00ff41;
     color: #00ff41;
   }
-
   .nav-icon {
     font-size: 1rem;
   }
-
   .nav-label {
     flex: 1;
     text-align: left;
   }
-
   .nav-count {
     background: #555555;
     color: #ffffff;
@@ -437,29 +388,24 @@
     border-radius: 10px;
     font-size: 0.625rem;
   }
-
   .nav-arrow {
     font-size: 0.75rem;
   }
-
   .system-status {
     padding: 1rem;
     border-top: 1px solid #555555;
     background: rgba(0, 0, 0, 0.3);
   }
-
   .status-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     font-size: 0.625rem;
     color: #999999;
     margin-bottom: 0.25rem;
   }
-
   .status-time {
     color: #00ff41;
   }
-
   /* Main Content Styles */
   .main-content {
     flex: 1;
@@ -467,41 +413,35 @@
     flex-direction: column;
     overflow: hidden;
   }
-
   .main-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 1rem 2rem;
     background: rgba(0, 0, 0, 0.8);
     border-bottom: 2px solid #00ff41;
   }
-
   .header-title {
     font-size: 1.5rem;
     color: #00ff41;
     margin: 0;
     text-shadow: 0 0 10px #00ff41;
   }
-
   .header-subtitle {
     font-size: 0.875rem;
     color: #cccccc;
     margin-top: 0.25rem;
   }
-
   .header-right {
     display: flex;
     align-items: center;
     gap: 1.5rem;
   }
-
   .search-section {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .search-input {
     width: 250px;
     background: rgba(0, 0, 0, 0.5);
@@ -509,7 +449,6 @@
     color: #ffffff;
     font-family: inherit;
   }
-
   .filter-select {
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid #555555;
@@ -518,7 +457,6 @@
     font-family: inherit;
     font-size: 0.875rem;
   }
-
   .search-btn, .auth-btn {
     background: #333333;
     border: 1px solid #555555;
@@ -529,17 +467,14 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-
   .search-btn:hover, .auth-btn:hover {
     border-color: #00ff41;
     box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
   }
-
   .auth-section {
     display: flex;
     gap: 0.5rem;
   }
-
   /* Chat Interface Styles */
   .chat-interface {
     flex: 1;
@@ -551,38 +486,32 @@
     flex-direction: column;
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
   }
-
   .chat-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 1rem 1.5rem;
     background: rgba(0, 255, 65, 0.1);
     border-bottom: 1px solid #00ff41;
   }
-
   .chat-title {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .terminal-prompt {
     color: #00ff41;
     font-size: 1.25rem;
   }
-
   .title-text {
     font-size: 1.125rem;
     color: #ffffff;
     font-weight: bold;
   }
-
   .chat-controls {
     display: flex;
     gap: 0.5rem;
   }
-
   .control-btn {
     background: transparent;
     border: 1px solid #555555;
@@ -593,60 +522,50 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-
   .control-btn:hover, .control-btn.active {
     border-color: #00ff41;
     color: #00ff41;
     background: rgba(0, 255, 65, 0.1);
   }
-
   .chat-body {
     flex: 1;
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
   }
-
   .system-header {
     margin-bottom: 1.5rem;
   }
-
   .system-status-line {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
   }
-
   .status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background: #666666;
   }
-
   .status-dot.active {
     background: #00ff41;
     box-shadow: 0 0 8px #00ff41;
   }
-
   .status-text {
     color: #00ff41;
     font-weight: bold;
   }
-
   .system-description {
     color: #cccccc;
     font-size: 0.875rem;
   }
-
   .messages-container {
     flex: 1;
     overflow-y: auto;
     padding-right: 0.5rem;
     margin-bottom: 1rem;
   }
-
   .message {
     margin-bottom: 1rem;
     padding: 1rem;
@@ -654,41 +573,33 @@
     border: 1px solid #333333;
     border-radius: 4px;
   }
-
   .message.assistant {
     border-left: 3px solid #00ff41;
   }
-
   .message.detective {
     border-left: 3px solid #3b82f6;
   }
-
   .message.typing {
     border-left: 3px solid #ff6b35;
     animation: pulse 1s infinite;
   }
-
   .message-header {
     display: flex;
     align-items: center;
     margin-bottom: 0.5rem;
     font-size: 0.75rem;
   }
-
   .message-sender {
     color: #00ff41;
     font-weight: bold;
   }
-
   .message-time {
     color: #999999;
   }
-
   .message-content {
     color: #ffffff;
     line-height: 1.5;
   }
-
   .user-status {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid #333333;
@@ -696,33 +607,27 @@
     padding: 1rem;
     border-left: 3px solid #3b82f6;
   }
-
   .user-info {
     font-size: 0.75rem;
     color: #3b82f6;
     margin-bottom: 0.5rem;
   }
-
   .user-activity {
     color: #ffffff;
   }
-
   .chat-input-area {
     border-top: 1px solid #333333;
     padding-top: 1rem;
   }
-
   .input-container {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .input-prompt {
     color: #00ff41;
     font-size: 1.125rem;
   }
-
   .chat-input {
     flex: 1;
     background: rgba(0, 0, 0, 0.5);
@@ -731,7 +636,6 @@
     padding: 0.75rem;
     font-family: inherit;
   }
-
   .send-btn {
     background: #00ff41;
     border: none;
@@ -742,37 +646,30 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-
-  .send-btn:hover:not(:disabled) {
+  .send-btn:hover:not(:disabled) {,
     background: #00cc34;
     box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
   }
-
   .send-btn:disabled {
     background: #333333;
     color: #666666;
     cursor: not-allowed;
   }
-
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
   }
-
   /* Scrollbar Styles */
   .messages-container::-webkit-scrollbar {
     width: 8px;
   }
-
   .messages-container::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.3);
   }
-
   .messages-container::-webkit-scrollbar-thumb {
     background: #555555;
     border-radius: 4px;
   }
-
   .messages-container::-webkit-scrollbar-thumb:hover {
     background: #00ff41;
   }

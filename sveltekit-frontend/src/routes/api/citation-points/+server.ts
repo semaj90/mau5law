@@ -1,10 +1,7 @@
 import { URL } from "url"
-
 import { reports } from "$lib/server/db/schema"
-
 import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
-
 // import { citationPoints
 import { and, eq } from "drizzle-orm"
 export const GET: RequestHandler = async ({ url, locals }) => {
@@ -22,7 +19,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const caseId = url.searchParams.get("caseId")
     const limit = parseInt(url.searchParams.get("limit") || "50")
     const offset = parseInt(url.searchParams.get("offset") || "0")
-
     // Return empty results structure for now
     return json({
       citationPoints: [],
@@ -35,7 +31,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json({ error: "Failed to fetch citation points" }, { status: 500 })
   }
 }
-
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
@@ -45,7 +40,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({ error: "Database not available" }, { status: 500 })
     }
     const data = await request.json()
-
     // Validate required fields
     if (!data.text || !data.source) {
       return json({ error: "Text and source are required" }, { status: 400 })
@@ -68,7 +62,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       isBookmarked: data.isBookmarked || false,
       createdBy: locals.user.id
     }
-
     const [newCitation] = await db
       .insert(reports)
       .values({
@@ -79,14 +72,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         caseId: data.caseId
       })
       .returning()
-
     return json(newCitation, { status: 201 })
   } catch (error: any) {
     console.error("Error creating citation point:", error)
     return json({ error: "Failed to create citation point" }, { status: 500 })
   }
 }
-
 export const PUT: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
@@ -96,7 +87,6 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       return json({ error: "Database not available" }, { status: 500 })
     }
     const data = await request.json()
-
     if (!data.id) {
       return json({ error: "Citation point ID is required" }, { status: 400 })
     }
@@ -108,14 +98,12 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
         and(eq(reports.id, data.id), eq(reports.reportType, "citation_point")),
       )
       .limit(1)
-
     if (!existingCitation.length) {
       return json({ error: "Citation point not found" }, { status: 404 })
     }
-    const updateData: Record<string, any> = {
+    const updateData: { [key: string]: any } = {
       updatedAt: new Date().toISOString()
     }
-
     // Only update provided fields
     if (data.text !== undefined) updateData.text = data.text
     if (data.source !== undefined) updateData.source = data.source
@@ -128,23 +116,20 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     if (data.metadata !== undefined) updateData.metadata = data.metadata
     if (data.isBookmarked !== undefined)
       updateData.isBookmarked = data.isBookmarked
-
     const [updatedCitation] = await db
       .update(reports)
       .set({
         content: JSON.stringify(updateData),
         updatedAt: new Date()
       })
-      .where(eq(reports.id, data.id)
+      .where(eq(reports.id, data.id))
       .returning()
-
     return json(updatedCitation)
   } catch (error: any) {
     console.error("Error updating citation point:", error)
     return json({ error: "Failed to update citation point" }, { status: 500 })
   }
 }
-
 export const DELETE: RequestHandler = async ({ url, locals }) => {
   try {
     if (!locals.user) {
@@ -168,13 +153,11 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         ),
       )
       .limit(1)
-
     if (!existingCitation.length) {
       return json({ error: "Citation point not found" }, { status: 404 })
     }
     // Delete the citation point
     await db.delete(reports).where(eq(reports.id, citationId)
-
     return json({ success: true })
   } catch (error: any) {
     console.error("Error deleting citation point:", error)

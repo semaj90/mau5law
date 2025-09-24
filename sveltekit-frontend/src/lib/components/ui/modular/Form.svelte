@@ -1,13 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Form Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
-
   // Svelte 5 props pattern
   interface Props {
     variant?: 'default' | 'card' | 'inline' | 'modal' | 'yorha' | 'legal';
@@ -25,7 +23,6 @@ https://svelte.dev/e/js_parse_error -->
     novalidate?: boolean;
     autocomplete?: 'on' | 'off';
   }
-
   let {
     variant = 'default',
     size = 'default',
@@ -40,9 +37,8 @@ https://svelte.dev/e/js_parse_error -->
     target,
     novalidate = false,
     autocomplete = 'on',
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
   // UnoCSS-based form variants
   const formVariants = cva(
     // Base classes
@@ -64,21 +60,18 @@ https://svelte.dev/e/js_parse_error -->
         }
       },
       defaultVariants: {
-        variant: 'default',;
+        variant: 'default',
         size: 'default';
       }
     }
   );
-
   // Computed class names
   let formClass = $derived(cn(formVariants({ variant, size }), class));
-
   // Handle form submission
   function handleSubmit(event: SubmitEvent) {
     onsubmit?.(event);
   }
 </script>
-
 <form
   class={formClass}
   {method}
@@ -95,14 +88,12 @@ https://svelte.dev/e/js_parse_error -->
       {@render header()}
     </div>
   {/if}
-
   <!-- Form Content -->
   {#if children}
     <div class="form-body">
       {@render children()}
     </div>
   {/if}
-
   <!-- Form Footer -->
   {#if footer}
     <div class="form-footer">
@@ -110,14 +101,13 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </form>
-
 <style>/* YoRHa-specific styling */ :global(.yorha-form input), :global(.yorha-form textarea), :global(.yorha-form select) {
     background-color: rgba(0, 0, 0, 0.8);
     border: 1px solid rgba(212, 175, 55, 0.6);
     color: rgb(212, 175, 55);
     font-family: 'JetBrains Mono', monospace;
   }
-:global(.yorha-form input:focus), :global(.yorha-form textarea:focus), :global(.yorha-form select:focus) {;
+:global(.yorha-form input:focus), :global(.yorha-form textarea:focus), :global(.yorha-form select:focus) {
     border-color: rgb(212, 175, 55);
     box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
   }
@@ -125,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
     color: rgb(29, 78, 216);
     font-weight: 600;
   }
-:global(.legal-form input[required] + label::after), :global(.legal-form textarea[required] + label::after), :global(.legal-form select[required] + label::after) {;
+:global(.legal-form input[required] + label::after), :global(.legal-form textarea[required] + label::after), :global($1) {
     content: ' *';
     color: rgb(239, 68, 68);
   }

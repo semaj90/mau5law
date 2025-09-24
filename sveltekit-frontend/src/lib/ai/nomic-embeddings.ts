@@ -3,15 +3,13 @@
 // - Use this service for all embedding generation in semantic_search, audit, and agent flows
 // - After embedding, upsert to Qdrant and log to todo log/DB as needed
 // - Add error handling and logging for all embedding operations
-// - See qdrant-service.ts for vector DB integration;
+// - See qdrant-service.ts for vector DB integration
 }
-
 export interface DocumentChunk {
   id: string;
   text: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface EmbeddingResult {
   embedding: number[];
   model: string;
@@ -20,13 +18,12 @@ export interface EmbeddingResult {
     [key: string]: unknown;
   };
 }
-
 export class NomicEmbeddingsService {
   /**
    * Embed text using Nomic embeddings
    */;
   async embed(text: string): Promise<EmbeddingResult> {
-    // PRODUCTION: Call Ollama or Nomic API for real embeddings;
+    // PRODUCTION: Call Ollama or Nomic API for real embeddings
     try {
       // TODO: Implement embedding generation with proper API
       // For now, use mock embedding with text-based variation
@@ -34,7 +31,7 @@ export class NomicEmbeddingsService {
       return {
         embedding,
         model: "nomic-embed-text-v1",
-        metadata: {;
+        metadata: {
           timestamp: new Date().toISOString()
         }
       };
@@ -44,13 +41,12 @@ export class NomicEmbeddingsService {
       return {
         embedding: new Array(768).fill(0).map(() => Math.random()),
         model: "nomic-embed-text-v1",
-        metadata: {;
+        metadata: {
           timestamp: new Date().toISOString()
         }
       };
     }
   }
-
   private generateMockEmbedding(text: string): number[] {
     // Generate deterministic embedding based on text content
     const embedding = new Array(768);
@@ -58,23 +54,19 @@ export class NomicEmbeddingsService {
     for (let i = 0; i < text.length; i++) {
       hash = ((hash << 5) - hash + text.charCodeAt(i)) & 0xffffffff;
     }
-    
     for (let i = 0; i < 768; i++) {
       // Create pseudo-random values based on text hash and position
       hash = ((hash * 9301) + 49297) % 233280;
       embedding[i] = (hash / 233280) * 2 - 1; // Normalize to [-1, 1]
     }
-    
     return embedding;
   }
-
   /**
    * Embed and upsert a document to Qdrant for audit/agent pipeline
    * Usage: await nomicEmbeddings.embedAndUpsert(doc)
    */;
   async embedAndUpsert(document: DocumentChunk): Promise<EmbeddingResult> {
     const embeddingResult = await this.embed(document.text);
-
     try {
       // Upsert to Qdrant for semantic search
       const { qdrantService } = await import("./qdrant-service");
@@ -98,7 +90,7 @@ export class NomicEmbeddingsService {
               size: document.metadata?.size || 0,
               mimeType: document.metadata?.mimeType || "text/plain",
               pageCount: document.metadata?.pageCount,
-              wordCount: document.metadata?.wordCount,;
+              wordCount: document.metadata?.wordCount,
               language: document.metadata?.language
             }
           }
@@ -107,12 +99,10 @@ export class NomicEmbeddingsService {
     } catch (error: any) {
       console.warn("Failed to upsert to Qdrant:", error);
     }
-
     // TODO: Log upsert to phase10-todo.log or DB
     // TODO: Optionally trigger agent action after upsert
     return embeddingResult;
   }
 }
-
 // Export singleton instance
 export const nomicEmbeddings = new NomicEmbeddingsService();

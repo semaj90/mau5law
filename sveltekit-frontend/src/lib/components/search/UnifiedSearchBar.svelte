@@ -4,7 +4,6 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, tick } from 'svelte';
   import { goto } from '$app/navigation';
   import Fuse from 'fuse.js';
@@ -21,14 +20,13 @@
     onSearch,
     className = ""
   }: Props = $props();
-
   // Search state
   let searchQuery = $state('');
   let searchResults = $state<SearchResult[]>([]);
   let showDropdown = $state(false);
   let isLoading = $state(false);
   let selectedIndex = $state(-1);
-  // Filter state  
+  // Filter state
   let selectedFilters = $state({
     practiceArea: '',
     documentType: '',
@@ -62,7 +60,6 @@
       content?: string;
     };
   }
-
   // Initialize search services
   $effect(() => {
     (async () => {
@@ -70,7 +67,6 @@ await initializeSearchServices();
     setupKeyboardNavigation();
     })();
   });
-
   async function initializeSearchServices() {
     console.log('🔍 Initializing unified search services...');
     try {
@@ -82,12 +78,12 @@ await initializeSearchServices();
           { name: 'content', weight: 0.3 },
           { name: 'entities', weight: 0.2 },
           { name: 'metadata.practiceArea', weight: 0.1 }
-        ],;
+        ],
         threshold: 0.3,
-        includeScore: true,
-        includeMatches: true,
+        includeScore: true
+        includeMatches: true
         minMatchCharLength: 2,
-        useExtendedSearch: true,
+        useExtendedSearch: true
         ignoreLocation: true;
       };
       fuseIndex = new Fuse(evidenceData, fuseOptions);
@@ -96,11 +92,10 @@ await initializeSearchServices();
       console.error('❌ Search service initialization failed:', error);
     }
   }
-
   async function loadEvidenceIndex(): Promise<any[]> {
     // Load evidence index from multiple sources
     const response = await fetch('/api/search/index', {
-      method: 'GET',;
+      method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     });
     if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -111,8 +106,8 @@ await initializeSearchServices();
       {
         id: 'ev_001',
         title: 'Contract Evidence - Service Level Agreement',
-        content: 'Signed SLA document with performance metrics and breach remedies',;
-        entities: ['SLA', 'Performance Metrics', 'Contract'],;
+        content: 'Signed SLA document with performance metrics and breach remedies',
+        entities: ['SLA', 'Performance Metrics', 'Contract'],
         metadata: {
           practiceArea: 'Contract Law',
           documentType: 'PDF',
@@ -122,10 +117,10 @@ await initializeSearchServices();
         }
       },
       {
-        id: 'ev_002', 
+        id: 'ev_002',
         title: 'Audio Recording - Client Interview',
-        content: 'Recorded client statement regarding contract dispute',;
-        entities: ['Client Statement', 'Contract Dispute', 'Interview'],;
+        content: 'Recorded client statement regarding contract dispute',
+        entities: ['Client Statement', 'Contract Dispute', 'Interview'],
         metadata: {
           practiceArea: 'Contract Law',
           documentType: 'Audio',
@@ -136,11 +131,11 @@ await initializeSearchServices();
       },
       {
         id: 'ev_003',
-        title: 'Email Chain - Breach Notification',;
-        content: 'Email correspondence regarding contract breach and remedial actions',;
-        entities: ['Email', 'Contract Breach', 'Notification'],;
+        title: 'Email Chain - Breach Notification',
+        content: 'Email correspondence regarding contract breach and remedial actions',
+        entities: ['Email', 'Contract Breach', 'Notification'],
         metadata: {
-          practiceArea: 'Contract Law', 
+          practiceArea: 'Contract Law',
           documentType: 'Email',
           caseId: 'case_124',
           uploadDate: '2024-01-17',
@@ -149,7 +144,6 @@ await initializeSearchServices();
       }
     ];
   }
-
   // Unified search across all data stores
   async function performSearch(query: string) {
     if (!query.trim() || query.length < 2) {
@@ -157,7 +151,6 @@ await initializeSearchServices();
       showDropdown = false;
       return;
     }
-
     // Check cache first
     const cacheKey = `${query}_${JSON.stringify(selectedFilters)}`;
     if (searchCache.has(cacheKey)) {
@@ -165,26 +158,22 @@ await initializeSearchServices();
       showDropdown = true;
       return;
     }
-
     isLoading = true;
     try {
       // Multi-source search strategy
       const [fuseResults, vectorResults, fullTextResults] = await Promise.all([
         performFuseSearch(query),
-        performVectorSearch(query), 
+        performVectorSearch(query),
         performFullTextSearch(query)
       ]);
-
       // Merge and deduplicate results
       const allResults = [...fuseResults, ...vectorResults, ...fullTextResults];
       const uniqueResults = deduplicateResults(allResults);
       const rankedResults = rankResults(uniqueResults, query);
-
       searchResults = rankedResults.slice(0, 10);
       searchCache.set(cacheKey, searchResults);
       showDropdown = searchResults.length > 0;
       onSearch?.(searchResults);
-
     } catch (error) {
       console.error('Search failed:', error);
       searchResults = [];
@@ -192,45 +181,40 @@ await initializeSearchServices();
       isLoading = false;
     }
   }
-
   // Fuse.js fuzzy search
   async function performFuseSearch(query: string): Promise<SearchResult[]> {
     if (!fuseIndex) return [];
-
     let searchQuery = query;
     if (selectedFilters.practiceArea) {
       searchQuery += ` practiceArea:"${selectedFilters.practiceArea}"`;
     }
-
     const results = fuseIndex.search(searchQuery);
     return results.map(result => ({
-      id: result.item.id,;
+      id: result.item.id,
       title: (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.title,
       content: (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.content.substring(0, 150) + '...',
       source: 'minio' as const,
       similarity: 1 - ((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).score || 0),
       confidence: 0.8,
       metadata: (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.metadata,
-      highlight: {;
+      highlight: {
         title: highlightMatches((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.title, (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).matches?.filter(m => m.key === 'title')),
         content: highlightMatches((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.content, (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).matches?.filter(m => m.key === 'content'))
       }
     }));
   }
-
   // Vector search via pgvector/Qdrant
   async function performVectorSearch(query: string): Promise<SearchResult[]> {
     try {
       const response = await fetch('/api/search/vector', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          query, 
-          filters: selectedFilters,;
+        body: JSON.stringify({
+          query,
+          filters: selectedFilters
           limit: 5 ;
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const results = await (response as { ok?: unknown; json?: unknown }).json();
         return results.map((r: unknown) => ({
@@ -244,20 +228,18 @@ await initializeSearchServices();
     }
     return [];
   }
-
   // Full-text search via PostgreSQL + Drizzle
   async function performFullTextSearch(query: string): Promise<SearchResult[]> {
     try {
       const response = await fetch('/api/search/fulltext', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query,
-          filters: selectedFilters,;
+          filters: selectedFilters
           limit: 5;
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const results = await (response as { ok?: unknown; json?: unknown }).json();
         return results.map((r: unknown) => ({
@@ -271,7 +253,6 @@ await initializeSearchServices();
     }
     return [];
   }
-
   // Utility functions
   function deduplicateResults(results: SearchResult[]): SearchResult[] {
     const seen = new Map();
@@ -288,18 +269,16 @@ await initializeSearchServices();
       return true;
     });
   }
-
   function rankResults(results: SearchResult[], query: string): SearchResult[] {
     return results.sort((a, b) => {
       // Boost exact matches in title
       const aExactTitle = a.title.toLowerCase().includes(query.toLowerCase()) ? 0.2 : 0;
       const bExactTitle = b.title.toLowerCase().includes(query.toLowerCase()) ? 0.2 : 0;
-      const aScore = a.similarity + aExactTitle;
-      const bScore = b.similarity + bExactTitle;
-      return bScore - aScore;
+      const aScore = a.similarity + aExactTitl;
+      const bScore = b.similarity + bExactTitl;
+      return bScore - aScor;
     });
   }
-
   function highlightMatches(text: string, matches?: unknown[]): string {
     if (!matches?.length) return text;
     let highlighted = text;
@@ -315,22 +294,18 @@ await initializeSearchServices();
     });
     return highlighted;
   }
-
   // Event handlers
   function handleInput() {
     selectedIndex = -1;
     performSearch(searchQuery);
   }
-
   function handleResultClick(result: SearchResult) {
-    searchQuery = (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).title;
+    searchQuery = (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).titl;
     showDropdown = false;
     goto(`/evidence/${(result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).id}`);
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (!showDropdown || searchResults.length === 0) return;
-
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault();
@@ -355,7 +330,6 @@ await initializeSearchServices();
         break;
     }
   }
-
   function setupKeyboardNavigation() {
     document.addEventListener('click', (event) => {
       if (!dropdownContainer?.contains(event.target as Node)) {
@@ -364,7 +338,6 @@ await initializeSearchServices();
       }
     });
   }
-
   // Source icon mapping
   function getSourceIcon(source: string): string {
     switch (source) {
@@ -375,7 +348,6 @@ await initializeSearchServices();
       default: return '📄';
     }
   }
-
   function getSourceLabel(source: string): string {
     switch (source) {
       case 'postgresql': return 'Database';
@@ -386,7 +358,6 @@ await initializeSearchServices();
     }
   }
 </script>
-
 <!-- HTML5 Search with UnoCSS styling -->
 <div class="relative w-full max-w-2xl {className}" bind:this={dropdownContainer}>
   <!-- Main Search Input -->
@@ -400,7 +371,6 @@ await initializeSearchServices();
         </svg>
       {/if}
     </div>
-    
     <input
       bind:this={searchInput};
       bind:value={searchQuery}
@@ -413,7 +383,6 @@ await initializeSearchServices();
       onfocus={() => searchResults.length > 0 && (showDropdown = true)}
       class="w-full pl-10 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm transition-all duration-200"
     />
-    
     <!-- Clear button -->
     {#if searchQuery}
       <button
@@ -426,7 +395,6 @@ await initializeSearchServices();
       </button>
     {/if}
   </div>
-
   <!-- Advanced Filters -->
   {#if showFilters}
     <div class="mt-2 flex flex-wrap gap-2">
@@ -437,7 +405,6 @@ await initializeSearchServices();
         <option value="Corporate Law">Corporate Law</option>
         <option value="Family Law">Family Law</option>
       </select>
-      
       <select bind:value={selectedFilters.documentType} class="px-2 py-1 text-xs border rounded bg-white">
         <option value="">All Types</option>
         <option value="PDF">PDF</option>
@@ -446,7 +413,6 @@ await initializeSearchServices();
         <option value="Image">Image</option>
         <option value="Email">Email</option>
       </select>
-      
       <select bind:value={selectedFilters.dateRange} class="px-2 py-1 text-xs border rounded bg-white">
         <option value="">Any Date</option>
         <option value="today">Today</option>
@@ -454,12 +420,11 @@ await initializeSearchServices();
         <option value="month">This Month</option>
         <option value="year">This Year</option>
       </select>
-      
       <div class="flex items-center gap-1">
-        <label class="text-xs text-gray-600" for="confidence">Confidence:</label><input id="confidence" 
-          type="range" 
-          min="0" 
-          max="1" 
+        <label class="text-xs text-gray-600" for="confidence">Confidence:</label><input id="confidence"
+          type="range"
+          min="0"
+          max="1"
           step="0.1"
           bind:value={selectedFilters.confidenceMin}
           class="w-16 h-1"
@@ -468,7 +433,6 @@ await initializeSearchServices();
       </div>
     </div>
   {/if}
-
   <!-- Search Results Dropdown -->
   {#if showDropdown && searchResults.length > 0}
     <div class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto">
@@ -489,11 +453,9 @@ await initializeSearchServices();
                   <span class="text-xs text-gray-500">{getSourceLabel((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).source)}</span>
                 </div>
               </div>
-              
               <p class="text-xs text-gray-600 line-clamp-2">
                 {@html (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).highlight?.content || (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).content}
               </p>
-              
               {#if (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).metadata.entities?.length}
                 <div class="flex flex-wrap gap-1 mt-2">
                   {#each (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).metadata.entities.slice(0, 3) as entity}
@@ -502,7 +464,6 @@ await initializeSearchServices();
                 </div>
               {/if}
             </div>
-            
             <div class="text-right">
               <div class="text-xs text-gray-500 mb-1">
                 {((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).similarity * 100).toFixed(0)}% match
@@ -514,7 +475,6 @@ await initializeSearchServices();
           </div>
         </div>
       {/each}
-      
       <!-- View all results -->
       <div class="px-4 py-3 border-t bg-gray-50">
         <button
@@ -526,7 +486,6 @@ await initializeSearchServices();
       </div>
     </div>
   {/if}
-
   <!-- No results message -->
   {#if showDropdown && searchResults.length === 0 && searchQuery && !isLoading}
     <div class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-4">
@@ -545,10 +504,9 @@ await initializeSearchServices();
     </div>
   {/if}
 </div>
-
 <!-- UnoCSS utilities for custom styling -->
 <style>
-  .line-clamp-2 {;
+  .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

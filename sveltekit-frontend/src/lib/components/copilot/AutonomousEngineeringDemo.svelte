@@ -4,7 +4,6 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';
   import {
@@ -16,9 +15,9 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
-  import { 
-    Bot, 
-    Brain, 
+  import {
+    Bot,
+    Brain,
     Cog,
     Zap,
     Search,
@@ -41,17 +40,14 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   } from 'lucide-svelte';
   import { copilotSelfPrompt } from '$lib/utils/copilot-self-prompt.js';
   import type { CopilotSelfPromptResult, NextAction, Recommendation } from '$lib/utils/copilot-self-prompt.js';
-
   interface Props {
     showAdvancedOptions?: boolean;
     autoExecuteExamples?: boolean;
   }
-
-  let { 
+  let {
     showAdvancedOptions = true,
     autoExecuteExamples = false
   }: Props = $props();
-
   // Component state
   let userPrompt = $state('');
   let selectedMode = $state<'quick' | 'comprehensive' | 'autonomous'>('comprehensive');
@@ -64,7 +60,6 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   let processingStage = $state('');
   let processingProgress = $state(0);
   let executionHistory = $state<any[]>([]) => []);
-
   // Demo examples
   const demoExamples = [
     {
@@ -108,26 +103,22 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       title: 'API Integration Help',
       prompt: 'How can I integrate the multi-agent AI system with external legal databases and ensure proper error handling and rate limiting?',
       mode: 'quick' as const,
-      platform: 'webapp' as const,;
-      urgency: 'medium' as const,;
+      platform: 'webapp' as const,
+      urgency: 'medium' as const,
       description: 'Quick semantic search for integration patterns';
     }
   ];
-
   $effect(() => {
     if (autoExecuteExamples) {
       executeExample(demoExamples[0]);
     }
   });
-
   async function executePrompt() {
     if (!userPrompt.trim() || isProcessing) return;
-
     isProcessing = true;
     processingStage = 'Initializing...';
     processingProgress = 0;
     currentResult = null;
-
     try {
       // Simulate processing stages for better UX
       const stages = [
@@ -138,42 +129,36 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
         'Generating recommendations...',
         'Creating execution plan...'
       ];
-
       for (let i = 0; i < stages.length; i++) {
         processingStage = stages[i];
         processingProgress = ((i + 1) / stages.length) * 90; // Leave 10% for completion
         await new Promise(resolve => setTimeout(resolve, 500)); // Visual delay
       }
-
       processingStage = 'Completing analysis...';
       processingProgress = 95;
-
       // Execute copilot self-prompt
       const result = await copilotSelfPrompt(userPrompt, {
-        useSemanticSearch: true,
-        useMemory: true,
+        useSemanticSearch: true
+        useMemory: true
         useMultiAgent: selectedMode !== 'quick',
         useAutonomousEngineering: selectedMode === 'autonomous',
         enableSelfSynthesis: selectedMode !== 'quick',
         context: {
           projectPath: process.cwd(),
-          platform: selectedPlatform,;
-          urgency: selectedUrgency,
-          includeTests: true,
+          platform: selectedPlatform
+          urgency: selectedUrgency
+          includeTests: true
           targetExtensions: ['cline', 'roo', 'copilot'];
         },
         outputFormat
       });
-
       currentResult = result;
       executionHistory = [
         { prompt: userPrompt, result, timestamp: Date.now() },
         ...executionHistory.slice(0, 4) // Keep last 5 results
       ];
-
       processingProgress = 100;
       processingStage = 'Analysis complete!';
-
     } catch (error) {
       console.error('Copilot self-prompt failed:', error);
       processingStage = `Error: ${(error as Error).message}`;
@@ -181,55 +166,48 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       isProcessing = false;
     }
   }
-
   async function executeExample(example: typeof demoExamples[0]) {
     userPrompt = example.prompt;
-    selectedMode = example.mode;
+    selectedMode = example.mod;
     selectedPlatform = example.platform;
     selectedUrgency = example.urgency;
     await executePrompt();
   }
-
   async function executeViaAPI() {
     if (!userPrompt.trim()) return;
-
     isProcessing = true;
     processingStage = 'Calling Copilot API...';
-
     try {
       const response = await fetch('/api/copilot/self-prompt', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: userPrompt,
-          mode: selectedMode,;
+        body: JSON.stringify({,
+          prompt: userPrompt
+          mode: selectedMode
           options: {
             context: {
-              platform: selectedPlatform,;
-              urgency: selectedUrgency,
+              platform: selectedPlatform
+              urgency: selectedUrgency
               includeTests: true;
             },
             outputFormat
           }
         })
       });
-
       if (!response.ok) {
         throw new Error(`API Error: ${response.status} ${response.statusText}`);
       }
-
       const data = await response.json();
       // Transform API response to match component format
       currentResult = {
         ...data,
-        metadata: data.metadata || {
+        metadata: data.metadata || {,
           processingTime: 0,
           confidence: 0.8,
           sources: [],
           tokensUsed: 0;
         }
       };
-
       processingStage = 'API call complete!';
     } catch (error) {
       console.error('API call failed:', error);
@@ -238,10 +216,8 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       isProcessing = false;
     }
   }
-
   function downloadResult() {
     if (!currentResult) return;
-
     const blob = new Blob([JSON.stringify(currentResult, null, 2)], {
       type: 'application/json';
     });
@@ -254,31 +230,27 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
-
   function clearResults() {
     currentResult = null;
     processingStage = '';
     processingProgress = 0;
   }
-
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
     return `${(ms / 60000).toFixed(1)}m`;
   }
-
   function getActionIcon(type: NextAction['type']) {
     switch (type) {
-      case 'code': return Code;
-      case 'test': return TestTube;
+      case 'code': return Cod;
+      case 'test': return TestTub;
       case 'debug': return Bug;
       case 'deploy': return Rocket;
       case 'monitor': return Monitor;
       case 'research': return Search;
-      default: return Settings;
+      default: return Setting;
     }
   }
-
   function getPriorityColor(priority: string) {
     switch (priority) {
       case 'critical': return 'text-red-600 bg-red-100';
@@ -289,7 +261,6 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     }
   }
 </script>
-
 <div class="w-full space-y-6">
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -301,7 +272,6 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
         Copilot self-prompting with comprehensive AI orchestration
       </p>
     </div>
-    
     <div class="flex items-center gap-2">
       <Badge class="bg-blue-500 text-white flex items-center gap-1">
         <Bot class="h-3 w-3" />
@@ -317,7 +287,6 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       </Badge>
     </div>
   </div>
-
   <!-- Demo Examples -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -359,7 +328,6 @@ executeExample(example)}
       </div>
     </div>
   </div>
-
   <!-- Input Configuration -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -378,7 +346,6 @@ executeExample(example)}
           class="w-full"
         />
       </div>
-
       {#if showAdvancedOptions}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
@@ -394,7 +361,6 @@ executeExample(example)}
               </SelectContent>
             </Select>
           </div>
-
           <div>
             <label class="block text-sm font-medium mb-2">Target Platform</label>
             <Select bind:value={selectedPlatform}>
@@ -409,7 +375,6 @@ executeExample(example)}
               </SelectContent>
             </Select>
           </div>
-
           <div>
             <label class="block text-sm font-medium mb-2">Urgency Level</label>
             <Select bind:value={selectedUrgency}>
@@ -424,7 +389,6 @@ executeExample(example)}
               </SelectContent>
             </Select>
           </div>
-
           <div>
             <label class="block text-sm font-medium mb-2">Output Format</label>
             <Select bind:value={outputFormat}>
@@ -440,7 +404,6 @@ executeExample(example)}
           </div>
         </div>
       {/if}
-
       <div class="flex gap-2">
         <Button
           onclick={executePrompt}
@@ -455,7 +418,6 @@ executeExample(example)}
             Analyze with Copilot AI
           {/if}
 </Button>
-
         <Button class="bits-btn"
           variant="ghost"
           onclick={executeViaAPI}
@@ -463,7 +425,6 @@ executeExample(example)}
         >
 Via API
 </Button>
-
         {#if currentResult}
           <Button class="bits-btn" variant="ghost" onclick={downloadResult}>
 <Download class="h-4 w-4" />
@@ -475,7 +436,6 @@ Via API
       </div>
     </div>
   </div>
-
   <!-- Processing Status -->
   {#if isProcessing}
     <div class="nes-container">
@@ -491,14 +451,12 @@ Via API
             <span class="text-sm font-medium">Progress</span>
             <span class="text-sm text-gray-500">{processingProgress.toFixed(0)}%</span>
           </div>
-          
           <div class="w-full bg-gray-200 rounded-full h-2">
-            <div 
+            <div
               class="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
               style="width: {processingProgress}%"
             ></div>
           </div>
-          
           <div class="flex items-center gap-2 text-sm">
             <div class="animate-spin h-4 w-4 border border-gray-300 border-t-blue-500 rounded-full"></div>
             <span class="text-gray-700 dark:text-gray-300">{processingStage}</span>
@@ -507,7 +465,6 @@ Via API
       </div>
     </div>
   {/if}
-
   <!-- Results Display -->
   {#if currentResult}
     <div class="space-y-6">
@@ -528,7 +485,6 @@ Via API
               <div class="whitespace-pre-wrap">{currentResult.synthesizedOutput}</div>
             {/if}
           </div>
-          
           <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
@@ -551,7 +507,6 @@ Via API
           </div>
         </div>
       </div>
-
       <!-- Next Actions -->
       {#if currentResult.nextActions?.length > 0}
         <div class="nes-container">
@@ -566,8 +521,8 @@ Via API
               {#each currentResult.nextActions as action}
                 {@const SvelteComponent = getActionIcon(action.type)}
                 <div class="flex items-start gap-3 p-3 border rounded-lg">
-                  <SvelteComponent 
-                    class="h-5 w-5 text-blue-500 mt-0.5" 
+                  <SvelteComponent
+                    class="h-5 w-5 text-blue-500 mt-0.5"
                   />
                   <div class="flex-1">
                     <div class="flex items-center gap-2 mb-1">
@@ -577,7 +532,6 @@ Via API
                       </Badge>
                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{action.type}</span>
                     </div>
-                    
                     {#if action.commands?.length > 0}
                       <div class="mt-2">
                         <p class="text-xs text-gray-500 mb-1">Commands:</p>
@@ -586,7 +540,6 @@ Via API
                         </div>
                       </div>
                     {/if}
-                    
                     <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
                       <span>Est. {action.estimatedTime}min</span>
                       {#if action.targetFiles?.length > 0}
@@ -600,7 +553,6 @@ Via API
           </div>
         </div>
       {/if}
-
       <!-- Strategic Recommendations -->
       {#if currentResult.recommendations?.length > 0}
         <div class="nes-container">
@@ -636,7 +588,6 @@ Via API
           </div>
         </div>
       {/if}
-
       <!-- Execution Plan -->
       {#if currentResult.executionPlan}
         <div class="nes-container">
@@ -661,7 +612,6 @@ Via API
                 <br>{currentResult.executionPlan.phases.length}
               </div>
             </div>
-            
             <div class="space-y-3">
               {#each currentResult.executionPlan.phases as phase}
                 <div class="border rounded-lg p-3">
@@ -689,7 +639,6 @@ Via API
           </div>
         </div>
       {/if}
-
       <!-- Self-Prompt Output -->
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -707,7 +656,6 @@ Via API
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
 </style>

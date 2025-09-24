@@ -1,7 +1,6 @@
 <!--
   N64 Card Component
   Advanced 3D card container with depth layering, texture filtering, and atmospheric effects
-
   Features:
   - True 3D perspective transformations with depth layering
   - Advanced texture filtering and anti-aliasing
@@ -12,18 +11,15 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from "svelte";
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
-
   interface Props extends GamingComponentProps {
     // Card specific props
     padding?: 'none' | 'small' | 'medium' | 'large' | 'xl';
     elevation?: number; // 3D depth in pixels
     clickable?: boolean;
     hoverable?: boolean;
-
     // N64-specific styling
     meshComplexity?: 'low' | 'medium' | 'high' | 'ultra';
     materialType?: 'basic' | 'phong' | 'pbr';
@@ -33,27 +29,23 @@
     enableLighting?: boolean;
     enableReflections?: boolean;
     enableAtmosphere?: boolean;
-
     // 3D transformations
     rotationX?: number;
     rotationY?: number;
     rotationZ?: number;
     perspective?: number;
     layerDepth?: number;
-
     // Advanced effects
     enableParticles?: boolean;
     glowIntensity?: number;
     enableSpatialAudio?: boolean;
     enableDepthShadows?: boolean;
-
     // Content slots
     header?: unknown;
     footer?: unknown;
     children?: unknown;
     class?: string;
   }
-
   let {
     era = 'n64',
     variant = 'primary',
@@ -62,12 +54,10 @@
     loading = false,
     animationStyle = 'smooth',
     renderOptions,
-
     padding = 'medium',
     elevation = 12,
     clickable = false,
     hoverable = true,
-
     meshComplexity = 'medium',
     materialType = 'phong',
     enableTextureFiltering = true,
@@ -76,30 +66,23 @@
     enableLighting = true,
     enableReflections = false,
     enableAtmosphere = true,
-
     rotationX = 0,
     rotationY = 0,
     rotationZ = 0,
     perspective = 1000,
     layerDepth = 8,
-
     enableParticles = false,
     glowIntensity = 0.4,
     enableSpatialAudio = true,
     enableDepthShadows = true,
-
     header,
     footer,
     children,
-
     onClick,
     onHover,
     onFocus,
     class: className = '';
   }: Props = $props();
-
-  
-
   let isHovered = $state(false);
   let isFocused = $state(false);
   let isPressed = $state(false);
@@ -107,7 +90,6 @@
   let mouseY = $state(0);
   let cardElement = $state<HTMLElement | null>(null);
   let audioContext = $state<AudioContext | null>(null);
-
   // Default to balanced N64 rendering options
   const effectiveRenderOptions: N64RenderingOptions = {
     ...N64_TEXTURE_PRESETS.balanced,
@@ -116,119 +98,95 @@
     enableFog,
     ...renderOptions
   };
-
   // Create spatial audio feedback
   const playCardSound = async (frequency: number, duration: number = 0.2) => {
     if (!enableSpatialAudio) return;
-
     try {
       if (!audioContext) {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
       }
-
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
       const pannerNode = audioContext.createPanner();
       const reverbNode = audioContext.createConvolver();
-
       // Configure 3D spatial audio
       pannerNode.panningModel = 'HRTF';
       pannerNode.positionX.setValueAtTime(mouseX / window.innerWidth - 0.5, audioContext.currentTime);
       pannerNode.positionY.setValueAtTime(mouseY / window.innerHeight - 0.5, audioContext.currentTime);
       pannerNode.positionZ.setValueAtTime(-elevation / 100, audioContext.currentTime);
-
       // Create reverb for atmospheric depth
       const impulseLength = audioContext.sampleRate * 0.3;
       const impulse = audioContext.createBuffer(2, impulseLength, audioContext.sampleRate);
       const impulseL = impulse.getChannelData(0);
       const impulseR = impulse.getChannelData(1);
-
       for (let i = 0; i < impulseLength; i++) {
         const decay = Math.pow(1 - i / impulseLength, 2);
         impulseL[i] = (Math.random() * 2 - 1) * decay * 0.2;
         impulseR[i] = (Math.random() * 2 - 1) * decay * 0.2;
       }
-      reverbNode.buffer = impulse;
-
+      reverbNode.buffer = impul;
       // Connect audio chain
       oscillator.connect(pannerNode);
       pannerNode.connect(reverbNode);
       reverbNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
-
       // Rich harmonic content for depth
       oscillator.type = 'sawtooth';
       oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
       oscillator.frequency.exponentialRampToValueAtTime(frequency * 0.8, audioContext.currentTime + duration);
-
       gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-
       oscillator.start();
       oscillator.stop(audioContext.currentTime + duration);
-
     } catch (error) {
       console.warn('Could not play card sound:', error);
     }
   };
-
   const handleMouseMove = (event: MouseEvent) => {
     if (!cardElement || disabled) return;
-
     const rect = cardElement.getBoundingClientRect();
     mouseX = event.clientX;
     mouseY = event.clientY;
-
     // Calculate relative position for 3D tilt
     const relativeX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     const relativeY = ((event.clientY - rect.top) / rect.height) * 2 - 1;
   };
-
   const handleClick = async () => {
     if (!clickable || disabled || loading) return;
-
     isPressed = true;
     await playCardSound(440, 0.3);
-
     setTimeout(() => {
       isPressed = false;
     }, 200);
-
     onClick?.();
-    ondispatch?.();
+    // ondispatch removed;
   };
-
   const handleHover = () => {
     if (disabled || !hoverable) return;
     isHovered = true;
     playCardSound(550, 0.15);
     onHover?.();
-    ondispatch?.();
+    // ondispatch removed;
   };
-
   const handleUnhover = () => {
     isHovered = false;
   };
-
   const handleFocus = () => {
     if (disabled) return;
     isFocused = true;
     playCardSound(660, 0.2);
     onFocus?.();
-    ondispatch?.();
+    // ondispatch removed;
   };
-
   const handleBlur = () => {
     isFocused = false;
   };
-
   const handleKeyDown = (event: KeyboardEvent) => {
     if (clickable && (event.key === 'Enter' || event.key === ' ')) {
       event.preventDefault();
       handleClick();
     }
   };
-
   // Get material styles based on variant and material type
   const getMaterialStyles = (variant: string, material: string) => {
     const baseColors = {
@@ -236,12 +194,10 @@
       secondary: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748', accent: '#6c757d' },
       success: { base: '#2d5016', highlight: '#38a169', shadow: '#1a365d', accent: '#28a745' },
       warning: { base: '#744210', highlight: '#d69e2e', shadow: '#452f06', accent: '#ffc107' },
-      error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', accent: '#dc3545' },;
+      error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', accent: '#dc3545' },
       info: { base: '#2a4365', highlight: '#3182ce', shadow: '#1a202c', accent: '#17a2b8' }
     };
-
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
-
     const materialMap = {
       basic: {
         background: colors.base,
@@ -261,7 +217,7 @@
           0 ${elevation * 2}px ${elevation * 2}px rgba(0,0,0,0.4)
         `
       },
-      pbr: {;
+      pbr: {
         background: `
           linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 30%, ${colors.shadow} 70%, ${colors.base} 100%),
           radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 50%)
@@ -276,37 +232,30 @@
         `
       }
     };
-
     return materialMap[material as keyof typeof materialMap] || materialMap.phong;
   };
-
   const getPaddingStyles = (padding: string) => {
     const paddingMap = {
       none: '0',
       small: '12px',
-      medium: '20px',;
-      large: '28px',;
+      medium: '20px',
+      large: '28px',
       xl: '36px';
     };
     return paddingMap[padding as keyof typeof paddingMap] || paddingMap.medium;
   };
-
   // Generate texture filtering CSS classes
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
-
     if (effectiveRenderOptions.textureQuality === 'ultra') {
       classes.push('texture-ultra');
     }
-
     if (effectiveRenderOptions.enableBilinearFiltering) {
       classes.push('filtering-bilinear');
     }
-
     if (effectiveRenderOptions.enableTrilinearFiltering) {
       classes.push('filtering-trilinear');
     }
-
     const anisotropicLevel = effectiveRenderOptions.anisotropicLevel || 1;
     if (anisotropicLevel >= 16) {
       classes.push('anisotropic-16x');
@@ -315,17 +264,14 @@
     } else if (anisotropicLevel >= 4) {
       classes.push('anisotropic-4x');
     }
-
     return classes.join(' ');
   };
-
   // Dynamic 3D transformations based on interaction state
   let dynamicRotationX = $derived(rotationX + (isHovered ? mouseY * 0.05 : 0) + (isPressed ? 2 : 0));
   let dynamicRotationY = $derived(rotationY + (isHovered ? mouseX * 0.05 : 0));
   let dynamicRotationZ = $derived(rotationZ);
   let dynamicScale = $derived(isPressed ? 0.98 : isHovered ? 1.02 : 1);
   let dynamicElevation = $derived(elevation + (isHovered ? layerDepth : 0) + (isFocused ? layerDepth / 2 : 0));
-
   let materialStyles = $derived(getMaterialStyles(variant, materialType));
   let paddingStyle = $derived(getPaddingStyles(padding));
   let transform3D = $derived(`
@@ -335,7 +281,6 @@
     rotateZ(${dynamicRotationZ}deg)
     scale(${dynamicScale})
   `);
-
   $effect(() => {
     // Set up intersection observer for performance optimization
     const observer = new IntersectionObserver(
@@ -353,17 +298,14 @@
       },
       { threshold: 0.1 }
     );
-
     if (cardElement) {
       observer.observe(cardElement);
     }
-
     return () => {
       observer.disconnect();
     };
   });
 </script>
-
 <div
   bind:this={cardElement}
   role={clickable ? 'button' : 'region'}
@@ -376,14 +318,14 @@
   onblur={handleBlur}
   onkeydown={handleKeyDown}
   class="n64-nier-bits-card {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
-  class:clickable
+  class: clickable
   class:hoverable
-  class:disabled
+  class: disabled
   class:loading;
   class:hovered={isHovered}
   class:focused={isFocused}
   class:pressed={isPressed}
-  style=";
+  style="
     --material-bg: {materialStyles.background};
     --material-border: {materialStyles.borderColor};
     --material-shadow: {materialStyles.boxShadow};
@@ -402,7 +344,6 @@
       {@render header()}
     </div>
   {/if}
-
   <div class="nier-bits-yorha-panel-content">
     {#if loading}
       <div class="loading-overlay">
@@ -413,30 +354,24 @@
       {@render children?.()}
     {/if}
   </div>
-
   {#if footer}
     <div class="nier-bits-yorha-panel-content">
       {@render footer()}
     </div>
   {/if}
-
   {#if enableLighting}
     <div class="lighting-overlay"></div>
   {/if}
-
   {#if enableReflections}
     <div class="reflection-overlay"></div>
   {/if}
-
   {#if enableAtmosphere}
     <div class="atmosphere-overlay"></div>
   {/if}
-
   {#if enableDepthShadows}
     <div class="depth-shadow"></div>
   {/if}
 </div>
-
 <style>
   .n64-card {
 /* Base N64 card styling */ font-family: 'Rajdhani', 'Arial', sans-serif;
@@ -456,7 +391,6 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
 /* Advanced shadows and lighting */ box-shadow: var(--material-shadow);
-
     transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
 /* Remove default styles */ -webkit-appearance: none;
     -moz-appearance: none;
@@ -468,7 +402,6 @@
 /* Clickable cards */ .n64-card.clickable {
     cursor: pointer;
   }
-
   .n64-card.clickable:focus-visible {
     outline: 3px solid rgba(74, 144, 226, 0.6);
     outline-offset: 2px;
@@ -482,13 +415,11 @@
     letter-spacing: 0.8px;
     font-size: 0.9em;
   }
-
   .card-content {
     flex: 1;
     position: relative;
     z-index: 2;
   }
-
   .card-footer {
     padding-top: 16px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -510,7 +441,6 @@
     gap: 16px;
     z-index: 10;
   }
-
   .n64-spinner {
     width: 32px;
     height: 32px;
@@ -522,7 +452,6 @@
     animation: n64CardSpin 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
     transform-style: preserve-3d;
   }
-
   @keyframes n64CardSpin {
     0% {
       transform: rotateY(0deg) rotateZ(0deg);
@@ -537,7 +466,6 @@
       border-width: 4px 3px 2px 4px;
     }
   }
-
   .loading-text {
     font-weight: 600;
     letter-spacing: 1px;
@@ -545,7 +473,6 @@
     font-size: 0.9em;
     animation: pulse 2s ease-in-out infinite;
   }
-
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.6; }
@@ -605,11 +532,9 @@ background: linear-gradient( to bottom, rgba(0, 0, 0, 0.4) 0%, transparent 100% 
 /* Mesh complexity variations */ .n64-card.mesh-ultra {
     border-radius: 8px;
   }
-
   .n64-card.mesh-ultra .lighting-overlay {
 background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 40%), linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.2) 0%, transparent 50%);
   }
-
   .n64-card.mesh-low {
     border-radius: 3px;
     transform-style: flat;
@@ -622,11 +547,9 @@ background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 40%
     transform: perspective(1000px) scale(0.95);
 box-shadow: 0 4px 0 #1a202c, inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 12px rgba(0,0,0,0.2);
   }
-
   .n64-card.hovered {
 box-shadow: var(--material-shadow), 0 0 30px rgba(255, 255, 255, calc(var(--glow-intensity) * 0.3));
   }
-
   .n64-card.focused {
 box-shadow: var(--material-shadow), 0 0 0 3px rgba(74, 144, 226, 0.4);
   }
@@ -635,23 +558,18 @@ box-shadow: var(--material-shadow), 0 0 0 3px rgba(74, 144, 226, 0.4);
     -moz-osx-font-smoothing: grayscale;
 filter: contrast(1.02) brightness(1.01) saturate(1.05);
   }
-
   .n64-card.filtering-bilinear {
     filter: blur(0.25px) contrast(1.1);
   }
-
   .n64-card.filtering-trilinear {
     filter: blur(0.15px) contrast(1.05);
   }
-
   .n64-card.anisotropic-4x {
     filter: blur(0.1px) contrast(1.03);
   }
-
   .n64-card.anisotropic-8x {
     filter: blur(0.05px) contrast(1.05);
   }
-
   .n64-card.anisotropic-16x {
     filter: contrast(1.08) brightness(1.02);
   }
@@ -676,7 +594,6 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
 .lighting-overlay, .reflection-overlay, .atmosphere-overlay, .depth-shadow {
       display: none;
     }
-
     .n64-card::before {
       display: none;
     }
@@ -686,13 +603,11 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
       transform: none !important;
       transition: box-shadow 150ms ease, opacity 150ms ease;
     }
-
     .n64-spinner {
       animation: none;
       border: 4px solid currentColor;
       border-right-color: transparent;
     }
-
     .loading-text {
       animation: none;
     }

@@ -5,7 +5,6 @@ import Cell from './TableCell.svelte.js';
 import Head from './TableHead.svelte.js';
 import Header from './TableHeader.svelte.js';
 import Row from './TableRow.svelte.js';
-
 export {
 	Root,
 	Body,

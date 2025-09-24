@@ -1,12 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { goto } from '$app/navigation';
   // Badge replaced with span - not available in enhanced-bits
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import {
     Card,
     CardHeader,
@@ -32,14 +31,12 @@ https://svelte.dev/e/js_parse_error -->
     SelectValue,
   } from '$lib/components/ui/select';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
-
   // Reactive state with Svelte 5 syntax
   let analyzing = $state(false);
   let results = $state(null);
   let error = $state('');
   let progress = $state(0);
   let showResults = $state(false);
-
   // Form data
   let caseId = $state('');
   let evidenceContent = $state('');
@@ -47,7 +44,6 @@ https://svelte.dev/e/js_parse_error -->
   let evidenceType = $state('police_report');
   let priority = $state('medium');
   let sessionId = $state('');
-
   // Analysis pipeline steps with enhanced metadata
   const steps = [
     {
@@ -56,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
       status: 'pending',
       description: 'Structuring document and extracting key facts',
       icon: '📋',
-      duration: '30-45s',;
+      duration: '30-45s',
     },
     {
       name: 'Person Extraction',
@@ -64,7 +60,7 @@ https://svelte.dev/e/js_parse_error -->
       status: 'pending',
       description: 'Identifying persons of interest and roles',
       icon: '👥',
-      duration: '20-30s',;
+      duration: '20-30s',
     },
     {
       name: 'Relationship Mapping',
@@ -72,18 +68,17 @@ https://svelte.dev/e/js_parse_error -->
       status: 'pending',
       description: 'Building knowledge graph connections',
       icon: '🔗',
-      duration: '15-25s',;
+      duration: '15-25s',
     },
     {
       name: 'Case Synthesis',
       key: 'case_synthesis',
       status: 'pending',
-      description: 'Generating prosecutorial analysis',;
-      icon: '⚖️',;
-      duration: '25-35s',;
+      description: 'Generating prosecutorial analysis',
+      icon: '⚖️',
+      duration: '25-35s',
     },
   ];
-
   // Evidence type options
   const evidenceTypes = [
     { value: 'police_report', label: 'Police Report' },
@@ -94,36 +89,32 @@ https://svelte.dev/e/js_parse_error -->
     { value: 'expert_testimony', label: 'Expert Testimony' },
     { value: 'other', label: 'Other Document' },
   ];
-
   // Priority options
   const priorityOptions = [
     { value: 'low', label: 'Low Priority', color: 'bg-gray-100 text-gray-800' },
     {
       value: 'medium',
       label: 'Medium Priority',
-      color: 'bg-blue-100 text-blue-800',;
+      color: 'bg-blue-100 text-blue-800',
     },
     {
-      value: 'high',;
-      label: 'High Priority',;
-      color: 'bg-orange-100 text-orange-800',;
+      value: 'high',
+      label: 'High Priority',
+      color: 'bg-orange-100 text-orange-800',
     },
     { value: 'urgent', label: 'Urgent', color: 'bg-red-100 text-red-800' },
   ];
-
   // Current step tracking
   let currentStep = $derived(
     steps.findIndex(
       (s) => progress > steps.indexOf(s) * 25 && progress <= (steps.indexOf(s) + 1) * 25
     )
   );
-
   // File upload handler
   function handleFileUpload(event) {
     const target = event.target;
     if (target.files && target.files.length > 0) {
       evidenceFile = target.files[0];
-
       // Read file content
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -132,23 +123,20 @@ https://svelte.dev/e/js_parse_error -->
       reader.readAsText(evidenceFile);
     }
   }
-
   // Start analysis
   async function startAnalysis() {
     if (!caseId || !evidenceContent) {
       error = 'Please provide a case ID and evidence content';
       return;
     }
-
     analyzing = true;
     error = '';
     results = null;
     progress = 0;
-
     try {
       const response = await fetch('/api/evidence/analyze', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
           evidenceFile: evidenceFile?.name || 'uploaded_evidence.txt',
@@ -157,36 +145,30 @@ https://svelte.dev/e/js_parse_error -->
           priority,
         }),
       });
-
       if (!response.ok) {
         throw new Error(`Analysis failed: ${response.statusText}`);
       }
-
       const data = await response.json();
       sessionId = data.sessionId;
-
       // Start polling for results
       pollResults();
     } catch (err) {
       console.error('Evidence analysis error:', err);
-
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
       notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
-
       // Generate mock analysis results
       analyzing = false;
       progress = 100;
       showResults = true;
-
       results = {
         status: 'completed',
         sessionId: 'mock-session-' + Date.now(),
         analysisResults: {
-          documentType: evidenceType,
+          documentType: evidenceType
           keyFactsCount: Math.floor(Math.random() * 10) + 5,
           personsOfInterest: [
             { name: 'John Doe', role: 'witness', confidence: 0.85 },
@@ -206,22 +188,19 @@ https://svelte.dev/e/js_parse_error -->
         },
         metadata: {
           source: 'mock-evidence-analyzer',
-          processingTime: '45 seconds',;
+          processingTime: '45 seconds',
           model: 'Legal Evidence AI v2.0 (Simulated)';
         }
       };
-
       error = '';
     }
   }
-
   // Poll for analysis results with enhanced progress tracking
   async function pollResults() {
     const pollInterval = setInterval(async () => {
       try {
         const response = await fetch(`/api/evidence/analyze/${sessionId}`);
         const data = await response.json();
-
         if (data.status === 'completed') {
           clearInterval(pollInterval);
           results = data;
@@ -238,7 +217,6 @@ https://svelte.dev/e/js_parse_error -->
           if (stepIndex !== -1) {
             progress = Math.min((stepIndex + 0.5) * 25, 95);
             steps[stepIndex].status = 'processing';
-
             // Mark previous steps as completed
             for (let i = 0; i < stepIndex; i++) {
               steps[i].status = 'completed';
@@ -248,24 +226,21 @@ https://svelte.dev/e/js_parse_error -->
       } catch (err) {
         console.error('Polling error:', err);
         clearInterval(pollInterval);
-
         // Show fallback notice
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
         notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
-
         // Complete analysis with mock results
         analyzing = false;
         progress = 100;
         showResults = true;
-
         results = {
           status: 'completed',
           sessionId: sessionId || 'mock-polling-session',
           analysisResults: {
-            documentType: evidenceType,
+            documentType: evidenceType
             keyFactsCount: 8,
             personsOfInterest: [
               { name: 'Mock Witness A', role: 'witness', confidence: 0.88 },
@@ -280,14 +255,13 @@ https://svelte.dev/e/js_parse_error -->
           },
           metadata: {
             source: 'mock-polling-fallback',
-            processingTime: 'Simulated',;
+            processingTime: 'Simulated',
             model: 'Offline Evidence Analyzer';
           }
         };
       }
     }, 2000);
   }
-
   // Reset form
   function resetForm() {
     caseId = '';
@@ -301,24 +275,20 @@ https://svelte.dev/e/js_parse_error -->
     progress = 0;
     showResults = false;
     sessionId = '';
-
     // Reset steps
     steps.forEach((step) => (step.status = 'pending');
   }
-
   // View detailed results
   function viewDetailedResults(analysisData) {
     console.log('Opening detailed results:', analysisData);
     // Could open a modal or navigate to detailed view
   }
 </script>
-
 <div class="max-w-6xl mx-auto p-6 space-y-6">
   <div class="text-center space-y-2">
     <h1 class="text-4xl font-bold tracking-tight">Evidence Analysis Pipeline</h1>
     <p class="text-xl nes-text is-disabled">AI-powered multi-agent legal document analysis</p>
   </div>
-
   <!-- Main Analysis Card -->
   <div class="w-full nes-container">
     <div class="yorha-panel-header">
@@ -327,7 +297,6 @@ https://svelte.dev/e/js_parse_error -->
         Configure your evidence analysis parameters and upload documents for processing
       </p>
     </div>
-
     <div class="yorha-panel-content space-y-6">
       <!-- Form Configuration -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -341,7 +310,6 @@ https://svelte.dev/e/js_parse_error -->
             disabled={analyzing}
             class="font-mono" />
         </div>
-
         <!-- Evidence Type -->
         <div class="space-y-2">
           <Label>Evidence Type</Label>
@@ -356,7 +324,6 @@ https://svelte.dev/e/js_parse_error -->
             </SelectContent>
           </SelectRoot>
         </div>
-
         <!-- Priority -->
         <div class="space-y-2">
           <Label>Priority Level</Label>
@@ -372,7 +339,6 @@ https://svelte.dev/e/js_parse_error -->
           </SelectRoot>
         </div>
       </div>
-
       <!-- File Upload -->
       <div class="space-y-2">
         <Label for_="evidenceFile">Evidence File (Optional)</Label>
@@ -390,7 +356,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </div>
-
       <!-- Evidence Content -->
       <div class="space-y-2">
         <Label for_="evidenceContent">Evidence Content *</Label>
@@ -409,7 +374,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     </div>
-
     <CardFooter class="flex justify-between">
       <div class="flex items-center gap-2">
         {#if priority !== 'low'}
@@ -421,7 +385,6 @@ https://svelte.dev/e/js_parse_error -->
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{evidenceTypes.find((t) => t.value === evidenceType)?.label}</span>
         {/if}
       </div>
-
     <div class="flex gap-2">
   <Button class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>
 Reset
@@ -432,7 +395,6 @@ Reset
       </div>
     </CardFooter>
   </div>
-
   <!-- Error Display -->
   {#if error}
     <div class="border-destructive nes-container">
@@ -445,7 +407,6 @@ Reset
       </div>
     </div>
   {/if}
-
   <!-- Progress Display -->
   {#if analyzing}
     <div class="nes-container">
@@ -453,7 +414,6 @@ Reset
         <h3 class="nes-text is-primary flex items-center gap-2">🔄 Analysis in Progress</h3>
         <p class="nes-text">Multi-agent pipeline processing your evidence document</p>
       </div>
-
       <div class="yorha-panel-content space-y-6">
         <!-- Overall Progress -->
         <div class="space-y-2">
@@ -463,14 +423,12 @@ Reset
           </div>
           <Progress value={progress} class="h-3" />
         </div>
-
         <!-- Step-by-step Progress -->
         <div class="space-y-4">
           {#each steps as step, i}
             {@const isActive = currentStep === i}
             {@const isCompleted = step.status === 'completed'}
             {@const isProcessing = step.status === 'processing'}
-
             <div
               class="transition-all duration-300 {isActive ? 'ring-2 ring-primary shadow-md' : ''} nes-container">
               <div class="yorha-panel-content p-4">
@@ -494,7 +452,6 @@ Reset
                       </div>
                     {/if}
                   </div>
-
                   <!-- Step Info -->
                   <div class="flex-grow">
                     <div class="flex items-center gap-2">
@@ -516,7 +473,6 @@ Reset
                       Est. {step.duration}
                     </p>
                   </div>
-
                   <!-- Mini Progress for Active Step -->
                   {#if isProcessing}
                     <div class="flex-shrink-0 w-20">
@@ -531,7 +487,6 @@ Reset
       </div>
     </div>
   {/if}
-
   <!-- Results Modal/Display -->
   {#if showResults && results}
     <Dialog bind:open={showResults}>
@@ -542,7 +497,6 @@ Reset
             Multi-agent pipeline analysis completed successfully
           </DialogDescription>
         </DialogHeader>
-
         <div class="space-y-4">
           {#each Object.entries(results.outputs) as [key, data]}
             <div class="nes-container">
@@ -570,7 +524,6 @@ viewDetailedResults(data)}>
             </div>
           {/each}
         </div>
-
         <DialogFooter>
           <Button class="bits-btn" variant="ghost" onclick={() =>
 (showResults = false)}>Close
@@ -583,21 +536,18 @@ goto(`/cases/${caseId}`)}>View Case Details
     </Dialog>
   {/if}
 </div>
-
 <style>
   /* Custom animations for progress indicators */
   @keyframes pulse-glow {
     0%,
-    100% {;
+    100% {
       box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
     }
     50% {
       box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
     }
   }
-
   .animate-pulse-glow {
     animation: pulse-glow 2s infinite;
   }
 </style>
-

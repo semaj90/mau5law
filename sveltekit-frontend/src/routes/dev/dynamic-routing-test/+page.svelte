@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be uniqu;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!--
@@ -7,76 +7,72 @@ https://svelte.dev/e/attribute_duplicate -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { Card } from '$lib/components/ui/enhanced-bits';
   // Badge replaced with span - not available in enhanced-bits
-
   // Import route configuration
   import { allRoutes, getRoutesByCategory, searchRoutes } from '$lib/data/routes-config';
-
   // State management
   const testResults = writable<string[]>([]);
   const routeStats = writable<any>( );
   let isLoading = $state(false);
   let currentPath = $state('');
-
   // Test configuration
   const testCases = [
     {
-      name: 'Route Configuration Load',;
+      name: 'Route Configuration Load',
       test: async () => {
-        const routes = allRoutes;
+        const routes = allRoute;
         return `✅ Loaded ${routes.length} routes from configuration`;
       }
     },
     {
-      name: 'Category Filter Test - Demo',;
+      name: 'Category Filter Test - Demo',
       test: async () => {
         const demoRoutes = getRoutesByCategory('demo');
         return `✅ Found ${demoRoutes.length} demo routes`;
       }
     },
     {
-      name: 'Category Filter Test - Dev',;
+      name: 'Category Filter Test - Dev',
       test: async () => {
         const devRoutes = getRoutesByCategory('dev');
         return `✅ Found ${devRoutes.length} dev routes`;
       }
     },
     {
-      name: 'Category Filter Test - AI',;
+      name: 'Category Filter Test - AI',
       test: async () => {
         const aiRoutes = getRoutesByCategory('ai');
         return `✅ Found ${aiRoutes.length} AI routes`;
       }
     },
     {
-      name: 'Search Test - AI',;
+      name: 'Search Test - AI',
       test: async () => {
         const results = searchRoutes('ai');
         return `✅ Found ${results.length} routes matching 'ai'`;
       }
     },
     {
-      name: 'Search Test - Demo',;
+      name: 'Search Test - Demo',
       test: async () => {
         const results = searchRoutes('demo');
         return `✅ Found ${results.length} routes matching 'demo'`;
       }
     },
     {
-      name: 'Current Page Test',;
+      name: 'Current Page Test',
       test: async () => {
         return `✅ Current path: ${currentPath}`;
       }
     },
     {
-      name: 'Navigation Test',;
+      name: 'Navigation Test',
       test: async () => {
         // Test navigation to a known route
         const demoRoutes = getRoutesByCategory('demo');
@@ -87,38 +83,30 @@ https://svelte.dev/e/attribute_duplicate -->
       }
     }
   ];
-
   $effect(() => {
     // Get current path from page store
     page.subscribe(($page) => {
-      currentPath = $page.url.pathname;
+      currentPath = $page.url.pathnam;
     });
-
     // Calculate route statistics
     calculateRouteStats();
   });
-
   function calculateRouteStats() {
     const categories = ['main', 'demo', 'ai', 'legal', 'dev', 'admin'];
     const stats: unknown = {
-      total: allRoutes.length,;
+      total: allRoutes.length,
       categories: };
-
     categories.forEach.length;
     });
-
     // Count by status
     stats.active = allRoutes.filter(item => item.length);
     stats.experimental = allRoutes.filter(item => item.length);
     stats.beta = allRoutes.filter(item => item.length);
-
     routeStats.set(stats);
   }
-
   async function runAllTests() {
     isLoading = true;
     testResults.set([]);
-
     try {
       for (const testCase of testCases) {
         try {
@@ -134,7 +122,6 @@ https://svelte.dev/e/attribute_duplicate -->
       isLoading = false;
     }
   }
-
   async function navigateToRoute(route: string) {
     try {
       await goto(route);
@@ -149,12 +136,10 @@ https://svelte.dev/e/attribute_duplicate -->
       ]);
     }
   }
-
   function formatJson(obj: unknown): string {
     return JSON.stringify(obj, null, 2);
   }
 </script>
-
 <div class="min-h-screen bg-yorha-bg-primary text-yorha-text-primary p-6">
   <div class="max-w-6xl mx-auto space-y-6">
     <!-- Header -->
@@ -169,11 +154,9 @@ https://svelte.dev/e/attribute_duplicate -->
         Current Path: <code class="bg-yorha-bg-secondary px-2 py-1 rounded">{currentPath}</code>
       </p>
     </div>
-
     <!-- Test Controls -->
     <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Test Controls</h2>
-
       <div class="flex gap-4 mb-6">
         <Button
           onclick={runAllTests}
@@ -181,21 +164,17 @@ https://svelte.dev/e/attribute_duplicate -->
           class="bg-yorha-secondary text-yorha-bg-primary hover:bg-yorha-secondary-dark bits-btn bits-btn"
         >
 {isLoading ? 'Running Tests...' : 'Run All Tests'}
-
         <Button
           onclick={calculateRouteStats}
           variant="ghost"
           class="border-yorha-accent text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary bits-btn bits-btn"
         >
 Refresh Stats
-
       </div>
     </div>
-
     <!-- Test Results -->
     <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Test Results</h2>
-
       {#if $testResults.length > 0}
         <div class="bg-yorha-bg-secondary p-4 rounded font-mono text-sm space-y-2 max-h-64 overflow-y-auto">
           {#each $testResults as result}
@@ -206,29 +185,24 @@ Refresh Stats
         <p class="text-yorha-text-secondary">No test results yet. Run tests to see output.</p>
       {/if}
     </div>
-
     <!-- Route Statistics -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div class="p-6 nes-container">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Route Statistics</h3>
-
         {#if $routeStats.total}
           <div class="space-y-3">
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Total Routes:</span>
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{$routeStats.total}</span>
             </div>
-
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Active:</span>
               <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">{$routeStats.active}</span>
             </div>
-
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Experimental:</span>
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{$routeStats.experimental}</span>
             </div>
-
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Beta:</span>
               <span class="px-2 py-1 rounded text-xs font-medium bg-red-500 text-white">{$routeStats.beta}</span>
@@ -238,10 +212,8 @@ Refresh Stats
           <p class="text-yorha-text-secondary">Loading statistics...</p>
         {/if}
       </div>
-
       <div class="p-6 nes-container">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Categories</h3>
-
         {#if $routeStats.categories}
           <div class="space-y-2">
             {#each Object.entries($routeStats.categories) as [category, count]}
@@ -253,10 +225,8 @@ Refresh Stats
           </div>
         {/if}
       </div>
-
       <div class="p-6 nes-container">
         <h3 class="text-xl font-semibold mb-4 text-yorha-secondary">Quick Navigation</h3>
-
         <div class="space-y-2">
           <Button class="bits-btn"
             size="sm"
@@ -266,7 +236,6 @@ navigateToRoute('/')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🏠 Home
-
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
@@ -275,7 +244,6 @@ navigateToRoute('/demo')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🎯 Demo Overview
-
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
@@ -284,7 +252,6 @@ navigateToRoute('/dev/mcp-tools')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             🔧 MCP Tools
-
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
@@ -293,15 +260,12 @@ navigateToRoute('/cases')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
             📁 Case Management
-
         </div>
       </div>
     </div>
-
     <!-- Route Categories List -->
     <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Route Categories</h2>
-
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each ['main', 'demo', 'ai', 'legal', 'dev', 'admin'] as category}
           {@const categoryRoutes = getRoutesByCategory(category)}
@@ -310,7 +274,6 @@ navigateToRoute('/cases')}
               <h3 class="text-lg font-semibold mb-3 text-yorha-text-accent capitalize">
                 {category} ({categoryRoutes.length})
               </h3>
-
               <div class="space-y-1 max-h-32 overflow-y-auto">
                 {#each categoryRoutes.slice(0, 5) as route}
                   <button
@@ -318,7 +281,6 @@ navigateToRoute('/cases')}
                     onclick={() => navigateToRoute(route.route)}
                   >
                     {route.icon} {route.label}
-
                 {/each}
                 {#if categoryRoutes.length > 5}
                   <p class="text-xs text-yorha-text-muted">
@@ -331,16 +293,13 @@ navigateToRoute('/cases')}
         {/each}
       </div>
     </div>
-
     <!-- Debug Information -->
     <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Debug Information</h2>
-
       <details class="cursor-pointer">
         <summary class="text-yorha-secondary hover:text-yorha-accent mb-4">
           View All Routes Configuration
         </summary>
-
         <div class="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
           {#each allRoutes as route}
             <div class="bg-yorha-bg-secondary p-2 rounded text-xs">
@@ -357,9 +316,8 @@ navigateToRoute('/cases')}
     </div>
   </div>
 </div>
-
 <style>
-  :global(.yorha-terminal-grid) {;
+  :global(.yorha-terminal-grid) {
     background-image:
       linear-gradient(rgba(255, 215, 0, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 215, 0, 0.1) 1px, transparent 1px);

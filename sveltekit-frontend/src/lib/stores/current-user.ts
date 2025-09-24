@@ -1,7 +1,5 @@
 import { writable } from 'svelte/store';
-
 export const currentUser = writable(null);
-
 export async function hydrateCurrentUser() {
   try {
     const r = await fetch('/api/user/me');

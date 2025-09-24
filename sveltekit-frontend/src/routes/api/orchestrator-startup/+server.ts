@@ -1,20 +1,17 @@
 import orchestrator from "$lib/services/comprehensive-database-orchestrator"
 import type { RequestHandler } from './$types.js'
-
 // Orchestrator Startup API - Initialize and manage the comprehensive system
 // Handles startup, monitoring, and coordination of all services
-
 // GET /api/orchestrator-startup - Get startup status and system readiness
 export const GET: RequestHandler = async () => {
   try {
     const orchestratorStatus = (orchestrator as any).getStatus?.() || { isRunning: false }
-
     // Check if orchestrator is running
     if (!orchestratorStatus.isRunning) {
       return json({
-        success: false,
+        success: false
         message: 'Database orchestrator is not running',
-        status: orchestratorStatus,
+        status: orchestratorStatus
         recommendations: [
           'Call POST /api/orchestrator-startup with action: "start"',
           'Verify all required services are available',
@@ -23,11 +20,10 @@ export const GET: RequestHandler = async () => {
         timestamp: new Date().toISOString()
       })
     }
-
     return json({
-      success: true,
+      success: true
       message: 'Database orchestrator is running',
-      status: orchestratorStatus,
+      status: orchestratorStatus
       capabilities: [
         'Real-time event processing',
         'Database operation monitoring',
@@ -36,46 +32,38 @@ export const GET: RequestHandler = async () => {
         'Multi-service health monitoring'
       ],
       timestamp: new Date().toISOString()
-    })
+    });
   } catch (error: any) {
-    return json()
+    return json(
       {
-        success: false,
+        success: false
         error: error.message,
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    )
+    );
   }
 }
-
 // POST /api/orchestrator-startup - Control orchestrator startup and operations
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, configuration } = await request.json()
-
     switch (action) {
       case 'start':
         return await startOrchestrator(configuration)
-
       case 'stop':
         return await stopOrchestrator()
-
       case 'restart':
         return await restartOrchestrator(configuration)
-
       case 'initialize_system':
         return await initializeFullSystem(configuration)
-
       case 'health_check':
         return await performSystemHealthCheck()
-
       case 'configure':
         return await configureOrchestrator(configuration)
-
       default:
-        return json({
-            success: false,
+        return json({,
+            success: false
             error: `Unknown action: ${action}`,
             available_actions: [
               'start',
@@ -92,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -100,35 +88,29 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // Start the database orchestrator
 async function startOrchestrator(configuration: any = {}): Promise<any> {
   try {
     const status = (orchestrator as any).getStatus?.() || { isRunning: false }
-
     if (status.isRunning) {
       return json({
-        success: true,
+        success: true
         message: 'Database orchestrator is already running',
         status,
         timestamp: new Date().toISOString()
       })
     }
-
     // Configure before starting if configuration provided
     if (configuration && Object.keys(configuration).length > 0) {
       await configureOrchestrator(configuration)
     }
-
     // Start the orchestrator
     await (orchestrator as any).start?.()
-
     const newStatus = (orchestrator as any).getStatus?.() || { isRunning: true }
-
     return json({
-      success: true,
+      success: true
       message: 'Database orchestrator started successfully',
-      status: newStatus,
+      status: newStatus
       startup_time: new Date().toISOString(),
       active_features: [
         'Event loops running',
@@ -140,7 +122,7 @@ async function startOrchestrator(configuration: any = {}): Promise<any> {
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: `Failed to start orchestrator: ${error.message}`,
         timestamp: new Date().toISOString()
       },
@@ -148,32 +130,28 @@ async function startOrchestrator(configuration: any = {}): Promise<any> {
     )
   }
 }
-
 // Stop the database orchestrator
 async function stopOrchestrator(): Promise<any> {
   try {
     const status = (orchestrator as any).getStatus?.() || { isRunning: false }
-
     if (!status.isRunning) {
       return json({
-        success: true,
+        success: true
         message: 'Database orchestrator is already stopped',
         status,
         timestamp: new Date().toISOString()
       })
     }
-
     await (orchestrator as any).stop?.()
-
     return json({
-      success: true,
+      success: true
       message: 'Database orchestrator stopped successfully',
       shutdown_time: new Date().toISOString()
     })
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: `Failed to stop orchestrator: ${error.message}`,
         timestamp: new Date().toISOString()
       },
@@ -181,19 +159,15 @@ async function stopOrchestrator(): Promise<any> {
     )
   }
 }
-
 // Restart the orchestrator
 async function restartOrchestrator(configuration: any = {}): Promise<any> {
   try {
     await stopOrchestrator()
-
     // Wait a moment for cleanup
     await new Promise((resolve) => setTimeout(resolve, 2000)
-
     const startResult = await startOrchestrator(configuration)
-
     return json({
-      success: true,
+      success: true
       message: 'Database orchestrator restarted successfully',
       restart_time: new Date().toISOString(),
       start_result: startResult
@@ -201,7 +175,7 @@ async function restartOrchestrator(configuration: any = {}): Promise<any> {
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: `Failed to restart orchestrator: ${error.message}`,
         timestamp: new Date().toISOString()
       },
@@ -209,16 +183,13 @@ async function restartOrchestrator(configuration: any = {}): Promise<any> {
     )
   }
 }
-
 // Initialize the full system
 async function initializeFullSystem(configuration: any = {}): Promise<any> {
   try {
     const initializationSteps = []
-
     // Step 1: Start orchestrator
     initializationSteps.push('Starting database orchestrator...')
     await (orchestrator as any).start?.()
-
     // Step 2: Setup default conditions
     initializationSteps.push('Setting up default conditions...')
     const defaultConditions = [
@@ -227,7 +198,7 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
         type: 'timer',
         condition: { interval: 60000 }, // 1 minute
         action: 'check_system_health',
-        isActive: true,
+        isActive: true
         metadata: { created_by: 'initialization' }
       },
       {
@@ -235,7 +206,7 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
         type: 'database_change',
         condition: { table: '*', operation: 'insert' },
         action: 'process_new_data',
-        isActive: true,
+        isActive: true
         metadata: { created_by: 'initialization' }
       },
       {
@@ -243,15 +214,13 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
         type: 'timer',
         condition: { interval: 300000 }, // 5 minutes
         action: 'sync_context7_data',
-        isActive: true,
+        isActive: true
         metadata: { created_by: 'initialization' }
       }
     ]
-
     for (const condition of defaultConditions) {
       (orchestrator as any).addCondition?.(condition)
     }
-
     // Step 3: Test database connectivity
     initializationSteps.push('Testing database connectivity...')
     const testRecord = {
@@ -260,11 +229,9 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
       timestamp: new Date()
     }
     await (orchestrator as any).saveToDatabase?.(testRecord, 'system_logs')
-
     // Step 4: Check service health
     initializationSteps.push('Checking service health...')
     const healthResults = await performSystemHealthCheck()
-
     // Step 5: Initialize Context7 integration
     initializationSteps.push('Initializing Context7 integration...')
     (orchestrator as any).emit?.('system:initialization_complete', {
@@ -272,20 +239,19 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
       configuration,
       health_results: healthResults
     })
-
     return json({
-      success: true,
+      success: true
       message: 'Full system initialization completed',
-      initialization_steps: initializationSteps,
+      initialization_steps: initializationSteps
       status: (orchestrator as any).getStatus?.(),
       default_conditions_added: defaultConditions.length,
-      system_ready: true,
+      system_ready: true
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: `System initialization failed: ${error.message}`,
         timestamp: new Date().toISOString()
       },
@@ -293,17 +259,15 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
     )
   }
 }
-
 // Perform comprehensive system health check
 async function performSystemHealthCheck(): Promise<any> {
   try {
     const healthResults = {
       orchestrator: (orchestrator as any).getStatus?.(),
-      services: Record<string, any>,
-      database: null,
+      services: { [key: string]: any },
+      database: null
       overall_status: 'unknown'
     }
-
     // Check key services
     const serviceEndpoints = [
       { name: 'ollama', url: 'http://localhost:11434/api/tags' },
@@ -311,7 +275,6 @@ async function performSystemHealthCheck(): Promise<any> {
       { name: 'upload_service', url: 'http://localhost:8093/health' },
       { name: 'recommendation_service', url: 'http://localhost:8096/health' }
     ]
-
     for (const service of serviceEndpoints) {
       try {
         const controller = new AbortController()
@@ -331,7 +294,6 @@ async function performSystemHealthCheck(): Promise<any> {
         }
       }
     }
-
     // Test database connectivity
     try {
       const testQuery = await (orchestrator as any).queryDatabase?.({ limit: 1 }, 'cases')
@@ -346,14 +308,12 @@ async function performSystemHealthCheck(): Promise<any> {
         error: error.message
       }
     }
-
     // Determine overall status
-    const serviceStatuses = Object.values(healthResults.services as Record<string, any>).map(
+    const serviceStatuses = Object.values(healthResults.services as { [key: string]: any }).map(
       (s: any) => s.status
     )
     const healthyServices = serviceStatuses.filter((s) => s === 'healthy').length
     const totalServices = serviceStatuses.length
-
     if (healthyServices === totalServices && healthResults.database.status === 'healthy') {
       healthResults.overall_status = 'healthy'
     } else if (healthyServices > totalServices / 2) {
@@ -361,18 +321,17 @@ async function performSystemHealthCheck(): Promise<any> {
     } else {
       healthResults.overall_status = 'critical'
     }
-
     return json({
-      success: true,
-      health_check: healthResults,
-      healthy_services: healthyServices,
-      total_services: totalServices,
+      success: true
+      health_check: healthResults
+      healthy_services: healthyServices
+      total_services: totalServices
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: `Health check failed: ${error.message}`,
         timestamp: new Date().toISOString()
       },
@@ -380,50 +339,43 @@ async function performSystemHealthCheck(): Promise<any> {
     )
   }
 }
-
 // Configure orchestrator settings
 async function configureOrchestrator(configuration: any): Promise<any> {
   try {
     // Apply configuration settings
     const appliedSettings = []
-
     if (configuration.eventLoopInterval) {
       appliedSettings.push(`Event loop interval: ${configuration.eventLoopInterval}ms`)
     }
-
     if (configuration.conditionCheckInterval) {
       appliedSettings.push(`Condition check interval: ${configuration.conditionCheckInterval}ms`)
     }
-
     if (configuration.databaseWatchInterval) {
       appliedSettings.push(`Database watch interval: ${configuration.databaseWatchInterval}ms`)
     }
-
     if (configuration.context7SyncInterval) {
       appliedSettings.push(`Context7 sync interval: ${configuration.context7SyncInterval}ms`)
     }
-
     // Save configuration to database
     await (orchestrator as any).saveToDatabase?.({
         configuration,
-        applied_settings: appliedSettings,
+        applied_settings: appliedSettings
         configured_at: new Date(),
         configured_by: 'api'
       },
       'orchestrator_configurations'
     )
-
     return json({
-      success: true,
+      success: true
       message: 'Orchestrator configured successfully',
-      applied_settings: appliedSettings,
+      applied_settings: appliedSettings
       configuration,
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: `Configuration failed: ${error.message}`,
         timestamp: new Date().toISOString()
       },

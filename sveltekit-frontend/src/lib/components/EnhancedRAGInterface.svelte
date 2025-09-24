@@ -1,7 +1,6 @@
 <!-- EnhancedRAGInterface.svelte - SvelteKit 2.0 Advanced RAG Interface -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, tick } from 'svelte';
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
   import {
@@ -31,80 +30,65 @@
     Target
   } from 'lucide-svelte';
   import type { SearchResult } from '$lib/types/rag.js';
-
   // Reactive state using Svelte 5 runes
   let searchQuery = $state('');
   let showAdvancedOptions = $state(false);
   let selectedClusters = $state<string[]>([]);
   let optimizationLevel = $state<'basic' | 'enhanced' | 'neural'>('enhanced');
-
   // Derived reactive state from store
   let ragState = $derived(enhancedRAGStore.state);
   let performanceMetrics = $derived(enhancedRAGStore.performanceMetrics);
   let optimizedResults = $derived(enhancedRAGStore.optimizedResults);
   let intelligentSuggestions = $derived(enhancedRAGStore.intelligentSuggestions);
   const search = enhancedRAGStore.search;
-  const optimizeCache = enhancedRAGStore.optimizeCache;
-
+  const optimizeCache = enhancedRAGStore.optimizeCach;
   // Performance monitoring
   let searchStartTime = $state(0);
   let searchDuration = $state(0);
-
   // Advanced UI state
   let visualizationMode = $state<'list' | 'clusters' | 'neural' | 'performance'>('list');
   let autoOptimization = $state(true);
-
   $effect(() => {
     // Initialize the RAG system
     console.log('Enhanced RAG Interface initialized');
-
     // Start real-time performance monitoring
     const interval = setInterval(() => {
       updatePerformanceVisualization();
     }, 1000);
-
     return () => clearInterval(interval);
   });
   async function handleSearch() {
     if (!searchQuery.trim()) return;
-
     searchStartTime = performance.now();
-
     try {
       await search(searchQuery, {
         limit: 20,
-        enableClustering: true,
-        enableReranking: true,
-        enableMLOptimization: true,
+        enableClustering: true
+        enableReranking: true
+        enableMLOptimization: true
         cacheStrategy: optimizationLevel === 'neural' ? 'aggressive' : 'balanced';
       });
-
-      searchDuration = performance.now() - searchStartTime;
-
+      searchDuration = performance.now() - searchStartTim;
       // Auto-scroll to results after search
       await tick();
       document.querySelector('#search-results')?.scrollIntoView({
-        behavior: 'smooth',;
+        behavior: 'smooth',
         block: 'start';
       });
-
     } catch (error) {
       console.error('Search failed:', error);
     }
   }
-
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       handleSearch();
     }
   }
-
   function selectSuggestion(suggestion: string) {
-    searchQuery = suggestion;
+    searchQuery = suggestio;
     handleSearch();
   }
-
   function handleClusterSelect(clusterId: string) {
     if (selectedClusters.includes(clusterId)) {
       selectedClusters = selectedClusters.filter(id => id !== clusterId);
@@ -112,36 +96,30 @@
       selectedClusters = [...selectedClusters, clusterId];
     }
   }
-
   async function handleOptimization() {
     await optimizeCache();
   }
-
   function updatePerformanceVisualization() {
     // Update real-time performance visualizations
     // This would update charts, graphs, etc.
   }
-
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${Math.round(ms)}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }
-
   function formatMemory(bytes: number): string {
     const mb = bytes / (1024 * 1024);
     return `${mb.toFixed(1)}MB`;
   }
-
   // Reactive calculations
   let searchPerformance = $derived({
     isSearching: ragState.isLoading,
-    duration: searchDuration,
+    duration: searchDuration
     resultsCount: optimizedResults.length,
     cacheHitRate: ragState.cacheMetrics.hitRate,
     memoryUsage: ragState.cacheMetrics.memoryUsageMB,
     predictionAccuracy: ragState.cacheMetrics.predictionAccuracy;
   });
-
   let clusterVisualization = $derived(
     ragState.somClusters.map(cluster => ({
       ...cluster,
@@ -149,15 +127,13 @@
       relevantResults: optimizedResults.filter(item => item.clusterId) === cluster.id)
     }))
   );
-
   let performanceIndicators = $derived({
-    throughput: performanceMetrics.throughputQPS,;
+    throughput: performanceMetrics.throughputQPS,
     efficiency: performanceMetrics.memoryEfficiency,
     cacheOptimization: ragState.cacheMetrics.hitRate * 100,
     neuralAccuracy: ragState.cacheMetrics.predictionAccuracy * 100;
   });
 </script>
-
 <!-- Main Interface -->
 <div class="enhanced-rag-interface">
   <!-- Header with Real-time Status -->
@@ -174,7 +150,6 @@
             Neural-powered legal research with SOM clustering and ML optimization
           </p>
         </div>
-
         <!-- Real-time Performance Indicators -->
         <div class="flex items-center gap-4">
           <div class="text-center">
@@ -183,14 +158,12 @@
             </div>
             <div class="text-xs text-gray-500">Efficiency</div>
           </div>
-
           <div class="text-center">
             <div class="text-2xl font-bold text-blue-600">
               {Math.round(performanceIndicators.cacheOptimization)}%
             </div>
             <div class="text-xs text-gray-500">Cache Hit</div>
           </div>
-
           <div class="text-center">
             <div class="text-2xl font-bold text-purple-600">
               {Math.round(performanceIndicators.neuralAccuracy)}%
@@ -201,7 +174,6 @@
       </div>
     </div>
   </div>
-
   <!-- Enhanced Search Interface -->
   <div class="mb-6 nes-container">
     <div class="yorha-panel-content p-6">
@@ -217,7 +189,6 @@
               class="pl-10 pr-4 py-3 text-lg"
               disabled={ragState.isLoading}
             />
-
             <!-- Loading indicator -->
             {#if ragState.isLoading}
               <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -225,7 +196,6 @@
               </div>
             {/if}
           </div>
-
           <Button
             onclick={handleSearch}
             disabled={!searchQuery.trim() || ragState.isLoading}
@@ -233,7 +203,6 @@
           >
 {ragState.isLoading ? 'Searching...' : 'Search'}
 </Button>
-
           <Button class="bits-btn"
             variant="ghost"
             onclick={() =>
@@ -242,7 +211,6 @@ showAdvancedOptions = !showAdvancedOptions}
             <Settings class="h-4 w-4" />
 </Button>
         </div>
-
         <!-- Real-time Search Performance -->
         {#if ragState.isLoading || searchDuration > 0}
           <div class="mt-2 text-sm text-gray-600 flex items-center gap-4">
@@ -252,7 +220,6 @@ showAdvancedOptions = !showAdvancedOptions}
           </div>
         {/if}
       </div>
-
       <!-- Intelligent Suggestions (Real-time) -->
       {#if intelligentSuggestions.length > 0}
         <div class="mb-4">
@@ -276,7 +243,6 @@ selectSuggestion(suggestion)}
           </div>
         </div>
       {/if}
-
       <!-- Did You Mean Suggestions -->
       {#if ragState.didYouMean.length > 0}
         <div class="mb-4">
@@ -294,7 +260,6 @@ selectSuggestion(suggestion)}
           </div>
         </div>
       {/if}
-
       <!-- Advanced Options Panel -->
       {#if showAdvancedOptions}
         <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
@@ -308,7 +273,6 @@ selectSuggestion(suggestion)}
                 <option value="neural">Neural</option>
               </select>
             </div>
-
             <!-- Visualization Mode -->
             <div>
               <label class="block text-sm font-medium mb-2" for="view-mode">View Mode</label>
@@ -319,7 +283,6 @@ selectSuggestion(suggestion)}
                 <option value="performance">Performance</option>
               </select>
             </div>
-
             <!-- Auto Optimization -->
             <div>
               <label class="flex items-center gap-2">
@@ -341,7 +304,6 @@ selectSuggestion(suggestion)}
       {/if}
     </div>
   </div>
-
   <!-- Results Section -->
   {#if optimizedResults.length > 0}
     <div id="search-results">
@@ -359,7 +321,6 @@ selectSuggestion(suggestion)}
                 Cache hit rate: {Math.round(ragState.cacheMetrics.hitRate * 100)}%
               </p>
             </div>
-
             <!-- View Toggle -->
             <div class="flex gap-2">
               <Button class="bits-btn"
@@ -391,7 +352,6 @@ visualizationMode = 'clusters'}
           </div>
         </div>
       </div>
-
       <!-- Dynamic Content Based on View Mode -->
       {#if visualizationMode === 'list'}
         <!-- Enhanced Results List -->
@@ -414,7 +374,6 @@ visualizationMode = 'clusters'}
                       {/if}
                     </div>
                   </div>
-
                   <!-- Neural Prediction Indicator -->
                   {#if (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).legalRelevance}
                     <div class="text-right">
@@ -425,7 +384,6 @@ visualizationMode = 'clusters'}
                     </div>
                   {/if}
                 </div>
-
                 <!-- Document Preview -->
                 {#if (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).highlights && (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).highlights.length > 0}
                   <div class="mb-3">
@@ -436,7 +394,6 @@ visualizationMode = 'clusters'}
                     </div>
                   </div>
                 {/if}
-
                 <!-- Metadata Tags -->
                 {#if (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).document.metadata.tags}
                   <div class="flex flex-wrap gap-1">
@@ -449,7 +406,6 @@ visualizationMode = 'clusters'}
             </div>
           {/each}
         </div>
-
       {:else if visualizationMode === 'clusters'}
         <!-- SOM Cluster Visualization -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -468,19 +424,16 @@ visualizationMode = 'clusters'}
                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{keyword}</span>
                     {/each}
                   </div>
-
                   <div class="text-sm text-gray-600">
                     Coherence: {Math.round(cluster.coherence * 100)}% •
                     Avg Relevance: {Math.round(cluster.avgRelevance * 100)}%
                   </div>
-
                   <Progress value={cluster.coherence * 100} class="h-2" />
                 </div>
               </div>
             </div>
           {/each}
         </div>
-
       {:else if visualizationMode === 'performance'}
         <!-- Performance Analytics Dashboard -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -491,7 +444,6 @@ visualizationMode = 'clusters'}
               <div class="text-sm text-gray-600">Total Queries</div>
             </div>
           </div>
-
           <div class="nes-container">
             <div class="yorha-panel-content p-4 text-center">
               <Zap class="h-8 w-8 mx-auto text-green-600 mb-2" />
@@ -499,7 +451,6 @@ visualizationMode = 'clusters'}
               <div class="text-sm text-gray-600">Queries/sec</div>
             </div>
           </div>
-
           <div class="nes-container">
             <div class="yorha-panel-content p-4 text-center">
               <Database class="h-8 w-8 mx-auto text-purple-600 mb-2" />
@@ -507,7 +458,6 @@ visualizationMode = 'clusters'}
               <div class="text-sm text-gray-600">Cache Entries</div>
             </div>
           </div>
-
           <div class="nes-container">
             <div class="yorha-panel-content p-4 text-center">
               <TrendingUp class="h-8 w-8 mx-auto text-orange-600 mb-2" />
@@ -518,7 +468,6 @@ visualizationMode = 'clusters'}
             </div>
           </div>
         </div>
-
         <!-- Real-time Performance Chart -->
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -533,7 +482,6 @@ visualizationMode = 'clusters'}
       {/if}
     </div>
   {/if}
-
   <!-- Error Display -->
   {#if ragState.error}
     <div class="border-red-200 bg-red-50 dark:bg-red-950 nes-container">
@@ -546,23 +494,17 @@ visualizationMode = 'clusters'}
     </div>
   {/if}
 </div>
-
 <style>
-  .enhanced-rag-interface {;
+  .enhanced-rag-interface {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
   }
-
   @keyframes pulse-glow {
     0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
     50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
   }
-
   .enhanced-rag-interface :global(.searching) {
     animation: pulse-glow 2s infinite;
   }
 </style>
-
-
-

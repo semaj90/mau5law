@@ -2,7 +2,6 @@
  * SIMD JSON Web Worker Client
  * Provides easy interface for off-main-thread JSON parsing
  */
-
 interface SIMDWorkerMessage {
   type: string;
   id: string;
@@ -11,12 +10,10 @@ interface SIMDWorkerMessage {
   success?: boolean;
   metadata?: any;
 }
-
 interface ParseOptions {
   timeout?: number;
   structured_clone?: boolean;
 }
-
 export class SIMDJSONWorkerClient {
   private worker: Worker | null = null;
   private messageId = 0;
@@ -25,94 +22,78 @@ export class SIMDJSONWorkerClient {
     reject: (error: Error) => void;
     timeout?: NodeJS.Timeout;
   }>();
-  
   private isReady = false;
   private initPromise: Promise<boolean> | null = null;
-  
   constructor() {
     if (typeof Worker !== 'undefined') {
       this.initWorker();
     }
   }
-  
   /**
    * Initialize the SIMD JSON worker
    */;
   private async initWorker(): Promise<void> {
     try {
       this.worker = new Worker('/simd-json-worker.js');
-      
       this.worker.addEventListener('message', (event) => {
         this.handleWorkerMessage(event.data);
       });
-      
       this.worker.addEventListener('error', (error) => {
         console.error('SIMD JSON Worker Error:', error);
         this.rejectAllPending(new Error('Worker error occurred');
       });
-      
       console.log('🚀 SIMD JSON Worker Client initialized');
     } catch (error) {
       console.error('❌ Failed to initialize SIMD JSON Worker:', error);
       throw error;
     }
   }
-  
   /**
    * Handle messages from the worker
    */;
   private handleWorkerMessage(message: SIMDWorkerMessage): void {
     const { type, id } = message;
-    
-    // Handle worker ready message;
+    // Handle worker ready message
     if (type === 'WORKER_READY') {
       console.log('✅ SIMD JSON Worker ready');
       return;
     }
-    
-    // Handle initialization complete;
+    // Handle initialization complete
     if (type === 'INIT_COMPLETE') {
       this.isReady = message.success || false;
       console.log(`🔧 SIMD JSON Worker initialization: ${this.isReady ? 'success' : 'failed'}`);
     }
-    
     // Handle pending requests
     const pending = this.pendingRequests.get(id);
     if (!pending) return;
-    
-    // Clear timeout;
+    // Clear timeout
     if (pending.timeout) {
       clearTimeout(pending.timeout);
     }
-    
     // Remove from pending
     this.pendingRequests.delete(id);
-    
-    // Resolve or reject based on message type;
+    // Resolve or reject based on message type
     switch (type) {
       case 'PARSE_COMPLETE':
       case 'BATCH_COMPLETE':
       case 'VECTOR_PARSE_COMPLETE':
       case 'STATS':
       case 'BENCHMARK_COMPLETE':
-      case 'STATS_RESET':;
+      case 'STATS_RESET':
         pending.resolve({
           data: message.data,
-          metadata: message.metadata,;
+          metadata: message.metadata,
           success: true
         });
         break;
-        
       case 'PARSE_ERROR':
       case 'ERROR':
         pending.reject(new Error(message.error || 'Unknown worker error');
         break;
-        
       default:
         pending.reject(new Error(`Unknown message type: ${type}`);
     }
   }
-  
   /**
    * Send message to worker and return promise
    */;
@@ -120,25 +101,21 @@ export class SIMDJSONWorkerClient {
     if (!this.worker) {
       return Promise.reject(new Error('Worker not available');
     }
-    
     const id = `msg-${++this.messageId}-${Date.now()}`;
     const timeout = options.timeout || 30000; // 30s default timeout
-    
     return new Promise((resolve, reject) => {
-      // Set up timeout;
+      // Set up timeout
       const timeoutId = setTimeout(() => {
         this.pendingRequests.delete(id);
         reject(new Error('Worker request timeout');
       }, timeout);
-      
-      // Store pending request;
+      // Store pending request
       this.pendingRequests.set(id, {
         resolve,
         reject,
         timeout: timeoutId
       });
-      
-      // Send message to worker;
+      // Send message to worker
       this.worker!.postMessage({
         type,
         id,
@@ -146,7 +123,6 @@ export class SIMDJSONWorkerClient {
       });
     });
   }
-  
   /**
    * Initialize worker with SIMD capabilities
    */;
@@ -154,10 +130,8 @@ export class SIMDJSONWorkerClient {
     if (this.initPromise) {
       return this.initPromise;
     }
-    
     this.initPromise = (async () => {
       if (!this.worker) return false;
-      
       try {
         const result = await this.sendMessage('INIT');
         return (result as { success?: any; data?: any }).success;
@@ -166,10 +140,8 @@ export class SIMDJSONWorkerClient {
         return false;
       }
     })();
-    
     return this.initPromise;
   }
-  
   /**
    * Parse JSON string using SIMD acceleration
    */;
@@ -177,12 +149,10 @@ export class SIMDJSONWorkerClient {
     if (!this.isReady) {
       await this.initialize();
     }
-    
     if (!this.worker) {
       // Fallback to native JSON.parse
       return JSON.parse(jsonString);
     }
-    
     try {
       const result = await this.sendMessage('PARSE_JSON', { jsonString, options }, options);
       return (result as { success?: any; data?: any }).data;
@@ -192,7 +162,6 @@ export class SIMDJSONWorkerClient {
       return JSON.parse(jsonString);
     }
   }
-  
   /**
    * Parse multiple JSON strings in batch
    */;
@@ -200,12 +169,10 @@ export class SIMDJSONWorkerClient {
     if (!this.isReady) {
       await this.initialize();
     }
-    
     if (!this.worker) {
       // Fallback to native JSON.parse
       return jsonStrings.map(json => JSON.parse(json);
     }
-    
     try {
       const result = await this.sendMessage('PARSE_BATCH', { jsonStrings }, options);
       return (result as { success?: any; data?: any }).data;
@@ -215,7 +182,6 @@ export class SIMDJSONWorkerClient {
       return jsonStrings.map(json => JSON.parse(json);
     }
   }
-  
   /**
    * Parse vector/tensor data with validation
    */;
@@ -223,12 +189,10 @@ export class SIMDJSONWorkerClient {
     if (!this.isReady) {
       await this.initialize();
     }
-    
     if (!this.worker) {
       // Fallback to native JSON.parse
       return JSON.parse(vectorJson);
     }
-    
     try {
       const result = await this.sendMessage('PARSE_VECTOR_DATA', { vectorJson }, options);
       return (result as { success?: any; data?: any }).data;
@@ -238,7 +202,6 @@ export class SIMDJSONWorkerClient {
       return JSON.parse(vectorJson);
     }
   }
-  
   /**
    * Get worker performance statistics
    */;
@@ -252,7 +215,6 @@ export class SIMDJSONWorkerClient {
         simdReady: false
       };
     }
-    
     try {
       const result = await this.sendMessage('GET_STATS');
       return (result as { success?: any; data?: any }).data;
@@ -261,7 +223,6 @@ export class SIMDJSONWorkerClient {
       throw error;
     }
   }
-  
   /**
    * Run performance benchmark
    */;
@@ -269,27 +230,22 @@ export class SIMDJSONWorkerClient {
     if (!this.worker) {
       throw new Error('Worker not available for benchmarking');
     }
-    
     const result = await this.sendMessage('BENCHMARK', { iterations, testSize });
     return (result as { success?: any; data?: any }).data;
   }
-  
   /**
    * Reset worker statistics
    */;
   async resetStats(): Promise<void> {
     if (!this.worker) return;
-    
     await this.sendMessage('RESET_STATS');
   }
-  
   /**
    * Check if worker is ready and SIMD is available
    */;
   isWorkerReady(): boolean {
     return this.isReady && this.worker !== null;
   }
-  
   /**
    * Reject all pending requests
    */;
@@ -302,7 +258,6 @@ export class SIMDJSONWorkerClient {
     }
     this.pendingRequests.clear();
   }
-  
   /**
    * Terminate worker and cleanup
    */;
@@ -316,23 +271,18 @@ export class SIMDJSONWorkerClient {
     }
   }
 }
-
 // Export singleton instance for global use
 export const simdJSONClient = new SIMDJSONWorkerClient();
-
-// Convenience functions for common operations;
+// Convenience functions for common operations
 export async function parseJSONOffThread(jsonString: string, timeout?: number): Promise<any> {
   return simdJSONClient.parseJSON(jsonString, { timeout });
 }
-
 export async function parseBatchOffThread(jsonStrings: string[], timeout?: number): Promise<any[]> {
   return simdJSONClient.parseBatch(jsonStrings, { timeout });
 }
-
 export async function parseVectorDataOffThread(vectorJson: string, timeout?: number): Promise<any> {
   return simdJSONClient.parseVectorData(vectorJson, { timeout });
 }
-
 export async function benchmarkSIMDJSON(iterations?: number, testSize?: 'small' | 'medium' | 'large'): Promise<any> {
   return simdJSONClient.benchmark(iterations, testSize);
 }

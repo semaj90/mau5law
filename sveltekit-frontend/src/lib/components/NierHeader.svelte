@@ -1,27 +1,20 @@
 import type { User } from '$lib/types';
-
 import type { User } from '$lib/types/user';
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     user: User | null ;
   }
   let {
     user = null
   }: Props = $props();
-
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
   import SearchInput from "./SearchInput.svelte";
-
   import { FolderOpen, Home, LogOut, MoreVertical, Palette, Settings, Shield, User as UserIcon } from "lucide-svelte";
-
   import type { User } from '$lib/types/user';
   let searchQuery = $state("");
   let userMenuOpen = $state(false);
-
   function handleSearch(event: CustomEvent) {
     searchQuery = event.detail.query;
     // Handle global search
@@ -35,13 +28,12 @@ import type { User } from '$lib/types/user';
     userMenuOpen = false;
   }
   function toggleUserMenu() {
-    userMenuOpen = !userMenuOpen;
+    userMenuOpen = !userMenuOpe;
   }
   function closeUserMenu() {
     userMenuOpen = false;
   }
 </script>
-
 <header class="space-y-4">
   <div class="space-y-4">
     <!-- Logo and Brand -->
@@ -55,7 +47,6 @@ import type { User } from '$lib/types/user';
         <span class="space-y-4">Prosecutor Canvas</span>
       </button>
     </div>
-
     <!-- Navigation -->
     <nav class="space-y-4" aria-label="Main navigation">
       <button
@@ -66,7 +57,6 @@ import type { User } from '$lib/types/user';
         <Home size={18} />
         <span>Dashboard</span>
       </button>
-
       <button
         class="space-y-4"
         onclick={() => handleNavigation("/cases")}
@@ -75,7 +65,6 @@ import type { User } from '$lib/types/user';
         <FolderOpen size={18} />
         <span>Cases</span>
       </button>
-
       <button
         class="space-y-4"
         onclick={() => handleNavigation("/interactive-canvas")}
@@ -84,7 +73,6 @@ import type { User } from '$lib/types/user';
         <Palette size={18} />
         <span>Canvas</span>
       </button>
-
       <button
         class="space-y-4"
         onclick={() => handleNavigation("/evidence/hash")}
@@ -95,7 +83,6 @@ import type { User } from '$lib/types/user';
         <span>Hash Verify</span>
       </button>
     </nav>
-
     <!-- Search -->
     <div class="space-y-4">
       <SearchInput
@@ -104,7 +91,6 @@ import type { User } from '$lib/types/user';
         search={handleSearch}
       />
     </div>
-
     <!-- User Menu -->
     <div class="space-y-4">
       {#if user}
@@ -127,7 +113,6 @@ import type { User } from '$lib/types/user';
             <span class="space-y-4">{user.name}</span>
             <MoreVertical size={16} />
           </button>
-
           {#if userMenuOpen}
             <div class="space-y-4" role="menu">
               <button
@@ -138,7 +123,6 @@ import type { User } from '$lib/types/user';
                 <UserIcon size={16} />
                 Profile
               </button>
-
               <button
                 class="space-y-4"
                 onclick={() => handleNavigation("/settings")}
@@ -147,9 +131,7 @@ import type { User } from '$lib/types/user';
                 <Settings size={16} />
                 Settings
               </button>
-
               <hr class="space-y-4" />
-
               <button
                 class="space-y-4"
                 onclick={() => handleLogout()}
@@ -173,7 +155,6 @@ import type { User } from '$lib/types/user';
     </div>
   </div>
 </header>
-
 <!-- Click outside to close menu -->
 {#if userMenuOpen}
   <div
@@ -185,11 +166,11 @@ import type { User } from '$lib/types/user';
     aria-label="Close user menu"
   ></div>
 {/if}
-
 <style>
   /* @unocss-include */
   .app-header {
     position: fixed;
+d;
     top: 0;
     left: 0;
     right: 0;
@@ -361,6 +342,7 @@ import type { User } from '$lib/types/user';
 }
   .menu-overlay {
     position: fixed;
+d;
     top: 0;
     left: 0;
     right: 0;
@@ -395,4 +377,3 @@ import type { User } from '$lib/types/user';
       margin: 0 0.5rem;
 }}
 </style>
-

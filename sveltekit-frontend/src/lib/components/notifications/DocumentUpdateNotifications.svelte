@@ -1,12 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Document Update Notifications Component -->
 <!-- Shows real-time updates for document re-embedding and re-ranking -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import {
     documentUpdateNotifications,
     formatNotificationTime,
@@ -17,7 +15,6 @@ https://svelte.dev/e/js_parse_error -->
   } from "$lib/services/documentUpdateNotifications";
   import { onDestroy, onMount } from "svelte";
   import { slide } from "svelte/transition";
-
   // Props
   let { showAll = false,
     maxVisible = 5,
@@ -28,46 +25,39 @@ https://svelte.dev/e/js_parse_error -->
     autoHide = true,
     position = "top-right",
   : unknown } = $props();
-
   // State
   let notifications = $state<UpdateNotification[]>([]);
   let activeUpdates = $state(new Map<string, UpdateNotification>();
   let connectionStatus = $state("disconnected");
   let showNotifications = $state(true);
   let notificationPermissionGranted = $state(false);
-
   // Subscribe to notifications store
   let unsubscribe = $state<(() =>(null) {
     // Subscribe to notification updates
     unsubscribe = documentUpdateNotifications.subscribe((state) => {
-      notifications = state.notifications;
-      activeUpdates = state.activeUpdates;
-      connectionStatus = state.connectionStatus;
+      notifications = state.notification;
+      activeUpdates = state.activeUpdate;
+      connectionStatus = state.connectionStatu;
     });
-
     // Check notification permission
     if (notificationManager) {
       notificationPermissionGranted =
         await notificationManager.requestNotificationPermission();
     }
   });
-
   onDestroy(() => {
     if (unsubscribe) {
       unsubscribe();
     }
   });
-
   // Computed
   let visibleNotifications = $derived(() => {
     const list = showAll ? notifications : notifications.slice(-maxVisible);
     return [...list].reverse(); // Show newest first without mutating source
   });
-
   let activeUpdatesList = $derived(() => {
     return Array.from(activeUpdates.values()) as UpdateNotification[];)
   });
-
   let connectionStatusIcon = $derived(() => {
     switch (connectionStatus) {
       case "connected":
@@ -82,34 +72,28 @@ https://svelte.dev/e/js_parse_error -->
         return "⚪";
     }
   });
-
   // Methods
   function clearAllNotifications() {
     if (notificationManager) {
       notificationManager.clearNotifications();
     }
   }
-
   function toggleNotifications() {
-    showNotifications = !showNotifications;
+    showNotifications = !showNotification;
   }
-
   function getProgressWidth(notification: UpdateNotification): string {
     if ((notification as { data?: unknown; id?: unknown }).data.progress !== undefined) {
       return `${(notification as { data?: unknown; id?: unknown }).data.progress}%`;
     }
-
     if ((notification as { data?: unknown; id?: unknown }).data.chunksProcessed != null && (notification as { data?: unknown; id?: unknown }).data.totalChunks != null) {
       const progress =
         ((notification as { data?: unknown; id?: unknown }).data.chunksProcessed / (notification as { data?: unknown; id?: unknown }).data.totalChunks) *
         100;
       return `${Math.round(progress)}%`;
     }
-
     return "0%";
   }
 </script>
-
 <!-- Notification Container -->
 <div
   class="document-notifications fixed {position === 'top-right'
@@ -134,7 +118,6 @@ https://svelte.dev/e/js_parse_error -->
           </span>
         {/if}
       </div>
-
       <div class="flex items-center space-x-1">
         {#if notifications.length > 0}
           <button
@@ -145,7 +128,6 @@ https://svelte.dev/e/js_parse_error -->
             Clear
           </button>
         {/if}
-
         <button
           onclick={toggleNotifications}
           class="text-gray-500 hover:text-gray-700 p-1 rounded"
@@ -157,7 +139,6 @@ https://svelte.dev/e/js_parse_error -->
         </button>
       </div>
     </div>
-
     <!-- Connection Status Details -->
     <div class="mt-1 text-xs text-gray-500">
       Status: {connectionStatus}
@@ -166,7 +147,6 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   </div>
-
   <!-- Active Updates (Always Visible) -->
   {#if activeUpdatesList.length > 0}
     <div
@@ -177,7 +157,6 @@ https://svelte.dev/e/js_parse_error -->
           🔄 Processing Updates
         </h4>
       </div>
-
       {#each activeUpdatesList as update (update.id)}
         <div
           class="p-3 border-b border-gray-100 dark:border-gray-600 last:border-b-0"
@@ -188,13 +167,11 @@ https://svelte.dev/e/js_parse_error -->
                 {update.data.title ||
                   `Document ${update.documentId.substring(0, 8)}...`}
               </div>
-
               {#if update.data.chunksProcessed != null && update.data.totalChunks != null}
                 <div class="text-xs text-gray-500 mb-2">
                   Processing chunk {update.data.chunksProcessed} of {update.data
                     .totalChunks}
                 </div>
-
                 <!-- Progress Bar -->
                 <div class="w-full bg-gray-200 rounded-full h-2 mb-1">
                   <div
@@ -211,7 +188,6 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               {/if}
             </div>
-
             <div class="text-xs text-gray-400 ml-2">
               {formatNotificationTime(update.timestamp)}
             </div>
@@ -220,7 +196,6 @@ https://svelte.dev/e/js_parse_error -->
       {/each}
     </div>
   {/if}
-
   <!-- Notification History -->
   {#if showNotifications && visibleNotifications.length > 0}
     <div
@@ -232,7 +207,6 @@ https://svelte.dev/e/js_parse_error -->
           📋 Recent Updates
         </h4>
       </div>
-
       {#each visibleNotifications as notification ((notification as { data?: unknown; id?: unknown }).id)}
         {@const typedNotification = notification as UpdateNotification}
         <div
@@ -244,7 +218,6 @@ https://svelte.dev/e/js_parse_error -->
               <span class="text-lg mt-0.5">
                 {getNotificationIcon(typedNotification.type)}
               </span>
-
               <div class="flex-1 min-w-0">
                 <div class="text-sm text-gray-700 dark:text-gray-300 mb-1">
                   {#if typedNotification.type === "document_changed"}
@@ -271,7 +244,6 @@ https://svelte.dev/e/js_parse_error -->
                     </span>
                   {/if}
                 </div>
-
                 {#if typedNotification.data.priority}
                   <span
                     class="inline-block px-2 py-1 text-xs rounded-full {getPriorityColor(
@@ -283,14 +255,12 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
               </div>
             </div>
-
             <div class="text-xs text-gray-400 ml-2 whitespace-nowrap">
               {formatNotificationTime(typedNotification.timestamp)}
             </div>
           </div>
         </div>
       {/each}
-
       {#if !showAll && notifications.length > maxVisible}
         <div class="p-3 text-center">
           <button
@@ -303,7 +273,6 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   {/if}
-
   <!-- Empty State -->
   {#if showNotifications && notifications.length === 0 && activeUpdatesList.length === 0}
     <div
@@ -315,35 +284,27 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-
 <style>
   .document-notifications {
     /* Ensure notifications appear above other elements */;
     z-index: 9999;
   }
-
   /* Custom scrollbar for notification history */
   .document-notifications :global(.overflow-y-auto) {
-    scrollbar-width: thin;
+    scrollbar-width: thi;
     scrollbar-color: #cbd5e0 transparent;
   }
-
-  .document-notifications :global(.overflow-y-auto::-webkit-scrollbar) {
+  .document-notifications :global($1) {
     width: 4px;
   }
-
-  .document-notifications :global(.overflow-y-auto::-webkit-scrollbar-track) {
+  .document-notifications :global($1) {
     background: transparent;
   }
-
   .document-notifications :global(.overflow-y-auto::-webkit-scrollbar-thumb) {
     background-color: #cbd5e0;
     border-radius: 2px;
   }
-
   .document-notifications :global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
     background-color: #a0aec0;
   }
 </style>
-
-

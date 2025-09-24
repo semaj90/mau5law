@@ -1,8 +1,6 @@
 // Production Performance Monitor - Real-time Dashboard
 // Monitors event loops, caching efficiency, interrupt handling, and system optimization
-
 import { writable, derived } from 'svelte/store';
-
 // Performance metrics store
 export const performanceMetrics = writable({
   system: {
@@ -20,7 +18,7 @@ export const performanceMetrics = writable({
   },
   optimization: {
     eventLoop: {
-      enabled: true,
+      enabled: true
       priority: 'high',
       batchSize: 100,
       processingRate: 0,
@@ -44,7 +42,7 @@ export const performanceMetrics = writable({
       processing_time: 0,
     },
     simd: {
-      enabled: true,
+      enabled: true
       operations: 0,
       speedup: 0,
       efficiency: 0,
@@ -57,21 +55,18 @@ export const performanceMetrics = writable({
     }
   },
   autoSolve: {
-    enabled: true,
+    enabled: true
     requests: 0,
     successful: 0,
     errors_fixed: 0,
     success_rate: 0,
   }
 });
-
 // Real-time update interval
 let updateInterval;
-
 // Start performance monitoring
 export function startMonitoring() {
   console.log('🔍 Starting production performance monitoring...');
-
   updateInterval = setInterval(async () => {
     try {
       await updateMetrics();
@@ -80,7 +75,6 @@ export function startMonitoring() {
     }
   }, 2000); // Update every 2 seconds
 }
-
 // Stop monitoring
 export function stopMonitoring() {
   if (updateInterval) {
@@ -88,7 +82,6 @@ export function stopMonitoring() {
     console.log('🛑 Performance monitoring stopped');
   }
 }
-
 // Update all performance metrics
 async function updateMetrics() {
   const metrics = await fetchMetrics();
@@ -98,7 +91,6 @@ async function updateMetrics() {
     timestamp: Date.now(),
   });
 }
-
 // Fetch metrics from various sources
 async function fetchMetrics() {
   const results = await Promise.allSettled([
@@ -107,21 +99,18 @@ async function fetchMetrics() {
     fetchOptimizationMetrics(),
     fetchAutoSolveMetrics()
   ]);
-
   return {
-    system: results[0].status === 'fulfilled' ? results[0].value: Record<string, any>,
-    services: results[1].status === 'fulfilled' ? results[1].value : Record<string, any>,
-    optimization: results[2].status === 'fulfilled' ? results[2].value : Record<string, any>,
-    autoSolve: results[3].status === 'fulfilled' ? results[3].value : Record<string, any>
+    system: results[0].status === 'fulfilled' ? results[0].value: { [key: string]: any },
+    services: results[1].status === 'fulfilled' ? results[1].value : { [key: string]: any },
+    optimization: results[2].status === 'fulfilled' ? results[2].value : { [key: string]: any },
+    autoSolve: results[3].status === 'fulfilled' ? results[3].value : { [key: string]: any }
   };
 }
-
 // System performance metrics
 async function fetchSystemMetrics() {
   try {
     const response = await fetch('/api/system/metrics');
     const data = await response.json();
-
     return {
       cpu: data.cpu || 0,
       memory: data.memory || 0,
@@ -138,7 +127,6 @@ async function fetchSystemMetrics() {
     };
   }
 }
-
 // Service health metrics
 async function fetchServiceMetrics() {
   const services = {
@@ -148,9 +136,7 @@ async function fetchServiceMetrics() {
     context7MultiCore: { port: 4100, path: '/health' },
     enhancedRag: { port: 8094, path: '/health' }
   };
-
   const results = {};
-
   for (const [name, config] of Object.entries(services)) {
     try {
       const start = performance.now();
@@ -159,7 +145,6 @@ async function fetchServiceMetrics() {
         timeout: 3000,
       });
       const responseTime = performance.now() - start;
-
       results[name] = {
         status: response.ok ? 'healthy' : 'unhealthy',
         responseTime: Math.round(responseTime),
@@ -174,10 +159,8 @@ async function fetchServiceMetrics() {
       };
     }
   }
-
   return results;
 }
-
 // Optimization metrics
 async function fetchOptimizationMetrics() {
   try {
@@ -188,7 +171,7 @@ async function fetchOptimizationMetrics() {
     // Simulate optimization metrics for demo
     return {
       eventLoop: {
-        enabled: true,
+        enabled: true
         priority: 'high',
         batchSize: 100,
         processingRate: Math.random() * 1000 + 500,
@@ -222,7 +205,7 @@ async function fetchOptimizationMetrics() {
         processing_time: Math.random() * 50 + 10,
       },
       simd: {
-        enabled: true,
+        enabled: true
         operations: Math.random() * 50000,
         speedup: 3.2 + Math.random() * 1.8,
         efficiency: 92 + Math.random() * 7,
@@ -236,7 +219,6 @@ async function fetchOptimizationMetrics() {
     };
   }
 }
-
 // AutoSolve metrics
 async function fetchAutoSolveMetrics() {
   try {
@@ -245,7 +227,7 @@ async function fetchAutoSolveMetrics() {
     return data;
   } catch (error) {
     return {
-      enabled: true,
+      enabled: true
       requests: Math.random() * 100,
       successful: Math.random() * 90,
       errors_fixed: Math.random() * 50,
@@ -254,51 +236,40 @@ async function fetchAutoSolveMetrics() {
     };
   }
 }
-
 // Derived performance scores
 export const performanceScore = derived(performanceMetrics, $metrics => {
   if (!$metrics.system || !$metrics.optimization) return 0;
-
   const systemScore = calculateSystemScore($metrics.system);
   const optimizationScore = calculateOptimizationScore($metrics.optimization);
   const serviceScore = calculateServiceScore($metrics.services);
-
   return Math.round((systemScore + optimizationScore + serviceScore) / 3);
 });
-
 function calculateSystemScore(system) {
   const cpuScore = Math.max(0, 100 - system.cpu);
   const memoryScore = Math.max(0, 100 - system.memory);
   const lagScore = Math.max(0, 100 - (system.eventLoopLag * 10);
-
   return (cpuScore + memoryScore + lagScore) / 3;
 }
-
 function calculateOptimizationScore(optimization) {
   const cacheScore = optimization.caching?.total?.efficiency || 0;
   const interruptScore = optimization.interrupts?.success_rate || 0;
   const simdScore = optimization.simd?.efficiency || 0;
   const jsonbScore = optimization.jsonb?.optimization_level || 0;
-
   return (cacheScore + interruptScore + simdScore + jsonbScore) / 4;
 }
-
 function calculateServiceScore(services) {
   if (!services) return 0;
-
   const serviceScores = Object.values(services).map(service => {
     if (service.status === 'healthy') return 100;
     if (service.status === 'unhealthy') return 50;
     return 0;
   });
-
   return serviceScores.reduce((sum, score) => sum + score, 0) / serviceScores.length;
 }
-
 // Export monitoring functions
 export const monitoring = {
-  start: startMonitoring,
-  stop: stopMonitoring,
+  start: startMonitoring
+  stop: stopMonitoring
   getMetrics: () => performanceMetrics,
   getScore: () => performanceScore,
 };

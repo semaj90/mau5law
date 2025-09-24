@@ -2,8 +2,7 @@
  * Unified Database Interface - Updated for Centralized Connection Management
  * Single entry point for all database operations across the legal AI platform
  */
-
-// Import centralized connection management;
+// Import centralized connection management
 import {
   getAppPool,
   getAdminPool,
@@ -15,8 +14,7 @@ import {
   closeDatabaseConnections,
   getDatabaseHealth
 } from './connection-manager.js';
-
-// Import database configuration;
+// Import database configuration
 import {
   getDatabaseConfig,
   getDatabaseUrls,
@@ -26,12 +24,10 @@ import {
   DATABASE_CONSTANTS,
   getBrowserSafeDatabaseInfo
 } from '$lib/config/database.js';
-
 // Import schema and types
 import * as schema from './schema-postgres.js';
 import type { DatabaseConfig, DatabaseUrls } from '$lib/config/database.js';
-
-// Re-export everything for backwards compatibility;
+// Re-export everything for backwards compatibility
 export {
   getAppPool,
   getAdminPool,
@@ -50,23 +46,18 @@ export {
   DATABASE_CONSTANTS,
   getBrowserSafeDatabaseInfo
 };
-
 // Re-export schema
 export * from './schema-postgres.js';
 export { schema };
-
 // Export types
 export type { DatabaseConfig, DatabaseUrls };
-
 // Default database instances (lazy initialization)
 export const db = getDrizzleDb();
 export const sql = getPostgresJsClient();
 export const pool = getAppPool();
-
 // Legacy compatibility
 export const isPostgreSQL = true;
-
-// Table exports for backwards compatibility;
+// Table exports for backwards compatibility
 export const {
   users,
   sessions,
@@ -76,8 +67,7 @@ export const {
   caseActivities,
   statutes
 } = schema;
-
-// Type-safe table lookup;
+// Type-safe table lookup
 export function getTableByName(tableName: string) {
   const tableMap = {
     users,
@@ -88,25 +78,21 @@ export function getTableByName(tableName: string) {
     caseActivities,
     statutes
   };
-
   return tableMap[tableName as keyof typeof tableMap];
 }
-
-// Enhanced health check using centralized connection manager;
+// Enhanced health check using centralized connection manager
 export async function healthCheck() {
   try {
     const health = await getDatabaseHealth();
     const connection = await testDatabaseConnection();
-
     if (health.status === 'unhealthy') {
       return {
         status: "unhealthy" as const,
-        error: health.error || 'Database connection failed',;
+        error: health.error || 'Database connection failed',
         timestamp: new Date()
       };
     }
-
-    // Test specific tables if connection is healthy;
+    // Test specific tables if connection is healthy
     if (connection.success) {
       try {
         const tableTests = await Promise.allSettled([
@@ -114,15 +100,13 @@ export async function healthCheck() {
           db.select().from(sessions).limit(1),
           db.select().from(cases).limit(1)
         ]);
-
         const failedTests = tableTests.filter(item => item.status) === 'rejected');
-
         if (failedTests.length > 0) {
           return {
             status: "degraded" as const,
             error: `${failedTests.length} table(s) inaccessible`,
             timestamp: new Date(),
-            tables: connection.tables || [],;
+            tables: connection.tables || [],
             extensions: connection.extensions || []
           };
         }
@@ -131,59 +115,53 @@ export async function healthCheck() {
         // Still return healthy if basic connection works
       }
     }
-
     return {
       status: "healthy" as const,
       timestamp: new Date(),
       version: connection.version,
-      tables: connection.tables?.length || 0,;
+      tables: connection.tables?.length || 0,
       extensions: connection.extensions || [],
       poolStats: health.pools
     };
   } catch (error: any) {
     return {
       status: "unhealthy" as const,
-      error: error.message,;
+      error: error.message,
       timestamp: new Date()
     };
   }
 }
-
-// System health with comprehensive checks;
+// System health with comprehensive checks
 export async function getSystemHealth() {
   const dbHealth = await getDatabaseHealth();
   const connectionTest = await testDatabaseConnection();
   const appHealth = await healthCheck();
-
   return {
     overall: appHealth.status,
     database: {
       status: dbHealth.status,
       config: dbHealth.config,
-      connection: connectionTest,
+      connection: connectionTest
       pools: dbHealth.pools
     },
-    application: appHealth,
-    timestamp: new Date().toISOString(),;
+    application: appHealth
+    timestamp: new Date().toISOString(),
     version: '2.0.0-unified'
   };
 }
-
-// Vector store with centralized connection (updated for embeddinggemma);
+// Vector store with centralized connection (updated for embeddinggemma)
 export function getVectorStore() {
   try {
     // Import LangChain components
     const { PGVectorStore } = require("@langchain/community/vectorstores/pgvector");
     const { OllamaEmbeddings } = require("@langchain/community/embeddings/ollama");
-
     const embeddings = new OllamaEmbeddings({
       model: "embeddinggemma:latest",
       baseUrl: "http://localhost:11434"
     });
-
     return new PGVectorStore(embeddings, {
       pool: getAppPool(),
-      tableName: "vector_embeddings",;
+      tableName: "vector_embeddings",
       columns: {
         idColumnName: "id",
         vectorColumnName: "embedding",
@@ -196,16 +174,13 @@ export function getVectorStore() {
     throw new Error(`Vector store unavailable: ${error.message}`);
   }
 }
-
-// Database migration utilities;
+// Database migration utilities
 export async function runMigration(migrationName: string, migrationSql: string) {
   return executeQuery(async (client) => {
     const start = Date.now();
-
     try {
       await client.query('BEGIN');
       await client.query(migrationSql);
-
       // Record migration in history
       await client.query(`
         INSERT INTO migration_history (migration_name, execution_time_ms, status)
@@ -215,13 +190,10 @@ export async function runMigration(migrationName: string, migrationSql: string) 
           execution_time_ms = $2,
           status = 'completed'
       `, [migrationName, Date.now() - start]);
-
       await client.query('COMMIT');
-
       return { success: true, executionTime: Date.now() - start };
     } catch (error) {
       await client.query('ROLLBACK');
-
       // Record failed migration
       await client.query(`
         INSERT INTO migration_history (migration_name, status, error_message)
@@ -231,7 +203,6 @@ export async function runMigration(migrationName: string, migrationSql: string) 
           status = 'failed',
           error_message = $2
       `, [migrationName, error.message]);
-
       throw error;
     }
   }, true); // Use admin connection for migrations

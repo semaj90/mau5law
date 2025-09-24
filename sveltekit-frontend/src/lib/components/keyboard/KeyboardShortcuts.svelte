@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props import type { User } from '$lib/types/user';
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
@@ -20,185 +19,179 @@ https://svelte.dev/e/js_parse_error -->
     Users,
     X,
   } from "lucide-svelte";
-
   // Convert to Svelte 5 $props
   let { open = $bindable(false),
     shortcutsHelp
     }: { open = $bindable(false),
     shortcutsHelp
   : unknown } = $props();
-
   // Keyboard shortcuts configuration
   const shortcuts = [
     {
-      category: "Navigation",;
+      category: "Navigation",
       items: [
         {
           key: "Ctrl+/",
           description: "Open command palette",
-          action: () => (open = true),;
+          action: () => (open = true),
         },
         {
           key: "Ctrl+H",
           description: "Go to dashboard",
-          action: () => goto("/dashboard"),;
+          action: () => goto("/dashboard"),
         },
         {
           key: "Ctrl+Shift+C",
           description: "Go to cases",
-          action: () => goto("/cases"),;
+          action: () => goto("/cases"),
         },
         {
           key: "Ctrl+Shift+E",
           description: "Go to evidence",
-          action: () => goto("/evidence"),;
+          action: () => goto("/evidence"),
         },
         {
           key: "Ctrl+Shift+P",
           description: "Go to persons",
-          action: () => goto("/criminals"),;
+          action: () => goto("/criminals"),
         },
         {
           key: "Ctrl+Shift+S",
           description: "Go to search",
-          action: () => goto("/search"),;
+          action: () => goto("/search"),
         },
         {
           key: "Ctrl+Shift+R",
           description: "Go to reports",
-          action: () => goto("/reports"),;
+          action: () => goto("/reports"),
         },
         {
           key: "Ctrl+,",
           description: "Open settings",
-          action: () => goto("/settings"),;
+          action: () => goto("/settings"),
         },
       ],
     },
     {
-      category: "Creation",;
+      category: "Creation",
       items: [
         {
           key: "Ctrl+N",
           description: "New case",
-          action: () => goto("/cases/new"),;
+          action: () => goto("/cases/new"),
         },
         {
           key: "Ctrl+Shift+N",
           description: "New person",
-          action: () => goto("/criminals/new"),;
+          action: () => goto("/criminals/new"),
         },
         {
           key: "Ctrl+U",
           description: "Upload evidence",
-          action: () => goto("/evidence"),;
+          action: () => goto("/evidence"),
         },
         {
           key: "Ctrl+Shift+U",
           description: "Generate report",
-          action: () => goto("/reports/new"),;
+          action: () => goto("/reports/new"),
         },
       ],
     },
     {
-      category: "Search & Access",;
+      category: "Search & Access",
       items: [
         {
           key: "Ctrl+K",
           description: "Quick search",
-          action: () => focusSearch(),;
+          action: () => focusSearch(),
         },
         {
           key: "Ctrl+F",
           description: "Find in page",
-          action: () => triggerPageSearch(),;
+          action: () => triggerPageSearch(),
         },
         {
           key: "Ctrl+Shift+F",
           description: "Global search",
-          action: () => goto("/search"),;
+          action: () => goto("/search"),
         },
         {
           key: "F1",
           description: "Help & documentation",
-          action: () => goto("/help"),;
+          action: () => goto("/help"),
         },
         {
           key: "F11",
           description: "Toggle fullscreen",
-          action: () => toggleFullscreen(),;
+          action: () => toggleFullscreen(),
         },
       ],
     },
     {
-      category: "Interface",;
+      category: "Interface",
       items: [
         {
           key: "Escape",
           description: "Close modals/overlays",
-          action: () => closeModals(),;
+          action: () => closeModals(),
         },
         {
           key: "Ctrl+Shift+D",
           description: "Toggle dark mode",
-          action: () => toggleDarkMode(),;
+          action: () => toggleDarkMode(),
         },
         {
           key: "Ctrl+Shift+L",
           description: "Toggle layout",
-          action: () => toggleLayout(),;
+          action: () => toggleLayout(),
         },
         {
           key: "Ctrl+R",
           description: "Refresh page",
-          action: () => window.location.reload(),;
+          action: () => window.location.reload(),
         },
       ],
     },
     {
-      category: "Accessibility",;
+      category: "Accessibility",
       items: [
         {
           key: "Alt+Shift+H",
           description: "Toggle heading navigation",
-          action: () => toggleHeadingNav(),;
+          action: () => toggleHeadingNav(),
         },
         {
           key: "Alt+Shift+L",
           description: "Toggle landmark navigation",
-          action: () => toggleLandmarkNav(),;
+          action: () => toggleLandmarkNav(),
         },
         {
           key: "Alt+Shift+F",
           description: "Toggle focus indicators",
-          action: () => toggleFocusIndicators(),;
+          action: () => toggleFocusIndicators(),
         },
         {
-          key: "Ctrl+Alt+A",;
-          description: "Accessibility settings",;
-          action: () => goto("/settings?tab=accessibility"),;
+          key: "Ctrl+Alt+A",
+          description: "Accessibility settings",
+          action: () => goto("/settings?tab=accessibility"),
         },
       ],
     },
   ];
-
   import { keyboardShortcuts, loadShortcutsFromAI } from '$lib/stores';
   // Duplicate import removed: onMount is already imported above
   import { get } from 'svelte/store';
-
   let searchQuery = $state("");
   let selectedIndex = $state(0);
   let filteredShortcuts = $state([]);
   let filteredCommands = $state([]);
   let commandInput: HTMLInputElement;
-
   // Subscribe to keyboardShortcuts store for dynamic/AI-driven shortcuts
   let allShortcuts = $state(get(keyboardShortcuts);
   const unsubscribeShortcuts = keyboardShortcuts.subscribe((shortcuts) => {
-    allShortcuts = shortcuts;
+    allShortcuts = shortcut;
     filterShortcuts();
   });
-
   function filterShortcuts() {
     if (searchQuery.trim()) {
       filteredShortcuts = allShortcuts.filter(
@@ -207,104 +200,100 @@ https://svelte.dev/e/js_parse_error -->
           s.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
     } else {
-      filteredShortcuts = allShortcuts;
+      filteredShortcuts = allShortcut;
     }
     selectedIndex = 0;
   }
-
   // Convert reactive statement to Svelte 5 $effect
   $effect(() => {
     filterShortcuts();
   });
-
   // Optionally, load AI-driven shortcuts on mount
   $effect(() => {
     (async () => {
 await loadShortcutsFromAI();
     })();
   });
-
   // Command palette items
   const commands = [
     {
       title: "Persons of interest",
       description: "Persons of interest",
-      icon: Users,
+      icon: Users
       action: () => goto("/criminals"),
-      keywords: ["people", "suspects"],;
+      keywords: ["people", "suspects"],
     },
     {
       title: "Search",
       description: "Global search",
-      icon: Search,
+      icon: Search
       action: () => goto("/search"),
-      keywords: ["find", "lookup"],;
+      keywords: ["find", "lookup"],
     },
     {
       title: "Reports",
       description: "Generate reports",
-      icon: FileText,
+      icon: FileText
       action: () => goto("/reports"),
-      keywords: ["export", "print"],;
+      keywords: ["export", "print"],
     },
     {
       title: "Settings",
       description: "Application settings",
-      icon: Settings,
+      icon: Settings
       action: () => goto("/settings"),
-      keywords: ["config", "preferences"],;
+      keywords: ["config", "preferences"],
     },
     {
       title: "Help",
       description: "Help & documentation",
-      icon: HelpCircle,
+      icon: HelpCircle
       action: () => goto("/help"),
-      keywords: ["support", "docs"],;
+      keywords: ["support", "docs"],
     },
     {
       title: "New Case",
       description: "Create a new case",
-      icon: Plus,
+      icon: Plus
       action: () => goto("/cases/new"),
-      keywords: ["create", "add"],;
+      keywords: ["create", "add"],
     },
     {
       title: "New Person",
       description: "Add person of interest",
-      icon: Plus,
+      icon: Plus
       action: () => goto("/criminals/new"),
-      keywords: ["create", "add"],;
+      keywords: ["create", "add"],
     },
     {
       title: "Upload Evidence",
       description: "Upload evidence files",
-      icon: Plus,
+      icon: Plus
       action: () => goto("/evidence"),
-      keywords: ["upload", "files"],;
+      keywords: ["upload", "files"],
     },
     {
       title: "Hash Verification",
       description: "Verify evidence integrity",
-      icon: Search,
+      icon: Search
       action: () => goto("/evidence/hash"),
-      keywords: ["integrity", "verify"],;
+      keywords: ["integrity", "verify"],
     },
     {
       title: "Analytics",
       description: "View analytics",
-      icon: Search,
+      icon: Search
       action: () => goto("/analytics"),
-      keywords: ["stats", "metrics"],;
+      keywords: ["stats", "metrics"],
     },
     {
       title: "Canvas Board",
       description: "Evidence canvas",
-      icon: Search,;
-      action: () => goto("/interactive-canvas"),;
-      keywords: ["board", "visual"],;
+      icon: Search
+      action: () => goto("/interactive-canvas"),
+      keywords: ["board", "visual"],
     },
   ];
-
   // Convert reactive statement to Svelte 5 $effect
   $effect(() => {
     if (searchQuery.trim()) {
@@ -317,18 +306,17 @@ await loadShortcutsFromAI();
           )
       );
     } else {
-      filteredCommands = commands;
+      filteredCommands = command;
     }
     selectedIndex = 0;
   });
   $effect(() => {
     if (!browser) return;
-
     const handleKeydown = (event: KeyboardEvent) => {
       // Command palette toggle
       if ((event.ctrlKey || event.metaKey) && event.key === "/") {
         event.preventDefault();
-        open = !open;
+        open = !ope;
         return;
   }
       // Handle command palette navigation
@@ -363,14 +351,11 @@ await loadShortcutsFromAI();
         shortcut.action();
   }
     };
-
     document.addEventListener("keydown", handleKeydown);
-
     return () => {
       document.removeEventListener("keydown", handleKeydown);
     };
   });
-
   function findShortcut(event: KeyboardEvent) {
     const key = formatKeyCombo(event);
     return shortcuts
@@ -379,11 +364,9 @@ await loadShortcutsFromAI();
   }
   function formatKeyCombo(event: KeyboardEvent): string {
     const parts: string[] = [];
-
     if (event.ctrlKey || event.metaKey) parts.push("Ctrl");
     if (event.altKey) parts.push("Alt");
     if (event.shiftKey) parts.push("Shift");
-
     // Handle special keys
     const specialKeys: Record<string, string> = {
       " ": "Space",
@@ -394,29 +377,25 @@ await loadShortcutsFromAI();
       ",": ",",
       Enter: "Enter",
     };
-
     const key = specialKeys[event.key] || event.key.toUpperCase();
     parts.push(key);
-
     return parts.join("+");
   }
   function executeCommand(command: unknown) {
     if (!command) return;
-
     open = false;
     searchQuery = "";
-
     try {
       command.action();
       notifications.add({
-        type: "info",;
-        title: "Command Executed",;
-        message: command.title,;
+        type: "info",
+        title: "Command Executed",
+        message: command.title,
       });
     } catch (error) {
       notifications.add({
-        type: "error",;
-        title: "Command Failed",;
+        type: "error",
+        title: "Command Failed",
         message: `Failed to execute: ${command.title}`,
       });
   }}
@@ -447,7 +426,6 @@ await loadShortcutsFromAI();
   function toggleDarkMode() {
     const html = document.documentElement;
     const isDark = html.classList.contains("dark");
-
     if (isDark) {
       html.classList.remove("dark");
       localStorage.setItem("theme", "light");
@@ -456,17 +434,17 @@ await loadShortcutsFromAI();
       localStorage.setItem("theme", "dark");
   }
     notifications.add({
-      type: "info",;
-      title: "Theme Changed",;
+      type: "info",
+      title: "Theme Changed",
       message: `Switched to ${isDark ? "light" : "dark"} mode`,
     });
   }
   function toggleLayout() {
     // This would toggle between different layout modes
     notifications.add({
-      type: "info",;
-      title: "Layout Toggle",;
-      message: "Layout toggled (feature to be implemented)",;
+      type: "info",
+      title: "Layout Toggle",
+      message: "Layout toggled (feature to be implemented)",
     });
   }
   function toggleHeadingNav() {
@@ -495,13 +473,12 @@ await loadShortcutsFromAI();
       document.getElementById("focus-indicators") ||
       document.createElement("style");
     style.id = "focus-indicators";
-
     if (style.textContent) {
       style.textContent = "";
       notifications.add({
-        type: "info",;
-        title: "Focus Indicators",;
-        message: "Enhanced focus indicators disabled",;
+        type: "info",
+        title: "Focus Indicators",
+        message: "Enhanced focus indicators disabled",
       });
     } else {
       style.textContent = `
@@ -511,16 +488,15 @@ await loadShortcutsFromAI();
   }
       `;
       notifications.add({
-        type: "info",;
-        title: "Focus Indicators",;
-        message: "Enhanced focus indicators enabled",;
+        type: "info",
+        title: "Focus Indicators",
+        message: "Enhanced focus indicators enabled",
       });
   }
     if (!style.parentNode) {
       document.head.appendChild(style);
     }
   }
-
   // Focus management for command palette - convert to Svelte 5 $effect
   $effect(() => {
     if (open && commandInput) {
@@ -528,7 +504,6 @@ await loadShortcutsFromAI();
     }
   });
 </script>
-
 <!-- Command Palette Overlay -->
 {#if open}
   <div
@@ -566,7 +541,6 @@ await loadShortcutsFromAI();
           </button>
         </div>
       </div>
-
       <div class="command-palette-body">
         {#if filteredShortcuts.length > 0}
           <ul
@@ -612,7 +586,6 @@ await loadShortcutsFromAI();
           </div>
         {/if}
       </div>
-
       <div class="command-palette-footer">
         <div class="footer-hint">
           <kbd>↑↓</kbd> to navigate
@@ -623,17 +596,15 @@ await loadShortcutsFromAI();
     </div>
   </div>
 {/if}
-
 <!-- Keyboard Shortcuts Help Modal -->
 <div class="space-y-4">
   {@render shortcutsHelp?.()}
 </div>
-
 <!-- Shortcut definitions for screen readers -->
 <div class="space-y-4" aria-live="polite" id="shortcuts-announcements"></div>
-
 <style>/* @unocss-include */ .command-palette-overlay {
     position: fixed;
+d;
     top: 0;
     left: 0;
     right: 0;
@@ -859,4 +830,3 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
       transition: none;
 }}
 </style>
-

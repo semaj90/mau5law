@@ -2,10 +2,8 @@
  * 🎨 Enhanced-Bits Design System
  * Gaming-inspired design tokens and theme utilities for Legal AI Platform
  */
-
 import type { ConsolePalette } from './retro-console-palettes';
 import { CONSOLE_PALETTES, applyConsolePalette } from './retro-console-palettes';
-
 export interface DesignTokens {
   spacing: {
     xs: string;
@@ -65,7 +63,6 @@ export interface DesignTokens {
     };
   };
 }
-
 export interface CustomTheme extends DesignTokens {
   name: string;
   palette: ConsolePalette;
@@ -77,7 +74,6 @@ export interface CustomTheme extends DesignTokens {
     glowEffects: boolean;
   };
 }
-
 // Base design tokens (NES-inspired minimal design)
 export const BASE_DESIGN_TOKENS: DesignTokens = {
   spacing: {
@@ -138,7 +134,6 @@ export const BASE_DESIGN_TOKENS: DesignTokens = {
     }
   }
 };
-
 // Predefined theme configurations
 export const THEME_PRESETS = {
   nesClassic: {
@@ -146,9 +141,9 @@ export const THEME_PRESETS = {
     palette: CONSOLE_PALETTES.nes,
     mode: 'retro' as const,
     effects: {
-      pixelatedBorders: true,
-      scanlines: false,
-      crtEffect: false,
+      pixelatedBorders: true
+      scanlines: false
+      crtEffect: false
       glowEffects: false
     }
   },
@@ -157,9 +152,9 @@ export const THEME_PRESETS = {
     palette: CONSOLE_PALETTES.snes,
     mode: 'retro' as const,
     effects: {
-      pixelatedBorders: false,
-      scanlines: true,
-      crtEffect: true,
+      pixelatedBorders: false
+      scanlines: true
+      crtEffect: true
       glowEffects: true
     }
   },
@@ -168,9 +163,9 @@ export const THEME_PRESETS = {
     palette: CONSOLE_PALETTES.ps1,
     mode: 'dark' as const,
     effects: {
-      pixelatedBorders: false,
-      scanlines: false,
-      crtEffect: false,
+      pixelatedBorders: false
+      scanlines: false
+      crtEffect: false
       glowEffects: true
     }
   },
@@ -179,9 +174,9 @@ export const THEME_PRESETS = {
     palette: CONSOLE_PALETTES.n64,
     mode: 'dark' as const,
     effects: {
-      pixelatedBorders: true,
-      scanlines: false,
-      crtEffect: false,
+      pixelatedBorders: true
+      scanlines: false
+      crtEffect: false
       glowEffects: true
     }
   },
@@ -190,23 +185,21 @@ export const THEME_PRESETS = {
     palette: CONSOLE_PALETTES.ps2,
     mode: 'dark' as const,
     effects: {
-      pixelatedBorders: false,
-      scanlines: false,
-      crtEffect: false,
+      pixelatedBorders: false
+      scanlines: false
+      crtEffect: false
       glowEffects: true
     }
   }
 } as const;
-
 /**
  * Create a custom theme by combining design tokens with a console palette
  */
 export function createCustomTheme(
-  themeName: keyof typeof THEME_PRESETS,
+  themeName: keyof typeof THEME_PRESETS
   overrides?: Partial<CustomTheme>
 ): CustomTheme {
   const preset = THEME_PRESETS[themeName];
-
   return {
     ...BASE_DESIGN_TOKENS,
     name: preset.name,
@@ -216,65 +209,52 @@ export function createCustomTheme(
     ...overrides
   };
 }
-
 /**
  * Apply design system theme to document root
  */
 export function applyDesignSystemToDocument(theme: CustomTheme): void {
   const root = document.documentElement;
-
   // Apply console palette first
   applyConsolePalette(Object.keys(CONSOLE_PALETTES).find(
     key => CONSOLE_PALETTES[key as keyof typeof CONSOLE_PALETTES] === theme.palette
   ) as keyof typeof CONSOLE_PALETTES);
-
   // Apply spacing tokens
   Object.entries(theme.spacing).forEach(([key, value]) => {
     root.style.setProperty(`--spacing-${key}`, value);
   });
-
   // Apply typography tokens
   Object.entries(theme.typography.fontFamily).forEach(([key, value]) => {
     root.style.setProperty(`--font-${key}`, value);
   });
-
   Object.entries(theme.typography.fontSize).forEach(([key, value]) => {
     root.style.setProperty(`--text-${key}`, value);
   });
-
   Object.entries(theme.typography.lineHeight).forEach(([key, value]) => {
     root.style.setProperty(`--leading-${key}`, value);
   });
-
   // Apply border radius tokens
   Object.entries(theme.borderRadius).forEach(([key, value]) => {
     root.style.setProperty(`--rounded-${key}`, value);
   });
-
   // Apply shadow tokens
   Object.entries(theme.shadows).forEach(([key, value]) => {
     root.style.setProperty(`--shadow-${key}`, value);
   });
-
   // Apply animation tokens
   Object.entries(theme.animations.duration).forEach(([key, value]) => {
     root.style.setProperty(`--duration-${key}`, value);
   });
-
   Object.entries(theme.animations.easing).forEach(([key, value]) => {
     root.style.setProperty(`--ease-${key}`, value);
   });
-
   // Apply theme mode class
   root.classList.remove('light', 'dark', 'retro');
   root.classList.add(theme.mode);
-
   // Apply effect classes
   root.classList.toggle('pixelated-borders', theme.effects.pixelatedBorders);
   root.classList.toggle('scanlines', theme.effects.scanlines);
   root.classList.toggle('crt-effect', theme.effects.crtEffect);
   root.classList.toggle('glow-effects', theme.effects.glowEffects);
-
   // Store current theme in localStorage
   localStorage.setItem('design-system-theme', JSON.stringify({
     name: theme.name,
@@ -282,7 +262,6 @@ export function applyDesignSystemToDocument(theme: CustomTheme): void {
     effects: theme.effects
   }));
 }
-
 /**
  * Get the currently applied theme from localStorage
  */
@@ -294,7 +273,6 @@ export function getCurrentTheme(): Partial<CustomTheme> | null {
     return null;
   }
 }
-
 /**
  * CSS utility classes generator
  */
@@ -304,7 +282,6 @@ export function generateUtilityCSS(theme: CustomTheme): string {
 .ds-font-mono { font-family: ${theme.typography.fontFamily.mono}; }
 .ds-font-sans { font-family: ${theme.typography.fontFamily.sans}; }
 .ds-font-pixel { font-family: ${theme.typography.fontFamily.pixel}; }
-
 .ds-text-xs { font-size: ${theme.typography.fontSize.xs}; }
 .ds-text-sm { font-size: ${theme.typography.fontSize.sm}; }
 .ds-text-base { font-size: ${theme.typography.fontSize.base}; }
@@ -312,41 +289,34 @@ export function generateUtilityCSS(theme: CustomTheme): string {
 .ds-text-xl { font-size: ${theme.typography.fontSize.xl}; }
 .ds-text-2xl { font-size: ${theme.typography.fontSize['2xl']}; }
 .ds-text-3xl { font-size: ${theme.typography.fontSize['3xl']}; }
-
 .ds-leading-tight { line-height: ${theme.typography.lineHeight.tight}; }
 .ds-leading-normal { line-height: ${theme.typography.lineHeight.normal}; }
 .ds-leading-relaxed { line-height: ${theme.typography.lineHeight.relaxed}; }
-
 .ds-p-xs { padding: ${theme.spacing.xs}; }
 .ds-p-sm { padding: ${theme.spacing.sm}; }
 .ds-p-md { padding: ${theme.spacing.md}; }
 .ds-p-lg { padding: ${theme.spacing.lg}; }
 .ds-p-xl { padding: ${theme.spacing.xl}; }
-
 .ds-m-xs { margin: ${theme.spacing.xs}; }
 .ds-m-sm { margin: ${theme.spacing.sm}; }
 .ds-m-md { margin: ${theme.spacing.md}; }
 .ds-m-lg { margin: ${theme.spacing.lg}; }
 .ds-m-xl { margin: ${theme.spacing.xl}; }
-
 .ds-rounded-none { border-radius: ${theme.borderRadius.none}; }
 .ds-rounded-sm { border-radius: ${theme.borderRadius.sm}; }
 .ds-rounded-md { border-radius: ${theme.borderRadius.md}; }
 .ds-rounded-lg { border-radius: ${theme.borderRadius.lg}; }
 .ds-rounded-pixel { border-radius: ${theme.borderRadius.pixel}; }
-
 .ds-shadow-sm { box-shadow: ${theme.shadows.sm}; }
 .ds-shadow-md { box-shadow: ${theme.shadows.md}; }
 .ds-shadow-lg { box-shadow: ${theme.shadows.lg}; }
 .ds-shadow-pixel { box-shadow: ${theme.shadows.pixel}; }
 .ds-shadow-neon { box-shadow: ${theme.shadows.neon}; }
-
 /* Theme Effect Classes */
 .pixelated-borders * {
   image-rendering: pixelated;
   border-radius: 0 !important;
 }
-
 .scanlines::before {
   content: '';
   position: fixed;
@@ -362,11 +332,9 @@ export function generateUtilityCSS(theme: CustomTheme): string {
   pointer-events: none;
   z-index: 1000;
 }
-
 .crt-effect {
   filter: contrast(1.1) brightness(1.2);
 }
-
 .crt-effect::after {
   content: '';
   position: fixed;
@@ -382,42 +350,33 @@ export function generateUtilityCSS(theme: CustomTheme): string {
   pointer-events: none;
   z-index: 999;
 }
-
 .glow-effects .console-primary {
   text-shadow: 0 0 5px currentColor;
 }
-
 .glow-effects .console-accent-0 {
   box-shadow: 0 0 10px currentColor;
 }
   `;
-
   return css;
 }
-
 /**
  * Initialize design system with a theme
  */
 export function initializeDesignSystem(themeName: keyof typeof THEME_PRESETS = 'nesClassic'): CustomTheme {
   const theme = createCustomTheme(themeName);
   applyDesignSystemToDocument(theme);
-
   // Inject utility CSS
   const styleEl = document.createElement('style');
   styleEl.textContent = generateUtilityCSS(theme);
   styleEl.id = 'design-system-utilities';
-
   // Remove existing styles if present
   const existing = document.getElementById('design-system-utilities');
   if (existing) {
     existing.remove();
   }
-
   document.head.appendChild(styleEl);
-
   return theme;
 }
-
 // Auto-initialize on import if in browser
 if (typeof window !== 'undefined') {
   // Check for stored theme preference
@@ -426,7 +385,6 @@ if (typeof window !== 'undefined') {
     const themeName = Object.keys(THEME_PRESETS).find(
       key => THEME_PRESETS[key as keyof typeof THEME_PRESETS].name === stored.name
     ) as keyof typeof THEME_PRESETS;
-
     if (themeName) {
       initializeDesignSystem(themeName);
     }

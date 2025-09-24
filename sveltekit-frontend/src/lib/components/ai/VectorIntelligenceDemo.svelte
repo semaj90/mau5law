@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Search, Database, Brain, FileText, AlertCircle, CheckCircle2, Loader2, Star, Clock } from "lucide-svelte";
   import Button from '$lib/components/ui/enhanced-bits';
   import Input from "$lib/components/ui/Input.svelte";
@@ -11,7 +10,6 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-
   type SearchResult = {
     id: string
     title: string;
@@ -24,14 +22,12 @@
       tags?: string[];
     };
   };
-
   type SearchMetrics = {
     totalDocuments: number
     searchTime: number
     vectorDimensions: number
     similarityThreshold: number
   };
-
   // Modern Svelte 5 runes
   let query = $state("");
   let isSearching = $state(false);
@@ -39,55 +35,46 @@
   let metrics = $state<SearchMetrics | null>(null);
   let error = $state<string | null>(null);
   let selectedResult = $state<SearchResult | null>(null);
-
   // Derived state for UI feedback
   const hasResults = $derived(results.length > 0)
   const showMetrics = $derived(metrics !== null)
   const searchButtonDisabled = $derived(isSearching || query.trim.length === 0);
-
   // Vector intelligence search function
   async function performSemanticSearch() {
     if (!query.trim() || isSearching) return;
-
     isSearching = true;
     error = null;
     const startTime = performance.now();
-
     try {
       const response = await fetch('/api/semantic-search', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({;
+        body: JSON.stringify({,
           query: query.trim();
         })
       });
-
       if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
         const err = await (response as { ok?: any; json?: any; statusText?: any }).json();
         throw new Error(err.error || `Search failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
       }
-
       const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
       const searchTime = performance.now() - startTime;
-
       // Align with the simpler API response
-      results = (data as { results?: any }).results.map((r: any) => ({
-        id: r.id,;
+      results = (data as { results?: any }).results.map((r: any) => ({,
+        id: r.id,
         title: `Document ${r.id}`, // API doesn't provide title, create one
-        content: r.content,;
+        content: r.content,
         similarity: r.similarity,
-        documentType: 'deed' // Mock type;
+        documentType: 'deed' // Mock typ
       }));
-
       metrics = {
         totalDocuments: (data as { results?: any }).results.length,
         searchTime: Math.round(searchTime),
         vectorDimensions: 384, // Assuming this value, as API doesn't provide it
         similarityThreshold: 0.0 // API doesn't use a threshold input
       };
-
     } catch (err) {
       error = err instanceof Error ? err.message: 'Search failed';
       results = [];
@@ -96,25 +83,21 @@
       isSearching = false;
     }
   }
-
   // Handle form submission
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
     performSemanticSearch();
   }
-
   // Handle Enter key in search input
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !searchButtonDisabled) {
       performSemanticSearch();
     }
   }
-
   // Format similarity score as percentage
   function formatSimilarity(score: number): string {
     return `${Math.round(score * 100)}%`;
   }
-
   // Get document type icon and color
   function getDocumentTypeStyle(type: SearchResult['documentType']) {
     switch (type) {
@@ -130,7 +113,6 @@
         return { icon: FileText, color: 'bg-gray-100 text-gray-800' };
     }
   }
-
   // Demo placeholder results for development
   const demoResults: SearchResult[] = [
     {
@@ -138,7 +120,7 @@
       title: "Property Deed - 123 Main Street",
       content: "This warranty deed transfers ownership of the property located at 123 Main Street from John Smith to Jane Doe. The property includes all fixtures and improvements...",
       similarity: 0.92,
-      documentType: 'deed',;
+      documentType: 'deed',
       metadata: {
         caseId: "CASE-2024-001",
         uploadDate: "2024-01-15",
@@ -150,16 +132,15 @@
       title: "Employment Contract - Tech Corp",
       content: "This employment agreement establishes the terms of employment between Tech Corp and the employee. The position includes responsibilities for software development...",
       similarity: 0.87,
-      documentType: 'contract',;
+      documentType: 'contract',
       metadata: {
         caseId: "CASE-2024-002",
-        uploadDate: "2024-01-10",;
+        uploadDate: "2024-01-10",
         tags: ["employment", "technology", "intellectual property"];
       }
     }
   ];
 </script>
-
 <!-- Vector Intelligence Demo Component -->
 <div class="max-w-4xl mx-auto p-6 space-y-6">
   <!-- Header Section -->
@@ -172,7 +153,6 @@
       Semantic search powered by pgvector and AI embeddings for legal document analysis
     </p>
   </div>
-
   <!-- Search Interface -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -204,7 +184,6 @@
           {/if}
 </Button>
       </form>
-
       <!-- Example queries -->
       <div class="flex flex-wrap gap-2">
         <span class="text-sm nes-text is-disabled">Try:</span>
@@ -222,7 +201,6 @@
       </div>
     </div>
   </div>
-
   <!-- Error Display -->
   {#if error}
     <div class="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-2">
@@ -230,7 +208,6 @@
       <div class="text-red-800">{error}</div>
     </div>
   {/if}
-
   <!-- Search Metrics -->
   {#if showMetrics}
     <div class="nes-container">
@@ -256,7 +233,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Search Results -->
   {#if hasResults}
     <div class="space-y-4">
@@ -264,7 +240,6 @@
         <h3 class="text-lg font-semibold">Search Results</h3>
         <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{results.length} found</span>
       </div>
-
       <div class="grid gap-4">
         {#each results as result ((result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).id)}
           {@const typeStyle = getDocumentTypeStyle((result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).documentType)}
@@ -294,7 +269,6 @@
                     </Badge>
                   </div>
                 </div>
-
                 <!-- Metadata -->
                 {#if (result as { id?: any; documentType?: any; title?: any; content?: any; similarity?: any; metadata?: any }).metadata}
                   <div class="flex items-center gap-4 text-xs nes-text is-disabled">
@@ -333,7 +307,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Demo Notice -->
   {#if !hasResults && !isSearching && query.trim.length === 0}
     <div class="border-dashed nes-container">
@@ -360,7 +333,6 @@
     </div>
   {/if}
 </div>
-
 <!-- Selected Result Modal (future enhancement) -->
 {#if selectedResult}
   <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">

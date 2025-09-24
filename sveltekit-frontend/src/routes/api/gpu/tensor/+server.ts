@@ -1,23 +1,18 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * SvelteKit API Route: GPU Tensor Processing
  * Integrates with Go GPU microservice and provides load balancing
  */
-
-
 import { ensureError } from '$lib/utils/ensure-error'
 import { json, error } from '@sveltejs/kit'
 import { dev } from '$app/environment'
 import { URL } from "url"
-
 // GPU service pool for load balancing
 const gpuServicePool = [
   'http://localhost:8095',  // Primary GPU service
   'http://localhost:8096',  // Secondary GPU service
   'http://localhost:8097',  // Tertiary GPU service
 ]
-
 // Service health tracking
 export interface ServiceHealth {
   url: string
@@ -26,49 +21,41 @@ export interface ServiceHealth {
   responseTime: number
   errorCount: number
 }
-
 class GPUServiceManager {
   private serviceHealth: Map<string, ServiceHealth> = new Map()
   private currentServiceIndex = 0
   private healthCheckInterval: NodeJS.Timeout | null = null
-
   constructor() {
     // Initialize health tracking for all services
     gpuServicePool.forEach(url => {
       this.serviceHealth.set(url, {
         url,
-        healthy: true,
+        healthy: true
         lastCheck: 0,
         responseTime: 0,
         errorCount: 0
       })
     })
-
     // Start periodic health checks
     this.startHealthChecks()
   }
-
   private startHealthChecks(): void {
     this.healthCheckInterval = setInterval(async () => {
       await this.checkAllServicesHealth()
     }, 30000); // Check every 30 seconds
   }
-
   private async checkAllServicesHealth(): Promise<void> {
     const healthPromises = gpuServicePool.map(url => this.checkServiceHealth(url)
     await Promise.all(healthPromises)
   }
-
   private async checkServiceHealth(url: string): Promise<void> {
     const startTime = Date.now()
     const health = this.serviceHealth.get(url)!
-
     try {
       const response = await fetch(`${url}/health`, {
         method: 'GET',
         timeout: 5000 // 5 second timeout
       } as CustomRequestInit)
-
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
         health.healthy = true
         health.responseTime = Date.now() - startTime
@@ -81,40 +68,32 @@ class GPUServiceManager {
       health.healthy = false
       health.errorCount++
     }
-
     health.lastCheck = Date.now()
   }
-
   getHealthyService(): string | null {
     // Get healthy services sorted by response time
     const healthyServices = Array.from(this.serviceHealth.values()
       .filter(service => service.healthy)
       .sort((a, b) => a.responseTime - b.responseTime)
-
     if (healthyServices.length === 0) {
       return null
     }
-
     // Round-robin with preference for fastest services
     const service = healthyServices[this.currentServiceIndex % healthyServices.length]
     this.currentServiceIndex++
     return service.url
   }
-
   getServiceForHash(hash: string): string {
     const healthyServices = Array.from(this.serviceHealth.values()
       .filter(service => service.healthy)
-
     if (healthyServices.length === 0) {
       return gpuServicePool[0]; // Fallback to primary
     }
-
     // Consistent hashing
     const hashCode = this.hashString(hash)
     const serviceIndex = hashCode % healthyServices.length
     return healthyServices[serviceIndex].url
   }
-
   private hashString(str: string): number {
     let hash = 0
     for (let i = 0; i < str.length; i++) {
@@ -124,7 +103,6 @@ class GPUServiceManager {
     }
     return Math.abs(hash)
   }
-
   getHealthStats() {
     return Array.from(this.serviceHealth.values()).map(health => ({
       url: health.url,
@@ -134,17 +112,14 @@ class GPUServiceManager {
       lastCheck: health.lastCheck
     })
   }
-
   cleanup(): void {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval)
     }
   }
 }
-
 // Global service manager instance
 let serviceManager: GPUServiceManager
-
 // Initialize service manager in development
 if (dev) {
   serviceManager = new GPUServiceManager()
@@ -152,7 +127,6 @@ if (dev) {
   // In production, you might want to use a different initialization strategy
   serviceManager = new GPUServiceManager()
 }
-
 // Request processing statistics
 export interface ProcessingStats {
   totalRequests: number
@@ -161,7 +135,6 @@ export interface ProcessingStats {
   cacheHits: number
   averageProcessingTime: number
 }
-
 const stats: ProcessingStats = {
   totalRequests: 0,
   successfulRequests: 0,
@@ -169,15 +142,12 @@ const stats: ProcessingStats = {
   cacheHits: 0,
   averageProcessingTime: 0
 }
-
 // POST: Process tensor with GPU acceleration
 export const POST: RequestHandler = async ({ request, getClientAddress, url }) => {
   const startTime = Date.now()
   stats.totalRequests++
-
   try {
     const tensorData = await request.json()
-
     // Validate tensor data structure
     if (!tensorData.shape || !tensorData.data) {
       stats.failedRequests++
@@ -185,7 +155,6 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         message: 'Invalid tensor data: missing shape or data fields'
       })
     }
-
     // Validate tensor shape
     if (!Array.isArray(tensorData.shape) || tensorData.shape.some((dim: any) => typeof dim !== 'number' || dim <= 0)) {
       stats.failedRequests++
@@ -193,7 +162,6 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         message: 'Invalid tensor shape: must be array of positive integers'
       })
     }
-
     // Validate tensor data
     const expectedSize = tensorData.shape.reduce((a: number, b: number) => a * b, 1)
     if (!Array.isArray(tensorData.data) || tensorData.data.length !== expectedSize) {
@@ -202,10 +170,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         message: 'Tensor data size mismatch'
       })
     }
-
     // Generate cache key for consistent routing
     const cacheKey = generateCacheKey(tensorData)
-
     // Enhance tensor data with metadata
     const enhancedTensorData = {
       ...tensorData,
@@ -219,32 +185,27 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       layout: tensorData.layout || 'standard',
       lodLevel: tensorData.lodLevel || 0
     }
-
     // Select appropriate GPU service
     const targetService = serviceManager.getServiceForHash(cacheKey)
-
     if (!targetService) {
       stats.failedRequests++
       throw error(503, ensureError({
         message: 'All GPU services unavailable'
       })
     }
-
     // Process with primary service
     const result = await processWithService(targetService, enhancedTensorData)
-
     // Update statistics
     const processingTime = Date.now() - startTime
     updateProcessingStats(processingTime, (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).cache_hit || false)
     stats.successfulRequests++
-
     return json({
-      success: true,
+      success: true
       data: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).data,
       metadata: {
         processingTime,
         cacheHit: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).cache_hit || false,
-        service: targetService,
+        service: targetService
         route: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).route || generateRouteHash(cacheKey),
         requestId: enhancedTensorData.requestId,
         tensorStats: (result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).metadata?.tensorStats,
@@ -258,26 +219,21 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         cacheHitRate: (stats.cacheHits / stats.totalRequests) * 100
       }
     })
-
   } catch (err: any) {
     stats.failedRequests++
     console.error('GPU tensor processing error:', err)
-
     if (err.status) {
       // Re-throw SvelteKit errors
       throw err
     }
-
     throw error(500, ensureError({
       message: `Processing failed: ${(err as Error).message}`
     })
   }
 }
-
 // GET: Retrieve processing statistics and service health
 export const GET: RequestHandler = async ({ url }) => {
   const statsType = url.searchParams.get('type')
-
   try {
     switch (statsType) {
       case 'health':
@@ -285,7 +241,6 @@ export const GET: RequestHandler = async ({ url }) => {
           serviceHealth: serviceManager.getHealthStats(),
           timestamp: Date.now()
         })
-
       case 'stats':
         return json({
           processing: {
@@ -301,13 +256,11 @@ export const GET: RequestHandler = async ({ url }) => {
           services: serviceManager.getHealthStats(),
           timestamp: Date.now()
         })
-
       case 'full':
       default:
         // Get detailed stats from primary GPU service
         const primaryService = gpuServicePool[0]
         let serviceStats = null
-
         try {
           const response = await fetch(`${primaryService}/stats`)
           if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
@@ -316,13 +269,12 @@ export const GET: RequestHandler = async ({ url }) => {
         } catch (error: any) {
           console.warn('Failed to fetch service stats:', error)
         }
-
         return json({
           api: {
-            processing: stats,
+            processing: stats
             services: serviceManager.getHealthStats()
           },
-          gpuService: serviceStats,
+          gpuService: serviceStats
           timestamp: Date.now(),
           uptime: process.uptime(),
           environment: dev ? 'development' : 'production'
@@ -336,7 +288,6 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   }
 }
-
 // DELETE: Clear caches and reset statistics (development only)
 export const DELETE: RequestHandler = async ({ url }) => {
   if (!dev) {
@@ -345,10 +296,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
       code: 'PRODUCTION_PROTECTION'
     })
   }
-
   try {
     const clearType = url.searchParams.get('type') || 'cache'
-
     if (clearType === 'stats' || clearType === 'all') {
       // Reset API statistics
       stats.totalRequests = 0
@@ -357,7 +306,6 @@ export const DELETE: RequestHandler = async ({ url }) => {
       stats.cacheHits = 0
       stats.averageProcessingTime = 0
     }
-
     if (clearType === 'cache' || clearType === 'all') {
       // Clear caches in GPU services
       const clearPromises = gpuServicePool.map(async (serviceUrl) => {
@@ -370,24 +318,20 @@ export const DELETE: RequestHandler = async ({ url }) => {
           return { service: serviceUrl, success: false, error: error.message }
         }
       })
-
       const results = await Promise.all(clearPromises)
-
       return json({
-        success: true,
+        success: true
         message: `${clearType} cleared successfully`,
         details: {
-          clearedType: clearType,
+          clearedType: clearType
           serviceResults: results
         }
       })
     }
-
     return json({
-      success: true,
+      success: true
       message: 'Operation completed'
     })
-
   } catch (err: any) {
     console.error('Cache clearing error:', err)
     throw error(500, ensureError({
@@ -396,12 +340,10 @@ export const DELETE: RequestHandler = async ({ url }) => {
     })
   }
 }
-
 // Helper functions
 async function processWithService(serviceUrl: string, tensorData: any): Promise<any> {
   const maxRetries = 2
   let lastError: Error | null = null
-
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const response = await fetch(`${serviceUrl}/process-tensor`, {
@@ -418,39 +360,30 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
         // Add timeout
         signal: AbortSignal.timeout(30000) // 30 second timeout
       })
-
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
         throw new Error(`GPU service error: ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status} ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).statusText}`)
       }
-
       const result = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json()
-
       if (!(result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).success) {
         throw new Error(`GPU processing failed: ${(result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).error || 'Unknown error'}`)
       }
-
       return result
-
     } catch (error: any) {
       lastError = error as Error
       console.warn(`Attempt ${attempt + 1} failed for service ${serviceUrl}:`, error.message)
-
       if (attempt < maxRetries - 1) {
         // Wait before retry with exponential backoff
         await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000)
       }
     }
   }
-
   // All attempts failed, try fallback services
   const healthyServices = serviceManager.getHealthStats()
     .filter(s => s.healthy && s.url !== serviceUrl)
     .sort((a, b) => a.responseTime - b.responseTime)
-
   for (const fallbackService of healthyServices) {
     try {
       console.log(`Trying fallback service: ${fallbackService.url}`)
-
       const response = await fetch(`${fallbackService.url}/process-tensor`, {
         method: 'POST',
         headers: {
@@ -461,7 +394,6 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
         body: JSON.stringify(tensorData),
         signal: AbortSignal.timeout(15000) // Shorter timeout for fallback
       })
-
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json()
         if ((result as { cache_hit?: any; data?: any; route?: any; metadata?: any; success?: any; error?: any }).success) {
@@ -472,39 +404,31 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
       console.warn(`Fallback service ${fallbackService.url} failed:`, error.message)
     }
   }
-
   throw lastError || new Error('All GPU services failed')
 }
-
 function generateCacheKey(tensorData: any): string {
   const shapeStr = tensorData.shape.join('x')
   const layout = tensorData.layout || 'standard'
   const lodLevel = tensorData.lodLevel || 0
   const dataHash = hashArray(tensorData.data, 100); // Hash first 100 elements
-
   const key = `${shapeStr}_${layout}_${lodLevel}_${dataHash}`
   return btoa(key).replace(/[+/=]/g, ''); // Base64 encode and remove special chars
 }
-
 function hashArray(arr: number[], sampleSize: number): string {
   const sample = arr.slice(0, Math.min(sampleSize, arr.length)
   let hash = 0
-
   for (let i = 0; i < sample.length; i++) {
     const value = Math.round(sample[i] * 1000); // Precision to 3 decimals
     hash = ((hash << 5) - hash) + value
     hash = hash & hash; // Convert to 32-bit integer
   }
-
   return Math.abs(hash).toString(36)
 }
-
 function generateRequestId(): string {
   const timestamp = Date.now().toString(36)
   const random = Math.random().toString(36).substr(2, 9)
   return `req_${timestamp}_${random}`
 }
-
 function generateRouteHash(cacheKey: string): string {
   let hash = 0
   for (let i = 0; i < cacheKey.length; i++) {
@@ -514,12 +438,10 @@ function generateRouteHash(cacheKey: string): string {
   }
   return `route_${Math.abs(hash).toString(36)}`
 }
-
 function updateProcessingStats(processingTime: number, cacheHit: boolean): void {
   if (cacheHit) {
     stats.cacheHits++
   }
-
   // Update average processing time
   if (stats.successfulRequests > 0) {
     const totalTime = stats.averageProcessingTime * (stats.successfulRequests - 1)
@@ -528,13 +450,11 @@ function updateProcessingStats(processingTime: number, cacheHit: boolean): void 
     stats.averageProcessingTime = processingTime
   }
 }
-
 // Cleanup on process exit
 if (typeof process !== 'undefined') {
   process.on('exit', () => {
     serviceManager?.cleanup()
   })
-
   process.on('SIGINT', () => {
     serviceManager?.cleanup()
     process.exit(0)

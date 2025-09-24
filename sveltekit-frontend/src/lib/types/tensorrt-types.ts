@@ -3,7 +3,6 @@
  * Ultra-optimized types for sub-1ms response handling
  */;
 }
-
 export interface LegalAIRequest {
     prompt: string;
     max_tokens?: number;
@@ -12,9 +11,8 @@ export interface LegalAIRequest {
     top_p?: number;
     stream?: boolean;
     session_id?: string;
-    metadata?: Record<string, any>;
+    metadata?: { [key: string]: any };
 }
-
 export interface LegalAIResponse {
     text: string;
     tokens: number;
@@ -33,7 +31,6 @@ export interface LegalAIResponse {
         [key: string]: any;
     };
 }
-
 export interface StreamingResponse {
     data: LegalAIResponse | Partial<LegalAIResponse>;
     metadata: {
@@ -44,7 +41,6 @@ export interface StreamingResponse {
         isComplete?: boolean;
     };
 }
-
 export interface PerformanceMetrics {
     totalRequests: number;
     averageLatency: number;
@@ -55,7 +51,6 @@ export interface PerformanceMetrics {
     simdEnabled: boolean;
     quicEnabled: boolean;
 }
-
 export interface DocumentAnalysisRequest {
     document_id: string;
     content: string;
@@ -68,7 +63,6 @@ export interface DocumentAnalysisRequest {
         [key: string]: any;
     };
 }
-
 export interface DocumentAnalysisResponse {
     document_id: string;
     analysis: {
@@ -81,13 +75,13 @@ export interface DocumentAnalysisResponse {
             amounts: string[];
             legal_terms: string[];
         };
-        risks: Array<{;
+        risks: Array<{,
             type: string;
             severity: 'low' | 'medium' | 'high';
             description: string;
             recommendation: string;
         }>;
-        compliance_issues: Array<{
+        compliance_issues: Array<{,
             regulation: string;
             severity: 'minor' | 'major' | 'critical';
             description: string;
@@ -104,14 +98,12 @@ export interface DocumentAnalysisResponse {
         optimization_level: string;
     };
 }
-
 export interface CaseSimilarityRequest {
     base_case_id: string;
     compare_case_ids: string[];
     similarity_threshold?: number;
     include_metadata?: boolean;
 }
-
 export interface CaseSimilarityResponse {
     base_case_id: string;
     similarities: Array<{
@@ -120,35 +112,31 @@ export interface CaseSimilarityResponse {
         confidence: number;
         key_similarities: string[];
         legal_precedents: string[];
-        metadata?: Record<string, any>;
+        metadata?: { [key: string]: any };
     }>;
     processing_time_ms: number;
 }
-
 export interface EmbeddingRequest {
     text: string;
     model?: string;
     normalize?: boolean;
-    metadata?: Record<string, any>;
+    metadata?: { [key: string]: any };
 }
-
 export interface EmbeddingResponse {
     embeddings: number[];
     dimensions: number;
     model: string;
     processing_time_ms: number;
-    metadata?: Record<string, any>;
+    metadata?: { [key: string]: any };
 }
-
 export interface SearchRequest {
     query: string;
     collection: string;
     top_k?: number;
     similarity_threshold?: number;
-    filters?: Record<string, any>;
+    filters?: { [key: string]: any };
     include_metadata?: boolean;
 }
-
 export interface SearchResponse {
     query_id: string;
     matches: Array<{
@@ -156,13 +144,12 @@ export interface SearchResponse {
         similarity_score: number;
         title: string;
         snippet: string;
-        metadata?: Record<string, any>;
+        metadata?: { [key: string]: any };
     }>;
     total_matches: number;
     processing_time_ms: number;
     is_complete: boolean;
 }
-
 export interface TensorRTMetrics {
     engine_info: {
         model_name: string;
@@ -188,15 +175,13 @@ export interface TensorRTMetrics {
         quic_transport_enabled: boolean;
     };
 }
-
 export interface ServiceHealth {
     service: string;
     status: 'healthy' | 'degraded' | 'unhealthy';
     latency_ms: number;
     last_check: number;
-    details?: Record<string, any>;
+    details?: { [key: string]: any };
 }
-
 export interface PipelineStatus {
     services: {
         tensorrt_llm: ServiceHealth;
@@ -212,17 +197,15 @@ export interface PipelineStatus {
         error_rate: number;
     };
 }
-
-// gRPC streaming types;
+// gRPC streaming types
 export interface StreamingChunk {
     chunk_id: string;
     sequence_number: number;
     is_final: boolean;
     content: string | number[];
     content_type: 'text' | 'embeddings' | 'analysis';
-    metadata?: Record<string, any>;
+    metadata?: { [key: string]: any };
 }
-
 export interface StreamingSession {
     session_id: string;
     created_at: number;
@@ -231,8 +214,7 @@ export interface StreamingSession {
     processed_chunks: number;
     error_message?: string;
 }
-
-// Client configuration types;
+// Client configuration types
 export interface TensorRTClientConfig {
     endpoints: {
         tensorrt_llm: string;
@@ -259,43 +241,35 @@ export interface TensorRTClientConfig {
         compress_requests: boolean;
     };
 }
-
-// Error types;
+// Error types
 export interface TensorRTError {
     code: 'TIMEOUT' | 'NETWORK_ERROR' | 'PARSING_ERROR' | 'SERVICE_UNAVAILABLE' | 'RATE_LIMITED' | 'UNKNOWN';
     message: string;
-    details?: Record<string, any>;
+    details?: { [key: string]: any };
     timestamp: number;
     request_id?: string;
 }
-
-// WebSocket types for real-time streaming;
+// WebSocket types for real-time streaming
 export interface WebSocketMessage {
     type: 'request' | 'response' | 'error' | 'metrics' | 'heartbeat';
     payload: any;
     request_id?: string;
     timestamp: number;
 }
-
 export interface WebSocketConfig {
     url: string;
     reconnect_attempts: number;
     heartbeat_interval_ms: number;
     compression: boolean;
 }
-
 // Utility types
 export type RequestPriority = 'low' | 'normal' | 'high' | 'critical';
-
 export type OptimizationLevel = 'none' | 'basic' | 'aggressive' | 'experimental';
-
 export type ModelPrecision = 'fp32' | 'fp16' | 'int8' | 'int4' | 'q4_k_m';
-
 export type TransportProtocol = 'http1' | 'http2' | 'http3' | 'grpc' | 'websocket';
-
-// Advanced analytics types;
+// Advanced analytics types
 export interface PerformanceAnalytics {
-    time_series: Array<{
+    time_series: Array<{,
         timestamp: number;
         latency_ms: number;
         throughput_tps: number;
@@ -315,8 +289,7 @@ export interface PerformanceAnalytics {
         error_trend: 'improving' | 'stable' | 'degrading';
     };
 }
-
-// Legal-specific types;
+// Legal-specific types
 export interface LegalDocument {
     id: string;
     title: string;
@@ -327,9 +300,8 @@ export interface LegalDocument {
     confidentiality_level: string;
     created_at: number;
     updated_at: number;
-    metadata: Record<string, any>;
+    metadata: { [key: string]: any };
 }
-
 export interface LegalAnalysisContext {
     jurisdiction: string;
     practice_areas: string[];
@@ -337,7 +309,6 @@ export interface LegalAnalysisContext {
     precedent_cases: string[];
     compliance_requirements: string[];
 }
-
 export interface ContractClause {
     id: string;
     type: string;
@@ -347,8 +318,7 @@ export interface ContractClause {
     recommendations: string[];
     related_clauses: string[];
 }
-
-// Export all types as a namespace for easier imports;
+// Export all types as a namespace for easier imports
 export namespace TensorRTTypes {
     export type Request = LegalAIRequest;
     export type Response = LegalAIResponse;

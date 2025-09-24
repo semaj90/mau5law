@@ -1,7 +1,6 @@
 <!-- MinIO Upload Component with SvelteKit 2 + Superforms + PostgreSQL Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { superForm } from 'sveltekit-superforms/client';
   import { fileUploadSchema, type FileUploadData } from '$lib/schemas/upload';
   import { page } from '$app/state';
@@ -15,7 +14,6 @@
     multiple?: boolean;
     disabled?: boolean;
   }
-
   let {
     data = { form: null },
     caseId = '',
@@ -24,7 +22,6 @@
     multiple = false,
     disabled = false
   }: Props = $props();
-
   interface UploadResult {
     success: boolean
     documentId: string
@@ -32,12 +29,11 @@
     objectName: string
     message: string;
   }
-
   // Superforms setup
   const { form, errors, enhance, submitting, message } = superForm(data?.form, {
     dataType: 'form',
-    multipleFiles: true,
-    validators: {;
+    multipleFiles: true
+    validators: {
       file: (value) => {
         if (!value || !(value instanceof File)) return 'File is required';
         const maxSize = 100 * 1024 * 1024; // 100MB
@@ -78,50 +74,43 @@
       }
     }
   });
-
   // Upload state
   let uploadProgress = $state(0);
   let uploadStatus: 'idle' | 'uploading' | 'processing' | 'completed' | 'error' = $state('idle');
   let fileInput: HTMLInputElement;
   let dragOver = $state(false);
   let previewUrl = $state<string | null>(null);
-
   // Set default caseId if provided
   $effect(() => {
     if (caseId && !$form.caseId) {
       $form.caseId = caseId;
     }
   });
-
   // File handling
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     const file = target.files?.[0];
     if (file) {
-      $form.file = file;
+      $form.file = fil;
       generatePreview(file);
     }
   }
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
-    const files = event.dataTransfer?.files;
+    const files = event.dataTransfer?.file;
     if (files && files.length > 0) {
       $form.file = files[0];
       generatePreview(files[0]);
     }
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
-
   function handleDragLeave() {
     dragOver = false;
   }
-
   function generatePreview(file: File) {
     if (file.type.startsWith('image/')) {
       const reader = new FileReader();
@@ -133,7 +122,6 @@
       previewUrl = null;
     }
   }
-
   function removeFile() {
     $form.file = undefined as any;
     previewUrl = null;
@@ -141,7 +129,6 @@
       fileInput.value = '';
     }
   }
-
   // Enhanced form submission with progress tracking
   function handleSubmit() {
     uploadStatus = 'uploading';
@@ -152,7 +139,6 @@
         uploadProgress += Math.random() * 10;
       }
     }, 200);
-
     return async ({ result }: { result: any }) => {
       clearInterval(progressInterval);
       if (result.type === 'success') {
@@ -169,7 +155,6 @@
       }
     };
   }
-
   // Format file size
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -178,7 +163,6 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   // Document type options
   const documentTypes = [
     { value: 'contract', label: 'Contract' },
@@ -194,7 +178,6 @@
     { value: 'forensic_analysis', label: 'Forensic Analysis' },
     { value: 'other', label: 'Other' }
   ];
-
   const priorityOptions = [
     { value: 'low', label: 'Low' },
     { value: 'medium', label: 'Medium' },
@@ -202,7 +185,6 @@
     { value: 'urgent', label: 'Urgent' }
   ];
 </script>
-
 <div class="minio-upload-container">
   <form method="POST" action="?/upload" use:enhance={handleSubmit} enctype="multipart/form-data">
     <!-- Case ID Input -->
@@ -223,7 +205,6 @@
         <div class="error-message">{$errors.caseId}</div>
       {/if}
     </div>
-
     <!-- File Upload Area -->
     <div class="form-group">
       <label>Document Upload *</label>
@@ -248,7 +229,6 @@
           style="display: none"
           disabled={disabled || $submitting}
         />
-
         {#if $form.file}
           <div class="file-preview">
             {#if previewUrl}
@@ -278,7 +258,6 @@
         <div class="error-message">{$errors.file}</div>
       {/if}
     </div>
-
     <!-- Document Type -->
     <div class="form-group">
       <label for="documentType">Document Type *</label>
@@ -295,7 +274,6 @@
         {/each}
       </select>
     </div>
-
     <!-- Description -->
     <div class="form-group">
       <label for="description">Description</label>
@@ -310,7 +288,6 @@
         class="form-textarea"
       ></textarea>
     </div>
-
     <!-- Priority -->
     <div class="form-group">
       <label for="priority">Priority</label>
@@ -326,7 +303,6 @@
         {/each}
       </select>
     </div>
-
     <!-- Tags -->
     <div class="form-group">
       <label for="tags">Tags (comma-separated)</label>
@@ -339,7 +315,6 @@
         class="form-input"
       />
     </div>
-
     <!-- Confidential Flag -->
     <div class="form-group">
       <label class="checkbox-label">
@@ -352,7 +327,6 @@
         Mark as confidential
       </label>
     </div>
-
     <!-- Upload Progress -->
     {#if uploadStatus !== 'idle'}
       <div class="upload-progress">
@@ -372,7 +346,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Submit Button -->
     <div class="form-actions">
       <button
@@ -387,7 +360,6 @@
         {/if}
       </button>
     </div>
-
     <!-- Messages -->
     {#if $message}
       <div class="form-message" class:error={uploadStatus === 'error'}>
@@ -396,9 +368,8 @@
     {/if}
   </form>
 </div>
-
 <style>
-  .minio-upload-container {;
+  .minio-upload-container {
     max-width: 600px;
     margin: 0 auto;
     padding: 2rem;
@@ -406,18 +377,15 @@
     border-radius: 12px;
     border: 1px solid var(--border-color);
   }
-
   .form-group {
     margin-bottom: 1.5rem;
   }
-
   .form-group label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
     color: var(--text-primary);
   }
-
   .form-input,
   .form-select,
   .form-textarea {
@@ -428,77 +396,65 @@
     background: var(--bg-primary);
     color: var(--text-primary);
     font-family: inherit;
-    transition: border-color 0.2s;
+    transition: border-color 0.2;
   }
-
-  .form-input:focus,
-  .form-select:focus,
+  .form-input: focus
+  .form-select: focus
   .form-textarea:focus {
     outline: none;
     border-color: var(--accent-primary);
     box-shadow: 0 0 0 3px var(--accent-primary-20);
   }
-
   .form-input.error {
     border-color: var(--error-color);
   }
-
   .file-upload-area {
     border: 2px dashed var(--border-color);
     border-radius: 8px;
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
     background: var(--bg-primary);
   }
-
-  .file-upload-area:hover,
+  .file-upload-area: hover
   .file-upload-area.drag-over {
     border-color: var(--accent-primary);
     background: var(--accent-primary-10);
   }
-
   .file-upload-area.has-file {
     border-style: solid;
     border-color: var(--success-color);
   }
-
   .upload-prompt {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
   }
-
   .upload-icon {
     font-size: 3rem;
     opacity: 0.6;
   }
-
   .upload-text {
     color: var(--text-secondary);
   }
-
   .upload-hint {
     font-size: 0.875rem;
     opacity: 0.8;
   }
-
   .file-preview {
     display: flex;
     align-items: center;
     gap: 1rem;
     text-align: left;
   }
-
   .image-preview {
     width: 80px;
     height: 80px;
     object-fit: cover;
     border-radius: 6px;
   }
-
   .file-icon {
     width: 80px;
     height: 80px;
@@ -509,21 +465,17 @@
     background: var(--bg-secondary);
     border-radius: 6px;
   }
-
   .file-info {
     flex: 1;
   }
-
   .file-name {
     font-weight: 600;
     margin-bottom: 0.25rem;
   }
-
   .file-size {
     color: var(--text-secondary);
     font-size: 0.875rem;
   }
-
   .remove-file {
     margin-top: 0.5rem;
     padding: 0.25rem 0.5rem;
@@ -534,23 +486,19 @@
     cursor: pointer;
     font-size: 0.875rem;
   }
-
   .remove-file:hover {
     background: var(--error-color);
     color: white;
   }
-
   .checkbox-label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
   }
-
   .upload-progress {
     margin: 1rem 0;
   }
-
   .progress-bar {
     width: 100%;
     height: 8px;
@@ -558,24 +506,20 @@
     border-radius: 4px;
     overflow: hidden;
   }
-
   .progress-fill {
     height: 100%;
     background: var(--accent-primary);
     transition: width 0.3s ease;
   }
-
   .progress-text {
     margin-top: 0.5rem;
     text-align: center;
     font-size: 0.875rem;
     color: var(--text-secondary);
   }
-
   .form-actions {
     margin-top: 2rem;
   }
-
   .submit-button {
     width: 100%;
     padding: 0.875rem;
@@ -585,24 +529,20 @@
     border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2;
   }
-
-  .submit-button:hover:not(:disabled) {
+  .submit-button:hover:not(:disabled) {,
     background: var(--accent-primary-dark);
   }
-
   .submit-button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
-
   .error-message {
     color: var(--error-color);
     font-size: 0.875rem;
     margin-top: 0.25rem;
   }
-
   .form-message {
     margin-top: 1rem;
     padding: 0.75rem;
@@ -611,7 +551,6 @@
     color: var(--success-color);
     border: 1px solid var(--success-color);
   }
-
   .form-message.error {
     background: var(--error-color-20);
     color: var(--error-color);

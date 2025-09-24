@@ -1,12 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   	import { tweened } from 'svelte/motion';
   import { cubicInOut, elasticOut } from 'svelte/easing';
   	// import * as Progress from 'bits-ui'; // Removed - not needed for this component
   	import { onMount } from 'svelte';
-
   	// Props
   	interface Props {
   		status?: 'loading' | 'processing' | 'success' | 'error';
@@ -15,52 +12,42 @@
   		progress?: number;
   		aiOutput?: string;
   	}
-
-  	let { 
+  	let {
   		status = $bindable('loading'),
   		loadingText = 'Processing legal documents...',
   		successContent = '',
   		progress = $bindable(0),
   		aiOutput = $bindable('')
   	}: Props = $props();
-
   	// Golden ratio constants
   	const GOLDEN_RATIO = 1.618;
   	const GOLDEN_ANGLE = 137.508; // Golden angle in degrees
-
   	// Animated properties
   	const progressValue = tweened(0, {
-  		duration: 800,;
+  		duration: 800,
   		easing: cubicInOut;
   	});
-
   	const containerWidth = tweened(100, {
-  		duration: 1200,;
+  		duration: 1200,
   		easing: elasticOut;
   	});
-
   	const containerHeight = tweened(8, {
-  		duration: 1200,;
+  		duration: 1200,
   		easing: elasticOut;
   	});
-
   	const borderRadius = tweened(4, {
-  		duration: 1000,;
+  		duration: 1000,
   		easing: cubicInOut;
   	});
-
   	const opacity = tweened(1, {
-  		duration: 600,;
+  		duration: 600,
   		easing: cubicInOut;
   	});
-
   	// Progress state management
   	let progressMax = 100;
-
   	// Reactive animations based on status
   	$effect(() => {
   		progressValue.set(progress);
-
   		switch (status) {
   			case 'loading':
   				containerWidth.set(100);
@@ -88,11 +75,9 @@
   				break;
   		}
   	});
-
   	// Typewriter effect for AI output
   	let displayedOutput = $state('');
   	let typewriterIndex = $state(0);
-
   	$effect(() => {
   		if (status === 'success' && aiOutput) {
   			const interval = setInterval(() => {
@@ -103,11 +88,9 @@
   					clearInterval(interval);
   				}
   			}, 30);
-
   			return () => clearInterval(interval);
   		}
   	});
-
   	// Spiral animation for golden ratio aesthetics
   	let spiralPoints = $derived(() => {
   		const points = [];
@@ -120,11 +103,10 @@
   			const y = centerY + radius * Math.sin(angle);
   			points.push({ x, y, delay: i * 50 });
   		}
-  		return points;
+  		return point;
   	});
 </script>
-
-<div 
+<div
 	class="golden-loader-container relative overflow-hidden transition-all duration-1200 ease-out"
 	style:width="{$containerWidth}%"
 	style:height="{$containerHeight * 4}px"
@@ -146,13 +128,11 @@
 					<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
 				</div>
 			</div>
-
 			<!-- Loading Text with Golden Ratio Typography -->
 			<div class="mt-3 px-4">
 				<p class="text-sm font-medium text-amber-800 animate-pulse">
 					{loadingText}
 				</p>
-				
 				<!-- Spiral Dots Animation -->
 				<div class="relative w-full h-16 mt-2">
 					<svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
@@ -169,7 +149,6 @@
 				</div>
 			</div>
 		</div>
-
 	{:else if status === 'success'}
 		<!-- Success State: Expanded Card with AI Output -->
 		<div class="w-full h-full bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-100 border border-amber-300 rounded-xl shadow-lg p-6 relative overflow-hidden">
@@ -180,14 +159,12 @@
 					<div class="col-span-3 bg-yellow-300"></div>
 				</div>
 			</div>
-
 			<!-- Content -->
 			<div class="relative z-10">
 				<div class="flex items-center mb-4">
 					<div class="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
 					<h3 class="text-lg font-semibold text-amber-900">Analysis Complete</h3>
 				</div>
-
 				<!-- AI Output with Typewriter Effect -->
 				<div class="bg-white/60 backdrop-blur-sm rounded-lg p-4 border border-amber-200">
 					<div class="text-gray-800 leading-relaxed">
@@ -197,7 +174,6 @@
 						{/if}
 					</div>
 				</div>
-
 				<!-- Action buttons with golden ratio spacing -->
 				<div class="mt-6 flex gap-4" style:gap="{100/GOLDEN_RATIO}px">
 					<button class="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors duration-200 flex-1">
@@ -209,7 +185,6 @@
 				</div>
 			</div>
 		</div>
-
 	{:else if status === 'error'}
 		<!-- Error State -->
 		<div class="w-full h-full bg-gradient-to-r from-red-50 to-red-100 border border-red-300 rounded-lg p-4">
@@ -220,12 +195,10 @@
 		</div>
 	{/if}
 </div>
-
 <style>
-	.golden-loader-container {;
+	.golden-loader-container {
 		transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 	}
-
 	@keyframes shimmer {
 		0% {
 			transform: translateX(-100%);
@@ -234,11 +207,9 @@
 			transform: translateX(100%);
 		}
 	}
-
 	.animate-shimmer {
 		animation: shimmer 2s infinite;
 	}
-
 	/* Golden ratio inspired gradients */
 	.bg-golden-gradient {
 		background: linear-gradient(
@@ -248,22 +219,18 @@
 			#d97706 100%
 		);
 	}
-
 	/* Custom scrollbar for AI output */
 	.ai-output::-webkit-scrollbar {
 		width: 4px;
 	}
-
 	.ai-output::-webkit-scrollbar-track {
 		background: rgba(251, 191, 36, 0.1);
 		border-radius: 2px;
 	}
-
 	.ai-output::-webkit-scrollbar-thumb {
 		background: rgba(251, 191, 36, 0.5);
 		border-radius: 2px;
 	}
-
 	.ai-output::-webkit-scrollbar-thumb:hover {
 		background: rgba(251, 191, 36, 0.7);
 	}

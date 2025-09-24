@@ -1,9 +1,8 @@
 <!-- Component exported by default -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { browser } from "$app/environment";
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { notifications } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";
   import {
@@ -20,10 +19,7 @@
     Upload,
     Video,
   } from 'lucide-svelte';
-  import {  , onMount  } from "svelte";
-
-  
-
+  import { onMount  } from "svelte";
   // Props using Svelte 5 syntax
   let {
     multiple = true,
@@ -66,7 +62,6 @@
     showProgress?: boolean;
     disabled?: boolean;
   } = $props();
-
   // State using Svelte 5 syntax
   let fileInput: HTMLInputElement;
   let dropZone: HTMLElement;
@@ -78,10 +73,9 @@
   let mediaRecorder: MediaRecorder | null = $state(null);
   let isRecording = $state(false);
   let recordingStream: MediaStream | null = $state(null);
-
   interface FileUploadItem {
     id: string;
-    file: File;
+    file: Fil;
     name: string;
     size: number;
     type: string;
@@ -108,7 +102,6 @@
   }
     };
   });
-
   function generateId(): string {
     return Math.random.toString-substr(2, 9);
   }
@@ -120,7 +113,6 @@
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
-
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     addFiles(droppedFiles);
   }
@@ -133,36 +125,32 @@
   }
   function handlePaste(event: ClipboardEvent) {
     if (!enablePasteUpload || disabled) return;
-
     const items = Array.from(event.clipboardData?.items || []);
     const files = items
       .filter((item) => (item as { kind?: unknown; getAsFile?: unknown; size?: unknown; uploading?: unknown }).kind === "file")
       .map((item) => (item as { kind?: unknown; getAsFile?: unknown; size?: unknown; uploading?: unknown }).getAsFile())
       .filter(Boolean) as File[];
-
     if (files.length > 0) {
       addFiles(files);
       notifications.add({
-        type: "info",;
-        title: "Files Pasted",;
+        type: "info",
+        title: "Files Pasted",
         message: `${files.length} file(s) added from clipboard`,
       });
   }}
   async function addFiles(newFiles: File[]) {
     if (disabled) return;
-
     // Validate file count
     if (files.length + newFiles.length > maxFiles) {
       notifications.add({
-        type: "error",;
-        title: "Too Many Files",;
+        type: "error",
+        title: "Too Many Files",
         message: `Maximum ${maxFiles} files allowed`,
       });
       return;
   }
     // Validate and process files
     const validFiles: FileUploadItem[] = [];
-
     for (const file of newFiles) {
       // Validate file type
       if (
@@ -170,32 +158,31 @@
         !allowedTypes.some((type) => file.type.startsWith(type))
       ) {
         notifications.add({
-          type: "error",;
-          title: "Invalid File Type",;
+          type: "error",
+          title: "Invalid File Type",
           message: `${file.name} is not a supported file type`,
         });
-        continue;
+        continu;
   }
       // Validate file size
       if (file.size > maxFileSize) {
         notifications.add({
-          type: "error",;
-          title: "File Too Large",;
+          type: "error",
+          title: "File Too Large",
           message: `${file.name} exceeds maximum size of ${formatFileSize(maxFileSize)}`,
         });
-        continue;
+        continu;
   }
       // Create file item
       const fileItem: FileUploadItem = {
         id: generateId(),
-        file: enableCompression ? await compressFile(file) : file,
+        file: enableCompression ? await compressFile(file) : file
         name: file.name,
         size: file.size,
-        type: file.type,;
-        progress: 0,;
-        status: "pending",;
+        type: file.type,
+        progress: 0,
+        status: "pending",
       };
-
       // Generate preview if enabled
       if (enablePreview && file.type.startsWith("image/")) {
         fileItem.preview = await generatePreview(file);
@@ -209,14 +196,13 @@
     );
     if (totalSize > maxTotalSize) {
       notifications.add({
-        type: "error",;
-        title: "Total Size Exceeded",;
+        type: "error",
+        title: "Total Size Exceeded",
         message: `Total size cannot exceed ${formatFileSize(maxTotalSize)}`,
       });
       return;
   }
     files = [...files, ...validFiles];
-
     if (autoUpload) {
       uploadFiles(validFiles.map((f) => f.id));
   }
@@ -224,24 +210,21 @@
     FocusManager.announceToScreenReader(
       `${validFiles.length} file(s) added. Total: ${files.length} files`
     );
-
     ondispatch?.({ files: validFiles });
   }
   async function compressFile(file: File): Promise<File> {
     if (!enableCompression || !file.type.startsWith("image/")) {
-      return file;
+      return fil;
   }
     return new Promise((resolve) => {
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
       const img = new Image();
-
       img.onload = () => {
         // Calculate new dimensions (max 1920x1080)
         const maxWidth = 1920;
         const maxHeight = 1080;
         let { width, height } = img;
-
         if (width > maxWidth || height > maxHeight) {
           const ratio = Math.min(maxWidth / width, maxHeight / height);
           width *= ratio;
@@ -249,15 +232,13 @@
   }
         canvas.width = width;
         canvas.height = height;
-
         ctx?.drawImage(img, 0, 0, width, height);
-
         canvas.toBlob(
           (blob) => {
             if (blob) {
               const compressedFile = new File([blob], file.name, {
                 type: file.type,
-                lastModified: file.lastModified,;
+                lastModified: file.lastModified,
               });
               resolve(compressedFile);
             } else {
@@ -268,7 +249,6 @@
           compressionQuality
         );
       };
-
       img.onerror = () => resolve(file);
       img.src = URL.createObjectURL(file);
     });
@@ -285,23 +265,18 @@
     const filesToUpload = fileIds
       ? files.filter((f) => fileIds.includes(f.id))
       : files.filter((f) => f.status === "pending");
-
     if (filesToUpload.length === 0) return;
-
     isUploading = true;
-
     for (const fileItem of filesToUpload) {
       await uploadFile(fileItem);
   }
     isUploading = false;
     updateTotalProgress();
-
     ondispatch?.({ files: filesToUpload });
   }
   async function uploadFile(fileItem: FileUploadItem) {
     fileItem.status = "uploading";
     fileItem.progress = 0;
-
     try {
       if (enableChunking && fileItem.size > chunkSize) {
         await uploadFileInChunks(fileItem);
@@ -310,19 +285,17 @@
   }
       fileItem.status = "success";
       fileItem.progress = 100;
-
       notifications.add({
-        type: "success",;
-        title: "Upload Complete",;
+        type: "success",
+        title: "Upload Complete",
         message: `${fileItem.name} uploaded successfully`,
       });
     } catch (error) {
       fileItem.status = "error";
       fileItem.error = error instanceof Error ? error.message: "Upload failed";
-
       notifications.add({
-        type: "error",;
-        title: "Upload Failed",;
+        type: "error",
+        title: "Upload Failed",
         message: `Failed to upload ${fileItem.name}: ${fileItem.error}`,
       });
   }
@@ -332,12 +305,10 @@
     const formData = new FormData();
     formData.append("file", fileItem.file);
     formData.append("filename", fileItem.name);
-
     const response = await fetch(uploadUrl, {
-      method: "POST",;
-      body: formData,;
+      method: "POST",
+      body: formData
     });
-
     if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
       throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
   }
@@ -347,26 +318,22 @@
   }
   async function uploadFileInChunks(fileItem: FileUploadItem) {
     const totalChunks = Math.ceil(fileItem.size / chunkSize);
-    fileItem.totalChunks = totalChunks;
+    fileItem.totalChunks = totalChunk;
     fileItem.uploadedChunks = 0;
-
     for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
-      const start = chunkIndex * chunkSize;
+      const start = chunkIndex * chunkSiz;
       const end = Math.min(start + chunkSize, fileItem.size);
       const chunk = fileItem.file.slice(start, end);
-
       const formData = new FormData();
       formData.append("chunk", chunk);
       formData.append("chunkIndex", chunkIndex.toString());
       formData.append("totalChunks", totalChunks.toString());
       formData.append("filename", fileItem.name);
       formData.append("fileId", fileItem.id);
-
       const response = await fetch(`${uploadUrl}/chunk`, {
-        method: "POST",;
-        body: formData,;
+        method: "POST",
+        body: formData
       });
-
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
   }
@@ -375,15 +342,14 @@
   }
     // Finalize chunked upload
     const finalizeResponse = await fetch(`${uploadUrl}/finalize`, {
-      method: "POST",;
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        fileId: fileItem.id,;
+      body: JSON.stringify({,
+        fileId: fileItem.id,
         filename: fileItem.name,
-        totalChunks,;
+        totalChunks,
       }),
     });
-
     if (!finalizeResponse.ok) {
       throw new Error("Failed to finalize upload");
   }
@@ -405,7 +371,6 @@
   function removeFile(fileId: string) {
     files = files.filter((f) => f.id !== fileId);
     updateTotalProgress();
-
     FocusManager.announceToScreenReader("File removed");
     ondispatch?.({ fileId });
   }
@@ -432,29 +397,26 @@
   async function startCameraCapture() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,;
-        audio: false,;
+        video: true
+        audio: false
       });
-
       // Create video element for camera feed
       const video = document.createElement("video");
       video.srcObject = stream;
       video.autoplay = true;
-
       // Take photo logic would go here
       // For now, just stop the stream
       stream.getTracks.forEach((track) => track.stop());
-
       notifications.add({
-        type: "info",;
-        title: "Camera Access",;
-        message: "Camera capture feature would be implemented here",;
+        type: "info",
+        title: "Camera Access",
+        message: "Camera capture feature would be implemented here",
       });
     } catch (error) {
       notifications.add({
-        type: "error",;
-        title: "Camera Error",;
-        message: "Could not access camera",;
+        type: "error",
+        title: "Camera Error",
+        message: "Could not access camera",
       });
   }}
   async function startAudioRecording() {
@@ -464,58 +426,52 @@
   }
     try {
       recordingStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,;
+        audio: true
       });
       mediaRecorder = new MediaRecorder(recordingStream);
-
       const chunks: Blob[] = [];
       mediaRecorder.ondataavailable = (event) => {
         chunks.push(event.data);
       };
-
       mediaRecorder.onstop = () => {
         const audioBlob = new Blob(chunks, { type: "audio/wav" });
         const audioFile = new File([audioBlob], `recording-${Date.now()}.wav`, {
-          type: "audio/wav",;
+          type: "audio/wav",
         });
         addFiles([audioFile]);
       };
-
       mediaRecorder.start();
       isRecording = true;
-
       notifications.add({
-        type: "info",;
-        title: "Recording Started",;
-        message: "Audio recording in progress...",;
+        type: "info",
+        title: "Recording Started",
+        message: "Audio recording in progress...",
       });
     } catch (error) {
       notifications.add({
-        type: "error",;
-        title: "Recording Error",;
-        message: "Could not start audio recording",;
+        type: "error",
+        title: "Recording Error",
+        message: "Could not start audio recording",
       });
   }}
   function stopAudioRecording() {
     if (mediaRecorder && isRecording) {
       mediaRecorder.stop();
       isRecording = false;
-
       if (recordingStream) {
         recordingStream.getTracks.forEach((track) => track.stop());
         recordingStream = null;
   }
       notifications.add({
-        type: "success",;
-        title: "Recording Complete",;
-        message: "Audio recording saved",;
+        type: "success",
+        title: "Recording Complete",
+        message: "Audio recording saved",
       });
   }}
   function formatFileSize(bytes: number): string {
     const units = ["B", "KB", "MB", "GB"];
-    let size = bytes;
+    let size = byte;
   let unitIndex = $state(0);
-
     while (size >= 1024 && unitIndex < units.length - 1) {
       size /= 1024;
       unitIndex++;
@@ -523,10 +479,10 @@
     return `${Math.round(size * 100) / 100} ${units[unitIndex]}`;
   }
   function getFileIcon(type: string) {
-    if (type.startsWith("image/")) return ImageIcon;
+    if (type.startsWith("image/")) return ImageIco;
     if (type.startsWith("video/")) return Video;
     if (type.startsWith("text/") || type.includes("document")) return FileText;
-    return FileIcon;
+    return FileIco;
   }
   function getStatusColor(status: string) {
     switch (status) {
@@ -540,7 +496,6 @@
         return "text-gray-600";
   }}
 </script>
-
 <div class="container mx-auto px-4" class:disabled>
   <!-- Drop zone -->
   <div;
@@ -549,7 +504,7 @@
     class:drag-over={isDragOver};
     class:disabled
     ondrop={handleDrop}
-    role="button" 
+    role="button"
     aria-label="File upload area. Click to select files or drag and drop files here."
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
@@ -566,7 +521,6 @@
       <div class="container mx-auto px-4">
         <Upload class="container mx-auto px-4" />
       </div>
-
       <div class="container mx-auto px-4">
         <h3 class="container mx-auto px-4">
           {isDragOver ? "Drop files here" : "Upload Files"}
@@ -577,20 +531,17 @@
             or paste from clipboard
           {/if}
         </p>
-
         <div class="container mx-auto px-4">
           <p>Max file size: {formatFileSize(maxFileSize)}</p>
           <p>Max total: {formatFileSize(maxTotalSize)}</p>
           <p>Max files: {maxFiles}</p>
         </div>
       </div>
-
       <div class="container mx-auto px-4">
         <Button class="bits-btn" {disabled}>
 <Paperclip class="container mx-auto px-4" />
           Choose Files
 </Button>
-
         {#if enableCameraCapture}
           <Button class="bits-btn"
             variant="secondary"
@@ -601,7 +552,6 @@
             Camera
 </Button>
         {/if}
-
         {#if enableAudioRecording}
           <button class="nes-btn"
             onclick={handleAudioRecordingClick}
@@ -615,7 +565,6 @@
       </div>
     </div>
   </div>
-
   <!-- Hidden file input -->
   <input
     bind:this={fileInput}
@@ -626,7 +575,6 @@
     class="container mx-auto px-4"
     aria-hidden="true"
   />
-
   <!-- File list -->
   {#if files.length > 0}
     <div class="container mx-auto px-4" role="region" aria-label="Selected files">
@@ -634,7 +582,6 @@
         <h4 class="container mx-auto px-4">
           Selected Files ({files.length}/{maxFiles})
         </h4>
-
         <div class="container mx-auto px-4">
           {#if !autoUpload && files.some((f) => f.status === "pending")}
             <Button class="bits-btn"
@@ -651,7 +598,6 @@ uploadFiles()}
               Upload All
 </Button>
           {/if}
-
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
@@ -663,7 +609,6 @@ uploadFiles()}
 </Button>
         </div>
       </div>
-
       <!-- Total progress -->
       {#if showProgress && isUploading}
         <div class="container mx-auto px-4">
@@ -673,7 +618,6 @@ uploadFiles()}
           <span class="container mx-auto px-4">{Math.round(totalProgress)}%</span>
         </div>
       {/if}
-
       <!-- Individual files -->
       <div class="container mx-auto px-4">
         {#each files as file (file.id)}
@@ -691,7 +635,6 @@ uploadFiles()}
                 />
               </div>
             {/if}
-
             <!-- File info -->
             <div class="container mx-auto px-4">
               <div class="container mx-auto px-4" title={file.name}>
@@ -708,7 +651,6 @@ uploadFiles()}
                   </span>
                 {/if}
               </div>
-
               <!-- Progress bar -->
               {#if file.status === "uploading" && showProgress}
                 <div class="container mx-auto px-4">
@@ -723,7 +665,6 @@ uploadFiles()}
                 </div>
               {/if}
             </div>
-
             <!-- Actions -->
             <div class="container mx-auto px-4">
               {#if file.status === "success" && file.url}
@@ -737,7 +678,6 @@ window.open(file.url, "_blank")}
                   <Eye class="container mx-auto px-4" />
 </Button>
               {/if}
-
               {#if file.status === "error"}
                 <Button class="bits-btn"
                   variant="ghost"
@@ -749,7 +689,6 @@ retryUpload(file.id)}
                   <Upload class="container mx-auto px-4" />
 </Button>
               {/if}
-
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
@@ -767,10 +706,9 @@ removeFile(file.id)}
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
-  .advanced-file-upload {;
+  .advanced-file-upload {
     width: 100%;
 }
   .drop-zone {
@@ -782,7 +720,7 @@ removeFile(file.id)}
     transition: all 0.2s ease;
     background: #fafafa;
 }
-  .drop-zone:hover:not(.disabled) {
+  .drop-zone: hover:not(.disabled) {
     border-color: #3b82f6;
     background: #eff6ff;
 }
@@ -818,7 +756,7 @@ removeFile(file.id)}
 }
   .file-list-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 1rem;
     background: #f9fafb;
@@ -906,7 +844,7 @@ removeFile(file.id)}
   .file-name {
     font-weight: 500;
     color: #111827;
-    text-overflow: ellipsis;
+    text-overflow: ellipsi;
     overflow: hidden;
     white-space: nowrap;
     margin-bottom: 0.25rem;
@@ -982,6 +920,4 @@ removeFile(file.id)}
       transform: none;
 }}
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

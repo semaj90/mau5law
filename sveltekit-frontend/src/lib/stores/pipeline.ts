@@ -7,13 +7,11 @@ export interface PipelineEventBase { type: string; ts: number; raw: any; [k: str
 export interface EvidenceUploadEvent extends PipelineEventBase { type: 'evidence.upload' }
 export interface AIResponseEvent extends PipelineEventBase { type: 'ai.response'; llmResult?: unknown }
 export type PipelineEvent = EvidenceUploadEvent | AIResponseEvent | PipelineEventBase;
-
 function createPipelineStore(){
   const events = writable<PipelineEvent[]>([]);
   let socket: WebSocket | null = null;
   let reconnectTimer: any = null;
-  const WS_URL = (import.meta.env.VITE_WS_FANOUT_URL as string) || 'ws://localhost:8080';
-
+  const WS_URL = (import.meta.env.VITE_WS_FANOUT_URL as string) || 'ws://localhost:8080'
   function connect(){
     if (socket){ socket.close(); }
     socket = new WebSocket(WS_URL);
@@ -29,19 +27,15 @@ function createPipelineStore(){
       } catch (e: any){ /* swallow */ }
     };
     socket.onclose = () => scheduleReconnect();
-    socket.onerror = () => { try { socket?.close(); } catch {}; };
+    socket.onerror = () => { try { socket?.close(); } catch (error) {}; };
   }
   function scheduleReconnect(){
     if (reconnectTimer) return;
     reconnectTimer = setTimeout(()=>{ reconnectTimer=null; connect(); }, 2000);
   }
   connect();
-
   const latest = derived(events, ($e) => $e[$e.length-1]);
   const llmResponses = derived(events, ($e) => $e.filter(e => e.type==='ai.response');
-
   return { events, latest, llmResponses };
 }
-
 export const pipeline = createPipelineStore();
-;

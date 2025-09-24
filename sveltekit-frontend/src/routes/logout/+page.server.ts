@@ -1,5 +1,4 @@
 import type { Actions, PageServerLoad } from './$types.js';
-
 import { redirect } from "@sveltejs/kit";
 import { invalidateSession, deleteSessionTokenCookie } from "$lib/server/session";
 export const load: PageServerLoad = async ({ cookies, locals }) => {
@@ -11,6 +10,4 @@ export const load: PageServerLoad = async ({ cookies, locals }) => {
   }
   throw redirect(302, "/login");
 };
-
 export const actions: Actions = {};
-;

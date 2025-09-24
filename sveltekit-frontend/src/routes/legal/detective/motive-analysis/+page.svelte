@@ -1,10 +1,9 @@
 <!-- Detective Mode: Motive Analysis Enhancement -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { page } from '$app/state';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Separator } from '$lib/components/ui/separator';
@@ -13,7 +12,6 @@
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import { nesMemoryBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import { glyphShaderCache } from '$lib/cache/glyph-shader-cache-bridge';
-  
   // Svelte 5 Runes
   let activeTab = $state('profile');
   let analysisInProgress = $state(false);
@@ -29,7 +27,6 @@
   let behaviorPatterns = $state([]);
   let motiveTriggers = $state([]);
   let investigativeRecommendations = $state([]);
-
   // Detective AI system state
   let detectiveSystem = $state({
     status: 'idle',
@@ -39,7 +36,6 @@
     profiledSuspects: 0,
     motiveConfidence: 0;
   });
-
   // NES-GPU Memory Bridge Integration
   let memoryMetrics = $state({
     nesRAM: { used: 0, total: 2048 },
@@ -47,7 +43,6 @@
     glyphCache: { hitRate: 0, entries: 0 },
     gpuUtilization: 0
   });
-
   interface SuspectProfile {
     id: string;
     name: string;
@@ -65,7 +60,6 @@
     };
     timeline: TimelineEvent[];
   }
-
   interface TimelineEvent {
     timestamp: string;
     event: string;
@@ -73,7 +67,6 @@
     evidenceIds: string[];
     correlationScore: number;
   }
-
   interface MotiveAnalysis {
     category: 'FINANCIAL' | 'REVENGE' | 'JEALOUSY' | 'POWER' | 'FEAR' | 'MENTAL_HEALTH';
     description: string;
@@ -83,24 +76,20 @@
     psychologicalBasis: string;
     triggerEvents: string[];
   }
-
   $effect(() => {
     caseId = page.url.searchParams.get('case') || 'CASE-2024-001';
     initializeDetectiveMode();
     startSystemMonitoring();
   });
-
   async function initializeDetectiveMode() {
     detectiveSystem.status = 'initializing';
     detectiveSystem.processingStage = 'Loading detective AI systems...';
-    
     // Initialize NES-GPU Memory Bridge for pattern recognition
     await nesMemoryBridge.initialize({
       mode: 'detective',
       optimizeFor: 'pattern-recognition',
       cacheRegions: ['motive-patterns', 'behavioral-profiles', 'evidence-correlation'];
     });
-
     // Initialize Glyph Shader Cache for visual analysis
     await glyphShaderCache.loadPatterns([
       'behavioral-signatures',
@@ -108,17 +97,14 @@
       'relationship-mapping',
       'psychological-markers'
     ]);
-
     detectiveSystem.status = 'ready';
     detectiveSystem.processingStage = 'Detective systems online';
     loadCaseData();
   }
-
   async function loadCaseData() {
     try {
       const response = await fetch(`/api/legal/detective/case/${caseId}`);
       const caseData = await response.json();
-      
       if (caseData.success) {
         suspectProfile = caseData.suspects[0] || generateMockSuspectProfile();
         timelineEvents = caseData.timeline || generateMockTimeline();
@@ -134,14 +120,11 @@
       evidenceCorrelation = generateMockEvidence();
     }
   }
-
   async function analyzeMotives() {
     if (!suspectProfile) return;
-
     analysisInProgress = true;
     analysisProgress = 0;
     detectiveSystem.status = 'analyzing';
-
     const stages = [
       'Analyzing behavioral patterns...',
       'Processing psychological markers...',
@@ -150,13 +133,10 @@
       'Generating risk assessment...',
       'Formulating recommendations...'
     ];
-
     for (let i = 0; i < stages.length; i++) {
       detectiveSystem.processingStage = stages[i];
       analysisProgress = ((i + 1) / stages.length) * 100;
-      
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
       // Process each stage
       switch (i) {
         case 0:
@@ -179,13 +159,11 @@
           break;
       }
     }
-
     analysisInProgress = false;
     detectiveSystem.status = 'complete';
     detectiveSystem.processingStage = 'Motive analysis complete';
     detectiveSystem.motiveConfidence = calculateOverallConfidence();
   }
-
   function startSystemMonitoring() {
     setInterval(() => {
       // Update NES-GPU metrics
@@ -196,7 +174,6 @@
       memoryMetrics.gpuUtilization = Math.random() * 100;
     }, 2000);
   }
-
   async function analyzeBehaviorPatterns() {
     return [
       {
@@ -212,14 +189,13 @@
         riskLevel: 'MEDIUM';
       },
       {
-        pattern: 'Emotional Dysregulation',;
+        pattern: 'Emotional Dysregulation',
         confidence: 0.94,
         timeline: ['Trigger events', 'Emotional outbursts', 'Impulsive decisions'],
         riskLevel: 'HIGH';
       }
     ];
   }
-
   async function generatePsychologicalProfile() {
     return {
       primaryTraits: ['Narcissistic tendencies', 'Poor impulse control', 'Emotional instability'],
@@ -230,7 +206,7 @@
         manipulation: 65,
         impulsivity: 89,
         planning: 45;
-      },;
+      },
       recommendations: [
         'Psychological evaluation required',
         'Monitor for escalation triggers',
@@ -238,7 +214,6 @@
       ];
     };
   }
-
   async function correlateEvidence() {
     return [
       {
@@ -256,7 +231,7 @@
         timelinePosition: '2024-01-20T14:15:00Z';
       },
       {
-        evidenceId: 'E003',;
+        evidenceId: 'E003',
         type: 'Witness Statement',
         correlationScore: 0.85,
         motiveSupport: ['REVENGE', 'JEALOUSY'],
@@ -264,7 +239,6 @@
       }
     ];
   }
-
   async function evaluateMotives(): Promise<MotiveAnalysis[]> {
     return [
       {
@@ -286,8 +260,8 @@
         triggerEvents: ['Court loss', 'Public embarrassment'];
       },
       {
-        category: 'MENTAL_HEALTH',;
-        description: 'Psychological breakdown affecting judgment',;
+        category: 'MENTAL_HEALTH',
+        description: 'Psychological breakdown affecting judgment',
         probability: 0.68,
         supportingEvidence: ['Medication changes', 'Behavioral changes', 'Social isolation'],
         contradictingEvidence: ['Treatment compliance', 'Support system'],
@@ -296,7 +270,6 @@
       }
     ];
   }
-
   async function assessRisk() {
     return {
       overallLevel: 'HIGH',
@@ -309,14 +282,13 @@
         opportunity: { score: 82, trend: 'increasing' },
         means: { score: 70, trend: 'stable' }
       },
-      timeline: {;
+      timeline: {
         immediate: 'Monitor closely - increased surveillance recommended',
         shortTerm: 'Intervention required within 48-72 hours',
         longTerm: 'Comprehensive treatment and ongoing monitoring';
       }
     };
   }
-
   async function generateRecommendations() {
     return [
       {
@@ -333,23 +305,21 @@
       },
       {
         priority: 'IMPORTANT',
-        action: 'Evidence preservation and documentation',;
-        rationale: 'Strong evidentiary support for multiple motive categories',;
+        action: 'Evidence preservation and documentation',
+        rationale: 'Strong evidentiary support for multiple motive categories',
         resources: ['Forensic team', 'Digital evidence specialists'];
       }
     ];
   }
-
   function calculateOverallConfidence() {
     if (motiveMatrix.length === 0) return 0;
     const avgProbability = motiveMatrix.reduce((sum, motive) => sum + motive.probability, 0) / motiveMatrix.length;
     return Math.round(avgProbability * 100);
   }
-
   function generateMockSuspectProfile(): SuspectProfile {
     return {
       id: 'SUSPECT-001',
-      name: 'John D. Anderson',;
+      name: 'John D. Anderson',
       relationship: 'Former Business Partner',
       opportunityScore: 82,
       meansScore: 75,
@@ -361,11 +331,10 @@
         deception: 65,
         impulsivity: 89,
         planning: 45;
-      },;
+      },
       timeline: [];
     };
   }
-
   function generateMockTimeline(): TimelineEvent[] {
     return [
       {
@@ -383,15 +352,14 @@
         correlationScore: 0.78;
       },
       {
-        timestamp: '2024-02-01T09:00:00Z',;
-        event: 'Public confrontation witnessed',;
+        timestamp: '2024-02-01T09:00:00Z',
+        event: 'Public confrontation witnessed',
         significance: 'HIGH',
         evidenceIds: ['E003'],
         correlationScore: 0.85;
       }
     ];
   }
-
   function generateMockEvidence() {
     return [
       { id: 'E001', type: 'Digital', relevance: 'HIGH' },
@@ -399,7 +367,6 @@
       { id: 'E003', type: 'Witness', relevance: 'HIGH' }
     ];
   }
-
   function getThreatColor(level: string) {
     switch (level) {
       case 'LOW': return 'bg-green-500';
@@ -409,7 +376,6 @@
       default: return 'bg-gray-500';
     }
   }
-
   function getMotiveColor(category: string) {
     switch (category) {
       case 'FINANCIAL': return 'bg-green-600';
@@ -422,7 +388,6 @@
     }
   }
 </script>
-
 <div class="container mx-auto p-6 space-y-6">
   <!-- Header -->
   <div class="flex justify-between items-center">
@@ -437,7 +402,6 @@
       </Badge>
     </div>
   </div>
-
   <!-- System Status -->
   <div>
     <divHeader>
@@ -462,7 +426,6 @@
           <div class="text-sm text-gray-600">Motive Confidence</div>
         </div>
       </div>
-      
       <div class="bg-gray-100 p-3 rounded-lg">
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm font-medium">Processing Status</span>
@@ -474,7 +437,6 @@
       </div>
     </div>
   </div>
-
   <!-- NES-GPU Memory Metrics -->
   <div>
     <divHeader>
@@ -505,28 +467,23 @@
       </div>
     </div>
   </div>
-
   <!-- Analysis Controls -->
   <div class="flex gap-4">
-    <Button 
-      onclick={analyzeMotives} 
+    <Button
+      onclick={analyzeMotives}
       disabled={analysisInProgress || !suspectProfile}
       class="bg-blue-600 hover:bg-blue-700"
     >
 {analysisInProgress ? 'Analyzing...' : 'Start Motive Analysis'}
-
     <button class="nes-btn" variant="ghost" onclick={() => activeTab = 'profile'}>
       View Suspect Profile
-
     <button class="nes-btn" variant="ghost" onclick={() => activeTab = 'motives'}>
       Motive Matrix
     </button>
-    
     <button class="nes-btn" variant="ghost" onclick={() => activeTab = 'risk'}>
       Risk Assessment
     </button>
   </div>
-
   <!-- Analysis Results -->
   <Tabs bind:value={activeTab} class="w-full">
     <TabsList class="grid w-full grid-cols-5">
@@ -536,7 +493,6 @@
       <TabsTrigger value="risk">Risk Assessment</TabsTrigger>
       <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
     </TabsList>
-
     <TabsContent value="profile">
       {#if suspectProfile}
         <div>
@@ -562,16 +518,13 @@
                 <div class="font-medium text-red-600">{suspectProfile.motiveScore}/100</div>
               </div>
             </div>
-
             <Separator />
-
             <div>
               <div class="text-sm text-gray-600 mb-2">Overall Threat Level</div>
               <Badge class={getThreatColor(suspectProfile.overallThreatLevel) + ' text-white'}>
                 {suspectProfile.overallThreatLevel}
               </Badge>
             </div>
-
             <div>
               <div class="text-sm text-gray-600 mb-2">Psychological Markers</div>
               <div class="flex flex-wrap gap-2">
@@ -580,7 +533,6 @@
                 {/each}
               </div>
             </div>
-
             <div>
               <div class="text-sm text-gray-600 mb-2">Behavioral Analysis</div>
               <div class="grid grid-cols-2 gap-4">
@@ -618,7 +570,6 @@
         </div>
       {/if}
     </TabsContent>
-
     <TabsContent value="motives">
       <div class="space-y-4">
         {#each motiveMatrix as motive}
@@ -636,7 +587,6 @@
             </div>
             <divContent class="space-y-4">
               <p class="text-gray-700">{motive.description}</p>
-              
               <div class="grid md:grid-cols-2 gap-4">
                 <div>
                   <div class="text-sm font-medium text-green-700 mb-2">Supporting Evidence</div>
@@ -649,7 +599,6 @@
                     {/each}
                   </ul>
                 </div>
-                
                 <div>
                   <div class="text-sm font-medium text-red-700 mb-2">Contradicting Evidence</div>
                   <ul class="text-sm space-y-1">
@@ -662,12 +611,10 @@
                   </ul>
                 </div>
               </div>
-
               <div>
                 <div class="text-sm font-medium text-blue-700 mb-2">Psychological Basis</div>
                 <p class="text-sm bg-blue-50 p-2 rounded">{motive.psychologicalBasis}</p>
               </div>
-
               <div>
                 <div class="text-sm font-medium text-purple-700 mb-2">Trigger Events</div>
                 <div class="flex flex-wrap gap-2">
@@ -681,7 +628,6 @@
         {/each}
       </div>
     </TabsContent>
-
     <TabsContent value="timeline">
       <div>
         <divHeader>
@@ -708,7 +654,6 @@
         </div>
       </div>
     </TabsContent>
-
     <TabsContent value="risk">
       {#if riskAssessment}
         <div class="space-y-4">
@@ -731,7 +676,6 @@
                   <div class="text-sm text-gray-600">Escalation Potential</div>
                 </div>
               </div>
-
               <div class="space-y-4">
                 <div>
                   <div class="text-sm font-medium mb-2">Risk Factor Analysis</div>
@@ -748,7 +692,6 @@
                     {/each}
                   </div>
                 </div>
-
                 <div>
                   <div class="text-sm font-medium mb-2">Timeline Recommendations</div>
                   <div class="space-y-2">
@@ -772,7 +715,6 @@
         </div>
       {/if}
     </TabsContent>
-
     <TabsContent value="recommendations">
       <div class="space-y-4">
         {#each investigativeRecommendations as rec}
@@ -806,7 +748,6 @@
       </div>
     </TabsContent>
   </Tabs>
-
   {#if behaviorPatterns.length > 0}
     <div>
       <divHeader>
@@ -837,7 +778,6 @@
       </div>
     </div>
   {/if}
-
   {#if psychologicalProfile}
     <div>
       <divHeader>
@@ -853,7 +793,6 @@
               {/each}
             </div>
           </div>
-          
           <div>
             <div class="text-sm font-medium text-gray-700 mb-2">Risk Factors</div>
             <div class="space-y-1">
@@ -862,7 +801,6 @@
               {/each}
             </div>
           </div>
-          
           <div>
             <div class="text-sm font-medium text-gray-700 mb-2">Protective Factors</div>
             <div class="space-y-1">
@@ -872,9 +810,7 @@
             </div>
           </div>
         </div>
-
         <Separator />
-
         <div>
           <div class="text-sm font-medium text-gray-700 mb-3">Assessment Scores</div>
           <div class="grid grid-cols-2 gap-4">
@@ -889,7 +825,6 @@
             {/each}
           </div>
         </div>
-
         <div>
           <div class="text-sm font-medium text-gray-700 mb-2">Professional Recommendations</div>
           <ul class="space-y-1">

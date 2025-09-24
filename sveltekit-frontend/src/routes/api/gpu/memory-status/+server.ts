@@ -1,15 +1,12 @@
 /// <reference types="vite/client" />
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 // Base URL for Go GPU status service (fallback to localhost)
 const GO_BASE =
     import.meta.env.GO_SERVICE_URL ||
     import.meta.env.GO_SERVER_URL ||
     import.meta.env.GO_MICROSERVICE_URL ||
     'http://localhost:8084'
-
 async function fetchWithTimeout(path: string, timeoutMs = 2500): Promise<any> {
     const controller = new AbortController()
     const t = setTimeout(() => controller.abort(), timeoutMs)
@@ -21,7 +18,6 @@ async function fetchWithTimeout(path: string, timeoutMs = 2500): Promise<any> {
         clearTimeout(t)
     }
 }
-
 export const GET: RequestHandler = async () => {
     try {
         const data = await fetchWithTimeout('/api/gpu-status')
@@ -33,18 +29,17 @@ export const GET: RequestHandler = async () => {
                     ? data.memory.total - data.memory.free: null
         }
         return json({
-            success: true,
-            ok: true,
+            success: true
+            ok: true
             source: 'go',
             memory
         })
     } catch (err: any) {
         console.error('GPU memory status error:', err)
-
         return json({
-            success: false,
+            success: false
             error: 'failure default to mock',
-            ok: false,
+            ok: false
             source: 'mock',
             memory: {
                 free: 8192, // Mock 8GB free

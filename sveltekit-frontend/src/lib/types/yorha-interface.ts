@@ -1,8 +1,6 @@
 // YoRHa Interface Types
 // Complete type definitions for the cyberpunk YoRHa legal AI interface system
-
 // Core System Types
-
 export interface SystemMetrics {
 	cpu_usage: number;
 	memory_usage: number;
@@ -13,13 +11,10 @@ export interface SystemMetrics {
 	quantum_state: QuantumState;
 	neural_activity: number;
 }
-
 export type SecurityLevel = 'MINIMUM' | 'STANDARD' | 'HIGH' | 'MAXIMUM' | 'CLASSIFIED';
 export type QuantumState = 'COHERENT' | 'ENTANGLED' | 'SUPERPOSITION' | 'COLLAPSED' | 'UNSTABLE';
 export type SystemStatus = 'ONLINE' | 'DEGRADED' | 'MAINTENANCE' | 'OFFLINE' | 'CRITICAL';
-
 // Module System Types
-
 export interface YoRHaModule {
 	id: string;
 	name: string;
@@ -34,7 +29,6 @@ export interface YoRHaModule {
 	error_count?: number;
 	uptime_seconds?: number;
 }
-
 export type ModuleStatus =
 	| 'ACTIVE'
 	| 'STANDBY'
@@ -44,7 +38,6 @@ export type ModuleStatus =
 	| 'UPDATING'
 	| 'MAXIMUM'
 	| 'OFFLINE';
-
 export interface ModuleConfiguration {
 	auto_start: boolean;
 	priority: number; // 1-10
@@ -53,7 +46,6 @@ export interface ModuleConfiguration {
 	logging_level: LogLevel;
 	backup_enabled: boolean;
 }
-
 export interface ResourceAllocation {
 	cpu_cores: number;
 	memory_mb: number;
@@ -61,11 +53,8 @@ export interface ResourceAllocation {
 	disk_space_mb: number;
 	network_bandwidth_mbps: number;
 }
-
 export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'CRITICAL';
-
 // Command System Types
-
 export interface CommandResult {
 	id: string;
 	command: string;
@@ -77,9 +66,7 @@ export interface CommandResult {
 	data?: any;
 	error_code?: string;
 }
-
 export type CommandStatus = 'PROCESSING' | 'SUCCESS' | 'ERROR' | 'TIMEOUT' | 'CANCELLED';
-
 export interface CommandContext {
 	user_id: string;
 	session_id: string;
@@ -87,7 +74,6 @@ export interface CommandContext {
 	current_module?: string;
 	environment_variables?: Record<string, string>;
 }
-
 export interface CommandDefinition {
 	name: string;
 	description: string;
@@ -97,7 +83,6 @@ export interface CommandDefinition {
 	module: string;
 	parameters: CommandParameter[];
 }
-
 export interface CommandParameter {
 	name: string;
 	type: 'string' | 'number' | 'boolean' | 'array' | 'object';
@@ -106,9 +91,7 @@ export interface CommandParameter {
 	default_value?: any;
 	validation?: string; // regex pattern
 }
-
 // 3D Holographic Types
-
 export interface HolographicData {
 	id: string;
 	type: HolographicType;
@@ -120,7 +103,6 @@ export interface HolographicData {
 	animation?: AnimationType;
 	data?: any;
 }
-
 export type HolographicType =
 	| 'sphere'
 	| 'cube'
@@ -131,7 +113,6 @@ export type HolographicType =
 	| 'mesh'
 	| 'text'
 	| 'particles';
-
 export type AnimationType =
 	| 'rotate'
 	| 'pulse'
@@ -141,13 +122,11 @@ export type AnimationType =
 	| 'orbit'
 	| 'bounce'
 	| 'static';
-
 export interface Vector3D {
 	x: number;
 	y: number;
 	z: number;
 }
-
 export interface HolographicScene {
 	id: string;
 	name: string;
@@ -156,21 +135,18 @@ export interface HolographicScene {
 	camera: CameraConfig;
 	effects: VisualEffect[];
 }
-
 export interface LightingConfig {
 	ambient_color: string;
 	ambient_intensity: number;
 	directional_lights: DirectionalLight[];
 	point_lights: PointLight[];
 }
-
 export interface DirectionalLight {
 	direction: Vector3D;
 	color: string;
 	intensity: number;
 	cast_shadows: boolean;
 }
-
 export interface PointLight {
 	position: Vector3D;
 	color: string;
@@ -178,7 +154,6 @@ export interface PointLight {
 	range: number;
 	decay: number;
 }
-
 export interface CameraConfig {
 	position: Vector3D;
 	target: Vector3D;
@@ -187,16 +162,13 @@ export interface CameraConfig {
 	far_plane: number;
 	auto_rotate: boolean;
 }
-
 // Visual Effects Types
-
 export interface VisualEffect {
 	type: EffectType;
 	enabled: boolean;
 	intensity: number;
-	parameters: Record<string, any>;
+	parameters: { [key: string]: any };
 }
-
 export type EffectType =
 	| 'scanlines'
 	| 'glitch'
@@ -206,7 +178,6 @@ export type EffectType =
 	| 'distortion'
 	| 'particle_system'
 	| 'data_streams';
-
 export interface ParticleSystem {
 	particle_count: number;
 	spawn_rate: number;
@@ -217,9 +188,7 @@ export interface ParticleSystem {
 	opacity: number;
 	physics_enabled: boolean;
 }
-
 // Data Visualization Types
-
 export interface DataVisualization {
 	id: string;
 	type: VisualizationType;
@@ -229,7 +198,6 @@ export interface DataVisualization {
 	real_time: boolean;
 	update_interval_ms?: number;
 }
-
 export type VisualizationType =
 	| 'network_graph'
 	| 'data_flow'
@@ -238,7 +206,6 @@ export type VisualizationType =
 	| 'security_grid'
 	| 'quantum_state'
 	| 'legal_relationships';
-
 export interface VisualizationConfig {
 	width: number;
 	height: number;
@@ -248,9 +215,7 @@ export interface VisualizationConfig {
 	show_labels: boolean;
 	show_connections: boolean;
 }
-
 // Neural Network Types
-
 export interface NeuralNetworkState {
 	total_nodes: number;
 	active_nodes: number;
@@ -261,7 +226,6 @@ export interface NeuralNetworkState {
 	training_status: TrainingStatus;
 	model_accuracy: number;
 }
-
 export type TrainingStatus =
 	| 'IDLE'
 	| 'TRAINING'
@@ -270,7 +234,6 @@ export type TrainingStatus =
 	| 'OPTIMIZING'
 	| 'COMPLETE'
 	| 'ERROR';
-
 export interface NeuralNode {
 	id: string;
 	layer: number;
@@ -280,7 +243,6 @@ export interface NeuralNode {
 	connections: NeuralConnection[];
 	node_type: 'input' | 'hidden' | 'output';
 }
-
 export interface NeuralConnection {
 	from_node: string;
 	to_node: string;
@@ -288,9 +250,7 @@ export interface NeuralConnection {
 	active: boolean;
 	signal_strength: number;
 }
-
 // Legal AI Specific Types
-
 export interface LegalAISession {
 	session_id: string;
 	user_id: string;
@@ -302,9 +262,7 @@ export interface LegalAISession {
 	processing_time_total: number;
 	context: LegalContext;
 }
-
 export type SessionStatus = 'ACTIVE' | 'IDLE' | 'PAUSED' | 'TERMINATED' | 'ERROR';
-
 export interface LegalContext {
 	jurisdiction: string;
 	practice_area: string[];
@@ -314,7 +272,6 @@ export interface LegalContext {
 	related_cases: string[];
 	key_entities: string[];
 }
-
 export interface LegalQuery {
 	id: string;
 	session_id: string;
@@ -325,7 +282,6 @@ export interface LegalQuery {
 	confidence_score?: number;
 	response?: LegalResponse;
 }
-
 export type LegalQueryType =
 	| 'case_analysis'
 	| 'document_review'
@@ -333,9 +289,7 @@ export type LegalQueryType =
 	| 'risk_assessment'
 	| 'compliance_check'
 	| 'contract_analysis';
-
 export type ProcessingStatus = 'QUEUED' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
-
 export interface LegalResponse {
 	id: string;
 	query_id: string;
@@ -347,7 +301,6 @@ export interface LegalResponse {
 	processing_time_ms: number;
 	model_used: string;
 }
-
 export interface LegalSource {
 	id: string;
 	type: 'case' | 'statute' | 'regulation' | 'precedent' | 'document';
@@ -357,18 +310,15 @@ export interface LegalSource {
 	excerpt?: string;
 	url?: string;
 }
-
 export interface RiskFactor {
 	category: string;
 	description: string;
 	severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 	probability: number; // 0-1
-	impact_score: number; // 0-10
+	impact_score: number; // 0-10,
 	mitigation_strategies: string[];
 }
-
 // System Monitoring Types
-
 export interface SystemAlert {
 	id: string;
 	type: AlertType;
@@ -378,9 +328,8 @@ export interface SystemAlert {
 	timestamp: string;
 	acknowledged: boolean;
 	resolved: boolean;
-	metadata?: Record<string, any>;
+	metadata?: { [key: string]: any };
 }
-
 export type AlertType =
 	| 'SYSTEM_ERROR'
 	| 'PERFORMANCE_DEGRADATION'
@@ -390,9 +339,7 @@ export type AlertType =
 	| 'NETWORK_ISSUE'
 	| 'DATA_INTEGRITY'
 	| 'AUTHENTICATION_FAILURE';
-
 export type AlertSeverity = 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL' | 'EMERGENCY';
-
 export interface PerformanceReport {
 	timestamp: string;
 	uptime_seconds: number;
@@ -403,7 +350,6 @@ export interface PerformanceReport {
 	module_performance: ModulePerformance[];
 	alerts_count: number;
 }
-
 export interface ResourceUtilization {
 	cpu_percentage: number;
 	memory_percentage: number;
@@ -411,7 +357,6 @@ export interface ResourceUtilization {
 	network_bandwidth_percentage: number;
 	gpu_percentage?: number;
 }
-
 export interface ModulePerformance {
 	module_id: string;
 	requests_processed: number;
@@ -420,9 +365,7 @@ export interface ModulePerformance {
 	success_rate: number;
 	resource_usage: ResourceUtilization;
 }
-
 // User Interface Types
-
 export interface UITheme {
 	name: string;
 	colors: ColorPalette;
@@ -430,7 +373,6 @@ export interface UITheme {
 	effects: EffectSettings;
 	layout: LayoutConfig;
 }
-
 export interface ColorPalette {
 	primary: string;
 	secondary: string;
@@ -444,7 +386,6 @@ export interface ColorPalette {
 	error: string;
 	hologram: string;
 }
-
 export interface FontConfig {
 	primary_family: string;
 	secondary_family: string;
@@ -452,7 +393,6 @@ export interface FontConfig {
 	base_size: string;
 	heading_scale: number;
 }
-
 export interface EffectSettings {
 	scanlines_enabled: boolean;
 	scanlines_opacity: number;
@@ -461,7 +401,6 @@ export interface EffectSettings {
 	particle_density: number;
 	animation_speed: number;
 }
-
 export interface LayoutConfig {
 	sidebar_width: string;
 	header_height: string;
@@ -469,9 +408,7 @@ export interface LayoutConfig {
 	border_radius: string;
 	grid_columns: number;
 }
-
 // API Integration Types
-
 export interface APIEndpoint {
 	name: string;
 	url: string;
@@ -481,7 +418,6 @@ export interface APIEndpoint {
 	timeout_ms: number;
 	retry_attempts: number;
 }
-
 export interface APIResponse<T = any> {
 	success: boolean;
 	data?: T;
@@ -490,9 +426,7 @@ export interface APIResponse<T = any> {
 	request_id: string;
 	processing_time_ms: number;
 }
-
 // WebGL and Rendering Types
-
 export interface WebGLConfig {
 	canvas_width: number;
 	canvas_height: number;
@@ -503,15 +437,13 @@ export interface WebGLConfig {
 	preserve_drawing_buffer: boolean;
 	power_preference: 'default' | 'high-performance' | 'low-power';
 }
-
 export interface ShaderProgram {
 	id: string;
 	vertex_shader: string;
 	fragment_shader: string;
-	uniforms: Record<string, any>;
+	uniforms: { [key: string]: any };
 	attributes: Record<string, number>;
 }
-
 export interface RenderObject {
 	id: string;
 	geometry: Geometry;
@@ -521,7 +453,6 @@ export interface RenderObject {
 	scale: Vector3D;
 	visible: boolean;
 }
-
 export interface Geometry {
 	vertices: Float32Array;
 	indices?: Uint16Array;
@@ -529,18 +460,15 @@ export interface Geometry {
 	uvs?: Float32Array;
 	colors?: Float32Array;
 }
-
 export interface Material {
 	type: 'basic' | 'phong' | 'holographic' | 'particle';
 	color: string;
 	opacity: number;
 	transparent: boolean;
 	texture?: string;
-	uniforms?: Record<string, any>;
+	uniforms?: { [key: string]: any };
 }
-
 // Utility Types
-
 export type YoRHaEventType =
 	| 'system_boot'
 	| 'module_start'
@@ -550,7 +478,6 @@ export type YoRHaEventType =
 	| 'user_login'
 	| 'user_logout'
 	| 'data_updated';
-
 export interface YoRHaEvent {
 	type: YoRHaEventType;
 	timestamp: string;
@@ -559,7 +486,6 @@ export interface YoRHaEvent {
 	user_id?: string;
 	session_id?: string;
 }
-
 export interface ConfigurationOption {
 	key: string;
 	type: 'string' | 'number' | 'boolean' | 'array' | 'object';
@@ -575,7 +501,6 @@ export interface ConfigurationOption {
 		options?: any[];
 	};
 }
-
 export interface SystemCapabilities {
 	webgl_supported: boolean;
 	webgl_version: string;
@@ -585,15 +510,12 @@ export interface SystemCapabilities {
 	extensions: string[];
 	performance_tier: 'low' | 'medium' | 'high' | 'maximum';
 }
-
 // Export collections for easy importing
 export type YoRHaModuleStatus = ModuleStatus;
 export type YoRHaSystemStatus = SystemStatus;
 export type YoRHaSecurityLevel = SecurityLevel;
 export type YoRHaCommandStatus = CommandStatus;
-
 // === Svelte 5 Runes Integration ===
-
 /**
  * Reactive state wrapper for YoRHa system metrics
  * Compatible with Svelte 5 $state() runes
@@ -604,7 +526,6 @@ export interface YoRHaReactiveState<T> {
   update: (updater: (current: T) => T) => void;
   set: (value: T) => void;
 }
-
 /**
  * Enhanced-Bits compatible theme configuration
  */
@@ -615,7 +536,6 @@ export interface YoRHaEnhancedTheme extends UITheme {
     inputStyles: Record<string, string>;
   };
 }
-
 /**
  * Type-safe event handlers for YoRHa components
  */
@@ -626,7 +546,6 @@ export interface YoRHaEventHandlers {
   onAlertRaised?: (alert: SystemAlert) => void;
   onLegalQueryComplete?: (response: LegalResponse) => void;
 }
-
 /**
  * Svelte 5 component props interface
  */
@@ -637,7 +556,6 @@ export interface YoRHaComponentProps {
   readonly?: boolean;
   disabled?: boolean;
 }
-
 /**
  * Type guards for runtime type checking
  */
@@ -645,21 +563,17 @@ export const isSystemMetrics = (value: unknown): value is SystemMetrics => {
   return typeof value === 'object' && value !== null &&
     'cpu_usage' in value && 'memory_usage' in value;
 };
-
 export const isLegalQuery = (value: unknown): value is LegalQuery => {
   return typeof value === 'object' && value !== null &&
     'id' in value && 'query_text' in value && 'query_type' in value;
 };
-
 export const isYoRHaModule = (value: unknown): value is YoRHaModule => {
   return typeof value === 'object' && value !== null &&
     'id' in value && 'name' in value && 'status' in value;
 };
-
 // === Re-exports for Enhanced Compatibility ===
 export type { SystemMetrics as YoRHaSystemMetrics };
 export type { LegalQuery as YoRHaLegalQuery };
 export type { CommandResult as YoRHaCommandResult };
 export type { HolographicData as YoRHa3DObject };
 export type { VisualEffect as YoRHaEffect };
-

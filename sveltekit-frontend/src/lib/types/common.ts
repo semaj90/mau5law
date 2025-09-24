@@ -2,32 +2,24 @@
  * Common TypeScript utility types for the Legal AI platform
  * Reduces need for type assertions and improves type safety
  */
-
 // ============================================================================
 // UTILITY TYPES
 // ============================================================================
-
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
-
 export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>;
-
 export type NonEmptyArray<T> = [T, ...T[]];
-
 export type Prettify<T> = {
   [K in keyof T]: T[K];
 } & {};
-
 export type DeepReadonly<T> = {
   readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
 };
-
 // ============================================================================
 // API RESPONSE TYPES
-// ============================================================================;
+// ============================================================================
 }
-
 export interface BaseResponse<T = unknown> {
   success: boolean;
   data?: T;
@@ -35,9 +27,8 @@ export interface BaseResponse<T = unknown> {
   message?: string;
   timestamp?: Date;
 }
-
 export interface PaginatedResponse<T = unknown> extends BaseResponse<T[]> {
-  pagination: {;
+  pagination: {
     page: number;
     limit: number;
     total: number;
@@ -46,7 +37,6 @@ export interface PaginatedResponse<T = unknown> extends BaseResponse<T[]> {
     hasPrev: boolean;
   };
 }
-
 export interface ErrorResponse {
   success: false;
   error: string;
@@ -54,21 +44,17 @@ export interface ErrorResponse {
   details?: Record<string, unknown>;
   timestamp: Date;
 }
-
 // ============================================================================
 // DATABASE ENTITY TYPES
-// ============================================================================;
+// ============================================================================
 }
-
 export interface TimestampedEntity {
   createdAt: Date;
   updatedAt: Date;
 }
-
 export interface UserOwnedEntity extends TimestampedEntity {
   userId: string;
 }
-
 export interface CaseEntity extends UserOwnedEntity {
   id: string;
   title: string;
@@ -78,7 +64,6 @@ export interface CaseEntity extends UserOwnedEntity {
   caseNumber?: string;
   assignedTo?: string;
 }
-
 export interface DocumentEntity extends UserOwnedEntity {
   id: string;
   caseId?: string;
@@ -93,7 +78,6 @@ export interface DocumentEntity extends UserOwnedEntity {
   tags?: string[];
   isIndexed: boolean;
 }
-
 export interface DocumentMetadata {
   pageCount?: number;
   extractionMethod?: string;
@@ -104,19 +88,16 @@ export interface DocumentMetadata {
   avgChunkSize?: number;
   [key: string]: unknown;
 }
-
 // ============================================================================
 // AI/ML TYPES
-// ============================================================================;
+// ============================================================================
 }
-
 export interface EmbeddingResult {
   vector: number[];
   model: string;
   dimensions: number;
   processingTime: number;
 }
-
 export interface AIAnalysisResult {
   summary?: string;
   entities?: string[];
@@ -126,7 +107,6 @@ export interface AIAnalysisResult {
   model: string;
   processingTime: number;
 }
-
 export interface SearchResult {
   id: string;
   score: number;
@@ -134,19 +114,16 @@ export interface SearchResult {
   highlights?: string[];
   context?: string;
 }
-
 // ============================================================================
 // XSTATE MACHINE TYPES
-// ============================================================================;
+// ============================================================================
 }
-
 export interface BaseMachineContext {
   error?: string;
   loading?: boolean;
   retryCount?: number;
   lastUpdated?: Date;
 }
-
 export interface DocumentUploadContext extends BaseMachineContext {
   file?: File;
   documentId?: string;
@@ -154,14 +131,12 @@ export interface DocumentUploadContext extends BaseMachineContext {
   processingProgress?: number;
   result?: DocumentEntity;
 }
-
 export interface ChatContext extends BaseMachineContext {
   messages: ChatMessage[];
   currentMessage?: string;
   isTyping?: boolean;
   sessionId?: string;
 }
-
 export interface ChatMessage {
   id: string;
   content: string;
@@ -173,12 +148,10 @@ export interface ChatMessage {
     confidence?: number;
   };
 }
-
 // ============================================================================
 // UPLOAD/FILE TYPES
-// ============================================================================;
+// ============================================================================
 }
-
 export interface FileMetadata {
   filename: string;
   size: number;
@@ -187,7 +160,6 @@ export interface FileMetadata {
   hash?: string;
   checksum?: string;
 }
-
 export interface UploadProgress {
   loaded: number;
   total: number;
@@ -196,58 +168,48 @@ export interface UploadProgress {
   timeRemaining?: number;
   stage: 'uploading' | 'processing' | 'indexing' | 'complete';
 }
-
 export interface UploadResult extends BaseResponse<DocumentEntity> {
   fileId?: string;
   url?: string;
   metadata?: FileMetadata;
   processingTime?: number;
 }
-
 // ============================================================================
 // EVENT TYPES
-// ============================================================================;
+// ============================================================================
 }
-
 export interface BaseEvent {
   type: string;
   timestamp: Date;
   userId?: string;
   sessionId?: string;
 }
-
 export interface DocumentEvent extends BaseEvent {
   documentId: string;
   caseId?: string;
 }
-
 export interface ChatEvent extends BaseEvent {
   messageId: string;
   conversationId?: string;
 }
-
 // ============================================================================
 // VALIDATION TYPES
-// ============================================================================;
+// ============================================================================
 }
-
 export interface ValidationError {
   field: string;
   message: string;
   code?: string;
 }
-
 export interface ValidationResult {
   isValid: boolean;
   errors: ValidationError[];
   warnings?: ValidationError[];
 }
-
 // ============================================================================
 // CONFIGURATION TYPES
-// ============================================================================;
+// ============================================================================
 }
-
 export interface AIConfig {
   model: string;
   temperature?: number;
@@ -256,7 +218,6 @@ export interface AIConfig {
   frequencyPenalty?: number;
   presencePenalty?: number;
 }
-
 export interface DatabaseConfig {
   host: string;
   port: number;
@@ -266,7 +227,6 @@ export interface DatabaseConfig {
   ssl?: boolean;
   maxConnections?: number;
 }
-
 export interface ServiceConfig {
   enabled: boolean;
   url: string;

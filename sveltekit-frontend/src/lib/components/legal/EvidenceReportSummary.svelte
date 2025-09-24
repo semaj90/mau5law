@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     evidenceId: string;
     caseId: string;
@@ -16,9 +15,6 @@
     reportData,
     allowExport = true
   : unknown } = $props();
-
-
-
   import { aiSummaryMachine } from "$lib/machines/aiSummaryMachine";
   import { useMachine } from "@xstate/svelte";
   import {
@@ -31,8 +27,6 @@
     Target,
   } from "lucide-svelte";
   import AISummaryReader from "./AISummaryReader.svelte";
-
-
   interface EvidenceReport {
     id: string;
     title: string;
@@ -59,12 +53,12 @@
       dateCollected: string
       location: string;
     };
-    methodology: {;
+    methodology: {
       procedures: string[];
       tools: string[];
       standards: string[];
     };
-    findings: {;
+    findings: {
       summary: string
       keyPoints: string[];
       confidence: number;
@@ -82,59 +76,45 @@
       size: number;
     }[];
   }
-
   const { state, send } = useMachine(aiSummaryMachine);
-
   // Generate comprehensive content for AI analysis
   let analysisContent = $derived(generateAnalysisContent(reportData));
-
   function generateAnalysisContent(report: EvidenceReport): string {
     return `
   EVIDENCE ANALYSIS REPORT
-
   Case ID: ${caseId}
   Evidence Item: ${report.evidence.itemNumber}
   Report Type: ${report.type.replace.toUpperCase()}
   Priority Level: ${report.priority.toUpperCase()}
   Status: ${report.status.toUpperCase()}
-
   ANALYST INFORMATION
   Name: ${report.analyst.name}
   Credentials: ${report.analyst.credentials}
   Department: ${report.analyst.department}
-
   EVIDENCE DETAILS
   Description: ${report.evidence.description}
   Collection Date: ${report.evidence.dateCollected}
   Collection Location: ${report.evidence.location}
   Chain of Custody: ${report.evidence.chainOfCustody.join(" → ")}
-
   METHODOLOGY
   Procedures: ${report.methodology.procedures.join(", ")}
   Tools Used: ${report.methodology.tools.join(", ")}
   Standards Applied: ${report.methodology.standards.join(", ")}
-
   FINDINGS
   ${report.findings.summary}
-
   Key Points:
   ${report.findings.keyPoints.map((point) => `• ${point}`).join("\n")}
-
   Confidence Level: ${Math.round(report.findings.confidence * 100)}%
-
   Limitations:
   ${report.findings.limitations.map((limitation) => `• ${limitation}`).join("\n")}
-
   LEGAL IMPLICATIONS
   Potential Charges: ${report.legalImplications.charges.join(", ")}
   Relevant Precedents: ${report.legalImplications.precedents.join(", ")}
   Challenge Points: ${report.legalImplications.challengePoints.join(", ")}
-
   ATTACHMENTS
   ${report.attachments.map((att) => `• ${att.name} (${att.type})`).join("\n")}
     `.trim();
   }
-
   function getStatusColor(status: string) {
     switch (status) {
       case "completed":
@@ -151,7 +131,6 @@
         return "text-gray-600 bg-gray-100";
     }
   }
-
   function getPriorityColor(priority: string) {
     switch (priority) {
       case "critical":
@@ -166,7 +145,6 @@
         return "text-gray-600 bg-gray-100 border-gray-200";
     }
   }
-
   function getTypeIcon(type: string) {
     switch (type) {
       case "digital_forensics":
@@ -185,7 +163,6 @@
         return "📋";
     }
   }
-
   function exportReport() {
     const content = `# Evidence Analysis Report Export\n\n${analysisContent}`;
     const blob = new Blob([content], { type: "text/markdown" });
@@ -199,7 +176,6 @@
     URL.revokeObjectURL(url);
   }
 </script>
-
 <div class="evidence-report-summary space-y-6">
   <!-- Report Header -->
   <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
@@ -221,7 +197,6 @@
           </div>
         </div>
       </div>
-
       <div class="flex items-center gap-3">
         <div class="text-right">
           <div class="flex items-center gap-2 mb-1">
@@ -241,7 +216,6 @@
             {reportData.priority.toUpperCase()} PRIORITY
           </div>
         </div>
-
         {#if allowExport}
           <button
             onclick={exportReport}
@@ -253,7 +227,6 @@
         {/if}
       </div>
     </div>
-
     <!-- Quick Stats -->
     <div
       class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg"
@@ -284,7 +257,6 @@
       </div>
     </div>
   </div>
-
   <!-- Evidence Details -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Evidence Information -->
@@ -295,7 +267,6 @@
         <Eye class="w-5 h-5" />
         Evidence Details
       </h3>
-
       <div class="space-y-4">
         <div>
           <label class="text-sm font-medium text-gray-700">Item Number</label>
@@ -303,12 +274,10 @@
             {reportData.evidence.itemNumber}
           </p>
         </div>
-
         <div>
           <label class="text-sm font-medium text-gray-700">Description</label>
           <p class="mt-1 text-gray-900">{reportData.evidence.description}</p>
         </div>
-
         <div>
           <label class="text-sm font-medium text-gray-700"
             >Collection Details</label
@@ -321,7 +290,6 @@
             <p><strong>Location:</strong> {reportData.evidence.location}</p>
           </div>
         </div>
-
         <div>
           <label class="text-sm font-medium text-gray-700"
             >Chain of Custody</label
@@ -341,7 +309,6 @@
         </div>
       </div>
     </div>
-
     <!-- Analyst Information -->
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3
@@ -350,7 +317,6 @@
         <Target class="w-5 h-5" />
         Analysis Details
       </h3>
-
       <div class="space-y-4">
         <div>
           <label class="text-sm font-medium text-gray-700">Analyst</label>
@@ -362,7 +328,6 @@
             <p class="text-sm text-gray-600">{reportData.analyst.department}</p>
           </div>
         </div>
-
         <div>
           <label class="text-sm font-medium text-gray-700">Methodology</label>
           <div class="mt-2 space-y-3">
@@ -374,7 +339,6 @@
                 {/each}
               </ul>
             </div>
-
             <div>
               <p class="text-sm font-medium text-gray-600">Tools</p>
               <div class="mt-1 flex flex-wrap gap-1">
@@ -390,7 +354,6 @@
         </div>
       </div>
     </div>
-
     <!-- Legal Impact -->
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3
@@ -399,7 +362,6 @@
         <Scale class="w-5 h-5" />
         Legal Implications
       </h3>
-
       <div class="space-y-4">
         <div>
           <label class="text-sm font-medium text-gray-700"
@@ -414,7 +376,6 @@
             {/each}
           </div>
         </div>
-
         <div>
           <label class="text-sm font-medium text-gray-700"
             >Challenge Points</label
@@ -430,7 +391,6 @@
             {/each}
           </div>
         </div>
-
         <div>
           <label class="text-sm font-medium text-gray-700"
             >Relevant Precedents</label
@@ -448,18 +408,15 @@
       </div>
     </div>
   </div>
-
   <!-- Key Findings -->
   <div class="bg-white border border-gray-200 rounded-lg p-6">
     <h3 class="text-lg font-semibold text-gray-900 mb-4">Key Findings</h3>
-
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div>
         <h4 class="font-medium text-gray-900 mb-3">Summary</h4>
         <p class="text-gray-700 leading-relaxed">
           {reportData.findings.summary}
         </p>
-
         <div class="mt-4">
           <div class="flex items-center justify-between mb-2">
             <span class="text-sm font-medium text-gray-700"
@@ -481,7 +438,6 @@
           </div>
         </div>
       </div>
-
       <div>
         <h4 class="font-medium text-gray-900 mb-3">Key Points</h4>
         <ul class="space-y-2">
@@ -494,7 +450,6 @@
             </li>
           {/each}
         </ul>
-
         {#if reportData.findings.limitations.length > 0}
           <div class="mt-4">
             <h4 class="font-medium text-gray-900 mb-3">Limitations</h4>
@@ -513,12 +468,10 @@
       </div>
     </div>
   </div>
-
   <!-- Attachments -->
   {#if reportData.attachments.length > 0}
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold text-gray-900 mb-4">Attachments</h3>
-
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each reportData.attachments as attachment}
           <div
@@ -542,7 +495,6 @@
       </div>
     </div>
   {/if}
-
   <!-- AI Summary Reader -->
   <div class="mt-8">
     <AISummaryReader
@@ -553,12 +505,10 @@
     />
   </div>
 </div>
-
 <style>
-  .evidence-report-summary {;
+  .evidence-report-summary {
     max-width: 80rem;
     margin-left: auto
     margin-right: auto;
   }
 </style>
-

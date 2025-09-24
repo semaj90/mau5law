@@ -1,8 +1,7 @@
 // Dynamic imports for AI components to enable code splitting
 // This helps reduce initial bundle size by loading AI components only when needed
-
 export const loadAIComponents = {
-  // Core AI components;
+  // Core AI components
   async detectives() {
     const [DetectiveBoard, EvidenceCard] = await Promise.all([
       import('$lib/components/detective/DetectiveBoard.svelte'),
@@ -10,23 +9,19 @@ export const loadAIComponents = {
     ]);
     return { DetectiveBoard: DetectiveBoard.default, EvidenceCard: EvidenceCard.default };
   },
-
   async qloraMonitoring() {
     const { default: QLoRAMonitoringDashboard } = await import('$lib/components/ai/QLoRAMonitoringDashboard.svelte');
     return QLoRAMonitoringDashboard;
   },
-
   async fabricCanvas() {
     const { default: FabricCanvas } = await import('$lib/components/canvas/FabricCanvas.svelte');
     return FabricCanvas;
   },
-
   async legalAnalysis() {
     const { default: LegalAnalysisDialog } = await import('$lib/components/LegalAnalysisDialog.svelte');
     return LegalAnalysisDialog;
   },
-
-  // Upload components;
+  // Upload components
   async uploads() {
     const [MinIOUpload, N64Upload] = await Promise.all([
       import('$lib/components/upload/OptimizedMinIOUpload.svelte'),
@@ -34,8 +29,7 @@ export const loadAIComponents = {
     ]);
     return { MinIOUpload: MinIOUpload.default, N64Upload: N64Upload.default };
   },
-
-  // WebGPU components;
+  // WebGPU components
   async webgpu() {
     const [WebGPULoader, TextureStreaming] = await Promise.all([
       import('$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte'),
@@ -44,52 +38,43 @@ export const loadAIComponents = {
     return { WebGPULoader: WebGPULoader.default, TextureStreaming: TextureStreaming.default };
   }
 };
-
-// Service workers for heavy AI processing;
+// Service workers for heavy AI processing
 export const loadAIServices = {
   async embeddingWorker() {
     const { enhancedEmbeddingWorker } = await import('$lib/workers/embedding-worker-enhanced.js');
     return enhancedEmbeddingWorker;
   },
-
   async gpuSomEmbeddings() {
     const { GPUSOMEmbeddings } = await import('$lib/services/gpu-som-embeddings');
     return GPUSOMEmbeddings;
   },
-
   async contextualIntelligence() {
     const { contextualIntelligenceService } = await import('$lib/services/contextual-intelligence-service');
     return contextualIntelligenceService;
   },
-
   async quantumCache() {
     const { quantumRagCache } = await import('$lib/quantum/rag-cache');
     return quantumRagCache;
   },
-
   async simdGpuTiling() {
     const { simdGPUTilingEngine } = await import('$lib/evidence/simd-gpu-tiling-engine');
     return simdGPUTilingEngine;
   }
 };
-
-// Utilities for managing dynamic imports;
+// Utilities for managing dynamic imports
 export class ComponentLoader {
   private loadedComponents = new Map<string, any>();
   private loadingPromises = new Map<string, Promise<any>();
-
   async load<T>(key: string, loader: () => Promise<T>): Promise<T> {
-    // Return already loaded component;
+    // Return already loaded component
     if (this.loadedComponents.has(key)) {
       return this.loadedComponents.get(key);
     }
-
-    // Return existing loading promise;
+    // Return existing loading promise
     if (this.loadingPromises.has(key)) {
       return this.loadingPromises.get(key);
     }
-
-    // Start loading;
+    // Start loading
     const loadingPromise = loader().then(component => {
       this.loadedComponents.set(key, component);
       this.loadingPromises.delete(key);
@@ -99,19 +84,15 @@ export class ComponentLoader {
       console.error(`Failed to load component ${key}:`, error);
       throw error;
     });
-
     this.loadingPromises.set(key, loadingPromise);
     return loadingPromise;
   }
-
   isLoaded(key: string): boolean {
     return this.loadedComponents.has(key);
   }
-
   isLoading(key: string): boolean {
     return this.loadingPromises.has(key);
   }
-
   preload(key: string, loader: () => Promise<any>): void {
     if (!this.isLoaded(key) && !this.isLoading(key)) {
       this.load(key, loader).catch(() => {
@@ -119,19 +100,16 @@ export class ComponentLoader {
       });
     }
   }
-
   clear(): void {
     this.loadedComponents.clear();
     this.loadingPromises.clear();
   }
 }
-
 // Global component loader instance
 export const componentLoader = new ComponentLoader();
-
-// Preload strategies;
+// Preload strategies
 export const preloadStrategies = {
-  // Preload components likely to be used soon;
+  // Preload components likely to be used soon
   async onIdle() {
     if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
       return new Promise<void>(resolve => {
@@ -144,15 +122,13 @@ export const preloadStrategies = {
       });
     }
   },
-
-  // Preload on user interaction;
+  // Preload on user interaction
   async onInteraction() {
     const commonComponents = [
       { key: 'qloraMonitoring', loader: loadAIComponents.qloraMonitoring },
       { key: 'fabricCanvas', loader: loadAIComponents.fabricCanvas },
       { key: 'legalAnalysis', loader: loadAIComponents.legalAnalysis }
     ];
-
     // Preload after first user interaction
     return Promise.all(
       commonComponents.map(({ key, loader }) =>
@@ -160,8 +136,7 @@ export const preloadStrategies = {
       )
     );
   },
-
-  // Preload based on route;
+  // Preload based on route
   async forRoute(routeId: string) {
     const routeComponentMap: Record<string, Array<any> = {
       '/detective': [
@@ -176,7 +151,6 @@ export const preloadStrategies = {
         { key: 'webgpu', loader: loadAIComponents.webgpu }
       ]
     };
-
     const componentsToLoad = routeComponentMap[routeId] || [];
     return Promise.all(
       componentsToLoad.map(({ key, loader }) =>
@@ -185,8 +159,7 @@ export const preloadStrategies = {
     );
   }
 };
-
-// Bundle analysis helper;
+// Bundle analysis helper
 export function getBundleStats() {
   return {
     loadedComponents: componentLoader['loadedComponents'].size,

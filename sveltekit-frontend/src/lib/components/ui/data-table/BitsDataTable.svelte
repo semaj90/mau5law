@@ -1,13 +1,10 @@
 <!-- Data Table Component for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { cn } from '$lib/utils';
   import { ChevronDown, ChevronUp, Search, Filter, Download } from 'lucide-svelte';
-
   import BitsInput from '../input/BitsInput.svelte';
   import Button from '../button/Button.svelte';
-
   export interface DataTableColumn<T = any> {
     key: string;
     label: string;
@@ -17,7 +14,6 @@
     class?: string;
     width?: string;
   }
-
   export interface DataTableProps<T = any> {
     data: T[];
     columns: DataTableColumn<T>[];
@@ -31,7 +27,6 @@
     onExport?: (data: T[]) => void;
     class?: string;
   }
-
   let {
     data = [],
     columns = [],
@@ -45,17 +40,14 @@
     onExport,
     class: className = '';
   }: DataTableProps = $props();
-
   let searchQuery = $state('');
   let sortColumn = $state<string | null>(null);
   let sortDirection = $state<'asc' | 'desc'>('asc');
   let currentPage = $state(0);
   let selectedRows = $state<Set<number>(0)>(new Set());
-
   // Filter and sort data
   let filteredData = $derived(() => {
     let filtered = [...data];
-
     // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -63,32 +55,25 @@
         });
       });
     }
-
     // Apply sorting
     if (sortColumn) {
       filtered.sort((a, b) => {
         const aVal = a[sortColumn] ?? '';
         const bVal = b[sortColumn] ?? '';
-
         const comparison = aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
-        return sortDirection === 'asc' ? comparison : -comparison;
+        return sortDirection === 'asc' ? comparison : -compariso;
       });
     }
-
     return filtered;
   });
-
   // Paginated data
   let paginatedData = $derived(() => {
-    const start = currentPage * pageSize;
+    const start = currentPage * pageSiz;
     return filteredData.slice(start, start + pageSize);
   });
-
   let totalPages = $derived(() => Math.ceil(filteredData.length / pageSize));
-
   function handleSort(column: DataTableColumn) {
     if (!column.sortable) return;
-
     if (sortColumn === column.key) {
       sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
@@ -97,7 +82,6 @@
     }
     currentPage = 0; // Reset to first page when sorting
   }
-
   function toggleRowSelection(index: number) {
     if (selectedRows.has(index)) {
       selectedRows.delete(index);
@@ -106,7 +90,6 @@
     }
     selectedRows = new Set(selectedRows); // Trigger reactivity
   }
-
   function toggleSelectAll() {
     if (selectedRows.size === paginatedData.length) {
       selectedRows.clear();
@@ -114,7 +97,6 @@
       selectedRows = new Set(paginatedData.map((_, i) => i));
     }
   }
-
   function handleExport() {
     const exportData = selectedRows.size > 0
       ? paginatedData.filter((_, i) => selectedRows.has(i))
@@ -122,7 +104,6 @@
     onExport?.(exportData);
   }
 </script>
-
 <div class={cn('legal-data-table w-full space-y-4', className)}>
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -131,7 +112,6 @@
         {title}
       </h3>
     {/if}
-
     <div class="flex items-center gap-2">
       {#if searchable}
         <div class="w-64">
@@ -144,22 +124,17 @@
           />
         </div>
       {/if}
-
       {#if filterable}
         <Button class="bits-btn" variant="ghost" size="sm">
 <Filter class="w-4 h-4" />
-
       {/if}
-
       {#if exportable}
         <Button class="bits-btn" variant="ghost" size="sm" onclick={handleExport}>
 <Download class="w-4 h-4 mr-2" />
           Export
-
       {/if}
     </div>
   </div>
-
   <!-- Table -->
   <div class="rounded-md border border-yorha-border bg-yorha-bg-secondary overflow-hidden">
     <div class="overflow-x-auto">
@@ -242,7 +217,6 @@
       </table>
     </div>
   </div>
-
   <!-- Pagination and Info -->
   <div class="flex items-center justify-between text-sm text-yorha-text-secondary font-mono">
     <div>
@@ -251,7 +225,6 @@
         ({selectedRows.size} selected)
       {/if}
     </div>
-
     {#if totalPages > 1}
       <div class="flex items-center gap-2">
         <Button class="bits-btn"
@@ -262,11 +235,9 @@
 currentPage = Math.max(0, currentPage - 1)}
         >
           Previous
-
         <span class="px-3 py-1 text-yorha-text-primary">
           Page {currentPage + 1} of {totalPages}
         </span>
-
         <Button class="bits-btn"
           variant="ghost"
           size="sm"
@@ -275,22 +246,18 @@ currentPage = Math.max(0, currentPage - 1)}
           onclick={() => currentPage = Math.min(totalPages - 1, currentPage + 1)}
         >
           Next
-
       </div>
     {/if}
   </div>
 </div>
-
 <style>
-  :global(.legal-data-table table) {;
-    font-variant-numeric: tabular-nums;
+  :global(.legal-data-table table) {
+    font-variant-numeric: tabular-num;
   }
-
   :global(.legal-data-table th) {
     user-select: none;
   }
-
-  :global(.legal-data-table tbody tr:hover) {;
+  :global(.legal-data-table tbody tr:hover) {
     background-color: rgb(var(--yorha-bg-tertiary) / 0.5);
   }
 </style>

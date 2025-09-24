@@ -1,22 +1,19 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Updated to use melt-ui components
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import Select from '$lib/components/ui/MeltSelect.svelte';
   import { onMount } from "svelte";
-
   // Enhanced AI Types
   interface DocumentRequest {
     content: string;
     document_type: string;
     practice_area?: string;
     jurisdiction: string;
-    metadata?: Record<string, any>;
+    metadata?: { [key: string]: any };
     use_gpu?: boolean;
   }
-
   interface DocumentResponse {
     success: boolean;
     message: string;
@@ -29,7 +26,6 @@
     processing_time?: string;
     cached_result?: boolean;
   }
-
   interface LegalEntity {
     name: string;
     type: string;
@@ -37,38 +33,33 @@
     start_pos: number;
     end_pos: number;
   }
-
   interface VectorSearchRequest {
     query: string;
     limit?: number;
-    filters?: Record<string, any>;
+    filters?: { [key: string]: any };
     use_gpu?: boolean;
     model?: string;
   }
-
   interface VectorSearchResponse {
     results: VectorResult[];
     total: number;
     query: string;
     took: string;
   }
-
   interface VectorResult {
     id: string;
     content: string;
     score: number;
-    metadata: Record<string, any>;
+    metadata: { [key: string]: any };
   }
-
   // Component state
   let serviceStatus = $state({
-    healthy: false,
-    loading: true,
-    services: as Record<string, string>,;
-    version: "",;
-    config: as Record<string, any>,;
+    healthy: false
+    loading: true
+    services: as Record<string, string>,
+    version: "",
+    config: as { [key: string]: any },
   });
-
   let documentContent = $state("");
   let selectedDocumentType = $state("contract");
   let selectedJurisdiction = $state("US");
@@ -76,19 +67,15 @@
   let useGPU = $state(true);
   let processing = $state(false);
   let processResult: DocumentResponse | null = $state(null);
-
   let searchQuery = $state("");
   let searchLimit = $state(10);
   let searching = $state(false);
   let searchResults: VectorSearchResponse | null = $state(null);
-
   let showProcessDialog = $state(false);
   let showSearchDialog = $state(false);
-
   // Enhanced configuration
   // Enhanced configuration
   const API_BASE = "/api"; // Use SvelteKit API routes
-
   const documentTypes = [
     { value: "contract", label: "Contract" },
     { value: "litigation", label: "Litigation" },
@@ -96,7 +83,6 @@
     { value: "regulatory", label: "Regulatory" },
     { value: "general", label: "General Legal" },
   ];
-
   const jurisdictions = [
     { value: "US", label: "United States" },
     { value: "CA", label: "Canada" },
@@ -104,7 +90,6 @@
     { value: "EU", label: "European Union" },
     { value: "INTL", label: "International" },
   ];
-
   const practiceAreas = [
     { value: "commercial", label: "Commercial Law" },
     { value: "ip", label: "Intellectual Property" },
@@ -113,21 +98,19 @@
     { value: "corporate", label: "Corporate Law" },
     { value: "employment", label: "Employment Law" },
   ];
-
   // Enhanced service functions
   async function checkServiceHealth() {
     try {
       serviceStatus.loading = true;
       const response = await fetch(`${API_BASE}/health`);
-
       if ((response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).ok) {
         const health = await (response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).json();
         serviceStatus = {
-          healthy: true,
-          loading: false,
-          services: health.services || ,;
-          version: health.version || "",;
-          config: health.config || ,;
+          healthy: true
+          loading: false
+          services: health.services ||
+          version: health.version || "",
+          config: health.config ||
         };
       } else {
         throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).status}`);
@@ -135,50 +118,44 @@
     } catch (error) {
       console.error("Health check failed:", error);
       serviceStatus = {
-        healthy: false,
-        loading: false,
-        services: ,;
-        version: "",;
-        config: ,;
+        healthy: false
+        loading: false
+        services: ,
+        version: "",
+        config: ,
       };
     }
   }
-
   async function processDocument() {
     if (!documentContent.trim()) {
       alert("Please enter document content");
       return;
     }
-
     try {
       processing = true;
       processResult = null;
-
       const request: DocumentRequest = {
-        content: documentContent,
-        document_type: selectedDocumentType,
-        practice_area: selectedPracticeArea,
-        jurisdiction: selectedJurisdiction,
-        use_gpu: useGPU,;
-        metadata: {;
+        content: documentContent
+        document_type: selectedDocumentType
+        practice_area: selectedPracticeArea
+        jurisdiction: selectedJurisdiction
+        use_gpu: useGPU
+        metadata: {
           timestamp: new Date().toISOString(),
           user_id: "demo-user",
-          session_id: "demo-session",;
+          session_id: "demo-session",
         },
       };
-
       const response = await fetch(`${API_BASE}/process`, {
-        method: "POST",;
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },;
-        body: JSON.stringify(request),;
+        },
+        body: JSON.stringify(request),
       });
-
       if (!(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).ok) {
         throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).status}: ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).statusText}`);
       }
-
       processResult = await (response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).json();
       showProcessDialog = true;
     } catch (error) {
@@ -188,40 +165,34 @@
       processing = false;
     }
   }
-
   async function performVectorSearch() {
     if (!searchQuery.trim()) {
       alert("Please enter a search query");
       return;
     }
-
     try {
       searching = true;
       searchResults = null;
-
       const request: VectorSearchRequest = {
-        query: searchQuery,
-        limit: searchLimit,
-        use_gpu: useGPU,
-        model: "gemma3-legal",;
-        filters: {;
-          jurisdiction: selectedJurisdiction,
-          practice_area: selectedPracticeArea,;
+        query: searchQuery
+        limit: searchLimit
+        use_gpu: useGPU
+        model: "gemma3-legal",
+        filters: {
+          jurisdiction: selectedJurisdiction
+          practice_area: selectedPracticeArea
         },
       };
-
       const response = await fetch(`${API_BASE}/vector-search`, {
-        method: "POST",;
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },;
-        body: JSON.stringify(request),;
+        },
+        body: JSON.stringify(request),
       });
-
       if (!(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).ok) {
         throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).status}: ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).statusText}`);
       }
-
       searchResults = await (response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).json();
       showSearchDialog = true;
     } catch (error) {
@@ -231,21 +202,18 @@
       searching = false;
     }
   }
-
   function getSentimentColor(sentiment: number): string {
     if (sentiment > 0.7) return "text-green-600";
     if (sentiment > 0.5) return "text-blue-600";
     if (sentiment > 0.3) return "text-yellow-600";
     return "text-red-600";
   }
-
   function getSentimentLabel(sentiment: number): string {
     if (sentiment > 0.7) return "Positive";
     if (sentiment > 0.5) return "Neutral-Positive";
     if (sentiment > 0.3) return "Neutral-Negative";
     return "Negative";
   }
-
   $effect(() => {
     checkServiceHealth();
     // Refresh health status every 30 seconds
@@ -253,7 +221,6 @@
     return () => clearInterval(interval);
   });
 </script>
-
 <!-- Enhanced Legal AI Interface -->
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
   <div class="max-w-6xl mx-auto">
@@ -265,7 +232,6 @@
       <p class="text-slate-600 text-lg">
         Gemma3-Legal GGUF • NVIDIA CUDA • Redis-Native • Advanced RAG
       </p>
-
       <!-- Service Status -->
       <div
         class="mt-4 p-4 rounded-lg border-2 {serviceStatus.healthy
@@ -292,7 +258,6 @@
               >
             {/if}
           </div>
-
           {#if serviceStatus.healthy}
             <div class="flex gap-4 text-sm">
               <span class="text-slate-600">
@@ -320,7 +285,6 @@
         </div>
       </div>
     </header>
-
     <!-- Main Interface -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Document Processing -->
@@ -330,7 +294,6 @@
         >
           📄 Document Processing
         </h2>
-
         <!-- Configuration -->
         <div class="grid grid-cols-2 gap-4 mb-4">
           <SelectRoot bind:selected={selectedDocumentType}>
@@ -352,7 +315,6 @@
               {/each}
             </SelectContent>
           </SelectRoot>
-
           <SelectRoot bind:selected={selectedJurisdiction}>
             <SelectTrigger
               class="h-10 px-3 rounded-lg border border-slate-300 bg-white"
@@ -373,7 +335,6 @@
             </SelectContent>
           </SelectRoot>
         </div>
-
         <div class="grid grid-cols-2 gap-4 mb-4">
           <SelectRoot bind:selected={selectedPracticeArea}>
             <SelectTrigger
@@ -394,20 +355,17 @@
               {/each}
             </SelectContent>
           </SelectRoot>
-
           <label class="flex items-center gap-2 px-3 py-2">
             <input type="checkbox" bind:checked={useGPU} class="rounded" />
             <span class="text-sm font-medium">CUDA GPU Acceleration</span>
           </label>
         </div>
-
         <!-- Document Input -->
         <textarea
           bind:value={documentContent}
           placeholder="Enter legal document content for analysis..."
           class="w-full h-32 p-3 border border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         ></textarea>
-
         <!-- Process Button -->
         <Button.Root
           onclick={processDocument}
@@ -426,7 +384,6 @@
           {/if}
         </Button.Root>
       </div>
-
       <!-- Vector Search -->
       <div class="bg-white rounded-xl shadow-lg p-6">
         <h2
@@ -434,7 +391,6 @@
         >
           🔍 Vector Search
         </h2>
-
         <!-- Search Configuration -->
         <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
@@ -456,14 +412,12 @@
             </label>
           </div>
         </div>
-
         <!-- Search Input -->
-        <textarea;
+        <textarease;
           bind:value={searchQuery}
           placeholder="Enter legal search query (e.g., 'contract liability terms', 'patent infringement')"
           class="w-full h-32 p-3 border border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         ></textarea>
-
         <!-- Search Button -->
         <Button.Root
           onclick={performVectorSearch}
@@ -485,7 +439,6 @@
     </div>
   </div>
 </div>
-
 <!-- Process Results Dialog -->
 <Dialog.Root open={showProcessDialog} openchange={(open) => showProcessDialog = open}>
   <Dialog.Portal>
@@ -497,7 +450,6 @@
         <Dialog.Title class="text-2xl font-bold text-slate-800 mb-4">
           📊 Document Analysis Results
         </Dialog.Title>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Summary -->
           <div class="space-y-4">
@@ -507,7 +459,6 @@
                 {processResult.summary}
               </p>
             </div>
-
             <!-- Keywords -->
             {#if processResult.keywords}
               <div>
@@ -523,7 +474,6 @@
                 </div>
               </div>
             {/if}
-
             <!-- Sentiment -->
             {#if processResult.sentiment !== undefined}
               <div>
@@ -545,7 +495,6 @@
               </div>
             {/if}
           </div>
-
           <!-- Legal Entities -->
           {#if processResult.legal_entities && processResult.legal_entities.length > 0}
             <div>
@@ -570,7 +519,6 @@
             </div>
           {/if}
         </div>
-
         <!-- Metadata -->
         <div class="mt-6 pt-4 border-t border-slate-200">
           <div class="flex justify-between text-sm text-slate-500">
@@ -585,7 +533,6 @@
           </div>
         </div>
       {/if}
-
       <Dialog.Close
         class="mt-6 px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors"
       >
@@ -594,7 +541,6 @@
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <!-- Search Results Dialog -->
 <Dialog.Root open={showSearchDialog} openchange={(open) => showSearchDialog = open}>
   <Dialog.Portal>
@@ -606,11 +552,9 @@
         <Dialog.Title class="text-2xl font-bold text-slate-800 mb-4">
           🔍 Vector Search Results
         </Dialog.Title>
-
         <div class="mb-4 text-sm text-slate-600">
           Found {searchResults.total} results for "{searchResults.query}" in {searchResults.took}
         </div>
-
         <div class="space-y-4">
           {#each searchResults.results as result}
             <div
@@ -634,7 +578,6 @@
           {/each}
         </div>
       {/if}
-
       <Dialog.Close
         class="mt-6 px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors"
       >
@@ -643,13 +586,11 @@
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
   /* UnoCSS will handle most styling, but we can add custom styles here if needed */
-  .animate-spin {;
+  .animate-spin {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     from {
       transform: rotate(0deg);
@@ -659,6 +600,3 @@
     }
   }
 </style>
-
-
-

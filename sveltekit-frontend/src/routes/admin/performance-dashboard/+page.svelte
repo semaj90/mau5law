@@ -1,37 +1,31 @@
 <!-- Legal AI Performance Metrics Dashboard -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
-  import { 
-    legalPerformanceMonitor, 
-    currentMetrics, 
+  import {
+    legalPerformanceMonitor,
+    currentMetrics,
     systemHealth,
     cacheEfficiency,
     averageLatency,
     gpuUtilization,
     legalConfidence,
     formatMetric,
-    type PerformanceSnapshot 
+    type PerformanceSnapshot
   } from '$lib/monitoring/legal-performance-metrics.js';
-  
   let metricsHistory: PerformanceSnapshot[] = $state([]);
   let refreshInterval: number;
-  
   $effect(() => {
     // Refresh metrics every 5 seconds
     refreshInterval = setInterval(() => {
       metricsHistory = legalPerformanceMonitor.getHistoricalMetrics(10);
     }, 5000);
-    
     // Initial load
     metricsHistory = legalPerformanceMonitor.getHistoricalMetrics(10);
-    
     return () => {
       if (refreshInterval) clearInterval(refreshInterval);
     };
   });
-  
   function getHealthColor(health: string): string {
     switch (health) {
       case 'optimal': return 'text-green-500';
@@ -40,37 +34,31 @@
       default: return 'text-gray-500';
     }
   }
-  
   function getCacheColor(efficiency: number): string {
     if (efficiency >= 0.8) return 'text-green-500';
     if (efficiency >= 0.6) return 'text-yellow-500';
     return 'text-red-500';
   }
-  
   function getLatencyColor(latency: number): string {
     if (latency <= 500) return 'text-green-500';
     if (latency <= 1000) return 'text-yellow-500';
     return 'text-red-500';
   }
-  
   function getGPUColor(utilization: number): string {
     if (utilization <= 70) return 'text-green-500';
     if (utilization <= 90) return 'text-yellow-500';
     return 'text-red-500';
   }
 </script>
-
 <svelte:head>
   <title>Legal AI Performance Dashboard</title>
 </svelte:head>
-
 <div class="min-h-screen bg-black text-green-400 font-mono p-6">
   <!-- Header -->
   <div class="border-b border-green-500 pb-4 mb-6">
     <h1 class="text-2xl font-bold text-green-300">Legal AI Performance Dashboard</h1>
     <p class="text-sm text-green-600">Gemma3:legal-latest + RTX 3060 Ti Monitoring</p>
   </div>
-
   <!-- System Health Overview -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
     <!-- System Health -->
@@ -83,7 +71,6 @@
         Overall system status
       </div>
     </div>
-
     <!-- Cache Efficiency -->
     <div class="border border-green-500 rounded p-4">
       <h3 class="text-sm font-semibold text-green-300 mb-2">Cache Efficiency</h3>
@@ -94,7 +81,6 @@
         Multi-tier hit rate
       </div>
     </div>
-
     <!-- Average Latency -->
     <div class="border border-green-500 rounded p-4">
       <h3 class="text-sm font-semibold text-green-300 mb-2">Query Latency</h3>
@@ -105,7 +91,6 @@
         Average response time
       </div>
     </div>
-
     <!-- GPU Utilization -->
     <div class="border border-green-500 rounded p-4">
       <h3 class="text-sm font-semibold text-green-300 mb-2">GPU Utilization</h3>
@@ -117,7 +102,6 @@
       </div>
     </div>
   </div>
-
   {#if $currentMetrics}
     <!-- Detailed Metrics Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -143,7 +127,6 @@
           </div>
         </div>
       </div>
-
       <!-- Latency Breakdown -->
       <div class="border border-green-500 rounded p-4">
         <h3 class="text-lg font-semibold text-green-300 mb-4">Latency Breakdown</h3>
@@ -166,7 +149,6 @@
           </div>
         </div>
       </div>
-
       <!-- Resource Usage -->
       <div class="border border-green-500 rounded p-4">
         <h3 class="text-lg font-semibold text-green-300 mb-4">Resource Usage</h3>
@@ -189,7 +171,6 @@
           </div>
         </div>
       </div>
-
       <!-- Legal Processing Stats -->
       <div class="border border-green-500 rounded p-4">
         <h3 class="text-lg font-semibold text-green-300 mb-4">Legal Processing</h3>
@@ -213,7 +194,6 @@
         </div>
       </div>
     </div>
-
     <!-- Throughput Metrics -->
     <div class="border border-green-500 rounded p-4 mb-6">
       <h3 class="text-lg font-semibold text-green-300 mb-4">Throughput Metrics</h3>
@@ -257,11 +237,9 @@
       </div>
     </div>
   {/if}
-
   <!-- Historical Trends (Simple Text Display) -->
   <div class="border border-green-500 rounded p-4">
     <h3 class="text-lg font-semibold text-green-300 mb-4">Recent Performance History (Last 10 minutes)</h3>
-    
     {#if metricsHistory.length > 0}
       <div class="space-y-2 max-h-96 overflow-y-auto">
         {#each metricsHistory.slice(-20) as metric}
@@ -282,28 +260,23 @@
       <div class="text-green-600">No historical data available yet...</div>
     {/if}
   </div>
-
   <!-- Footer -->
   <div class="mt-8 pt-4 border-t border-green-500 text-center text-xs text-green-600">
     Legal AI Performance Dashboard | Gemma3:legal-latest | RTX 3060 Ti | Real-time Monitoring
   </div>
 </div>
-
 <style>
   /* Additional terminal-style animations */
-  .text-green-400 {;
+  .text-green-400 {
     text-shadow: 0 0 5px currentColor;
   }
-  
   .text-green-300 {
     text-shadow: 0 0 3px currentColor;
   }
-  
   /* Subtle pulse animation for critical alerts */
   .text-red-500 {
     animation: pulse 2s infinite;
   }
-  
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }

@@ -3,17 +3,15 @@
  * Provides type-safe database operations for the legal AI platform
  * Integrates with existing SSR helpers and GPU acceleration
  */
-
 import { queryLegalDocumentsSSR, type SSRResponse } from './api-ssr-helpers.js';
-
-// Type definitions based on database schema;
+// Type definitions based on database schema
 export interface LegalDocument {
   id: string;
   title: string;
   content: string;
   document_type: 'contract' | 'brief' | 'evidence' | 'statute' | 'regulation' | 'case_law';
   jurisdiction: string;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   embeddings?: number[];
   created_at: Date;
   updated_at: Date;
@@ -21,7 +19,6 @@ export interface LegalDocument {
   client_id?: string;
   status: 'active' | 'archived' | 'draft';
 }
-
 export interface LegalCase {
   id: string;
   title: string;
@@ -32,36 +29,33 @@ export interface LegalCase {
   client_id: string;
   created_at: Date;
   updated_at: Date;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   priority: 'low' | 'medium' | 'high' | 'urgent';
 }
-
 export interface EvidenceItem {
   id: string;
   title: string;
   description: string;
   evidence_type: 'document' | 'testimony' | 'physical' | 'digital' | 'expert_opinion';
   file_path?: string;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   case_id: string;
   relevance_score: number;
   admissibility_status: 'unknown' | 'admissible' | 'inadmissible' | 'pending';
   created_at: Date;
   updated_at: Date;
 }
-
 export interface ConversationRecord {
   id: string;
   user_id: string;
   title: string;
   case_id?: string;
-  context: Record<string, any>;
+  context: { [key: string]: any };
   created_at: Date;
   updated_at: Date;
   message_count: number;
   last_activity: Date;
 }
-
 export interface MessageRecord {
   id: string;
   conversation_id: string;
@@ -70,32 +64,27 @@ export interface MessageRecord {
   model?: string;
   token_count?: number;
   processing_time?: number;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   created_at: Date;
 }
-
-// Database connection and operations;
+// Database connection and operations
 export class LegalDatabaseBridge {
   private connectionString: string;
   private pool: any; // PostgreSQL pool would be initialized here
-
   constructor(connectionString?: string) {
     this.connectionString = connectionString || process.env.DATABASE_URL || '';
     // In a real implementation, initialize connection pool here
     this.initializeConnection();
   }
-
   private async initializeConnection() {
     // Initialize PostgreSQL connection pool
     // This would typically use pg or similar library
     console.log('Initializing database connection...');
   }
-
-  // Legal Documents Operations;
+  // Legal Documents Operations
   async createLegalDocument(document: Partial<LegalDocument>): Promise<LegalDocument> {
     const id = `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const now = new Date();
-
     const newDocument: LegalDocument = {
       id,
       title: document.title || 'Untitled Document',
@@ -103,17 +92,16 @@ export class LegalDatabaseBridge {
       document_type: document.document_type || 'contract',
       jurisdiction: document.jurisdiction || 'federal',
       metadata: document.metadata || {},
-      created_at: now,
-      updated_at: now,
+      created_at: now
+      updated_at: now
       case_id: document.case_id,
-      client_id: document.client_id,;
+      client_id: document.client_id,
       status: document.status || 'draft'
     };
-
     try {
       // Use the existing SSR helper for JSONB operations
       await this.executeQuery(
-        `INSERT INTO legal_documents (id, title, content, document_type, jurisdiction, metadata, case_id, client_id, status, created_at, updated_at) 
+        `INSERT INTO legal_documents (id, title, content, document_type, jurisdiction, metadata, case_id, client_id, status, created_at, updated_at)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
         [
           newDocument.id,
@@ -129,32 +117,27 @@ export class LegalDatabaseBridge {
           newDocument.updated_at
         ]
       );
-
       return newDocument;
     } catch (error) {
       console.error('Failed to create legal document:', error);
       throw new Error('Document creation failed');
     }
   }
-
   async getLegalDocument(id: string): Promise<LegalDocument | null> {
     try {
       const result = await this.executeQuery(
         'SELECT * FROM legal_documents WHERE id = $1',
         [id]
       );
-
       if (!(result as { rows?: any }).rows || (result as { rows?: any }).rows.length === 0) {
         return null;
       }
-
       return this.mapRowToDocument((result as { rows?: any }).rows[0]);
     } catch (error) {
       console.error('Failed to get legal document:', error);
       return null;
     }
   }
-
   async searchLegalDocuments(query: {
       searchTerm?: string;
       documentType?: string;
@@ -169,63 +152,55 @@ export class LegalDatabaseBridge {
     } = {}
   ): Promise<LegalDocument[]> {
     try {
-      // Use the enhanced JSONB query from SSR helpers;
+      // Use the enhanced JSONB query from SSR helpers
       const documents = await queryLegalDocumentsSSR({
-          path: query.searchTerm ? 'title,content' : undefined,
+          path: query.searchTerm ? 'title,content' : undefined
           operator: '@>',
-          value: query,
+          value: query
           conditions: {
-            document_type: query.documentType,;
+            document_type: query.documentType,
             jurisdiction: query.jurisdiction,
             case_id: query.caseId,
             client_id: query.clientId
           }
         },);
         {
-          limit: options.limit || 50,;
+          limit: options.limit || 50,
           offset: options.offset || 0,
           useGPU: options.useVector,
           cacheResults: true
         }
       );
-
       return documents.map(row => this.mapRowToDocument(row);
     } catch (error) {
       console.error('Failed to search legal documents:', error);
       return [];
     }
   }
-
   async updateLegalDocument(id: string, updates: Partial<LegalDocument>): Promise<boolean> {
     try {
       const setClause = Object.keys(updates)
         .filter(key => key !== 'id' && key !== 'created_at')
         .map((key, index) => `${key} = $${index + 2}`)
         .join(', ');
-
-      const values = [id, ...Object.values(updates).filter((_, index) => 
+      const values = [id, ...Object.values(updates).filter((_, index) =>
         Object.keys(updates)[index] !== 'id' && Object.keys(updates)[index] !== 'created_at'
       )];
-
       values.push(new Date(); // updated_at
-
       await this.executeQuery(
         `UPDATE legal_documents SET ${setClause}, updated_at = $${values.length} WHERE id = $1`,
         values
       );
-
       return true;
     } catch (error) {
       console.error('Failed to update legal document:', error);
       return false;
     }
   }
-
-  // Legal Cases Operations;
+  // Legal Cases Operations
   async createLegalCase(caseData: Partial<LegalCase>): Promise<LegalCase> {
     const id = `case_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const now = new Date();
-
     const newCase: LegalCase = {
       id,
       title: caseData.title || 'New Case',
@@ -234,12 +209,11 @@ export class LegalDatabaseBridge {
       jurisdiction: caseData.jurisdiction || 'federal',
       status: caseData.status || 'active',
       client_id: caseData.client_id || 'default_client',
-      created_at: now,
-      updated_at: now,
-      metadata: caseData.metadata || {},;
+      created_at: now
+      updated_at: now
+      metadata: caseData.metadata || {},
       priority: caseData.priority || 'medium'
     };
-
     try {
       await this.executeQuery(
         `INSERT INTO legal_cases (id, title, description, case_type, jurisdiction, status, client_id, metadata, priority, created_at, updated_at)
@@ -258,55 +232,47 @@ export class LegalDatabaseBridge {
           newCase.updated_at
         ]
       );
-
       return newCase;
     } catch (error) {
       console.error('Failed to create legal case:', error);
       throw new Error('Case creation failed');
     }
   }
-
   async getLegalCase(id: string): Promise<LegalCase | null> {
     try {
       const result = await this.executeQuery(
         'SELECT * FROM legal_cases WHERE id = $1',
         [id]
       );
-
       if (!(result as { rows?: any }).rows || (result as { rows?: any }).rows.length === 0) {
         return null;
       }
-
       return this.mapRowToCase((result as { rows?: any }).rows[0]);
     } catch (error) {
       console.error('Failed to get legal case:', error);
       return null;
     }
   }
-
   async getCaseDocuments(caseId: string): Promise<LegalDocument[]> {
     return this.searchLegalDocuments({ caseId });
   }
-
-  // Evidence Operations;
+  // Evidence Operations
   async createEvidence(evidenceData: Partial<EvidenceItem>): Promise<EvidenceItem> {
     const id = `ev_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const now = new Date();
-
     const newEvidence: EvidenceItem = {
       id,
       title: evidenceData.title || 'Evidence Item',
       description: evidenceData.description || '',
       evidence_type: evidenceData.evidence_type || 'document',
-      file_path: evidenceData.file_path,;
+      file_path: evidenceData.file_path,
       metadata: evidenceData.metadata || {},
       case_id: evidenceData.case_id || '',
       relevance_score: evidenceData.relevance_score || 0.5,
       admissibility_status: evidenceData.admissibility_status || 'unknown',
-      created_at: now,
+      created_at: now
       updated_at: now
     };
-
     try {
       await this.executeQuery(
         `INSERT INTO evidence_items (id, title, description, evidence_type, file_path, metadata, case_id, relevance_score, admissibility_status, created_at, updated_at)
@@ -325,45 +291,39 @@ export class LegalDatabaseBridge {
           newEvidence.updated_at
         ]
       );
-
       return newEvidence;
     } catch (error) {
       console.error('Failed to create evidence:', error);
       throw new Error('Evidence creation failed');
     }
   }
-
   async getCaseEvidence(caseId: string): Promise<EvidenceItem[]> {
     try {
       const result = await this.executeQuery(
         'SELECT * FROM evidence_items WHERE case_id = $1 ORDER BY relevance_score DESC',
         [caseId]
       );
-
       return (result as { rows?: any }).rows?.map(row => this.mapRowToEvidence(row)) || [];
     } catch (error) {
       console.error('Failed to get case evidence:', error);
       return [];
     }
   }
-
-  // Conversation Operations;
+  // Conversation Operations
   async createConversation(conversationData: Partial<ConversationRecord>): Promise<ConversationRecord> {
     const id = `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const now = new Date();
-
     const newConversation: ConversationRecord = {
       id,
       user_id: conversationData.user_id || 'default_user',
       title: conversationData.title || 'New Conversation',
-      case_id: conversationData.case_id,;
+      case_id: conversationData.case_id,
       context: conversationData.context || {},
-      created_at: now,
-      updated_at: now,
+      created_at: now
+      updated_at: now
       message_count: 0,
       last_activity: now
     };
-
     try {
       await this.executeQuery(
         `INSERT INTO conversations (id, user_id, title, case_id, context, created_at, updated_at, message_count, last_activity)
@@ -380,18 +340,15 @@ export class LegalDatabaseBridge {
           newConversation.last_activity
         ]
       );
-
       return newConversation;
     } catch (error) {
       console.error('Failed to create conversation:', error);
       throw new Error('Conversation creation failed');
     }
   }
-
   async addMessage(messageData: Partial<MessageRecord>): Promise<MessageRecord> {
     const id = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const now = new Date();
-
     const newMessage: MessageRecord = {
       id,
       conversation_id: messageData.conversation_id || '',
@@ -399,11 +356,10 @@ export class LegalDatabaseBridge {
       content: messageData.content || '',
       model: messageData?.model || "unknown" // @ts-ignore - Model property access,
       token_count: messageData.token_count,
-      processing_time: messageData.processing_time,;
+      processing_time: messageData.processing_time,
       metadata: messageData.metadata || {},
       created_at: now
     };
-
     try {
       // Insert message
       await this.executeQuery(
@@ -421,39 +377,34 @@ export class LegalDatabaseBridge {
           newMessage.created_at
         ]
       );
-
       // Update conversation message count and last activity
       await this.executeQuery(
-        `UPDATE conversations SET 
-         message_count = message_count + 1, 
-         last_activity = $1, 
-         updated_at = $1 
+        `UPDATE conversations SET
+         message_count = message_count + 1,
+         last_activity = $1,
+         updated_at = $1
          WHERE id = $2`,
         [now, newMessage.conversation_id]
       );
-
       return newMessage;
     } catch (error) {
       console.error('Failed to add message:', error);
       throw new Error('Message creation failed');
     }
   }
-
   async getConversationMessages(conversationId: string): Promise<MessageRecord[]> {
     try {
       const result = await this.executeQuery(
         'SELECT * FROM messages WHERE conversation_id = $1 ORDER BY created_at ASC',
         [conversationId]
       );
-
       return (result as { rows?: any }).rows?.map(row => this.mapRowToMessage(row)) || [];
     } catch (error) {
       console.error('Failed to get conversation messages:', error);
       return [];
     }
   }
-
-  // Helper methods for row mapping;
+  // Helper methods for row mapping
   private mapRowToDocument(row: any): LegalDocument {
     return {
       id: row.id,
@@ -466,11 +417,10 @@ export class LegalDatabaseBridge {
       created_at: new Date(row.created_at),
       updated_at: new Date(row.updated_at),
       case_id: row.case_id,
-      client_id: row.client_id,;
+      client_id: row.client_id,
       status: row.status
     };
   }
-
   private mapRowToCase(row: any): LegalCase {
     return {
       id: row.id,
@@ -482,18 +432,17 @@ export class LegalDatabaseBridge {
       client_id: row.client_id,
       created_at: new Date(row.created_at),
       updated_at: new Date(row.updated_at),
-      metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,;
+      metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
       priority: row.priority
     };
   }
-
   private mapRowToEvidence(row: any): EvidenceItem {
     return {
       id: row.id,
       title: row.title,
       description: row.description,
       evidence_type: row.evidence_type,
-      file_path: row.file_path,;
+      file_path: row.file_path,
       metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
       case_id: row.case_id,
       relevance_score: row.relevance_score,
@@ -502,7 +451,6 @@ export class LegalDatabaseBridge {
       updated_at: new Date(row.updated_at)
     };
   }
-
   private mapRowToMessage(row: any): MessageRecord {
     return {
       id: row.id,
@@ -511,26 +459,23 @@ export class LegalDatabaseBridge {
       content: row.content,
       model: row?.model || "unknown" // @ts-ignore - Model property access,
       token_count: row.token_count,
-      processing_time: row.processing_time,;
+      processing_time: row.processing_time,
       metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
       created_at: new Date(row.created_at)
     };
   }
-
-  // Execute query helper (would integrate with actual PostgreSQL client);
+  // Execute query helper (would integrate with actual PostgreSQL client)
   private async executeQuery(query: string, params: any[] = []): Promise<any> {
     // This would use the actual PostgreSQL pool in a real implementation
     // For now, return a mock structure
     console.log('Executing query:', query.substring(0, 100), '...with', params.length, 'params');
-    
-    // Mock response structure;
+    // Mock response structure
     return {
       rows: [],
       rowCount: 0
     };
   }
-
-  // Health check;
+  // Health check
   async isConnected(): Promise<boolean> {
     try {
       const result = await this.executeQuery('SELECT 1');
@@ -539,18 +484,16 @@ export class LegalDatabaseBridge {
       return false;
     }
   }
-
-  // Statistics;
-  async getDatabaseStats(): Promise<Record<string, any> {
+  // Statistics
+  async getDatabaseStats(): Promise<{ [key: string]: any } {
     try {
       const stats = {
         legal_documents: await this.executeQuery('SELECT COUNT(*) FROM legal_documents'),
         legal_cases: await this.executeQuery('SELECT COUNT(*) FROM legal_cases'),
         evidence_items: await this.executeQuery('SELECT COUNT(*) FROM evidence_items'),
-        conversations: await this.executeQuery('SELECT COUNT(*) FROM conversations'),;
+        conversations: await this.executeQuery('SELECT COUNT(*) FROM conversations'),
         messages: await this.executeQuery('SELECT COUNT(*) FROM messages')
       };
-
       return Object.entries(stats).reduce((acc, [table, result]) => {
         acc[table] = (result as { rows?: any }).rows?.[0]?.count || 0;
         return acc;
@@ -561,87 +504,83 @@ export class LegalDatabaseBridge {
     }
   }
 }
-
 // Global database bridge instance
 export const legalDB = new LegalDatabaseBridge();
-
-// API integration helpers;
+// API integration helpers
 export async function apiCreateDocument(documentData: Partial<LegalDocument>): Promise<SSRResponse<LegalDocument> {
   try {
     const document = await legalDB.createLegalDocument(documentData);
     return {
-      success: true,
-      data: document,
+      success: true
+      data: document
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false,;
+        cached: false
         source: 'api'
       }
     };
   } catch (error) {
     return {
-      success: false,
-      data: null as any,
+      success: false
+      data: null as any
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false,
+        cached: false
         source: 'api'
-      },;
+      },
       error: error instanceof Error ? error.message: 'Document creation failed'
     };
   }
 }
-
 export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRResponse<LegalCase> {
   try {
     const legalCase = await legalDB.createLegalCase(caseData);
     return {
-      success: true,
-      data: legalCase,
+      success: true
+      data: legalCase
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false,;
+        cached: false
         source: 'api'
       }
     };
   } catch (error) {
     return {
-      success: false,
-      data: null as any,
+      success: false
+      data: null as any
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false,
+        cached: false
         source: 'api'
-      },;
+      },
       error: error instanceof Error ? error.message: 'Case creation failed'
     };
   }
 }
-
 export async function apiSearchDocuments(
-  searchQuery: any,
+  searchQuery: any
   options: any = {}
 ): Promise<SSRResponse<LegalDocument[]> {
   try {
     const documents = await legalDB.searchLegalDocuments(searchQuery, options);
     return {
-      success: true,
-      data: documents,
+      success: true
+      data: documents
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false,;
+        cached: false
         source: 'api'
       }
     };
   } catch (error) {
     return {
-      success: false,
+      success: false
       data: [],
       meta: {
         timestamp: new Date().toISOString(),
-        cached: false,
+        cached: false
         source: 'api'
-      },;
+      },
       error: error instanceof Error ? error.message: 'Document search failed'
     };
   }

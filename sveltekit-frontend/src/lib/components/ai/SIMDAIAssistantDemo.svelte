@@ -1,11 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
   // Svelte 5 runes are auto-imported
-
-
-
 // Auto-generated default export
 export default ;
 </script>
@@ -19,19 +16,16 @@ export default ;
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  
   interface Props {
     initialContext?: any;
     enableSIMD?: boolean;
     useWebWorker?: boolean;
   }
-  
   let {
     initialContext = ,
     enableSIMD = true,
     useWebWorker = true
   }: Props = $props();
-  
   // XState machine with SIMD enhancement
   const machineWithSIMD = aiAssistantMachine.provide({
     context: {
@@ -39,18 +33,16 @@ export default ;
       response: '',
       conversationHistory: [],
       sessionId: `simd-session-${Date.now()}`,
-      isProcessing: false,
-      model: 'gemma3-legal:latest',;
+      isProcessing: false
+      model: 'gemma3-legal:latest',
       temperature: 0.7,
       maxTokens: 2048,
-      
       // SIMD-specific context
-      simdEnabled: enableSIMD,
+      simdEnabled: enableSIMD
       compressionTarget: 109,
       qualityTier: 'nes',
-      instantUIEnabled: true,
-      webWorkerEnabled: useWebWorker,
-      
+      instantUIEnabled: true
+      webWorkerEnabled: useWebWorker
       // Enhanced tracking
       processingStats: {
         totalQueries: 0,
@@ -58,13 +50,10 @@ export default ;
         avgProcessingTime: 0,
         instantComponentsGenerated: 0
       },
-      
       ...initialContext
     }
   });
-  
   const { state, send } = useMachine(machineWithSIMD);
-  
   let queryInput = $state('');
   let compressionTarget = $state(109);
   let qualityTier = $state('nes');
@@ -72,7 +61,6 @@ export default ;
   let simdResults = $state(null);
   let liveComponents = $state([]);
   let processingLogs = $state([]);
-  
   // Sample queries for legal AI testing
   const sampleQueries = [
     'Analyze the key terms in a software license agreement for potential risks.',
@@ -81,22 +69,18 @@ export default ;
     'Draft a brief summary of employment law compliance requirements.',
     'What are the legal implications of data privacy regulations?'
   ];
-  
   // Reactive state tracking
   let currentState = $derived(state.value);
   let context = $derived(state.context);
   let isProcessing = $derived(state.value === 'processing' || context.isProcessing);
   let hasResponse = $derived(!!context.response);
-  
   async function submitQuery() {
     if (!queryInput.trim() || isProcessing) return;
-    
     try {
       addLog(`🚀 Processing query with SIMD: "${queryInput.slice(0, 50)}..."`);
-      
       // Send to XState machine
-      send({ 
-        type: 'QUERY', ;
+      send({
+        type: 'QUERY',
         query: queryInput.trim(),
         simdConfig: {
           compressionTarget,
@@ -104,106 +88,88 @@ export default ;
           useWebWorker: useWorker
         }
       });
-      
       // Call our enhanced Ollama-SIMD API
       const response = await fetch('/api/ai/ollama-simd', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: queryInput.trim(),;
-          model: context.model,;
+        body: JSON.stringify({,
+          prompt: queryInput.trim(),
+          model: context.model,
           temperature: context.temperature,
-          enable_simd: enableSIMD,
-          compression_target: compressionTarget,
-          quality_tier: qualityTier,
-          generate_ui_components: true,
-          use_web_worker: useWorker,
+          enable_simd: enableSIMD
+          compression_target: compressionTarget
+          quality_tier: qualityTier
+          generate_ui_components: true
+          use_web_worker: useWorker
           session_id: context.sessionId,
           task_type: 'legal-analysis';
         })
       });
-      
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`API request failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
-      
       const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
-      
       // Update machine state with results
       send({
-        type: 'RESPONSE_RECEIVED',;
+        type: 'RESPONSE_RECEIVED',
         response: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).response,
-        metadata: {;
+        metadata: {
           model: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).model,
           tokensPerSecond: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).performance_metrics.tokens_per_second,
           totalDuration: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).total_duration,
           simdResults: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results
         }
       });
-      
       // Store SIMD results for visualization
       if ((result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results?.enabled) {
-        simdResults = (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results;
+        simdResults = (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_result;
         await generateLiveComponents((result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results);
         addLog(`✅ SIMD compression: ${(result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results.total_compression_ratio.toFixed(1)}:1 ratio`);
         addLog(`🎨 Generated ${(result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results.instant_ui_components.length} UI components`);
       }
-      
       addLog(`⚡ Response generated: ${(result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).performance_metrics.tokens_per_second?.toFixed(1)} tokens/sec`);
-      
       queryInput = '';
-      
     } catch (error) {
       console.error('Query processing failed:', error);
       addLog(`❌ Error: ${error.message}`);
-      
       send({
-        type: 'ERROR',;
-        error: error.message;
+        type: 'ERROR',
+        error: error.messag;
       });
     }
   }
-  
   async function generateLiveComponents(simdData) {
     if (!simdData.instant_ui_components) return;
-    
     const components = simdData.instant_ui_components.map(comp => ({
       ...comp,
-      timestamp: Date.now(),;
+      timestamp: Date.now(),
       animated: qualityTier === 'nes';
     }));
-    
     liveComponents = [
       ...components,
       ...liveComponents.slice(0, 10) // Keep last 10
     ];
-    
     // Inject CSS dynamically
     components.forEach(comp => {
       injectComponentCSS(comp.css_styles, comp.id);
     });
   }
-  
   function injectComponentCSS(css, componentId) {
     const existingStyle = document.getElementById(`style-${componentId}`);
     if (existingStyle) existingStyle.remove();
-    
     const style = document.createElement('style');
     style.id = `style-${componentId}`;
-    style.textContent = css;
+    style.textContent = cs;
     document.head.appendChild(style);
   }
-  
   function addLog(message) {
     const timestamp = new Date().toLocaleTimeString();
     processingLogs = [`[${timestamp}] ${message}`, ...processingLogs.slice(0, 19)];
   }
-  
   function loadSampleQuery(index) {
     if (isProcessing) return;
     queryInput = sampleQueries[index];
   }
-  
   function clearConversation() {
     send({ type: 'CLEAR_HISTORY' });
     simdResults = null;
@@ -211,13 +177,11 @@ export default ;
     processingLogs = [];
     addLog('🧹 Conversation cleared');
   }
-  
   function toggleSIMD() {
     enableSIMD = !enableSIMD;
     send({ type: 'UPDATE_CONFIG', config: { simdEnabled: enableSIMD } });
     addLog(`🔧 SIMD ${enableSIMD ? 'enabled' : 'disabled'}`);
   }
-  
   function getStateColor(state) {
     switch (state) {
       case 'idle': return 'bg-green-500';
@@ -227,14 +191,12 @@ export default ;
       default: return 'bg-gray-500';
     }
   }
-  
   function getCompressionColor(ratio) {
     if (ratio > 100) return 'text-purple-600 font-bold';
     if (ratio > 50) return 'text-green-600 font-bold';
     if (ratio > 25) return 'text-blue-600 font-semibold';
     return 'text-orange-600';
   }
-  
   function getQualityBadgeColor(tier) {
     switch (tier) {
       case 'nes': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
@@ -243,13 +205,11 @@ export default ;
       default: return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   }
-  
   $effect(() => {
     addLog('🧬 SIMD AI Assistant initialized with XState machine');
     addLog(`💡 SIMD: ${enableSIMD ? 'enabled' : 'disabled'}, WebWorker: ${useWorker ? 'enabled' : 'disabled'}`);
   });
 </script>
-
 <div class="simd-ai-assistant max-w-6xl mx-auto p-6 space-y-6">
   <!-- Enhanced Status Header with SIMD Info -->
   <div class="nes-container">
@@ -284,7 +244,6 @@ export default ;
           </div>
           <div class="text-gray-600 mt-1">Model: {context.model?.slice(0, 15)}...</div>
         </div>
-        
         <div class="bg-gray-50 p-3 rounded">
           <div class="font-semibold mb-1">SIMD Compression</div>
           <div class="flex items-center gap-2">
@@ -293,7 +252,6 @@ export default ;
           </div>
           <div class="text-gray-600 mt-1">Target: {compressionTarget}:1</div>
         </div>
-        
         <div class="bg-gray-50 p-3 rounded">
           <div class="font-semibold mb-1">Web Worker</div>
           <div class="flex items-center gap-2">
@@ -302,7 +260,6 @@ export default ;
           </div>
           <div class="text-gray-600 mt-1">Non-blocking processing</div>
         </div>
-        
         <div class="bg-gray-50 p-3 rounded">
           <div class="font-semibold mb-1">UI Components</div>
           <div class="flex items-center gap-2">
@@ -314,7 +271,6 @@ export default ;
       </div>
     </div>
   </div>
-  
   <!-- Query Interface -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -332,7 +288,6 @@ export default ;
             <option value={200}>200:1 (Maximum)</option>
           </select>
         </div>
-        
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2" for="quality-tier">Quality Tier</label><select id="quality-tier" bind:value={qualityTier} class="w-full p-2 border rounded-md text-sm">
             <option value="nes">NES (8-bit)</option>
@@ -340,7 +295,6 @@ export default ;
             <option value="n64">N64 (64-bit)</option>
           </select>
         </div>
-        
         <div class="flex flex-col">
           <label class="block text-sm font-medium text-gray-700 mb-2">Options</label>
           <div class="space-y-2">
@@ -350,14 +304,11 @@ export default ;
             </label>
           </div>
         </div>
-        
         <div class="flex items-end">
           <Button onclick={toggleSIMD} variant="ghost" class="w-full text-sm bits-btn bits-btn">
 {enableSIMD ? '🔧 Disable SIMD' : '⚡ Enable SIMD'}
-
         </div>
       </div>
-      
       <!-- Query Input -->
       <div class="space-y-2">
         <div class="flex gap-2">
@@ -375,9 +326,7 @@ export default ;
             class={isProcessing ? 'processing' : ''}
           >
 {isProcessing ? 'Processing...' : 'Submit'}
-
         </div>
-        
         <!-- Sample Queries -->
         <div class="flex flex-wrap gap-2">
           {#each sampleQueries as sample, index}
@@ -390,16 +339,13 @@ loadSampleQuery(index)}
               class="text-xs"
             >
               Sample {index + 1}
-
           {/each}
           <Button class="bits-btn" onclick={clearConversation} variant="ghost" size="sm">
 Clear All
-
         </div>
       </div>
     </div>
   </div>
-  
   <!-- SIMD Processing Results -->
   {#if simdResults?.enabled}
     <div class="nes-container">
@@ -435,7 +381,6 @@ Clear All
             <div class="text-sm text-gray-600">Total Time</div>
           </div>
         </div>
-        
         <!-- Compressed Tiles Visualization -->
         {#if simdResults.compressed_tiles.length > 0}
           <div class="space-y-2">
@@ -461,7 +406,6 @@ Clear All
       </div>
     </div>
   {/if}
-  
   <!-- Live Rendered Components -->
   {#if liveComponents.length > 0}
     <div class="nes-container">
@@ -489,7 +433,6 @@ Clear All
       </div>
     </div>
   {/if}
-  
   <!-- AI Response -->
   {#if hasResponse}
     <div class="nes-container">
@@ -509,7 +452,6 @@ Clear All
             {context.response}
           </div>
         </div>
-        
         {#if context.metadata}
           <div class="mt-4 text-sm text-gray-600 space-y-1">
             <div><strong>Model:</strong> {context.metadata.model}</div>
@@ -523,7 +465,6 @@ Clear All
       </div>
     </div>
   {/if}
-  
   <!-- Conversation History -->
   {#if context.conversationHistory && context.conversationHistory.length > 0}
     <div class="nes-container">
@@ -554,7 +495,6 @@ Clear All
       </div>
     </div>
   {/if}
-  
   <!-- Processing Logs -->
   {#if processingLogs.length > 0}
     <div class="nes-container">
@@ -564,7 +504,6 @@ Clear All
           <Button class="bits-btn" onclick={() =>
 processingLogs = []} variant="ghost" size="sm">
             Clear Logs
-
         </h3>
       </div>
       <div class="yorha-panel-content">
@@ -577,63 +516,51 @@ processingLogs = []} variant="ghost" size="sm">
     </div>
   {/if}
 </div>
-
 <style>
-  .simd-ai-assistant {;
+  .simd-ai-assistant {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
-  
   /* NES-style rendering for live components */
   :global(.rendered-content) {
     image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edge;
+    image-rendering: crisp-edge;
     font-family: 'Courier New', monospace;
   }
-  
   /* Processing animation */
   @keyframes processing-pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
   }
-  
   .processing {
     animation: processing-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-  
   /* Live component animations */
   .live-component {
     transition: all 0.3s ease-in-out;
   }
-  
   .live-component:hover {
     transform: scale(1.02);
     background-color: rgba(59, 130, 246, 0.1);
   }
-  
   /* Enhanced scrollbars */
   .bg-black::-webkit-scrollbar {
     width: 8px;
   }
-  
   .bg-black::-webkit-scrollbar-track {
     background: #000;
   }
-  
   .bg-black::-webkit-scrollbar-thumb {
-    background: #22c55e;
+    background: #22c55;
     border-radius: 4px;
   }
-  
   /* Quality tier specific effects */
   :global(.tile-nes) {
     filter: contrast(1.2) saturate(1.3);
   }
-  
   :global(.tile-snes) {
     filter: contrast(1.1) saturate(1.1);
   }
-  
   :global(.tile-n64) {
     filter: contrast(1.0) saturate(1.0);
   }

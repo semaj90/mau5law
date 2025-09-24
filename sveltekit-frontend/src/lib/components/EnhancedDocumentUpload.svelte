@@ -1,25 +1,21 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import ModernButton from '$lib/components/ui/button/Button.svelte';
-
+  import ModernButton from '$lib/components/ui/Button.svelte';
   interface UploadResponse {
     success?: boolean;
     error?: string;
     data?: any;
   }
-
   let fileInput: HTMLInputElement;
   let selectedFile = $state<File | null>(null);
   let uploading = $state(false);
   let uploadResult = $state<any>(null);
   let errorMessage = $state('');
   let uploadConfig = $state<any>(null);
-
   // Form fields
   let caseId = $state('');
   let documentType = $state('');
   let title = $state('');
-
   onMount(async () => {
     // Load upload configuration
     try {
@@ -29,13 +25,11 @@
       console.error('Failed to load upload config:', error);
     }
   });
-
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     selectedFile = target.files?.[0] || null;
     errorMessage = '';
     uploadResult = null;
-
     if (selectedFile) {
       // Auto-generate title from filename if not provided
       if (!title) {
@@ -43,35 +37,28 @@
       }
     }
   }
-
   async function uploadDocument() {
     if (!selectedFile) {
       errorMessage = 'Please select a file to upload';
       return;
     }
-
     uploading = true;
     errorMessage = '';
     uploadResult = null;
-
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
       if (caseId) formData.append('caseId', caseId);
       if (documentType) formData.append('documentType', documentType);
       if (title) formData.append('title', title);
-
       const response = await fetch('/api/documents/upload-enhanced', {
-        method: 'POST',;
+        method: 'POST',
         body: formData;
       });
-
       const result = await response.json();
-
-      const typedResult = result as UploadResponse;
+      const typedResult = result as UploadRespon;
       if (typedResult.success) {
         uploadResult = typedResult;
-
         // Reset form
         selectedFile = null;
         if (fileInput) fileInput.value = '';
@@ -87,7 +74,6 @@
       uploading = false;
     }
   }
-
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -96,13 +82,11 @@
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>
-
 <div class="enhanced-upload-container">
   <div class="upload-header">
     <h2>📄 Enhanced Document Upload</h2>
     <p class="subtitle">Upload legal documents with AI-powered processing and semantic indexing</p>
   </div>
-
   <!-- Upload Configuration Info -->
   {#if uploadConfig}
     <div class="config-info">
@@ -115,7 +99,6 @@
           </div>
         {/each}
       </div>
-
       <div class="supported-formats">
         <h4>📁 Supported Formats</h4>
         <div class="formats-list">
@@ -129,7 +112,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Upload Form -->
   <div class="upload-form">
     <div class="file-input-section">
@@ -148,7 +130,6 @@
         class="file-input-hidden"
       />
     </div>
-
     {#if selectedFile}
       <div class="file-info">
         <div class="file-details">
@@ -158,7 +139,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Metadata Form -->
     <div class="metadata-form">
       <div class="form-row">
@@ -171,7 +151,6 @@
           class="form-input"
         />
       </div>
-
       <div class="form-row">
         <label for="case-id">Case ID (Optional)</label>
         <input
@@ -182,7 +161,6 @@
           class="form-input"
         />
       </div>
-
       <div class="form-row">
         <label for="document-type">Document Type (Optional)</label>
         <select id="document-type" bind:value={documentType} class="form-select">
@@ -200,7 +178,6 @@
         </select>
       </div>
     </div>
-
     <!-- Upload Button -->
     <div class="upload-actions">
       <ModernButton
@@ -212,7 +189,6 @@
       </ModernButton>
     </div>
   </div>
-
   <!-- Error Display -->
   {#if errorMessage}
     <div class="error-message">
@@ -220,7 +196,6 @@
       <span>{errorMessage}</span>
     </div>
   {/if}
-
   <!-- Success Result -->
   {#if uploadResult}
     <div class="success-result">
@@ -228,7 +203,6 @@
         <span class="success-icon">✅</span>
         <h3>Document Processed Successfully!</h3>
       </div>
-
       <div class="result-details">
         <div class="detail-item">
           <strong>Document ID:</strong> {uploadResult.documentId}
@@ -248,7 +222,6 @@
           </div>
         {/if}
       </div>
-
       <div class="features-enabled">
         <h4>🎯 AI Features Enabled:</h4>
         <ul>
@@ -264,9 +237,8 @@
     </div>
   {/if}
 </div>
-
 <style>
-  .enhanced-upload-container {;
+  .enhanced-upload-container {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
@@ -276,23 +248,19 @@
     border: 2px solid #333;
     color: #fff;
   }
-
   .upload-header {
     text-align: center;
     margin-bottom: 2rem;
   }
-
   .upload-header h2 {
     color: #00ff41;
     font-size: 1.8rem;
     margin-bottom: 0.5rem;
   }
-
   .subtitle {
     color: #aaa;
     font-size: 0.9rem;
   }
-
   .config-info {
     background: #111;
     border: 1px solid #333;
@@ -300,18 +268,15 @@
     padding: 1.5rem;
     margin-bottom: 2rem;
   }
-
   .config-info h3 {
     color: #00ff41;
     margin-bottom: 1rem;
   }
-
   .capabilities-grid {
     display: grid;
     gap: 0.5rem;
     margin-bottom: 1.5rem;
   }
-
   .capability-item {
     display: flex;
     align-items: center;
@@ -319,23 +284,19 @@
     font-size: 0.85rem;
     color: #ccc;
   }
-
   .checkmark {
     color: #00ff41;
   }
-
   .supported-formats h4 {
     color: #fff;
     margin-bottom: 0.5rem;
   }
-
   .formats-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
   }
-
   .format-badge {
     background: #333;
     color: #00ff41;
@@ -344,12 +305,10 @@
     font-size: 0.75rem;
     font-weight: bold;
   }
-
   .format-note {
     color: #888;
     font-size: 0.8rem;
   }
-
   .upload-form {
     background: #111;
     border: 1px solid #333;
@@ -357,7 +316,6 @@
     padding: 1.5rem;
     margin-bottom: 1rem;
   }
-
   .file-input-label {
     display: flex;
     align-items: center;
@@ -369,63 +327,51 @@
     cursor: pointer;
     transition: all 0.3s ease;
   }
-
-  .file-input-label:hover {
+  .file-input-label: hover {
     border-color: #00ff41;
     background: #1a2a1a;
   }
-
   .file-input-hidden {
     display: none;
   }
-
   .file-icon {
     font-size: 1.5rem;
   }
-
   .file-text {
     color: #ccc;
     font-size: 0.9rem;
   }
-
   .file-info {
     margin-top: 1rem;
     padding: 1rem;
     background: #1a1a1a;
     border-radius: 6px;
   }
-
   .file-details {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .file-name {
     color: #00ff41;
     font-weight: bold;
   }
-
   .file-size, .file-type {
     color: #888;
     font-size: 0.8rem;
   }
-
   .metadata-form {
     margin-top: 1.5rem;
   }
-
   .form-row {
     margin-bottom: 1rem;
   }
-
   .form-row label {
     display: block;
     margin-bottom: 0.5rem;
     color: #ccc;
     font-size: 0.9rem;
   }
-
   .form-input, .form-select {
     width: 100%;
     padding: 0.75rem;
@@ -435,70 +381,57 @@
     color: #fff;
     font-family: inherit;
   }
-
   .form-input:focus, .form-select:focus {
     outline: none;
     border-color: #00ff41;
   }
-
   .upload-actions {
     margin-top: 1.5rem;
     text-align: center;
   }
-
   .error-message, .success-result {
     padding: 1rem;
     border-radius: 8px;
     margin-top: 1rem;
   }
-
   .error-message {
     background: #2a1a1a;
     border: 1px solid #ff4444;
     color: #ff6666;
   }
-
   .success-result {
     background: #1a2a1a;
     border: 1px solid #00ff41;
     color: #fff;
   }
-
   .success-header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 1rem;
   }
-
   .success-icon {
     color: #00ff41;
     font-size: 1.2rem;
   }
-
   .result-details {
     margin-bottom: 1rem;
   }
-
   .detail-item {
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
   }
-
   .detail-item strong {
     color: #00ff41;
   }
-
   .features-enabled h4 {
     color: #00ff41;
     margin-bottom: 0.5rem;
   }
-
   .features-enabled ul {
     list-style: none;
     padding: 0;
   }
-
   .features-enabled li {
     margin-bottom: 0.25rem;
     font-size: 0.85rem;

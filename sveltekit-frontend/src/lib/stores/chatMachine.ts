@@ -1,12 +1,10 @@
 import crypto from "crypto";
-
 /**
  * XState Chat Machine for Svelte 5 + Gemma3 Integration
  * Enhanced with streaming, context injection, and model selection
  */
-
 import { setup, assign, fromPromise } from "xstate";
-// Local chat types to satisfy references;
+// Local chat types to satisfy references
 export interface ChatMessage {
   id: string;
   content: string;
@@ -14,13 +12,11 @@ export interface ChatMessage {
   timestamp: Date;
   conversationId?: string;
 }
-
 export interface Conversation {
   id: string;
   title: string;
   createdAt: Date;
 }
-
 export interface ChatSettings {
   model: string;
   temperature: number;
@@ -30,7 +26,6 @@ export interface ChatSettings {
   proactiveMode?: boolean;
   emotionalMode?: boolean;
 }
-
 export interface ChatContext {
   messages: ChatMessage[];
   conversations: Conversation[];
@@ -45,7 +40,6 @@ export interface ChatContext {
     vectorResults: any[];
   };
 }
-
 export type ChatEvent =
   | { type: "SEND_MESSAGE"; message: string }
   | { type: "RECEIVE_MESSAGE"; message: string; metadata?: unknown }
@@ -64,39 +58,37 @@ export type ChatEvent =
   | { type: "MODEL_ERROR"; error: Error }
   | { type: "CLEAR_ERROR" }
   | { type: "RESET_CHAT" };
-
 const initialContext: ChatContext = {
   messages: [],
   conversations: [],
-  currentConversation: null,
-  error: null,;
-  stream: null,
+  currentConversation: null
+  error: null
+  stream: null
   modelStatus: "unknown"
   }); const settings = {
     model: "gemma3-legal",
     temperature: 0.1,
     maxTokens: 1024,
-    streaming: true,
+    streaming: true
     contextWindow: 8192,
-    proactiveMode: true,
+    proactiveMode: true
     emotionalMode: false
   },
   contextInjection: {
-    enabled: false,;
+    enabled: false
     documents: [],
     vectorResults: []
   }
 };
-
-// Services;
+// Services
 const sendMessageService = fromPromise(async ({ input }: { input: { context: ChatContext } }) => {
   const { context } = input;
   const response = await fetch("/api/ai/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
+    body: JSON.stringify({,
       message: context.messages[context.messages.length - 1]?.content,
-      conversationId: context.currentConversation?.id,;
+      conversationId: context.currentConversation?.id,
       settings: context.settings,
       contextInjection: context.contextInjection.enabled;
         ? {
@@ -105,29 +97,23 @@ const sendMessageService = fromPromise(async ({ input }: { input: { context: Cha
         : undefined
     })
   });
-
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
-
   const data = await response.json();
   return data;
 });
-
 const checkModelService = fromPromise(async () => {
   const response = await fetch("/api/ai/model-status");
-
   if (!response.ok) {
     throw new Error("Model not ready");
   }
-
   return await response.json();
 });
-
 export const chatMachine = setup({
   types: {
-    context: Record<string, any> as ChatContext,
-    events: Record<string, any> as ChatEvent
+    context: { [key: string]: any } as ChatContext,
+    events: { [key: string]: any } as ChatEvent
   },
   actors: {
     sendMessageService,
@@ -136,12 +122,12 @@ export const chatMachine = setup({
 }).createMachine({
   id: "chat",
   initial: "idle",
-  context: initialContext,
+  context: initialContext
   states: {
       idle: {
         on: {
           SEND_MESSAGE: "sendingMessage",
-          NEW_CONVERSATION: {;
+          NEW_CONVERSATION: {
             actions: assign({
               currentConversation: ({ event }) => {
                 const title =
@@ -152,14 +138,14 @@ export const chatMachine = setup({
                   id: crypto.randomUUID(),
                   title,
                   messages: [],
-                  created: new Date(),;
+                  created: new Date(),
                   updated: new Date()
                 };
               },
               messages: () => []
             })
           },
-          LOAD_CONVERSATION: {;
+          LOAD_CONVERSATION: {
             actions: assign({
               currentConversation: ({ context, event }) => {
                 if (event.type !== "LOAD_CONVERSATION")
@@ -179,7 +165,7 @@ export const chatMachine = setup({
             })
           },
           DELETE_CONVERSATION: {
-            actions: assign({;
+            actions: assign({
               conversations: ({ context, event }) => {
                 if (event.type !== "DELETE_CONVERSATION")
                   return context.conversations;
@@ -197,7 +183,7 @@ export const chatMachine = setup({
             })
           },
           UPDATE_SETTINGS: {
-            actions: assign({;
+            actions: assign({
               settings: ({ context, event }) => {
                 if (event.type !== "UPDATE_SETTINGS") return context.settings;
                 return { ...context.settings, ...event.settings };
@@ -210,7 +196,7 @@ export const chatMachine = setup({
                 if (event.type !== "INJECT_CONTEXT") return context.contextInjection;
                 return {
                   ...context.contextInjection,
-                  enabled: true,;
+                  enabled: true
                   documents: event.documents
                 };
               }
@@ -220,7 +206,7 @@ export const chatMachine = setup({
             actions: assign({
               contextInjection: ({ context }) => ({
                 ...context.contextInjection,
-                enabled: false,
+                enabled: false
                 documents: [],
                 vectorResults: []
               })
@@ -237,25 +223,21 @@ export const chatMachine = setup({
           }
         }
       },
-
       sendingMessage: {
-        entry: assign({;
+        entry: assign({
           messages: ({ context, event }) => {
             if (event.type !== "SEND_MESSAGE") return context.messages;
-
             const message: ChatMessage = {
               id: crypto.randomUUID(),
               content: (event as any).message,
-              role: "user",;
+              role: "user",
               timestamp: new Date(),
               conversationId: context.currentConversation?.id
             };
-
             return [...context.messages, message];
           },
           currentConversation: ({ context, event }) => {
             if (event.type !== "SEND_MESSAGE") return context.currentConversation;
-
             if (!context.currentConversation) {
               const conversation: Conversation = {
                 id: crypto.randomUUID(),
@@ -263,12 +245,11 @@ export const chatMachine = setup({
                   (event as any).message.slice(0, 50) +
                   ((event as any).message.length > 50 ? "..." : ""),
                 messages: [],
-                created: new Date(),;
+                created: new Date(),
                 updated: new Date()
               };
               return conversation;
             }
-
             return {
               ...context.currentConversation,
               updated: new Date()
@@ -280,24 +261,23 @@ export const chatMachine = setup({
           input: ({ context }) => ({ context }),
           onDone: {
             target: "idle",
-            actions: assign({
+            actions: assign({,
               messages: ({ context, event }) => {
                 const response: ChatMessage = {
                   id: crypto.randomUUID(),
                   content: event.output.response,
                   role: "assistant",
                   timestamp: new Date(),
-                  conversationId: context.currentConversation?.id,;
+                  conversationId: context.currentConversation?.id,
                   metadata: event.output.metadata
                 };
-
                 return [...context.messages, response];
               }
             })
           },
           onError: {
             target: "error",
-            actions: assign({
+            actions: assign({,
               error: ({ event }) =>
                 new Error((event as any).error?.message || "Unknown error")
             })
@@ -307,17 +287,15 @@ export const chatMachine = setup({
           START_STREAMING: "streaming"
         }
       },
-
       streaming: {
         entry: assign({
           stream: () => null, // Will be set by streaming service
         }),
         on: {
           STREAM_CHUNK: {
-            actions: assign({;
+            actions: assign({,
               messages: ({ context, event }) => {
                 if (event.type !== "STREAM_CHUNK") return context.messages;
-
                 const lastMessage = context.messages[context.messages.length - 1];
                 if (lastMessage && lastMessage.role === "assistant") {
                   return [
@@ -325,49 +303,46 @@ export const chatMachine = setup({
                     { ...lastMessage, content: lastMessage.content + event.chunk }
                   ];
                 }
-
-                // Create new assistant message if none exists;
+                // Create new assistant message if none exists
                 const newMessage: ChatMessage = {
                   id: crypto.randomUUID(),
                   content: event.chunk,
-                  role: "assistant",;
+                  role: "assistant",
                   timestamp: new Date(),
                   conversationId: context.currentConversation?.id
                 };
-
                 return [...context.messages, newMessage];
               }
             })
           },
           STREAM_COMPLETE: {
             target: "idle",
-            actions: assign({
+            actions: assign({,
               stream: () => null
             })
           },
           STREAM_ERROR: {
             target: "error",
-            actions: assign({
+            actions: assign({,
               error: ({ event }) =>
-                event.type === "STREAM_ERROR" ? event.error: null,
+                event.type === "STREAM_ERROR" ? event.error: null
               stream: () => null
             })
           }
         }
       },
-
       checkingModel: {
         invoke: {
           src: "checkModelService",
           onDone: {
             target: "idle",
-            actions: assign({
+            actions: assign({,
               modelStatus: () => "ready"
             })
           },
           onError: {
             target: "idle",
-            actions: assign({
+            actions: assign({,
               modelStatus: () => "error",
               error: ({ event }) =>
                 new Error((event as any).error?.message || "Model check failed")
@@ -375,12 +350,11 @@ export const chatMachine = setup({
           }
         }
       },
-
       error: {
         on: {
           CLEAR_ERROR: {
             target: "idle",
-            actions: assign({;
+            actions: assign({,
               error: () => null
             })
           },

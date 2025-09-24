@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
 import LegalCaseManager from './LegalCaseManager.svelte.js';
-
 const meta = {
   title: 'Business/LegalCaseManager',
-  component: LegalCaseManager,
+  component: LegalCaseManager
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -33,102 +32,95 @@ const meta = {
       control: { type: 'boolean' },
       description: 'Display case statistics dashboard'
     }
-  },;
+  },
   tags: ['autodocs']
 } satisfies Meta<LegalCaseManager>;
-
 export default meta;
 type Story = StoryObj<typeof meta>;
-
 export const Default: Story = {
   args: {
     viewMode: 'list',
     filterMode: 'all',
     sortBy: 'date',
-    enableAI: true,
+    enableAI: true
     showStats: true
   }
 };
-
 export const GridView: Story = {
   args: {
     viewMode: 'grid',
     filterMode: 'active',
     sortBy: 'priority',
-    enableAI: true,
+    enableAI: true
     showStats: false
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Grid view layout optimized for visual case management'
       }
     }
   }
 };
-
 export const Timeline: Story = {
   args: {
     viewMode: 'timeline',
     filterMode: 'all',
     sortBy: 'date',
-    enableAI: false,
+    enableAI: false
     showStats: true
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Timeline view showing chronological case progression'
       }
     }
   }
 };
-
 export const KanbanBoard: Story = {
   args: {
     viewMode: 'kanban',
     filterMode: 'active',
     sortBy: 'status',
-    enableAI: true,
+    enableAI: true
     showStats: false
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Kanban board for workflow-based case management'
       }
     }
   }
 };
-
 export const AssignedCases: Story = {
   args: {
     viewMode: 'list',
     filterMode: 'assigned',
     sortBy: 'priority',
-    enableAI: true,
+    enableAI: true
     showStats: true
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Focus view showing only cases assigned to current user'
       }
     }
   }
 };
-
 export const ClosedCases: Story = {
   args: {
     viewMode: 'grid',
     filterMode: 'closed',
     sortBy: 'date',
-    enableAI: false,
+    enableAI: false
     showStats: true
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Archive view for completed and closed cases'
       }
     }

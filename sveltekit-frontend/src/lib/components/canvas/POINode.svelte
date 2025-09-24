@@ -1,12 +1,10 @@
 <script lang="ts">
-
   import { onMount } from 'svelte';
   import { createEventDispatcher } from 'svelte';
   import { draggable } from '$lib/actions/draggable';
   import { aiService } from '$lib/services/aiService';
   import * as ContextMenu from "$lib/components/ui/context-menu";
   import { Edit, Save, Sparkles, Tag, User as UserIcon, X } from "lucide-svelte";
-
   // Simple POI interface for the component
   export interface POIData {
     id: string;
@@ -28,18 +26,14 @@
     tags?: string[];
     createdBy?: string;
   }
-
   // Props
-  export let poi: POIData;
-
+  let { poi } = $props(): POIData;
   const dispatch = createEventDispatcher();
-
   let nodeElement: HTMLElement | null = null;
   let isEditing = false;
   let showContextMenu = false;
   let contextX = 0;
   let contextY = 0;
-
   // Derived reactive values
   let name = $derived(poi?.name ?? "");
   let aliases: string[] = $derived(poi?.aliases ?? []);
@@ -50,7 +44,6 @@
   let threatLevel = $derived(poi?.threatLevel ?? "low");
   let status = $derived(poi?.status ?? "active");
   let tags: string[] = $derived(poi?.tags ?? []);
-
   type FormShape = {
     name: string;
     aliases: string;
@@ -60,17 +53,15 @@
     status: string;
     tags: string;
   };
-
   let formData: FormShape = {
-    name: "",;
+    name: "",
     aliases: "",
     profileData: { who: "", what: "", why: "", how: "" },
     relationship: "",
-    threatLevel: "low",;
-    status: "active",;
-    tags: "",;
+    threatLevel: "low",
+    status: "active",
+    tags: "",
   };
-
   // Initialize form when component mounts or poi changes
   $effect(() => {
     if (!isEditing) {
@@ -80,12 +71,11 @@
       profileData: { ...profileData },
       relationship,
       threatLevel,
-      status,;
-      tags: tags.join(", "),;
+      status,
+      tags: tags.join(", "),
     };
     }
   });
-
   function startEditing() {
     isEditing = true;
     formData = {
@@ -94,11 +84,10 @@
       profileData: { ...profileData },
       relationship,
       threatLevel,
-      status,;
-      tags: tags.join(", "),;
+      status,
+      tags: tags.join(", "),
     };
   }
-
   function saveChanges() {
     const updatedPoi: POIData = {
       ...poi,
@@ -108,22 +97,19 @@
         .map((a: string) => a.trim())
         .filter((a: string) => a.length > 0),
       relationship: formData.relationship,
-      threatLevel: formData.threatLevel,;
-      status: formData.status,;
+      threatLevel: formData.threatLevel,
+      status: formData.status,
       tags: formData.tags
         .split(',')
         .map((t: string) => t.trim())
         .filter((t: string) => t.length > 0),
-      profileData: formData.profileData,;
+      profileData: formData.profileData,
     };
-
     // Update local poi reference and emit an update event
     poi = updatedPoi;
     dispatch('update', updatedPoi);
-
     isEditing = false;
   }
-
   function cancelEditing() {
     isEditing = false;
     // reset form to current poi values
@@ -133,18 +119,16 @@
       profileData: { ...profileData },
       relationship,
       threatLevel,
-      status,;
-      tags: tags.join(", "),;
+      status,
+      tags: tags.join(", "),
     };
   }
-
   function handleContextMenu(event: MouseEvent) {
     event.preventDefault();
     contextX = event.clientX;
     contextY = event.clientY;
     showContextMenu = true;
   }
-
   async function summarizePOI() {
     try {
       const summary = await aiService.summarizePOI(
@@ -152,7 +136,6 @@
         poi.id,
         poi.caseId
       );
-
       if (summary) {
         console.log("POI Summary:", summary);
         dispatch('summary', { id: poi.id, summary });
@@ -161,7 +144,6 @@
       console.error('summarizePOI error', err);
     }
   }
-
   function getThreatLevelColor(level: string): string {
     switch (level) {
       case "high":
@@ -174,7 +156,6 @@
         return "bg-gray-500";
     }
   }
-
   function getStatusColor(st: string): string {
     switch (st) {
       case "active":
@@ -189,25 +170,22 @@
         return "bg-gray-500";
     }
   }
-
   function handleDragEvent(detail: { x: number; y: number }) {
     posX = detail.x;
     posY = detail.y;
     dispatch('move', { id: poi.id, x: posX, y: posY });
   }
-
   // ensure nodeElement exists for external integrations if needed
   onMount(() => {
     // placeholder if any setup is needed later
   });
 </script>
-
 <ContextMenu.Root>
   <ContextMenu.Trigger asChild={false}>
     <div
       bind:this={nodeElement}
       class="container mx-auto px-4"
-      style="left: {posX}px; top: {posY}px; z-index: 10;"
+      style="left: {posX}px; top: {posY}px; z-index: 10;",
       use:draggable={{ onDrag: (x: number, y: number) => handleDragEvent({ x, y }) }}
       on:contextmenu={handleContextMenu}
       role="menu"
@@ -219,7 +197,7 @@
           <UserIcon class="nier-icon text-gray-400 w-6 h-6" />
           {#if isEditing}
             <input
-              class="nier-input text-lg font-bold bg-transparent border-b border-gray-400 focus:border-nier-accent outline-none w-full";
+              class="nier-input text-lg font-bold bg-transparent border-b border-gray-400 focus: border-nier-accent outline-none w-full";
               bind:value={formData.name}
               placeholder="Person name"
             />
@@ -227,19 +205,16 @@
             <h3 class="nier-title text-lg font-bold">{name}</h3>
           {/if}
         </div>
-
         <div class="flex gap-2 mb-2">
           <span class={`nier-badge nier-badge-secondary ${getThreatLevelColor(threatLevel)}`}>{threatLevel.toUpperCase()}</span>
           <span class={`nier-badge nier-badge-secondary ${getStatusColor(status)}`}>{status.toUpperCase()}</span>
         </div>
-
         {#if aliases.length > 0 && !isEditing}
           <div class="nier-alias text-xs text-gray-400 mb-1">AKA: {aliases.join(", ")}</div>
         {/if}
         {#if relationship && !isEditing}
           <span class="nier-badge nier-badge-secondary">{relationship}</span>
         {/if}
-
         <div class="nier-content mt-2">
           {#if isEditing}
             <div class="space-y-2">
@@ -328,7 +303,6 @@
             </div>
           {/if}
         </div>
-
         <div class="nier-footer flex justify-between items-center mt-4 gap-2">
           {#if isEditing}
             <button type="button" class="nier-btn nier-btn-accent" onclick={saveChanges}><Save class="w-4 h-4" /> Save</button>
@@ -341,20 +315,16 @@
       </div>
     </div>
   </ContextMenu.Trigger>
-
   <ContextMenu.Content class="container mx-auto px-4">
     <ContextMenu.Item on:select={startEditing}>
       <Edit class="container mx-auto px-4" />
       Edit Profile
     </ContextMenu.Item>
-
     <ContextMenu.Item on:select={summarizePOI}>
       <Sparkles class="container mx-auto px-4" />
       AI Summary
     </ContextMenu.Item>
-
     <ContextMenu.Separator />
-
     <ContextMenu.Item;
       on:select={() => {
         poi = { ...poi, threatLevel: "low" };
@@ -364,7 +334,6 @@
       <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Low</span>
       Low
     </ContextMenu.Item>
-
     <ContextMenu.Item
       on:select={() => {
         poi = { ...poi, threatLevel: "medium" };
@@ -374,7 +343,6 @@
       <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Medium</span>
       Medium
     </ContextMenu.Item>
-
     <ContextMenu.Item
       on:select={() => {
         poi = { ...poi, threatLevel: "high" };
@@ -384,19 +352,16 @@
       <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">High</span>
       High
     </ContextMenu.Item>
-
     <ContextMenu.Separator />
-
     <ContextMenu.Item on:select={() => dispatch('delete', poi.id)}>
       <X class="container mx-auto px-4" />
       Delete POI
     </ContextMenu.Item>
   </ContextMenu.Content>
 </ContextMenu.Root>
-
 <style>
 /* Nier-inspired UI styles */
-.nier-card {;
+.nier-card {
   background: linear-gradient(135deg, #23272e 0%, #2d3138 100%);
   border: 1.5px solid #bcbcbc;
   box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18);
@@ -417,7 +382,7 @@
   border-radius: 9999px;
   font-size: 0.85em;
   font-weight: 600;
-  background: #23272e;
+  background: #23272;
   color: #bcbcbc;
   border: 1px solid #bcbcbc;
 }
@@ -432,7 +397,7 @@
   font-weight: 500;
 }
 .nier-input {
-  background: #23272e;
+  background: #23272;
   color: #e5e5e5;
   border: 1px solid #bcbcbc;
   border-radius: 0.5em;
@@ -440,14 +405,14 @@
   font-size: 1em;
   margin-top: 0.2em;
   margin-bottom: 0.2em;
-  transition: border 0.2s;
+  transition: border 0.2;
 }
-.nier-input:focus {
+.nier-input: focus {
   border-color: #a3e7fc;
   outline: none;
 }
 .nier-btn {
-  background: #23272e;
+  background: #23272;
   color: #bcbcbc;
   border: 1.5px solid #bcbcbc;
   border-radius: 0.5em;
@@ -455,14 +420,14 @@
   font-size: 1em;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border 0.2s;
+  transition: background 0.2s, color 0.2s, border 0.2;
   display: inline-flex;
   align-items: center;
   gap: 0.4em;
 }
 .nier-btn-accent {
   background: #a3e7fc;
-  color: #23272e;
+  color: #23272;
   border-color: #a3e7fc;
 }
 .nier-btn-secondary {
@@ -472,7 +437,7 @@
 }
 .nier-btn:hover, .nier-btn-accent:hover, .nier-btn-secondary:hover {
   background: #bcbcbc;
-  color: #23272e;
+  color: #23272;
 }
 .nier-footer {
   border-top: 1px solid #bcbcbc;
@@ -482,4 +447,3 @@
   font-style: italic;
 }
 </style>
-

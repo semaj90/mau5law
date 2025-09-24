@@ -3,14 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <script lang="ts">
   let { title, description, path, icon: unknown, ariaLabel = title  }: { title, description, path, icon: unknown, ariaLabel = title : unknown } = $props();
-
   import { goto } from '$app/navigation';
-  
-  
-  
-   // Svelte component constructor;
-  
-  ;
+   // Svelte component constructor
   function handleNavigate() {
     if (path) goto(path);
   }
@@ -21,7 +15,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="yorha-nav-nier-bits-card" role="button" tabindex="0" aria-label={ariaLabel}
   onclick={handleNavigate} keydown={handleKey} data-path={path}>
   <div class="yorha-nav-header">
@@ -36,7 +29,5 @@ https://svelte.dev/e/js_parse_error -->
     {@render trailing?.()}
   </div>
 </div>
-
 <!-- Styling inherits from parent page; only minimal overrides if needed -->
 <style>/*$$__STYLE_CONTENT__$$*/ </style>
-

@@ -1,8 +1,7 @@
 
 // Legal AI System Type Definitions - Extended for Evidence and Case Management
 export * from './legal';
-
-// Additional Evidence Types;
+// Additional Evidence Types
 export interface Evidence {
   id: string;
   title: string;
@@ -11,14 +10,14 @@ export interface Evidence {
   filePath?: string;
   fileSize?: number;
   mimeType?: string;
-  evidenceType: 
-    | "document" 
-    | "image" 
-    | "video" 
-    | "audio" 
-    | "digital" 
-    | "physical" 
-    | "testimony" 
+  evidenceType:
+    | "document"
+    | "image"
+    | "video"
+    | "audio"
+    | "digital"
+    | "physical"
+    | "testimony"
     | "other";
   caseId: string;
   uploadedAt: Date;
@@ -27,13 +26,12 @@ export interface Evidence {
   aiTags?: string[];
   aiSummary?: string;
   aiAnalysis?: AIAnalysis;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   confidentialityLevel: number;
   chainOfCustody?: ChainOfCustodyEntry[];
   isProcessed: boolean;
   processingStatus?: "pending" | "processing" | "completed" | "failed";
 }
-
 export interface ChainOfCustodyEntry {
   id: string;
   evidenceId: string;
@@ -44,20 +42,18 @@ export interface ChainOfCustodyEntry {
   notes?: string;
   signature?: string;
 }
-
 export interface AIAnalysis {
   id: string;
   evidenceId: string;
   analysisType: "content_extraction" | "sentiment_analysis" | "entity_recognition" | "classification" | "similarity";
-  results: Record<string, any>;
+  results: { [key: string]: any };
   confidence: number;
   processingTime: number;
   model: string;
   version: string;
   analyzedAt: Date;
 }
-
-// Extended Legal Document Interface;
+// Extended Legal Document Interface
 export interface LegalDocument {
   id: string;
   title: string;
@@ -69,7 +65,7 @@ export interface LegalDocument {
     | "motion"
     | "brief"
     | "contract"
-    | "evidence" 
+    | "evidence"
     | "correspondence"
     | "pleading"
     | "statute"
@@ -90,11 +86,10 @@ export interface LegalDocument {
   jurisdiction?: string;
   court?: string;
   parties?: Record<string, string>; // e.g., { plaintiff: "John Doe", defendant: "Jane Smith" }
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   embeddings?: number[]; // Vector embeddings for search
 }
-
-// Enhanced Case Interface;
+// Enhanced Case Interface
 export interface Case {
   id: string;
   caseNumber: string;
@@ -117,8 +112,7 @@ export interface Case {
   dueDate?: Date;
   tags?: string[];
 }
-
-// API Response Types;
+// API Response Types
 export interface DocumentSearchResult {
   id: string;
   title: string;
@@ -128,7 +122,6 @@ export interface DocumentSearchResult {
   caseId?: string;
   lastModified: Date;
 }
-
 export interface EvidenceSearchResult {
   id: string;
   title: string;
@@ -139,8 +132,7 @@ export interface EvidenceSearchResult {
   uploadedAt: Date;
   aiSummary?: string;
 }
-
-// Vector Search Types;
+// Vector Search Types
 export interface VectorSearchOptions {
   query: string;
   threshold?: number;
@@ -149,16 +141,14 @@ export interface VectorSearchOptions {
   documentType?: string;
   evidenceType?: string;
 }
-
 export interface VectorSearchResult {
   id: string;
   score: number;
   content: string;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   type: "document" | "evidence" | "case";
 }
-
-// Export commonly used types from legal.ts;
+// Export commonly used types from legal.ts
 export type {
   LegalCase,
   AIInsights,

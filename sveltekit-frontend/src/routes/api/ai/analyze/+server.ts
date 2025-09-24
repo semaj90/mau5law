@@ -3,10 +3,8 @@
  * Routes: /api/ai/analyze → QUIC /legal/analyze → Go GPU /inference
  * NO MOCKS - Full production implementation per apparch913.txt
  */
-
 import { json, error, type RequestHandler } from '@sveltejs/kit'
 import { z } from 'zod'
-
 // Legal analysis schema per architecture docs
 const LegalAnalysisSchema = z.object({
   content: z.string().min(1),
@@ -14,35 +12,29 @@ const LegalAnalysisSchema = z.object({
   document_id: z.string().optional(),
   case_id: z.string().optional(),
   model: z.enum(['gemma3:legal-latest', 'embeddinggemma:latest']).default('gemma3:legal-latest'),
-  options: z.object({
+  options: z.object({,
     max_tokens: z.number().default(1024),
     temperature: z.number().min(0).max(1).default(0.1),
     include_precedents: z.boolean().default(true),
     include_citations: z.boolean().default(true)
   }).optional()
 })
-
 type LegalAnalysisRequest = z.infer<typeof LegalAnalysisSchema>
-
 const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433'
-
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     const sessionId = cookies.get('session_id')
     if (!sessionId) {
       throw error(401, 'Authentication required for legal AI analysis')
     }
-
     const body = await request.json()
     const validatedData = LegalAnalysisSchema.safeParse(body)
-
     if (!validatedData.success) {
       throw error(400, {
         message: 'Invalid analysis request format',
         errors: validatedData.error.errors
       })
     }
-
     // Route to QUIC server legal analysis endpoint (per architecture)
     const response = await fetch(`${QUIC_SERVER_URL}/legal/analyze`, {
       method: 'POST',
@@ -54,17 +46,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       },
       body: JSON.stringify(validatedData.data)
     })
-
     if (!response.ok) {
       const errorData = await response.text()
       console.error('QUIC server legal analysis error:', errorData)
       throw error(response.status, `Legal analysis failed: ${errorData}`)
     }
-
     const result = await response.json()
-
     return json({
-      success: true,
+      success: true
       data: {
         analysis: result.analysis,
         analysis_type: result.analysis_type,
@@ -77,58 +66,46 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         risk_assessment: result.risk_assessment
       }
     })
-
   } catch (err) {
     console.error('Legal AI analysis error:', err)
-
     if (err instanceof Error && 'status' in err) {
       throw err
     }
-
     throw error(500, 'Internal server error during legal analysis')
   }
 }
-
 export const GET: RequestHandler = async ({ url, cookies }) => {
   try {
     const sessionId = cookies.get('session_id')
     if (!sessionId) {
       throw error(401, 'Authentication required')
     }
-
     const jobId = url.searchParams.get('job_id')
     if (!jobId) {
       throw error(400, 'job_id parameter required')
     }
-
     // Get analysis result from QUIC server
     const response = await fetch(`${QUIC_SERVER_URL}/legal/result?job_id=${jobId}`, {
       headers: {
         'Authorization': `Bearer ${sessionId}`
       }
     })
-
     if (!response.ok) {
       throw error(response.status, 'Failed to retrieve analysis result')
     }
-
     const result = await response.json()
-
     return json({
-      success: true,
+      success: true
       job_id: result.job_id,
       status: result.status,
       result: result.result,
       completed_at: result.completed_at
     })
-
   } catch (err) {
     console.error('Analysis result retrieval error:', err)
-
     if (err instanceof Error && 'status' in err) {
       throw err
     }
-
     throw error(500, 'Failed to retrieve analysis result')
   }
 }

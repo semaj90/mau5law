@@ -1,10 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { AlertCircle, FileText, Image, Upload } from 'lucide-svelte';
   // runtime helpers ($props, $state, $derived, $effect, $bindable) are provided by the compiler in runes mode
-
   interface Props {
     accept?: string;
     multiple?: boolean;
@@ -14,7 +11,6 @@
     onFilesDropped?: (files: File[]) => void;
     onFileHover?: (hovering: boolean) => void;
   }
-
   let {
     accept = '*/*',
     multiple = true,
@@ -24,22 +20,18 @@
     onFilesDropped,
     onFileHover
   }: Props = $props();
-
   let fileInput: HTMLInputElement;
   let isDragOver = $state(false);
   let errors = $state<string[]>([]);
-
   const allowedTypes = {
     'image/*': { icon: Image, label: 'Images' },
     'application/pdf': { icon: FileText, label: 'PDF Documents' },
     'text/*': { icon: FileText, label: 'Text Files' },
     '*/*': { icon: Upload, label: 'Any File' }
   };
-
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     if (disabled) return;
-
     isDragOver = true;
     dragActive = true;
     onFileHover?.(true);
@@ -47,7 +39,6 @@
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     if (disabled) return;
-
     isDragOver = false;
     dragActive = false;
     onFileHover?.(false);
@@ -55,11 +46,9 @@
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     if (disabled) return;
-
     isDragOver = false;
     dragActive = false;
     onFileHover?.(false);
-
     const files = Array.from(e.dataTransfer?.files || []);
     processFiles(files);
   }
@@ -71,17 +60,16 @@
   function processFiles(files: File[]) {
     errors = [];
     const validFiles: File[] = [];
-
     for (const file of files) {
       // Check file size
       if (file.size > maxSize) {
         errors.push(`${file.name} is too large (max ${formatFileSize(maxSize)})`);
-        continue;
+        continu;
   }
       // Check file type if accept is specified and not wildcard
       if (accept !== '*/*' && !matchesAcceptType(file.type, accept)) {
         errors.push(`${file.name} is not an accepted file type`);
-        continue;
+        continu;
   }
       validFiles.push(file);
   }
@@ -100,7 +88,7 @@
         const baseType = acceptType.slice(0, -2);
         return fileType.startsWith(baseType);
   }
-      return fileType === acceptType;
+      return fileType === acceptTyp;
     });
   }
   function formatFileSize(bytes: number): string {
@@ -119,7 +107,6 @@
       fileInput.click();
   }}
 </script>
-
 <div
   class="space-y-4"
   ondragover={handleDragOver}
@@ -140,7 +127,6 @@
     onchange={handleFileSelect}
     class="space-y-4"
   />
-
   <div class="space-y-4">
     <div class="space-y-4">
       {#if isDragOver}
@@ -153,16 +139,13 @@
         </div>
       {/if}
     </div>
-
     <div class="space-y-4">
       <p class="space-y-4">
         {isDragOver ? 'Drop files here' : 'Drag and drop files here'}
       </p>
-
       <p class="space-y-4">
         or <span class="space-y-4">browse files</span>
       </p>
-
       {#if accept !== '*/*'}
         <div class="space-y-4">
           {#each getAcceptedFileInfo() as { icon: Icon, label }}
@@ -173,13 +156,11 @@
           {/each}
         </div>
       {/if}
-
       <p class="space-y-4">
         Max file size: {formatFileSize(maxSize)}
       </p>
     </div>
   </div>
-
   {#if errors.length > 0}
     <div class="space-y-4">
       {#each errors as error}
@@ -191,4 +172,3 @@
     </div>
   {/if}
 </div>
-

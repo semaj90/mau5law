@@ -1,5 +1,4 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * QUIC Vector Proxy API - High-Performance Vector Operations
  * Provides vector search with intelligent caching and multi-backend routing
@@ -8,7 +7,6 @@ import type { RequestHandler } from './$types.js'
  */
 import { json, error } from '@sveltejs/kit'
 import { randomUUID } from 'node:crypto'
-
 import { ensureError } from '$lib/utils/ensure-error'
 // Use canonical VectorSearchQuery type
 import type { VectorSearchQuery } from '$lib/types/ai-assistant'
@@ -16,7 +14,6 @@ import type { VectorSearchQuery } from '$lib/types/ai-assistant'
 import { vectorSearchService } from '$lib/services/real-vector-search-service'
 import { goServiceManager } from '$lib/services/goMicroservice'
 import { URL } from 'url'
-
 const QUIC_VECTOR_CONFIG = {
   primaryPort: 8445, // QUIC HTTP/3
   fallbackPort: 8446, // HTTP/2
@@ -26,7 +23,6 @@ const QUIC_VECTOR_CONFIG = {
   cacheTTL: 300, // 5 minutes cache TTL
   maxCacheSize: 1000
 }
-
 /*
  * GET /api/v1/quic/vector - Vector proxy health and cache status
  */
@@ -36,10 +32,8 @@ export const GET: RequestHandler = async ({ url }) => {
     const healthResponse = await fetch(`${QUIC_VECTOR_CONFIG.baseUrl}/health`, {
       signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout)
     })
-
     let proxyStatus = 'healthy'
     let responseData: any = {}
-
     if (healthResponse.ok) {
       responseData = await healthResponse.json()
     } else {
@@ -47,7 +41,6 @@ export const GET: RequestHandler = async ({ url }) => {
       const fallbackResponse = await fetch(`${QUIC_VECTOR_CONFIG.fallbackUrl}/health`, {
         signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout)
       })
-
       if (fallbackResponse.ok) {
         responseData = await fallbackResponse.json()
         proxyStatus = 'fallback'
@@ -55,10 +48,9 @@ export const GET: RequestHandler = async ({ url }) => {
         proxyStatus = 'unhealthy'
       }
     }
-
     return json({
       service: 'quic-vector-proxy',
-      status: proxyStatus,
+      status: proxyStatus
       protocol:
         proxyStatus === 'healthy' ? 'HTTP/3' : proxyStatus === 'fallback' ? 'HTTP/2' : 'N/A',
       ports: {
@@ -76,8 +68,8 @@ export const GET: RequestHandler = async ({ url }) => {
         'Cache Management',
         'Health Monitoring'
       ],
-      cache: responseData.cache || {
-        enabled: true,
+      cache: responseData.cache || {,
+        enabled: true
         ttl: QUIC_VECTOR_CONFIG.cacheTTL,
         maxSize: QUIC_VECTOR_CONFIG.maxCacheSize
       },
@@ -86,7 +78,6 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   } catch (err: any) {
     console.error('QUIC Vector Proxy health check failed:', err)
-
     return json({
       service: 'quic-vector-proxy',
       status: 'error',
@@ -95,7 +86,6 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   }
 }
-
 /*
  * POST /api/v1/quic/vector - Vector search with QUIC acceleration
  */
@@ -105,17 +95,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const useCache = url.searchParams.get('cache') !== 'false'
     const useHttp3 = url.searchParams.get('http3') !== 'false'
     const backend = url.searchParams.get('backend') || 'auto'; // 'auto', 'qdrant', 'pgvector'
-
     // Validate search query
     if (!searchQuery.query && !(searchQuery as any).embedding) {
       error(400, ensureError({ message: 'Either query text or embedding vector is required' })
     }
-
     // Determine target URL
     const targetUrl = useHttp3
       ? `${QUIC_VECTOR_CONFIG.baseUrl}/api/vector/search`
       : `${QUIC_VECTOR_CONFIG.fallbackUrl}/api/vector/search`
-
     // Prepare request payload
     const requestPayload = {
       ...searchQuery,
@@ -126,17 +113,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
         timestamp: Date.now()
       }
     }
-
     let response: Response
     let protocol: string
-
     try {
       // Use Go Vector Service if backend is 'auto' or 'vector'
       if (backend === 'auto' || backend === 'vector' || backend === 'pgvector') {
         // If a direct Go vector client exists in future, call it here.
         // For now, skip to Enhanced RAG fallback below.
       }
-
       // Fallback to Enhanced RAG service
       // If Enhanced RAG client becomes available, call it; otherwise fallback to local service
       const ragSearchResponse = await vectorSearchService.search(
@@ -148,14 +132,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
           collection: (searchQuery as any).collection || 'legal_documents'
         }
       )
-
       if (ragSearchResponse) {
         return json({
-          success: true,
+          success: true
           results: (ragSearchResponse as any).results || ragSearchResponse,
           protocol: 'HTTP',
           source: 'vector-search-service',
-          cached: false,
+          cached: false
           timestamp: new Date().toISOString(),
           metrics: {
             totalResults: Array.isArray((ragSearchResponse as any).results)
@@ -163,18 +146,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 ? (ragSearchResponse as any).length
                 : 0,
             executionTimeMs: 0,
-            cacheHit: false,
+            cacheHit: false
             backend: 'local-service'
           }
         })
       }
-
       // Original QUIC proxy as final fallback
       response = await fetch(targetUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Vector-Backend': backend,
+          'X-Vector-Backend': backend
           'X-Use-Cache': String(useCache),
           'X-QUIC-Request': 'true'
         },
@@ -185,18 +167,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
     } catch (quicError) {
       // Fallback to direct database operations if QUIC proxy fails
       console.warn('QUIC Vector Proxy failed, using direct database access:', quicError)
-
       const direct = await vectorSearchService.search(searchQuery.query || 'vector search', {
         maxResults: searchQuery.limit || 10,
         collection: (searchQuery as any).collection || 'legal_documents'
       })
-
       return json({
-        success: true,
+        success: true
         results: (direct as any).results || (direct as any),
         protocol: 'Direct Database',
         source: 'fallback',
-        cached: false,
+        cached: false
         timestamp: new Date().toISOString(),
         metrics: {
           totalResults: Array.isArray(direct as any)
@@ -206,15 +186,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
         }
       })
     }
-
     if (!response.ok) {
       throw new Error(`Vector proxy responded with ${response.status}: ${response.statusText}`)
     }
-
     const responseData = await response.json()
-
     return json({
-      success: true,
+      success: true
       results: responseData.results || responseData,
       protocol,
       source: 'quic-vector-proxy',
@@ -238,7 +215,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
     )
   }
 }
-
 /*
  * DELETE /api/v1/quic/vector - Clear vector cache
  */
@@ -246,14 +222,11 @@ export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const cacheKey = url.searchParams.get('key')
     const useHttp3 = url.searchParams.get('http3') !== 'false'
-
     const targetUrl = useHttp3
       ? `${QUIC_VECTOR_CONFIG.baseUrl}/cache`
       : `${QUIC_VECTOR_CONFIG.fallbackUrl}/cache`
-
     const query = new URLSearchParams()
     if (cacheKey) query.set('key', cacheKey)
-
     const response = await fetch(`${targetUrl}?${query}`, {
       method: 'DELETE',
       headers: {
@@ -261,15 +234,12 @@ export const DELETE: RequestHandler = async ({ url }) => {
       },
       signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout)
     })
-
     if (!response.ok) {
       throw new Error(`Cache clear failed: ${response.statusText}`)
     }
-
     const result = await response.json()
-
     return json({
-      success: true,
+      success: true
       message: cacheKey ? `Cache key '${cacheKey}' cleared` : 'All cache cleared',
       result,
       timestamp: new Date().toISOString()
@@ -285,36 +255,30 @@ export const DELETE: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 /*
  * PUT /api/v1/quic/vector - Update vector proxy configuration
  */
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const config = await request.json()
-
     // Validate configuration
     if (config.cacheTTL && (config.cacheTTL < 10 || config.cacheTTL > 3600)) {
       error(400, ensureError({ message: 'Cache TTL must be between 10 and 3600 seconds' })
     }
-
     if (config.maxCacheSize && (config.maxCacheSize < 10 || config.maxCacheSize > 10000)) {
       error(400, ensureError({ message: 'Max cache size must be between 10 and 10000' })
     }
-
     // Update configuration (in a real implementation, this would be persisted)
     const updatedConfig = {
       ...QUIC_VECTOR_CONFIG,
       ...config,
       lastUpdated: new Date().toISOString()
     }
-
     return json({
-      success: true,
+      success: true
       message: 'Vector proxy configuration updated',
       config: updatedConfig
     })
-
   } catch (err: any) {
     console.error('Vector proxy configuration update failed:', err)
     error(500, ensureError({

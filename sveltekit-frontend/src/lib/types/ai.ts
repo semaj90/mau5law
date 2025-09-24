@@ -7,7 +7,6 @@ export interface AIResponse {
   legalRisk?: string;
   [key: string]: unknown;
 }
-
 export interface VectorSearchResult {
   id: string;
   content: string;
@@ -21,7 +20,6 @@ export interface VectorSearchResult {
   highlights?: string[];
   confidence?: number;
 }
-
 export interface SemanticEntity {
   id?: string;
   text: string;
@@ -31,28 +29,24 @@ export interface SemanticEntity {
   end?: number;
   metadata?: Record<string, unknown>;
 }
-
-// Context7 integration types;
+// Context7 integration types
 export interface OrchestrationOptions {
   enabled: boolean;
   priority: 'low' | 'medium' | 'high';
   timeout?: number;
   retries?: number;
 }
-
 export interface MCPToolRequest {
   tool: string;
   args: Record<string, unknown>;
   context?: Record<string, unknown>;
 }
-
 export interface EnhancedRAGEngine {
   query: (prompt: string, options?: Record<string, unknown>) => Promise<AIResponse>;
   search: (query: string) => Promise<VectorSearchResult[]>;
   analyze: (content: string) => Promise<SemanticEntity[]>;
 }
-
-// Chat related types for AI Assistant;
+// Chat related types for AI Assistant
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
@@ -65,7 +59,6 @@ export interface ChatMessage {
     confidence?: number;
   };
 }
-
 export interface SystemStatus {
   gpu: boolean;
   ollama: boolean;
@@ -73,7 +66,6 @@ export interface SystemStatus {
   postgres: boolean;
   neo4j: boolean;
 }
-
 export interface ChatRequest {
   message: string;
   model?: string;
@@ -85,13 +77,12 @@ export interface ChatRequest {
     previousMessages?: ChatMessage[];
   };
 }
-
 export interface ChatResponse {
   response: string;
   model: string;
   timestamp: string;
   conversationId?: string;
-  performance: {;
+  performance: {
     duration: number;
     tokens: number;
     promptTokens: number;

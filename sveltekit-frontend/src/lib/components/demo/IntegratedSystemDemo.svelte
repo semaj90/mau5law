@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services
   import { onMount } from 'svelte';
@@ -20,21 +19,21 @@ https://svelte.dev/e/js_parse_error -->
   import ModernAuthForm from '$lib/components/auth/ModernAuthForm.svelte';
   import AIAssistantChat from '$lib/components/ai/AIAssistantChat.svelte';
   // Import all the integrated stores and managers
-  import { 
-    authService, 
-    isAuthenticated, 
-    user, 
-    isLoading as authLoading 
+  import {
+    authService,
+    isAuthenticated,
+    user,
+    isLoading as authLoading
   } from '$lib/stores/auth.svelte.js';
-  import { 
-    sessionManager, 
-    isSessionActive, 
-    currentUser, 
-    sessionHealth, 
-    sessionAnalytics, 
-    securityLevel 
+  import {
+    sessionManager,
+    isSessionActive,
+    currentUser,
+    sessionHealth,
+    sessionAnalytics,
+    securityLevel
   } from '$lib/stores/sessionManager.svelte.js';
-  import { 
+  import {
     aiAssistantManager,
     isAIProcessing,
     clusterHealth,
@@ -42,25 +41,23 @@ https://svelte.dev/e/js_parse_error -->
     conversationHistory
   } from '$lib/stores/aiAssistant.svelte.js';
   import { productionServiceClient } from '$lib/services/productionServiceClient.js';
-
   // Component state using Svelte 5 runes
   let showAuthDialog = $state(false);
   let systemStatus = $state({
-    authentication: false,
-    sessionManagement: false,
-    aiAssistant: false,
-    productionServices: false,
+    authentication: false
+    sessionManagement: false
+    aiAssistant: false
+    productionServices: false
     overallHealth: 'unknown' as 'healthy' | 'partial' | 'down' | 'unknown';
   });
   let serviceMetrics = $state({
-    lastUpdate: new Date());,
+    lastUpdate: new Date());
     authUptime: 0,
     sessionUptime: 0,
     aiResponseTime: 0,
     totalInteractions: 0
   });
   let demoMode = $state<'overview' | 'auth' | 'session' | 'ai' | 'services'>('overview');
-
   // Derived state for UI
   let isSystemHealthy = $derived(() => systemStatus.overallHealth === 'healthy');
   let authenticatedUser = $derived(() => isAuthenticated() ? user() : null);
@@ -69,7 +66,6 @@ https://svelte.dev/e/js_parse_error -->
     const health = clusterHealth();
     return Object.values.some(Boolean);
   });
-
   // Component lifecycle
   $effect(() => {
     (async () => {
@@ -86,7 +82,6 @@ https://svelte.dev/e/js_parse_error -->
     };
     })();
   });
-
   // Comprehensive system health check
   async function checkSystemHealth() {
     try {
@@ -105,13 +100,11 @@ https://svelte.dev/e/js_parse_error -->
       } catch (error) {
         console.warn('Service health check failed:', error);
       }
-
       // Update system status
       systemStatus.authentication = authHealthy;
       systemStatus.sessionManagement = sessionHealthy;
       systemStatus.aiAssistant = aiHealthy;
       systemStatus.productionServices = servicesHealthy;
-
       // Calculate overall health
       const healthyComponents = [
         authHealthy,
@@ -119,7 +112,6 @@ https://svelte.dev/e/js_parse_error -->
         aiHealthy,
         servicesHealthy
       ].filter(item => item.length);
-
       if (healthyComponents === 4) {
         systemStatus.overallHealth = 'healthy';
       } else if (healthyComponents >= 2) {
@@ -129,26 +121,23 @@ https://svelte.dev/e/js_parse_error -->
       } else {
         systemStatus.overallHealth = 'unknown';
       }
-
       console.log('System health check completed:', systemStatus);
     } catch (error) {
       console.error('System health check failed:', error);
       systemStatus.overallHealth = 'unknown';
     }
   }
-
   // Update system metrics
   function updateMetrics() {
     const now = new Date());
     serviceMetrics.lastUpdate = now;
-    serviceMetrics.authUptime = authenticatedUser ? 
+    serviceMetrics.authUptime = authenticatedUser ?
       Math.floor((now.getTime() - (sessionAnalytics().loginTime?.getTime() || now.getTime())) / 1000) : 0;
-    serviceMetrics.sessionUptime = activeSession ? 
+    serviceMetrics.sessionUptime = activeSession ?
       Math.floor((now.getTime() - (sessionAnalytics().loginTime?.getTime() || now.getTime())) / 1000) : 0;
-    serviceMetrics.aiResponseTime = aiUsage().averageResponseTime;
-    serviceMetrics.totalInteractions = sessionAnalytics().activityCount + aiUsage().totalQueries;
+    serviceMetrics.aiResponseTime = aiUsage().averageResponseTim;
+    serviceMetrics.totalInteractions = sessionAnalytics().activityCount + aiUsage().totalQuerie;
   }
-
   // Demo authentication flow
   async function demoLogin() {
     try {
@@ -163,7 +152,6 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Demo login error:', error);
     }
   }
-
   // Demo logout
   async function demoLogout() {
     try {
@@ -174,7 +162,6 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Demo logout error:', error);
     }
   }
-
   // Demo AI interaction
   async function demoAIInteraction() {
     try {
@@ -187,7 +174,6 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Demo AI interaction error:', error);
     }
   }
-
   // Format uptime
   function formatUptime(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
@@ -195,7 +181,6 @@ https://svelte.dev/e/js_parse_error -->
     const secs = seconds % 60;
     return `${hours}h ${minutes}m ${secs}s`;
   }
-
   // Get status color
   function getStatusColor(status: boolean | string): string {
     if (typeof status === 'boolean') {
@@ -208,7 +193,6 @@ https://svelte.dev/e/js_parse_error -->
       default: return 'bg-gray-500';
     }
   }
-
   // Handle authentication success
   function handleAuthSuccess(user: any) {
     console.log('Authentication successful in demo:', user);
@@ -216,7 +200,6 @@ https://svelte.dev/e/js_parse_error -->
     demoMode = 'session';
   }
 </script>
-
 <div class="w-full max-w-6xl mx-auto p-6 space-y-6">
   <!-- System Overview Header -->
   <div class="nes-container">
@@ -240,7 +223,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </div>
-
   <!-- System Status Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
     <!-- Authentication Status -->
@@ -262,7 +244,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     </div>
-
     <!-- Session Management Status -->
     <div class="nes-container">
       <div class="yorha-panel-content p-4">
@@ -282,7 +263,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     </div>
-
     <!-- AI Assistant Status -->
     <div class="nes-container">
       <div class="yorha-panel-content p-4">
@@ -302,7 +282,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     </div>
-
     <!-- Production Services Status -->
     <div class="nes-container">
       <div class="yorha-panel-content p-4">
@@ -321,7 +300,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </div>
-
   <!-- Demo Tabs -->
   <Tabs bind:value={demoMode} class="w-full">
     <TabsList class="grid w-full grid-cols-5">
@@ -331,7 +309,6 @@ https://svelte.dev/e/js_parse_error -->
       <TabsTrigger value="ai">AI Assistant</TabsTrigger>
       <TabsTrigger value="services">Services</TabsTrigger>
     </TabsList>
-
     <!-- Overview Tab -->
     <TabsContent value="overview" class="space-y-4">
       <div class="nes-container">
@@ -342,7 +319,6 @@ https://svelte.dev/e/js_parse_error -->
           <p class="text-gray-600">
             This demonstration showcases the complete integration of all system components:
           </p>
-          
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-2">
               <h4 class="font-semibold">✅ Completed Integrations:</h4>
@@ -356,26 +332,21 @@ https://svelte.dev/e/js_parse_error -->
                 <li>• PostgreSQL + Drizzle ORM</li>
               </ul>
             </div>
-            
             <div class="space-y-2">
               <h4 class="font-semibold">🎯 Demo Actions:</h4>
               <div class="space-y-2">
                 <Button class="bits-btn" onclick={demoLogin} disabled={authenticatedUser !== null}>
 Demo Login
-
                 <Button class="bits-btn" onclick={demoAIInteraction} disabled={!authenticatedUser}>
 Test AI Assistant
-
                 <Button class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="ghost">
 Demo Logout
-
               </div>
             </div>
           </div>
         </div>
       </div>
     </TabsContent>
-
     <!-- Authentication Tab -->
     <TabsContent value="auth" class="space-y-4">
       <div class="nes-container">
@@ -391,7 +362,6 @@ Demo Logout
               <Button class="bits-btn" onclick={() =>
 showAuthDialog = true}>
                 Open Authentication Dialog
-
             </div>
           {:else}
             <div class="space-y-4">
@@ -405,13 +375,11 @@ showAuthDialog = true}>
               </div>
               <Button class="bits-btn" onclick={demoLogout} variant="ghost">
 Logout
-
             </div>
           {/if}
         </div>
       </div>
     </TabsContent>
-
     <!-- Session Tab -->
     <TabsContent value="session" class="space-y-4">
       <div class="nes-container">
@@ -440,23 +408,20 @@ Logout
                   </div>
                 </div>
               </div>
-              
               <div class="flex gap-2">
-                <Button class="bits-btn" 
+                <Button class="bits-btn"
                   onclick={() =>
-sessionManager.performSecurityCheck()} 
+sessionManager.performSecurityCheck()}
                   size="sm"
                 >
                   Security Check
-
-                <Button class="bits-btn" 
+                <Button class="bits-btn"
                   onclick={() =>
-sessionManager.refreshSession()} 
-                  size="sm" 
+sessionManager.refreshSession()}
+                  size="sm"
                   variant="ghost"
                 >
                   Refresh Session
-
               </div>
             </div>
           {:else}
@@ -465,17 +430,15 @@ sessionManager.refreshSession()}
         </div>
       </div>
     </TabsContent>
-
     <!-- AI Assistant Tab -->
     <TabsContent value="ai" class="space-y-4">
-      <AIAssistantChat 
+      <AIAssistantChat
         height="500px"
         showSettings={true}
         enableContext7={true}
         autoFocus={false}
       />
     </TabsContent>
-
     <!-- Services Tab -->
     <TabsContent value="services" class="space-y-4">
       <div class="nes-container">
@@ -506,7 +469,6 @@ sessionManager.refreshSession()}
                   </div>
                 </div>
               </div>
-              
               <div>
                 <h4 class="font-semibold mb-2">System Metrics</h4>
                 <div class="text-sm space-y-1">
@@ -517,24 +479,20 @@ sessionManager.refreshSession()}
                 </div>
               </div>
             </div>
-            
             <Button class="bits-btn" onclick={checkSystemHealth}>
 Refresh System Health
-
           </div>
         </div>
       </div>
     </TabsContent>
   </Tabs>
 </div>
-
 <!-- Authentication Dialog -->
-<ModernAuthForm 
+<ModernAuthForm
   open={showAuthDialog} openchange={(open) => showAuthDialog = open}
   mode="login"
   success={handleAuthSuccess}
 />
-
 <style>
   /* Additional component styles if needed */
 </style>

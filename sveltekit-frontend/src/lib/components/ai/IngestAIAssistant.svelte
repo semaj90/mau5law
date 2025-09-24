@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be uniqu;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   /**
    * Enhanced AI-Powered Document Ingest Assistant
    * Integrates with your existing AI agent store and production architecture
@@ -21,12 +20,12 @@ https://svelte.dev/e/attribute_duplicate -->
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import Label from '$lib/components/ui/label/LabelCompat.svelte';
   // Your established store patterns
-  import { 
-    aiAgentStore, 
-    isProcessing, 
-    systemHealth, 
+  import {
+    aiAgentStore,
+    isProcessing,
+    systemHealth,
     performanceMetrics,
-    currentConversation 
+    currentConversation
   } from '$lib/stores/ai-agent';
   import { enhancedIngestService } from '$lib/services/enhanced-ingest-integration';
   // Component state following your patterns
@@ -65,15 +64,15 @@ https://svelte.dev/e/attribute_duplicate -->
     currentProgress.set(10);
     try {
       const request = {
-        title: documentTitle,
-        content: documentContent,
-        case_id: caseId || undefined,;
+        title: documentTitle
+        content: documentContent
+        case_id: caseId || undefined
         metadata: {
-          document_type: selectedDocumentType,;
+          document_type: selectedDocumentType
           source: 'ai_assistant_ui',
-          ai_enhanced: true,
+          ai_enhanced: true
           // Integrate with your AI agent session
-          ai_session_id: $aiAgentStore.activeSessionId,;
+          ai_session_id: $aiAgentStore.activeSessionId,
         }
       };
       currentProgress.set(30);
@@ -88,8 +87,8 @@ https://svelte.dev/e/attribute_duplicate -->
       // Update results
       ingestResults.update(results => [...results, {
         ...result,
-        title: documentTitle,;
-        type: selectedDocumentType,;
+        title: documentTitle
+        type: selectedDocumentType
         timestamp: new Date();
       }]);
       // Clear form
@@ -100,8 +99,8 @@ https://svelte.dev/e/attribute_duplicate -->
       console.error('Ingest failed:', error);
       errors.update(errs => [...errs, {
         id: Date.now(),
-        message: error.message,;
-        timestamp: new Date(),;
+        message: error.message,
+        timestamp: new Date(),
         type: 'ingest_error';
       }]);
       processingStatus.set('error');
@@ -114,7 +113,7 @@ https://svelte.dev/e/attribute_duplicate -->
       const prompt = `Please provide a concise legal analysis summary of this document:\n\n${content.substring(0, 1000)}...`;
       // Use your existing AI agent for summary
       await aiAgentStore.sendMessage(prompt, {
-        document_id: documentId,
+        document_id: documentId
         analysis_type: 'legal_summary',
         source: 'ingest_assistant';
       });
@@ -124,7 +123,7 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   // Batch processing following your batch patterns
   async function processBatch() {
-    const documents = $batchDocuments;
+    const documents = $batchDocument;
     if (documents.length === 0) return;
     processingStatus.set('batch_processing');
     currentProgress.set(0);
@@ -132,10 +131,10 @@ https://svelte.dev/e/attribute_duplicate -->
       const batchRequest = documents.map(doc => ({
         title: doc.title,
         content: doc.content,
-        case_id: doc.case_id,;
+        case_id: doc.case_id,
         metadata: {
           document_type: doc.type || 'legal',
-          batch_processing: true,;
+          batch_processing: true
           source: 'ai_assistant_batch';
         }
       }));
@@ -144,7 +143,7 @@ https://svelte.dev/e/attribute_duplicate -->
       // Update results with batch information
       ingestResults.update(results => [...results, {
         ...result,
-        is_batch: true,
+        is_batch: true
         timestamp: new Date();
       }]);
       batchDocuments.set([]);
@@ -153,9 +152,9 @@ https://svelte.dev/e/attribute_duplicate -->
     } catch (error) {
       console.error('Batch processing failed:', error);
       errors.update(errs => [...errs, {
-        id: Date.now(),;
+        id: Date.now(),
         message: `Batch processing failed: ${error.message}`,
-        timestamp: new Date(),;
+        timestamp: new Date(),
         type: 'batch_error';
       }]);
       processingStatus.set('error');
@@ -171,10 +170,10 @@ https://svelte.dev/e/attribute_duplicate -->
     if (!documentTitle.trim() || !documentContent.trim()) return;
     batchDocuments.update(docs => [...docs, {
       id: Date.now(),
-      title: documentTitle,;
-      content: documentContent,
-      case_id: caseId,;
-      type: selectedDocumentType;
+      title: documentTitle
+      content: documentContent
+      case_id: caseId
+      type: selectedDocumentTyp;
     }]);
     clearForm();
   }
@@ -189,7 +188,6 @@ https://svelte.dev/e/attribute_duplicate -->
     aiAgentStore.connect.catch(console.error);
   });
 </script>
-
 <!-- Component HTML following your UI patterns -->
 <div class="w-full max-w-4xl mx-auto p-6 space-y-6">
   <!-- Header with system status -->
@@ -201,7 +199,6 @@ https://svelte.dev/e/attribute_duplicate -->
         {$systemHealth}
       </Badge>
     </div>
-    
     <div class="flex items-center space-x-2">
       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{$isProcessing ? 'Processing...' : 'Ready'}</span>
       {#if $performanceMetrics.totalRequests > 0}
@@ -209,7 +206,6 @@ https://svelte.dev/e/attribute_duplicate -->
       {/if}
     </div>
   </div>
-  
   <!-- Error Display -->
   {#each $errors as error (error.id)}
     <Alert variant="error" class="mb-4">
@@ -218,20 +214,18 @@ https://svelte.dev/e/attribute_duplicate -->
         <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 dismissError(error.id)}>
           ✕
-
       </AlertDescription>
     </Alert>
   {/each}
-  
   <!-- Progress Indicator -->
   {#if $processingStatus !== 'idle'}
     <div class="nes-container">
       <div class="yorha-panel-content p-4">
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm font-medium">
-            {$processingStatus === 'processing' ? 'Processing Document...' : 
-             $processingStatus === 'batch_processing' ? 'Processing Batch...' : 
-             $processingStatus === 'completed' ? 'Completed Successfully!' : 
+            {$processingStatus === 'processing' ? 'Processing Document...' :
+             $processingStatus === 'batch_processing' ? 'Processing Batch...' :
+             $processingStatus === 'completed' ? 'Completed Successfully!' :
              'Processing Failed'}
           </span>
           <span class="text-sm nes-text is-disabled">{$currentProgress}%</span>
@@ -240,7 +234,6 @@ dismissError(error.id)}>
       </div>
     </div>
   {/if}
-  
   <!-- Main Input Form -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <div class="nes-container">
@@ -257,7 +250,6 @@ dismissError(error.id)}>
             disabled={$isProcessing}
           />
         </div>
-        
         <div class="space-y-2">
           <Label for="case-id">Case ID (Optional)</Label>
           <Input
@@ -267,12 +259,11 @@ dismissError(error.id)}>
             disabled={$isProcessing}
           />
         </div>
-        
         <div class="space-y-2">
           <Label>Document Type</Label>
           <div class="grid grid-cols-2 gap-2">
             {#each documentTypes as type}
-              <button class="nes-btn" 
+              <button class="nes-btn"
                 variant={selectedDocumentType === type.value ? 'default' : 'outline'}
                 size="sm"
                 onclick={() => selectedDocumentType = type.value}
@@ -281,11 +272,9 @@ dismissError(error.id)}>
               >
                 <span class="mr-2">{type.icon}</span>
                 {type.label}
-
             {/each}
           </div>
         </div>
-        
         <div class="space-y-2">
           <Label for="content">Document Content</Label>
           <Textarea
@@ -296,7 +285,6 @@ dismissError(error.id)}>
             disabled={$isProcessing}
           />
         </div>
-        
         <div class="flex space-x-2">
           <Button
             onclick={ingestDocument}
@@ -304,18 +292,15 @@ dismissError(error.id)}>
             class="flex-1 bits-btn bits-btn"
           >
 {$isProcessing ? 'Processing...' : '🚀 Ingest Document'}
-
           <Button class="bits-btn"
             variant="ghost"
             onclick={addToBatch}
             disabled={!documentTitle.trim() || !documentContent.trim() || $isProcessing}
           >
 ➕ Add to Batch
-
         </div>
       </div>
     </div>
-    
     <!-- Batch Processing Panel -->
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -349,11 +334,9 @@ dismissError(error.id)}>
 removeFromBatch(doc.id)}
                 >
                   ✕
-
               </div>
             {/each}
           </div>
-          
           <div class="space-y-2">
             <Button
               onclick={processBatch}
@@ -361,7 +344,6 @@ removeFromBatch(doc.id)}
               class="w-full bits-btn bits-btn"
             >
 {$processingStatus === 'batch_processing' ? 'Processing Batch...' : `🔥 Process ${$batchDocuments.length} Documents`}
-
             <Button class="bits-btn"
               variant="ghost"
               onclick={() =>
@@ -371,13 +353,11 @@ batchDocuments.set([])}
               class="w-full"
             >
               Clear Batch
-
           </div>
         {/if}
       </div>
     </div>
   </div>
-  
   <!-- Results Display -->
   {#if $hasResults}
     <div class="nes-container">
@@ -399,7 +379,6 @@ batchDocuments.set([])}
                 </div>
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">✓ Completed</span>
               </div>
-              
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
                   <div class="nes-text is-disabled">Processing Time</div>
@@ -432,7 +411,6 @@ batchDocuments.set([])}
       </div>
     </div>
   {/if}
-  
   <!-- AI Chat Integration (if active conversation exists) -->
   {#if $currentConversation.length > 0}
     <div class="nes-container">
@@ -460,15 +438,13 @@ batchDocuments.set([])}
     </div>
   {/if}
 </div>
-
 <style>
   /* Custom styles following your YoRHa theme patterns */
   :global(.progress-bar) {
     background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
   }
-  
   /* Enhanced focus states following your accessibility patterns */
-  :global(.enhanced-focus:focus) {
+  :global($1) {
     outline: 2px solid #3b82f6;
     outline-offset: 2px;
   }

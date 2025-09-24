@@ -2,12 +2,10 @@
  * Semantic Search API Endpoint
  * GPU-accelerated semantic search using nomic-embed-text
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service'
 import type { SemanticSearchRequest } from '$lib/services/gpu-semantic-embedding-service'
-
 /*
  * POST /api/v1/embeddings/search
  * Perform semantic search with GPU acceleration
@@ -15,7 +13,6 @@ import type { SemanticSearchRequest } from '$lib/services/gpu-semantic-embedding
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const searchRequest: SemanticSearchRequest = await request.json()
-    
     // Validate required fields
     if (!searchRequest.query) {
       return json(
@@ -23,17 +20,15 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       )
     }
-    
     if (!searchRequest.documents || !Array.isArray(searchRequest.documents)) {
       return json()
         { error: 'Missing or invalid field: documents (must be array)' },
         { status: 400 }
       )
     }
-
     if (searchRequest.documents.length === 0) {
       return json({
-        success: true,
+        success: true
         query: searchRequest.query,
         results: [],
         metadata: {
@@ -45,14 +40,12 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       })
     }
-
     // Perform semantic search
     const results = await gpuEmbeddingService.semanticSearch(searchRequest)
-    
     return json({
-      success: true,
+      success: true
       query: searchRequest.query,
-      results: results.map(r => ({
+      results: results.map(r => ({,
         document: r.document,
         score: Math.round(r.score * 10000) / 10000, // Round to 4 decimal places
         index: r.index
@@ -67,10 +60,9 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       timestamp: Date.now()
     })
-
   } catch (error) {
     console.error('Semantic search API error:', error)
-    return json({ 
+    return json({
         error: 'Failed to perform semantic search',
         message: error instanceof Error ? error.message: 'Unknown error'
       },)
@@ -78,7 +70,6 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 /*
  * GET /api/v1/embeddings/search
  * Get semantic search endpoint information
@@ -97,7 +88,7 @@ export const GET: RequestHandler = async () => {
     response: {
       success: 'boolean',
       query: 'string',
-      results: [{
+      results: [{,
         document: 'string',
         score: 'number',
         index: 'number'

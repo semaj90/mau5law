@@ -1,31 +1,26 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { Search, Database, Activity, FileText, Settings, Upload, RefreshCw } from 'lucide-svelte';
-
   interface Props {
     class?: string;
     children?: Snippet;
     onSearch?: (query: string) => Promise<any[]>;
     onUpload?: (file: File) => Promise<void>;
   }
-
   let {
     class: className = '',
     children,
     onSearch,
     onUpload,
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
   let activeTab = $state<'search' | 'upload' | 'settings'>('search');
   let searchQuery = $state('');
   let isLoading = $state(false);
   let searchResults = $state<any[]>([]);
   let uploadFile = $state<File | null>(null);
-
   async function handleSearch() {
     if (!searchQuery.trim() || !onSearch) return;
-
     isLoading = true;
     try {
       const results = await onSearch(searchQuery);
@@ -37,10 +32,8 @@
       isLoading = false;
     }
   }
-
   async function handleUpload() {
     if (!uploadFile || !onUpload) return;
-
     isLoading = true;
     try {
       await onUpload(uploadFile);
@@ -52,7 +45,6 @@
     }
   }
 </script>
-
 <div class="nes-container is-rounded p-4 {className}" {...restProps}>
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-xl font-bold">Enhanced RAG Studio</h2>
@@ -83,7 +75,6 @@
       </button>
     </div>
   </div>
-
   {#if activeTab === 'search'}
     <div class="space-y-4">
       <div class="flex gap-2">
@@ -107,7 +98,6 @@
           Search
         </button>
       </div>
-
       {#if searchResults.length > 0}
         <div class="space-y-3">
           <h3 class="font-bold text-lg">Search Results ({searchResults.length})</h3>
@@ -144,7 +134,6 @@
           accept=".pdf,.txt,.md,.docx"
         />
       </div>
-
       {#if uploadFile}
         <div class="nes-container is-rounded p-3 bg-blue-50">
           <div class="flex items-center gap-2">
@@ -156,7 +145,6 @@
           </div>
         </div>
       {/if}
-
       <button
         class="nes-btn is-success"
         onclick={handleUpload}
@@ -178,19 +166,16 @@
           Enhanced RAG Studio settings and configuration options will be available here.
         </div>
       </div>
-
       {#if children}
         {@render children()}
       {/if}
     </div>
   {/if}
 </div>
-
 <style>
-  .animate-spin {;
+  .animate-spin {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }

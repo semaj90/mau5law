@@ -1,19 +1,15 @@
 <!--
   SSRWebGPULoader.svelte
-
   NES-inspired WebGPU texture streaming with SSR-safe initialization
   Provides clean server-side fallbacks and client-side GPU acceleration
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import type { Snippet } from 'svelte';
   import { lodManager, LOD_LEVELS } from '$lib/services/N64LODManager';
   import type { LODContext } from '$lib/services/N64LODManager';
-
   interface Props {
     assetId: string;
     width?: number;
@@ -31,7 +27,6 @@
       debug?: Snippet<[any, number, boolean]>;
     };
   }
-
   let {
     assetId,
     width = 64,
@@ -45,7 +40,6 @@
     debug = false,
     children
   }: Props = $props();
-
   // Reactive state for texture streaming
   let webgpuSupported = $state(false);
   let textureData = $state('');
@@ -53,11 +47,9 @@
   let isLoading = $state(true);
   let error = $state<string | null>(null);
   let containerElement: HTMLElement;
-
   // NES-style loading states (converted to derived values)
   let loadingState = $derived(isLoading ? 'loading' : error ? 'error' : 'ready');
   let nesClass = $derived(`nes-container ${loadingState === 'loading' ? loadingClass : ''} ${error ? errorClass : ''}`);
-
   $effect(() => {
     (async () => {
     if (!browser || !enableGPU) {
@@ -66,21 +58,17 @@
       isLoading = false;
       return;
     }
-
     try {
       // Check WebGPU support
       webgpuSupported = 'gpu' in navigator;
-
       if (!webgpuSupported) {
         console.log('🎮 WebGPU not supported, using CPU fallback');
         textureData = generateFallbackPattern();
         isLoading = false;
         return;
       }
-
       // Initialize NES texture streaming
       await initializeTextureStreaming();
-
     } catch (err) {
       console.error('🎮 WebGPU initialization failed:', err);
       error = err instanceof Error ? err.message: 'WebGPU failed';
@@ -88,7 +76,6 @@
       isLoading = false;
     }
   });
-
   /**
    * Initialize NES-inspired texture streaming with LOD management
    */
@@ -100,12 +87,9 @@
         documentComplexity: 0.5, // Medium complexity default
         memoryPressure: 0.3       // Assume good memory conditions
       };
-
       currentLOD = lodManager.calculateLOD(lodContext);
-
       // Stream texture at calculated LOD
       const textureChunk = await lodManager.streamTexture(assetId, currentLOD);
-
       if (textureChunk) {
         // Convert texture data to displayable format (Data URL or SVG)
         textureData = await convertTextureToDisplay(textureChunk.data, currentLOD);
@@ -113,14 +97,11 @@
       } else {
         throw new Error(`Failed to stream texture for ${assetId}`);
       }
-
       isLoading = false;
-
       // Set up progressive enhancement - load higher quality on hover/interaction
       if (containerElement) {
         setupProgressiveEnhancement();
       }
-
     } catch (err) {
       error = err instanceof Error ? err.message: 'Streaming failed';
       textureData = generateFallbackPattern();
@@ -128,7 +109,6 @@
     }
     })();
   });
-
   /**
    * Generate NES-style fallback pattern when WebGPU is unavailable
    */
@@ -136,7 +116,6 @@
     // Generate simple NES-style pattern as SVG
     const color = hashToColor(assetId);
     const pattern = assetId.toUpperCase();
-
     return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"
              style="image-rendering: pixelated;" xmlns="http://www.w3.org/2000/svg">
       <rect width="100%" height="100%" fill="${color}" opacity="0.8"/>
@@ -146,47 +125,37 @@
             font-family="monospace" font-size="8" fill="#000">${pattern}</text>
     </svg>`;
   }
-
   /**
    * Convert GPU texture data to displayable format
    */
   async function convertTextureToDisplay(textureBuffer: ArrayBuffer, lodLevel: number): Promise<string> {
     const lodInfo = LOD_LEVELS[lodLevel];
-    const { width: texWidth, height: texHeight } = lodInfo.resolution;
-
+    const { width: texWidth, height: texHeight } = lodInfo.resolutio;
     // Create canvas to convert texture data
     const canvas = document.createElement('canvas');
     canvas.width = texWidth;
     canvas.height = texHeight;
     const ctx = canvas.getContext('2d');
-
     if (!ctx) throw new Error('Canvas 2D context not available');
-
     // Convert ArrayBuffer to ImageData
     const imageData = new ImageData(
       new Uint8ClampedArray(textureBuffer),
       texWidth,
       texHeight
     );
-
     ctx.putImageData(imageData, 0, 0);
-
     // For low LOD levels, apply pixelated rendering
     if (lodLevel >= 2) {
       canvas.style.imageRendering = 'pixelated';
     }
-
     return canvas.toDataURL();
   }
-
   /**
    * Set up progressive enhancement - upgrade texture quality on interaction
    */
   function setupProgressiveEnhancement() {
     if (!containerElement || !webgpuSupported) return;
-
     let enhancementTimeout: number;
-
     containerElement.addEventListener('mouseenter', async () => {
       // Delay enhancement to avoid unnecessary GPU work on quick hovers
       enhancementTimeout = window.setTimeout(async () => {
@@ -194,10 +163,9 @@
           try {
             const higherLOD = Math.max(0, currentLOD - 1) as 0 | 1 | 2 | 3;
             const enhancedChunk = await lodManager.streamTexture(assetId, higherLOD);
-
             if (enhancedChunk) {
               const enhancedTexture = await convertTextureToDisplay(enhancedChunk.data, higherLOD);
-              textureData = enhancedTexture;
+              textureData = enhancedTextur;
               currentLOD = higherLOD;
               console.log(`🎮 Enhanced ${assetId} to LOD${higherLOD}`);
             }
@@ -207,12 +175,10 @@
         }
       }, 150); // 150ms delay for hover enhancement
     });
-
     containerElement.addEventListener('mouseleave', () => {
       clearTimeout(enhancementTimeout);
     });
   }
-
   /**
    * Generate consistent color from asset ID hash
    */
@@ -221,7 +187,6 @@
     for (let i = 0; i < str.length; i++) {
       hash = ((hash << 5) - hash + str.charCodeAt(i)) & 0xffffffff;
     }
-
     // NES-inspired color palette
     const nesColors = [
       '#fcfcfc', '#f8f8f8', '#bcbcbc', '#7c7c7c',
@@ -229,10 +194,8 @@
       '#b8b8f8', '#6888fc', '#0058f8', '#0000bc',
       '#d8b8f8', '#9878f8', '#6844fc', '#4428bc'
     ];
-
     return nesColors[Math.abs(hash) % nesColors.length];
   }
-
   /**
    * Get memory stats from LOD manager for debugging
    */
@@ -240,7 +203,6 @@
     return lodManager.getMemoryStats();
   }
 </script>
-
 <!-- SSR-safe rendering with progressive enhancement -->
 <div
   bind:this={containerElement}
@@ -255,7 +217,6 @@
     <!-- Client-side texture rendering -->
     <div class="nes-texture-container">
       {@html textureData}
-
       {#if overlay && children?.overlay}
         <div class="nes-overlay">
           {@render children.overlay(currentLOD, webgpuSupported, assetId)}
@@ -286,46 +247,39 @@
           </div>
         </div>
       {/if}
-
       {#if children?.fallback}
         {@render children.fallback(assetId)}
       {/if}
     </div>
   {/if}
-
   <!-- Debug info slot -->
   {#if debug && children?.debug}
     {@render children.debug(getMemoryStats(), currentLOD, webgpuSupported)}
   {/if}
 </div>
-
 <style>
   /* NES-inspired container styling */
-  .nes-container {;
+  .nes-container {
     position: relative;
     border: 2px solid #000;
     background: #fcfcfc;
     image-rendering: pixelated;
     font-family: 'Courier New', monospace;
   }
-
   .nes-loading {
     animation: nes-blink 1s infinite;
     border-color: #3cbcfc;
   }
-
   .nes-error {
     border-color: #f83800;
     background: #ffeee6;
   }
-
   .nes-texture-container {
     position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
   }
-
   .nes-overlay {
     position: absolute;
     top: 0;
@@ -334,7 +288,6 @@
     bottom: 0;
     pointer-events: none;
   }
-
   .nes-loading-container {
     display: flex;
     flex-direction: column;
@@ -344,18 +297,15 @@
     height: 100%;
     gap: 8px;
   }
-
   .nes-spinner {
     font-size: 16px;
     animation: nes-spin 0.5s infinite;
   }
-
   .nes-loading-text {
     font-size: 8px;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-
   .nes-error-container {
     display: flex;
     flex-direction: column;
@@ -365,17 +315,14 @@
     height: 100%;
     gap: 4px;
   }
-
   .nes-error-icon {
     font-size: 12px;
   }
-
   .nes-error-text {
     font-size: 6px;
     color: #f83800;
     text-align: center;
   }
-
   .nes-fallback-container {
     display: flex;
     align-items: center;
@@ -383,7 +330,6 @@
     width: 100%;
     height: 100%;
   }
-
   .nes-pattern-block {
     width: 100%;
     height: 100%;
@@ -395,12 +341,10 @@
     color: #000;
     text-shadow: 1px 1px 0 #fff;
   }
-
   @keyframes nes-blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0.6; }
   }
-
   @keyframes nes-spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }

@@ -651,7 +651,7 @@ class LODCacheBackgroundProcessor {
         text.split(/[.!?]+/).reduce((sum, s) => sum + s.trim().length, 0) /
         ((text.match(/[.!?]+/g) || []).length || 1),
       capital_density: (text.match(/[A-Z]/g) || []).length / text.length,
-      punctuation_density: (text.match(/[.,;:!?]/g) || []).length / text.length,
+      punctuation_density: (text.match(/[.;:!?]/g) || []).length / text.length,
       number_density: (text.match(/\d/g) || []).length / text.length,
     };
   }

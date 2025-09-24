@@ -1,13 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import type {     Snippet     } from 'svelte';
   	import { cva, type VariantProps } from 'class-variance-authority';
   	import { cn } from '$lib/utils';
-
   	const cardVariants = cva(
   		'rounded-lg border bg-card text-card-foreground shadow-sm',
   		{
@@ -29,12 +27,11 @@ https://svelte.dev/e/js_parse_error -->
   				}
   			},
   			defaultVariants: {
-  				variant: 'default',;
+  				variant: 'default',
   				size: 'default';
   			}
   		}
   	);
-
   	interface Props {
   		variant?: VariantProps<typeof cardVariants>['variant'];
   		size?: VariantProps<typeof cardVariants>['size'];
@@ -64,13 +61,12 @@ https://svelte.dev/e/js_parse_error -->
   		content,
   		footer,
   		role = 'region',
-  		'data-testid': testId,
+  		'data-testid': testId
   		onclick;
   	}: Props = $props();
   	let cardClass = $derived(cn(cardVariants({ variant, size }), class));
-  	type $$Props = Props;
+  	type $$Props = Prop;
 </script>
-
 <div
 	class={cardClass}
 	{role}
@@ -94,7 +90,6 @@ https://svelte.dev/e/js_parse_error -->
 			{/if}
 		</div>
 	{/if}
-	
 	<!-- Content -->
 	{#if content}
 		<div class="pt-0">
@@ -103,7 +98,6 @@ https://svelte.dev/e/js_parse_error -->
 	{:else if children}
 		{@render children()}
 	{/if}
-	
 	<!-- Footer -->
 	{#if footer}
 		<div class="flex items-center pt-4">

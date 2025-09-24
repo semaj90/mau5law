@@ -1,15 +1,13 @@
 import { requireAuth } from '$lib/server/auth';
 import { error } from '@sveltejs/kit';
-
 export async function load(event) {
   try {
     // This will throw an error if user is not authenticated
     const { user, session } = await requireAuth(event);
-
     return {
-      user: user,
+      user: user
       session: {
-        id: session.id,;
+        id: session.id,
         fresh: session.fresh,
         expiresAt: session.expiresAt
       }

@@ -1,10 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name;
+<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute nam;
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import Dialog from 'bits-ui/Dialog.svelte';
   import Button from 'bits-ui/Button.svelte';
   import { onMount } from 'svelte';
@@ -16,7 +14,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     open = $bindable(false)
    }: {
     item: {
-      jsonData: {;
+      jsonData: {
         title: string;
         description: string;
         tags?: string[];
@@ -31,20 +29,18 @@ https://svelte.dev/e/attribute_invalid_name -->
   let description = $state('');
   let tagsString = $state('');
   let type = $state('');
-
   // XState machine for tag/type grouping
   const evidenceMachine = createMachine({
     id: 'evidence',
-    initial: 'view',;
+    initial: 'view',
     context: { item },
     states: {
-      view: { on: { EDIT: 'edit' } },;
+      view: { on: { EDIT: 'edit' } },
       edit: { on: { SAVE: 'view', CANCEL: 'view' } }
     }
   });
   // Use initialState property for xstate v5+ or .initialState for v4
-  let state = evidenceMachine.initialState;
-
+  let state = evidenceMachine.initialStat;
   // Use zod adapter for superValidate
   import { zod } from 'sveltekit-superforms/adapters';
   $effect(() => {
@@ -59,15 +55,14 @@ form = await superValidate(zod(evidenceSchema), { initialValues: item
       type = form.values.jsonData.type || '';
     }
   });
-
   function handleEdit() {
     state = evidenceMachine.transition(state, { type: 'EDIT' });
   }
   function handleSave() {
     if (form && form.values && form.values.jsonData) {
-      form.values.jsonData.title = title;
-      form.values.jsonData.description = description;
-      form.values.jsonData.type = type;
+      form.values.jsonData.title = titl;
+      form.values.jsonData.description = descriptio;
+      form.values.jsonData.type = typ;
       form.values.jsonData.tagsString = tagsString;
       form.values.jsonData.tags = tagsString
         ? tagsString.split.map((t: string) => t.trim()).filter(Boolean)
@@ -81,7 +76,6 @@ form = await superValidate(zod(evidenceSchema), { initialValues: item
     open = false;
   }
 </script>
-
 <Dialog.Root bind:open={open}>
   <div class="uno-p-4 uno-bg-white uno-shadow">
     <div class="mb-4">
@@ -96,7 +90,6 @@ form = await superValidate(zod(evidenceSchema), { initialValues: item
       <div class="flex gap-2 mt-2">
         <Button class="bits-btn" onclick={handleEdit}>
 Edit
-
       </div>
     {:else}
       <form class="flex flex-col gap-2" onsubmit|preventDefault={handleSave}>
@@ -107,24 +100,20 @@ Edit
         <div class="flex gap-2 mt-2">
           <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn bits-btn">
 Save
-
           <Button class="bits-btn" variant="ghost" onclick={handleCancel}>
 Cancel
-
         </div>
       </form>
     {/if}
     <div class="mt-4 flex justify-end">
       <Button class="bits-btn" onclick={() =>
 (open = false)} variant="ghost">Close
-
     </div>
   </div>
 </Dialog.Root>
-
 <style>
   /* @unocss-include */
-  .uno-shadow {;
+  .uno-shadow {
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
   .input.input-bordered {
@@ -134,5 +123,3 @@ Cancel
     font-size: 1rem;
   }
 </style>
-
-

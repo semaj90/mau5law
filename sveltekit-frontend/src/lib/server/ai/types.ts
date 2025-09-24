@@ -1,7 +1,6 @@
 /**
  * Type definitions for the AI Assistant system with intelligent fallback support
  */
-
 export interface OllamaConfig {
   baseUrl: string;
   defaultModel: string;
@@ -18,21 +17,18 @@ export interface OllamaConfig {
   performance: PerformanceConfig;
   features: FeaturesConfig;
 }
-
 export interface GpuConfig {
   enabled: boolean;
   layers: number;
   mainGpu: number;
   tensorSplit: number[] | null;
 }
-
 export interface PerformanceConfig {
   batchSize: number;
   parallelRequests: number;
   cacheEnabled: boolean;
   cacheTTL: number;
 }
-
 export interface FeaturesConfig {
   som: boolean;
   proactiveCaching: boolean;
@@ -41,7 +37,6 @@ export interface FeaturesConfig {
   webGpuAcceleration: boolean;
   intelligentFallback?: boolean;
 }
-
 export interface ModelConfig {
   name: string;
   type:
@@ -58,9 +53,8 @@ export interface ModelConfig {
   topP?: number;
   topK?: number;
   systemPrompt?: string;
-  options?: Record<string, any>;
+  options?: { [key: string]: any };
 }
-
 export interface OllamaGenerateRequest {
   model: string;
   prompt: string;
@@ -82,12 +76,10 @@ export interface OllamaGenerateRequest {
     repeat_penalty?: number;
   };
 }
-
 export interface OllamaEmbeddingRequest {
   model: string;
   prompt: string;
 }
-
 export interface OllamaResponse {
   model: string;
   created_at: string;
@@ -102,16 +94,14 @@ export interface OllamaResponse {
   fallback_used?: boolean;
   models_tried?: string[];
 }
-
 export interface OllamaEmbeddingResponse {
   embedding: number[];
   model?: string;
 }
-
 export interface DocumentChunk {
   id: string;
   content: string;
-  metadata: {;
+  metadata: {
     source: string;
     page?: number;
     section?: string;
@@ -121,7 +111,6 @@ export interface DocumentChunk {
   embedding?: number[];
   relevanceScore?: number;
 }
-
 export interface SOMNode {
   x: number;
   y: number;
@@ -130,11 +119,10 @@ export interface SOMNode {
   topic?: string;
   density: number;
 }
-
 export interface ProcessingPipeline {
   id: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
-  stages: {;
+  stages: {
     ingestion: boolean;
     preprocessing: boolean;
     embedding: boolean;
@@ -152,7 +140,6 @@ export interface ProcessingPipeline {
     processingTimeMs: number;
   };
 }
-
 export interface LegalDocument {
   id: string;
   title: string;
@@ -173,12 +160,11 @@ export interface LegalDocument {
   somCoordinates?: { x: number; y: number };
   relevanceScore?: number;
 }
-
 export interface AnalysisResult {
   documentId: string;
   summary: string;
   keyPoints: string[];
-  entities: {;
+  entities: {
     people: string[];
     organizations: string[];
     dates: string[];
@@ -199,7 +185,6 @@ export interface AnalysisResult {
     [key: string]: unknown;
   };
 }
-
 export interface UserQuery {
   id: string;
   userId: string;
@@ -217,7 +202,6 @@ export interface UserQuery {
     processingTimeMs: number;
   };
 }
-
 export interface CacheEntry {
   key: string;
   value: any;
@@ -227,8 +211,7 @@ export interface CacheEntry {
   accessCount: number;
   priority: 'low' | 'medium' | 'high' | 'critical';
 }
-
-// RAG Configuration;
+// RAG Configuration
 export interface SimpleRAGConfiguration {
   embeddingModel: string;
   embeddingDimensions: number;

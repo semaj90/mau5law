@@ -10,8 +10,6 @@
     children,
     ...restProps: unknown } = $props();
 </script>
-
 <div class="text-sm [&_p]:leading-relaxed {className}" {...restProps}>
   {@render children?.()}
 </div>
-

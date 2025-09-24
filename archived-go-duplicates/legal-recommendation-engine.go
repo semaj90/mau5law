@@ -194,8 +194,10 @@ func NewLegalCaseDatabase() *LegalCaseDatabase {
 			DamagesAwarded: 1800000,
 			CourtLevel:     "district",
 			Precedents:     []string{"prec_software_001", "prec_contract_002"},
+			Citations:      []Citation{},
 			Tags:           []string{"software", "technology", "licensing", "breach"},
 			Complexity:     8,
+			Metadata:       map[string]string{"type": "commercial", "industry": "technology"},
 			RiskFactors: []RiskFactor{
 				{
 					FactorName:   "Contract Ambiguity",
@@ -234,6 +236,8 @@ func NewLegalCaseDatabase() *LegalCaseDatabase {
 			Precedents:     []string{"prec_employment_001", "prec_whistleblower_001"},
 			Tags:           []string{"employment", "whistleblower", "safety", "retaliation"},
 			Complexity:     6,
+			Citations:      []Citation{},
+			Metadata:       map[string]string{"type": "employment", "industry": "manufacturing"},
 			RiskFactors: []RiskFactor{
 				{
 					FactorName:   "Documentation Quality",
@@ -265,6 +269,8 @@ func NewLegalCaseDatabase() *LegalCaseDatabase {
 			Precedents:     []string{"prec_patent_001", "prec_injunction_001"},
 			Tags:           []string{"patent", "AI", "algorithm", "infringement"},
 			Complexity:     9,
+			Citations:      []Citation{},
+			Metadata:       map[string]string{"type": "intellectual_property", "industry": "technology"},
 			RiskFactors: []RiskFactor{
 				{
 					FactorName:   "Patent Validity",

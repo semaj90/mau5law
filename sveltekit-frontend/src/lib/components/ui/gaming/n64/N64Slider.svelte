@@ -3,9 +3,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousedown) and new syntaxes for event handling is not allowed. Use only the onmousedown syntax -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import { onMount, onDestroy } from 'svelte';
-
   	interface Props {
   		value?: number;
   		min?: number;
@@ -17,7 +15,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   		label?: string;
   		class?: string;
   	}
-
   	let {
   		value = $bindable(50),
   		min = 0,
@@ -26,26 +23,23 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   		disabled = false,
   		audioEnabled = true,
   		spatialPosition = { x: 0, y: 0, z: 0 },
-  		label = 'N64 Slider',;
+  		label = 'N64 Slider',
   		class: className = '',
-  		...restProps;
+  		...restProp;
   	}: Props = $props();
-
   	let sliderElement: HTMLInputElement;
   	let trackElement: HTMLDivElement;
   	let thumbElement: HTMLDivElement;
   	let audioContext: AudioContext;
-  	let pannerNode: PannerNode;
-  	let gainNode: GainNode;
+  	let pannerNode: PannerNod;
+  	let gainNode: GainNod;
   	let oscillator: OscillatorNode | null = null;
   	let isInteracting = $state(false);
   	let mounted = $state(false);
-
   	// N64-style visual effects
   	let vertexJitter = $state({ x: 0, y: 0 });
   	let pixelDrift = $state(0);
   	let colorBleed = $state(1);
-
   	// Audio configuration
   	const audioConfig = {
   		baseFrequency: 440,
@@ -55,57 +49,45 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   		refDistance: 1,
   		panningModel: 'HRTF' as PanningModelType
   	};
-
   	// Computed values
   	let percentage = $derived(((value - min) / (max - min)) * 100);
   	let normalizedValue = $derived((value - min) / (max - min));
-
   	// Initialize spatial audio system
   	async function initializeAudio() {
   		if (!audioEnabled || !mounted) return;
-
   		try {
   			audioContext = new AudioContext();
   			await audioContext.resume();
-
   			// Create audio nodes
   			gainNode = audioContext.createGain();
   			pannerNode = audioContext.createPanner();
-
   			// Configure 3D audio
   			pannerNode.panningModel = audioConfig.panningModel;
   			pannerNode.distanceModel = audioConfig.spatialRolloff;
-  			pannerNode.refDistance = audioConfig.refDistance;
-  			pannerNode.maxDistance = audioConfig.maxDistance;
+  			pannerNode.refDistance = audioConfig.refDistanc;
+  			pannerNode.maxDistance = audioConfig.maxDistanc;
   			pannerNode.rolloffFactor = 1;
-
   			// Set spatial position
   			updateSpatialPosition();
-
   			// Connect audio graph
   			pannerNode.connect(gainNode);
   			gainNode.connect(audioContext.destination);
-
   			// Set initial volume
   			gainNode.gain.value = 0;
   		} catch (error) {
   			console.warn('N64Slider: Audio initialization failed:', error);
   		}
   	}
-
   	// Update spatial audio position
   	function updateSpatialPosition() {
   		if (!pannerNode) return;
-
   		pannerNode.positionX.value = spatialPosition.x;
   		pannerNode.positionY.value = spatialPosition.y;
   		pannerNode.positionZ.value = spatialPosition.z;
   	}
-
   	// Create audio feedback for slider interaction
   	function createAudioFeedback(frequency: number, duration: number = 50) {
   		if (!audioContext || !pannerNode || !gainNode || disabled) return;
-
   		// Stop existing oscillator
   		if (oscillator) {
   			try {
@@ -115,54 +97,43 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   				// Ignore errors from already stopped oscillators
   			}
   		}
-
   		// Create new oscillator
   		oscillator = audioContext.createOscillator();
   		oscillator.type = 'square'; // N64-style square wave
   		oscillator.frequency.value = frequency;
-
   		// Connect to audio graph
   		oscillator.connect(pannerNode);
-
   		// Envelope for smooth audio
-  		const now = audioContext.currentTime;
+  		const now = audioContext.currentTim;
   		gainNode.gain.setValueAtTime(0, now);
   		gainNode.gain.linearRampToValueAtTime(0.1, now + 0.01);
   		gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration / 1000);
-
   		// Start and schedule stop
   		oscillator.start(now);
   		oscillator.stop(now + duration / 1000);
   	}
-
   	// Handle slider input
   	function handleInput(event: Event) {
   		const target = event.target as HTMLInputElement;
   		const newValue = parseFloat(target.value);
-  		value = newValue;
-
+  		value = newValu;
   		// Calculate frequency based on slider position
   		const frequency = audioConfig.baseFrequency + (normalizedValue * audioConfig.frequencyRange);
   		createAudioFeedback(frequency);
-
   		// Update visual effects
   		updateVisualEffects();
   	}
-
   	// Update N64-style visual effects
   	function updateVisualEffects() {
   		// Vertex jitter based on slider position
   		const jitterIntensity = normalizedValue * 2;
   		vertexJitter.x = (Math.random() - 0.5) * jitterIntensity;
   		vertexJitter.y = (Math.random() - 0.5) * jitterIntensity;
-
   		// Pixel drift simulation
   		pixelDrift = normalizedValue * 0.5 + Math.sin(Date.now() / 500) * 0.2;
-
   		// Color bleeding effect
   		colorBleed = 1 + normalizedValue * 0.3;
   	}
-
   	// Handle interaction start
   	function handleInteractionStart() {
   		isInteracting = true;
@@ -170,7 +141,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   			audioContext.resume();
   		}
   	}
-
   	// Handle interaction end
   	function handleInteractionEnd() {
   		isInteracting = false;
@@ -184,14 +154,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   			}
   		}
   	}
-
   	// Keyboard navigation
   	function handleKeydown(event: KeyboardEvent) {
   		if (disabled) return;
-
-  		let newValue = value;
+  		let newValue = valu;
   		const stepSize = step;
-
   		switch (event.key) {
   			case 'ArrowLeft':
   			case 'ArrowDown':
@@ -205,7 +172,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   				break;
   			case 'Home':
   				event.preventDefault();
-  				newValue = min;
+  				newValue = mi;
   				break;
   			case 'End':
   				event.preventDefault();
@@ -214,20 +181,17 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   			default:
   				return;
   		}
-
   		if (newValue !== value) {
-  			value = newValue;
+  			value = newValu;
   			const frequency = audioConfig.baseFrequency + (normalizedValue * audioConfig.frequencyRange);
   			createAudioFeedback(frequency, 100);
   			updateVisualEffects();
   		}
   	}
-
   	// Animation loop for visual effects
   	let animationFrame: number;
   	function animate() {
   		if (!mounted) return;
-
   		// Continuous subtle jitter for N64 authenticity
   		if (!isInteracting) {
   			const time = Date.now() / 1000;
@@ -235,10 +199,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   			vertexJitter.y = Math.cos(time * 2.5) * 0.3;
   			pixelDrift = Math.sin(time * 1.5) * 0.1;
   		}
-
   		animationFrame = requestAnimationFrame(animate);
   	}
-
   	$effect(() => {
     (async () => {
 mounted = true;
@@ -247,13 +209,11 @@ mounted = true;
   		updateVisualEffects();
     })();
   });
-
   	onDestroy(() => {
   		mounted = false;
   		if (animationFrame) {
   			cancelAnimationFrame(animationFrame);
   		}
-
   		if (oscillator) {
   			try {
   				oscillator.stop();
@@ -262,29 +222,25 @@ mounted = true;
   				// Ignore errors
   			}
   		}
-
   		if (audioContext) {
   			audioContext.close();
   		}
   	});
-
   	// Reactive updates
   	$effect(() => {
   		updateSpatialPosition();
   	});
-
   	$effect(() => {
   		if (mounted) {
   			updateVisualEffects();
   		}
   	});
 </script>
-
 <div
 	class="n64-slider {className}"
-	class:disabled;
+	class: disabled;
 	class:interacting={isInteracting}
-	style=";
+	style="
 		--slider-percentage: {percentage}%;
 		--vertex-jitter-x: {vertexJitter.x}px;
 		--vertex-jitter-y: {vertexJitter.y}px;
@@ -297,7 +253,6 @@ mounted = true;
 			{label}
 		</label>
 	{/if}
-
 	<div class="n64-slider-container">
 		<div
 			bind:this={trackElement}
@@ -309,7 +264,6 @@ mounted = true;
 				class="n64-slider-thumb"
 			></div>
 		</div>
-
 		<input
 			bind:this={sliderElement}
 			type="range"
@@ -332,12 +286,10 @@ mounted = true;
 			{...restProps}
 		/>
 	</div>
-
 	<div class="n64-slider-value">
 		{value}
 	</div>
 </div>
-
 <style>
 	.n64-slider {
 		--n64-primary: #1a4d8c;
@@ -349,27 +301,22 @@ mounted = true;
 		--n64-background: #f0f0f0;
 		--n64-shadow: rgba(0, 0, 0, 0.3);
 		--n64-highlight: rgba(255, 255, 255, 0.2);
-
 		position: relative;
 		width: 100%;
 		max-width: 300px;
 		font-family: 'Courier New', monospace;
 		user-select: none;
-
 		/* N64-style transform with vertex jitter */
 		transform:
 			translateX(var(--vertex-jitter-x, 0))
 			translateY(var(--vertex-jitter-y, 0));
-
 		/* Pixel drift simulation */
 		filter:
 			blur(calc(var(--pixel-drift, 0) * 0.5px))
 			saturate(var(--color-bleed, 1))
 			contrast(1.1);
-
 		transition: transform 0.1s ease;
 	}
-
 	.n64-slider-label {
 		display: block;
 		margin-bottom: 8px;
@@ -380,13 +327,11 @@ mounted = true;
 		letter-spacing: 1px;
 		text-shadow: 1px 1px 2px var(--n64-shadow);
 	}
-
 	.n64-slider-container {
 		position: relative;
 		height: 24px;
 		margin: 8px 0;
 	}
-
 	.n64-slider-track {
 		position: absolute;
 		top: 50%;
@@ -405,7 +350,6 @@ mounted = true;
 		box-shadow:
 			inset 2px 2px 4px var(--n64-shadow),
 			2px 2px 4px rgba(0, 0, 0, 0.2);
-
 		/* Texture simulation */
 		background-image:
 			repeating-linear-gradient(
@@ -416,7 +360,6 @@ mounted = true;
 				rgba(0, 0, 0, 0.05) 2px
 			);
 	}
-
 	.n64-slider-fill {
 		position: absolute;
 		top: 0;
@@ -430,23 +373,20 @@ mounted = true;
 			var(--n64-primary) 100%
 		);
 		border-radius: 0;
-
 		/* Animated fill effect */
 		background-size: 200% 100%;
 		animation: fillPulse 2s ease-in-out infinite;
 	}
-
 	@keyframes fillPulse {
 		0%, 100% {
-			background-position: 0% 50%;
+			background-position: % 50%;
 			filter: brightness(1);
 		}
 		50% {
-			background-position: 100% 50%;
+			background-position: 00% 50%;
 			filter: brightness(1.2);
 		}
 	}
-
 	.n64-slider-thumb {
 		position: absolute;
 		top: 50%;
@@ -466,15 +406,12 @@ mounted = true;
 		box-shadow:
 			2px 2px 6px var(--n64-shadow),
 			inset 1px 1px 2px var(--n64-highlight);
-
 		cursor: pointer;
 		transition: all 0.1s ease;
-
 		/* N64 controller button styling */
 		position: relative;
 		z-index: 2;
 	}
-
 	.n64-slider-thumb::before {
 		content: '';
 		position: absolute;
@@ -487,7 +424,6 @@ mounted = true;
 		border-radius: 50%;
 		box-shadow: inset 1px 1px 2px var(--n64-shadow);
 	}
-
 	.n64-slider-input {
 		position: absolute;
 		top: 0;
@@ -499,21 +435,17 @@ mounted = true;
 		margin: 0;
 		z-index: 3;
 	}
-
 	.n64-slider-input:disabled {
 		cursor: not-allowed;
 	}
-
 	.n64-slider-input:focus {
 		outline: none;
 	}
-
 	.n64-slider-input:focus + .n64-slider-track,
 	.n64-slider-input:focus ~ .n64-slider-track {
 		outline: 2px solid var(--n64-yellow);
 		outline-offset: 2px;
 	}
-
 	.n64-slider-value {
 		text-align: center;
 		font-size: 14px;
@@ -521,7 +453,6 @@ mounted = true;
 		color: var(--n64-primary);
 		margin-top: 8px;
 		text-shadow: 1px 1px 2px var(--n64-shadow);
-
 		/* Retro display styling */
 		background: var(--n64-background);
 		border: 1px solid var(--n64-primary);
@@ -530,7 +461,6 @@ mounted = true;
 		min-width: 40px;
 		box-shadow: inset 1px 1px 2px var(--n64-shadow);
 	}
-
 	/* Interaction states */
 	.n64-slider.interacting .n64-slider-thumb {
 		transform: translate(-50%, -50%) scale(1.1);
@@ -544,18 +474,15 @@ mounted = true;
 			var(--n64-primary) 100%
 		);
 	}
-
 	.n64-slider.interacting .n64-slider-fill {
-		animation-duration: 0.5s;
+		animation-duration: 0.5;
 		filter: brightness(1.3) saturate(1.2);
 	}
-
 	/* Disabled state */
 	.n64-slider.disabled {
 		opacity: 0.6;
 		filter: grayscale(0.8) blur(0.5px);
 	}
-
 	.n64-slider.disabled .n64-slider-thumb {
 		cursor: not-allowed;
 		background: linear-gradient(
@@ -565,18 +492,15 @@ mounted = true;
 			#666 100%
 		);
 	}
-
 	.n64-slider.disabled .n64-slider-fill {
 		background: #999;
 		animation: none;
 	}
-
 	/* Hover effects */
 	.n64-slider:not(.disabled):hover .n64-slider-thumb {
 		transform: translate(-50%, -50%) scale(1.05);
 		filter: brightness(1.1);
 	}
-
 	/* High contrast mode support */
 	@media (prefers-contrast: high) {
 		.n64-slider {
@@ -586,30 +510,25 @@ mounted = true;
 			--n64-background: #fff;
 		}
 	}
-
 	/* Reduced motion support */
 	@media (prefers-reduced-motion: reduce) {
 		.n64-slider {
 			transform: none;
 			transition: none;
 		}
-
 		.n64-slider-fill {
 			animation: none;
 		}
-
 		.n64-slider-thumb {
 			transition: none;
 		}
 	}
-
 	/* Mobile optimizations */
 	@media (max-width: 768px) {
 		.n64-slider-thumb {
 			width: 24px;
 			height: 24px;
 		}
-
 		.n64-slider-track {
 			height: 10px;
 		}

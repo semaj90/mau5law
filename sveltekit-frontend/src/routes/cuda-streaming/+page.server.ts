@@ -1,17 +1,13 @@
 import type { PageServerLoad, Actions } from './$types.js';
 import { error, fail, json } from '@sveltejs/kit';
-
 export const load: PageServerLoad = async ({ locals }) => {
   try {
     // Get CUDA/GPU system information
     const gpuInfo = await getGPUSystemInfo();
-    
     // Get streaming session statistics
     const sessionStats = await getStreamingStats();
-    
     // Get recent processing results for demonstration
     const recentProcessing = await getRecentProcessingResults();
-
     return {
       gpuInfo,
       sessionStats,
@@ -36,33 +32,28 @@ export const load: PageServerLoad = async ({ locals }) => {
     return getDefaultGPUData();
   }
 };
-
 export const actions: Actions = {
   startStream: async ({ request, locals }) => {
     const data = await request.formData();
     const operationType = data.get('operationType') as string;
     const inputData = data.get('inputData') as string;
     const batchSize = parseInt(data.get('batchSize') as string) || 10;
-
     if (!operationType || !inputData) {
       return fail(400, { error: 'Operation type and input data are required' });
     }
-
     try {
       const sessionId = `stream_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
-      // Initialize CUDA streaming session;
+      // Initialize CUDA streaming session
       const streamingResult = await initializeCudaStream(sessionId, {
         operationType,
         inputData,
         batchSize,
         userId: locals.user?.id
       });
-
       return json({
         success: true,
         sessionId,
-        stream: streamingResult,;
+        stream: streamingResult,
         timestamp: new Date().toISOString()
       });
     } catch (err) {
@@ -70,20 +61,16 @@ export const actions: Actions = {
       return fail(500, { error: 'Failed to initialize streaming session' });
     }
   },
-
   stopStream: async ({ request, locals }) => {
     const data = await request.formData();
     const sessionId = data.get('sessionId') as string;
-
     if (!sessionId) {
       return fail(400, { error: 'Session ID is required' });
     }
-
     try {
       await terminateCudaStream(sessionId);
-      
       return json({
-        success: true,;
+        success: true,
         message: 'Streaming session terminated',
         sessionId
       });
@@ -92,33 +79,27 @@ export const actions: Actions = {
       return fail(500, { error: 'Failed to terminate streaming session' });
     }
   },
-
   processDocument: async ({ request, locals }) => {
     const data = await request.formData();
     const documentData = data.get('documentData') as string;
     const processingType = data.get('processingType') as string || 'vectorization';
     const useGpu = data.get('useGpu') === 'true';
-
     if (!documentData) {
       return fail(400, { error: 'Document data is required' });
     }
-
     try {
       const startTime = Date.now();
-      
       const processingResult = await processCudaDocument(documentData, {
         processingType,
         useGpu,
         userId: locals.user?.id
       });
-
       const processingTime = Date.now() - startTime;
-
       return json({
-        success: true,
-        result: processingResult,
+        success: true
+        result: processingResult
         processingTime,
-        gpuAccelerated: useGpu,;
+        gpuAccelerated: useGpu
         timestamp: new Date().toISOString()
       });
     } catch (err) {
@@ -127,29 +108,27 @@ export const actions: Actions = {
     }
   }
 };
-
 async function getGPUSystemInfo() {
-  // Mock GPU info - replace with actual CUDA/GPU detection;
+  // Mock GPU info - replace with actual CUDA/GPU detection
   return {
-    gpuAvailable: true,
+    gpuAvailable: true
     gpuName: "NVIDIA GeForce RTX 4090",
     cudaVersion: "12.2",
     totalMemory: "24GB",
-    availableMemory: "20.3GB", 
+    availableMemory: "20.3GB",
     computeCapability: "8.9",
     multiprocessors: 128,
     maxThreadsPerBlock: 1024,
     clockRate: 2520, // MHz
     memoryClockRate: 10501, // MHz
     temperatureCurrent: 45, // Celsius
-    powerDraw: 320, // Watts;
+    powerDraw: 320, // Watts
     utilization: {
-      gpu: 15, // percentage;
+      gpu: 15, // percentage
       memory: 8, // percentage
     }
   };
 }
-
 async function getStreamingStats() {
   return {
     activeSessions: 3,
@@ -163,7 +142,6 @@ async function getStreamingStats() {
     memoryUsage: 8.4 // GB
   };
 }
-
 async function getRecentProcessingResults() {
   return [
     {
@@ -171,17 +149,17 @@ async function getRecentProcessingResults() {
       operation: "document_vectorization",
       documentsProcessed: 156,
       processingTime: 2340,
-      gpuAccelerated: true,
+      gpuAccelerated: true
       throughput: 667, // docs/sec
       timestamp: new Date(Date.now() - 300000).toISOString(), // 5 min ago
       status: "completed"
     },
     {
-      sessionId: "stream_1234567891", 
+      sessionId: "stream_1234567891",
       operation: "similarity_search",
       documentsProcessed: 89,
       processingTime: 1890,
-      gpuAccelerated: true,
+      gpuAccelerated: true
       throughput: 471,
       timestamp: new Date(Date.now() - 900000).toISOString(), // 15 min ago
       status: "completed"
@@ -193,14 +171,13 @@ async function getRecentProcessingResults() {
       processingTime: 3120,
       gpuAccelerated: false, // Fallback to CPU
       throughput: 225,
-      timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 min ago;
+      timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
       status: "completed"
     }
   ];
 }
-
 async function initializeCudaStream(sessionId: string, options: any) {
-  // Mock streaming initialization - replace with actual CUDA implementation;
+  // Mock streaming initialization - replace with actual CUDA implementation
   return {
     sessionId,
     status: 'initialized',
@@ -209,21 +186,17 @@ async function initializeCudaStream(sessionId: string, options: any) {
     queuePosition: 1
   };
 }
-
 async function terminateCudaStream(sessionId: string) {
   // Mock termination - replace with actual CUDA cleanup
   console.log(`Terminating CUDA stream: ${sessionId}`);
   return { terminated: true };
 }
-
 async function processCudaDocument(documentData: string, options: any) {
   // Mock CUDA document processing - replace with actual implementation
   const simulatedProcessingTime = Math.random() * 1000 + 200;
-  
   await new Promise(resolve => setTimeout(resolve, simulatedProcessingTime));
-  
   return {
-    vectors: new Array(768).fill(0).map(() => Math.random()),;
+    vectors: new Array(768).fill(0).map(() => Math.random()),
     entities: [
       { text: "Legal Contract", type: "DOCUMENT_TYPE", confidence: 0.95 },
       { text: "TechCorp Inc.", type: "ORGANIZATION", confidence: 0.92 },
@@ -238,11 +211,10 @@ async function processCudaDocument(documentData: string, options: any) {
     }
   };
 }
-
 function getDefaultGPUData() {
   return {
     gpuInfo: {
-      gpuAvailable: false,
+      gpuAvailable: false
       gpuName: "No GPU Detected",
       cudaVersion: "N/A",
       totalMemory: "0GB",

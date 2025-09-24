@@ -1,7 +1,6 @@
 <!-- YoRHa Detective Form Component - Fixed dynamic type binding -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface FormField {
     name: string;
     label: string;
@@ -12,34 +11,29 @@
     options?: { value: string; label: string }[];
     defaultValue?: string;
   }
-
   interface Props {
     fields: FormField[];
     onSubmit: (data: unknown) => Promise<void>;
     submitText?: string;
     submitClass?: string;
   }
-
   let { fields = $bindable(),
-    onsubmit= $bindable(), 
+    onsubmit= $bindable(),
     submitText = $bindable(),
     submitClass = $bindable()
    }: { fields = $bindable(),
-    onsubmit= $bindable(), 
+    onsubmit= $bindable(),
     submitText = $bindable(),
     submitClass = $bindable()
   : unknown } = $props();
-
   let formData = $state( );
   let isSubmitting = $state(false);
-
   // Initialize form data with default values
   fields.forEach(field => {
     if (field.defaultValue !== undefined) {
-      formData[field.name] = field.defaultValue;
+      formData[field.name] = field.defaultValu;
     }
   });
-
   async function handleSubmit(event: Event) {
     event.preventDefault();
     if (isSubmitting) return;
@@ -50,7 +44,7 @@
       formData = {};
       fields.forEach(field => {
         if (field.defaultValue !== undefined) {
-          formData[field.name] = field.defaultValue;
+          formData[field.name] = field.defaultValu;
         }
       });
     } catch (error) {
@@ -59,12 +53,10 @@
       isSubmitting = false;
     }
   }
-
   function updateFormData(fieldName: string, value: unknown) {
-    formData[fieldName] = value;
+    formData[fieldName] = valu;
   }
 </script>
-
 <form class="yorha-form" onsubmit={handleSubmit}>
   <div class="form-fields">
     {#each fields as field}
@@ -73,7 +65,6 @@
           {field.label}
           {#if field.required}<span class="required">*</span>{/if}
         </label>
-        
         {#if field.type === 'textarea'}
           <textarea
             id={field.name}
@@ -132,10 +123,9 @@
       </div>
     {/each}
   </div>
-  
   <div class="form-actions">
-    <button 
-      type="submit" 
+    <button
+      type="submit"
       class="submit-btn {submitClass}"
       disabled={isSubmitting}
     >
@@ -147,24 +137,20 @@
     </button>
   </div>
 </form>
-
 <style>
   .yorha-form {
     font-family: 'Roboto Mono', monospace;
   }
-
   .form-fields {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
-
   .form-field {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .form-label {
     font-size: 0.875rem;
     font-weight: bold;
@@ -172,12 +158,10 @@
     color: #3D3D3D;
     letter-spacing: 0.025em;
   }
-
   .required {
     color: #ef4444;
     margin-left: 0.25rem;
   }
-
   .form-input {
     background-color: #FFFFFF;
     border: 1px solid #D1CFC7;
@@ -190,33 +174,27 @@
     width: 100%;
     box-sizing: border-box;
   }
-
   .form-input:focus {
     outline: none;
     border-color: #3D3D3D;
     box-shadow: 0 0 0 3px rgba(61, 61, 61, 0.2);
   }
-
   .form-input::placeholder {
     color: #999;
     opacity: 1;
   }
-
   textarea.form-input {
     resize: vertical;
     min-height: 3rem;
   }
-
   select.form-input {
     cursor: pointer;
   }
-
   .form-actions {
     margin-top: 2rem;
     display: flex;
     justify-content: flex-end;
   }
-
   .submit-btn {
     display: flex;
     align-items: center;
@@ -233,37 +211,30 @@
     border-radius: 0;
     text-transform: uppercase;
   }
-
-  .submit-btn:hover:not(:disabled) {
+  .submit-btn: hover:not(:disabled) {
     background-color: #EAE8E1;
     transform: translateY(-1px);
   }
-
   .submit-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
-
   .submit-btn.yorha-btn-success {
     background-color: rgba(16, 185, 129, 0.1);
     color: #059669;
     border-color: rgba(16, 185, 129, 0.5);
   }
-
   .submit-btn.yorha-btn-success:hover:not(:disabled) {
     background-color: rgba(16, 185, 129, 0.2);
   }
-
   /* Responsive */
   @media (max-width: 640px) {
     .form-fields {
       gap: 1rem;
     }
-    
     .form-actions {
       margin-top: 1.5rem;
     }
-    
     .submit-btn {
       width: 100%;
       justify-content: center;

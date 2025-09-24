@@ -1,7 +1,6 @@
 <!-- Updated AI Chat for GPU Ollama -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
@@ -15,23 +14,21 @@
   let messages = $state([]);
   let input = $state('');
   let isLoading = $state(false);
-
   async function sendMessage() {
     if (!input.trim()) return;
     messages.push({ role: 'user', content: input });
     const userMessage = input;
     input = '';
     isLoading = true;
-
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           model: 'gemma3-legal',
-          prompt: userMessage,
-          stream: false,;
-          options: {;
+          prompt: userMessage
+          stream: false
+          options: {
             temperature: 0.3,
             num_ctx: 2048;
           }
@@ -47,7 +44,6 @@
     }
   }
 </script>
-
 <div class="h-96 flex flex-col nes-container">
   <div class="yorha-panel-header">
     <h3 class="nes-text is-primary">Legal AI Assistant (GPU)</h3>
@@ -67,10 +63,6 @@
       <Input bind:value={input} placeholder="Legal question..." keydown={(e) => e.key === 'Enter' && sendMessage()} />
       <Button class="bits-btn" onclick={sendMessage} disabled={isLoading}>
 Send
-
     </div>
   </div>
 </div>
-
-
-

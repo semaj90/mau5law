@@ -1,8 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   let laws: unknown[] = $state([]);
   let loading = $state(true);
@@ -31,11 +30,9 @@ try {
     law.code?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 </script>
-
 <svelte:head>
   <title>Law Database - WardenNet</title>
 </svelte:head>
-
 <div class="space-y-4">
   <div class="space-y-4">
     <h1 class="space-y-4">Law Database</h1>
@@ -46,22 +43,20 @@ try {
       Add Statute
     </a>
   </div>
-
   <div class="space-y-4">
     <div class="space-y-4">
       <label class="space-y-4" for="search">
         <span class="space-y-4">Search laws and statutes</span>
       </label>
-      <input 
-        type="text" 
+      <input
+        type="text"
         id="search"
-        placeholder="Search by title, description, or code..." 
+        placeholder="Search by title, description, or code..."
         class="space-y-4"
         bind:value={searchQuery}
       />
     </div>
   </div>
-
   {#if loading}
     <div class="space-y-4">
       <div class="space-y-4"></div>
@@ -97,10 +92,10 @@ try {
               <div class="space-y-4">{law.code || 'No Code'}</div>
             </h2>
             <p class="space-y-4">
-              {law.description ? 
-                (law.description.length > 200 ? 
-                  law.description.substring(0, 200) + '...' : 
-                  law.description) : 
+              {law.description ?
+                (law.description.length > 200 ?
+                  law.description.substring(0, 200) + '...' :
+                  law.description) :
                 'No description available'}
             </p>
             {#if law.category}
@@ -118,4 +113,3 @@ try {
     </div>
   {/if}
 </div>
-

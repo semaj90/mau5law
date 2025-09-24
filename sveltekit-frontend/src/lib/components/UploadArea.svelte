@@ -1,30 +1,24 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses;
+<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parenthese;
 https://svelte.dev/e/rune_missing_parentheses -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { preventDefault } from 'svelte/legacy';
   interface Props {
     onFileSelected?: (files: File[]) => void;
     accept?: string;
     multiple?: boolean;
   }
-
   let { onFileSelected = () => , accept = "*", multiple = false }: Props = $props();
   let dragActive = $state(false);
   let fileInput = $state<HTMLInputElement;
-
   function handleDrop(e: DragEvent) {
     e.preventDefault()dragActive  | null>(null); const data = false);
-
     if (e.dataTransfer?.files) {
       const files = Array.from(e.dataTransfer.files);
       onFileSelected(files);
     }
   }
-
   function handleFileSelect(e: Event) {
     const target = e.target as HTMLInputElement;
     if (target.files) {
@@ -33,9 +27,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
     }
   }
 </script>
-
 <div
-  class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors";
+  class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover: border-gray-400 transition-colors";
   class:border-blue-500={dragActive}
   class:bg-blue-50={dragActive}
   ondrop={handleDrop}
@@ -49,7 +42,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
     {multiple} onchange={handleFileSelect}
     class="hidden"
   />
-
   <div class="space-y-4">
     <div class="text-4xl">📁</div>
     <div>

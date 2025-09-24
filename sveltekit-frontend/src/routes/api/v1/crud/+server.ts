@@ -1,13 +1,10 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * Comprehensive CRUD REST API - Legal AI Platform
  * Integrates with PostgreSQL + pgvector using Drizzle ORM
  * Supports all entities with vector search capabilities
  */
-
 import { json, error } from '@sveltejs/kit'
-
 import { ensureError } from '$lib/utils/ensure-error'
 import { db } from '$lib/server/db'
 import {
@@ -16,29 +13,25 @@ import {
 } from '$lib/server/db/schema-postgres'
 import { sql, eq, and, or, like } from 'drizzle-orm'
 import { apiOrchestrator } from '$lib/services/api-orchestrator'
-
 // Entity mapping for dynamic CRUD operations
 // Small helpers used by the request handlers below:
 // - validate entity names
 // - resolve a table for an entity
 // - build simple WHERE clauses from filters
 // - build lightweight text-search clauses for common entities
-
 function isValidEntity(name?: string | null): boolean {
   return !!name && !!(entityMap as any)?.[name]
 }
-
 function getTableForEntity(entity: string) {
   if (!entity) throw new Error('Entity required')
   const table = (entityMap as any)[entity]
   if (!table) throw new Error(`Unknown entity: ${entity}`)
   return table
 }
-
 // Convert a simple filters object into an array of drizzle WHERE conditions.
 // - Strings containing '%' are treated as LIKE patterns.
 // - Other values use equality.
-function buildWhereClauses(filters: Record<string, any> | undefined, table: any) {
+function buildWhereClauses(filters: { [key: string]: any } | undefined, table: any) {
   if (!filters || typeof filters !== 'object') return []
   return Object.entries(filters).flatMap(([key, value]) => {
     if (value === undefined || value === null) return []
@@ -50,7 +43,6 @@ function buildWhereClauses(filters: Record<string, any> | undefined, table: any)
     return [eq(column, value)]
   })
 }
-
 // Lightweight text-search clause builder used in list/search handlers.
 // Lightweight text-search clause builder used in list/search handlers.
 // Returns an array of drizzle conditions (often a single `or(...)`) or [].
@@ -80,16 +72,14 @@ const entityMap = {
   ragMessages,
   ragSessions
 } as const
-
 type EntityName = keyof typeof entityMap
 }
-
 export interface CrudRequest {
-  action: 'create' | 'read' | 'update' | 'delete' | 'list' | 'search' | 'vector_search'
+  action: 'create' | 'read' | 'update' | 'delete' | 'list' | 'search' | 'vector_search',
   entity: EntityName
   id?: string
   data?: any
-  filters?: Record<string, any>
+  filters?: { [key: string]: any }
   pagination?: {
     page?: number
     limit?: number
@@ -103,7 +93,6 @@ export interface CrudRequest {
     similarity_threshold?: number
   }
 }
-
 export interface ApiResponse<T = any> {
   success: boolean
   data?: T
@@ -116,10 +105,8 @@ export interface ApiResponse<T = any> {
     cached?: boolean
   }
 }
-
 export const GET: RequestHandler = async ({ url, request }) => {
   const startTime = Date.now()
-
   try {
     // Parse query parameters for GET requests
     const entity = url.searchParams.get('entity') as EntityName
@@ -130,42 +117,34 @@ export const GET: RequestHandler = async ({ url, request }) => {
     const sortBy = url.searchParams.get('sortBy') || 'createdAt'
     const sortOrder = (url.searchParams.get('sortOrder') || 'desc') as 'asc' | 'desc'
     const searchQuery = url.searchParams.get('search')
-
     if (!entity || !entityMap[entity]) {
       return error(400, ensureError({
         message: `Invalid entity: ${entity}. Available: ${Object.keys(entityMap).join(', ')}`
       })
     }
-
     const table = entityMap[entity]
     let result: any
-
     switch (action) {
       case 'read':
         if (!id) return error(400, ensureError({ message: 'ID required for read operation' })
-
         result = await db.select().from(table).where(eq((table as any).id, id)).limit(1)
         if ((result as { length?: any }).length === 0) {
           return error(404, ensureError({ message: `${entity} with ID ${id} not found` })
         }
         return json({
-          success: true,
-          data: result[0],
+          success: true
+          data: result[0]
           metadata: { processingTime: Date.now() - startTime }
         } satisfies ApiResponse)
-
       case 'list':
         const offset = (page - 1) * limit
         const sortColumnAny = (table as any)[sortBy] || (table as any).createdAt
         const orderBy = sortOrder === 'asc' ? sql`${sortColumnAny} ASC` : sql`${sortColumnAny} DESC`
-
         // Get total count for pagination
         const countResultArr = await db.select({ count: sql<number>`count(*)::int` }).from(table)
         const total = countResultArr[0]?.count ?? 0
-
         // Get paginated results
         const query = db.select().from(table).orderBy(orderBy).limit(limit).offset(offset)
-
         // Add search if provided
         if (searchQuery) {
           const searchClauses = buildSearchClause(entity, searchQuery, table)
@@ -173,12 +152,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
             query.where(and(...searchClauses)
           }
         }
-
         result = await query
-
         return json({
-          success: true,
-          data: result,
+          success: true
+          data: result
           metadata: {
             total,
             page,
@@ -186,13 +163,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
             processingTime: Date.now() - startTime
           }
         } satisfies ApiResponse)
-
       case 'search':
         if (!searchQuery) return error(400, ensureError({ message: 'Search query required' })
-
         // Basic text search for now - can be enhanced with vector search
         let searchResult: any[] = []
-
         if (entity === 'cases') {
           searchResult = await db.select().from(cases)
             .where(
@@ -224,19 +198,16 @@ export const GET: RequestHandler = async ({ url, request }) => {
             )
             .limit(limit)
         }
-
         return json({
-          success: true,
-          data: searchResult,
+          success: true
+          data: searchResult
           metadata: {
             total: searchResult.length,
             processingTime: Date.now() - startTime
           }
         } satisfies ApiResponse)
-
       case 'vector_search':
         if (!searchQuery) return error(400, ensureError({ message: 'Search query required for vector search' })
-
         // Use the API orchestrator to perform vector search via Go services
         try {
           const vectorResponse = await apiOrchestrator.routeRequest(
@@ -244,23 +215,20 @@ export const GET: RequestHandler = async ({ url, request }) => {
             '/api/vector/search',)
             {
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                query: searchQuery,
-                entity: entity,
-                limit: limit,
+              body: JSON.stringify({,
+                query: searchQuery
+                entity: entity
+                limit: limit
                 similarity_threshold: parseFloat(url.searchParams.get('similarity_threshold') || '0.7')
               })
             }
           )
-
           if (!vectorResponse.ok) {
             throw new Error(`Vector search failed: ${vectorResponse.status}`)
           }
-
           const vectorData = await vectorResponse.json()
-
           return json({
-            success: true,
+            success: true
             data: vectorData.results || vectorData,
             metadata: {
               total: vectorData.total || vectorData.results?.length || 0,
@@ -268,13 +236,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
               cached: false
             }
           } satisfies ApiResponse)
-
         } catch (vectorError) {
           console.error('Vector search error:', vectorError)
-
           // Fallback to regular search if vector search fails
           return json({
-            success: true,
+            success: true
             data: [],
             error: 'Vector search unavailable, falling back to text search',
             metadata: {
@@ -283,11 +249,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
             }
           } satisfies ApiResponse)
         }
-
       default:
         return error(400, ensureError({ message: `Invalid action: ${action}` })
     }
-
   } catch (err: any) {
     console.error('CRUD GET error:', err)
     return error(500, ensureError({
@@ -296,36 +260,28 @@ export const GET: RequestHandler = async ({ url, request }) => {
     })
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now()
-
   try {
     const body: CrudRequest = await request.json()
     const { action, entity, data, id } = body
-
     if (!entity || !entityMap[entity]) {
       return error(400, ensureError({
         message: `Invalid entity: ${entity}. Available: ${Object.keys(entityMap).join(', ')}`
       })
     }
-
     const table = entityMap[entity]
     let result: any
-
     switch (action) {
       case 'create':
         if (!data) return error(400, ensureError({ message: 'Data required for create operation' })
-
         // Add timestamps for create
         const createData = {
           ...data,
           createdAt: new Date(),
           updatedAt: new Date()
         }
-
         result = await db.insert(table).values(createData).returning()
-
         // If this is a document or evidence with content, trigger embedding generation
         if ((entity === 'evidence' || entity === 'legalDocuments') && (data as { content?: any; title?: any }).content) {
           try {
@@ -334,9 +290,9 @@ export const POST: RequestHandler = async ({ request }) => {
               '/api/embeddings/generate',)
               {
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+                body: JSON.stringify({,
                   id: result[0].id,
-                  entity: entity,
+                  entity: entity
                   content: (data as { content?: any; title?: any }).content,
                   title: (data as { content?: any; title?: any }).title
                 })
@@ -347,44 +303,34 @@ export const POST: RequestHandler = async ({ request }) => {
             // Don't fail the creation, just log the warning
           }
         }
-
         return json({
-          success: true,
-          data: result[0],
+          success: true
+          data: result[0]
           metadata: { processingTime: Date.now() - startTime }
         } satisfies ApiResponse)
-
       case 'update':
         if (!id || !data) return error(400, ensureError({ message: 'ID and data required for update operation' })
-
         // Add updated timestamp
         const updateData = {
           ...data,
           updatedAt: new Date()
         }
-
         result = await db.update(table).set(updateData).where(eq((table as any).id, id)).returning()
-
         if ((result as { length?: any }).length === 0) {
           return error(404, ensureError({ message: `${entity} with ID ${id} not found` })
         }
-
         return json({
-          success: true,
-          data: result[0],
+          success: true
+          data: result[0]
           metadata: { processingTime: Date.now() - startTime }
         } satisfies ApiResponse)
-
       case 'delete':
         if (!id) return error(400, ensureError({ message: 'ID required for delete operation' })
-
         // Perform deletion
         result = await db.delete(table).where(eq((table as any).id, id)).returning()
-
         if ((result as { length?: any }).length === 0) {
           return error(404, ensureError({ message: `${entity} with ID ${id} not found` })
         }
-
         // Best-effort cleanup of embeddings / vectors for content entities
         if (['evidence', 'legalDocuments'].includes(entity)) {
           try {
@@ -400,17 +346,14 @@ export const POST: RequestHandler = async ({ request }) => {
             console.warn(`Embedding cleanup failed for ${entity} ${id}:`, cleanupErr)
           }
         }
-
         return json({
-          success: true,
-          data: result[0],
+          success: true
+          data: result[0]
           metadata: { processingTime: Date.now() - startTime }
         } satisfies ApiResponse)
-
       default:
         return error(400, ensureError({ message: `Invalid action: ${action}` })
     }
-
   } catch (err: any) {
     console.error('CRUD POST error:', err)
     return error(500, ensureError({
@@ -419,12 +362,10 @@ export const POST: RequestHandler = async ({ request }) => {
     })
   }
 }
-
 export const PUT: RequestHandler = async ({ request, url }) => {
   // PUT maps to update action
   const body = await request.json()
   const id = url.searchParams.get('id') || body.id
-
   return POST({
     request: new Request(request.url, {
       method: 'POST',
@@ -437,16 +378,14 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     })
   } as any)
 }
-
 export const DELETE: RequestHandler = async ({ url }) => {
   const entity = url.searchParams.get('entity') as EntityName
   const id = url.searchParams.get('id')
-
   return POST({
     request: new Request(url.toString(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: JSON.stringify({,
         action: 'delete',
         entity,
         id

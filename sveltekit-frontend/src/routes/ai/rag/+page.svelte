@@ -4,20 +4,16 @@ TODO: Implement RAG functionality, vector search, document context
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
 	import Button from '$lib/components/ui/enhanced-bits';
 	import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/enhanced-bits';
 	import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
 	import { FileText, Brain, Search, Zap } from 'lucide-svelte';
-
 	let query = $state('');
 	let isSearching = $state(false);
 	let results = $state([]);
-
 	async function handleRAGSearch() {
 		if (!query.trim()) return;
-
 		isSearching = true;
 		try {
 			// TODO: Implement RAG search
@@ -25,9 +21,8 @@ TODO: Implement RAG functionality, vector search, document context
 			// 	method: 'POST',
 			// 	headers: { 'Content-Type': 'application/json' },
 			// 	body: JSON.stringify({ query })
-			// });
-			// results = await (response as { json?: unknown }).json();
-
+			// })
+			// results = await (response as { json?: unknown }).json()
 			// Simulate search for now
 			setTimeout(() => {
 				results = [
@@ -39,8 +34,8 @@ TODO: Implement RAG functionality, vector search, document context
 					},
 					{
 						id: 2,
-						title: 'Evidence Standards',;
-						snippet: 'The court ruled that...',;
+						title: 'Evidence Standards',
+						snippet: 'The court ruled that...',
 						relevance: 0.87;
 					}
 				];
@@ -51,31 +46,29 @@ TODO: Implement RAG functionality, vector search, document context
 			isSearching = false;
 		}
 	}
-
 	const features = [
 		{
-			icon: Brain,
+			icon: Brain
 			title: 'Intelligent Search',
 			description: 'AI-powered document retrieval with semantic understanding';
 		},
 		{
-			icon: FileText,
+			icon: FileText
 			title: 'Context Aware',
 			description: 'Retrieves relevant legal documents based on case context';
 		},
 		{
-			icon: Search,
+			icon: Search
 			title: 'Vector Search',
 			description: 'Advanced vector similarity search across legal corpus';
 		},
 		{
-			icon: Zap,;
-			title: 'Fast Results',;
+			icon: Zap
+			title: 'Fast Results',
 			description: 'Sub-second response times with cached embeddings';
 		}
 	];
 </script>
-
 <EssentialRoutePage
 	pageTitle="RAG Interface"
 	description="Retrieval Augmented Generation for Legal Research"
@@ -117,7 +110,6 @@ TODO: Implement RAG functionality, vector search, document context
 										{/if}
 								</div>
 							</div>
-
 							<!-- Results -->
 							{#if results.length > 0}
 								<div class="space-y-3">
@@ -142,7 +134,6 @@ TODO: Implement RAG functionality, vector search, document context
 						</div>
 					</div.Content>
 				</div.Root>
-
 				<!-- Chat Interface -->
 				<Card class="nes-container is-rounded">
 					<CardHeader>
@@ -157,7 +148,6 @@ TODO: Implement RAG functionality, vector search, document context
 					</div.Content>
 				</div.Root>
 			</div>
-
 			<!-- Features Sidebar -->
 			<div>
 				<Card class="nes-container is-rounded">
@@ -184,7 +174,6 @@ TODO: Implement RAG functionality, vector search, document context
 						</div>
 					</div.Content>
 				</div.Root>
-
 				<!-- Quick Actions -->
 				<Card class="nes-container is-rounded mt-6">
 					<CardHeader>

@@ -2,21 +2,17 @@
   Unified Vector Interface Component
   YoRHa-themed interface for all vector systems integration
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import type { UnifiedVectorRequest, UnifiedVectorResponse } from '$lib/services/unified-vector-orchestrator';
-
   // Stores
   const isProcessing = writable(false);
   const results = writable<UnifiedVectorResponse | null>(null);
   const health = writable<Record<string, boolean>( );
-  const analytics = writable<Record<string, any>( );
+  const analytics = writable<{ [key: string]: any }( );
   const logs = writable<string[]>([]);
-
   // Form state
   let selectedOperation: 'analyze' | 'search' | 'recommend' | 'visualize' | 'ingest' = $state('analyze');
   let inputText = $state('');
@@ -30,7 +26,6 @@
   let useRecommendations = $state(true);
   let useNeo4j = $state(true);
   let cacheResults = true;
-
   // Sample documents for testing
   let sampleDocuments = [
     {
@@ -40,19 +35,17 @@
       type: 'CONTRACT';
     },
     {
-      id: 'doc2', 
-      title: 'Legal Precedent',;
-      content: 'In the case of Smith v. Johnson, the court ruled that contractual obligations must be clearly stated.',;
+      id: 'doc2',
+      title: 'Legal Precedent',
+      content: 'In the case of Smith v. Johnson, the court ruled that contractual obligations must be clearly stated.',
       type: 'CASE_LAW';
     }
   ];
-
   function addLog(message: string) {
     logs.update.toLocaleTimeString()}] ${message}`,
       ...currentLogs.slice(0, 99) // Keep last 100 logs
     ]);
   }
-
   async function checkHealth() {
     try {
       const response = await fetch('/api/unified-vector?action=health');
@@ -64,7 +57,6 @@
       addLog(`Health check failed: ${error.message}`);
     }
   }
-
   async function loadAnalytics() {
     try {
       const response = await fetch('/api/unified-vector?action=analytics');
@@ -75,25 +67,22 @@
       addLog(`Analytics failed: ${error.message}`);
     }
   }
-
   async function processRequest() {
     if (!inputText.trim() && selectedOperation !== 'ingest') {
       addLog('Error: Input text is required');
       return;
     }
-
     isProcessing.set(true);
     addLog(`Starting ${selectedOperation} operation...`);
-
     try {
       const request: UnifiedVectorRequest = {
-        type: selectedOperation,;
+        type: selectedOperation
         payload: {
-          text: inputText || undefined,
-          documents: selectedOperation === 'ingest' ? sampleDocuments : undefined,;
-          query: selectedOperation === 'search' ? inputText : undefined,
+          text: inputText || undefined
+          documents: selectedOperation === 'ingest' ? sampleDocuments : undefined
+          query: selectedOperation === 'search' ? inputText : undefined
           userId,
-          sessionId,;
+          sessionId,
           options: {
             useWebGPU,
             useWebAssembly,
@@ -105,18 +94,15 @@
           }
         }
       };
-
       const response = await fetch('/api/unified-vector', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify(request);
       });
-
       const data: UnifiedVectorResponse = await (response as { json?: unknown }).json();
       results.set(data);
-
       if ((data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).success) {
         addLog(`✅ ${selectedOperation} completed in ${(data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).results.processingTime}ms`);
         addLog(`Components used: ${(data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).metadata.componentsUsed.join(', ')}`);
@@ -124,7 +110,6 @@
       } else {
         addLog(`❌ ${selectedOperation} failed: ${(data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).metadata.errors?.join(', ') || 'Unknown error'}`);
       }
-
     } catch (error: unknown) {
       addLog(`❌ Request failed: ${error.message}`);
       results.set(null);
@@ -132,7 +117,6 @@
       isProcessing.set(false);
     }
   }
-
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 B';
     const k = 1024;
@@ -140,7 +124,6 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   $effect(() => {
     checkHealth();
     loadAnalytics();
@@ -149,11 +132,9 @@
       checkHealth();
       loadAnalytics();
     }, 30000);
-
     return () => clearInterval(interval);
   });
 </script>
-
 <!-- YoRHa-themed UI -->
 <div class="unified-vector-interface bg-black text-green-400 font-mono min-h-screen p-6">
   <!-- Header -->
@@ -163,7 +144,6 @@
       WebGPU SOM • WebAssembly RAG • PageRank • Glyph Diffusion • Neo4j • Vector Search
     </div>
   </div>
-
   <!-- System Status Grid -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
     <!-- Health Status -->
@@ -180,7 +160,6 @@
         {/each}
       </div>
     </div>
-
     <!-- Performance Analytics -->
     <div class="border border-green-400 p-4">
       <h2 class="text-lg mb-3 text-green-300">PERFORMANCE</h2>
@@ -195,7 +174,6 @@
         {/each}
       </div>
     </div>
-
     <!-- Activity Log -->
     <div class="border border-green-400 p-4">
       <h2 class="text-lg mb-3 text-green-300">ACTIVITY LOG</h2>
@@ -206,13 +184,11 @@
       </div>
     </div>
   </div>
-
   <!-- Main Interface -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Control Panel -->
     <div class="border border-green-400 p-4">
       <h2 class="text-lg mb-4 text-green-300">CONTROL PANEL</h2>
-
       <!-- Operation Selection -->
       <div class="mb-4">
         <label class="block text-sm mb-2" for="operation">OPERATION</label><select id="operation" ;
@@ -226,7 +202,6 @@
           <option value="ingest">Ingest - Bulk document processing</option>
         </select>
       </div>
-
       <!-- Text Input -->
       {#if selectedOperation !== 'ingest'}
         <div class="mb-4">
@@ -237,7 +212,6 @@
           ></textarea>
         </div>
       {/if}
-
       <!-- User Context -->
       <div class="grid grid-cols-2 gap-2 mb-4">
         <div>
@@ -253,7 +227,6 @@
           />
         </div>
       </div>
-
       <!-- Options Grid -->
       <div class="mb-4">
         <label class="block text-sm mb-2">SYSTEM OPTIONS</label>
@@ -284,7 +257,6 @@
           </label>
         </div>
       </div>
-
       <!-- Action Buttons -->
       <div class="grid grid-cols-3 gap-2">
         <button
@@ -308,11 +280,9 @@
         </button>
       </div>
     </div>
-
     <!-- Results Panel -->
     <div class="border border-green-400 p-4">
       <h2 class="text-lg mb-4 text-green-300">RESULTS</h2>
-
       {#if $results}
         <div class="space-y-4 text-sm">
           <!-- Operation Summary -->
@@ -327,7 +297,6 @@
               <div>Components: {$results.metadata.componentsUsed.length}</div>
             </div>
           </div>
-
           <!-- Components Used -->
           <div class="border border-green-600 p-3">
             <div class="text-green-200 mb-2">COMPONENTS USED</div>
@@ -339,7 +308,6 @@
               {/each}
             </div>
           </div>
-
           <!-- Performance Breakdown -->
           {#if Object.keys(errors).length > 0}
             <div class="border border-green-600 p-3">
@@ -354,7 +322,6 @@
               </div>
             </div>
           {/if}
-
           <!-- Results Data -->
           {#if $results.results.vectorResults}
             <div class="border border-green-600 p-3">
@@ -369,7 +336,6 @@
               </div>
             </div>
           {/if}
-
           {#if $results.results.recommendations}
             <div class="border border-green-600 p-3">
               <div class="text-green-200 mb-2">RECOMMENDATIONS ({$results.results.recommendations.length})</div>
@@ -383,7 +349,6 @@
               </div>
             </div>
           {/if}
-
           <!-- Errors -->
           {#if $results.metadata.errors && $results.metadata.errors.length > 0}
             <div class="border border-red-600 p-3">
@@ -402,27 +367,22 @@
     </div>
   </div>
 </div>
-
 <style>
   .unified-vector-interface {
-    background-image: 
+    background-image:
       linear-gradient(rgba(0, 255, 0, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 255, 0, 0.03) 1px, transparent 1px);
     background-size: 20px 20px;
   }
-
   input, textarea, select {
     outline: none;
   }
-
-  input:focus, textarea:focus, select:focus {;
+  input:focus, textarea:focus, select:focus {
     box-shadow: inset 0 0 0 1px theme('colors.green.400');
   }
-
-  button:disabled {;
+  button:disabled {
     cursor: not-allowed;
   }
-
   .accent-green-400 {
     accent-color: theme('colors.green.400');
   }

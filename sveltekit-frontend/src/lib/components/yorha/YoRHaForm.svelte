@@ -1,11 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
-https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Form Component with Terminal Styling -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   interface FormField {
     id: string;
     label: string;
@@ -24,7 +22,6 @@ https://svelte.dev/e/js_parse_error -->
     };
     error?: string;
   }
-
   interface FormProps {
     title?: string;
     subtitle?: string;
@@ -33,10 +30,9 @@ https://svelte.dev/e/js_parse_error -->
     cancelLabel?: string;
     loading?: boolean;
     showCancel?: boolean;
-    onsubmit?: (data: Record<string, any>) => void;
+    onsubmit?: (data: { [key: string]: any }) => void;
     oncancel?: () => void;
   }
-
   let { title = "Data Input Form",
     subtitle = "",
     fields = [],
@@ -56,27 +52,23 @@ https://svelte.dev/e/js_parse_error -->
     onsubmit,
     oncancel
   : unknown } = $props();
-
-  let formData = $state<Record<string, any>('')>( );
+  let formData = $state<{ [key: string]: any }('')>( );
   let errors = $state<Record<string, string>('')>( );
   let touched = $state<Record<string, boolean>(false)>( );
-
   // Initialize form data
   $effect(() => {
-    const initialData: Record<string, any> = {};
+    const initialData: { [key: string]: any } = {};
     fields.forEach(field => {
       initialData[field.id] = field.value || (field.type === 'checkbox' ? false : '');
     });
     formData = initialData;
   });
-
   function validateField(field: FormField, value: unknown): string {
     if (field.required && (!value || (typeof value === 'string' && value.trim() === ''))) {
       return `${field.label} is required`;
     }
-
     if (field.validation && value) {
-      const { pattern, min, max, minLength, maxLength } = field.validation;
+      const { pattern, min, max, minLength, maxLength } = field.validatio;
       if (pattern && typeof value === 'string' && !new RegExp(pattern).test(value)) {
         return `${field.label} format is invalid`;
       }
@@ -93,14 +85,11 @@ https://svelte.dev/e/js_parse_error -->
         }
       }
     }
-
     return '';
   }
-
   function handleFieldChange(fieldId: string, value: unknown) {
-    formData[fieldId] = value;
+    formData[fieldId] = valu;
     touched[fieldId] = true;
-
     const field = fields.find(f => f.id === fieldId);
     if (field) {
       const error = validateField(field, value);
@@ -112,7 +101,6 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   }
-
   function handleSubmit() {
     // Validate all fields
     let hasErrors = false;
@@ -125,20 +113,16 @@ https://svelte.dev/e/js_parse_error -->
       }
       touched[field.id] = true;
     });
-
-    errors = newErrors;
-
+    errors = newError;
     if (!hasErrors && onsubmit) {
       onsubmit(formData);
     }
   }
-
   function handleCancel() {
     if (oncancel) {
       oncancel();
     }
   }
-
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
       event.preventDefault();
@@ -149,7 +133,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="yorha-form" onkeydown={handleKeyDown}>
   <!-- Form Header -->
   <div class="form-header">
@@ -167,7 +150,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </div>
-
   <!-- Form Body -->
   <div class="form-body">
     {#each fields as field}
@@ -178,7 +160,6 @@ https://svelte.dev/e/js_parse_error -->
             <span class="required-indicator">*</span>
           {/if}
         </label>
-
         <div class="field-input-wrapper">
           {#if field.type === 'text' || field.type === 'email' || field.type === 'password' || field.type === 'number' || field.type === 'date'}
             <input
@@ -190,7 +171,6 @@ https://svelte.dev/e/js_parse_error -->
               class="field-input"
               oninput={(e) => handleFieldChange(field.id, (e.target as HTMLInputElement).value)}
             />
-
           {:else if field.type === 'textarea'}
             <textarea
               id={field.id}
@@ -201,7 +181,6 @@ https://svelte.dev/e/js_parse_error -->
               rows="4"
               oninput={(e) => handleFieldChange(field.id, (e.target as HTMLInputElement).value)}
             ></textarea>
-
           {:else if field.type === 'select'}
             <select
               id={field.id}
@@ -215,7 +194,6 @@ https://svelte.dev/e/js_parse_error -->
                 <option value={option.value}>{option.label}</option>
               {/each}
             </select>
-
           {:else if field.type === 'checkbox'}
             <label class="checkbox-wrapper">
               <input
@@ -229,7 +207,6 @@ https://svelte.dev/e/js_parse_error -->
               <div class="checkbox-indicator"></div>
               <span class="checkbox-text">{field.placeholder || field.label}</span>
             </label>
-
           {:else if field.type === 'radio'}
             <div class="radio-group">
               {#each field.options || [] as option}
@@ -248,7 +225,6 @@ https://svelte.dev/e/js_parse_error -->
                 </label>
               {/each}
             </div>
-
           {:else if field.type === 'file'}
             <input
               id={field.id}
@@ -258,12 +234,10 @@ https://svelte.dev/e/js_parse_error -->
               onchange={(e) => handleFieldChange(field.id, (e.target as HTMLInputElement).files?.[0])}
             />
           {/if}
-
           {#if field.type !== 'checkbox'}
             <div class="field-border"></div>
           {/if}
         </div>
-
         {#if errors[field.id]}
           <div class="field-error">
             <span class="error-icon">⚠</span>
@@ -273,7 +247,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/each}
   </div>
-
   <!-- Form Footer -->
   <div class="form-footer">
     <div class="form-actions">
@@ -288,7 +261,6 @@ https://svelte.dev/e/js_parse_error -->
           {cancelLabel}
         </button>
       {/if}
-      
       <button
         type="submit"
         class="form-button submit"
@@ -303,7 +275,6 @@ https://svelte.dev/e/js_parse_error -->
         {submitLabel}
       </button>
     </div>
-    
     <div class="form-hints">
       <div class="hint">
         <span class="hint-key">Ctrl+Enter</span> to submit
@@ -314,7 +285,6 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <style>
   .yorha-form {
     background: var(--yorha-bg-secondary, #1a1a1a);
@@ -324,16 +294,14 @@ https://svelte.dev/e/js_parse_error -->
     max-width: 600px;
     overflow: hidden;
   }
-
   .form-header {
     background: var(--yorha-bg-tertiary, #2a2a2a);
     border-bottom: 2px solid var(--yorha-secondary, #ffd700);
     display: flex;
     align-items: flex-start;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 16px 20px;
   }
-
   .form-title {
     color: var(--yorha-secondary, #ffd700);
     font-size: 16px;
@@ -342,7 +310,6 @@ https://svelte.dev/e/js_parse_error -->
     letter-spacing: 2px;
     margin: 0 0 4px 0;
   }
-
   .form-subtitle {
     color: var(--yorha-text-muted, #808080);
     font-size: 12px;
@@ -350,11 +317,9 @@ https://svelte.dev/e/js_parse_error -->
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-
   .form-status {
     flex-shrink: 0;
   }
-
   .status-indicator {
     font-size: 10px;
     font-weight: 600;
@@ -363,31 +328,26 @@ https://svelte.dev/e/js_parse_error -->
     padding: 4px 8px;
     border: 1px solid currentColor;
   }
-
   .status-indicator.ready {
     color: var(--yorha-accent, #00ff41);
     background: rgba(0, 255, 65, 0.1);
   }
-
   .status-indicator.processing {
     color: var(--yorha-warning, #ffaa00);
     background: rgba(255, 170, 0, 0.1);
     animation: pulse 1.5s infinite;
   }
-
   .form-body {
     padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 20px;
   }
-
   .form-field {
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
-
   .field-label {
     font-size: 12px;
     font-weight: 600;
@@ -398,16 +358,13 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     gap: 4px;
   }
-
   .required-indicator {
     color: var(--yorha-danger, #ff0041);
     font-weight: 700;
   }
-
   .field-input-wrapper {
     position: relative;
   }
-
   .field-input,
   .field-textarea,
   .field-select {
@@ -421,31 +378,26 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.2s ease;
     border-radius: 0;
   }
-
-  .field-input:focus,
-  .field-textarea:focus,
+  .field-input: focus
+  .field-textarea: focus
   .field-select:focus {
     outline: none;
     border-color: var(--yorha-secondary, #ffd700);
-    box-shadow: 
+    box-shadow:
       0 0 0 1px var(--yorha-secondary, #ffd700),
       inset 0 0 10px rgba(255, 215, 0, 0.1);
   }
-
-  .field-input::placeholder,
+  .field-input:: placeholder
   .field-textarea::placeholder {
     color: var(--yorha-text-muted, #808080);
   }
-
   .field-textarea {
     resize: vertical;
     min-height: 80px;
   }
-
   .field-select {
     cursor: pointer;
   }
-
   .field-border {
     position: absolute;
     bottom: 0;
@@ -457,13 +409,11 @@ https://svelte.dev/e/js_parse_error -->
     transition: transform 0.2s ease;
     transform-origin: center;
   }
-
   .field-input:focus + .field-border,
   .field-textarea:focus + .field-border,
   .field-select:focus + .field-border {
     transform: scaleX(1);
   }
-
   /* Checkbox Styling */
   .checkbox-wrapper {
     display: flex;
@@ -472,11 +422,9 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     font-size: 14px;
   }
-
   .field-checkbox {
     display: none;
   }
-
   .checkbox-indicator {
     width: 18px;
     height: 18px;
@@ -485,12 +433,10 @@ https://svelte.dev/e/js_parse_error -->
     position: relative;
     transition: all 0.2s ease;
   }
-
   .field-checkbox:checked + .checkbox-indicator {
     border-color: var(--yorha-secondary, #ffd700);
     background: var(--yorha-secondary, #ffd700);
   }
-
   .field-checkbox:checked + .checkbox-indicator::after {
     content: '✓';
     position: absolute;
@@ -501,14 +447,12 @@ https://svelte.dev/e/js_parse_error -->
     font-weight: 700;
     font-size: 12px;
   }
-
   /* Radio Styling */
   .radio-group {
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
-
   .radio-wrapper {
     display: flex;
     align-items: center;
@@ -516,11 +460,9 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     font-size: 14px;
   }
-
   .field-radio {
     display: none;
   }
-
   .radio-indicator {
     width: 18px;
     height: 18px;
@@ -530,11 +472,9 @@ https://svelte.dev/e/js_parse_error -->
     position: relative;
     transition: all 0.2s ease;
   }
-
   .field-radio:checked + .radio-indicator {
     border-color: var(--yorha-secondary, #ffd700);
   }
-
   .field-radio:checked + .radio-indicator::after {
     content: '';
     position: absolute;
@@ -546,7 +486,6 @@ https://svelte.dev/e/js_parse_error -->
     background: var(--yorha-secondary, #ffd700);
     border-radius: 50%;
   }
-
   /* File Input Styling */
   .field-file {
     width: 100%;
@@ -557,8 +496,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: inherit;
     cursor: pointer;
   }
-
-  .field-file::-webkit-file-upload-button {;
+  .field-file::-webkit-file-upload-button {
     background: var(--yorha-secondary, #ffd700);
     color: var(--yorha-bg-primary, #0a0a0a);
     border: none;
@@ -570,7 +508,6 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     margin-right: 12px;
   }
-
   /* Error Styling */
   .form-field.has-error .field-input,
   .form-field.has-error .field-textarea,
@@ -578,7 +515,6 @@ https://svelte.dev/e/js_parse_error -->
     border-color: var(--yorha-danger, #ff0041);
     box-shadow: 0 0 0 1px var(--yorha-danger, #ff0041);
   }
-
   .field-error {
     display: flex;
     align-items: center;
@@ -587,26 +523,22 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 12px;
     font-weight: 500;
   }
-
   .error-icon {
     font-size: 14px;
   }
-
   /* Form Footer */
   .form-footer {
     background: var(--yorha-bg-primary, #0a0a0a);
     border-top: 2px solid var(--yorha-text-muted, #808080);
     padding: 16px 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
   }
-
   .form-actions {
     display: flex;
     gap: 12px;
   }
-
   .form-button {
     display: flex;
     align-items: center;
@@ -623,65 +555,53 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     transition: all 0.2s ease;
   }
-
-  .form-button:hover:not(:disabled) {
+  .form-button:hover:not(:disabled) {,
     transform: translateY(-1px);
   }
-
   .form-button.submit {
     border-color: var(--yorha-secondary, #ffd700);
     color: var(--yorha-secondary, #ffd700);
   }
-
-  .form-button.submit:hover:not(:disabled) {
+  .form-button.submit:hover:not(:disabled) {,
     background: var(--yorha-secondary, #ffd700);
     color: var(--yorha-bg-primary, #0a0a0a);
     box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700);
   }
-
   .form-button.cancel {
     border-color: var(--yorha-danger, #ff0041);
     color: var(--yorha-danger, #ff0041);
   }
-
-  .form-button.cancel:hover:not(:disabled) {
+  .form-button.cancel:hover:not(:disabled) {,
     background: var(--yorha-danger, #ff0041);
     color: var(--yorha-text-primary, #e0e0e0);
   }
-
   .form-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none !important;
   }
-
   .button-spinner {
     animation: spin 1s linear infinite;
   }
-
   .form-hints {
     display: flex;
     gap: 16px;
     font-size: 10px;
     color: var(--yorha-text-muted, #808080);
   }
-
   .hint-key {
     color: var(--yorha-secondary, #ffd700);
     font-weight: 600;
   }
-
   /* Animations */
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.6; }
   }
-
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-
   /* Responsive Design */
   @media (max-width: 768px) {
     .form-header {
@@ -689,26 +609,21 @@ https://svelte.dev/e/js_parse_error -->
       gap: 8px;
       align-items: flex-start;
     }
-
     .form-body {
       padding: 16px;
     }
-
     .form-footer {
       flex-direction: column;
       gap: 12px;
       align-items: stretch;
     }
-
     .form-actions {
       justify-content: stretch;
     }
-
     .form-button {
       flex: 1;
       justify-content: center;
     }
-
     .form-hints {
       justify-content: center;
     }

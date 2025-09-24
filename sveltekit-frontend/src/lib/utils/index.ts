@@ -3,26 +3,19 @@
  * Comprehensive Utility Functions
  * SvelteKit 2 + Svelte 5 + TypeScript Compatible
  */
-
 import { type ClassValue, clsx } from "clsx";
-
 // ===== CLASS NAME UTILITIES =====
-
 export function cn(...inputs: ClassValue[]): string {
   return clsx(inputs);
 }
-
 // ===== NETWORK UTILITIES =====
-
 export async function fetchWithTimeout(
-  resource: RequestInfo | URL,;
+  resource: RequestInfo | URL
   options: RequestInit & { timeout?: number } = {}
 ): Promise<Response> {
   const { timeout = 8000, ...fetchOptions } = options;
-
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
-
   try {
     const response = await fetch(resource, {
       ...fetchOptions,
@@ -35,48 +28,37 @@ export async function fetchWithTimeout(
     throw error;
   }
 }
-
 // ===== FILE UTILITIES =====
-
 export function formatFileSize(bytes: number): string {
   if (!bytes) return '0 B';
-
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k);
-
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
-
 // ===== DATE UTILITIES =====
-
 export function formatDate(date: Date | string): string {
   const d = typeof date === 'string' ? new Date(date) : date;
   return d.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
-    hour: '2-digit',;
+    hour: '2-digit',
     minute: '2-digit'
   });
 }
-
 export function formatProcessingTime(ms: number): string {
   if (ms < 1000) return `${ms}ms`;
   if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
   return `${(ms / 60000).toFixed(1)}m`;
 }
-
 // ===== ID UTILITIES =====
-
 export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
-
 // ===== PERFORMANCE UTILITIES =====
-
-export function debounce<T extends (...args: any[]) => any>(
-  func: T,;
+export function debounce<T extends (...args: any[]) => any>(,
+  func: T
   wait: number;
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
@@ -85,9 +67,8 @@ export function debounce<T extends (...args: any[]) => any>(
     timeout = setTimeout(() => func.apply(this, args), wait);
   };
 }
-
-export function throttle<T extends (...args: any[]) => any>(
-  func: T,;
+export function throttle<T extends (...args: any[]) => any>(,
+  func: T
   limit: number;
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
@@ -99,9 +80,7 @@ export function throttle<T extends (...args: any[]) => any>(
     }
   };
 }
-
 // ===== LEGAL AI SPECIFIC UTILITIES =====
-
 export function getConfidenceLevel(score: number): string {
   if (score >= 0.9) return 'Very High';
   if (score >= 0.75) return 'High';
@@ -109,7 +88,6 @@ export function getConfidenceLevel(score: number): string {
   if (score >= 0.4) return 'Low';
   return 'Very Low';
 }
-
 export function getCaseStatusStyling(status: string): string {
   const styles = {
     'open': 'bg-blue-100 text-blue-800 border-blue-200',
@@ -120,7 +98,6 @@ export function getCaseStatusStyling(status: string): string {
   };
   return styles[status as keyof typeof styles] || styles['open'];
 }
-
 export function getEvidenceTypeStyling(type: string): string {
   const styles = {
     'document': 'bg-blue-50 border-blue-200 text-blue-700',
@@ -132,20 +109,15 @@ export function getEvidenceTypeStyling(type: string): string {
   };
   return styles[type as keyof typeof styles] || styles['document'];
 }
-
 // ===== USER UTILITIES =====
-
 export function getInitials(name: string): string {
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 }
-
 export function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
-
 // ===== CLIPBOARD UTILITIES =====
-
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     if (navigator.clipboard && window.isSecureContext) {
@@ -170,9 +142,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     return false;
   }
 }
-
 // ===== DOWNLOAD UTILITIES =====
-
 export function downloadFile(data: Blob | string, filename: string, type: string = 'text/plain'): void {
   const blob = data instanceof Blob ? data : new Blob([data], { type });
   const url = URL.createObjectURL(blob);
@@ -185,13 +155,9 @@ export function downloadFile(data: Blob | string, filename: string, type: string
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
-
 // ===== ENVIRONMENT UTILITIES =====
-
 export const isBrowser = typeof window !== 'undefined';
-;
 // ===== STORAGE UTILITIES =====
-
 export const storage = {
   get: <T>(key: string, fallback?: T): T | undefined => {
     if (!isBrowser) return fallback;
@@ -202,7 +168,6 @@ export const storage = {
       return fallback;
     }
   },
-
   set: <T>(key: string, value: T): void => {
     if (!isBrowser) return;
     try {
@@ -211,32 +176,26 @@ export const storage = {
       console.error('Failed to save to localStorage:', error);
     }
   },
-
   remove: (key: string): void => {
     if (!isBrowser) return;
     localStorage.removeItem(key);
   },
-
   clear: (): void => {
     if (!isBrowser) return;
     localStorage.clear();
   }
 };
-
 // ===== THEME UTILITIES =====
-
 export const theme = {
   get: (): 'light' | 'dark' => {
     if (!isBrowser) return 'light';
     return (localStorage.getItem('theme') as 'light' | 'dark') || 'light';
   },
-
   set: (newTheme: 'light' | 'dark'): void => {
     if (!isBrowser) return;
     localStorage.setItem('theme', newTheme);
     document.documentElement.classList.toggle('dark', newTheme === 'dark');
   },
-
   toggle: (): 'light' | 'dark' => {
     const current = theme.get();
     const newTheme = current === 'light' ? 'dark' : 'light';
@@ -244,9 +203,7 @@ export const theme = {
     return newTheme;
   }
 };
-
 // ===== SVELTE 5 TYPE HELPERS =====
-
 export type WithoutChild<T> = Omit<T, 'child'>;
 export type WithoutChildren<T> = Omit<T, 'children'>;
 export type WithoutChildrenOrChild<T> = Omit<T, 'children' | 'child'>;

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -7,7 +7,6 @@ Features: Case management, evidence upload, AI chat, vector search
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { SearchResults } from "$lib/types/global";
   import {
     Card,
@@ -36,7 +35,6 @@ Features: Case management, evidence upload, AI chat, vector search
     Filter
   } from 'lucide-svelte';
   import { onMount } from 'svelte';
-
   // State management
   let selectedCaseId = $state('');
   let cases: unknown[] = $state([]);
@@ -45,25 +43,20 @@ Features: Case management, evidence upload, AI chat, vector search
   let searchQuery = $state('');
   let searchResults: unknown[] = $state([]);
   let activeTab = $state('overview');
-
   // AI features state
   let webGPUEnabled = $state(false);
   let ragSystemStatus = $state('initializing');
-
   $effect(() => {
     (async () => {
 // Check WebGPU availability
     webGPUEnabled = await webGPUProcessor.initialize();
-
     // Load prosecutor data
     await loadCases();
     await loadPersonsOfInterest();
     await loadRecentEvidence();
-
     ragSystemStatus = 'ready';
     })();
   });
-
   const loadCases = async () => {
     try {
   let response = $state<Responsetry {
@@ -77,7 +70,6 @@ Features: Case management, evidence upload, AI chat, vector search
         }
       const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
       cases = (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
-
       if (cases.length > 0 && !selectedCaseId) {
         selectedCaseId = cases[0].id;
       }
@@ -85,7 +77,6 @@ Features: Case management, evidence upload, AI chat, vector search
       console.error('Failed to load cases:', error);
     }
   };
-
   const loadPersonsOfInterest = async () => {
     try {
   let response = $state<Responsetry {
@@ -103,7 +94,6 @@ Features: Case management, evidence upload, AI chat, vector search
       console.error('Failed to load POIs:', error);
     }
   };
-
   const loadRecentEvidence = async () => {
     try {
   let response = $state<Responsetry {
@@ -121,11 +111,9 @@ Features: Case management, evidence upload, AI chat, vector search
       console.error('Failed to load evidence:', error);
     }
   };
-
   // Enhanced vector search with WebGPU
   const performVectorSearch = async () => {
     if (!searchQuery.trim()) return;
-
     try {
       if (webGPUEnabled) {
         searchResults = await webGPUProcessor.searchSimilarEvidence(
@@ -138,11 +126,11 @@ Features: Case management, evidence upload, AI chat, vector search
       } else {
         // Fallback to API search
         const response = await fetch('/api/search/vector', {
-          method: 'POST',;
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query: searchQuery,
-            caseId: selectedCaseId,;
+          body: JSON.stringify({,
+            query: searchQuery
+            caseId: selectedCaseId
             type: 'evidence';
           })
         });
@@ -153,13 +141,11 @@ Features: Case management, evidence upload, AI chat, vector search
       console.error('Vector search failed:', error);
     }
   };
-
   // Handle evidence upload completion
   const handleEvidenceUploaded = (results: unknown[]) => {
     console.log('Evidence uploaded:', results);
     loadRecentEvidence(); // Refresh evidence list
   };
-
   // Case selection handler
   const selectCase = (caseId: string) => {
     selectedCaseId = caseId;
@@ -167,11 +153,9 @@ Features: Case management, evidence upload, AI chat, vector search
     loadRecentEvidence();
   };
 </script>
-
 <svelte:head>
   <title>Prosecutor Dashboard - Legal AI Platform</title>
 </svelte:head>
-
 <div class="min-h-screen bg-gray-50">
   <!-- Header -->
   <header class="bg-white shadow-sm border-b">
@@ -180,20 +164,17 @@ Features: Case management, evidence upload, AI chat, vector search
         <div class="flex items-center space-x-4">
           <Scale class="w-8 h-8 text-blue-600" />
           <h1 class="text-2xl font-bold text-gray-900">Prosecutor Dashboard</h1>
-
           {#if webGPUEnabled}
             <Badge variant="secondary" class="hidden sm:flex">
               <Zap class="w-3 h-3 mr-1" />
               GPU Accelerated
             </Badge>
           {/if}
-
           <Badge variant="ghost" class="hidden sm:flex">
             <Brain class="w-3 h-3 mr-1" />
             Gemma3Legal Active
           </Badge>
         </div>
-
         <div class="flex items-center space-x-4">
           <Badge variant={ragSystemStatus === 'ready' ? 'secondary' : 'outline'}>
             {ragSystemStatus === 'ready' ? '✅' : '⏳'} RAG System
@@ -202,7 +183,6 @@ Features: Case management, evidence upload, AI chat, vector search
       </div>
     </div>
   </header>
-
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Case Selector -->
     <div class="mb-6 nes-container">
@@ -220,17 +200,13 @@ selectCase(caseItem.id)}
             >
               {caseItem.caseNumber} - {caseItem.title}
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{caseItem.status}</span>
-
           {/each}
-
           <Button class="bits-btn" variant="ghost" size="sm">
 <Plus class="w-4 h-4 mr-1" />
             New Case
-
         </div>
       </div>
     </div>
-
     <!-- Main Dashboard Layout -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
       <!-- Left Column: Evidence & Search -->
@@ -255,9 +231,7 @@ selectCase(caseItem.id)}
               />
               <Button class="bits-btn" onclick={performVectorSearch} disabled={!searchQuery.trim()}>
 <Search class="w-4 h-4" />
-
             </div>
-
             {#if searchResults.length > 0}
               <div class="space-y-2">
                 <h4 class="font-medium">Search Results ({searchResults.length})</h4>
@@ -285,14 +259,12 @@ selectCase(caseItem.id)}
             {/if}
           </div>
         </div>
-
         <!-- Evidence Upload -->
         <EvidenceUploadComponent
           caseId={selectedCaseId}
           enableWebGPU={webGPUEnabled}
           uploadcomplete={handleEvidenceUploaded}
         />
-
         <!-- Recent Evidence -->
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -322,7 +294,6 @@ selectCase(caseItem.id)}
                         {/if}
                       </div>
                     </div>
-
                     <div class="flex items-center space-x-2">
                       {#if evidence.aiAnalysis?.prosecutionRelevance}
                         <Badge
@@ -334,7 +305,6 @@ selectCase(caseItem.id)}
                       {/if}
                       <Button class="bits-btn" variant="ghost" size="sm">
 <Eye class="w-4 h-4" />
-
                     </div>
                   </div>
                 {/each}
@@ -343,7 +313,6 @@ selectCase(caseItem.id)}
           </div>
         </div>
       </div>
-
       <!-- Right Column: AI Chat & POIs -->
       <div class="space-y-6">
         <!-- Persons of Interest -->
@@ -384,14 +353,11 @@ selectCase(caseItem.id)}
                 {/each}
               </div>
             {/if}
-
             <Button variant="ghost" size="sm" class="w-full mt-3 bits-btn bits-btn">
 <Plus class="w-4 h-4 mr-1" />
               Add Person of Interest
-
           </div>
         </div>
-
         <!-- AI Chat Assistant -->
         <div class="h-96">
           <EnhancedAIChatAssistant
@@ -403,7 +369,6 @@ selectCase(caseItem.id)}
         </div>
       </div>
     </div>
-
     <!-- System Status Bar -->
     <div class="fixed bottom-4 right-4 z-50">
       <div class="bg-black text-white nes-container">
@@ -435,24 +400,20 @@ selectCase(caseItem.id)}
     </div>
   </div>
 </div>
-
 <style>
   /* Prosecutor dashboard styling */
   :global(.prosecutor-dashboard) {
     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   }
-
   /* Enhanced hover effects for elemental awareness */
   :global(*:hover) {
     transition: all 0.1s ease;
   }
-
   /* WebGPU acceleration indicators */
   :global(.gpu-accelerated) {
     position: relative;
   }
-
-  :global(.gpu-accelerated::after) {
+  :global($1) {
     content: '⚡';
     position: absolute;
     top: -8px;
@@ -460,5 +421,3 @@ selectCase(caseItem.id)}
     font-size: 12px;
   }
 </style>
-
-

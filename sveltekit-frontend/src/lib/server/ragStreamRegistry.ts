@@ -2,24 +2,20 @@ import stream from "stream";
 // Simple in-memory registry for active RAG streams to support interrupt & summary
 // NOTE: Non-persistent; fine for dev. For prod, consider Redis channel or durable map.
 import { randomUUID, createHash } from 'crypto';
-
 // TTL (ms) after which inactive streams are cleaned
 const STREAM_TTL_MS = 5 * 60 * 1000; // 5 minutes
 let lastSweep = Date.now();
 }
-
 export interface ActiveStream {
   id: string;
   createdAt: number;
-  controller: AbortController; // to cancel upstream model/provider
+  controller: AbortController; // to cancel upstream model/provider,
   tokens: string[]; // accumulated tokens for optional summarization
   interrupted?: boolean;
   summarySent?: boolean;
   lastActivity?: number;
 }
-
 const streams = new Map<string, ActiveStream>();
-
 // Optional Redis integration for distributed registry & summary cache
 import type { Redis } from 'ioredis';
 import { createRedisInstance } from '$lib/server/redis';
@@ -39,9 +35,7 @@ let redis: ReturnType<typeof createRedisInstance> | null = null;
     } catch { redis = null; }
   }
 })();
-
 const SUMMARY_CACHE_PREFIX = 'rag:summary:';
-
 export function createStream(): ActiveStream {
   const controller = new AbortController();
   const id = randomUUID();
@@ -51,15 +45,12 @@ export function createStream(): ActiveStream {
   sweepIfNeeded();
   return stream;
 }
-
 export function getStream(id: string): ActiveStream | undefined {
   return streams.get(id);
 }
-
 export function removeStream(id: string) {
   streams.delete(id);
 }
-
 export function recordToken(id: string, token: string) {
   const s = streams.get(id);
   if (s && !s.interrupted) {
@@ -67,7 +58,6 @@ export function recordToken(id: string, token: string) {
     s.lastActivity = Date.now();
   }
 }
-
 export function interruptStream(id: string, mode: 'graceful' | 'force' = 'graceful') {
   const s = streams.get(id);
   if (!s) return false;
@@ -79,7 +69,6 @@ export function interruptStream(id: string, mode: 'graceful' | 'force' = 'gracef
   // graceful: allow caller to finish but mark interrupted so upstream can stop generation
   return true;
 }
-
 export function generateSummary(id: string, maxSentences = 3): string | undefined {
   const s = streams.get(id);
   if (!s) return undefined;
@@ -87,22 +76,20 @@ export function generateSummary(id: string, maxSentences = 3): string | undefine
   const text = s.tokens.join(' ');
   return summarizeText(text, maxSentences);
 }
-
 export function listActive() {
   return Array.from(streams.values()).map((s) => ({ id: s.id, tokens: s.tokens.length });
 }
-
-// Retrieve or compute & store summary in cache (memory/redis);
+// Retrieve or compute & store summary in cache (memory/redis)
 export async function cachedSummary(text: string, maxSentences = 3): Promise<string | undefined> {
   if (!text) return undefined;
   const hash = createHash('sha256').update(text).digest('hex');
   const key = SUMMARY_CACHE_PREFIX + hash + ':' + maxSentences;
-  // Redis first;
+  // Redis first
   if (redis) {
     try {
       const existing = await redis.get(key);
       if (existing) return existing;
-    } catch {}
+    } catch (error) {}
   }
   // Memory cache via Map keyed by key (reuse streams map not ideal) – lightweight singleton
   const mem =
@@ -114,14 +101,12 @@ export async function cachedSummary(text: string, maxSentences = 3): Promise<str
     if (redis) {
       try {
         await (redis as any).set(key, summary, 'EX', 3600);
-      } catch {}
+      } catch (error) {}
     }
   }
   return summary;
 }
-
 // --------- Internal helpers ---------
-
 function summarizeText(text: string, maxSentences: number): string | undefined {
   const sentences = text
     .split(/(?<=[.!?])\s+/)
@@ -149,7 +134,7 @@ function summarizeText(text: string, maxSentences: number): string | undefined {
   for (const [term, tf] of Object.entries(termFreq)) {
     idf[term] = Math.log(1 + totalSent / (1 + tf);
   }
-  // Score sentences;
+  // Score sentences
   const scored = sentences.map((s, i) => {
     const terms = sentenceTerms[i];
     let score = 0;
@@ -164,7 +149,6 @@ function summarizeText(text: string, maxSentences: number): string | undefined {
     .map((x) => x.s)
     .join(' ');
 }
-
 function sweepIfNeeded() {
   const now = Date.now();
   if (now - lastSweep < 60_000) return; // sweep at most once per minute

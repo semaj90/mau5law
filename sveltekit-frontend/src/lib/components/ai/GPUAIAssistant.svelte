@@ -1,14 +1,12 @@
 <!-- GPU AI Assistant - Real-time streaming chat with server GPU -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { gpuAIService } from '$lib/services/gpu-ai-service';
   import { evidenceStore } from '$lib/stores/evidence';
   import { showSuccess, showError } from '$lib/stores/alerts';
   import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits';
   import { Bot, Send, Zap, Brain, TrendingUp, AlertTriangle, Loader2, Cpu, Signal } from 'lucide-svelte';
-
   interface ChatMessage {
     id: string;
     type: 'user' | 'assistant' | 'system';
@@ -19,88 +17,74 @@
     insights?: any[];
     streaming?: boolean;
   }
-
   interface Props {
     caseId: string;
     selectedEvidenceIds?: string[];
     onSuggestionClick?: (suggestion: any) => void;
     onInsightClick?: (insight: any) => void;
   }
-
   let {
     caseId,
     selectedEvidenceIds = $bindable([]),
     onSuggestionClick,
     onInsightClick
   }: Props = $props();
-
   // Svelte 5 state
   let messages = $state<ChatMessage[]>([]);
   let currentMessage = $state('');
   let isStreaming = $state(false);
   let isTyping = $state(false);
   let gpuStatus = $state({
-    available: false,;
-    utilization: 0,;
+    available: false
+    utilization: 0,
     model: 'none',
     queue_length: 0;
   });
-
   let chatContainer = $state<HTMLDivElement>();
   let messageInput = $state<HTMLInputElement>();
   let streamingMessageId = $state<string | null>(null);
-
   // Evidence context
   let evidenceList = $state<any[]>([]);
-
   // Auto-scroll management
   let shouldAutoScroll = $state(true);
-
   // Subscribe to evidence store
   $effect(() => {
     const unsubscribe = evidenceStore.subscribe((state) => {
       evidenceList = state.evidence || [];
     });
-    return unsubscribe;
+    return unsubscrib;
   });
-
   // Initialize AI assistant
   $effect(() => {
     (async () => {
 await initializeAssistant();
     updateGPUStatus();
-
     // Update GPU status every 10 seconds
     const statusInterval = setInterval(updateGPUStatus, 10000);
-
     return () => {
       clearInterval(statusInterval);
     };
     })();
   });
-
   async function initializeAssistant() {
     try {
       // Add welcome message
       addSystemMessage('AI Assistant initialized with GPU acceleration. How can I help analyze your evidence?');
-
       // Check if we have evidence to analyze
       if (evidenceList.length > 0) {
         addSystemMessage(`Found ${evidenceList.length} evidence items in case ${caseId}. I can help analyze connections and patterns.`);
       }
-
     } catch (error) {
       console.error('❌ Failed to initialize AI assistant:', error);
       addSystemMessage('AI Assistant initialization failed. Some features may be limited.');
     }
   }
-
   async function updateGPUStatus() {
     try {
       const status = await gpuAIService.getServerStatus();
       gpuStatus = {
-        available: status.gpu_available,;
-        utilization: status.gpu_utilization,;
+        available: status.gpu_available,
+        utilization: status.gpu_utilization,
         model: status.model_loaded,
         queue_length: status.queue_length;
       };
@@ -108,61 +92,55 @@ await initializeAssistant();
       console.warn('Failed to update GPU status:', error);
     }
   }
-
   function addSystemMessage(content: string) {
     const message: ChatMessage = {
-      id: crypto.randomUUID(),;
+      id: crypto.randomUUID(),
       type: 'system',
-      content,;
+      content,
       timestamp: Date.now();
     };
     messages = [...messages, message];
     scrollToBottom();
   }
-
   function addUserMessage(content: string, evidenceIds?: string[]) {
     const message: ChatMessage = {
-      id: crypto.randomUUID(),;
+      id: crypto.randomUUID(),
       type: 'user',
-      content,;
+      content,
       timestamp: Date.now(),
-      evidence_ids: evidenceIds;
+      evidence_ids: evidenceId;
     };
     messages = [...messages, message];
     scrollToBottom();
-    return message;
+    return messag;
   }
-
   function addAssistantMessage(content: string): ChatMessage {
     const message: ChatMessage = {
       id: crypto.randomUUID(),
       type: 'assistant',
-      content,;
-      timestamp: Date.now(),;
+      content,
+      timestamp: Date.now(),
       streaming: true;
     };
     messages = [...messages, message];
     scrollToBottom();
-    return message;
+    return messag;
   }
-
   function updateStreamingMessage(messageId: string, content: string, complete: boolean = false) {
     messages = messages.map(msg => {
       if (msg.id === messageId) {
         return {
           ...msg,
-          content,;
-          streaming: !complete;
+          content,
+          streaming: !complet;
         };
       }
       return msg;
     });
-
     if (shouldAutoScroll) {
       scrollToBottom();
     }
   }
-
   function scrollToBottom() {
     setTimeout(() => {
       if (chatContainer) {
@@ -170,23 +148,18 @@ await initializeAssistant();
       }
     }, 50);
   }
-
   async function sendMessage() {
     const messageText = currentMessage.trim();
     if (!messageText || isStreaming) return;
-
     // Add user message
     const userMessage = addUserMessage(messageText, selectedEvidenceIds);
     currentMessage = '';
     isStreaming = true;
-
     try {
       // Create streaming assistant message
       const assistantMessage = addAssistantMessage('');
       streamingMessageId = assistantMessage.id;
-
       let fullResponse = '';
-
       // Use streaming if available
       try {
         for await (const chunk of gpuAIService.chatStreamingWithAI(messageText, caseId, selectedEvidenceIds)) {
@@ -195,13 +168,12 @@ await initializeAssistant();
             updateStreamingMessage(assistantMessage.id, fullResponse);
           } else if (chunk.type === 'complete') {
             updateStreamingMessage(assistantMessage.id, fullResponse, true);
-
             // Handle suggestions and insights
             if (chunk.data.suggestions) {
-              assistantMessage.suggestions = chunk.data.suggestions;
+              assistantMessage.suggestions = chunk.data.suggestion;
             }
             if (chunk.data.insights) {
-              assistantMessage.insights = chunk.data.insights;
+              assistantMessage.insights = chunk.data.insight;
             }
             break;
           } else if (chunk.type === 'error') {
@@ -210,103 +182,84 @@ await initializeAssistant();
         }
       } catch (streamingError) {
         console.warn('Streaming failed, falling back to regular request:', streamingError);
-
         // Fallback to non-streaming
         const response = await gpuAIService.chatWithAI(messageText, caseId, selectedEvidenceIds);
         updateStreamingMessage(assistantMessage.id, response.text, true);
-
         if (response.suggestions) {
-          assistantMessage.suggestions = response.suggestions;
+          assistantMessage.suggestions = response.suggestion;
         }
         if (response.insights) {
-          assistantMessage.insights = response.insights;
+          assistantMessage.insights = response.insight;
         }
       }
-
       showSuccess('AI response generated');
-
     } catch (error) {
       console.error('❌ AI chat failed:', error);
-
       if (streamingMessageId) {
         updateStreamingMessage(streamingMessageId,
           `I'm sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`,
           true
         );
       }
-
       showError('AI chat failed');
     } finally {
       isStreaming = false;
       streamingMessageId = null;
     }
   }
-
   async function analyzeSelectedEvidence() {
     if (selectedEvidenceIds.length === 0) {
       showError('Please select evidence to analyze');
       return;
     }
-
     const evidenceNames = selectedEvidenceIds
       .map(id => evidenceList.find(e => e.id === id)?.title || id)
       .join(', ');
-
     const analysisPrompt = selectedEvidenceIds.length === 1
       ? `Please analyze this evidence item: ${evidenceNames}`
       : `Please analyze these evidence items and find connections: ${evidenceNames}`;
-
     currentMessage = analysisPrompt;
     await sendMessage();
   }
-
   async function suggestInvestigationSteps() {
     currentMessage = 'What are the next investigation steps I should take based on the current evidence?';
     await sendMessage();
   }
-
   async function identifyEvidenceGaps() {
     currentMessage = 'What gaps or missing information do you see in the current evidence collection?';
     await sendMessage();
   }
-
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
-
   function handleSuggestionClick(suggestion: any) {
     onSuggestionClick?.(suggestion);
-
     // Auto-follow suggestion
     if (suggestion.action) {
       currentMessage = suggestion.action;
       sendMessage();
     }
   }
-
   function formatTimestamp(timestamp: number): string {
     return new Date(timestamp).toLocaleTimeString([], {
-      hour: '2-digit',;
+      hour: '2-digit',
       minute: '2-digit';
     });
   }
-
   function getGPUStatusColor(): string {
     if (!gpuStatus.available) return 'text-red-500';
     if (gpuStatus.utilization > 80) return 'text-orange-500';
     return 'text-green-500';
   }
-
   function getGPUStatusText(): string {
     if (!gpuStatus.available) return 'GPU Offline';
     if (gpuStatus.utilization > 80) return 'GPU Busy';
     return 'GPU Ready';
   }
 </script>
-
 <!-- AI Assistant Panel -->
 <Card class="h-full flex flex-col">
   <!-- Header -->
@@ -316,7 +269,6 @@ await initializeAssistant();
         <Bot class="w-5 h-5 text-primary" />
         <CardTitle class="text-lg">AI Assistant</CardTitle>
       </div>
-
       <!-- GPU Status -->
       <div class="flex items-center gap-2 text-sm">
         <Cpu class="w-4 h-4 {getGPUStatusColor()}" />
@@ -330,7 +282,6 @@ await initializeAssistant();
         {/if}
       </div>
     </div>
-
     <!-- Connection Info -->
     <div class="flex items-center gap-4 text-xs text-muted-foreground">
       <div class="flex items-center gap-1">
@@ -343,7 +294,6 @@ await initializeAssistant();
       {/if}
     </div>
   </CardHeader>
-
   <!-- Chat Messages -->
   <div
     bind:this={chatContainer}
@@ -367,7 +317,6 @@ await initializeAssistant();
             </div>
           </div>
         {/if}
-
         <!-- Message Content -->
         <div class="flex-1 max-w-[80%] {message.type === 'user' ? 'order-first' : ''}">
           <div class="
@@ -385,7 +334,6 @@ await initializeAssistant();
                 <span class="inline-block w-2 h-4 bg-current animate-pulse ml-1"></span>
               {/if}
             </div>
-
             <!-- Evidence tags -->
             {#if message.evidence_ids?.length}
               <div class="flex flex-wrap gap-1 mt-2">
@@ -397,7 +345,6 @@ await initializeAssistant();
                 {/each}
               </div>
             {/if}
-
             <!-- Suggestions -->
             {#if message.suggestions?.length}
               <div class="mt-3 space-y-2">
@@ -416,7 +363,6 @@ await initializeAssistant();
                 {/each}
               </div>
             {/if}
-
             <!-- Insights -->
             {#if message.insights?.length}
               <div class="mt-3 space-y-2">
@@ -434,13 +380,11 @@ await initializeAssistant();
               </div>
             {/if}
           </div>
-
           <!-- Timestamp -->
           <div class="text-xs text-muted-foreground mt-1 {message.type === 'user' ? 'text-right' : ''}">
             {formatTimestamp(message.timestamp)}
           </div>
         </div>
-
         <!-- User avatar -->
         {#if message.type === 'user'}
           <div class="flex-shrink-0">
@@ -451,7 +395,6 @@ await initializeAssistant();
         {/if}
       </div>
     {/each}
-
     <!-- Typing indicator -->
     {#if isTyping}
       <div class="flex gap-3">
@@ -468,7 +411,6 @@ await initializeAssistant();
       </div>
     {/if}
   </div>
-
   <!-- Quick Actions -->
   <div class="p-3 border-t bg-muted/30">
     <div class="flex flex-wrap gap-2 mb-3">
@@ -482,7 +424,6 @@ await initializeAssistant();
         <Brain class="w-3 h-3 mr-1" />
         Analyze ({selectedEvidenceIds.length})
       </Button>
-
       <Button
         size="sm"
         variant="ghost"
@@ -493,7 +434,6 @@ await initializeAssistant();
         <TrendingUp class="w-3 h-3 mr-1" />
         Next Steps
       </Button>
-
       <Button
         size="sm"
         variant="ghost"
@@ -505,7 +445,6 @@ await initializeAssistant();
         Find Gaps
       </Button>
     </div>
-
     <!-- Message Input -->
     <div class="flex gap-2">
       <Input
@@ -516,7 +455,6 @@ await initializeAssistant();
         disabled={isStreaming}
         class="flex-1"
       />
-
       <Button
         onclick={sendMessage}
         disabled={!currentMessage.trim() || isStreaming}
@@ -531,24 +469,19 @@ await initializeAssistant();
     </div>
   </div>
 </Card>
-
 <style>
   .prose {
     @apply text-current;
   }
-
   .prose p {
     @apply my-2;
   }
-
   .prose ul, .prose ol {
     @apply my-2 pl-4;
   }
-
   .prose strong {
     @apply font-semibold;
   }
-
   .prose code {
     @apply bg-current/10 px-1 rounded text-sm;
   }

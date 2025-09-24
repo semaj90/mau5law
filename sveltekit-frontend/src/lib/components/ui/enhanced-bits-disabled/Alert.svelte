@@ -4,22 +4,18 @@ NES-styled alert with legal AI theming
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
-  
   interface AlertProps {
     variant?: 'default' | 'destructive' | 'warning' | 'success' | 'info';
     class?: string;
     children?: import('svelte').Snippet;
   }
-  
   let {
     variant = 'default',
     class: className = '',
-    children;
+    childre;
   }: AlertProps = $props();
-  
   // NES-style alert classes
   const alertClasses = $derived(
     cn(
@@ -28,7 +24,6 @@ NES-styled alert with legal AI theming
       'relative w-full rounded-lg border-2 p-4',
       'font-mono text-sm',
       'transition-all duration-300',
-      
       // Variant styles
       {
         'bg-white border-gray-300 text-gray-900': variant === 'default',
@@ -37,15 +32,12 @@ NES-styled alert with legal AI theming
         'bg-green-50 border-green-300 text-green-900': variant === 'success',
         'bg-blue-50 border-blue-300 text-blue-900': variant === 'info',
       },
-      
       // NES styling
       'shadow-lg',
       'image-rendering: pixelated',
-      
       className
     )
   );
-  
   // Get emoji for variant
   const variantEmoji = $derived(() => {
     switch (variant) {
@@ -57,8 +49,7 @@ NES-styled alert with legal AI theming
     }
   });
 </script>
-
-<div 
+<div
   class={alertClasses}
   role="alert"
   aria-live="polite"
@@ -72,13 +63,12 @@ NES-styled alert with legal AI theming
     </div>
   </div>
 </div>
-
 <style>
   .bits-alert {
     font-family: 'Courier New', monospace;
     image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edge;
+    image-rendering: crisp-edge;
   }
 /* NES-style borders with inset effect */ .bits-alert {
 box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.2), inset 2px 2px 0px rgba(255, 255, 255, 0.8);
@@ -90,7 +80,6 @@ box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.3), inset 2px 2px 0px rgba(255, 
 /* Destructive variant animation */ .bits-alert[data-variant="error"] {
     animation: alert-pulse 2s ease-in-out infinite;
   }
-  
   @keyframes alert-pulse {
     0%, 100% {
       border-color: rgb(252, 165, 165);
@@ -102,7 +91,6 @@ box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.3), inset 2px 2px 0px rgba(255, 
 /* Success variant animation */ .bits-alert[data-variant="success"] {
     animation: alert-success 0.5s ease-out;
   }
-  
   @keyframes alert-success {
     0% {
       transform: scale(0.95);

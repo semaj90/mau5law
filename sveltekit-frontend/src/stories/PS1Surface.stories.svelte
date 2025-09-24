@@ -1,9 +1,7 @@
 <script>
   // Svelte 5 runes are auto-imported
-
 	import { onMount, onDestroy } from 'svelte';
 	import '../lib/components/yorha/ps1.css';
-
 	let container;
 	let surfaceType = $state('wireframe');
 	let animationSpeed = $state(1);
@@ -15,7 +13,6 @@
 	let lightingModel = $state('flat');
 	let textureQuality = $state('low');
 	let animationId = null;
-
 	// PS1 surface configurations
 	let surfaceConfigs = [
 		{
@@ -37,13 +34,12 @@
 			className: 'ps1-textured-low';
 		},
 		{
-			id: 'vertex',;
-			name: '< Vertex Colored',;
+			id: 'vertex',
+			name: '< Vertex Colored',
 			desc: 'Per-vertex color interpolation',
 			className: 'ps1-vertex-colored';
 		}
 	];
-
 	// Performance metrics
 	let perfMetrics = $state({
 		polygonsPerFrame: 0,
@@ -52,52 +48,43 @@
 		frameTime: 0,
 		lastFrameTime: 0
 	});
-
 	let vertices = [];
 	let faces = [];
-
 	$effect(() => {
 		generateSurfaceMesh();
 		startRenderLoop();
 	});
-
 	onDestroy(() => {
 		if (animationId) cancelAnimationFrame(animationId);
 	});
-
 	function generateSurfaceMesh() {
 		vertices = [];
 		faces = [];
-
 		const gridSize = Math.floor(Math.sqrt(polygonCount / 2));
 		const spacing = 40;
 		const amplitude = 30;
-
 		// Generate vertices in a grid
 		for (let x = 0; x < gridSize; x++) {
 			for (let z = 0; z < gridSize; z++) {
 				const worldX = (x - gridSize / 2) * spacing;
 				const worldZ = (z - gridSize / 2) * spacing;
-
 				// PS1-style low precision height calculation
-				const height = Math.sin(worldX * 0.02) * Math.cos(worldZ * 0.02) * amplitude;
-				const quantizedHeight = Math.floor(height / vertexPrecision) * vertexPrecision;
-
+				const height = Math.sin(worldX * 0.02) * Math.cos(worldZ * 0.02) * amplitud;
+				const quantizedHeight = Math.floor(height / vertexPrecision) * vertexPrecisio;
 				vertices.push({
-					x: worldX,
-					y: quantizedHeight,
-					z: worldZ,
+					x: worldX
+					y: quantizedHeight
+					z: worldZ
 					u: x / (gridSize - 1), // UV coordinates
-					v: z / (gridSize - 1),;
+					v: z / (gridSize - 1),
 					color: {
-						r: Math.floor((x / gridSize) * 255),;
-						g: Math.floor((z / gridSize) * 255),;
+						r: Math.floor((x / gridSize) * 255),
+						g: Math.floor((z / gridSize) * 255),
 						b: Math.floor(((x + z) / (gridSize * 2)) * 255);
 					}
 				});
 			}
 		}
-
 		// Generate triangular faces
 		for (let x = 0; x < gridSize - 1; x++) {
 			for (let z = 0; z < gridSize - 1; z++) {
@@ -105,93 +92,74 @@
 				const topRight = (x + 1) * gridSize + z;
 				const bottomLeft = x * gridSize + (z + 1);
 				const bottomRight = (x + 1) * gridSize + (z + 1);
-
 				// Two triangles per quad
 				faces.push({
-					vertices: [topLeft, bottomLeft, topRight],;
+					vertices: [topLeft, bottomLeft, topRight],
 					normal: calculateNormal(vertices[topLeft], vertices[bottomLeft], vertices[topRight]);
 				});
-
 				faces.push({
-					vertices: [topRight, bottomLeft, bottomRight],;
+					vertices: [topRight, bottomLeft, bottomRight],
 					normal: calculateNormal(vertices[topRight], vertices[bottomLeft], vertices[bottomRight]);
 				});
 			}
 		}
-
 		console.log(`Generated PS1 surface: ${vertices.length} vertices, ${faces.length} triangles`);
 	}
-
 	function calculateNormal(v1, v2, v3) {
 		// Calculate face normal for lighting
 		const ax = v2.x - v1.x, ay = v2.y - v1.y, az = v2.z - v1.z;
 		const bx = v3.x - v1.x, by = v3.y - v1.y, bz = v3.z - v1.z;
-
 		return {
-			x: ay * bz - az * by,;
-			y: az * bx - ax * bz,;
+			x: ay * bz - az * by,
+			y: az * bx - ax * bz,
 			z: ax * by - ay * bx;
 		};
 	}
-
 	function updatePerformanceMetrics() {
 		const currentTime = performance.now();
-		perfMetrics.frameTime = currentTime - perfMetrics.lastFrameTime;
-		perfMetrics.lastFrameTime = currentTime;
+		perfMetrics.frameTime = currentTime - perfMetrics.lastFrameTim;
+		perfMetrics.lastFrameTime = currentTim;
 		perfMetrics.polygonsPerFrame = faces.length;
 		perfMetrics.vertexOperations = vertices.length * 4; // Transform, project, light, clip
 		perfMetrics.fillRate = (perfMetrics.polygonsPerFrame * 60) / 1000; // K-polys/sec estimate
 	}
-
 	function startRenderLoop() {
 		function animate() {
 			updatePerformanceMetrics();
-
 			// Simulate PS1 vertex wobble due to fixed-point precision
 			const time = performance.now() * 0.001 * animationSpeed;
-
 			vertices.forEach((vertex, i) => {
 				// Add subtle vertex jitter to simulate PS1 precision limits
-				const jitterX = (Math.sin(time * 2 + i * 0.1) * 0.5) / vertexPrecision;
-				const jitterY = (Math.cos(time * 1.5 + i * 0.1) * 0.3) / vertexPrecision;
-
+				const jitterX = (Math.sin(time * 2 + i * 0.1) * 0.5) / vertexPrecisio;
+				const jitterY = (Math.cos(time * 1.5 + i * 0.1) * 0.3) / vertexPrecisio;
 				vertex.screenX = vertex.x + jitterX;
 				vertex.screenY = vertex.y + jitterY;
 			});
-
 			animationId = requestAnimationFrame(animate);
 		}
-
 		animate();
 	}
-
 	function resetSurface() {
 		generateSurfaceMesh();
 	}
-
 	function toggleZBuffer() {
 		enableZBuffer = !enableZBuffer;
 	}
-
 	function toggleBackfaceCulling() {
 		enableBackfaceCulling = !enableBackfaceCulling;
 	}
-
 	// Reactive updates
 	$effect(() => {
 		generateSurfaceMesh();
 	});
 </script>
-
 <div class="ps1-surface-container" bind:this={container}>
 	<div class="story-header ps1-scanlines">
 		<h1 class="ps1-text-glow">PS1 Surface Rendering</h1>
 		<p class="ps1-subtitle">Low-poly surfaces with PS1-era graphics limitations</p>
 	</div>
-
 	<div class="controls-panel ps1-border">
 		<h3>Surface Controls</h3>
-
 		<div class="surface-type-selector">
 			<label>Surface Type:</label>
 			<div class="surface-buttons">
@@ -206,7 +174,6 @@
 				{/each}
 			</div>
 		</div>
-
 		<div class="control-row">
 			<label>Polygon Count:</label>
 			<input
@@ -219,7 +186,6 @@
 			>
 			<span class="value">{polygonCount}</span>
 		</div>
-
 		<div class="control-row">
 			<label>Vertex Precision:</label>
 			<input
@@ -232,7 +198,6 @@
 			>
 			<span class="value">{vertexPrecision}px</span>
 		</div>
-
 		<div class="control-row">
 			<label>Animation Speed:</label>
 			<input
@@ -245,7 +210,6 @@
 			>
 			<span class="value">{animationSpeed.toFixed(1)}x</span>
 		</div>
-
 		<div class="checkbox-row">
 			<label class="checkbox-label">
 				<input
@@ -256,7 +220,6 @@
 				Z-Buffer (Depth Testing)
 			</label>
 		</div>
-
 		<div class="checkbox-row">
 			<label class="checkbox-label">
 				<input
@@ -267,7 +230,6 @@
 				Backface Culling
 			</label>
 		</div>
-
 		<div class="checkbox-row">
 			<label class="checkbox-label">
 				<input
@@ -278,14 +240,12 @@
 				PS1 Dithering
 			</label>
 		</div>
-
 		<div class="button-row">
 			<button class="ps1-button" onclick={resetSurface}>Regenerate</button>
 			<button class="ps1-button" onclick={() => animationSpeed = animationSpeed > 0 ? 0 : 1}>
 				{animationSpeed > 0 ? 'Pause' : 'Resume'} Animation
 			</button>
 		</div>
-
 		<div class="status-panel ps1-panel">
 			<h4>=� Rendering Stats</h4>
 			<div class="status-item">Vertices: {vertices.length}</div>
@@ -295,23 +255,21 @@
 			<div class="status-item">Frame Time: {perfMetrics.frameTime.toFixed(1)}ms</div>
 		</div>
 	</div>
-
 	<div class="surface-viewport ps1-3d-scene {surfaceConfigs.find(c => c.id === surfaceType)?.className}">
 		<div class="surface-grid {enableDithering ? 'ps1-dithered' : ''}">
 			<!-- Background Grid -->
 			<div class="grid-background"></div>
-
 			<!-- 3D Surface Visualization -->
 			<div class="surface-mesh">
 				{#each faces.slice(0, Math.min(faces.length, 800)) as face, i}
 					<div
 						class="surface-polygon {lightingModel}"
-						style=";
+						style="
 							--face-index: {i};
 							--normal-x: {face.normal.x};
 							--normal-y: {face.normal.y};
 							--normal-z: {face.normal.z};
-							animation-delay: {i * 0.001}s;
+							animation-delay: {i * 0.001};
 							z-index: {enableZBuffer ? Math.floor(100 - (face.vertices.reduce((sum, vi) => sum + vertices[vi].z, 0) / 3) * 0.1) : 'auto'};
 						"
 					>
@@ -320,7 +278,6 @@
 					</div>
 				{/each}
 			</div>
-
 			<!-- PS1-style artifacts -->
 			{#if surfaceType === 'wireframe'}
 				<div class="wireframe-overlay">
@@ -331,13 +288,12 @@
 								left: {20 + (i * 15) % 80}%;
 								top: {30 + (i * 7) % 40}%;
 								transform: rotate({i * 45}deg);
-								animation-delay: {i * 0.1}s;
+								animation-delay: {i * 0.1};
 							"
 						></div>
 					{/each}
 				</div>
 			{/if}
-
 			<!-- Vertex markers for debugging -->
 			{#if surfaceType === 'vertex'}
 				<div class="vertex-markers">
@@ -355,7 +311,6 @@
 				</div>
 			{/if}
 		</div>
-
 		<!-- PS1 HUD overlay -->
 		<div class="hud-overlay">
 			<div class="hud-corner top-left">
@@ -376,32 +331,27 @@
 			</div>
 		</div>
 	</div>
-
 	<div class="info-panel ps1-terminal">
 		<h4>PS1 Surface Rendering Features</h4>
-		<p>This demo showcases PlayStation 1 era 3D surface rendering techniques:</p>
-
+		<p>This demo showcases PlayStation 1 era 3D surface rendering techniques: </p>
 		<h5>Wireframe Mode:</h5>
 		<ul>
 			<li>Classic vector-based wireframe rendering</li>
 			<li>No hidden surface removal</li>
 			<li>Pure geometric visualization</li>
 		</ul>
-
 		<h5>Flat Shaded:</h5>
 		<ul>
 			<li>One color per polygon face</li>
 			<li>No Gouraud or Phong smoothing</li>
 			<li>Sharp polygon edges visible</li>
 		</ul>
-
 		<h5>Textured Surfaces:</h5>
 		<ul>
 			<li>Low-resolution texture mapping</li>
 			<li>Nearest-neighbor filtering (pixelated)</li>
 			<li>UV coordinate precision limitations</li>
 		</ul>
-
 		<h5>PS1 Technical Limitations:</h5>
 		<ul>
 			<li><strong>Fixed-Point Math:</strong> Vertex precision limited to avoid floating-point</li>
@@ -412,9 +362,8 @@
 		</ul>
 	</div>
 </div>
-
 <style>
-	.ps1-surface-container {;
+	.ps1-surface-container {
 		min-height: 100vh;
 		background: #0a0a0a;
 		color: #fff;
@@ -422,25 +371,21 @@
 		overflow-x: hidden;
 		position: relative;
 	}
-
 	.story-header {
 		text-align: center;
 		padding: 20px;
 		margin-bottom: 20px;
 	}
-
 	.story-header h1 {
 		font-size: 2.5em;
 		color: #ff6600;
 		text-shadow: 0 0 20px rgba(255, 102, 0, 0.5);
 		margin-bottom: 10px;
 	}
-
 	.ps1-subtitle {
 		color: #888;
 		font-size: 14px;
 	}
-
 	.controls-panel {
 		background: rgba(0, 0, 0, 0.9);
 		border: 2px solid #ff6600;
@@ -451,59 +396,49 @@
 		position: relative;
 		z-index: 100;
 	}
-
 	.controls-panel h3 {
 		color: #ff6600;
 		margin-top: 0;
 	}
-
 	.surface-type-selector {
 		margin-bottom: 20px;
 	}
-
 	.surface-type-selector label {
 		display: block;
 		margin-bottom: 10px;
 		color: #ccc;
 		font-size: 14px;
 	}
-
 	.surface-buttons {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 8px;
 	}
-
 	.surface-btn {
 		padding: 8px 10px;
 		font-size: 11px;
 		border-radius: 3px;
-		transition: all 0.2s;
+		transition: all 0.2;
 	}
-
 	.surface-btn.active {
 		background: rgba(255, 102, 0, 0.2);
 		border-color: #ff6600;
 		box-shadow: 0 0 10px rgba(255, 102, 0, 0.4);
 	}
-
 	.control-row {
 		display: flex;
 		align-items: center;
 		margin-bottom: 15px;
 		gap: 10px;
 	}
-
 	.control-row label {
 		min-width: 120px;
 		font-size: 12px;
 		color: #ccc;
 	}
-
 	.checkbox-row {
 		margin-bottom: 10px;
 	}
-
 	.checkbox-label {
 		display: flex;
 		align-items: center;
@@ -512,11 +447,9 @@
 		color: #ccc;
 		cursor: pointer;
 	}
-
 	.ps1-checkbox {
 		accent-color: #ff6600;
 	}
-
 	.ps1-slider {
 		flex: 1;
 		background: #222;
@@ -524,20 +457,17 @@
 		height: 20px;
 		accent-color: #ff6600;
 	}
-
 	.value {
 		min-width: 50px;
 		font-size: 11px;
 		color: #ffff00;
 		text-align: right;
 	}
-
 	.button-row {
 		display: flex;
 		gap: 10px;
 		margin: 15px 0;
 	}
-
 	.ps1-button {
 		background: #333;
 		border: 2px solid #ff6600;
@@ -547,14 +477,12 @@
 		font-size: 12px;
 		cursor: pointer;
 		border-radius: 4px;
-		transition: all 0.2s;
+		transition: all 0.2;
 	}
-
 	.ps1-button:hover {
 		background: rgba(255, 102, 0, 0.1);
 		box-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
 	}
-
 	.status-panel {
 		background: rgba(40, 20, 0, 0.8);
 		border: 1px solid #ff6600;
@@ -562,19 +490,16 @@
 		padding: 15px;
 		margin-top: 20px;
 	}
-
 	.status-panel h4 {
 		color: #ff6600;
 		margin-top: 0;
 		margin-bottom: 10px;
 	}
-
 	.status-item {
 		margin: 5px 0;
 		font-size: 12px;
 		color: #aaa;
 	}
-
 	.surface-viewport {
 		position: relative;
 		height: 60vh;
@@ -587,14 +512,12 @@
 		transform-style: preserve-3d;
 		background: radial-gradient(circle at 30% 30%, #2a1810, #1a1000);
 	}
-
 	.surface-grid {
 		position: relative;
 		width: 100%;
 		height: 100%;
 		transform-style: preserve-3d;
 	}
-
 	.grid-background {
 		position: absolute;
 		top: 0;
@@ -608,7 +531,6 @@
 		opacity: 0.3;
 		z-index: 1;
 	}
-
 	.surface-mesh {
 		position: absolute;
 		top: 0;
@@ -618,7 +540,6 @@
 		transform-style: preserve-3d;
 		z-index: 2;
 	}
-
 	.surface-polygon {
 		position: absolute;
 		width: 20px;
@@ -626,7 +547,6 @@
 		transform-origin: center;
 		animation: polygonFloat 3s ease-in-out infinite;
 	}
-
 	.triangle-face {
 		width: 0;
 		height: 0;
@@ -636,7 +556,6 @@
 		transform-origin: center bottom;
 		animation: trianglePulse 2s ease-in-out infinite;
 	}
-
 	/* Surface type styles */
 	.ps1-wireframe .triangle-face {
 		border-bottom-color: transparent;
@@ -644,12 +563,10 @@
 		width: 15px;
 		height: 15px;
 	}
-
 	.ps1-flat-shaded .triangle-face {
 		border-bottom-color: #ff4400;
 		filter: brightness(calc(0.5 + 0.5 * var(--normal-y, 0)));
 	}
-
 	.ps1-textured-low .triangle-face {
 		border-bottom-color: transparent;
 		background: conic-gradient(from 0deg, #ff6600, #ff4400, #cc3300, #ff6600);
@@ -658,7 +575,6 @@
 		image-rendering: pixelated;
 		filter: contrast(1.2) saturate(0.8);
 	}
-
 	.ps1-vertex-colored .triangle-face {
 		border-bottom-color: transparent;
 		background: linear-gradient(45deg,
@@ -669,7 +585,6 @@
 		height: 16px;
 		border-radius: 2px;
 	}
-
 	.wireframe-overlay {
 		position: absolute;
 		top: 0;
@@ -679,7 +594,6 @@
 		z-index: 3;
 		pointer-events: none;
 	}
-
 	.wire-segment {
 		position: absolute;
 		width: 40px;
@@ -687,7 +601,6 @@
 		background: linear-gradient(90deg, transparent, #ff6600, transparent);
 		animation: wireGlow 2s ease-in-out infinite;
 	}
-
 	.vertex-markers {
 		position: absolute;
 		top: 0;
@@ -697,7 +610,6 @@
 		z-index: 4;
 		pointer-events: none;
 	}
-
 	.vertex-point {
 		position: absolute;
 		width: 3px;
@@ -705,7 +617,6 @@
 		border-radius: 1px;
 		animation: vertexPulse 1.5s ease-in-out infinite;
 	}
-
 	.ps1-dithered::before {
 		content: '';
 		position: absolute;
@@ -722,7 +633,6 @@
 		pointer-events: none;
 		z-index: 10;
 	}
-
 	.hud-overlay {
 		position: absolute;
 		top: 0;
@@ -732,7 +642,6 @@
 		pointer-events: none;
 		z-index: 20;
 	}
-
 	.hud-corner {
 		position: absolute;
 		padding: 8px 12px;
@@ -740,44 +649,36 @@
 		border: 1px solid #ff6600;
 		font-size: 10px;
 	}
-
 	.hud-corner.top-left {
 		top: 10px;
 		left: 10px;
 		border-bottom-right-radius: 8px;
 	}
-
 	.hud-corner.top-right {
 		top: 10px;
 		right: 10px;
 		border-bottom-left-radius: 8px;
 	}
-
 	.hud-corner.bottom-left {
 		bottom: 10px;
 		left: 10px;
 		border-top-right-radius: 8px;
 	}
-
 	.hud-corner.bottom-right {
 		bottom: 10px;
 		right: 10px;
 		border-top-left-radius: 8px;
 	}
-
 	.hud-text {
 		color: #888;
 		margin-bottom: 2px;
 	}
-
 	.hud-value {
 		color: #ff6600;
 		font-weight: bold;
 	}
-
 	.hud-value.status-ok { color: #00ff88; }
 	.hud-value.status-off { color: #888; }
-
 	.info-panel {
 		background: rgba(0, 0, 0, 0.9);
 		border: 2px solid #ff6600;
@@ -786,27 +687,22 @@
 		margin: 20px;
 		color: #ccc;
 	}
-
 	.info-panel h4 {
 		color: #ff6600;
 		margin-bottom: 15px;
 	}
-
 	.info-panel h5 {
 		color: #ffaa00;
 		margin: 15px 0 8px 0;
 	}
-
 	.info-panel ul {
 		margin: 10px 0;
 		padding-left: 20px;
 	}
-
 	.info-panel li {
 		margin: 5px 0;
 		line-height: 1.4;
 	}
-
 	/* Animations */
 	@keyframes polygonFloat {
 		0%, 100% {
@@ -819,7 +715,6 @@
 			transform: translateY(2px) rotateZ(120deg);
 		}
 	}
-
 	@keyframes trianglePulse {
 		0%, 100% {
 			transform: scale(1) rotateY(0deg);
@@ -830,7 +725,6 @@
 			opacity: 1;
 		}
 	}
-
 	@keyframes wireGlow {
 		0%, 100% {
 			opacity: 0.3;
@@ -841,7 +735,6 @@
 			filter: brightness(1.5);
 		}
 	}
-
 	@keyframes vertexPulse {
 		0%, 100% {
 			transform: scale(1);
@@ -852,7 +745,6 @@
 			opacity: 1;
 		}
 	}
-
 	/* PS1 Effects */
 	.ps1-scanlines::before {
 		content: '';
@@ -870,41 +762,34 @@
 		);
 		pointer-events: none;
 	}
-
 	.ps1-text-glow {
 		text-shadow:
 			0 0 5px currentColor,
 			0 0 10px currentColor,
 			0 0 15px currentColor;
 	}
-
 	.ps1-border {
 		box-shadow:
 			inset 0 0 10px rgba(255, 102, 0, 0.1),
 			0 0 20px rgba(255, 102, 0, 0.2);
 	}
-
 	.ps1-3d-scene {
 		filter: contrast(1.2) saturate(1.1);
 	}
-
 	/* Responsive */
 	@media (max-width: 768px) {
 		.controls-panel {
 			max-width: 100%;
 			margin: 10px;
 		}
-
 		.surface-viewport {
 			height: 50vh;
 			min-height: 300px;
 			margin: 10px;
 		}
-
 		.story-header h1 {
 			font-size: 2em;
 		}
-
 		.surface-buttons {
 			grid-template-columns: 1fr;
 		}

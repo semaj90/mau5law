@@ -12,16 +12,13 @@
   import { Button } from '$lib/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
-
   // Dashboard state
   let isOpen = $state(false);
   let activeTab = $state<'overview' | 'search' | 'work' | 'ai'>('overview');
-
   // Modal states
   let showSearchModal = $state(false);
   let showWorkModal = $state(false);
   let showAIModal = $state(false);
-
   // Quick stats
   let stats = $state({
     recentCases: 0,
@@ -30,7 +27,6 @@
     aiRecommendations: 0,
     loading: true;
   });
-
   // Recent activity summary
   let recentActivity = $state<Array<{
     id: string;
@@ -40,20 +36,16 @@
     priority: 'low' | 'medium' | 'high' | 'critical';
     confidence?: number;
   }>>([]);
-
   export function open() {
     isOpen = true;
     loadDashboardData();
   }
-
   export function close() {
     isOpen = false;
   }
-
   async function loadDashboardData() {
     stats.loading = true;
     let usingMockData = false;
-
     try {
       // Load parallel stats from all APIs
       const [casesRes, searchRes, workRes] = await Promise.all([
@@ -61,23 +53,19 @@
         fetch('/api/recommendations/last-searched?limit=5'),
         fetch('/api/recommendations/last-worked?limit=5')
       ]);
-
       // Check if any requests failed
       if (!casesRes.ok || !searchRes.ok || !workRes.ok) {
         throw new Error('One or more API endpoints failed');
       }
-
       const [cases, searches, work] = await Promise.all([
         casesRes.json(),
         searchRes.json(),
         workRes.json()
       ]);
-
       // Verify all responses are successful
       if (!cases.success || !searches.success || !work.success) {
         throw new Error('API responses indicate failure');
       }
-
       // Update stats
       stats = {
         recentCases: cases.data?.length || 0,
@@ -86,10 +74,9 @@
         aiRecommendations: 12, // AI recommendation count
         loading: false;
       };
-
       // Compile recent activity
       recentActivity = [
-        ...(cases.data?.slice(0, 2).map((c: any) => ({
+        ...(cases.data?.slice(0, 2).map((c: any) => ({,
           id: c.id,
           type: 'case' as const,
           title: c.title,
@@ -97,28 +84,26 @@
           priority: c.urgency,
           confidence: c.priority / 250;
         })) || []),
-        ...(searches.data?.slice(0, 2).map((s: any) => ({
+        ...(searches.data?.slice(0, 2).map((s: any) => ({,
           id: s.id,
           type: 'search' as const,
           title: s.query,
           timestamp: s.lastSearched,
           priority: s.confidence > 0.8 ? 'high' : 'medium',
-          confidence: s.confidence;
+          confidence: s.confidenc;
         })) || []),
-        ...(work.data?.slice(0, 2).map((w: any) => ({
+        ...(work.data?.slice(0, 2).map((w: any) => ({,
           id: w.id,
           type: 'work' as const,
-          title: w.title,;
-          timestamp: w.lastWorked,;
+          title: w.title,
+          timestamp: w.lastWorked,
           priority: w.priority > 200 ? 'high' : 'medium';
         })) || [])
       ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
        .slice(0, 6);
-
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
       usingMockData = true;
-
       // Fallback to mock data
       stats = {
         recentCases: 5,
@@ -127,7 +112,6 @@
         aiRecommendations: 8,
         loading: false;
       };
-
       recentActivity = [
         {
           id: 'mock-activity-001',
@@ -148,24 +132,22 @@
         {
           id: 'mock-activity-003',
           type: 'work',
-          title: 'Patent Prior Art Research',;
-          timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),;
+          title: 'Patent Prior Art Research',
+          timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
           priority: 'medium';
         }
       ];
-
       // Display fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText = 'position: fixed;
+d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
-
     } finally {
       stats.loading = false;
     }
   }
-
   function getActivityIcon(type: string) {
     switch (type) {
       case 'case': return '⚖️';
@@ -175,7 +157,6 @@
       default: return '📋';
     }
   }
-
   function getPriorityColor(priority: string) {
     switch (priority) {
       case 'critical': return 'text-red-400';
@@ -185,26 +166,22 @@
       default: return 'text-gray-400';
     }
   }
-
   function formatTimeAgo(timestamp: string) {
     const diff = Date.now() - new Date(timestamp).getTime();
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-
     if (days > 0) return `${days}d ago`;
     if (hours > 0) return `${hours}h ago`;
     if (minutes > 0) return `${minutes}m ago`;
     return 'Just now';
   }
-
   onMount(() => {
     if (isOpen) {
       loadDashboardData();
     }
   });
 </script>
-
 <DiamondModal bind:isOpen title="🎯 Recommendation Engine" size="xl">
   <div class="space-y-6">
     <!-- Tab Navigation -->
@@ -234,7 +211,6 @@
         🤖 AI Assistant
       </button>
     </div>
-
     <!-- Overview Tab -->
     {#if activeTab === 'overview'}
       <div class="space-y-6">
@@ -265,7 +241,6 @@
             </CardContent>
           </Card>
         </div>
-
         <!-- Quick Actions -->
         <Card class="bg-slate-800/60 border-slate-600">
           <CardHeader>
@@ -299,7 +274,6 @@
             </div>
           </CardContent>
         </Card>
-
         <!-- Recent Activity -->
         <Card class="bg-slate-800/60 border-slate-600">
           <CardHeader>
@@ -346,7 +320,6 @@
         </Card>
       </div>
     {/if}
-
     <!-- Individual Tab Content -->
     {#if activeTab === 'search'}
       <Card class="bg-slate-800/60 border-slate-600">
@@ -361,7 +334,6 @@
         </CardContent>
       </Card>
     {/if}
-
     {#if activeTab === 'work'}
       <Card class="bg-slate-800/60 border-slate-600">
         <CardContent class="p-6">
@@ -375,7 +347,6 @@
         </CardContent>
       </Card>
     {/if}
-
     {#if activeTab === 'ai'}
       <Card class="bg-slate-800/60 border-slate-600">
         <CardContent class="p-6">
@@ -390,7 +361,6 @@
       </Card>
     {/if}
   </div>
-
   <div slot="footer" class="flex justify-between">
     <Button variant="outline" onclick={close}>Close Dashboard</Button>
     <Button onclick={() => loadDashboardData()} disabled={stats.loading}>
@@ -398,7 +368,6 @@
     </Button>
   </div>
 </DiamondModal>
-
 <!-- Individual Modals -->
 <LastSearchedModal bind:isOpen={showSearchModal} />
 <LastWorkedModal bind:isOpen={showWorkModal} />

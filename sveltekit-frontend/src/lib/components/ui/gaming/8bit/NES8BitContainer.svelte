@@ -4,7 +4,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!--
   NES 8-Bit Container Component
   Authentic NES.css container with enhanced features
-  
   Features:
   - Hardware-accurate NES styling
   - Title support with proper theming
@@ -14,11 +13,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {   } from "svelte";
   import type { GamingComponentProps } from '../types/gaming-types.js';
   import { NES_COLOR_PALETTE } from '../constants/gaming-constants.js';
-
   interface Props extends GamingComponentProps {
     // Container specific props
     title?: string;
@@ -32,7 +28,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     maxWidth?: string;
     minHeight?: string;
   }
-
   let {
     era = '8bit',
     variant = 'primary',
@@ -52,22 +47,18 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     onClick,
     onHover;
   }: Props = $props();
-
   // Events now handled via props in Svelte 5
-  // 
-
+  //
   const handleClick = () => {
     if (disabled) return;
     onClick?.();
-    ondispatch?.();
+    // ondispatch removed;
   };
-
   const handleHover = () => {
     if (disabled) return;
     onHover?.();
-    ondispatch?.();
+    // ondispatch removed;
   };
-
   // Get container color based on variant
   const getVariantStyles = (variant: string) => {
     const styleMap = {
@@ -104,7 +95,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     };
     return styleMap[variant as keyof typeof styleMap] || styleMap.primary;
   };
-
   const getPaddingValue = (padding: string) => {
     const paddingMap = {
       'none': '0',
@@ -114,7 +104,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     };
     return paddingMap[padding as keyof typeof paddingMap] || paddingMap.medium;
   };
-
   let variantStyles = $derived(getVariantStyles(variant));
   let paddingValue = $derived(getPaddingValue(padding));
   let containerClasses = $derived([
@@ -128,10 +117,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     enableCRTEffect ? 'enable-crt' : '',
     disabled ? 'disabled' : '',
     className
-  ].filter(item => item.join)(' '));
+  ].filter(Boolean).join(' '));
 </script>
-
-<div 
+<div
   class={containerClasses}
   style="
     --container-bg: {variantStyles.backgroundColor};
@@ -149,12 +137,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   {#if title && containerType === 'with-title'}
     <p class="title">{title}</p>
   {/if}
-  
   <div class="container-content">
     {@render children?.()}
   </div>
 </div>
-
 <style>
   :global(.nes-8bit-container) {
 /* Base container styling */ background-color: var(--container-bg);
@@ -166,8 +152,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     font-size: 12px;
     line-height: 1.5;
 /* Pixel perfect rendering */ image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edge;
+    image-rendering: crisp-edge;
 /* Layout */ position: relative;
     display: block;
     box-sizing: border-box;
@@ -180,7 +166,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 /* Container variants */ :global(.nes-8bit-container.with-title) {
     margin-top: 1rem;
   }
-
   :global(.nes-8bit-container.with-title .title) {
     position: absolute;
     top: -0.75rem;
@@ -196,11 +181,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 /* Ensure title has proper background */ border: 1px solid var(--container-border);
     border-radius: 0;
   }
-
   :global(.nes-8bit-container.is-rounded) {
     border-radius: 4px;
   }
-
   :global(.nes-8bit-container.is-dark) {
     background-color: #0f0f0f;
     border-color: #3cbcfc;
@@ -209,11 +192,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     --container-border: #3cbcfc;
     --container-text: #fcfcfc;
   }
-
   :global(.nes-8bit-container.is-centered) {
     text-align: center;
   }
-
   :global(.nes-8bit-container.is-centered .container-content) {
     display: flex;
     flex-direction: column;
@@ -252,16 +233,13 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     user-select: none;
     transition: transform 50ms ease-out;
   }
-
   :global(.nes-8bit-container[role="button"]:hover) {
     transform: scale(1.01);
     filter: brightness(1.05);
   }
-
   :global(.nes-8bit-container[role="button"]:active) {
     transform: scale(0.99);
   }
-
   :global(.nes-8bit-container.disabled) {
     opacity: 0.6;
     cursor: not-allowed;
@@ -271,7 +249,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     outline: 2px solid #ffffff;
     outline-offset: 2px;
   }
-/* Scanlines effect */ :global(.nes-8bit-container.enable-scanlines::after) {
+/* Scanlines effect */ :global($1) {
     content: '';
     position: absolute;
     top: 0;
@@ -294,7 +272,6 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.3)
 /* Content spacing */ .container-content > :global(*:first-child) {
     margin-top: 0;
   }
-
   .container-content > :global(*:last-child) {
     margin-bottom: 0;
   }
@@ -306,12 +283,10 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.3)
     letter-spacing: 1px;
     margin: 1rem 0 0.5rem 0;
   }
-
   :global(.nes-8bit-container h1) { font-size: 14px; }
   :global(.nes-8bit-container h2) { font-size: 12px; }
   :global(.nes-8bit-container h3) { font-size: 11px; }
 :global(.nes-8bit-container h4), :global(.nes-8bit-container h5), :global(.nes-8bit-container h6) { font-size: 10px; }
-
   :global(.nes-8bit-container p) {
     margin: 0.5rem 0;
     line-height: 1.6;
@@ -320,7 +295,6 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.3)
     margin: 0.5rem 0;
     padding-left: 2rem;
   }
-
   :global(.nes-8bit-container li) {
     margin: 0.25rem 0;
     line-height: 1.4;
@@ -332,7 +306,6 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.3)
     font-family: 'Press Start 2P', 'Courier New', monospace;
     font-size: 10px;
   }
-
   :global(.nes-8bit-container pre) {
     background-color: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--container-border);
@@ -340,7 +313,6 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.3)
     overflow-x: auto;
     margin: 0.5rem 0;
   }
-
   :global(.nes-8bit-container pre code) {
     background: none;
     border: none;
@@ -351,12 +323,10 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.3)
       font-size: 10px;
       padding: 12px;
     }
-    
     :global(.nes-8bit-container.with-title .title) {
       font-size: 9px;
       left: 0.5rem;
     }
-    
     :global(.nes-8bit-container h1) { font-size: 12px; }
     :global(.nes-8bit-container h2) { font-size: 11px; }
     :global(.nes-8bit-container h3) { font-size: 10px; }
@@ -365,7 +335,6 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 8px rgba(0, 0, 0, 0.3)
     :global(.nes-8bit-container) {
       border-width: 1px;
     }
-    
     :global(.nes-8bit-container.with-title .title) {
       border-width: 1px;
     }

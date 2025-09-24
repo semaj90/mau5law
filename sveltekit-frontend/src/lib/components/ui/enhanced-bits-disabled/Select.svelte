@@ -1,22 +1,19 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { Snippet } from 'svelte';
   import { Select as BitsSelect } from 'bits-ui';
   import { cn } from '$lib/utils/cn';
   import { ChevronDown, Check } from 'lucide-svelte';
-
   // Extract available components from BitsSelect
   const {
-    Root: SelectRoot,
-    Trigger: SelectTrigger,
-    Content: SelectContent,
-    Item: SelectItem,
+    Root: SelectRoot
+    Trigger: SelectTrigger
+    Content: SelectContent
+    Item: SelectItem
     // Value and other components might not be available
-    Portal: SelectPortal,
+    Portal: SelectPortal
     Group: SelectGroup
   } = BitsSelect;
-
   interface SelectOption {
     value: string;
     label: string;
@@ -24,7 +21,6 @@
     disabled?: boolean;
     category?: string;
   }
-
   interface SelectProps {
     /** Selected value */
     value?: string;
@@ -59,7 +55,6 @@
     /** Custom content class */
     contentClass?: string;
   }
-
   let {
     value = $bindable(),
     onValueChange,
@@ -77,15 +72,12 @@
     triggerClass = '',
     contentClass = ''
   }: SelectProps = $props();
-
   // Group options by category if they have categories
   let groupedOptions = $derived((() => {
     const hasCategories = options.some(option => option.category);
-
     if (!hasCategories) {
       return { '': options };
     }
-
     return options.reduce((acc, option) => {
       const category = option.category || 'Other';
       if (!acc[category]) {
@@ -95,7 +87,6 @@
       return acc;
     }, as Record<string, SelectOption[]>);
   })());
-
   // Reactive trigger classes using $derived
   let triggerClasses = $derived(cn(
     'bits-select-trigger',
@@ -103,41 +94,37 @@
       'h-8 px-3 text-xs': size === 'sm',
       'h-10 px-3 text-sm': size === 'md',
       'h-12 px-4 text-base': size === 'lg',
-      'w-full': fullWidth,
-      'nier-bits-select': legal,
-      'yorha-input': evidenceCategory || caseType,
-      'border-red-500 bg-red-50': error,
-      'border-green-500 bg-green-50': aiRecommendations && value,
-      'font-gothic tracking-wide': legal,
+      'w-full': fullWidth
+      'nier-bits-select': legal
+      'yorha-input': evidenceCategory || caseType
+      'border-red-500 bg-red-50': error
+      'border-green-500 bg-green-50': aiRecommendations && value
+      'font-gothic tracking-wide': legal
       'cursor-not-allowed opacity-50':disabled
     },
     triggerClass
   ));
-
   // Reactive content classes using $derived
   let selectContentClasses = $derived(cn(
     'bits-select-content',
     {
-      'nier-panel-elevated shadow-xl': legal,
-      'border-2 border-nier-border-primary': evidenceCategory,
-      'yorha-card': caseType,
+      'nier-panel-elevated shadow-xl': legal
+      'border-2 border-nier-border-primary': evidenceCategory
+      'yorha-card': caseType
       'bg-gradient-to-b from-nier-bg-primary to-nier-bg-secondary': legal
     },
     contentClass
   ));
-
   // Handle value change
   function handleValueChange(newValue: string) {
-    value = newValue;
+    value = newValu;
     onValueChange?.(newValue);
   }
-
   // Get selected option label
   let selectedLabel = $derived(
     options.find(option => option.value === value)?.label || placeholder
   );
 </script>
-
 <div class="select-wrapper" class:w-full={fullWidth}>
   <SelectRoot {value} valuechange={handleValueChange} {disabled} type="single">
     <SelectTrigger class={triggerClasses}>
@@ -148,7 +135,6 @@
         <ChevronDown class="h-4 w-4 opacity-50" />
       </div>
     </SelectTrigger>
-
     <BitsSelect.Portal>
       <SelectContent class={selectContentClasses}>
         <BitsSelect.Viewport class="p-1">
@@ -175,14 +161,12 @@
       </SelectContent>
     </BitsSelect.Portal>
   </SelectRoot>
-
   {#if error && errorMessage}
     <div class="mt-1 text-xs text-red-600 font-medium">
       {errorMessage}
     </div>
   {/if}
 </div>
-
 {#snippet selectItem(option: SelectOption)}
   <SelectItem
     value={option.value}
@@ -200,7 +184,6 @@
     <div class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <Check class="h-4 w-4" />
     </div>
-
     <div class="pl-6">
       <div class="font-medium">
         {option.label}
@@ -213,14 +196,12 @@
     </div>
   </SelectItem>
 {/snippet}
-
-<style>/* @unocss-include */ .select-wrapper {;
+<style>/* @unocss-include */ .select-wrapper {
     position: relative;
   }
 /* Enhanced select animations for legal AI context */ :global(.bits-select-content) {
     animation: select-content-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-
   @keyframes select-content-show {
     from {
       opacity: 0;
@@ -236,20 +217,17 @@ background: linear-gradient( 135deg, var(--color-nier-bg-primary) 0%, var(--colo
     border: 2px solid var(--color-nier-border-secondary);
     transition: all 0.2s ease;
   }
-
   :global(.nier-bits-select:focus) {
     border-color: var(--color-nier-border-primary);
     box-shadow: 0 0 0 1px var(--color-nier-border-primary);
   }
-
   :global(.nier-panel-elevated) {
 box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 /* Evidence category specific styling */ :global([data-evidence-category] .bits-select-item) {
     position: relative;
   }
-
-  :global([data-evidence-category] .bits-select-item::before) {
+  :global($1) {
     content: '';
     position: absolute;
     left: 0;
@@ -262,7 +240,6 @@ box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.
     opacity: 0;
     transition: opacity 0.2s ease;
   }
-
   :global([data-evidence-category] .bits-select-item[data-highlighted]::before) {
     opacity: 1;
   }
@@ -272,16 +249,14 @@ background-image: radial-gradient(circle at 20% 80%, rgba(58, 55, 47, 0.05) 0%, 
 /* AI recommendations styling */ :global([data-ai-recommendations] .bits-select-item) {
     transition: all 0.2s ease;
   }
-
-  :global([data-ai-recommendations] .bits-select-item:hover) {
+  :global($1) {
 background: linear-gradient( 90deg, rgba(16, 185, 129, 0.1) 0%, transparent 100% );
   }
-/* Enhanced focus states for accessibility */ :global(.bits-select-trigger:focus-visible) {
+/* Enhanced focus states for accessibility */ :global($1) {
     outline: 2px solid var(--color-nier-border-primary);
     outline-offset: 2px;
   }
-
-  :global(.bits-select-item:focus-visible) {
+  :global($1) {
     outline: 2px solid var(--color-nier-border-primary);
     outline-offset: -2px;
   }

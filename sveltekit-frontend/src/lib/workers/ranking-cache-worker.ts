@@ -1,15 +1,12 @@
 // ranking-cache-worker.ts
 // Web Worker for WASM-accelerated ranking cache packing/unpacking & QUIC fetch
-
 // Message protocol
 // { type: 'init', wasmUrl?: string }
 // { type: 'pack', payload: RankingSet }
 // { type: 'unpack', blob: ArrayBuffer }
 // { type: 'fetch', key: string, endpoint?: string, format?: 'raw'|'json' }
-
 interface CanonicalResult { docId: string; score: number; flags: number; summaryHash: string; targetUrlId?: string }
 interface RankingSet { results: CanonicalResult[]; query: string; totalResults: number; timestamp: number; version: number }
-
 let wasm: any = null;
 let wasmReady = false;
 // Attempt to detect pre-injected WASM module (e.g., from wasm-pack bundle attaching to self.RankingWasm)
@@ -19,7 +16,6 @@ if (typeof self !== 'undefined' && self.RankingWasm) {
   wasmReady = true;
 }
 let defaultEndpoint = '/quic/rankings';
-
 self.onmessage = async (ev: MessageEvent) => {
   const msg = ev.data;
   try {
@@ -38,12 +34,12 @@ self.onmessage = async (ev: MessageEvent) => {
               wasmReady = false; // fallback JS
             }
           } else {
-            // Optional dynamic import stub (future Rust/wasm-pack bundle);
+            // Optional dynamic import stub (future Rust/wasm-pack bundle)
             try {
               // @ts-ignore - optional chunk, may fail silently
               const m = await import('../wasm/ranking_wasm_stub.js');
               if (m && m.default) { wasm = m.default; wasmReady = true; }
-            } catch {}
+            } catch (error) {}
           }
         }
         if (msg.endpoint) defaultEndpoint = msg.endpoint;
@@ -101,8 +97,7 @@ self.onmessage = async (ev: MessageEvent) => {
     (self as any).postMessage({ type:'error', error: err?.message || String(err) });
   }
 };
-
-// --- Minimal JS pack/unpack (mirrors canonical-result-cache.ts logic) ---;
+// --- Minimal JS pack/unpack (mirrors canonical-result-cache.ts logic) ---
 function packRankingSetJS(rankingSet: RankingSet): Uint8Array {
   const MAX_RESULTS = 1024;
   if (!rankingSet.results.length || rankingSet.results.length>MAX_RESULTS) throw new Error('invalid result count');
@@ -134,7 +129,6 @@ function packRankingSetJS(rankingSet: RankingSet): Uint8Array {
   view.setUint32(crcOffset, crc);
   return new Uint8Array(buffer,0,offset);
 }
-
 function unpackRankingSetJS(packed: Uint8Array): RankingSet {
   const view = new DataView(packed.buffer, packed.byteOffset, packed.byteLength);
   let offset=0;
@@ -158,7 +152,6 @@ function unpackRankingSetJS(packed: Uint8Array): RankingSet {
   }
   return { results, query:'', totalResults: results.length, timestamp: Date.now(), version };
 }
-
 function computeDocDelta(cur:string, prev:string){ if(!prev) return parseInt(cur)||0; return (parseInt(cur)||0)-(parseInt(prev)||0); }
 function applyDocDelta(prev:string, delta:number){ if(!prev) return delta.toString(); return ((parseInt(prev)||0)+delta).toString(); }
 function computeSummaryHash(s:string){ let h=0; for(let i=0;i<s.length;i++){ h=((h<<5)-h+s.charCodeAt(i)) & 0x3FFFFF;} return h; }
@@ -169,5 +162,4 @@ function read22Bits(view:DataView, offset:number){ const b0=view.getUint8(offset
 function writeString(view:DataView, offset:number, str:string){ const bytes=new TextEncoder().encode(str); offset=writeVarint(view, offset, bytes.length); for(let i=0;i<bytes.length;i++){ view.setUint8(offset++, bytes[i]); } return offset; }
 function readString(view:DataView, offset:number){ const lenRes=readVarint(view, offset); const len=lenRes.value; offset = lenRes.newOffset; const bytes=new Uint8Array(len); for(let i=0;i<len;i++){ bytes[i]=view.getUint8(offset++);} return { value: new TextDecoder().decode(bytes), newOffset: offset}; }
 function computeCRC32(data:Uint8Array){ let crc=0xFFFFFFFF; for(let i=0;i<data.length;i++){ crc^=data[i]; for(let j=0;j<8;j++){ crc = (crc>1) ^ (crc & 1 ? 0xEDB88320:0); } } return (~crc)>0; }
-
 export {};

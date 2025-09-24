@@ -1,16 +1,13 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Canvas Evidence Board with Fabric.js Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     onevidenceUpdated?: (event?: unknown) => void;
     onsave?: (event?: unknown) => void;
   }
-
-
   import { browser } from "$app/environment";
   import { onMount, onDestroy } from "svelte";
   import Button from '$lib/components/ui/enhanced-bits';
@@ -64,8 +61,8 @@ if (!browser) return;
       fabricCanvas = new fabricLib.Canvas(canvasElement, {
         backgroundColor: "#f8fafc",
         selection: !readonly,
-        preserveObjectStacking: true,
-        enableRetinaScaling: true,;
+        preserveObjectStacking: true
+        enableRetinaScaling: true
     })();
   });
       fabricLoaded = true;
@@ -73,13 +70,13 @@ if (!browser) return;
       // ...existing event setup...
       // --- XState workflow state machine ---
       const xstateModule = await import("xstate");
-      const { createMachine, createActor } = xstateModule;
+      const { createMachine, createActor } = xstateModul;
       const canvasMachine = createMachine({
         id: "canvasWorkflow",
-        initial: "evidence",;
+        initial: "evidence",
         states: {
           evidence: { on: { DRAW: "drawing", ANNOTATE: "annotation" } },
-          drawing: { on: { EVIDENCE: "evidence", ANNOTATE: "annotation" } },;
+          drawing: { on: { EVIDENCE: "evidence", ANNOTATE: "annotation" } },
           annotation: { on: { EVIDENCE: "evidence", DRAW: "drawing" } },
         },
       });
@@ -100,22 +97,19 @@ if (!browser) return;
     } catch (error) {
       console.error("Failed to initialize Fabric.js or XState:", error);
       notifications.add({
-        type: "error",;
-        title: "Canvas Error",;
+        type: "error",
+        title: "Canvas Error",
         message:
-          "Failed to initialize canvas or workflow state. Some features may not work.",;
+          "Failed to initialize canvas or workflow state. Some features may not work.",
       });
   }
   });
-
   onDestroy(() => {
     if (canvasService) canvasService.stop();
     if (fabricCanvas) fabricCanvas.dispose();
   });
-
   async function addEvidenceToCanvas(item: any) {
     if (!fabricCanvas) return;
-
     try {
       const fabricModule = await import("fabric");
       const fabricLib = fabricModule.default;
@@ -127,8 +121,8 @@ if (!browser) return;
             top: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).y || 100,
             scaleX: ((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).width || 200) / img.width,
             scaleY: ((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).height || 150) / img.height,
-            selectable: !readonly,;
-            evented: !readonly,;
+            selectable: !readonly,
+            evented: !readonly,
           });
           fabricObject = img;
         } catch (imgError) {
@@ -140,9 +134,9 @@ if (!browser) return;
             width: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).width || 200,
             fontSize: 14,
             fontFamily: "Arial",
-            fill: "#6b7280",;
-            selectable: !readonly,;
-            evented: !readonly,;
+            fill: "#6b7280",
+            selectable: !readonly,
+            evented: !readonly,
           });
   }
       } else {
@@ -157,9 +151,9 @@ if (!browser) return;
           backgroundColor: "#ffffff",
           padding: 10,
           borderColor: "#e5e7eb",
-          cornerColor: "#3b82f6",;
-          selectable: !readonly,;
-          evented: !readonly,;
+          cornerColor: "#3b82f6",
+          selectable: !readonly,
+          evented: !readonly,
         });
   }
       // Add metadata
@@ -167,7 +161,6 @@ if (!browser) return;
         evidenceType: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).type,
         customType: "evidence",
       });
-
       fabricCanvas.add(fabricObject);
     } catch (error) {
       console.error("Error adding evidence to canvas:", error);
@@ -187,9 +180,7 @@ if (!browser) return;
   }}
   function selectTool(tool: string) {
     selectedTool = tool;
-
     if (!fabricCanvas) return;
-
     switch (tool) {
       case "select":
         fabricCanvas.isDrawingMode = false;
@@ -207,7 +198,6 @@ if (!browser) return;
   }}
   async function addShape(shape: "rectangle" | "circle") {
     if (!fabricCanvas) return;
-
     try {
       const fabricModule = await import("fabric");
       const fabricLib = fabricModule.default;
@@ -216,25 +206,24 @@ if (!browser) return;
           left: 100,
           top: 100,
           width: 100,
-          height: 80,;
-          fill: "rgba(59, 130, 246, 0.1)",;
+          height: 80,
+          fill: "rgba(59, 130, 246, 0.1)",
           stroke: "#3b82f6",
-          strokeWidth: 2,;
+          strokeWidth: 2,
         }));
       } else {
         fabricObject = new fabricLib.Circle({
           left: 100,
           top: 100,
-          radius: 50,;
-          fill: "rgba(16, 185, 129, 0.1)",;
+          radius: 50,
+          fill: "rgba(16, 185, 129, 0.1)",
           stroke: "#10b981",
-          strokeWidth: 2,;
+          strokeWidth: 2,
         });
   }
       fabricObject.set({
         customType: "shape",
       });
-
       fabricCanvas.add(fabricObject);
       fabricCanvas.setActiveObject(fabricObject);
       saveCanvasState();
@@ -243,26 +232,22 @@ if (!browser) return;
   }}
   async function addTextBox() {
     if (!fabricCanvas) return;
-
     try {
       const fabricModule = await import("fabric");
-      const fabric = fabricModule.default || fabricModule;
-
+      const fabric = fabricModule.default || fabricModul;
       const textbox = new fabric.Textbox("Type here...", {
         left: 100,
         top: 100,
         width: 200,
         fontSize: 16,
-        fontFamily: "Arial",;
+        fontFamily: "Arial",
         fill: "#1f2937",
-        backgroundColor: "rgba(255, 255, 255, 0.9)",;
-        padding: 10,;
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        padding: 10,
       });
-
       textbox.set({
         customType: "text",
       });
-
       fabricCanvas.add(textbox);
       fabricCanvas.setActiveObject(textbox);
       saveCanvasState();
@@ -270,7 +255,6 @@ if (!browser) return;
       console.error("Error adding text:", error);
   }}
   let currentPath = $state<any >(null);
-
   function startDrawing(pointer: { x: number; y: number }) {
     // Drawing implementation
   }
@@ -282,18 +266,15 @@ if (!browser) return;
   }
   function saveCanvasState() {
     if (!fabricCanvas) return;
-
     const state = JSON.stringify(
       fabricCanvas.toJSON(["evidenceId", "evidenceType", "customType"])
     );
-
     // Manage history
     if (historyIndex < canvasHistory.length - 1) {
       canvasHistory = canvasHistory.slice(0, historyIndex + 1);
   }
     canvasHistory.push(state);
     historyIndex++;
-
     // Limit history size
     if (canvasHistory.length > 50) {
       canvasHistory = canvasHistory.slice(1);
@@ -311,7 +292,6 @@ if (!browser) return;
   }}
   async function loadCanvasState(state: string) {
     if (!fabricCanvas) return;
-
     try {
       fabricCanvas.loadFromJSON(state, () => {
         fabricCanvas.renderAll();
@@ -322,9 +302,7 @@ if (!browser) return;
   }}
   function updateEvidencePositions() {
     if (!fabricCanvas) return;
-
     const objects = fabricCanvas.getObjects();
-
     objects.forEach((obj: any) => {
       if (obj.evidenceId) {
         onevidenceUpdated?.();
@@ -349,7 +327,6 @@ if (!browser) return;
   }
   function deleteSelected() {
     if (!fabricCanvas || readonly) return;
-
     const activeObjects = fabricCanvas.getActiveObjects();
     if (activeObjects.length > 0) {
       activeObjects.forEach((obj: any) => {
@@ -360,27 +337,25 @@ if (!browser) return;
   }}
   async function saveCanvas() {
     if (!fabricCanvas) return;
-
     const canvasData = JSON.stringify(
       fabricCanvas.toJSON(["evidenceId", "evidenceType", "customType"])
     );
     const positions = fabricCanvas
       .getObjects.filter((obj: any) => obj.evidenceId)
-      .map((obj: any) => ({
+      .map((obj: any) => ({,
         evidenceId: obj.evidenceId,
         x: obj.left,
-        y: obj.top,;
-        width: obj.width * obj.scaleX,;
-        height: obj.height * obj.scaleY,;
+        y: obj.top,
+        width: obj.width * obj.scaleX,
+        height: obj.height * obj.scaleY,
       }));
-
     // Wire up to SvelteKit API endpoint
     try {
       const response = await fetch("/api/canvas/save", {
-        method: "POST",;
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },;
+        },
         body: JSON.stringify({
           caseId,
           canvasData,
@@ -391,58 +366,53 @@ if (!browser) return;
         throw new Error("Failed to save canvas");
   }
       notifications.add({
-        type: "success",;
-        title: "Canvas Saved",;
-        message: "Evidence board saved successfully.",;
+        type: "success",
+        title: "Canvas Saved",
+        message: "Evidence board saved successfully.",
       });
     } catch (error) {
       notifications.add({
-        type: "error",;
-        title: "Save Failed",;
-        message: "Failed to save evidence board.",;
+        type: "error",
+        title: "Save Failed",
+        message: "Failed to save evidence board.",
       });
   }
     onsave?.();
   }
   async function exportCanvas() {
     if (!fabricCanvas) return;
-
     try {
       const dataURL = fabricCanvas.toDataURL({
-        format: "png",;
-        quality: 0.9,;
-        multiplier: 2,;
+        format: "png",
+        quality: 0.9,
+        multiplier: 2,
       });
-
       // Create download link
       const link = document.createElement("a");
       link.download = `evidence-board-${caseId || "canvas"}-${new Date().getTime()}.png`;
       link.href = dataURL;
       link.click();
-
       notifications.add({
-        type: "success",;
-        title: "Export Complete",;
-        message: "Evidence board exported successfully.",;
+        type: "success",
+        title: "Export Complete",
+        message: "Evidence board exported successfully.",
       });
     } catch (error) {
       console.error("Export error:", error);
       notifications.add({
-        type: "error",;
-        title: "Export Failed",;
-        message: "Failed to export evidence board.",;
+        type: "error",
+        title: "Export Failed",
+        message: "Failed to export evidence board.",
       });
   }}
   function clearCanvas() {
     if (!fabricCanvas || readonly) return;
-
     if (confirm("Are you sure you want to clear the entire canvas?")) {
       fabricCanvas.clear();
       fabricCanvas.backgroundColor = "#f8fafc";
       saveCanvasState();
   }}
 </script>
-
 <div class="space-y-4">
   <!-- Toolbar -->
   <div
@@ -481,7 +451,6 @@ selectTool("text")}
           <Type class="space-y-4" />
 </Button>
       </div>
-
       <!-- Shapes -->
       {#if !readonly}
         <div
@@ -505,7 +474,6 @@ addShape("circle")}
 </Button>
         </div>
       {/if}
-
       <!-- History -->
       <div
         class="space-y-4"
@@ -529,7 +497,6 @@ redo()}
           <Redo class="space-y-4" />
 </Button>
       </div>
-
       <!-- Zoom -->
       <div class="space-y-4">
         <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
@@ -549,7 +516,6 @@ resetZoom()}
         >
       </div>
     </div>
-
     <!-- Actions -->
     <div class="space-y-4">
       {#if !readonly}
@@ -569,14 +535,12 @@ exportCanvas()}>
 </Button>
     </div>
   </div>
-
   <!-- Canvas Container -->
   <div class="space-y-4">
     <div
       bind:this={canvasContainer}
       class="space-y-4"
     ></div>
-
     {#if !fabricLoaded}
       <div
         class="space-y-4"
@@ -590,7 +554,6 @@ exportCanvas()}>
       </div>
     {/if}
   </div>
-
   <!-- Instructions -->
   {#if fabricLoaded && evidenceItems.length === 0}
     <div
@@ -604,8 +567,6 @@ exportCanvas()}>
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
 </style>
-

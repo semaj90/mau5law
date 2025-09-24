@@ -9,7 +9,6 @@ Should be included in the root layout to ensure session is available everywhere
   import { browser } from '$app/environment';
   import { sessionStore, initUserDataSync } from '$lib/stores/sessionStore.svelte';
   import { userDataStore } from '$lib/stores/userDataStore';
-
   // Props for configuration
   let {
     enableAutoSync = true,
@@ -20,33 +19,26 @@ Should be included in the root layout to ensure session is available everywhere
     syncInterval?: number;
     enableDebugLogging?: boolean;
   } = $props();
-
   let syncIntervalId: number | null = null;
-
   // Debug logging helper
   function debugLog(message: string, ...args: any[]) {
     if (enableDebugLogging) {
       console.log(`[SessionInitializer] ${message}`, ...args);
     }
   }
-
   // Reactive effect for session sync (Svelte 5 style)
   $effect(() => {
     initUserDataSync();
   });
-
   // Initialize session when component mounts
   onMount(() => {
     debugLog('Initializing session...');
-
     // Subscribe to page data changes to detect session updates
     const unsubscribePage = page.subscribe(($page) => {
       if ($page.data) {
         debugLog('Page data updated, syncing session:', $page.data);
-
         // Initialize session store with page data
         sessionStore.init($page.data);
-
         // If user is authenticated, initialize user data
         if ($page.data.user?.id) {
           debugLog('User authenticated, initializing user data:', $page.data.user.id);
@@ -54,25 +46,21 @@ Should be included in the root layout to ensure session is available everywhere
         }
       }
     });
-
     // Set up auto-sync if enabled
     if (enableAutoSync && browser) {
       syncIntervalId = window.setInterval(() => {
         debugLog('Auto-sync triggered');
-
         // Check if session is still valid and refresh if needed
         sessionStore.refreshSession().then((user) => {
           if (user?.id) {
             debugLog('Session refreshed, syncing user data for:', user.id);
             // Optionally sync user data as well
-            // userDataStore.init(user.id);
+            // userDataStore.init(user.id)
           }
         });
       }, syncInterval);
-
       debugLog('Auto-sync enabled with interval:', syncInterval);
     }
-
     // Listen for visibility changes to sync when user returns to tab
     if (browser) {
       const handleVisibilityChange = () => {
@@ -81,19 +69,15 @@ Should be included in the root layout to ensure session is available everywhere
           sessionStore.refreshSession();
         }
       };
-
       document.addEventListener('visibilitychange', handleVisibilityChange);
-
       // Cleanup function for visibility listener
       return () => {
         document.removeEventListener('visibilitychange', handleVisibilityChange);
       };
     }
-
     // Return cleanup function for page subscription
-    return unsubscribePage;
+    return unsubscribePag;
   });
-
   // Cleanup on component destroy
   onDestroy(() => {
     if (syncIntervalId !== null) {
@@ -101,7 +85,6 @@ Should be included in the root layout to ensure session is available everywhere
       debugLog('Auto-sync interval cleared');
     }
   });
-
   // Listen for storage events to sync across tabs
   if (browser) {
     const handleStorageChange = (e: StorageEvent) => {
@@ -117,16 +100,13 @@ Should be included in the root layout to ensure session is available everywhere
         }
       }
     };
-
     window.addEventListener('storage', handleStorageChange);
-
     // Cleanup storage listener
     onDestroy(() => {
       window.removeEventListener('storage', handleStorageChange);
     });
   }
 </script>
-
 <!-- This component doesn't render anything visible -->
 <!-- It's purely for session initialization and management -->
 <div style="display: none;" aria-hidden="true">

@@ -1,4 +1,4 @@
-// Chat types for Legal AI platform;
+// Chat types for Legal AI platform
 export interface ChatMessage {
   id: string;
   content: string;
@@ -17,7 +17,6 @@ export interface ChatMessage {
     [key: string]: unknown;
   };
 }
-
 export interface ChatSession {
   id: string;
   model: string;
@@ -32,14 +31,12 @@ export interface ChatSession {
     [key: string]: unknown;
   };
 }
-
 export interface ChatState {
   messages: ChatMessage[];
   currentSession: ChatSession | null;
   isLoading: boolean;
   error: string | null;
 }
-
 export interface OllamaResponse {
   model: string;
   created_at: string;
@@ -53,7 +50,6 @@ export interface OllamaResponse {
   eval_count?: number;
   eval_duration?: number;
 }
-
 export interface ChatRequest {
   message: string;
   context?: ChatMessage[];
@@ -61,7 +57,6 @@ export interface ChatRequest {
   model?: string;
   stream?: boolean;
 }
-
 export interface ChatResponse {
   response: string;
   confidence?: number;

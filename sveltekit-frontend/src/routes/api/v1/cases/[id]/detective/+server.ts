@@ -2,22 +2,18 @@
  * Detective Mode Toggle API Route
  * POST /api/v1/cases/[id]/detective - Toggle detective mode for case
  */
-
 import { json, error, type RequestHandler } from '@sveltejs/kit'
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
 import { CasesCRUDService } from '$lib/server/services/user-scoped-crud'
 import { z } from 'zod'
-
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid case ID format')
-
 // Detective mode request schema
 const DetectiveModeSchema = z.object({
   enabled: z.boolean(),
   reason: z.string().optional(),
   aiAssisted: z.boolean().default(true)
 })
-
 /*
  * POST /api/v1/cases/[id]/detective
  * Toggle detective mode for a specific case
@@ -31,17 +27,13 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       )
     }
-
     // Validate case ID
     const caseId = UUIDSchema.parse(params.id)
-
     // Parse request body
     const body = await request.json()
     const { enabled, reason, aiAssisted } = DetectiveModeSchema.parse(body)
-
     // Create service instance
     const casesService = new CasesCRUDService(locals.user.id)
-
     // Get current case to verify it exists and user has access
     const currentCase = await casesService.getById(caseId)
     if (!currentCase) {
@@ -50,10 +42,9 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
       )
     }
-
     // Update detective mode
     const updateData = {
-      detectiveMode: enabled,
+      detectiveMode: enabled
       metadata: {
         ...currentCase.metadata,
         detectiveMode: {
@@ -66,19 +57,15 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         }
       }
     }
-
     await casesService.update(caseId, updateData)
-
     // Get updated case
     const updatedCase = await casesService.getById(caseId)
-
     // Log detective mode change for audit trail
     console.log(`Detective mode ${enabled ? 'activated' : 'deactivated'} for case ${caseId} by user ${locals.user.id}`)
-
     return json({
-      success: true,
+      success: true
       data: {
-        case: updatedCase,
+        case: updatedCase
         detectiveMode: {
           enabled,
           toggledAt: new Date().toISOString(),
@@ -95,7 +82,6 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     })
   } catch (err: any) {
     console.error('Error toggling detective mode:', err)
-
     if (err instanceof z.ZodError) {
       return error(
         400,
@@ -106,14 +92,12 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         })
       )
     }
-
     if (err.message.includes('not found') || err.message.includes('access denied')) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
       )
     }
-
     return error(
       500,
       makeHttpErrorPayload({

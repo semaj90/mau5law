@@ -1,10 +1,8 @@
 <!-- Production AI Assistant Component - bits-ui Implementation -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import { Loader2, Brain, Zap, AlertTriangle } from 'lucide-svelte';
-
   interface Props {
     query?: string;
     isProcessing?: boolean;
@@ -13,7 +11,6 @@
     onresponse?: (event: CustomEvent) => void;
     onerror?: (event: CustomEvent) => void;
   }
-
   let {
     query = '',
     isProcessing = $bindable(false),
@@ -22,10 +19,8 @@
     onresponse,
     onerror
   }: Props = $props();
-
   let apiLogs = $state([]);
   let currentTest = $state(null);
-
   const logAPI = (endpoint, status, time, error = null) => {
     apiLogs = [{
       endpoint,
@@ -35,40 +30,35 @@
       timestamp: Date.now();
     }, ...apiLogs.slice(0, 9)];
   };
-
   const testGemma3 = async () => {
     if (isProcessing) return;
-
     isProcessing = true;
     currentTest = 'gemma3';
     const startTime = Date.now();
-
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           model: 'gemma3-legal',
           prompt: query || 'Legal AI status check',
-          stream: false,;
-          options: {;
+          stream: false
+          options: {
             temperature: 0.1,
             num_ctx: 4096,
-            num_gpu: 1 // Force GPU;
+            num_gpu: 1 // Force GPU
           }
         })
       });
-
       const time = Date.now() - startTime;
       responseTime = time;
-
       if ((response as { ok?: any; json?: any; status?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; status?: any }).json();
         systemStatus = 'operational';
         logAPI('Gemma3 Legal', 200, time);
         onresponse?.(new CustomEvent('response', {
           detail: {
-            source: 'gemma3',;
+            source: 'gemma3',
             content: (result as { response?: any; documents?: any }).response,
             metadata: { time, confidence: 0.92 }
           }
@@ -83,34 +73,28 @@
         detail: { source: 'gemma3', error: error.message }
       }));
     }
-
     isProcessing = false;
     currentTest = null;
   };
-
   const testSynthesis = async () => {
     if (isProcessing) return;
-
     isProcessing = true;
     currentTest = 'synthesis';
     const startTime = Date.now();
-
     try {
       const response = await fetch('/api/evidence/synthesize', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           evidenceIds: ['test-1', 'test-2'],
           synthesisType: 'correlation',
           caseId: 'api-test',
-          title: 'API Validation Test',;
+          title: 'API Validation Test',
           prompt: query;
         })
       });
-
       const time = Date.now() - startTime;
       responseTime = time;
-
       // 401 is expected without auth
       if ((response as { ok?: any; json?: any; status?: any }).status === 401 || (response as { ok?: any; json?: any; status?: any }).ok) {
         systemStatus = 'operational';
@@ -118,8 +102,8 @@
         const result = await (response as { ok?: any; json?: any; status?: any }).json();
         onresponse?.(new CustomEvent('response', {
           detail: {
-            source: 'synthesis',;
-            content: JSON.stringify(result, null, 2),;
+            source: 'synthesis',
+            content: JSON.stringify(result, null, 2),
             metadata: { time, status: (response as { ok?: any; json?: any; status?: any }).status }
           }
         }));
@@ -132,39 +116,33 @@
         detail: { source: 'synthesis', error: error.message }
       }));
     }
-
     isProcessing = false;
     currentTest = null;
   };
-
   const testRAG = async () => {
     if (isProcessing) return;
-
     isProcessing = true;
     currentTest = 'rag';
     const startTime = Date.now();
-
     try {
       const response = await fetch('/api/enhanced-rag/query', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({;
+        body: JSON.stringify({,
           query: query || 'legal evidence analysis',
-          useContextRAG: true,
+          useContextRAG: true
           maxResults: 10;
         })
       });
-
       const time = Date.now() - startTime;
       responseTime = time;
-
       if ((response as { ok?: any; json?: any; status?: any }).ok) {
         const result = await (response as { ok?: any; json?: any; status?: any }).json();
         logAPI('RAG Studio', 200, time);
         onresponse?.(new CustomEvent('response', {
           detail: {
-            source: 'rag',;
-            content: JSON.stringify(result, null, 2),;
+            source: 'rag',
+            content: JSON.stringify(result, null, 2),
             metadata: { time, documents: (result as { response?: any; documents?: any }).documents?.length }
           }
         }));
@@ -177,11 +155,9 @@
         detail: { source: 'rag', error: error.message }
       }));
     }
-
     isProcessing = false;
     currentTest = null;
   };
-
   const getStatusColor = (status) => {
     switch (status) {
       case 'operational': return 'bg-green-500';
@@ -190,7 +166,6 @@
     }
   };
 </script>
-
 <div class="space-y-4">
   <!-- Action Buttons -->
   <div class="grid grid-cols-3 gap-3">
@@ -206,7 +181,6 @@
       {/if}
       Gemma3
     </Button.Root>
-
     <Button.Root
       onclick={testSynthesis}
       disabled={isProcessing}
@@ -219,7 +193,6 @@
       {/if}
       Synthesis
     </Button.Root>
-
     <Button.Root
       onclick={testRAG}
       disabled={isProcessing}
@@ -233,21 +206,18 @@
       RAG
     </Button.Root>
   </div>
-
   <!-- Status & Metrics -->
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-2">
       <div class="w-3 h-3 rounded-full {getStatusColor(systemStatus)}"></div>
       <span class="text-sm font-medium capitalize">{systemStatus}</span>
     </div>
-
     {#if responseTime > 0}
       <span class="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded">
         {responseTime}ms
       </span>
     {/if}
   </div>
-
   <!-- API Logs -->
   {#if apiLogs.length > 0}
     <div class="bg-black text-green-400 p-3 rounded-lg max-h-32 overflow-y-auto font-mono text-xs">
@@ -265,5 +235,3 @@
     </div>
   {/if}
 </div>
-
-

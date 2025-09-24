@@ -1,32 +1,27 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: context
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import { json } from '@sveltejs/kit'
 import { URL } from "url"
-
 import { ContextService } from "$lib/services/context-service"
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
-
-
 // Environment variables fallback
 const env = process.env || {}
-
 /*
  * AI Context API Server
  * Provides comprehensive context for the local Gemma3 Legal LLM model
@@ -40,15 +35,12 @@ export async function GET({ url }): Promise<any> {
     const contextType = url.searchParams.get("type") || "legal"
     const includeDocumentation = url.searchParams.get("docs") === "true"
     const includeCaseData = url.searchParams.get("cases") === "true"
-
     // Get current application context
     const currentContext = await ContextService.getCurrentContext()
-
     // Enhanced context for Gemma3 Legal LLM
     const enhancedContext: any = {
       // Core application context
-      application: currentContext,
-
+      application: currentContext
       // AI Model configuration
       aiModel: {
         name: "gemma3-legal",
@@ -68,7 +60,6 @@ export async function GET({ url }): Promise<any> {
           streamingEnabled: true
         }
       },
-
       // System architecture context
       architecture: {
         frontend: "SvelteKit 2 with Svelte 5 runes",
@@ -78,11 +69,10 @@ export async function GET({ url }): Promise<any> {
         caching: "Redis",
         messaging: "RabbitMQ"
       },
-
       // Development guidelines
       guidelines: {
         svelte: {
-          runesRequired: true,
+          runesRequired: true
           stateDeclaration: "let (never const)",
           derivedFunctions: "$derived.by(() => ...)",
           errorBoundaries: "component rendering only"
@@ -90,12 +80,11 @@ export async function GET({ url }): Promise<any> {
         aiIntegration: {
           priorityIndex: "enhanced_legal_ai_index",
           contextBoost: 0.2,
-          mcpActive: true,
+          mcpActive: true
           fallbackChain: ["gemma3-legal", "gemma3:12b", "mock"]
         }
       }
     }
-
     // Add documentation context if requested
     if (includeDocumentation) {
       enhancedContext.documentation = {
@@ -104,7 +93,6 @@ export async function GET({ url }): Promise<any> {
         errorResolution: "SvelteKit troubleshooting and best practices"
       }
     }
-
     // Add case-specific context if requested
     if (includeCaseData && contextType === "legal") {
       enhancedContext.legalDomain = {
@@ -119,17 +107,16 @@ export async function GET({ url }): Promise<any> {
         aiPromptTemplate: "specialized_legal_assistant_prompt"
       }
     }
-
     return json({
-      success: true,
-      context: enhancedContext,
+      success: true
+      context: enhancedContext
       timestamp: new Date().toISOString(),
       version: "1.0.0"
     })
   } catch (error: any) {
     console.error("Context API error:", error)
     return json({
-        success: false,
+        success: false
         error: "Failed to retrieve AI context",
         message: error instanceof Error ? error.message: "Unknown error"
       },)
@@ -137,34 +124,29 @@ export async function GET({ url }): Promise<any> {
     )
   }
 }
-
 /*
  * POST endpoint for updating context with AI interactions
  */
 export async function POST({ request }): Promise<any> {
   try {
     const { contextUpdate, interactionType } = await request.json()
-
     // Update context based on AI interaction
     if (interactionType === "chat_message") {
       await ContextService.updateChatContext(contextUpdate)
     } else if (interactionType === "case_analysis") {
       await ContextService.updateCaseContext(contextUpdate)
     }
-
     return json({
-      success: true,
+      success: true
       message: "Context updated successfully"
     })
   } catch (error: any) {
     console.error("Context update error:", error)
     return json({
-        success: false,
+        success: false
         error: "Failed to update context"
       },)
       { status: 500 },
     )
   }
 }
-
-

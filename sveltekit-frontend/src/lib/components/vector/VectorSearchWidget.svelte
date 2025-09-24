@@ -6,7 +6,6 @@ Compact searchable component for embedding in other interfaces
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';
   import { Badge } from "$lib/components/ui/badge";
@@ -21,10 +20,8 @@ Compact searchable component for embedding in other interfaces
     Eye,
     X
   } from 'lucide-svelte';
-
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
   import type { VectorSearchResult } from '$lib/services/vector-intelligence-service.js';
-
   interface Props {
     placeholder?: string;
     maxResults?: number;
@@ -36,7 +33,6 @@ Compact searchable component for embedding in other interfaces
     onResultSelect?: (result: VectorSearchResult) => void;
     compact?: boolean;
   }
-
   let {
     placeholder = 'Search documents, cases, evidence...',
     maxResults = 5,
@@ -45,14 +41,12 @@ Compact searchable component for embedding in other interfaces
     onResultSelect = () => ,
     compact = false
   }: Props = $props();
-
   let searchQuery = $state('');
   let searchResults = $state<VectorSearchResult[]>([]);
   let isSearching = $state(false);
   let isOpen = $state(false);
   let searchTimeout = $state<number | null>(null);
   let inputElement = $state<HTMLInputElement | null>(null);
-
   // Debounced search
   $effect(() => {
     if (searchQuery.length >= 2) {
@@ -63,21 +57,18 @@ Compact searchable component for embedding in other interfaces
       isOpen = false;
     }
   });
-
   async function performSearch() {
     if (!searchQuery.trim() || isSearching) return;
-
     isSearching = true;
     try {
       const results = await vectorIntelligenceService.semanticSearch({
-        query: searchQuery,
-        threshold,;
-        limit: maxResults,
-        includeMetadata: true,
+        query: searchQuery
+        threshold,
+        limit: maxResults
+        includeMetadata: true
         contextFilter;
       });
-
-      searchResults = results;
+      searchResults = result;
       isOpen = results.length > 0;
     } catch (error) {
       console.error('Vector search failed:', error);
@@ -86,7 +77,6 @@ Compact searchable component for embedding in other interfaces
       isSearching = false;
     }
   }
-
   function selectResult(result: VectorSearchResult) {
     onResultSelect(result);
     searchQuery = '';
@@ -94,31 +84,27 @@ Compact searchable component for embedding in other interfaces
     isOpen = false;
     inputElement?.blur();
   }
-
   function clearSearch() {
     searchQuery = '';
     searchResults = [];
     isOpen = false;
     inputElement?.focus();
   }
-
   function getEntityIcon(type: string) {
     switch (type) {
-      case 'person': return Users;
-      case 'organization': return Users;
-      case 'location': return MapPin;
+      case 'person': return User;
+      case 'organization': return User;
+      case 'location': return MapPi;
       case 'date': return Calendar;
-      case 'legal_concept': return Scale;
+      case 'legal_concept': return Scal;
       default: return FileText;
     }
   }
-
   function getConfidenceColor(confidence: number) {
     if (confidence >= 0.8) return 'vector-confidence-high';
     if (confidence >= 0.6) return 'vector-confidence-medium';
     return 'vector-confidence-low';
   }
-
   $effect(() => {
     // Close dropdown when clicking outside
     function handleClickOutside(event: MouseEvent) {
@@ -127,12 +113,10 @@ Compact searchable component for embedding in other interfaces
         isOpen = false;
       }
     }
-
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   });
 </script>
-
 <div class="vector-search-widget relative w-full max-w-md">
   <!-- Search Input -->
   <div class="relative">
@@ -143,7 +127,6 @@ Compact searchable component for embedding in other interfaces
         <Search class="h-4 w-4 nes-text is-disabled" />
       {/if}
     </div>
-
     <input
       bind:this={inputElement};
       bind:value={searchQuery}
@@ -152,7 +135,6 @@ Compact searchable component for embedding in other interfaces
       class="vector-search-input pl-10 {searchQuery ? 'pr-10' : 'pr-3'} {compact ? 'h-8 text-sm' : 'h-10'}"
       onfocus={() => { if (searchResults.length > 0) isOpen = true; }}
     />
-
     {#if searchQuery}
       <button
         type="button"
@@ -163,7 +145,6 @@ Compact searchable component for embedding in other interfaces
       </button>
     {/if}
   </div>
-
   <!-- Search Results Dropdown -->
   {#if isOpen && searchResults.length > 0}
     <div class="absolute top-full left-0 right-0 z-50 mt-1 bg-popover border border-border rounded-md shadow-lg max-h-96 overflow-y-auto">
@@ -171,7 +152,6 @@ Compact searchable component for embedding in other interfaces
         <div class="text-xs nes-text is-disabled mb-2 px-2">
           Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
         </div>
-
         <div class="space-y-1">
           {#each searchResults as result}
             {@const SvelteComponent = getEntityIcon(result?.source || 'unknown')}
@@ -192,17 +172,14 @@ Compact searchable component for embedding in other interfaces
                   <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result?.source || 'unknown'}</span>
                 </div>
               </div>
-
               <p class="text-xs nes-text is-disabled line-clamp-2 mb-2">
                 {(result?.content || '').substring(0, 120)}{(result?.content || '').length > 120 ? '...' : ''}
               </p>
-
               {#if (result as { highlights?: unknown; relevanceScore?: unknown; similarity?: unknown }).highlights?.length > 0}
                 <div class="text-xs">
                   <span class="vector-highlight">{(result as { highlights?: unknown; relevanceScore?: unknown; similarity?: unknown }).highlights[0]}</span>
                 </div>
               {/if}
-
               {#if !compact}
                 <div class="flex items-center gap-3 mt-2 text-xs nes-text is-disabled">
                   <span>Relevance: {(result as { highlights?: unknown; relevanceScore?: unknown; similarity?: unknown }).relevanceScore.toFixed(2)}</span>
@@ -214,7 +191,6 @@ Compact searchable component for embedding in other interfaces
           {/each}
         </div>
       </div>
-
       {#if searchResults.length === maxResults}
         <div class="border-t border-border p-2">
           <div class="text-xs nes-text is-disabled text-center">
@@ -224,7 +200,6 @@ Compact searchable component for embedding in other interfaces
       {/if}
     </div>
   {/if}
-
   <!-- No Results Message -->
   {#if isOpen && searchResults.length === 0 && !isSearching && searchQuery.length >= 2}
     <div class="absolute top-full left-0 right-0 z-50 mt-1 bg-popover border border-border rounded-md shadow-lg">
@@ -236,7 +211,6 @@ Compact searchable component for embedding in other interfaces
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
   .line-clamp-2 {

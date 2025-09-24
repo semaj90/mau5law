@@ -1,6 +1,5 @@
 import { createMachine, assign, createActor, type StateFrom, fromPromise } from "xstate";
 import { writable } from 'svelte/store';
-
 // Recommendation Engine Context with RabbitMQ routing
 export interface RecommendationContext {
   sessionId: string;
@@ -24,14 +23,14 @@ export interface RecommendationContext {
     currentQueue?: string;
     messageId?: string;
   };
-  recommendations: {;
+  recommendations: {
     legal: LegalRecommendation[];
     documents: DocumentRecommendation[];
     actions: ActionRecommendation[];
     risks: RiskRecommendation[];
   };
   aiModels: {
-    primary: string; // gemma3:legal-latest
+    primary: string; // gemma3:legal-latest,
     fallback: string[];
     currentModel?: string;
     confidence: number;
@@ -49,7 +48,6 @@ export interface RecommendationContext {
   };
   error?: string;
 }
-
 // Recommendation types
 export interface LegalRecommendation {
   id: string;
@@ -60,7 +58,6 @@ export interface LegalRecommendation {
   citation?: string;
   confidence: number;
 }
-
 export interface DocumentRecommendation {
   id: string;
   filename: string;
@@ -69,7 +66,6 @@ export interface DocumentRecommendation {
   excerpt: string;
   metadata: any;
 }
-
 export interface ActionRecommendation {
   id: string;
   action: 'review' | 'investigate' | 'file_motion' | 'gather_evidence' | 'analyze_risk';
@@ -78,7 +74,6 @@ export interface ActionRecommendation {
   reasoning: string;
   estimatedTime: string;
 }
-
 export interface RiskRecommendation {
   id: string;
   category: string;
@@ -87,7 +82,6 @@ export interface RiskRecommendation {
   impact: string;
   mitigation: string[];
 }
-
 // Events for recommendation routing
 type RecommendationEvent =
   | { type: 'START_SESSION'; userId: string; caseId?: string }
@@ -102,11 +96,10 @@ type RecommendationEvent =
   | { type: 'ERROR_OCCURRED'; error: string }
   | { type: 'RETRY' }
   | { type: 'RESET' };
-
 // Smart routing recommendation engine with RabbitMQ
 export const recommendationRoutingMachine = createMachine({
   id: 'recommendation-routing',
-  types: {} as {;
+  types: {} as {
     context: RecommendationContext;
     events: RecommendationEvent;
   },
@@ -153,7 +146,7 @@ export const recommendationRoutingMachine = createMachine({
       on: {
         START_SESSION: {
           target: 'session_active',
-          actions: assign({
+          actions: assign({,
             sessionId: ({ event }) => `session_${Date.now()}`,
             userId: ({ event }) => event.userId,
             caseId: ({ event }) => event.caseId
@@ -161,7 +154,6 @@ export const recommendationRoutingMachine = createMachine({
         }
       }
     },
-
     session_active: {
       initial: 'waiting_for_input',
       states: {
@@ -169,7 +161,7 @@ export const recommendationRoutingMachine = createMachine({
           on: {
             ANALYZE_DOCUMENT: {
               target: 'routing_analysis',
-              actions: assign({
+              actions: assign({,
                 currentDocument: ({ event }) => ({
                   id: event.documentId,
                   type: event.documentType as any,
@@ -182,7 +174,6 @@ export const recommendationRoutingMachine = createMachine({
             }
           }
         },
-
         routing_analysis: {
           invoke: {
             id: 'analyzeRouting',
@@ -196,7 +187,7 @@ export const recommendationRoutingMachine = createMachine({
             }),
             onDone: {
               target: 'rabbitmq_routing',
-              actions: assign({
+              actions: assign({,
                 rabbitMQRouting: ({ context, event }) => ({
                   ...context.rabbitMQRouting,
                   routingKeys: event.output.routingKeys,
@@ -210,13 +201,12 @@ export const recommendationRoutingMachine = createMachine({
             },
             onError: {
               target: '#recommendation-routing.error',
-              actions: assign({
+              actions: assign({,
                 error: ({ event }) => `Routing analysis failed: ${(event.error as any)?.message}`
               })
             }
           }
         },
-
         rabbitmq_routing: {
           invoke: {
             id: 'routeToRabbitMQ',
@@ -236,7 +226,7 @@ export const recommendationRoutingMachine = createMachine({
             }),
             onDone: {
               target: 'cache_check',
-              actions: assign({
+              actions: assign({,
                 rabbitMQRouting: ({ context, event }) => ({
                   ...context.rabbitMQRouting,
                   messageId: event.output.messageId
@@ -245,13 +235,12 @@ export const recommendationRoutingMachine = createMachine({
             },
             onError: {
               target: '#recommendation-routing.error',
-              actions: assign({
+              actions: assign({,
                 error: ({ event }) => `RabbitMQ routing failed: ${(event.error as any)?.message}`
               })
             }
           }
         },
-
         cache_check: {
           invoke: {
             id: 'checkRedisCache',
@@ -266,7 +255,7 @@ export const recommendationRoutingMachine = createMachine({
               {
                 target: 'serving_cached_recommendations',
                 guard: ({ event }) => event.output.cacheHit,
-                actions: assign({
+                actions: assign({,
                   recommendations: ({ event }) => event.output.cachedData,
                   cache: ({ context, event }) => ({
                     ...context.cache,
@@ -278,7 +267,7 @@ export const recommendationRoutingMachine = createMachine({
               },
               {
                 target: 'processing_recommendations',
-                actions: assign({
+                actions: assign({,
                   cache: ({ context, event }) => ({
                     ...context.cache,
                     hitRate: event.output.hitRate,
@@ -292,7 +281,6 @@ export const recommendationRoutingMachine = createMachine({
             }
           }
         },
-
         serving_cached_recommendations: {
           invoke: {
             id: 'serveCachedRecommendations',
@@ -306,7 +294,6 @@ export const recommendationRoutingMachine = createMachine({
             }
           }
         },
-
         processing_recommendations: {
           invoke: {
             id: 'processRecommendations',
@@ -322,7 +309,7 @@ export const recommendationRoutingMachine = createMachine({
             }),
             onDone: {
               target: 'caching_results',
-              actions: assign({
+              actions: assign({,
                 recommendations: ({ event }) => event.output.recommendations,
                 processingMetrics: ({ context, event }) => ({
                   ...context.processingMetrics,
@@ -333,13 +320,12 @@ export const recommendationRoutingMachine = createMachine({
             },
             onError: {
               target: '#recommendation-routing.error',
-              actions: assign({
+              actions: assign({,
                 error: ({ event }) => `Recommendation processing failed: ${(event.error as any)?.message}`
               })
             }
           }
         },
-
         caching_results: {
           invoke: {
             id: 'cacheResults',
@@ -351,7 +337,7 @@ export const recommendationRoutingMachine = createMachine({
             }),
             onDone: {
               target: 'recommendations_ready',
-              actions: assign({
+              actions: assign({,
                 cache: ({ context, event }) => ({
                   ...context.cache,
                   redisKeys: [...context.cache.redisKeys, ...event.output.newKeys],
@@ -364,9 +350,8 @@ export const recommendationRoutingMachine = createMachine({
             }
           }
         },
-
         recommendations_ready: {
-          type: 'final',;
+          type: 'final',
           entry: () => {
             console.log('✅ Recommendations ready and served');
           }
@@ -375,7 +360,7 @@ export const recommendationRoutingMachine = createMachine({
       on: {
         ANALYZE_DOCUMENT: {
           target: '.routing_analysis',
-          actions: assign({
+          actions: assign({,
             currentDocument: ({ event }) => ({
               id: event.documentId,
               type: event.documentType as any,
@@ -385,22 +370,21 @@ export const recommendationRoutingMachine = createMachine({
         }
       }
     },
-
     error: {
       on: {
         RETRY: {
           target: 'session_active.routing_analysis',
-          actions: assign({
+          actions: assign({,
             error: undefined
           })
         },
         RESET: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             sessionId: '',
             userId: '',
-            caseId: undefined,
-            currentDocument: undefined,
+            caseId: undefined
+            currentDocument: undefined
             recommendations: {
               legal: [],
               documents: [],
@@ -416,7 +400,7 @@ export const recommendationRoutingMachine = createMachine({
 }, {
   actors: {
     // Analyze routing requirements based on document type and system load
-    analyzeRoutingRequirements: fromPromise(async ({ input }: {;
+    analyzeRoutingRequirements: fromPromise(async ({ input }: {
       input: {
         sessionId: string;
         userId: string;
@@ -426,35 +410,30 @@ export const recommendationRoutingMachine = createMachine({
       }
     }) => {
       const { currentDocument, processingMetrics } = input;
-
       // Determine routing based on document type and system load
       const routingAnalysis = await fetch('/api/routing/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          document: currentDocument,
-          metrics: processingMetrics,;
+        body: JSON.stringify({,
+          document: currentDocument
+          metrics: processingMetrics
           timestamp: new Date().toISOString()
         })
       });
-
       if (!routingAnalysis.ok) {
         throw new Error(`Routing analysis failed: ${routingAnalysis.statusText}`);
       }
-
       return await routingAnalysis.json();
     }),
-
     // Route message to appropriate RabbitMQ queue
     routeMessageToQueue: fromPromise(async ({ input }: {
-      input: {;
+      input: {
         exchange: string;
         routingKey: string;
         message: any;
       }
     }) => {
       const { exchange, routingKey, message } = input;
-
       const response = await fetch('/api/queue/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -463,20 +442,17 @@ export const recommendationRoutingMachine = createMachine({
           routingKey,
           message,
           options: {
-            persistent: true,;
+            persistent: true
             timestamp: Date.now(),
             messageId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
           }
         })
       });
-
       if (!response.ok) {
         throw new Error(`Queue routing failed: ${response.statusText}`);
       }
-
       return await response.json();
     }),
-
     // Check Redis cache for existing recommendations
     checkRecommendationCache: fromPromise(async ({ input }: {
       input: {
@@ -487,38 +463,33 @@ export const recommendationRoutingMachine = createMachine({
       }
     }) => {
       const { cacheKeys } = input;
-
       const response = await fetch('/api/cache/check', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          keys: cacheKeys,;
+        body: JSON.stringify({,
+          keys: cacheKeys
           operation: 'mget' // Multi-get for efficiency
         })
       });
-
       if (!response.ok) {
         return { cacheHit: false, hitRate: 0 };
       }
-
       return await response.json();
     }),
-
     // Serve cached recommendations
     serveCachedData: fromPromise(async ({ input }: {
-      input: {;
+      input: {
         recommendations: any;
         sessionId: string;
       }
     }) => {
       // Optionally enrich cached data or perform additional processing
       return {
-        served: true,
-        timestamp: new Date().toISOString(),;
+        served: true
+        timestamp: new Date().toISOString(),
         source: 'cache'
       };
     }),
-
     // Generate new recommendations using AI models
     generateRecommendations: fromPromise(async ({ input }: {
       input: {
@@ -532,7 +503,6 @@ export const recommendationRoutingMachine = createMachine({
       }
     }) => {
       const { sessionId, userId, caseId, document, model, messageId } = input;
-
       const response = await fetch('/api/recommendations/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -542,55 +512,48 @@ export const recommendationRoutingMachine = createMachine({
           caseId,
           document,
           model,
-          messageId,;
+          messageId,
           options: {
-            includeLegal: true,
-            includeDocuments: true,
-            includeActions: true,
-            includeRisks: true,
+            includeLegal: true
+            includeDocuments: true
+            includeActions: true
+            includeRisks: true
             maxRecommendations: 10,
             confidenceThreshold: 0.7
           }
         })
       });
-
       if (!response.ok) {
         throw new Error(`Recommendation generation failed: ${response.statusText}`);
       }
-
       return await response.json();
     }),
-
     // Cache recommendations in Redis
     cacheRecommendations: fromPromise(async ({ input }: {
-      input: {;
+      input: {
         recommendations: any;
         cacheKeys: string[];
         ttl: number;
       }
     }) => {
       const { recommendations, cacheKeys, ttl } = input;
-
       const response = await fetch('/api/cache/store', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          data: recommendations,
-          keys: cacheKeys,
-          ttl,;
+        body: JSON.stringify({,
+          data: recommendations
+          keys: cacheKeys
+          ttl,
           compression: true // SIMD JSON compression
         })
       });
-
       if (!response.ok) {
         throw new Error(`Caching failed: ${response.statusText}`);
       }
-
       return await response.json();
     })
   }
 });
-
 // Helper functions
 function determinePriority(documentType?: string): 'high' | 'standard' | 'background' {
   switch (documentType) {
@@ -606,7 +569,6 @@ function determinePriority(documentType?: string): 'high' | 'standard' | 'backgr
       return 'background';
   }
 }
-
 function generateCacheKeys(context: RecommendationContext): string[] {
   const base = `rec:${context.userId}:${context.caseId || 'global'}`;
   const keys = [
@@ -615,18 +577,14 @@ function generateCacheKeys(context: RecommendationContext): string[] {
     `${base}:actions`,
     `${base}:risks`
   ];
-
   if (context.currentDocument?.id) {
     keys.push(`${base}:doc:${context.currentDocument.id}`);
   }
-
   return keys;
 }
-
 // Types
 export type RecommendationState = StateFrom<typeof recommendationRoutingMachine>;
 export type RecommendationActor = ReturnType<typeof createActor<typeof recommendationRoutingMachine>>;
-
 // Store integration
 function createRecommendationStore() {
   const actor = createActor(recommendationRoutingMachine);
@@ -635,12 +593,10 @@ function createRecommendationStore() {
     actor.start();
     return () => actor.stop();
   });
-
   return {
     subscribe,
     send: actor.send.bind(actor),
     getSnapshot: actor.getSnapshot.bind(actor)
   };
 }
-
 export const recommendationStore = createRecommendationStore();

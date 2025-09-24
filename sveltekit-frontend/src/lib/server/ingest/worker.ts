@@ -8,7 +8,6 @@
  * - Image processing (Sharp)
  * - Embedding requests
  */
-
 import { parentPort, workerData } from 'worker_threads';
 import {
   extractTextFromImage,
@@ -24,18 +23,15 @@ import {
   embedAudioFilePath,
   embedContent
 } from './embed.js';
-
 if (!parentPort) {
   throw new Error('This script must be run as a worker thread');
 }
-
 interface WorkerJobData {
   id: string;
   type: 'ocr' | 'audio_extract' | 'video_frames' | 'json_parse' | 'embed' | 'image_process';
   payload: any;
   options?: any;
 }
-
 interface WorkerJobResult {
   success: boolean;
   result?: any;
@@ -43,80 +39,64 @@ interface WorkerJobResult {
   processingTime: number;
   workerId: string;
 }
-
 const workerId = `worker_${process.pid}_${Date.now()}`;
-
-// Message handler;
+// Message handler
 parentPort.on('message', async (jobData: WorkerJobData) => {
   const startTime = Date.now();
-
   try {
     let result: any;
-
     switch (jobData.type) {
       case 'ocr':
         result = await handleOCR(jobData.payload);
         break;
-
       case 'audio_extract':
         result = await handleAudioExtraction(jobData.payload);
         break;
-
       case 'video_frames':
         result = await handleVideoFrames(jobData.payload);
         break;
-
       case 'json_parse':
         result = await handleJsonParsing(jobData.payload);
         break;
-
       case 'embed':
         result = await handleEmbedding(jobData.payload);
         break;
-
       case 'image_process':
         result = await handleImageProcessing(jobData.payload);
         break;
-
       default:
         throw new Error(`Unknown job type: ${jobData.type}`);
     }
-
-    const response: WorkerJobResult = {;
-      success: true,
+    const response: WorkerJobResult = {
+      success: true
       result,
       processingTime: Date.now() - startTime,
       workerId
     };
-
     parentPort!.postMessage(response);
   } catch (error) {
     const response: WorkerJobResult = {
-      success: false,;
+      success: false
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime,
       workerId
     };
-
     parentPort!.postMessage(response);
   }
 });
-
-// Job handlers;
+// Job handlers
 async function handleOCR(payload: {
   buffer: number[]; // Buffer as array
   contentType?: string;
   options?: any;
 }) {
   const buffer = Buffer.from(payload.buffer);
-
   if (payload.contentType === 'application/pdf') {
     return await extractTextFromPDF(buffer);
   } else {
     return await extractTextFromImage(buffer, payload.options);
   }
 }
-
 async function handleAudioExtraction(payload: {
   buffer: number[];
   filename: string;
@@ -124,7 +104,6 @@ async function handleAudioExtraction(payload: {
   const buffer = Buffer.from(payload.buffer);
   return await extractAudioFromBuffer(buffer, payload.filename);
 }
-
 async function handleVideoFrames(payload: {
   buffer: number[];
   filename: string;
@@ -133,13 +112,11 @@ async function handleVideoFrames(payload: {
   const buffer = Buffer.from(payload.buffer);
   return await sampleFramesFromVideo(buffer, payload.filename, payload.frameCount);
 }
-
 async function handleJsonParsing(payload: {
   jsonText: string;
 }) {
   return await parseJsonWithSimd(payload.jsonText);
 }
-
 async function handleEmbedding(payload: {
   content: string | number[]; // string for text, number[] for Buffer
   contentType: string;
@@ -154,71 +131,60 @@ async function handleEmbedding(payload: {
     return await embedContent(buffer, payload.contentType, payload.options);
   }
 }
-
 async function handleImageProcessing(payload: {
   buffer: number[];
   operations: Array<any>) {
   const buffer = Buffer.from(payload.buffer);
-
   // Dynamic import Sharp
   const sharp = await import('sharp');
   let image = sharp.default(buffer);
-
-  // Apply operations sequentially;
+  // Apply operations sequentially
   for (const operation of payload.operations) {
     switch (operation.type) {
-      case 'resize':;
+      case 'resize':
         image = image.resize(operation.params?.width, operation.params?.height, {
           fit: operation.params?.fit || 'inside',
           withoutEnlargement: operation.params?.withoutEnlargement !== false
         });
         break;
-
-      case 'crop':;
+      case 'crop':
         image = image.extract({
           left: operation.params?.left || 0,
           top: operation.params?.top || 0,
-          width: operation.params?.width,;
+          width: operation.params?.width,
           height: operation.params?.height
         });
         break;
-
       case 'blur':
         image = image.blur(operation.params?.sigma || 1);
         break;
-
       case 'sharpen':
         image = image.sharpen(operation.params?.sigma, operation.params?.flat, operation.params?.jagged);
         break;
-
       case 'grayscale':
         image = image.greyscale();
         break;
-
       case 'normalize':
         image = image.normalize();
         break;
     }
   }
-
   // Return processed buffer
   const processedBuffer = await image.toBuffer();
-
   return {
-    success: true,;
-    buffer: Array.from(processedBuffer), // Convert back to array for JSON transport;
+    success: true
+    buffer: Array.from(processedBuffer), // Convert back to array for JSON transport
     metadata: {
       originalSize: buffer.length,
-      processedSize: processedBuffer.length,;
+      processedSize: processedBuffer.length,
       operations: payload.operations.length
     }
   };
 }
-
-// Error handling;
+// Error handling
 process.on('uncaughtException', (error) => {
   const response: WorkerJobResult = {
-    success: false,;
+    success: false
     error: `Uncaught exception: ${error.message}`,
     processingTime: 0,
     workerId
@@ -226,10 +192,9 @@ process.on('uncaughtException', (error) => {
   parentPort!.postMessage(response);
   process.exit(1);
 });
-
 process.on('unhandledRejection', (reason) => {
   const response: WorkerJobResult = {
-    success: false,;
+    success: false
     error: `Unhandled rejection: ${reason}`,
     processingTime: 0,
     workerId
@@ -237,6 +202,5 @@ process.on('unhandledRejection', (reason) => {
   parentPort!.postMessage(response);
   process.exit(1);
 });
-
 // Send ready signal
 parentPort.postMessage({ type: 'ready', workerId });

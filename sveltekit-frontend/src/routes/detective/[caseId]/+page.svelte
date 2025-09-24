@@ -1,24 +1,19 @@
 <!--
   Detective Analysis Page for Specific Case
-  
   Integrates all detective functionality:
   - ContextualDetectiveBoard with XState typing behavior
   - Connection mapping with Gemma embeddings
   - Real-time evidence analysis and contextual prompting
   - Case management integration
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import ContextualDetectiveBoard from '$lib/components/detective/ContextualDetectiveBoard.svelte';
   import type { TypingContext } from '$lib/machines/userTypingStateMachine.js';
-  
   // Get case ID from route parameters
   const caseId = $page.params.caseId;
-  
   // State
   let caseData = $state<any>(null);
   let evidenceList = $state<any[]>([]);
@@ -26,11 +21,9 @@
   let isLoading = $state(true);
   let error = $state<string | null>(null);
   let analytics = $state<any>( );
-  
   // Event handlers
   let connectionMapGenerated = false;
   let lastContextualPrompts: string[] = [];
-  
   /**
    * Initialize the page
    */
@@ -40,12 +33,10 @@
       isLoading = false;
       return;
     }
-
     loadCaseData();
     loadCaseEvidence();
     isLoading = false;
   });
-  
   /**
    * Load case information
    */
@@ -63,7 +54,6 @@
       error = 'Failed to load case information';
     }
   }
-  
   /**
    * Load evidence for the case
    */
@@ -81,64 +71,54 @@
       // Don't set error here as evidence might be empty
     }
   }
-  
   /**
    * Handle connection map generation
    */
   function handleConnectionMapGenerated(event: CustomEvent) {
     connectionMap = event.detail.map;
     connectionMapGenerated = true;
-    
     // Log analytics
     analytics = {
       ...analytics,
       lastConnectionMap: {
         timestamp: new Date().toISOString(),
-        nodes: connectionMap.nodes?.length || 0,;
-        edges: connectionMap.edges?.length || 0,;
+        nodes: connectionMap.nodes?.length || 0,
+        edges: connectionMap.edges?.length || 0,
         clusters: connectionMap.clusters?.length || 0;
       }
     };
-    
     console.log('[Detective Page] Connection map generated:', event.detail.metadata);
   }
-  
   /**
    * Handle contextual prompts
    */
   function handleContextualPromptTriggered(event: CustomEvent) {
-    lastContextualPrompts = event.detail.prompts;
-    
+    lastContextualPrompts = event.detail.prompt;
     // Update analytics with user behavior
     analytics = {
       ...analytics,
       userBehavior: {
         ...analytics.userBehavior,
-        lastPrompts: lastContextualPrompts,
+        lastPrompts: lastContextualPrompts
         engagement: event.detail.context.analytics?.userEngagement || 'medium',
         typingSpeed: event.detail.context.userBehavior?.avgTypingSpeed || 0,
         lastActivity: new Date().toISOString();
       }
     };
-    
     console.log('[Detective Page] Contextual prompts triggered:', lastContextualPrompts);
   }
-  
   /**
    * Handle evidence analysis
    */
   function handleEvidenceAnalyzed(event: CustomEvent) {
     const { evidence, analysis } = event.detail;
-    
     // Update evidence in the list with new analysis
-    evidenceList = evidenceList.map.id === evidence.id 
+    evidenceList = evidenceList.map.id === evidence.id
         ? { ...item, metadata: { ...item.metadata, aiAnalysis: analysis } }
         : item
     );
-    
     console.log('[Detective Page] Evidence analyzed:', evidence.id);
   }
-  
   /**
    * Refresh case data
    */
@@ -149,12 +129,10 @@
     isLoading = false;
   }
 </script>
-
 <svelte:head>
   <title>Detective Analysis - Case {caseId}</title>
   <meta name="description" content="Detective analysis board for case {caseId} with AI-powered connection mapping and evidence analysis" />
 </svelte:head>
-
 {#if isLoading}
   <div class="loading-container">
     <div class="loading-spinner"></div>
@@ -182,13 +160,11 @@
           {/if}
         </div>
       </div>
-      
       <div class="case-actions">
         <button type="button" onclick={refreshCase}>Refresh</button>
         <a href="/cases/{caseId}" class="view-case-btn">View Case Details</a>
       </div>
     </header>
-
     <!-- Main detective board -->
     <main class="detective-main">
       <ContextualDetectiveBoard
@@ -201,12 +177,10 @@
         onevidenceAnalyzed={handleEvidenceAnalyzed}
       />
     </main>
-
     <!-- Analytics sidebar (optional) -->
     {#if Object.keys(errors).length > 0}
       <aside class="analytics-sidebar">
         <h3>Session Analytics</h3>
-        
         {#if analytics.lastConnectionMap}
           <div class="analytics-section">
             <h4>Connection Map</h4>
@@ -226,7 +200,6 @@
             </div>
           </div>
         {/if}
-        
         {#if analytics.userBehavior}
           <div class="analytics-section">
             <h4>User Behavior</h4>
@@ -242,7 +215,6 @@
                 <span class="label">CPM</span>
               </div>
             </div>
-            
             {#if analytics.userBehavior.lastPrompts?.length > 0}
               <div class="recent-prompts">
                 <h5>Recent Prompts</h5>
@@ -266,7 +238,6 @@
     <a href="/cases" class="back-link">Back to Cases</a>
   </div>
 {/if}
-
 <style>
   .loading-container, .error-container {
     display: flex;
@@ -277,7 +248,6 @@
     gap: 1rem;
     text-align: center;
   }
-
   .loading-spinner {
     width: 2rem;
     height: 2rem;
@@ -286,16 +256,13 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
   .error-icon {
     font-size: 3rem;
   }
-
   .error-container button, .back-link {
     padding: 0.5rem 1rem;
     background: #3b82f6;
@@ -306,14 +273,12 @@
     cursor: pointer;
     font-weight: 500;
   }
-
-  .error-container button:hover, .back-link:hover {;
+  .error-container button:hover, .back-link:hover {
     background: #2563eb;
   }
-
   .detective-page {
     display: grid;
-    grid-template-areas: 
+    grid-template-areas:
       "header header"
       "main sidebar";
     grid-template-columns: 1fr 300px;
@@ -321,37 +286,32 @@
     height: 100vh;
     background: #f8fafc;
   }
-
   .case-header {
     grid-area: header;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 1.5rem 2rem;
     background: white;
     border-bottom: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-
   .case-info h1 {
     margin: 0 0 0.5rem 0;
     font-size: 1.75rem;
     color: #1e293b;
     font-weight: 700;
   }
-
   .case-description {
     margin: 0 0 1rem 0;
     color: #64748b;
     line-height: 1.5;
   }
-
   .case-meta {
     display: flex;
     gap: 1rem;
     align-items: center;
   }
-
   .case-status {
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
@@ -360,60 +320,49 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-
   .status-active { background: #dcfce7; color: #166534; }
   .status-closed { background: #fef2f2; color: #991b1b; }
   .status-pending { background: #fef3c7; color: #92400e; }
-
   .evidence-count, .connection-status {
     font-size: 0.875rem;
     color: #64748b;
   }
-
   .connection-status {
     color: #059669;
     font-weight: 500;
   }
-
   .case-actions {
     display: flex;
     gap: 0.75rem;
   }
-
   .case-actions button, .view-case-btn {
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
     font-weight: 500;
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
   .case-actions button {
     background: #f3f4f6;
     color: #374151;
     border: 1px solid #d1d5db;
   }
-
-  .case-actions button:hover {;
+  .case-actions button:hover {
     background: #e5e7eb;
   }
-
   .view-case-btn {
     background: #3b82f6;
     color: white;
     border: 1px solid #3b82f6;
   }
-
   .view-case-btn:hover {
     background: #2563eb;
   }
-
   .detective-main {
-    grid-area: main;
+    grid-area: mai;
     overflow: hidden;
   }
-
   .analytics-sidebar {
     grid-area: sidebar;
     background: white;
@@ -421,38 +370,32 @@
     padding: 1.5rem;
     overflow-y: auto;
   }
-
   .analytics-sidebar h3 {
     margin: 0 0 1.5rem 0;
     font-size: 1.125rem;
     color: #1e293b;
     font-weight: 600;
   }
-
   .analytics-section {
     margin-bottom: 2rem;
   }
-
   .analytics-section h4 {
     margin: 0 0 1rem 0;
     font-size: 1rem;
     color: #374151;
     font-weight: 600;
   }
-
   .analytics-section h5 {
     margin: 1rem 0 0.5rem 0;
     font-size: 0.875rem;
     color: #4b5563;
     font-weight: 600;
   }
-
   .analytics-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.75rem;
   }
-
   .metric {
     display: flex;
     flex-direction: column;
@@ -462,13 +405,11 @@
     background: #f8fafc;
     border-radius: 0.375rem;
   }
-
   .metric .value {
     font-size: 1.25rem;
     font-weight: 700;
     color: #1e293b;
   }
-
   .metric .label {
     font-size: 0.75rem;
     color: #64748b;
@@ -476,17 +417,14 @@
     letter-spacing: 0.05em;
     margin-top: 0.25rem;
   }
-
   .value.engagement-high { color: #dc2626; }
   .value.engagement-medium { color: #d97706; }
   .value.engagement-low { color: #64748b; }
-
   .recent-prompts ul {
     margin: 0;
     padding: 0;
     list-style: none;
   }
-
   .recent-prompts li {
     padding: 0.5rem;
     background: #f1f5f9;
@@ -496,16 +434,14 @@
     color: #475569;
     line-height: 1.4;
   }
-
   /* Mobile responsive */
   @media (max-width: 1024px) {
     .detective-page {
-      grid-template-areas: 
+      grid-template-areas:
         "header"
         "main";
       grid-template-columns: 1fr;
     }
-    
     .analytics-sidebar {
       display: none;
     }

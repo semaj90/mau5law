@@ -7,7 +7,6 @@
  * - Client-side: Unified Client LLM Orchestrator (Gemma + ONNX)
  * - Bridge: Routes requests to optimal orchestrator based on task type and context
  */
-
 import { orchestrator as enhancedOrchestrator } from './enhanced-orchestrator.js';
 import { unifiedClientLLMOrchestrator } from '$lib/ai/unified-client-llm-orchestrator.js';
 import { mcpMultiCore } from '$lib/server/mcp/multi-core-integration.js';
@@ -15,7 +14,6 @@ import type { MCPTask } from '$lib/server/mcp/multi-core-integration.js';
 import { logger } from './logger.js';
 import type { ClientLLMRequest, InferenceResult } from '$lib/ai/unified-client-llm-orchestrator.js';
 }
-
 export interface LLMBridgeRequest {
   id: string;
   type: 'chat' | 'legal_analysis' | 'document_processing' | 'embedding' | 'search' | 'workflow';
@@ -43,7 +41,6 @@ export interface LLMBridgeRequest {
     timestamp?: number;
   };
 }
-
 export interface LLMBridgeResponse {
   success: boolean;
   response: string;
@@ -63,7 +60,6 @@ export interface LLMBridgeResponse {
   error?: string;
   requestId: string;
 }
-
 export class LLMOrchestratorBridge {
   private requestCounter = 0;
   private activeRequests = new Map<string, LLMBridgeRequest>();
@@ -75,25 +71,20 @@ export class LLMOrchestratorBridge {
     serverRoutedRequests: 0,
     clientRoutedRequests: 0
   };
-
   constructor() {
     this.initializeBridge();
   }
-
   private async initializeBridge() {
     logger.info('[LLM Bridge] Initializing orchestrator bridge...');
-
     try {
       // Ensure both orchestrators are initialized
       await this.checkServerOrchestrator();
       await this.checkClientOrchestrator();
-
       logger.info('[LLM Bridge] Bridge initialized successfully');
     } catch (error) {
       logger.error('[LLM Bridge] Initialization failed:', error);
     }
   }
-
   /**
    * Main entry point - routes requests to optimal orchestrator
    */;
@@ -101,70 +92,52 @@ export class LLMOrchestratorBridge {
     const startTime = performance.now();
     const requestId = this.generateRequestId();
     request.id = requestId;
-
     this.activeRequests.set(requestId, request);
     this.performanceMetrics.totalRequests++;
-
     try {
       logger.info(`[LLM Bridge] Processing request ${requestId}: ${request.type}`);
-
       // Step 1: Determine optimal orchestrator
       const routingDecision = await this.determineOrchestrator(request);
       const routingTime = performance.now() - startTime;
-
       logger.info(`[LLM Bridge] Routing to ${routingDecision.orchestrator} for ${request.type}`);
-
       // Step 2: Execute with selected orchestrator
       const processingStartTime = performance.now();
       let result: LLMBridgeResponse;
-
       switch (routingDecision.orchestrator) {
         case 'server':
           result = await this.executeServerOrchestrator(request, routingDecision);
           this.performanceMetrics.serverRoutedRequests++;
           break;
-
         case 'client':
           result = await this.executeClientOrchestrator(request, routingDecision);
           this.performanceMetrics.clientRoutedRequests++;
           break;
-
         case 'mcp':
           result = await this.executeMCPOrchestrator(request, routingDecision);
           break;
-
         case 'hybrid':
           result = await this.executeHybridOrchestrator(request, routingDecision);
           break;
-
         default:
           throw new Error(`Unknown orchestrator: ${routingDecision.orchestrator}`);
       }
-
       const processingTime = performance.now() - processingStartTime;
       const totalLatency = performance.now() - startTime;
-
       // Step 3: Update metrics and finalize response
       (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.routingTime = routingTime;
       (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.processingTime = processingTime;
       (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.totalLatency = totalLatency;
       (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).requestId = requestId;
-
       if ((result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).success) {
         this.performanceMetrics.successfulRequests++;
       }
-
       this.updatePerformanceMetrics(result);
-
       logger.info(`[LLM Bridge] Request ${requestId} completed in ${totalLatency.toFixed(2)}ms`);
-
       return result;
-
     } catch (error) {
       logger.error(`[LLM Bridge] Request ${requestId} failed:`, error);
-
       return {
-        success: false,
+        success: false
         response: 'Failed to process request',
         orchestratorUsed: 'server',
         modelUsed: 'none',
@@ -172,7 +145,7 @@ export class LLMOrchestratorBridge {
           totalLatency: performance.now() - startTime,
           routingTime: 0,
           processingTime: 0
-        },;
+        },
         error: error instanceof Error ? error.message: 'Unknown error',
         requestId
       };
@@ -180,114 +153,102 @@ export class LLMOrchestratorBridge {
       this.activeRequests.delete(requestId);
     }
   }
-
   /**
    * Determines which orchestrator to use based on request characteristics
    */;
   private async determineOrchestrator(request: LLMBridgeRequest): Promise<any> {
-    // Force server orchestrator for specific model requests;
+    // Force server orchestrator for specific model requests
     if (request.options?.model === 'server-orchestrator') {
       return {
         orchestrator: 'server',
-        reasoning: 'Explicitly requested server orchestrator',;
+        reasoning: 'Explicitly requested server orchestrator',
         confidence: 1.0
       };
     }
-
-    // Force client orchestrator for specific models;
+    // Force client orchestrator for specific models
     if (request.options?.model && ['gemma270m', 'legal-bert'].includes(request.options.model)) {
       return {
         orchestrator: 'client',
-        reasoning: `Client-side model requested: ${request.options?.model || 'unknown'}`,;
+        reasoning: `Client-side model requested: ${request.options?.model || 'unknown'}`,
         confidence: 1.0
       };
     }
-
     // Check if MCP multi-core is available and optimal
     const mcpMetrics = mcpMultiCore.getPerformanceMetrics();
     const mcpAvailable = mcpMetrics.onlineCores > 0;
-
     // Prefer MCP for parallel processing or high-load scenarios
     if (mcpAvailable && (
       request.options?.priority === 'high' ||
       request.type === 'document_processing' ||
       (request.type === 'embedding' && request.content.length > 1000) ||
-      mcpMetrics.totalLoad < (mcpMetrics.totalCapacity * 0.7) // MCP not overloaded;
+      mcpMetrics.totalLoad < (mcpMetrics.totalCapacity * 0.7) // MCP not overloaded
     )) {
       return {
         orchestrator: 'mcp',
-        reasoning: `MCP multi-core optimal: ${mcpMetrics.onlineCores} cores available, load: ${mcpMetrics.totalLoad}/${mcpMetrics.totalCapacity}`,;
+        reasoning: `MCP multi-core optimal: ${mcpMetrics.onlineCores} cores available, load: ${mcpMetrics.totalLoad}/${mcpMetrics.totalCapacity}`,
         confidence: 0.85
       };
     }
-
-    // Task-based routing;
+    // Task-based routing
     switch (request.type) {
-      case 'embedding':;
+      case 'embedding':
         return {
           orchestrator: 'client',
-          reasoning: 'Embedding tasks are faster on client-side ONNX',;
+          reasoning: 'Embedding tasks are faster on client-side ONNX',
           confidence: 0.9
         };
-
-      case 'workflow':;
+      case 'workflow':
         return {
           orchestrator: 'server',
-          reasoning: 'Complex workflows require server orchestrator with XState',;
+          reasoning: 'Complex workflows require server orchestrator with XState',
           confidence: 0.95
         };
-
       case 'legal_analysis':
         // Complex legal analysis -> server, simple questions -> client
         const isComplex = request.content.length > 500 ||
                          request.context?.documentType === 'contract' ||
                          request.content.includes('precedent') ||
                          request.content.includes('statute');
-
         return {
           orchestrator: isComplex ? 'server' : 'client',
-          reasoning: `Legal analysis complexity: ${isComplex ? 'high' : 'low'}`,;
+          reasoning: `Legal analysis complexity: ${isComplex ? 'high' : 'low'}`,
           confidence: 0.8
         };
-
-      case 'search':;
+      case 'search':
         return {
           orchestrator: 'server',
-          reasoning: 'Search requires pgvector and Neo4j integration',;
+          reasoning: 'Search requires pgvector and Neo4j integration',
           confidence: 0.9
         };
-
-      case 'document_processing':;
+      case 'document_processing':
         return {
           orchestrator: 'server',
-          reasoning: 'Document processing needs full pipeline with caching',;
+          reasoning: 'Document processing needs full pipeline with caching',
           confidence: 0.85
         };
-
       case 'chat':
       default:
-        // Latency-based routing for chat;
+        // Latency-based routing for chat
         if (request.options?.priority === 'realtime' && request.options?.maxLatency && request.options.maxLatency < 200) {
           return {
             orchestrator: 'client',
-            reasoning: 'Realtime chat requires low latency',;
+            reasoning: 'Realtime chat requires low latency',
             confidence: 0.7
           };
         } else {
           return {
             orchestrator: 'server',
-            reasoning: 'Default to server for comprehensive chat capabilities',;
+            reasoning: 'Default to server for comprehensive chat capabilities',
             confidence: 0.6
           };
         }
     }
   }
-
   /**
    * Execute request using server-side enhanced orchestrator
    */
   private async executeServerOrchestrator(
-    request: LLMBridgeRequest,;
+    request: LLMBridgeRequest
     routing: any;
   ): Promise<LLMBridgeResponse> {
     try {
@@ -302,9 +263,8 @@ export class LLMOrchestratorBridge {
         useGPU: request.options?.useGPU || true,
         enableStreaming: request.options?.enableStreaming || false
       });
-
       return {
-        success: true,;
+        success: true
         response: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).summary || (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).detailed_discussion || (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).response || 'No response generated',
         orchestratorUsed: 'server',
         modelUsed: 'gemma3-legal:latest',
@@ -312,7 +272,7 @@ export class LLMOrchestratorBridge {
           totalLatency: 0, // Will be set by caller
           routingTime: 0,  // Will be set by caller
           processingTime: 0, // Will be set by caller
-          gpuAccelerated: true,
+          gpuAccelerated: true
           cacheHitRate: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).metadata?.cacheHit ? 1.0 : 0.0
         },
         confidence: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).confidence_score || 0.8,
@@ -324,12 +284,11 @@ export class LLMOrchestratorBridge {
       throw new Error(`Server orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
-
   /**
    * Execute request using client-side unified orchestrator
    */
   private async executeClientOrchestrator(
-    request: LLMBridgeRequest,;
+    request: LLMBridgeRequest
     routing: any;
   ): Promise<LLMBridgeResponse> {
     try {
@@ -337,7 +296,7 @@ export class LLMOrchestratorBridge {
         id: request.id,
         prompt: request.content,
         task: this.mapTaskToClientTask(request.type),
-        priority: request.options?.priority || 'normal',;
+        priority: request.options?.priority || 'normal',
         context: {
           userId: request.context?.userId || 'anonymous',
           sessionId: request.context?.sessionId || 'default',
@@ -349,19 +308,17 @@ export class LLMOrchestratorBridge {
           preferredModel: request.options?.model === 'auto' ? 'auto' : request.options?.model as any,
           maxLatency: request.options?.maxLatency,
           qualityThreshold: 0.8,
-          enableRLTraining: false,
+          enableRLTraining: false
           enableContextSwitching: true
         },
         resourceLimits: {
           maxGPUMemoryMB: 4096,
           maxDDRRAMCacheMB: 8192,
-          allowModelSwitching: true,
+          allowModelSwitching: true
           enableParallelInference: true
         }
       };
-
       const result: InferenceResult = await unifiedClientLLMOrchestrator.executeInference(clientRequest);
-
       return {
         success: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).success,
         response: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).response,
@@ -382,12 +339,11 @@ export class LLMOrchestratorBridge {
       throw new Error(`Client orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
-
   /**
    * Execute request using MCP multi-core orchestrator
    */
   private async executeMCPOrchestrator(
-    request: LLMBridgeRequest,;
+    request: LLMBridgeRequest
     routing: any;
   ): Promise<LLMBridgeResponse> {
     try {
@@ -403,19 +359,16 @@ export class LLMOrchestratorBridge {
             temperature: request.options?.temperature || 0.3,
             maxTokens: request.options?.maxTokens || 1024,
             useGPU: request.options?.useGPU !== false
-          },;
+          },
           metadata: request.metadata
         }
       };
-
       const mcpResponse = await mcpMultiCore.submitTask(mcpTask);
-
       if (!mcpResponse.success) {
         throw new Error(mcpResponse.error || 'MCP processing failed');
       }
-
       return {
-        success: true,
+        success: true
         response: mcpResponse.result?.response || mcpResponse.result?.content || JSON.stringify(mcpResponse.result),
         orchestratorUsed: 'hybrid' as const,
         modelUsed: mcpResponse.metadata?.model || 'mcp-worker',
@@ -425,7 +378,7 @@ export class LLMOrchestratorBridge {
           processingTime: mcpResponse.processingTime,
           cacheHitRate: mcpResponse.metadata?.cacheHit ? 1.0 : 0.0,
           gpuAccelerated: mcpResponse.metadata?.gpuAccelerated || false
-        },;
+        },
         confidence: 0.8, // Default confidence for MCP tasks
         requestId: request.id
       };
@@ -433,12 +386,11 @@ export class LLMOrchestratorBridge {
       throw new Error(`MCP orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
-
   /**
    * Execute request using hybrid approach (both orchestrators)
    */
   private async executeHybridOrchestrator(
-    request: LLMBridgeRequest,;
+    request: LLMBridgeRequest
     routing: any;
   ): Promise<LLMBridgeResponse> {
     try {
@@ -447,14 +399,11 @@ export class LLMOrchestratorBridge {
         this.executeServerOrchestrator(request, routing),
         this.executeClientOrchestrator(request, routing)
       ]);
-
       // Choose best result based on confidence and success
       let bestResult: LLMBridgeResponse;
-
       if (serverResult.status === 'fulfilled' && clientResult.status === 'fulfilled') {
         const serverConfidence = serverResult.value.confidence || 0;
         const clientConfidence = clientResult.value.confidence || 0;
-
         bestResult = serverConfidence > clientConfidence ? serverResult.value: clientResult.value;
         bestResult.orchestratorUsed = 'hybrid';
       } else if (serverResult.status === 'fulfilled') {
@@ -466,13 +415,11 @@ export class LLMOrchestratorBridge {
       } else {
         throw new Error('Both orchestrators failed');
       }
-
       return bestResult;
     } catch (error) {
       throw new Error(`Hybrid orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
-
   /**
    * Helper methods
    */;
@@ -488,7 +435,6 @@ export class LLMOrchestratorBridge {
         return 'chat';
     }
   }
-
   private mapTaskTypeToMCP(bridgeTask: string): 'embedding' | 'generation' | 'analysis' | 'search' | 'workflow' {
     switch (bridgeTask) {
       case 'embedding': return 'embedding';
@@ -501,7 +447,6 @@ export class LLMOrchestratorBridge {
         return 'generation';
     }
   }
-
   private mapPriorityToMCP(bridgePriority: string): 'low' | 'normal' | 'high' | 'critical' {
     switch (bridgePriority) {
       case 'low': return 'low';
@@ -511,26 +456,22 @@ export class LLMOrchestratorBridge {
       default: return 'normal';
     }
   }
-
   private generateRequestId(): string {
     return `bridge_${Date.now()}_${++this.requestCounter}_${Math.random().toString(36).substring(2, 9)}`;
   }
-
   private updatePerformanceMetrics(result: LLMBridgeResponse) {
     // Update running averages
     const currentAvg = this.performanceMetrics.averageLatency;
     const newLatency = (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.totalLatency;
     this.performanceMetrics.averageLatency =
       (currentAvg * (this.performanceMetrics.totalRequests - 1) + newLatency) / this.performanceMetrics.totalRequests;
-
-    // Update cache hit rate if available;
+    // Update cache hit rate if available
     if ((result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.cacheHitRate !== undefined) {
       const currentCacheRate = this.performanceMetrics.cacheHitRate;
       this.performanceMetrics.cacheHitRate =
         (currentCacheRate * (this.performanceMetrics.totalRequests - 1) + (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.cacheHitRate) / this.performanceMetrics.totalRequests;
     }
   }
-
   private async checkServerOrchestrator(): Promise<boolean> {
     try {
       const health = await enhancedOrchestrator.health();
@@ -541,7 +482,6 @@ export class LLMOrchestratorBridge {
       return false;
     }
   }
-
   private async checkClientOrchestrator(): Promise<boolean> {
     try {
       const status = await unifiedClientLLMOrchestrator.getStatus();
@@ -552,7 +492,6 @@ export class LLMOrchestratorBridge {
       return false;
     }
   }
-
   /**
    * Public API methods
    */;
@@ -561,10 +500,8 @@ export class LLMOrchestratorBridge {
       this.checkServerOrchestrator(),
       this.checkClientOrchestrator()
     ]);
-
     const serverHealthy = serverHealth.status === 'fulfilled' && serverHealth.value;
     const clientHealthy = clientStatus.status === 'fulfilled' && clientStatus.value;
-
     let bridgeStatus: 'healthy' | 'degraded' | 'offline';
     if (serverHealthy && clientHealthy) {
       bridgeStatus = 'healthy';
@@ -573,10 +510,9 @@ export class LLMOrchestratorBridge {
     } else {
       bridgeStatus = 'offline';
     }
-
     return {
-      bridge: {;
-        status: bridgeStatus,
+      bridge: {
+        status: bridgeStatus
         activeRequests: this.activeRequests.size,
         totalRequests: this.performanceMetrics.totalRequests,
         successRate: this.performanceMetrics.totalRequests > 0
@@ -587,16 +523,13 @@ export class LLMOrchestratorBridge {
       clientOrchestrator: clientHealthy ? await unifiedClientLLMOrchestrator.getStatus() : { status: 'offline' }
     };
   }
-
   getPerformanceMetrics() {
     return { ...this.performanceMetrics };
   }
-
   getActiveRequests() {
     return Array.from(this.activeRequests.values();
   }
 }
-
 // Export singleton instance
 export const llmOrchestratorBridge = new LLMOrchestratorBridge();
 export default llmOrchestratorBridge;

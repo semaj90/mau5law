@@ -6,7 +6,6 @@
     showPercentage?: boolean;
     percentage?: number;
   }
-
   let {
     size = 'md',
     theme = 'classic',
@@ -14,25 +13,23 @@
     showPercentage = false,
     percentage = 0
   }: Props = $props();
-
   const sizes = {
     sm: '32px',
-    md: '48px', ;
-    lg: '64px',;
+    md: '48px',
+    lg: '64px',
     xl: '96px';
   };
-
   const themes = {
     classic: {
       primary: '#FFD700',
-      secondary: '#FFA500', 
+      secondary: '#FFA500',
       accent: '#FF8C00',
       glow: '#FFFF00';
     },
     gold: {
       primary: '#FFD700',
       secondary: '#DAA520',
-      accent: '#B8860B', 
+      accent: '#B8860B',
       glow: '#FFFF99';
     },
     red: {
@@ -48,27 +45,25 @@
       glow: '#87CEEB';
     },
     green: {
-      primary: '#40FF40', 
+      primary: '#40FF40',
       secondary: '#32CD32',
       accent: '#228B22',
       glow: '#90EE90';
     },
     purple: {
       primary: '#9932CC',
-      secondary: '#8A2BE2',;
-      accent: '#6A0DAD',;
+      secondary: '#8A2BE2',
+      accent: '#6A0DAD',
       glow: '#DDA0DD';
     }
   };
-
   const speeds = {
-    slow: '3s',;
-    medium: '2s', ;
+    slow: '3s',
+    medium: '2s',
     fast: '1s';
   };
 </script>
-
-<div 
+<div
   class="n64-loading-ring"
   style="
     --size: {sizes[size]};
@@ -83,34 +78,32 @@
   <div class="ring-container">
     <div class="ring-outer">
       {#each Array(8) as _, i}
-        <div 
+        <div
           class="ring-segment"
           style="--delay: {i * 0.125}s; --rotation: {i * 45}deg"
         ></div>
       {/each}
     </div>
-    
     <!-- Inner rotating core -->
     <div class="ring-core">
       <div class="core-inner">
         <div class="core-crystal"></div>
       </div>
     </div>
-    
     <!-- Progress indicator -->
     {#if showPercentage}
       <div class="percentage-ring">
         <svg class="percentage-svg" viewBox="0 0 100 100">
-          <circle 
+          <circle
             class="percentage-bg"
-            cx="50" 
-            cy="50" 
+            cx="50"
+            cy="50"
             r="45"
           />
-          <circle 
+          <circle
             class="percentage-fill"
-            cx="50" 
-            cy="50" 
+            cx="50"
+            cy="50"
             r="45"
             style="--percentage: {percentage}"
           />
@@ -118,11 +111,10 @@
         <div class="percentage-text">{Math.round(percentage)}%</div>
       </div>
     {/if}
-    
     <!-- Sparkle effects -->
     <div class="sparkle-layer">
       {#each Array(6) as _, i}
-        <div 
+        <div
           class="sparkle"
           style="--delay: {i * 0.3}s; --rotation: {i * 60}deg"
         ></div>
@@ -130,9 +122,8 @@
     </div>
   </div>
 </div>
-
 <style>
-  .n64-loading-ring {;
+  .n64-loading-ring {
     position: relative;
     width: var(--size);
     height: var(--size);
@@ -140,13 +131,11 @@
     align-items: center;
     justify-content: center;
   }
-
   .ring-container {
     position: relative;
     width: 100%;
     height: 100%;
   }
-
   .ring-outer {
     position: absolute;
     top: 0;
@@ -156,7 +145,6 @@
     border-radius: 50%;
     animation: rotate var(--speed) linear infinite;
   }
-
   .ring-segment {
     position: absolute;
     top: 10%;
@@ -173,11 +161,10 @@
     transform-origin: 50% 200%;
     transform: translateX(-50%) rotate(var(--rotation));
     animation: pulse-segment calc(var(--speed) * 2) ease-in-out infinite var(--delay);
-    box-shadow: 
+    box-shadow:
       0 0 4px var(--glow),
       inset 0 1px 0 rgba(255,255,255,0.3);
   }
-
   .ring-core {
     position: absolute;
     top: 25%;
@@ -192,11 +179,10 @@
       var(--accent) 100%
     );
     animation: rotate-reverse calc(var(--speed) * 1.5) linear infinite;
-    box-shadow: 
+    box-shadow:
       0 0 8px var(--glow),
       inset 0 0 4px rgba(0,0,0,0.3);
   }
-
   .core-inner {
     position: absolute;
     top: 20%;
@@ -207,7 +193,6 @@
     background: var(--primary);
     animation: pulse-core calc(var(--speed) * 0.8) ease-in-out infinite;
   }
-
   .core-crystal {
     position: absolute;
     top: 30%;
@@ -218,7 +203,6 @@
     clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
     animation: crystal-shine calc(var(--speed) * 1.2) ease-in-out infinite;
   }
-
   .percentage-ring {
     position: absolute;
     top: 0;
@@ -229,20 +213,17 @@
     align-items: center;
     justify-content: center;
   }
-
   .percentage-svg {
     position: absolute;
     width: 100%;
     height: 100%;
     transform: rotate(-90deg);
   }
-
   .percentage-bg {
     fill: none;
     stroke: rgba(0,0,0,0.1);
     stroke-width: 2;
   }
-
   .percentage-fill {
     fill: none;
     stroke: var(--primary);
@@ -253,21 +234,19 @@
     transition: stroke-dashoffset 0.5s ease;
     filter: drop-shadow(0 0 2px var(--glow));
   }
-
   .percentage-text {
     position: relative;
     color: var(--primary);
     font-family: 'Courier New', monospace;
     font-weight: bold;
     font-size: calc(var(--size) * 0.15);
-    text-shadow: 
+    text-shadow:
       1px 1px 0 #000,
       -1px -1px 0 #000,
       1px -1px 0 #000,
       -1px 1px 0 #000;
     z-index: 10;
   }
-
   .sparkle-layer {
     position: absolute;
     top: 0;
@@ -276,7 +255,6 @@
     height: 100%;
     pointer-events: none;
   }
-
   .sparkle {
     position: absolute;
     top: 15%;
@@ -289,64 +267,56 @@
     animation: sparkle-twinkle calc(var(--speed) * 3) ease-in-out infinite var(--delay);
     box-shadow: 0 0 6px var(--glow);
   }
-
   /* Animations */
   @keyframes rotate {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-
   @keyframes rotate-reverse {
     from { transform: rotate(360deg); }
     to { transform: rotate(0deg); }
   }
-
   @keyframes pulse-segment {
-    0%, 100% { 
-      opacity: 0.4; 
+    0%, 100% {
+      opacity: 0.4;
       transform: translateX(-50%) rotate(var(--rotation)) scale(1);
     }
-    50% { 
-      opacity: 1; 
+    50% {
+      opacity: 1;
       transform: translateX(-50%) rotate(var(--rotation)) scale(1.1);
     }
   }
-
   @keyframes pulse-core {
-    0%, 100% { 
+    0%, 100% {
       transform: scale(1);
       box-shadow: 0 0 8px var(--glow);
     }
-    50% { 
+    50% {
       transform: scale(1.1);
       box-shadow: 0 0 16px var(--glow);
     }
   }
-
   @keyframes crystal-shine {
-    0%, 100% { 
+    0%, 100% {
       opacity: 0.8;
       transform: scale(1);
     }
-    50% { 
+    50% {
       opacity: 1;
       transform: scale(1.2);
     }
   }
-
   @keyframes sparkle-twinkle {
     0%, 100% { opacity: 0; }
     25%, 75% { opacity: 1; }
     50% { opacity: 0.5; }
   }
-
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     .ring-outer,
     .ring-core {
-      animation-duration: 10s;
+      animation-duration: 10;
     }
-    
     .ring-segment,
     .core-inner,
     .core-crystal,

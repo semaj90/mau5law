@@ -3,21 +3,16 @@
   Unified frontend component for vector search + AI generation
   Enhanced with bits-ui professional components
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { unifiedServiceRegistry } from '$lib/services/unified-service-registry';
   import { CardBits } from '$lib/enhanced-bits';
   import { AlertCircle } from 'lucide-svelte';
-
   let errorMessage = $state<string | null>('');
-
   // Additional imports
   import { ButtonBits, InputBits } from '$lib/enhanced-bits';
   import { Search, Loader2, CheckCircle } from 'lucide-svelte';
-
   let searchQuery = $state('');
   let searchResults = $state(null);
   let ragResponse = $state(null);
@@ -26,21 +21,18 @@
   let systemStatus = $state(null);
   // Search configuration
   let searchConfig = $state({
-    limit: 5,;
+    limit: 5,
     threshold: 0.7,
     includeRAGResponse: true;
   });
-
   $effect(() => {
     (async () => {
       await loadSystemStatus();
     })();
-
     // Refresh system status periodically
     const interval = setInterval(loadSystemStatus, 10000);
     return () => clearInterval(interval);
   });
-
   async function loadSystemStatus() {
     try {
       systemStatus = await unifiedServiceRegistry.getSystemStatus();
@@ -48,7 +40,6 @@
       console.error('Failed to load system status:', error);
     }
   }
-
   async function performSearch() {
     if (!searchQuery.trim() || isSearching) return;
     isSearching = true;
@@ -56,40 +47,35 @@
     try {
       // Use the new enhanced semantic search API for better performance
       const response = await fetch('/api/rag/semantic-search', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: searchQuery,
-          limit: searchConfig.limit,;
+          query: searchQuery
+          limit: searchConfig.limit,
           threshold: searchConfig.threshold,
-          // Optional filters can be added here;
+          // Optional filters can be added her
           filters: {}
         })
       });
-
       if (!response.ok) {
         throw new Error(`Search failed: ${response.statusText}`);
       }
-
       const data = await response.json();
-
       if (data.success) {
         searchResults = data.results || [];
-
         // If includeRAGResponse is enabled, generate a response using the retrieved documents
         if (searchConfig.includeRAGResponse && Array.isArray(data.results) && data.results.length > 0) {
           try {
             const ragResponseFetch = await fetch('/api/rag/enhanced', {
-              method: 'POST',;
+              method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                query: searchQuery,
-                mode: 'semantic_search', // Use our enhanced semantic search mode;
-                limit: searchConfig.limit,;
+              body: JSON.stringify({,
+                query: searchQuery
+                mode: 'semantic_search', // Use our enhanced semantic search mod
+                limit: searchConfig.limit,
                 threshold: searchConfig.threshold;
               })
             });
-
             if (ragResponseFetch.ok) {
               const ragData = await ragResponseFetch.json();
               ragResponse = ragData.success ? ragData.answer: null;
@@ -99,21 +85,18 @@
             ragResponse = null;
           }
         }
-
         // Add to search history
         searchHistory.unshift({
-          query: searchQuery,
-          resultCount: Array.isArray(data.results) ? data.results.length : 0,;
+          query: searchQuery
+          resultCount: Array.isArray(data.results) ? data.results.length : 0,
           timestamp: new Date(),
           hasRAGResponse: !!ragResponse,
           processingTime: data.processingTime || 0;
         });
-
         // Keep only last 5 searches
         if (searchHistory.length > 5) {
           searchHistory = searchHistory.slice(0, 5);
         }
-
         // Cache the query using unified service registry
         if (Array.isArray(data.results) && data.results.length > 0) {
           await unifiedServiceRegistry.cacheGraphQuery(searchQuery, data, 300);
@@ -122,13 +105,12 @@
         throw new Error(data.error || 'Search request failed');
       }
     } catch (error) {
-      errorMessage = (error as Error).message;
+      errorMessage = (error as Error).messag;
       console.error('Search error:', error);
     } finally {
       isSearching = false;
     }
   }
-
   async function ingestDocument() {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -140,24 +122,22 @@
       try {
         const text = await file.text();
         const response = await fetch('/api/embed/ingest', {
-          method: 'POST',;
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            text: text,
+          body: JSON.stringify({,
+            text: text
             entityType: 'document',
-            entityId: crypto.randomUUID(),;
+            entityId: crypto.randomUUID(),
             metadata: {
-              filename: file.name,;
+              filename: file.name,
               filesize: file.size,
               uploadedAt: new Date().toISOString();
             }
           })
         });
-
         if (!response.ok) {
           throw new Error(`Ingestion failed: ${response.statusText}`);
         }
-
         const result = await response.json();
         // Show success notification
         console.log(`Document ingested: ${result.chunks.length} chunks created`);
@@ -167,17 +147,14 @@
     };
     fileInput.click();
   }
-
   function formatTimestamp(date: Date) {
     return date.toLocaleTimeString() + ' ' + date.toLocaleDateString();
   }
-
   function highlightMatch(text: string, query: string) {
     if (!query) return text;
     const regex = new RegExp(`(${query})`, 'gi');
     return text.replace(regex, '<mark class="bg-yellow-300 px-1">$1</mark>');
   }
-
   // Suggestions based on system components
   const searchSuggestions = [
     'evidence analysis',
@@ -187,11 +164,9 @@
     'legal procedures'
   ];
 </script>
-
 <svelte:head>
   <title>RAG Search - Legal AI Platform</title>
 </svelte:head>
-
 <div class="space-y-6">
   <header class="flex justify-between items-center">
     <div>
@@ -200,7 +175,6 @@
         Vector search with AI-powered responses
       </p>
     </div>
-
     <!-- System Status -->
     {#if systemStatus}
       <div class="flex items-center gap-2 text-sm">
@@ -212,7 +186,6 @@
       </div>
     {/if}
   </header>
-
   <!-- Search Interface -->
   <CardBits variant="elevated" padding="lg" class="bg-nier-bg-secondary border border-nier-border-primary">
     <div class="space-y-4">
@@ -258,7 +231,6 @@
           {/snippet}
         </ButtonBits>
       </div>
-
       <!-- Search Configuration -->
       <div class="flex gap-4 text-sm">
         <label class="flex items-center gap-2">
@@ -282,7 +254,6 @@
           <span>Include AI Response</span>
         </label>
       </div>
-
       <!-- Search Suggestions -->
       <div class="flex flex-wrap gap-2">
         <span class="text-sm text-nier-text-muted">Try:</span>
@@ -301,7 +272,6 @@
       </div>
     </div>
   </CardBits>
-
   <!-- Error Message -->
   {#if errorMessage}
     <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
@@ -310,7 +280,6 @@
       </div>
     </div>
   {/if}
-
   <!-- RAG Response -->
   {#if ragResponse}
     <CardBits variant="elevated" padding="lg" class="bg-nier-bg-secondary border border-nier-border-primary">
@@ -330,14 +299,12 @@
       </div>
     </CardBits>
   {/if}
-
   <!-- Search Results -->
   {#if searchResults?.length > 0}
     <CardBits variant="elevated" padding="lg" class="bg-nier-bg-secondary border border-nier-border-primary">
       <h3 class="font-bold text-nier-accent-warm mb-4">
         Search Results ({searchResults.length})
       </h3>
-
       <div class="space-y-4">
         {#each searchResults as result}
           <CardBits variant="outlined" padding="md" class="bg-nier-bg-primary border border-nier-border-muted legal-search-result">
@@ -356,7 +323,6 @@
                 </span>
               </div>
             </div>
-
             <div class="text-nier-text-primary text-sm leading-relaxed">
               {@html highlightMatch(result.chunk_text || '', searchQuery)}
             </div>
@@ -375,7 +341,6 @@
       </div>
     </CardBits>
   {/if}
-
   <!-- Search History -->
   {#if searchHistory.length > 0}
     <CardBits variant="elevated" padding="lg" class="bg-nier-bg-secondary border border-nier-border-primary">
@@ -406,53 +371,43 @@
     </CardBits>
   {/if}
 </div>
-
 <style>
   /* Enhanced bits-ui styling for legal AI search */
-  :global(.legal-ai-search-input) {;
+  :global(.legal-ai-search-input) {
     background: var(--nier-bg-primary);
     border: 2px solid var(--nier-border-muted);
     transition: all 0.3s ease;
   }
-
   :global(.legal-ai-search-input:focus) {
     border-color: var(--nier-accent-warm);
     box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
   }
-
   :global(.legal-ai-search-btn) {
     transition: all 0.2s ease;
     box-shadow: var(--legal-ai-shadow-md);
   }
-
-  :global(.legal-ai-search-btn:hover) {
+  :global($1) {
     transform: translateY(-1px);
     box-shadow: var(--legal-ai-shadow-lg);
   }
-
   :global(.legal-search-result) {
     border-left: 4px solid var(--nier-accent-warm);
     transition: transform 0.2s ease;
   }
-
-  :global(.legal-search-result:hover) {
+  :global($1) {
     transform: translateY(-2px);
   }
-
   /* Custom scrollbar for results */
   .space-y-4 ::-webkit-scrollbar {
     width: 6px;
   }
-
   .space-y-4 ::-webkit-scrollbar-track {
     background: var(--nier-bg-tertiary);
   }
-
   .space-y-4 ::-webkit-scrollbar-thumb {
     background: var(--nier-accent-warm);
     border-radius: 3px;
   }
-
   /* Highlighting for search matches */
   :global(mark) {
     background-color: rgba(255, 255, 0, 0.3);

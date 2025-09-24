@@ -3,48 +3,36 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax -->
 <script lang="ts">
   import type { Evidence } from "$lib/data/types";
-  import {   } from "svelte";
-
-  
-
   let dragActive = false;
   let files: FileList | null = null;
   let uploadProgress = 0;
-
   function handleDragEnter(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
   }
-
   function handleDragLeave() {
     dragActive = false;
   }
-
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
     if (e.dataTransfer?.files) {
-      files = e.dataTransfer.files;
+      files = e.dataTransfer.file;
       handleUpload();
     }
   }
-
   async function handleUpload() {
     if (!files?.length) return;
-
     const formData = new FormData();
     Array.from.forEach((file) => {
       formData.append("files", file);
     });
-
     try {
       const response = await fetch("/api/evidence", {
-        method: "POST",;
-        body: formData,;
+        method: "POST",
+        body: formData
       });
-
       if (!response.ok) throw new Error("Upload failed");
-
       const evidence = await response.json();
       ondispatch?.(evidence);
     } catch (error) {
@@ -55,7 +43,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     }
   }
 </script>
-
 <div
   class="upload-zone"
   class:active={dragActive}
@@ -85,20 +72,18 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       type="file"
       multiple
       onchange={(e) => {
-        files = e.currentTarget.files;
+        files = e.currentTarget.file;
         handleUpload();
       }}
       style="display: none"
     />
   </div>
-
   {#if uploadProgress > 0}
     <div class="progress-bar">
       <div class="progress" style="width: {uploadProgress}%"></div>
     </div>
   {/if}
 </div>
-
 <style>
   .upload-zone {
     border: 2px dashed #ccc;
@@ -107,36 +92,30 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     border-radius: 8px;
     transition: all 0.3s ease;
   }
-
   .upload-zone.active {
     border-color: #007bff;
     background-color: rgba(0, 123, 255, 0.1);
   }
-
   .upload-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
   }
-
   .upload-icon {
     width: 48px;
     height: 48px;
     color: #666;
   }
-
   .progress-bar {
     margin-top: 1rem;
-    background-color: #eee;
+    background-color: #ee;
     border-radius: 4px;
     overflow: hidden;
   }
-
   .progress {
     height: 4px;
     background-color: #007bff;
     transition: width 0.3s ease;
   }
 </style>
-

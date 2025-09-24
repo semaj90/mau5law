@@ -2,26 +2,21 @@ export type CacheEntry<T> = {
   value: T;
   expiresAt?: number; // epoch ms
 };
-
 export default class MultiTierCache<T = unknown> {
   private memory = new Map<string, CacheEntry<T>();
   private memoryLimit: number;
   private storagePrefix: string;
-
   constructor(options?: { memoryLimit?: number; storagePrefix?: string }) {
 	this.memoryLimit = options?.memoryLimit ?? 500;
 	this.storagePrefix = options?.storagePrefix ?? 'mtcache:';
   }
-
   private now(): number {
 	return Date.now();
   }
-
   private isExpired(entry?: CacheEntry<T>): boolean {
 	if (!entry) return true;
 	return typeof entry.expiresAt === 'number' && entry.expiresAt <= this.now();
   }
-
   private trimMemory() {
 	while (this.memory.size > this.memoryLimit) {
 	  // remove the oldest inserted (first) entry
@@ -30,11 +25,9 @@ export default class MultiTierCache<T = unknown> {
 	  this.memory.delete(firstKey);
 	}
   }
-
   private storageKey(key: string) {
 	return `${this.storagePrefix}${key}`;
   }
-
   private saveToStorage(key: string, entry: CacheEntry<T> | undefined) {
 	if (typeof window === 'undefined' || !window.localStorage) return;
 	try {
@@ -48,7 +41,6 @@ export default class MultiTierCache<T = unknown> {
 	  // ignore storage errors (quota, private mode, etc.)
 	}
   }
-
   private loadFromStorage(key: string): CacheEntry<T> | undefined {
 	if (typeof window === 'undefined' || !window.localStorage) return undefined;
 	try {
@@ -60,7 +52,6 @@ export default class MultiTierCache<T = unknown> {
 	  return undefined;
 	}
   }
-
   async get(key: string): Promise<T | undefined> {
 	// Try memory
 	const mem = this.memory.get(key);
@@ -75,7 +66,6 @@ export default class MultiTierCache<T = unknown> {
 	  this.memory.set(key, mem);
 	  return mem.value;
 	}
-
 	// Try persistent storage
 	const stored = this.loadFromStorage(key);
 	if (!stored) return undefined;
@@ -88,7 +78,6 @@ export default class MultiTierCache<T = unknown> {
 	this.trimMemory();
 	return stored.value;
   }
-
   async set(key: string, value: T, ttlMs?: number): Promise<void> {
 	const entry: CacheEntry<T> = {
 	  value,
@@ -101,12 +90,10 @@ export default class MultiTierCache<T = unknown> {
 	// persist
 	this.saveToStorage(key, entry);
   }
-
   async del(key: string): Promise<void> {
 	this.memory.delete(key);
 	this.saveToStorage(key, undefined);
   }
-
   async has(key: string): Promise<boolean> {
 	const mem = this.memory.get(key);
 	if (mem) {
@@ -125,7 +112,6 @@ export default class MultiTierCache<T = unknown> {
 	}
 	return true;
   }
-
   async clear(): Promise<void> {
 	this.memory.clear();
 	if (typeof window === 'undefined' || !window.localStorage) return;

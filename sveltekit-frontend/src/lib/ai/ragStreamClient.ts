@@ -38,7 +38,6 @@ import type {     Readable     } from 'svelte/store';
  *  function cancel() { abortCtrl?.abort(); }
  */;
 }
-
 export interface RagStreamOptions {
   query: string;
   contextIds?: string[];
@@ -53,18 +52,15 @@ export interface RagStreamOptions {
   endpoint?: string;
   extra?: Record<string, unknown>;
 }
-
 import { writable, get } from 'svelte/store';
-// Orphaned content: import type { Readable;
+// Orphaned content: import type { Readable
 }
-
 export interface InternalSSEState {
   currentEvent?: string;
   dataLines: string[];
 }
-
 function finalizeEvent(
-  state: InternalSSEState,;
+  state: InternalSSEState
   emit: (evt: { event?: string; data: string }) => void;
 ) {
   if (state.dataLines.length === 0) return;
@@ -72,11 +68,10 @@ function finalizeEvent(
   state.currentEvent = undefined;
   state.dataLines = [];
 }
-
 /** Incremental SSE line processor (per complete line without trailing \n) */
 function processSSELine(
-  line: string,
-  state: InternalSSEState,;
+  line: string
+  state: InternalSSEState
   emit: (evt: { event?: string; data: string }) => void;
 ) {
   if (line === '' || line === '\r') {
@@ -99,7 +94,6 @@ function processSSELine(
   // Unknown line type: treat as data fallback
   state.dataLines.push(line.trim();
 }
-
 export async function streamRag(opts: RagStreamOptions): Promise<any> {
   const {
     query,
@@ -115,13 +109,11 @@ export async function streamRag(opts: RagStreamOptions): Promise<any> {
     endpoint = '/rag/query/stream',
     extra = {}
   } = opts;
-
   let doneEmitted = false;
-
   try {
     const body = JSON.stringify({ query, contextIds, intent, model, ingestionId, ...extra });
     const resp = await fetch(endpoint, {
-      method: 'POST',;
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body,
       signal
@@ -129,13 +121,11 @@ export async function streamRag(opts: RagStreamOptions): Promise<any> {
     if (!resp.ok || !resp.body) {
       throw new Error(`Stream request failed: ${resp.status}`);
     }
-
     const traceparent = resp.headers.get('traceparent') || undefined;
     const reader = resp.body.getReader();
     const decoder = new TextDecoder();
     const state: InternalSSEState = { dataLines: [] };
     let buffer = '';
-
     const emit = (evt: { event?: string; data: string }) => {
       const ev = evt.event || 'message';
       if (ev === 'token' || ev === 'message') {
@@ -155,12 +145,10 @@ export async function streamRag(opts: RagStreamOptions): Promise<any> {
         onDone?.();
       }
     };
-
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;
       buffer += decoder.decode(value, { stream: true });
-
       // Process complete lines; keep trailing partial in buffer
       let newlineIndex: number;
       while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
@@ -172,14 +160,12 @@ export async function streamRag(opts: RagStreamOptions): Promise<any> {
       // Early exit if aborted
       if (signal?.aborted) break;
     }
-
-    // Flush any final line without newline;
+    // Flush any final line without newline
     if (buffer.length) {
       processSSELine(buffer, state, emit);
     }
     // Finalize any pending event data
     finalizeEvent(state, emit);
-
     if (!doneEmitted) {
       // Server closed without explicit done; emit once
       onDone?.();
@@ -194,19 +180,16 @@ export async function streamRag(opts: RagStreamOptions): Promise<any> {
     return {};
   }
 }
-
 // ---------------------------------------------
 // Async generator + backoff + Svelte store API
-// ---------------------------------------------;
+// ---------------------------------------------
 }
-
 export interface RagStreamGeneratorOptions extends RagStreamOptions {
   maxRetries?: number; // default 0 (no reconnect)
   backoffMs?: number; // initial backoff (default 500ms)
   backoffFactor?: number; // exponential factor (default 2)
   retryStatusCodes?: number[]; // default [502,503,504]
 }
-
 export type RagStreamYield =
   | { type: 'token'; token: string }
   | { type: 'done' }
@@ -215,11 +198,9 @@ export type RagStreamYield =
   | { type: 'meta'; traceparent?: string; streamId?: string }
   | { type: 'patch'; patch: any }
   | { type: 'summary'; summary: string; source: 'server' | 'local' };
-
 function isRetryableStatus(status: number, retryStatusCodes: number[]) {
   return retryStatusCodes.includes(status);
 }
-
 export async function* streamRagGenerator(
   opts: RagStreamGeneratorOptions;
 ): AsyncGenerator<RagStreamYield, void, unknown> {
@@ -231,13 +212,11 @@ export async function* streamRagGenerator(
     signal,
     ...base
   } = opts;
-
   const outerAbort = new AbortController();
   if (signal) {
     if (signal.aborted) outerAbort.abort();
     else signal.addEventListener('abort', () => outerAbort.abort(), { once: true });
   }
-
   let attempt = 0;
   while (true) {
     let doneEmitted = false;
@@ -245,7 +224,7 @@ export async function* streamRagGenerator(
       const body = JSON.stringify({
         query: base.query,
         contextIds: base.contextIds ?? [],
-        intent: base.intent,;
+        intent: base.intent,
         model: base?.model || "unknown", // @ts-ignore - Model property access ?? 'default'
         ingestionId: base.ingestionId,
         ...(base.extra || {})
@@ -253,7 +232,7 @@ export async function* streamRagGenerator(
       const resp = await fetch(base.endpoint || '/rag/query/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body,;
+        body,
         signal: outerAbort.signal
       });
       if (!resp.ok || !resp.body) {
@@ -266,13 +245,12 @@ export async function* streamRagGenerator(
         }
         yield {
           type: 'error',
-          error: new Error(`Stream request failed: ${resp.status}`),;
-          final: true,
+          error: new Error(`Stream request failed: ${resp.status}`),
+          final: true
           attempt
         };
         return;
       }
-
       const traceparent = resp.headers.get('traceparent') || undefined;
       const streamIdHeader = resp.headers.get('x-stream-id') || undefined;
       const reader = resp.body.getReader();
@@ -306,7 +284,6 @@ export async function* streamRagGenerator(
           queue.push({ type: 'done' });
         }
       };
-
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
@@ -340,7 +317,6 @@ export async function* streamRagGenerator(
     }
   }
 }
-
 export interface RagStreamStore {
   tokens: Readable<string[]>;
   status: Readable<
@@ -354,17 +330,16 @@ export interface RagStreamStore {
   patches: Readable<any[]>;
   appliedObject?: Readable<any>; // auto-applied object derived from patches
   summary: Readable<string | undefined>;
-  start: (;
+  start: (
     opts: Omit<RagStreamGeneratorOptions, 'signal'> & { signal?: AbortSignal }
   ) => Promise<void>;
   cancel: () => void;
   interrupt: (mode?: 'graceful' | 'force') => Promise<void>; // request server to stop; fallback to local summary
   clear: () => void;
   resetMetrics: () => void;
-  rebuildApplied: (upToIndex?: number) => void; // rebuild derived object up to index
+  rebuildApplied: (upToIndex?: number) => void; // rebuild derived object up to index,
   undoLast: (count?: number) => void; // undo last N patches
 }
-
 export interface RagStreamStoreInit extends Partial<RagStreamGeneratorOptions> {
   persistence?: {
     enabled?: boolean;
@@ -394,7 +369,6 @@ export interface RagStreamStoreInit extends Partial<RagStreamGeneratorOptions> {
     minSentenceLength?: number; // default 20 chars
   };
 }
-
 export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamStore {
   const tokensW = writable<string[]>([]);
   const statusW = writable<
@@ -412,7 +386,6 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
   const snapshots: { index: number; object: any }[] = [];
   let patchCount = 0;
   const snapshotInterval = initial?.patches?.snapshotInterval ?? 20;
-
   // (Re)declared runtime state variables (restored after edit)
   let persistenceKey: string | undefined;
   let pendingBatch: string[] = [];
@@ -422,12 +395,10 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
   const EMA_ALPHA = 0.25;
   let abortCtrl: AbortController | null = null;
   let running = false;
-
   function getStorage(storage?: 'local' | 'session') {
     if (typeof window === 'undefined') return undefined;
     return storage === 'session' ? window.sessionStorage: window.localStorage;
   }
-
   function loadPersisted(query: string) {
     if (!initial?.persistence?.enabled) return [] as string[];
     persistenceKey = initial.persistence?.key || `rag:${query}`;
@@ -446,10 +417,9 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       ) {
         return parsed.data.length ? parsed.data.split('\n') : [];
       }
-    } catch {}
+    } catch (error) {}
     return [];
   }
-
   function persist(tokens: string[]) {
     if (!initial?.persistence?.enabled || !persistenceKey) return;
     const store = getStorage(initial.persistence?.storage);
@@ -462,9 +432,8 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       } else {
         store.setItem(persistenceKey, JSON.stringify(tokens.slice(-maxTokens));
       }
-    } catch {}
+    } catch (error) {}
   }
-
   function flushBatch() {
     if (!pendingBatch.length) return;
     tokensW.update((a) => {
@@ -479,7 +448,6 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       batchTimer = null;
     }
   }
-
   function scheduleBatch() {
     if (batchTimer) return;
     let interval = initial?.batching?.intervalMs ?? 40;
@@ -493,8 +461,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     }
     batchTimer = setTimeout(() => flushBatch(), interval);
   }
-
-  // Patch application helpers;
+  // Patch application helpers
   function applyJsonPatch(target: any, patch: any[]): boolean {
     try {
       for (const op of patch) {
@@ -530,7 +497,6 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       return false;
     }
   }
-
   function deepMerge(target: any, src: any) {
     if (src && typeof src === 'object') {
       for (const k of Object.keys(src)) {
@@ -545,7 +511,6 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     }
     return target;
   }
-
   async function start(opts: Omit<RagStreamGeneratorOptions, 'signal'> & { signal?: AbortSignal }): Promise<any> {
     if (running) cancel();
     const merged: RagStreamGeneratorOptions = { ...initial, ...opts } as any;
@@ -600,7 +565,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
             if (initial?.patches?.autoApply) {
               const prevObj = get(appliedObjectW) || (initial?.patches?.initialObject ?? {});
               const mode = initial.patches?.mode || 'auto';
-              let newObj = prevObj ? JSON.parse(JSON.stringify(prevObj)) : Record<string, any>;
+              let newObj = prevObj ? JSON.parse(JSON.stringify(prevObj)) : { [key: string]: any };
               let changed = false;
               let inverseForPatch: any[] | null = null;
               const keepInv = initial?.patches?.keepInverses;
@@ -650,7 +615,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
               }
             }
             break;
-          case 'error':;
+          case 'error':
             if (ev.final) {
               statusW.set('error');
               errorW.set(ev.error);
@@ -669,7 +634,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
               endedAt: Date.now(),
               durationMs: m.startedAt ? Date.now() - m.startedAt: undefined
             });
-            // Generate local summary if allowed and none received;
+            // Generate local summary if allowed and none received
             if (!get(summaryW) && initial?.summarization?.localOnMissing) {
               const local = generateLocalSummary(get(tokensW), initial?.summarization);
               if (local) summaryW.set(local);
@@ -702,12 +667,10 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       running = false;
     }
   }
-
   function cancel() {
     if (abortCtrl && !abortCtrl.signal.aborted) abortCtrl.abort();
     statusW.set('aborted');
   }
-
   function generateLocalSummary(tokens: string[], cfg?: RagStreamStoreInit['summarization']) {
     if (!tokens.length) return undefined;
     const text = tokens.join(' ');
@@ -743,7 +706,6 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     }
     return chosen.join(' ');
   }
-
   async function interrupt(mode: 'graceful' | 'force' = 'graceful'): Promise<any> {
     // Hard cancel always aborts immediately
     const sid = get(streamIdW) || get(traceparentW);
@@ -760,10 +722,10 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       return;
     }
     try {
-      // Attempt server cooperative interrupt;
+      // Attempt server cooperative interrupt
       await fetch('/rag/interrupt', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },;
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ streamId: sid, mode })
       });
       // If graceful, wait briefly for server summary; if force, abort now;
@@ -787,7 +749,6 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       }
     }
   }
-
   function clear() {
     tokensW.set([]);
     tokenCountW.set(0);
@@ -798,11 +759,9 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     summaryW.set(undefined);
     streamIdW.set(undefined);
   }
-
   function resetMetrics() {
     metricsW.update((m) => ({ reconnects: 0, errors: 0, startedAt: Date.now() });
   }
-
   function applyOnePatch(patch: any, obj: any) {
     if (Array.isArray(patch)) applyJsonPatch(obj, patch);
     else if (patch && typeof patch === 'object') deepMerge(obj, patch);
@@ -813,7 +772,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     const limit = upToIndex == null ? all.length: Math.max(0, Math.min(upToIndex, all.length);
     let base = initial?.patches?.initialObject
       ? JSON.parse(JSON.stringify(initial.patches.initialObject)
-      : Record<string, any>;
+      : { [key: string]: any };
     if (snapshots.length) {
       let best = snapshots[0];
       for (const s of snapshots) if (s.index <= limit && s.index > best.index) best = s;
@@ -831,7 +790,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     if (count <= 0) return;
     if (initial?.patches?.keepInverses && inverseStack.length >= count) {
       appliedObjectW.update((cur) => {
-        let obj = cur ? JSON.parse(JSON.stringify(cur)) : Record<string, any>;
+        let obj = cur ? JSON.parse(JSON.stringify(cur)) : { [key: string]: any };
         for (let i = 0; i < count; i++) {
           const inv = inverseStack.pop();
           if (inv) applyJsonPatch(obj, inv);
@@ -845,7 +804,6 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       patchCount = Math.max(0, newLen);
     }
   }
-
   return {
     tokens: { subscribe: tokensW.subscribe },
     status: { subscribe: statusW.subscribe },
@@ -855,7 +813,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     traceparent: { subscribe: traceparentW.subscribe },
     streamId: { subscribe: streamIdW.subscribe },
     patches: { subscribe: patchesW.subscribe },
-    appliedObject: { subscribe: appliedObjectW.subscribe },;
+    appliedObject: { subscribe: appliedObjectW.subscribe },
     summary: { subscribe: summaryW.subscribe },
     start,
     cancel,
@@ -866,9 +824,8 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     undoLast
   };
 }
-
 // Example Svelte usage:
-// const rag = createRagStreamStore({ maxRetries: 3 });
+// const rag = createRagStreamStore({ maxRetries: 3 })
 // const { tokens, status, summary } = rag; // destructure the individual Svelte stores
 // onMount(() => { rag.start({ query: 'Explain force majeure' }); });
 // let tokenList = $derived($tokens); // reactive tokens array

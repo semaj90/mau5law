@@ -1,13 +1,12 @@
 <!-- Enhanced AI Chat Component - Svelte 5 Compatible -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { ChatBubbleIcon, PaperPlaneIcon, MagnifyingGlassIcon, DocumentTextIcon } from '@radix-icons/svelte';
   import * as Dialog from '$lib/components/ui/dialog';
   // Card components removed - using native HTML elements
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import * as Tooltip from '$lib/components/ui/tooltip';
   import {
@@ -15,9 +14,8 @@
   } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea';
   import type { ChatMessage, MessageAnalysis, RAGContext, Recommendation } from '$lib/types/ai-chat';
-
   // Props using correct Svelte 5 syntax
-  let { 
+  let {
     caseId = $bindable(''),
     userId = $bindable(''),
     enableWebGPU = $bindable(true),
@@ -32,7 +30,6 @@
     showAnalysisPanel?: boolean;
     maxMessages?: number;
   } = $props();
-
   // Component state using $state runes
   let chatContainer = $state<HTMLDivElement | null>(null);
   let messageInput = $state<HTMLTextAreaElement | null>(null);
@@ -42,13 +39,11 @@
   let currentAnalysis = $state<MessageAnalysis | null>(null);
   let ragContext = $state<RAGContext | null>(null);
   let userAttention = $state({ focused: true, lastActivity: Date.now() });
-
   // Chat state
   let messages = $state<ChatMessage[]>([]);
   let sessionId = $state<string>('');
   let currentMessage = $state('');
   let wsConnection = $state<WebSocket | null>(null);
-
   // WebGPU accelerator state
   let webgpuAccelerator = $state<any>(null);
   let processingMetrics = $state({
@@ -56,31 +51,25 @@
     gpuUtilization: 0,
     memoryUsage: 0
   });
-
   // Dialog state for analysis panel
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   // Initialize WebSocket connection
   async function initializeConnection() {
     if (!browser) return;
-
     try {
-      wsConnection = new WebSocket(`ws://localhost:5173/ws/chat`);
+      wsConnection = new WebSocket(`ws://localhost:5173/ws/chat`)
       wsConnection.onopen = () => {
         isConnected = true;
         console.log('✅ Enhanced AI Chat connected');
       };
-
       wsConnection.onmessage = (event) => {
         const data = JSON.parse(event.data);
         handleWebSocketMessage(data);
       };
-
       wsConnection.onclose = () => {
         isConnected = false;
         console.log('❌ Enhanced AI Chat disconnected');
       };
-
       wsConnection.onerror = (error) => {
         console.error('❌ WebSocket error:', error);
         isConnected = false;
@@ -89,11 +78,9 @@
       console.error('Failed to initialize connection:', error);
     }
   }
-
   // Initialize WebGPU acceleration if enabled
   async function initializeWebGPU() {
     if (!enableWebGPU || !browser) return;
-
     try {
       // Placeholder for WebGPU initialization
       console.log('🚀 WebGPU acceleration enabled');
@@ -103,7 +90,6 @@
       enableWebGPU = false;
     }
   }
-
   // Handle WebSocket messages
   function handleWebSocketMessage(data: any) {
     switch (data.type) {
@@ -114,13 +100,13 @@
         isTyping = data.isTyping;
         break;
       case 'analysis':
-        currentAnalysis = data.analysis;
+        currentAnalysis = data.analysi;
         break;
       case 'rag_context':
         ragContext = data.context;
         break;
       case 'metrics':
-        processingMetrics = data.metrics;
+        processingMetrics = data.metric;
         break;
       case 'stream':
         streamingResponse += data.chunk;
@@ -130,10 +116,10 @@
           messages = [...messages, {
             id: Date.now.toString(),
             role: 'assistant',
-            content: streamingResponse,
-            timestamp: new Date(),;
-            confidence: data.confidence,;
-            analysis: currentAnalysis;
+            content: streamingResponse
+            timestamp: new Date(),
+            confidence: data.confidence,
+            analysis: currentAnalysi;
           }];
           streamingResponse = '';
         }
@@ -141,54 +127,48 @@
         break;
     }
   }
-
   // Send message to AI
   async function sendMessage() {
     if (!currentMessage.trim() || !isConnected || isTyping) return;
-
     const userMessage: ChatMessage = {
       id: Date.now.toString(),
-      role: 'user',;
-      content: currentMessage,;
+      role: 'user',
+      content: currentMessage
       timestamp: new Date();
     };
-
     messages = [...messages, userMessage];
-    const messageToSend = currentMessage;
+    const messageToSend = currentMessag;
     currentMessage = '';
     isTyping = true;
-
     // Send via WebSocket
     if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
       wsConnection.send(JSON.stringify({
-        type: 'message',;
-        content: messageToSend,
+        type: 'message',
+        content: messageToSend
         sessionId,
         userId,
         caseId,
-        enableAnalysis: showAnalysisPanel,
+        enableAnalysis: showAnalysisPanel
         enableWebGPU;
       }));
     }
-
     // Fallback to HTTP API if WebSocket not available
     if (!wsConnection || wsConnection.readyState !== WebSocket.OPEN) {
       try {
         const response = await fetch('/api/chat-test', {
-          method: 'POST',;
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({;
+          body: JSON.stringify({,
             messages: [{ role: 'user', content: messageToSend }]
           })
         });
-
         const data = await response.json();
         if (response.ok && data.message) {
           messages = [...messages, {
             id: Date.now.toString(),
             role: 'assistant',
-            content: data.message,;
-            timestamp: new Date(),;
+            content: data.message,
+            timestamp: new Date(),
             confidence: data.confidence,
             tokensPerSecond: data.tokensPerSecond;
           }];
@@ -197,22 +177,20 @@
         console.error('Failed to send message:', error);
         messages = [...messages, {
           id: Date.now.toString(),
-          role: 'assistant',;
-          content: 'Sorry, I encountered an error. Please try again.',;
+          role: 'assistant',
+          content: 'Sorry, I encountered an error. Please try again.',
           timestamp: new Date();
         }];
       } finally {
         isTyping = false;
       }
     }
-
     // Auto-scroll to bottom
     await tick();
     if (chatContainer) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
   }
-
   // Handle keyboard shortcuts
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -220,7 +198,6 @@
       sendMessage();
     }
   }
-
   // Clear chat
   function clearChat() {
     messages = [];
@@ -228,7 +205,6 @@
     ragContext = null;
     streamingResponse = '';
   }
-
   // Track user attention if enabled
   function trackUserAttention() {
     if (!enableAttentionTracking) return;
@@ -237,7 +213,6 @@
       lastActivity: Date.now();
     };
   }
-
   // Initialize on mount
   $effect(() => {
     (async () => {
@@ -253,7 +228,6 @@
       }
     })();
   });
-
   // Cleanup on destroy
   onDestroy(() => {
     if (wsConnection) {
@@ -266,7 +240,6 @@
     }
   });
 </script>
-
 <div class="enhanced-ai-chat w-full max-w-6xl mx-auto">
   <!-- Main Chat Interface -->
   <div class="h-[700px] flex flex-col">
@@ -289,7 +262,6 @@
             </p>
           </div>
         </div>
-        
         <div class="flex items-center gap-2">
           {#if showAnalysisPanel}
             <Tooltip.Root>
@@ -310,25 +282,23 @@
               </Tooltip.Content>
             </Tooltip.Root>
           {/if}
-          
           <Button class="bits-btn" variant="ghost" size="sm" onclick={clearChat}>
             Clear
           </Button>
         </div>
       </div>
     </div>
-
     <!-- Messages Area -->
     <div class="chat-content flex-1 overflow-hidden p-0">
-      <div 
+      <div
         bind:this={chatContainer}
         class="h-full overflow-y-auto p-4 space-y-4"
       >
         {#each messages as message}
           <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
             <div class="max-w-[80%] p-3 rounded-lg {
-              message.role === 'user' 
-                ? 'bg-primary text-primary-foreground' 
+              message.role === 'user'
+                ? 'bg-primary text-primary-foreground'
                 : 'bg-muted'
             }">
               <div class="text-sm font-medium mb-1 opacity-70">
@@ -338,7 +308,6 @@
                 </span>
               </div>
               <div class="whitespace-pre-wrap">{message.content}</div>
-              
               {#if message.role === 'assistant' && message.confidence}
                 <div class="flex gap-1 mt-2">
                   <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(message.confidence * 100)}%</span>
@@ -350,7 +319,6 @@
             </div>
           </div>
         {/each}
-        
         {#if streamingResponse}
           <div class="flex justify-start">
             <div class="max-w-[80%] p-3 rounded-lg bg-muted">
@@ -360,7 +328,6 @@
             </div>
           </div>
         {/if}
-        
         {#if isTyping && !streamingResponse}
           <div class="flex justify-start">
             <div class="max-w-[80%] p-3 rounded-lg bg-muted">
@@ -378,7 +345,6 @@
         {/if}
       </div>
     </div>
-
     <!-- Input Area -->
     <div class="border-t p-4">
       <div class="flex gap-3">
@@ -398,7 +364,6 @@
           <PaperPlaneIcon class="w-4 h-4" />
         </Button>
       </div>
-      
       {#if processingMetrics.tokensPerSecond > 0}
         <div class="flex gap-4 mt-2 text-xs nes-text is-disabled">
           <span>Speed: {processingMetrics.tokensPerSecond} tok/s</span>
@@ -408,7 +373,6 @@
       {/if}
     </div>
   </div>
-
   <!-- Analysis Dialog -->
   {#if showAnalysisPanel}
     <Dialog.Root>
@@ -419,7 +383,6 @@
             Detailed analysis and context for the current conversation
           </Dialog.Description>
         </Dialog.Header>
-        
         <div class="space-y-4">
           {#if currentAnalysis}
             <div>
@@ -430,7 +393,6 @@
               </div>
             </div>
           {/if}
-          
           {#if ragContext}
             <div>
               <h4 class="font-medium mb-2">Relevant Context</h4>
@@ -440,7 +402,6 @@
             </div>
           {/if}
         </div>
-        
         <Dialog.Footer>
           <Button class="bits-btn" variant="ghost">
             Close
@@ -450,9 +411,8 @@
     </Dialog.Root>
   {/if}
 </div>
-
 <style>
-  .enhanced-ai-chat {;
+  .enhanced-ai-chat {
     font-family: system-ui, -apple-system, sans-serif;
   }
 </style>

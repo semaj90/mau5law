@@ -2,21 +2,17 @@
 <!-- Test page for Simple File Upload with RAG integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
   import { onMount } from 'svelte';
-
   interface ServiceStatus { healthy: boolean; [key: string]: unknown }
   interface SystemStatus { services?: Record<string, ServiceStatus>; [key: string]: unknown }
   interface UploadResult { filename?: string; status?: string; documentId?: string; size?: number; embeddingGenerated?: boolean; error?: string; [key:string]: unknown }
-
   let uploadResults: UploadResult[] = [];
   let systemStatus: SystemStatus = {};
   function handleUploadComplete(result: UploadResult) {
     console.log('Upload completed:', result);
     uploadResults = [...uploadResults, result];
   }
-
   $effect(() => {
     (async () => {
 try {
@@ -26,23 +22,22 @@ try {
       const REQUEST_TIMEOUT_MS = 8000;
       const POLL_INTERVAL_MS = 5000;
   let pollActive = $state(true);
-
       async function fetchStatus(attempt = 1) {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
         try {
           const res = await fetch(`${API_BASE}/api/rag/status`, {
-        method: 'GET',;
+        method: 'GET',
         headers: { 'Accept': 'application/json' },
-        signal: controller.signal,;
+        signal: controller.signal,
         cache: 'no-store';
     })();
   });
         clearTimeout(timer);
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const json = await res.json();
-          systemStatus = json;
-          return res;
+          systemStatus = jso;
+          return re;
         } catch (err) {
           clearTimeout(timer);
           if (attempt < MAX_RETRIES && pollActive) {
@@ -55,15 +50,12 @@ try {
           }
         }
       }
-
       const first = await fetchStatus(); // initial immediate load
-
       // Provide a Response object for existing code below (re-used json via systemStatus)
       const response = new Response(JSON.stringify(systemStatus), {
-        status: first?.status || (systemStatus ? 200 : 500),;
+        status: first?.status || (systemStatus ? 200 : 500),
         headers: { 'Content-Type': 'application/json' }
       });
-
       // Background polling loop
       (async function poll() {
         while (pollActive) {
@@ -72,7 +64,6 @@ try {
           await fetchStatus(1);
         }
       })();
-
       // Stop polling when leaving page
       addEventListener('beforeunload', () => { pollActive = false; });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -83,14 +74,11 @@ try {
     }
   });
 </script>
-
 <svelte:head>
   <title>Enhanced File Upload Test - Legal AI System</title>
 </svelte:head>
-
 <div class="container mx-auto p-6">
   <h1 class="text-3xl font-bold mb-6">Enhanced File Upload Test</h1>
-
   <!-- System Status Display (fixed) -->
   {#if systemStatus.services}
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -111,7 +99,6 @@ try {
   <div class="mb-8 border border-gray-200 rounded-lg p-4">
     <SimpleFileUpload onuploadcomplete={handleUploadComplete} />
   </div>
-
   <!-- Upload Results -->
   {#if uploadResults.length > 0}
     <div class="mt-8">
@@ -142,7 +129,6 @@ try {
       </div>
     </div>
   {/if}
-
   <!-- Debug Information -->
   <div class="mt-8 p-4 bg-gray-50 rounded-lg">
     <h2 class="text-lg font-semibold mb-2">Debug Information</h2>
@@ -156,9 +142,7 @@ try {
     </div>
   </div>
 </div>
-
 <!-- Replaced raw CSS with UnoCSS utilities (no <style> needed).
   Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px"
   Add 'max-w-1200px' to safelist in uno.config if using arbitrary values.
 -->
-

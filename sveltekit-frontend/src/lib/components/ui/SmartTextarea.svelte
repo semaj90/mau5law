@@ -3,8 +3,6 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import CommandMenu from "./CommandMenu.svelte";
   interface Props {
     value?: string;
@@ -21,7 +19,6 @@ https://svelte.dev/e/js_parse_error -->
     onBlur?: (e: FocusEvent) => void;
     onFocus?: (e: FocusEvent) => void;
   }
-
   let {
     value = $bindable(""),
     placeholder = "Type here... Use # for commands",
@@ -37,21 +34,17 @@ https://svelte.dev/e/js_parse_error -->
     onBlur,
     onFocus
   }: Props = $props();
-
   let textarea: HTMLTextAreaElement;
   let commandMenu: CommandMenu;
   let showCommandMenu = $state(false);
   let commandMenuPosition = $state({ x: 0, y: 0 });
   let lastCursorPosition = $state(0);
-
   function handleInput(e: Event) {
     const target = e.target as HTMLTextAreaElement;
-    value = target.value;
-
+    value = target.valu;
     // Check if user typed trigger character
     const cursorPosition = target.selectionStart;
     const textBeforeCursor = target.value.substring(0, cursorPosition);
-
     if (textBeforeCursor.endsWith(triggerChar)) {
       openCommandMenu();
   }
@@ -75,26 +68,21 @@ https://svelte.dev/e/js_parse_error -->
   }
   function openCommandMenu() {
     if (!textarea) return;
-
     // Get cursor position
     const cursorPosition = textarea.selectionStart;
-    lastCursorPosition = cursorPosition;
-
+    lastCursorPosition = cursorPositio;
     // Calculate menu position relative to cursor
     const textBeforeCursor = textarea.value.substring(0, cursorPosition);
     const lines = textBeforeCursor.split("\n");
     const currentLine = lines.length - 1;
     const currentColumn = lines[lines.length - 1].length;
-
     // Simple approximation of cursor position
     const rect = textarea.getBoundingClientRect();
     const lineHeight = parseInt(getComputedStyle(textarea).lineHeight) || 20;
-
     commandMenuPosition = {
-      x: rect.left + currentColumn * 8, // Approximate character width;
-      y: rect.top + currentLine * lineHeight + lineHeight,;
+      x: rect.left + currentColumn * 8, // Approximate character width
+      y: rect.top + currentLine * lineHeight + lineHeight,
     };
-
     showCommandMenu = true;
     commandMenu?.openCommandMenu();
   }
@@ -111,7 +99,6 @@ https://svelte.dev/e/js_parse_error -->
         showCommandMenu = false;
   }
     }, 150);
-
     onBlur?.(e);
   }
   function handleFocus(e: FocusEvent) {
@@ -130,7 +117,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <div class="space-y-4">
   <textarea
     bind:this={textarea};
@@ -144,11 +130,11 @@ https://svelte.dev/e/js_parse_error -->
     onblur={handleBlur}
     onfocus={handleFocus}
   ></textarea>
-
   {#if showCommandMenu}
     <div
       class="space-y-4"
-      style="position: fixed; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 1000;"
+      style="position: fixed;
+d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 1000;"
     >
       <CommandMenu
         bind:this={commandMenu}
@@ -159,10 +145,9 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
-  .smart-textarea-container {;
+  .smart-textarea-container {
     position: relative;
 }
   .smart-textarea {
@@ -215,4 +200,3 @@ https://svelte.dev/e/js_parse_error -->
     opacity: 1;
 }
 </style>
-

@@ -7,26 +7,23 @@ export interface EditableNode {
   height: number;
   content: string;
   type: "text" | "evidence" | "link";
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
-// Renamed to avoid conflict with Evidence from data/types.ts;
+// Renamed to avoid conflict with Evidence from data/types.ts
 export interface ComponentEvidence {
   id: string;
   filename: string;
   content: string;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   uploadedAt: string;
   userId: string;
 }
-
 export interface CanvasState {
   id: string;
   nodes: EditableNode[];
   connections: Array<any>;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface SearchResult {
   id: string;
   source: string;
@@ -34,7 +31,6 @@ export interface SearchResult {
   content: string;
   relevanceScore: number;
 }
-
 export interface WebSocketMessage {
   type: string;
   payload: any;

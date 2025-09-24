@@ -1,6 +1,5 @@
 import { setup, assign, createActor, fromPromise } from 'xstate';
 import { AuthService } from '$lib/server/auth.js';
-
 // Authentication context interface
 export interface AuthContext {
   user: {
@@ -36,7 +35,6 @@ export interface AuthContext {
   twoFactorRequired: boolean;
   registrationData?: unknown;
 }
-
 // Authentication events
 type AuthEvent =
   | { type: 'START_LOGIN'; data: LoginData }
@@ -60,7 +58,6 @@ type AuthEvent =
   | { type: 'PROFILE_UPDATED' }
   | { type: 'RETRY' };
 }
-
 export interface LoginData {
   email: string;
   password: string;
@@ -68,7 +65,6 @@ export interface LoginData {
   twoFactorCode?: string;
   deviceInfo?: unknown;
 }
-
 export interface RegistrationData {
   email: string;
   firstName: string;
@@ -81,23 +77,21 @@ export interface RegistrationData {
   enableTwoFactor?: boolean;
   deviceInfo?: unknown;
 }
-
 const initialContext: AuthContext = {
-  user: null,
-  session: null,;
-  error: undefined,
-  isLoading: false,
-  deviceInfo: undefined,
+  user: null
+  session: null
+  error: undefined
+  isLoading: false
+  deviceInfo: undefined
   loginAttempts: 0,
   maxLoginAttempts: 5,
-  lastLoginAttempt: undefined,
-  lockoutUntil: undefined,
-  twoFactorRequired: false,
+  lastLoginAttempt: undefined
+  lockoutUntil: undefined
+  twoFactorRequired: false
   registrationData: undefined
 };
-
 export const authMachine = setup({
-  types: Record<string, any> as {;
+  types: { [key: string]: any } as {
     context: AuthContext;
     events: AuthEvent;
   },
@@ -106,53 +100,53 @@ export const authMachine = setup({
       isLoading: () => true,
       error: () => undefined
     }),
-    clearLoading: assign({
+    clearLoading: assign({,
       isLoading: () => false
     }),
-    setError: assign({
+    setError: assign({,
       error: ({ event }) => (event as any).data?.error || 'An error occurred',
       isLoading: () => false
     }),
-    setUser: assign({
+    setUser: assign({,
       user: ({ event }) => (event as any).data?.user || null,
       session: ({ event }) => (event as any).data?.session || null,
       isLoading: () => false,
       error: () => undefined,
       loginAttempts: () => 0
     }),
-    clearUser: assign({
+    clearUser: assign({,
       user: () => null,
       session: () => null,
       error: () => undefined
     }),
-    incrementLoginAttempts: assign({
+    incrementLoginAttempts: assign({,
       loginAttempts: ({ context }) => context.loginAttempts + 1,
       lastLoginAttempt: () => new Date()
     }),
-    resetLoginAttempts: assign({
+    resetLoginAttempts: assign({,
       loginAttempts: () => 0,
       lastLoginAttempt: () => undefined
     }),
-    setLockout: assign({
+    setLockout: assign({,
       lockoutUntil: () => new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
       loginAttempts: () => 0
     }),
-    clearLockout: assign({
+    clearLockout: assign({,
       lockoutUntil: () => undefined
     }),
-    setTwoFactorRequired: assign({
+    setTwoFactorRequired: assign({,
       twoFactorRequired: () => true
     }),
-    clearTwoFactor: assign({
+    clearTwoFactor: assign({,
       twoFactorRequired: () => false
     }),
-    setRegistrationData: assign({
+    setRegistrationData: assign({,
       registrationData: ({ event }) => (event as any).data
     }),
-    clearRegistrationData: assign({
+    clearRegistrationData: assign({,
       registrationData: () => undefined
     })
-  },;
+  },
   guards: {
     isMaxAttemptsReached: ({ context }) => {
       return context.loginAttempts >= context.maxLoginAttempts;
@@ -161,16 +155,14 @@ export const authMachine = setup({
       return context.lockoutUntil ? new Date() < context.lockoutUntil: false;
     }
   },
-  actors: {;
+  actors: {
     authenticate: fromPromise(async ({ input }: { input: LoginData }) => {
       // Real authentication with local Windows native services
       const authService = new AuthService();
-
       try {
         const result = await authService.login(input.email, input.password);
-
         return {
-          user: {;
+          user: {
             id: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id,
             email: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).email,
             firstName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).firstName || 'User',
@@ -178,7 +170,7 @@ export const authMachine = setup({
             role: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).role,
             permissions: ['read:cases', 'write:cases', 'ai:query'], // TODO: Get from user role
           },
-          session: {;
+          session: {
             id: 'session_' + (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id, // Generate session ID
             expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
             fresh: true
@@ -191,25 +183,23 @@ export const authMachine = setup({
     register: fromPromise(async ({ input }: { input: RegistrationData }) => {
       // Real registration with local Windows native services
       const authService = new AuthService();
-
       try {
         const result = await authService.register({
-          email: input.email,;
+          email: input.email,
           password: input.password,
           firstName: input.firstName,
           lastName: input.lastName,
           displayName: `${input.firstName} ${input.lastName}`,
           // Removed legalSpecialties: not part of AuthService.register signature
         });
-
         return {
-          user: {;
+          user: {
             id: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id,
             email: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).email,
             firstName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).firstName,
             lastName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).lastName,
             role: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).role,
-            department: input.department,;
+            department: input.department,
             permissions: []
           }
         };
@@ -220,7 +210,6 @@ export const authMachine = setup({
     logout: fromPromise(async () => {
       // Real logout with local Windows native services
       const authService = new AuthService();
-
       try {
         await (authService as any).logout();
         return { success: true };
@@ -233,7 +222,6 @@ export const authMachine = setup({
     resetPassword: fromPromise(async ({ input }: { input: { email: string } }) => {
       // Real password reset with local Windows native services
       const authService = new AuthService();
-
       try {
         await (authService as any).requestPasswordReset(input.email);
         return { success: true };
@@ -245,7 +233,7 @@ export const authMachine = setup({
 }).createMachine({
   id: 'auth',
   initial: 'idle',
-  context: initialContext,
+  context: initialContext
   states: {
     idle: {
       on: {
@@ -260,7 +248,7 @@ export const authMachine = setup({
     authenticating: {
       entry: 'setLoading',
       invoke: {
-        src: 'authenticate',;
+        src: 'authenticate',
         input: ({ event }) => (event as any).data,
         onDone: [;
           {
@@ -269,7 +257,7 @@ export const authMachine = setup({
             actions: ['setTwoFactorRequired', 'clearLoading']
           },
           {
-            target: 'authenticated',;
+            target: 'authenticated',
             actions: ['setUser', 'resetLoginAttempts']
           }
         ],
@@ -392,16 +380,14 @@ export const authMachine = setup({
       entry: 'setLoading',
       after: {
         1500: {
-          target: 'authenticated',;
+          target: 'authenticated',
           actions: 'clearLoading'
         }
       }
     }
   }
 });
-
 // Create the actor
 export const authActor = createActor(authMachine);
-;
 // Export for use in components
 export default authActor;

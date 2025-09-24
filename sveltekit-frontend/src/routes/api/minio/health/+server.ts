@@ -1,11 +1,9 @@
 // MinIO Health Check API Endpoint
 // Verifies MinIO connectivity and bucket status
-
 import { json } from '@sveltejs/kit'
 import { env } from '$env/dynamic/private'
 import { Client as MinIOClient } from 'minio'
 import type { RequestHandler } from './$types'
-
 export const GET: RequestHandler = async () => {
   try {
     const minioEndpoint = env.MINIO_ENDPOINT || 'localhost:9000'
@@ -13,7 +11,6 @@ export const GET: RequestHandler = async () => {
     const secretKey = env.MINIO_SECRET_KEY || 'minio123'
     const bucketName = env.MINIO_BUCKET_NAME || 'legal-documents'
     const useSSL = env.MINIO_USE_SSL === 'true'
-
     // Initialize MinIO client
     const minioClient = new MinIOClient({
       endPoint: minioEndpoint.split(':')[0],
@@ -22,10 +19,8 @@ export const GET: RequestHandler = async () => {
       accessKey,
       secretKey
     })
-
     // Check bucket existence and connectivity
     const bucketExists = await minioClient.bucketExists(bucketName)
-
     // Get bucket region (tests connectivity)
     let region = 'unknown'
     try {
@@ -33,7 +28,6 @@ export const GET: RequestHandler = async () => {
     } catch (err) {
       console.warn('Could not get bucket region:', err)
     }
-
     // List some objects to verify read permissions
     let objectCount = 0
     try {
@@ -47,35 +41,31 @@ export const GET: RequestHandler = async () => {
     } catch (err) {
       console.warn('Could not list objects:', err)
     }
-
     const healthStatus = {
       status: 'healthy',
-      endpoint: minioEndpoint,
+      endpoint: minioEndpoint
       bucket: {
-        name: bucketName,
-        exists: bucketExists,
+        name: bucketName
+        exists: bucketExists
         region,
         objectCount: objectCount > 0 ? `${objectCount}+` : '0'
       },
       timestamp: new Date().toISOString(),
       connectivity: {
-        read: true,
+        read: true
         write: true, // Will be tested on actual upload
         bucketManagement: bucketExists
       },
       features: {
-        upload: true,
-        download: true,
-        versioning: true,
-        encryption: true,
+        upload: true
+        download: true
+        versioning: true
+        encryption: true
         lifecycle: true
       }
     }
-
     console.log(`🏥 MinIO Health Check: ${healthStatus.status} - Bucket exists: ${bucketExists}`)
-
     return json(healthStatus)
-
   } catch (error) {
     console.error('MinIO health check failed:', error)
     return json(
@@ -84,8 +74,8 @@ export const GET: RequestHandler = async () => {
         error: error instanceof Error ? error.message : 'Health check failed',
         timestamp: new Date().toISOString(),
         connectivity: {
-          read: false,
-          write: false,
+          read: false
+          write: false
           bucketManagement: false
         }
       },

@@ -10,7 +10,6 @@
     Button,
     Input
   } from '$lib/components/ui/enhanced-bits';
-
   interface BriefSection {
     id: string;
     type: 'header' | 'introduction' | 'facts' | 'argument' | 'conclusion' | 'signature';
@@ -21,7 +20,6 @@
     aiSuggestions?: string[];
     status: 'draft' | 'review' | 'approved';
   }
-
   interface Citation {
     id: string;
     type: 'case' | 'statute' | 'regulation' | 'secondary';
@@ -31,7 +29,6 @@
     verified: boolean;
     relevanceScore: number;
   }
-
   interface Brief {
     id: string;
     title: string;
@@ -45,23 +42,19 @@
     collaborators: string[];
     version: number;
   }
-
   interface Props {
     brief?: Brief;
     onSave?: (brief: Brief) => Promise<void>;
     onCitationCheck?: (citations: Citation[]) => Promise<Citation[]>;
     onAISuggestion?: (section: BriefSection) => Promise<string[]>;
   }
-
   let { brief, onSave, onCitationCheck, onAISuggestion }: Props = $props();
-
   // Enhanced-Bits builder for briefs
   const briefBuilder = createLegalEvidenceAnalyzer({
     caseType: 'civil',
     urgency: 'medium',
     aiModel: 'gemma3';
   });
-
   let briefData = $state<Brief>(brief || {
     id: 'brief-001',
     title: 'Motion for Summary Judgment',
@@ -72,20 +65,20 @@
     wordLimit: 8000,
     status: 'draft',
     collaborators: ['Legal Counsel', 'Associate Attorney'],
-    version: 1,;
+    version: 1,
     sections: [
       {
         id: 'intro',
         type: 'introduction',
         title: 'Introduction',
-        content: 'Plaintiff Smith respectfully moves this Court for summary judgment on all claims against Defendant Jones Construction Co. pursuant to Code of Civil Procedure Section 437c...',;
+        content: 'Plaintiff Smith respectfully moves this Court for summary judgment on all claims against Defendant Jones Construction Co. pursuant to Code of Civil Procedure Section 437c...',
         citations: [
           {
             id: 'cit-1',
             type: 'statute',
             citation: 'Cal. Code Civ. Proc. § 437c',
             shortForm: '§ 437c',
-            verified: true,
+            verified: true
             relevanceScore: 0.95;
           }
         ],
@@ -100,14 +93,13 @@
         id: 'facts',
         type: 'facts',
         title: 'Statement of Facts',
-        content: 'The undisputed material facts establish that on March 15, 2024, Defendant breached its contractual obligations...',;
+        content: 'The undisputed material facts establish that on March 15, 2024, Defendant breached its contractual obligations...',
         citations: [],
-        wordCount: 89,;
+        wordCount: 89,
         status: 'draft';
       }
     ]
   });
-
   let selectedSection = $state<string>('intro');
   let isAutoSaving = $state(false);
   let citationPanel = $state(false);
@@ -120,14 +112,11 @@
     if (percentage > 90) return 'warning';
     return 'normal';
   });
-
   let currentSection = $derived(() =>
     briefData.sections.find(s => s.id === selectedSection)
   );
-
   async function saveBrief() {
     if (!onSave) return;
-
     isAutoSaving = true;
     try {
       await onSave(briefData);
@@ -138,52 +127,45 @@
       isAutoSaving = false;
     }
   }
-
   async function checkCitations() {
     if (!onCitationCheck || !currentSection) return;
-
     try {
       const verifiedCitations = await onCitationCheck(currentSection.citations);
       const sectionIndex = briefData.sections.findIndex(s => s.id === selectedSection);
       if (sectionIndex >= 0) {
-        briefData.sections[sectionIndex].citations = verifiedCitations;
+        briefData.sections[sectionIndex].citations = verifiedCitation;
       }
     } catch (error) {
       console.error('Citation check failed:', error);
     }
   }
-
   async function getAISuggestions(sectionId: string) {
     if (!onAISuggestion) return;
-
     const section = briefData.sections.find(s => s.id === sectionId);
     if (!section) return;
-
     try {
       const suggestions = await onAISuggestion(section);
       const sectionIndex = briefData.sections.findIndex(s => s.id === sectionId);
       if (sectionIndex >= 0) {
-        briefData.sections[sectionIndex].aiSuggestions = suggestions;
+        briefData.sections[sectionIndex].aiSuggestions = suggestion;
       }
     } catch (error) {
       console.error('AI suggestion failed:', error);
     }
   }
-
   function addSection() {
     const newSection: BriefSection = {
       id: `section-${Date.now()}`,
       type: 'argument',
       title: 'New Argument Section',
-      content: '',;
+      content: '',
       citations: [],
-      wordCount: 0,;
+      wordCount: 0,
       status: 'draft';
     };
     briefData.sections.push(newSection);
     selectedSection = newSection.id;
   }
-
   function updateSectionContent(sectionId: string, content: string) {
     const sectionIndex = briefData.sections.findIndex(s => s.id === sectionId);
     if (sectionIndex >= 0) {
@@ -191,57 +173,50 @@
       briefData.sections[sectionIndex].wordCount = content.split(/\s+/).filter(word => word.length > 0).length;
     }
   }
-
   function addCitation() {
     if (!currentSection) return;
-
     const newCitation: Citation = {
       id: `cit-${Date.now()}`,
-      type: 'case',;
+      type: 'case',
       citation: '',
-      shortForm: '',;
-      verified: false,
+      shortForm: '',
+      verified: false
       relevanceScore: 0;
     };
-
     const sectionIndex = briefData.sections.findIndex(s => s.id === selectedSection);
     if (sectionIndex >= 0) {
       briefData.sections[sectionIndex].citations.push(newCitation);
     }
   }
-
   function getSectionIcon(type: BriefSection['type']): string {
     const icons = {
       header: '📋',
       introduction: '🎯',
       facts: '📊',
-      argument: '⚖️',;
-      conclusion: '🏁',;
+      argument: '⚖️',
+      conclusion: '🏁',
       signature: '✍️';
     };
     return icons[type] || '📄';
   }
-
   function getCitationIcon(type: Citation['type']): string {
     const icons = {
       case: '⚖️',
-      statute: '📜',;
-      regulation: '📋',;
+      statute: '📜',
+      regulation: '📋',
       secondary: '📚';
     };
     return icons[type] || '📄';
   }
-
   function getStatusColor(status: string) {
     const colors = {
       draft: '#6b7280',
-      review: '#f59e0b',;
-      approved: '#10b981',;
+      review: '#f59e0b',
+      approved: '#10b981',
       filed: '#3b82f6';
     };
     return colors[status as keyof typeof colors] || colors.draft;
   }
-
   // Auto-save effect
   let saveTimeout: NodeJS.Timeout;
   $effect(() => {
@@ -253,7 +228,6 @@
     }, 2000);
   });
 </script>
-
 <div class="brief-editor">
   <!-- Brief Header -->
   <Card
@@ -277,7 +251,6 @@
             </div>
           </div>
         </div>
-
         <div class="brief-actions">
           <div class="word-count-display">
             <span class="word-count {wordCountStatus}">
@@ -290,7 +263,6 @@
               ></div>
             </div>
           </div>
-
           <Button
             onclick={saveBrief}
             disabled={isAutoSaving}
@@ -298,7 +270,6 @@
           >
             {isAutoSaving ? '💾 Saving...' : '💾 Save Brief'}
           </Button>
-
           <Button
             onclick={() => citationPanel = !citationPanel}
             variant="outline"
@@ -308,7 +279,6 @@
         </div>
       </CardTitle>
     </CardHeader>
-
     <CardContent>
       <!-- Brief Details -->
       <div class="brief-details">
@@ -335,7 +305,6 @@
       </div>
     </CardContent>
   </Card>
-
   <!-- Main Editor Layout -->
   <div class="editor-layout">
     <!-- Section Navigation -->
@@ -346,7 +315,6 @@
           ➕ Add Section
         </Button>
       </div>
-
       <div class="section-list">
         {#each briefData.sections as section (section.id)}
           <button
@@ -370,7 +338,6 @@
         {/each}
       </div>
     </div>
-
     <!-- Content Editor -->
     <div class="content-editor">
       {#if currentSection}
@@ -379,7 +346,6 @@
             <h3>{currentSection.title}</h3>
             <span class="section-type">{currentSection.type.replace('_', ' ').toUpperCase()}</span>
           </div>
-
           <div class="editor-tools">
             <Button onclick={() => getAISuggestions(currentSection.id)} size="sm">
               🤖 AI Suggestions
@@ -389,7 +355,6 @@
             </Button>
           </div>
         </div>
-
         <div class="editor-content">
           <textarea
             value={currentSection.content}
@@ -397,7 +362,6 @@
             placeholder="Start writing your brief section..."
             class="content-textarea"
           ></textarea>
-
           <!-- AI Suggestions Panel -->
           {#if currentSection.aiSuggestions && currentSection.aiSuggestions.length > 0}
             <div class="suggestions-panel" transition:fly={{ x: 20, duration: 300 }}>
@@ -410,7 +374,6 @@
             </div>
           {/if}
         </div>
-
         <!-- Citations for Current Section -->
         <div class="section-citations">
           <div class="citations-header">
@@ -419,7 +382,6 @@
               ➕ Add Citation
             </Button>
           </div>
-
           <div class="citations-list">
             {#each currentSection.citations as citation (citation.id)}
               <div class="citation-item" transition:scale>
@@ -430,7 +392,6 @@
                     {citation.verified ? '✅ Verified' : '⏳ Pending'}
                   </span>
                 </div>
-
                 <div class="citation-content">
                   <Input
                     value={citation.citation}
@@ -450,7 +411,6 @@
                     />
                   {/if}
                 </div>
-
                 <div class="citation-metrics">
                   <span class="relevance-score">
                     Relevance: {Math.round(citation.relevanceScore * 100)}%
@@ -468,7 +428,6 @@
         </div>
       {/if}
     </div>
-
     <!-- Citation Panel -->
     {#if citationPanel}
       <div class="citation-panel" transition:fly={{ x: 300, duration: 300 }}>
@@ -476,7 +435,6 @@
           <h3>📚 All Citations</h3>
           <Button onclick={() => citationPanel = false} size="sm">✕</Button>
         </div>
-
         <div class="panel-content">
           {#each briefData.sections as section}
             {#if section.citations.length > 0}
@@ -501,45 +459,38 @@
     {/if}
   </div>
 </div>
-
 <style>
-  .brief-editor {;
+  .brief-editor {
     max-width: 1600px;
     margin: 0 auto;
     padding: 1rem;
     font-family: 'Courier New', monospace;
   }
-
   .brief-title {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: flex-start;
     gap: 2rem;
   }
-
   .title-section {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .brief-icon {
     font-size: 2rem;
   }
-
   .title-text h2 {
     margin: 0;
     color: var(--enhanced-bits-foreground);
     font-size: 1.5rem;
   }
-
   .brief-meta {
     display: flex;
     gap: 1rem;
     margin-top: 0.5rem;
     font-size: 0.875rem;
   }
-
   .brief-type {
     background: var(--enhanced-bits-primary);
     color: #000;
@@ -547,36 +498,30 @@
     border-radius: 4px;
     font-weight: bold;
   }
-
   .brief-status, .version-info {
     padding: 0.25rem 0.5rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     font-weight: bold;
   }
-
   .brief-actions {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .word-count-display {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 0.25rem;
   }
-
   .word-count {
     font-size: 0.875rem;
     font-weight: bold;
   }
-
   .word-count.normal { color: var(--enhanced-bits-success); }
   .word-count.warning { color: var(--enhanced-bits-warning); }
   .word-count.over { color: var(--enhanced-bits-error); }
-
   .word-progress {
     width: 120px;
     height: 4px;
@@ -584,51 +529,42 @@
     border-radius: 2px;
     overflow: hidden;
   }
-
   .word-fill {
     height: 100%;
     transition: width 300ms ease;
     border-radius: 2px;
   }
-
   .word-fill.normal { background: var(--enhanced-bits-success); }
   .word-fill.warning { background: var(--enhanced-bits-warning); }
   .word-fill.over { background: var(--enhanced-bits-error); }
-
   .brief-details {
     padding: 1rem 0;
     border-bottom: 1px solid var(--enhanced-bits-border);
     margin-bottom: 1rem;
   }
-
   .detail-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
   }
-
   .detail-item {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
-
   .detail-label {
     font-size: 0.75rem;
     color: var(--enhanced-bits-muted-foreground);
     text-transform: uppercase;
   }
-
   .detail-value {
     color: var(--enhanced-bits-foreground);
     font-weight: 500;
   }
-
   .due-date {
     color: var(--enhanced-bits-warning);
     font-weight: bold;
   }
-
   .editor-layout {
     display: grid;
     grid-template-columns: 300px 1fr auto;
@@ -636,32 +572,27 @@
     margin-top: 2rem;
     min-height: 600px;
   }
-
   .section-nav {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--enhanced-bits-border);
     border-radius: 8px;
     padding: 1.5rem;
   }
-
   .nav-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .nav-header h3 {
     margin: 0;
     color: var(--enhanced-bits-foreground);
   }
-
   .section-list {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .section-item {
     display: block;
     width: 100%;
@@ -675,44 +606,36 @@
     color: var(--enhanced-bits-foreground);
     font-family: inherit;
   }
-
   .section-item:hover {
     background: rgba(255, 255, 255, 0.05);
     border-color: var(--enhanced-bits-primary);
   }
-
   .section-item.active {
     background: rgba(0, 255, 65, 0.1);
     border-color: var(--enhanced-bits-primary);
   }
-
   .section-header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
   }
-
   .section-icon {
     font-size: 1rem;
   }
-
   .section-title {
     flex: 1;
     font-weight: 500;
   }
-
   .section-status {
     font-size: 0.75rem;
   }
-
   .section-meta {
     display: flex;
     gap: 1rem;
     font-size: 0.75rem;
     color: var(--enhanced-bits-muted-foreground);
   }
-
   .content-editor {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--enhanced-bits-border);
@@ -721,32 +644,27 @@
     display: flex;
     flex-direction: column;
   }
-
   .editor-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--enhanced-bits-border);
   }
-
   .section-info h3 {
     margin: 0;
     color: var(--enhanced-bits-foreground);
   }
-
   .section-type {
     font-size: 0.875rem;
     color: var(--enhanced-bits-muted-foreground);
     text-transform: uppercase;
   }
-
   .editor-tools {
     display: flex;
     gap: 0.5rem;
   }
-
   .editor-content {
     flex: 1;
     display: grid;
@@ -754,7 +672,6 @@
     gap: 1rem;
     margin-bottom: 1.5rem;
   }
-
   .content-textarea {
     width: 100%;
     min-height: 300px;
@@ -768,13 +685,11 @@
     line-height: 1.6;
     resize: vertical;
   }
-
   .content-textarea:focus {
     outline: none;
     border-color: var(--enhanced-bits-primary);
     box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
   }
-
   .suggestions-panel {
     width: 250px;
     background: rgba(157, 74, 221, 0.1);
@@ -782,19 +697,16 @@
     border-radius: 4px;
     padding: 1rem;
   }
-
   .suggestions-panel h4 {
     margin: 0 0 1rem 0;
     color: var(--enhanced-bits-ai);
     font-size: 0.875rem;
   }
-
   .suggestions-list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-
   .suggestion-item {
     padding: 0.5rem 0;
     border-bottom: 1px solid rgba(157, 74, 221, 0.2);
@@ -802,80 +714,66 @@
     line-height: 1.4;
     color: var(--enhanced-bits-foreground);
   }
-
   .section-citations {
     border-top: 1px solid var(--enhanced-bits-border);
     padding-top: 1.5rem;
   }
-
   .citations-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .citations-header h4 {
     margin: 0;
     color: var(--enhanced-bits-foreground);
   }
-
   .citations-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .citation-item {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--enhanced-bits-border);
     border-radius: 6px;
     padding: 1rem;
   }
-
   .citation-header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 1rem;
   }
-
   .citation-icon {
     font-size: 1rem;
   }
-
   .citation-type {
     font-size: 0.75rem;
     color: var(--enhanced-bits-muted-foreground);
     text-transform: uppercase;
   }
-
   .citation-verified {
     margin-left: auto;
     font-size: 0.75rem;
     color: var(--enhanced-bits-warning);
   }
-
   .citation-verified.verified {
     color: var(--enhanced-bits-success);
   }
-
   .citation-content {
     display: grid;
     gap: 0.75rem;
     margin-bottom: 1rem;
   }
-
   .citation-input, .citation-short, .citation-pinpoint {
     font-family: 'Times New Roman', serif;
     font-size: 0.875rem;
   }
-
   .citation-metrics {
     font-size: 0.75rem;
     color: var(--enhanced-bits-muted-foreground);
   }
-
   .citation-panel {
     width: 300px;
     background: rgba(255, 255, 255, 0.03);
@@ -885,29 +783,24 @@
     max-height: 600px;
     overflow-y: auto;
   }
-
   .panel-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1.5rem;
   }
-
   .panel-header h3 {
     margin: 0;
     color: var(--enhanced-bits-foreground);
   }
-
   .section-citations-group {
     margin-bottom: 2rem;
   }
-
   .section-citations-group h4 {
     margin: 0 0 1rem 0;
     color: var(--enhanced-bits-foreground);
     font-size: 1rem;
   }
-
   .citation-summary {
     display: flex;
     align-items: start;
@@ -915,23 +808,19 @@
     padding: 0.75rem 0;
     border-bottom: 1px solid var(--enhanced-bits-border);
   }
-
   .citation-text {
     flex: 1;
   }
-
   .citation-full {
     font-size: 0.875rem;
     color: var(--enhanced-bits-foreground);
     line-height: 1.4;
   }
-
   .citation-meta {
     font-size: 0.75rem;
     color: var(--enhanced-bits-muted-foreground);
     margin-top: 0.25rem;
   }
-
   .no-section-selected {
     display: flex;
     flex-direction: column;
@@ -941,58 +830,48 @@
     text-align: center;
     color: var(--enhanced-bits-muted-foreground);
   }
-
   .empty-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
   }
-
   .no-section-selected h3 {
     margin: 0 0 1rem 0;
     color: var(--enhanced-bits-foreground);
   }
-
   .no-section-selected p {
     margin: 0;
   }
-
   @media (max-width: 1200px) {
     .editor-layout {
       grid-template-columns: 250px 1fr;
     }
-
     .citation-panel {
       position: fixed;
+d;
       top: 20px;
       right: 20px;
       z-index: 100;
       max-height: calc(100vh - 40px);
     }
   }
-
   @media (max-width: 768px) {
     .brief-title {
       flex-direction: column;
       gap: 1rem;
     }
-
     .editor-layout {
       grid-template-columns: 1fr;
       gap: 1rem;
     }
-
     .section-nav {
       order: 2;
     }
-
     .content-editor {
       order: 1;
     }
-
     .editor-content {
       grid-template-columns: 1fr;
     }
-
     .suggestions-panel {
       width: 100%;
     }

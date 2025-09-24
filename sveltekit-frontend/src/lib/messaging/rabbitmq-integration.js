@@ -9,11 +9,9 @@
  *
  * This module will try to require('amqplib') and fall back to dynamic import for ESM environments.
  */
-
 let amqplibModule = null;
 let connection = null;
 let channel = null;
-
 async function getAmqplib() {
   if (amqplibModule) return amqplibModule;
   // Try commonjs require first, fallback to dynamic import for ESM
@@ -27,7 +25,6 @@ async function getAmqplib() {
   }
   return amqplibModule;
 }
-
 /**
  * Connect to RabbitMQ and create a channel if not already created.
  * @param {string} [url] - AMQP connection string (defaults to RABBITMQ_URL env or amqp://localhost)
@@ -35,13 +32,13 @@ async function getAmqplib() {
 export async function connect(url) {
   if (connection && channel) return { connection, channel };
   const amqplib = await getAmqplib();
-  const connUrl = url || process.env.RABBITMQ_URL || 'amqp://localhost';
+  const connUrl = url || process.env.RABBITMQ_URL || 'amqp://localhost'
   connection = await amqplib.connect(connUrl);
   channel = await connection.createChannel();
   // handle connection close errors gracefully
   connection.on && connection.on('error', (err) => {
 	// keep debugging info but don't throw
-	// console.error('RabbitMQ connection error', err);
+	// console.error('RabbitMQ connection error', err)
   });
   connection.on && connection.on('close', () => {
 	connection = null;
@@ -49,7 +46,6 @@ export async function connect(url) {
   });
   return { connection, channel };
 }
-
 /**
  * Ensure a channel is available.
  * @private
@@ -60,7 +56,6 @@ async function ensureChannel() {
   }
   return channel;
 }
-
 /**
  * Send a JSON message to a named queue.
  * @param {string} queue
@@ -73,7 +68,6 @@ export async function sendToQueue(queue, message, options = { persistent: true }
   const buf = Buffer.from(typeof message === 'string' ? message : JSON.stringify(message);
   return ch.sendToQueue(queue, buf, options);
 }
-
 /**
  * Consume messages from a queue.
  * onMessage receives (parsedContent, rawMessage)
@@ -108,7 +102,6 @@ export async function consume(queue, onMessage, options = { noAck: false }) {
 	options
   );
 }
-
 /**
  * Close channel and connection if open.
  */
@@ -126,7 +119,6 @@ export async function close() {
 	// swallow close errors
   }
 }
-
 export default {
   connect,
   sendToQueue,

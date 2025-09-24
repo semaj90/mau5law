@@ -3,30 +3,27 @@
  * Centralized configuration for production-ready legal AI platform
  */;
 }
-
 export interface ProductionConfig {
-  // Performance Settings;
+  // Performance Settings
   performance: {
     maxConcurrentUploads: number;
-    maxFileSize: number; // bytes
+    maxFileSize: number; // bytes,
     maxBatchSize: number;
-    cacheTimeout: number; // milliseconds
+    cacheTimeout: number; // milliseconds,
     requestTimeout: number; // milliseconds
     retryAttempts: number;
     retryDelay: number; // milliseconds
   };
-
-  // Database Settings;
+  // Database Settings
   database: {
     connectionPoolSize: number;
-    queryTimeout: number; // milliseconds
+    queryTimeout: number; // milliseconds,
     enableQueryLogging: boolean;
     enableSlowQueryLogging: boolean;
     slowQueryThreshold: number; // milliseconds
   };
-
-  // Cache Settings;
-  cache: {;
+  // Cache Settings
+  cache: {
     redis: {
       maxMemory: string;
       ttl: number; // seconds
@@ -39,8 +36,7 @@ export interface ProductionConfig {
       enablePrefetch: boolean;
     };
   };
-
-  // Security Settings;
+  // Security Settings
   security: {
     enableRateLimit: boolean;
     rateLimit: {
@@ -52,18 +48,16 @@ export interface ProductionConfig {
     enableCsrfProtection: boolean;
     maxRequestSize: number; // bytes
   };
-
-  // Monitoring Settings;
+  // Monitoring Settings
   monitoring: {
     enableMetrics: boolean;
-    metricsInterval: number; // milliseconds
+    metricsInterval: number; // milliseconds,
     enableHealthChecks: boolean;
-    healthCheckInterval: number; // milliseconds
+    healthCheckInterval: number; // milliseconds,
     enableErrorTracking: boolean;
     logLevel: 'error' | 'warn' | 'info' | 'debug';
   };
-
-  // AI Settings;
+  // AI Settings
   ai: {
     defaultModel: string;
     fallbackModel: string;
@@ -73,8 +67,7 @@ export interface ProductionConfig {
     batchProcessing: boolean;
     maxBatchSize: number;
   };
-
-  // MinIO Settings;
+  // MinIO Settings
   minio: {
     maxFileSize: number;
     allowedMimeTypes: string[];
@@ -84,8 +77,7 @@ export interface ProductionConfig {
     enableNotifications: boolean;
   };
 }
-
-// Production Configuration;
+// Production Configuration
 export const PRODUCTION_CONFIG: ProductionConfig = {
   performance: {
     maxConcurrentUploads: 10,
@@ -96,15 +88,13 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
     retryAttempts: 3,
     retryDelay: 1000, // 1 second
   },
-
   database: {
     connectionPoolSize: 20,
     queryTimeout: 30000, // 30 seconds
     enableQueryLogging: false, // Disable in production for performance
-    enableSlowQueryLogging: true,
+    enableSlowQueryLogging: true
     slowQueryThreshold: 1000, // 1 second
   },
-
   cache: {
     redis: {
       maxMemory: '1gb',
@@ -118,41 +108,37 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
       enablePrefetch: true
     }
   },
-
   security: {
-    enableRateLimit: true,
+    enableRateLimit: true
     rateLimit: {
       windowMs: 15 * 60 * 1000, // 15 minutes
       maxRequests: 1000, // per window
     },
-    enableCors: true,
+    enableCors: true
     corsOrigins: [
       'https://legal-ai.yourdomain.com',
       'https://app.yourdomain.com'
     ],
-    enableCsrfProtection: true,
+    enableCsrfProtection: true
     maxRequestSize: 50 * 1024 * 1024, // 50MB
   },
-
   monitoring: {
-    enableMetrics: true,
+    enableMetrics: true
     metricsInterval: 60000, // 1 minute
-    enableHealthChecks: true,
+    enableHealthChecks: true
     healthCheckInterval: 30000, // 30 seconds
-    enableErrorTracking: true,
+    enableErrorTracking: true
     logLevel: 'warn', // Only warn and error in production
   },
-
   ai: {
     defaultModel: 'gemma3-legal',
     fallbackModel: 'embeddinggemma',
     maxTokens: 4000,
     temperature: 0.7,
-    enableCaching: true,
-    batchProcessing: true,
+    enableCaching: true
+    batchProcessing: true
     maxBatchSize: 10
   },
-;
   minio: {
     maxFileSize: 100 * 1024 * 1024, // 100MB
     allowedMimeTypes: [
@@ -166,100 +152,81 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
       'image/tiff'
     ],
     bucketRetention: 2555, // 7 years for legal compliance
-    enableEncryption: true,
-    enableVersioning: true,
+    enableEncryption: true
+    enableVersioning: true
     enableNotifications: true
   }
 };
-
-// Development Configuration (less restrictive);
+// Development Configuration (less restrictive)
 export const DEVELOPMENT_CONFIG: ProductionConfig = {
   ...PRODUCTION_CONFIG,
-
   performance: {
     ...PRODUCTION_CONFIG.performance,
     maxConcurrentUploads: 5,
     cacheTimeout: 10000, // 10 seconds
     requestTimeout: 120000, // 2 minutes for debugging
   },
-
   database: {
     ...PRODUCTION_CONFIG.database,
     connectionPoolSize: 5,
     enableQueryLogging: true, // Enable in development
     slowQueryThreshold: 500, // 500ms
   },
-
   security: {
     ...PRODUCTION_CONFIG.security,
     enableRateLimit: false, // Disable for development
     corsOrigins: ['http://localhost:*', 'http://127.0.0.1:*'],
     enableCsrfProtection: false, // Disable for development
   },
-;
   monitoring: {
     ...PRODUCTION_CONFIG.monitoring,
     logLevel: 'debug', // Full logging in development
     metricsInterval: 30000, // 30 seconds
   }
 };
-
-// Environment-based configuration;
+// Environment-based configuration
 export function getConfig(): ProductionConfig {
   const isDevelopment =
     process.env.NODE_ENV === 'development' ||
     process.env.NODE_ENV === 'test';
-
   return isDevelopment ? DEVELOPMENT_CONFIG : PRODUCTION_CONFIG;
 }
-
-// Configuration validation;
+// Configuration validation
 export function validateConfig(config: ProductionConfig): string[] {
   const errors: string[] = [];
-
-  // Validate required settings;
+  // Validate required settings
   if (config.performance.maxFileSize <= 0) {
     errors.push('performance.maxFileSize must be positive');
   }
-
   if (config.database.connectionPoolSize <= 0) {
     errors.push('database.connectionPoolSize must be positive');
   }
-
   if (config.cache.redis.ttl <= 0) {
     errors.push('cache.redis.ttl must be positive');
   }
-
   if (!config.ai.defaultModel) {
     errors.push('ai.defaultModel is required');
   }
-
   if (config.minio.allowedMimeTypes.length === 0) {
     errors.push('minio.allowedMimeTypes cannot be empty');
   }
-
   // Validate security settings for production
   const isProduction = process.env.NODE_ENV === 'production';
   if (isProduction) {
     if (!config.security.enableRateLimit) {
       errors.push('security.enableRateLimit must be true in production');
     }
-
     if (!config.security.enableCors) {
       errors.push('security.enableCors must be true in production');
     }
-
     if (config.monitoring.logLevel === 'debug') {
       errors.push('monitoring.logLevel should not be debug in production');
     }
   }
-
   return errors;
 }
-
 // Export singleton configuration
 export const CONFIG = getConfig();
-
 // Validate configuration on import
 const validationErrors = validateConfig(CONFIG);
 if (validationErrors.length > 0) {
@@ -268,10 +235,8 @@ if (validationErrors.length > 0) {
     throw new Error(`Invalid production configuration: ${validationErrors.join(', ')}`);
   }
 }
-
 console.log(`🔧 Loaded ${process.env.NODE_ENV || 'development'} configuration`);
 console.log(`📊 Performance settings: ${CONFIG.performance.maxConcurrentUploads} concurrent uploads, ${Math.round(CONFIG.performance.maxFileSize / 1024 / 1024)}MB max file size`);
 console.log(`🗄️  Database pool size: ${CONFIG.database.connectionPoolSize} connections`);
 console.log(`⚡ Cache settings: Redis TTL ${CONFIG.cache.redis.ttl}s, GPU buffer ${Math.round(CONFIG.cache.gpu.bufferSize / 1024 / 1024)}MB`);
-
 export default CONFIG;

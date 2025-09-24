@@ -1,26 +1,23 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: ingest
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import { json } from "@sveltejs/kit"
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
-
-
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData()
@@ -31,21 +28,16 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const jurisdiction = formData.get("jurisdiction") as string
     const caseId = formData.get("caseId") as string
     const userId = formData.get("userId") as string
-
     if (!file) {
       return json({ error: "File is required" }, { status: 400 })
     }
-
     // Read file content
     const content = await file.text()
-
     if (!content.trim()) {
       return json({ error: "File content is empty" }, { status: 400 })
     }
-
     // Initialize AI pipeline
     await aiPipeline.initialize()
-
     // Process document with full AI pipeline
     const result = await aiPipeline.ingestLegalDocument(content, {
       title: title || file.name,
@@ -56,9 +48,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       userId,
       fileSize: file.size
     })
-
     return json({
-      success: true,
+      success: true
       documentId: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).documentId,
       embeddingId: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).embeddingId,
       analysis: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).analysis,
@@ -82,15 +73,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // Get ingestion statistics
 const originalGETHandler: RequestHandler = async () => {
   try {
     await aiPipeline.initialize()
     const stats = await aiPipeline.getEmbeddingStats()
-
     return json({
-      success: true,
+      success: true
       stats,
       timestamp: new Date().toISOString()
     })
@@ -104,7 +93,5 @@ const originalGETHandler: RequestHandler = async () => {
     )
   }
 }
-
-
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)

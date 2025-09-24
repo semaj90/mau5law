@@ -2,15 +2,12 @@ import { json } from '@sveltejs/kit'
 import { apiRegistry } from '$lib/server/api/service-registry'
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
 export const GET: RequestHandler = async ({ url }) => {
   const showDetails = url.searchParams.has('details')
   const checkRoutes = url.searchParams.has('routes')
-
   try {
     // Get all service statuses
     const serviceStatuses = await apiRegistry.checkAllServices()
-
     // Basic system info
     const systemInfo = {
       timestamp: new Date().toISOString(),
@@ -20,13 +17,11 @@ export const GET: RequestHandler = async ({ url }) => {
       memory: process.memoryUsage(),
       pid: process.pid
     }
-
     // Service summary
     const services = Array.from(serviceStatuses.values()
     const healthyServices = services.filter((s) => s.status === 'healthy')
     const requiredServices = services.filter((s) => s.required)
     const healthyRequiredServices = requiredServices.filter((s) => s.status === 'healthy')
-
     const summary = {
       overall: {
         status:
@@ -54,14 +49,12 @@ export const GET: RequestHandler = async ({ url }) => {
         caching: serviceStatuses.get('redis')?.status === 'healthy'
       }
     }
-
     // Build response based on query parameters
     let response: any = {
-      system: systemInfo,
+      system: systemInfo
       summary,
       services: Object.fromEntries(serviceStatuses)
     }
-
     if (showDetails) {
       response.details = {
         apiRoutes: apiRegistry.generateServiceReport(),
@@ -74,11 +67,9 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       }
     }
-
     if (checkRoutes) {
       response.routes = await apiRegistry.validateApiRoutes()
     }
-
     // Set appropriate HTTP status
     const httpStatus =
       summary.overall.status === 'operational'
@@ -86,9 +77,8 @@ export const GET: RequestHandler = async ({ url }) => {
         : summary.overall.status === 'degraded'
           ? 206
           : 503
-
     return json(response, {
-      status: httpStatus,
+      status: httpStatus
       headers: {
         'X-System-Status': summary.overall.status,
         'X-Health-Score': summary.overall.healthScore.toString(),
@@ -104,7 +94,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         system: { timestamp: new Date().toISOString() },
         summary: { overall: { status: 'error', error: msg } },
-        services: Record<string, any>
+        services: { [key: string]: any }
       },
       { status: 500 }
     )

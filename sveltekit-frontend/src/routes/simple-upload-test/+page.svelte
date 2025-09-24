@@ -1,39 +1,33 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Simple Upload Test Page -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // $state runtime rune is provided globally
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
   import { onMount } from 'svelte';
-
   let uploadResults = $state<unknown[]>([]);
   let searchQuery = $state('');
   let searchResults = $state<unknown[]>([]);
   let isSearching = $state(false);
-
   function handleUploadComplete(result: unknown) {
     console.log('Upload completed:', result);
     uploadResults = [...uploadResults, result];
   }
-
   async function performSearch() {
     if (!searchQuery.trim()) return;
-
     isSearching = true;
     try {
       const response = await fetch('/api/rag/search', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: searchQuery,
-          searchType: 'semantic',;
+        body: JSON.stringify({,
+          query: searchQuery
+          searchType: 'semantic',
           limit: 5;
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown; text?: unknown }).ok) {
         const result = await (response as { ok?: unknown; json?: unknown; text?: unknown }).json();
         searchResults = (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).results || [];
@@ -48,20 +42,16 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <svelte:head>
   <title>Simple RAG Upload Test - Legal AI System</title>
 </svelte:head>
-
 <div class="container mx-auto p-6 max-w-4xl">
   <h1 class="text-3xl font-bold mb-6">Simple RAG Upload Test</h1>
-
   <!-- Upload Section -->
   <div class="mb-8">
     <h2 class="text-xl font-semibold mb-4">File Upload & Processing</h2>
     <SimpleFileUpload uploadcomplete={handleUploadComplete} />
   </div>
-
   <!-- Search Section -->
   <div class="mb-8">
     <h2 class="text-xl font-semibold mb-4">Search Documents</h2>
@@ -81,7 +71,6 @@ https://svelte.dev/e/js_parse_error -->
         {isSearching ? 'Searching...' : 'Search'}
       </button>
     </div>
-
     {#if searchResults.length > 0}
       <div class="space-y-3">
         <h3 class="font-medium">Search Results:</h3>
@@ -102,7 +91,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   </div>
-
   <!-- Upload Results -->
   {#if uploadResults.length > 0}
     <div class="mb-8">
@@ -119,7 +107,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   {/if}
-
   <!-- API Test Section -->
   <div class="mt-8 p-4 bg-gray-50 rounded-lg">
     <h3 class="font-medium mb-2">Quick API Tests</h3>
@@ -140,11 +127,9 @@ https://svelte.dev/e/js_parse_error -->
     <p class="text-xs text-gray-600 mt-2">Check browser console for results</p>
   </div>
 </div>
-
 <style>
-  pre {;
+  pre {
     white-space: pre-wrap;
     word-break: break-all;
   }
 </style>
-

@@ -201,7 +201,7 @@ function fixTypeScriptPatterns(content, filePath) {
   let changes = [];
 
   // Fix any types
-  const anyTypeRegex = /:\s*any(\s|[,;\]\)}])/g;
+  const anyTypeRegex = /:\s*any(\s|[;\]\)}])/g;
   if (anyTypeRegex.test(fixed)) {
     changes.push('Found any types - consider using specific types');
   }
@@ -612,7 +612,7 @@ function analyzeTypeScriptPatterns(content, filePath) {
 
   let changes = [];
 
-  if (/:\s*any(\s|[,;\]\)}])/.test(content)) {
+  if (/:\s*any(\s|[;\]\)}])/.test(content)) {
     changes.push('Found any types - would suggest specific types');
   }
 

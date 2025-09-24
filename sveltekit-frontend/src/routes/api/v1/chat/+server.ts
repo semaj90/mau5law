@@ -9,12 +9,10 @@ import { dev } from '$app/environment'
 import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration'
 import { fastStringify } from '$lib/utils/fast-json'
 import type { RequestHandler } from './$types.js'
-
 // Advanced Chat API with Quantized LLM, GRPMO Thinking, and Contextual Memory
 export const POST: RequestHandler = async ({ request, url, getClientAddress }) => {
   const startTime = performance.now()
   const clientIP = getClientAddress()
-
   try {
     const body = await readBodyFastWithMetrics(request)
     const {
@@ -30,11 +28,10 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
       stream = false,
       options = {}
     } = body
-
     // Enhanced validation
     if (action === 'send' && !message?.trim() && !messages?.length) {
       return json({
-          success: false,
+          success: false
           error: {
             code: 'EMPTY_MESSAGE',
             message: 'Message content is required'
@@ -43,10 +40,9 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
         { status: 400 }
       )
     }
-
     if (!user_id) {
       return json({
-          success: false,
+          success: false
           error: {
             code: 'MISSING_USERID',
             message: 'user_id is required for contextual chat'
@@ -55,27 +51,24 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
         { status: 400 }
       )
     }
-
     // Route through Parallel Orchestration Master for maximum concurrency
     switch (action) {
       case 'send':
         return await handleParallelChatExecution({
           message: message || messages?.[messages.length - 1]?.content,
-          userId: user_id,
+          userId: user_id
           sessionId: session_id || crypto.randomUUID(),
-          caseId: case_id,
+          caseId: case_id
           model,
           temperature,
           options,
           clientIP,
           startTime
         })
-
       default:
         // Handle other actions with existing logic
         break
     }
-
     // Legacy orchestration request for non-chat actions
     const orchestrationRequest = {
       type: 'chat' as const,
@@ -98,10 +91,8 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
         prefer_cache: true
       }
     }
-
     // Process through orchestrator
     const response = await orchestrator.processRequest(orchestrationRequest)
-
     // Track analytics asynchronously
     await natsQuicSearchService.publishAnalytics({
       event_type: 'chat_request',
@@ -117,7 +108,6 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
       response_time_ms: Date.now() - startTime,
       cache_hit: response._metadata?.cached || false
     })
-
     // Store chat context for future use
     if (user_id && response.content) {
       await natsQuicSearchService.publishChatContext({
@@ -128,9 +118,8 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
         context_type: 'new'
       })
     }
-
     return json({
-      success: true,
+      success: true
       data: {
         content: response.content || response.message,
         session_id,
@@ -144,7 +133,6 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
     })
   } catch (error: any) {
     console.error('Chat API error:', error)
-
     // Track error analytics
     await analytics.trackEvent(
       'chat_error',
@@ -156,7 +144,6 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
         responseTimeMs: Date.now() - startTime
       }
     )
-
     return json({
         error: 'Chat processing failed',
         details: error.message,
@@ -166,46 +153,38 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
     )
   }
 }
-
 // Streaming chat endpoint
 export const GET: RequestHandler = async ({ url }) => {
   const session_id = url.searchParams.get('session_id')
   const user_id = url.searchParams.get('user_id')
-
   if (!session_id) {
     return json({ error: 'session_id required' }, { status: 400 })
   }
-
   // Server-Sent Events for streaming
   const stream = new ReadableStream({
     start(controller) {
       // Setup streaming logic here
       // This would connect to the service worker and LLM streaming
-
       const encoder = new TextEncoder()
-
       // Send initial connection message
       controller.enqueue(
-        encoder.encode(`data: ${fastStringify({
+        encoder.encode(`data: ${fastStringify({,
             type: 'connected',
             session_id,
             timestamp: Date.now()
           })}\n\n`
         )
       )
-
       // In a real implementation, you'd setup listeners for:
       // - LLM stream chunks from service worker
       // - Real-time updates from RabbitMQ
       // - Vector search results
-
       // Cleanup function
       setTimeout(() => {
         controller.close()
       }, 300000); // 5 minute timeout
     }
   })
-
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
@@ -214,7 +193,6 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   })
 }
-
 // New Parallel Chat Execution - Routes ALL services concurrently
 async function handleParallelChatExecution({
   message,
@@ -272,10 +250,8 @@ async function handleParallelChatExecution({
       },
       timeout: options.timeout || 30000, // 30 second timeout
     }
-
     // Execute ALL services in parallel - maximum concurrency!
     const parallelResult = await parallelOrchestrationMaster.executeParallel(parallelRequest)
-
     // Format response for API compatibility
     const response = {
       success: parallelResult.success,
@@ -284,7 +260,7 @@ async function handleParallelChatExecution({
         id: `chatcmpl-${parallelRequest.id}`,
         object: 'chat.completion',
         created: Math.floor(Date.now() / 1000),
-        model: model,
+        model: model
         choices: [
           {
             index: 0,
@@ -302,7 +278,6 @@ async function handleParallelChatExecution({
             estimateTokens(message) + estimateTokens(parallelResult.data?.response || '')
         }
       },
-
       // Enhanced parallel execution metadata
       parallel: {
         executionMetrics: parallelResult.executionMetrics,
@@ -322,37 +297,34 @@ async function handleParallelChatExecution({
           concurrentTasks: parallelResult.executionMetrics.tasksExecuted
         }
       },
-
       metadata: {
         requestId: parallelRequest.id,
         timestamp: new Date().toISOString(),
         processingTimeMs: performance.now() - startTime,
-        model: model,
-        temperature: temperature,
+        model: model
+        temperature: temperature
         clientIP: clientIP.split(':').pop() || 'unknown',
-        parallelExecution: true,
+        parallelExecution: true
         servicesUsed: Object.keys(parallelResult.serviceResults)
       }
     }
-
     // Track analytics for parallel execution
     await natsQuicSearchService.publishAnalytics({
       event_type: 'parallel_chat_request',
       event_data: {
-        user_id: userId,
-        session_id: sessionId,
-        case_id: caseId,
+        user_id: userId
+        session_id: sessionId
+        case_id: caseId
         message_length: message.length,
         services_executed: Object.keys(parallelResult.serviceResults),
         parallel_efficiency: parallelResult.executionMetrics.parallelEfficiency,
         total_latency: parallelResult.executionMetrics.totalLatency,
         cache_hit_rate: parallelResult.executionMetrics.cacheHitRate,
-        client_ip: clientIP,
+        client_ip: clientIP
         parallel_execution: true
       },
       response_time_ms: performance.now() - startTime
     })
-
     // Log performance in development
     if (dev) {
       console.log('🚀 Parallel Chat Execution Complete:', {
@@ -363,11 +335,9 @@ async function handleParallelChatExecution({
         tasksCompleted: `${parallelResult.executionMetrics.tasksSucceeded}/${parallelResult.executionMetrics.tasksExecuted}`
       })
     }
-
     return json(response)
   } catch (error: any) {
     console.error('Parallel chat execution error:', error)
-
     // Fallback to single-service execution
     try {
       const fallbackResult = await contextualMemoryChatService.sendMessage(
@@ -376,14 +346,13 @@ async function handleParallelChatExecution({
         sessionId,)
         { useRAG: !!caseId, maxContextMessages: 5 }
       )
-
       return json({
-        success: true,
+        success: true
         data: {
           id: `chatcmpl-fallback-${crypto.randomUUID()}`,
           object: 'chat.completion',
           created: Math.floor(Date.now() / 1000),
-          model: model,
+          model: model
           choices: [
             {
               index: 0,
@@ -397,7 +366,7 @@ async function handleParallelChatExecution({
         },
         parallel: {
           executionMetrics: { totalLatency: performance.now() - startTime, parallelEfficiency: 0 },
-          fallback: true,
+          fallback: true
           error: error.message
         },
         metadata: {
@@ -412,7 +381,6 @@ async function handleParallelChatExecution({
     }
   }
 }
-
 // Simple token estimation helper
 function estimateTokens(text: string): number {
   if (!text) return 0

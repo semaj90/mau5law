@@ -1,12 +1,11 @@
 // @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/svelte';
 import AIAssistantMachine from './AIAssistantMachineComponent.svelte.js';
-
 // NOTE: Typing loosened due to Storybook + Svelte 5 (runes) inference friction; casting to any to avoid blocking TS errors.;
 const meta: any = {
   title: 'XState/AI Assistant Machine',
   // @ts-expect-error Svelte 5 component typing mismatch with Storybook inferred component type
-  component: AIAssistantMachine,
+  component: AIAssistantMachine
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -14,9 +13,9 @@ const meta: any = {
         component: 'Enterprise-grade XState 5 AI Assistant Machine with full-stack legal AI integration, multi-protocol service support, and real-time capabilities'
       }
     }
-  },;
+  },
   tags: ['autodocs'],
-  // Cast argTypes to any to suppress prop name validation (alignment not critical for current story functionality);
+  // Cast argTypes to any to suppress prop name validation (alignment not critical for current story functionality)
   argTypes: {
     initialContext: {
       control: 'object',
@@ -38,18 +37,16 @@ const meta: any = {
       control: 'select',
       options: ['http', 'grpc', 'quic', 'websocket'],
       description: 'Preferred communication protocol for AI services',
-      table: {;
+      table: {
         type: { summary: 'string' },
         defaultValue: { summary: 'http' }
       }
     }
   } as any
 };
-
 export default meta as Meta;
 type Story = StoryObj<any>;
-
-// Default idle state - ready for interaction;
+// Default idle state - ready for interaction
 export const Default: Story = {
   args: {
     initialContext: {
@@ -57,7 +54,7 @@ export const Default: Story = {
       response: '',
       conversationHistory: [],
       sessionId: 'story-default-session',
-      isProcessing: false,
+      isProcessing: false
       model: 'gemma3-legal',
       temperature: 0.7,
       maxTokens: 2048,
@@ -65,9 +62,9 @@ export const Default: Story = {
         { name: 'gemma3-legal', displayName: 'Gemma 3 Legal', capabilities: ['text', 'legal'] },
         { name: 'nomic-embed-text', displayName: 'Nomic Embeddings', capabilities: ['embeddings'] }
       ],
-      modelLoadBalancing: false,
-      databaseConnected: true,
-      vectorSearchEnabled: true,
+      modelLoadBalancing: false
+      databaseConnected: true
+      vectorSearchEnabled: true
       databasePerformance: {
         queryLatency: 45,
         connectionPool: 8,
@@ -78,12 +75,12 @@ export const Default: Story = {
         indexHealth: 'excellent',
         lastUpdated: new Date().toISOString()
       },
-      context7Available: true,
+      context7Available: true
       context7Cache: new Map(),
       currentDocuments: [],
       currentImages: [],
       processingQueue: [],
-      gpuProcessingEnabled: true,
+      gpuProcessingEnabled: true
       serviceHealth: {
         overallHealth: 'excellent',
         services: {
@@ -94,34 +91,33 @@ export const Default: Story = {
       },
       preferredProtocol: 'http',
       activeProtocol: 'http',
-      serviceLoadBalancer: {;
+      serviceLoadBalancer: {
         strategy: 'round_robin',
         currentIndex: 0
       },
       circuitBreakers: new Map(),
-      natsConnected: true,
-      activeStreaming: false,
+      natsConnected: true
+      activeStreaming: false
       streamBuffer: '',
       collaborationUsers: []
     },
-    enableStreamingMode: false,
+    enableStreamingMode: false
     preferredProtocol: 'http'
   }
 };
-
-// Processing state with AI interaction;
+// Processing state with AI interaction
 export const Processing: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Analyze the contractual obligations in this employment agreement',
-      isProcessing: true,;
+      isProcessing: true
       response: 'Analyzing legal document... Please wait.',
       conversationHistory: [;
         {
           id: '1',
           type: 'user',
-          content: 'Analyze the contractual obligations in this employment agreement',;
+          content: 'Analyze the contractual obligations in this employment agreement',
           timestamp: new Date(Date.now() - 5000)
         }
       ],
@@ -133,38 +129,37 @@ export const Processing: Story = {
           progress: 0.65
         }
       ],
-      activeStreaming: false,
+      activeStreaming: false
       streamBuffer: 'Analyzing legal document structure...'
     },
-    enableStreamingMode: false,
+    enableStreamingMode: false
     preferredProtocol: 'http'
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'AI Assistant in processing state - actively analyzing legal documents'
       }
     }
   }
 };
-
-// Streaming mode with real-time responses;
+// Streaming mode with real-time responses
 export const StreamingMode: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'What are the key provisions in this merger agreement?',
-      isProcessing: true,;
+      isProcessing: true
       response: 'Based on my analysis of the merger agreement, I can identify several key provisions:\n\n1. **Purchase Price and Payment Terms**: The agreement specifies...',
       conversationHistory: [;
         {
           id: '1',
           type: 'user',
-          content: 'What are the key provisions in this merger agreement?',;
+          content: 'What are the key provisions in this merger agreement?',
           timestamp: new Date(Date.now() - 10000)
         }
       ],
-      activeStreaming: true,
+      activeStreaming: true
       streamBuffer: 'Based on my analysis of the merger agreement, I can identify several key provisions:\n\n1. **Purchase Price and Payment Terms**: The agreement specifies a total consideration of $50M, payable in cash and stock...\n\n2. **Representations and Warranties**: Both parties have made extensive representations covering...',
       preferredProtocol: 'websocket',
       activeProtocol: 'websocket',
@@ -177,31 +172,30 @@ export const StreamingMode: Story = {
         }
       ]
     },
-    enableStreamingMode: true,
+    enableStreamingMode: true
     preferredProtocol: 'websocket'
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Streaming mode with real-time AI response generation and WebSocket communication'
       }
     }
   }
 };
-
-// Multi-document analysis scenario;
+// Multi-document analysis scenario
 export const MultiDocumentAnalysis: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Compare these three contracts for common risk factors',
-      isProcessing: true,;
+      isProcessing: true
       response: 'Comparing 3 contracts for risk analysis...',
       conversationHistory: [;
         {
           id: '1',
           type: 'user',
-          content: 'Compare these three contracts for common risk factors',;
+          content: 'Compare these three contracts for common risk factors',
           timestamp: new Date(Date.now() - 15000)
         }
       ],
@@ -212,7 +206,7 @@ export const MultiDocumentAnalysis: Story = {
           title: 'Service Agreement 2024',
           fileSize: 245760,
           extractedText: '',
-          isIndexed: false,
+          isIndexed: false
           // additional metadata omitted for story simplicity
         },
         {
@@ -221,16 +215,16 @@ export const MultiDocumentAnalysis: Story = {
           title: 'Employment Contract Manager',
           fileSize: 189440,
           extractedText: '',
-          isIndexed: false,
+          isIndexed: false
           // analysis pending
         },
         {
           id: 'doc-3',
-          filename: 'NDA_Template_2024.pdf',;
+          filename: 'NDA_Template_2024.pdf',
           title: 'NDA Template 2024',
           fileSize: 156672,
           extractedText: '',
-          isIndexed: false,
+          isIndexed: false
           // queued for analysis
         }
       ],
@@ -243,34 +237,33 @@ export const MultiDocumentAnalysis: Story = {
           documentsCount: 3
         }
       ],
-      vectorSearchEnabled: true,
+      vectorSearchEnabled: true
       vectorIndexStatus: {
         totalVectors: 23890,
         indexHealth: 'excellent',
         lastUpdated: new Date().toISOString()
       }
     },
-    enableStreamingMode: false,
+    enableStreamingMode: false
     preferredProtocol: 'grpc'
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Multi-document analysis with vector search and comparative risk assessment'
       }
     }
   }
 };
-
-// High-performance QUIC protocol scenario;
+// High-performance QUIC protocol scenario
 export const HighPerformanceMode: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Perform deep semantic analysis on this 500-page legal brief',
-      isProcessing: true,
+      isProcessing: true
       response: '',
-      modelLoadBalancing: true,
+      modelLoadBalancing: true
       availableModels: [
         { name: 'gemma3-legal', displayName: 'Gemma 3 Legal', capabilities: ['text', 'legal'], status: 'active' },
         { name: 'gemma3-legal-backup', displayName: 'Gemma 3 Legal Backup', capabilities: ['text', 'legal'], status: 'active' },
@@ -286,11 +279,11 @@ export const HighPerformanceMode: Story = {
           'gpu-compute': { status: 'healthy', latency: 8 }
         }
       },
-      serviceLoadBalancer: {;
+      serviceLoadBalancer: {
         strategy: 'least_latency',
         currentIndex: 0
       },
-      gpuProcessingEnabled: true,
+      gpuProcessingEnabled: true
       processingQueue: [;
         {
           id: 'deep-analysis',
@@ -306,25 +299,24 @@ export const HighPerformanceMode: Story = {
         cacheHitRatio: 0.94
       }
     },
-    enableStreamingMode: true,
+    enableStreamingMode: true
     preferredProtocol: 'quic'
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'High-performance mode using QUIC protocol with GPU acceleration and load balancing'
       }
     }
   }
 };
-
-// Error state with circuit breaker activation;
+// Error state with circuit breaker activation
 export const ErrorRecovery: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Analyze this corrupted document',
-      isProcessing: false,;
+      isProcessing: false
       response: '',
       conversationHistory: [;
         {
@@ -347,7 +339,7 @@ export const ErrorRecovery: Story = {
         }
       ],
       serviceHealth: {
-        overallHealth: 'degraded',;
+        overallHealth: 'degraded',
         services: {
           'enhanced-rag': { status: 'healthy', latency: 45 },
           'upload-service': { status: 'degraded', latency: 250 },
@@ -368,25 +360,24 @@ export const ErrorRecovery: Story = {
         }
       ]
     },
-    enableStreamingMode: false,
+    enableStreamingMode: false
     preferredProtocol: 'http'
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Error recovery state with circuit breaker patterns and service degradation handling'
       }
     }
   }
 };
-
-// Collaborative session with multiple users;
+// Collaborative session with multiple users
 export const CollaborativeMode: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Draft a motion for summary judgment based on these case files',
-      isProcessing: true,;
+      isProcessing: true
       response: 'Analyzing case precedents and drafting motion...',
       conversationHistory: [;
         {
@@ -404,12 +395,12 @@ export const CollaborativeMode: Story = {
         {
           id: '3',
           type: 'assistant',
-          content: 'I have incorporated the Johnson v. Smith precedent into the analysis...',;
+          content: 'I have incorporated the Johnson v. Smith precedent into the analysis...',
           timestamp: new Date(Date.now() - 60000)
         }
       ],
-      natsConnected: true,
-      activeStreaming: true,
+      natsConnected: true
+      activeStreaming: true
       collaborationUsers: [;
         {
           id: 'user-1',
@@ -436,25 +427,24 @@ export const CollaborativeMode: Story = {
       preferredProtocol: 'websocket',
       activeProtocol: 'websocket'
     },
-    enableStreamingMode: true,
+    enableStreamingMode: true
     preferredProtocol: 'websocket'
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Collaborative mode with multiple users working together on legal document analysis'
       }
     }
   }
 };
-
-// Context7 integration showcase;
+// Context7 integration showcase
 export const Context7Integration: Story = {
   args: {
     initialContext: {
       ...Default.args?.initialContext,
       currentQuery: 'Help me implement a new Svelte 5 component for case management',
-      isProcessing: true,;
+      isProcessing: true
       response: 'Analyzing your SvelteKit architecture and generating Context7-compliant component...',
       conversationHistory: [;
         {
@@ -464,12 +454,12 @@ export const Context7Integration: Story = {
           timestamp: new Date(Date.now() - 45000)
         }
       ],
-      context7Available: true,
+      context7Available: true
       context7Analysis: {
         framework: 'SvelteKit 2',
         version: 'Svelte 5',
         libraries: ['bits-ui', 'melt-ui', 'shadcn-svelte'],
-        patterns: ['runes', 'type-safety', 'barrel-exports'],;
+        patterns: ['runes', 'type-safety', 'barrel-exports'],
         recommendations: [
           'Use $state() for reactive variables',
           'Implement proper TypeScript interfaces',
@@ -490,12 +480,12 @@ export const Context7Integration: Story = {
         }
       ]
     },
-    enableStreamingMode: true,
+    enableStreamingMode: true
     preferredProtocol: 'http'
   },
   parameters: {
     docs: {
-      description: {;
+      description: {
         story: 'Context7 integration for intelligent code generation and framework-specific assistance'
       }
     }

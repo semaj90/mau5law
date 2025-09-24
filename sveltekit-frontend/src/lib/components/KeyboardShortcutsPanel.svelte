@@ -1,13 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy,  } from 'svelte';
-
-  
-  
   import {
     shortcuts,
     shortcutCategories,
@@ -27,50 +23,38 @@ https://svelte.dev/e/js_parse_error -->
   } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Switch } from '$lib/components/ui/switch';
-
-  let { visible = $bindable()  }: { visible = $bindable() : unknown } = $props(); // false;
-  let { context = $bindable()  }: { context = $bindable() : unknown } = $props(); // string[] = ['global'];
+  let { visible = $bindable()  }: { visible = $bindable() : unknown } = $props(); // false
+  let { context = $bindable()  }: { context = $bindable() : unknown } = $props(); // string[] = ['global']
   let searchQuery = $state('');
   let selectedCategory = $state('all');
   let showRemoteOnly = $state(false);
-
   let filteredShortcuts = $derived($shortcuts.filter(item => item.includes(searchQuery.toLowerCase()) ||
       shortcut.key.toLowerCase().includes(searchQuery.toLowerCase());
-
     const matchesCategory = selectedCategory === 'all' || shortcut.category === selectedCategory;
-
-    const matchesRemote = !showRemoteOnly || shortcut.remote;
-
-    return matchesSearch && matchesCategory && matchesRemote;
+    const matchesRemote = !showRemoteOnly || shortcut.remot;
+    return matchesSearch && matchesCategory && matchesRemot;
   });
-
   let categories = $derived($shortcutCategories);
   let recentCommands = $derived($remoteCommands.slice.reverse());
   let helpModalVisible = $state(false);
   let remoteStatusVisible = $state(false);
-
   $effect(() => {
     // Set context for shortcuts service
     setKeyboardContext(context);
-
     // Listen for custom events
     const handleToggleHelp = () => {
-      helpModalVisible = !helpModalVisible;
+      helpModalVisible = !helpModalVisibl;
     };
-
     const handleShowRemoteStatus = () => {
-      remoteStatusVisible = !remoteStatusVisible;
+      remoteStatusVisible = !remoteStatusVisibl;
     };
-
     document.addEventListener('show-keyboard-help', handleToggleHelp);
     document.addEventListener('show-remote-status', handleShowRemoteStatus);
-
     return () => {
       document.removeEventListener('show-keyboard-help', handleToggleHelp);
       document.removeEventListener('show-remote-status', handleShowRemoteStatus);
     };
   });
-
   function toggleShortcut(shortcut: KeyboardShortcut) {
     if (shortcut.enabled) {
       keyboardShortcutsService.disableShortcut(shortcut.id);
@@ -78,40 +62,36 @@ https://svelte.dev/e/js_parse_error -->
       keyboardShortcutsService.enableShortcut(shortcut.id);
     }
   }
-
   function executeShortcut(shortcut: KeyboardShortcut) {
     keyboardShortcutsService.executeRemoteCommand({
       id: crypto.randomUUID(),
       command: shortcut.id,
-      args: ,;
-      source: 'api',;
+      args: ,
+      source: 'api',
       timestamp: Date.now();
     });
   }
-
   function getCategoryIcon(category: string): string {
     const icons = {
       navigation: '🧭',
       ai: '🤖',
       cases: '📁',
-      evidence: '📋',;
-      system: '⚙️',;
+      evidence: '📋',
+      system: '⚙️',
       remote: '🎮';
     };
     return icons[category] || '📌';
   }
-
   function getSourceIcon(source: string): string {
     const icons = {
       keyboard: '⌨️',
-      api: '🔗',;
-      websocket: '📡',;
+      api: '🔗',
+      websocket: '📡',
       voice: '🎤';
     };
     return icons[source] || '❓';
   }
 </script>
-
 <!-- Help Modal -->
 {#if helpModalVisible}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -122,9 +102,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn" variant="ghost" onclick={() =>
 helpModalVisible = false}>
             ✕
-
         </div>
-
         <!-- Search and filters -->
         <div class="flex gap-4 mb-4">
           <input
@@ -133,7 +111,6 @@ helpModalVisible = false}>
             bind:value={searchQuery}
             class="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white placeholder-gray-400"
           />
-
           <select;
             bind:value={selectedCategory}
             class="px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white"
@@ -143,13 +120,11 @@ helpModalVisible = false}>
               <option value={category.id}>{category.name}</option>
             {/each}
           </select>
-
           <label class="flex items-center gap-2">
             <Switch bind:checked={showRemoteOnly} />
             <span class="text-sm">Remote Only</span>
           </label>
         </div>
-
         <!-- Shortcuts list -->
         <div class="overflow-y-auto max-h-96">
           {#each categories as category}
@@ -158,7 +133,6 @@ helpModalVisible = false}>
                 <h3 class="text-lg font-semibold text-yellow-400 mb-3 flex items-center gap-2">
                   {getCategoryIcon(category.id)} {category.name}
                 </h3>
-
                 <div class="space-y-2">
                   {#each category.shortcuts.filter(s => filteredShortcuts.includes(s)) as shortcut}
                     <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg border border-gray-700">
@@ -176,7 +150,6 @@ helpModalVisible = false}>
                           {formatShortcut(shortcut)}
                         </div>
                       </div>
-
                       <div class="flex items-center gap-2">
                         <Switch
                           checked={shortcut.enabled} onchange={() => toggleShortcut(shortcut)}
@@ -189,7 +162,6 @@ executeShortcut(shortcut)}
                           disabled={!shortcut.enabled}
                         >
                           Test
-
                       </div>
                     </div>
                   {/each}
@@ -198,7 +170,6 @@ executeShortcut(shortcut)}
             {/if}
           {/each}
         </div>
-
         <!-- Remote connection status -->
         {#if $isRemoteConnected}
           <div class="mt-4 p-3 bg-green-900 border border-green-700 rounded-lg">
@@ -207,7 +178,6 @@ executeShortcut(shortcut)}
               <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
 remoteStatusVisible = true}>
                 View Status
-
             </div>
           </div>
         {:else}
@@ -217,7 +187,6 @@ remoteStatusVisible = true}>
               <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
 keyboardShortcutsService.connectRemote()}>
                 Connect
-
             </div>
           </div>
         {/if}
@@ -225,7 +194,6 @@ keyboardShortcutsService.connectRemote()}>
     </div>
   </div>
 {/if}
-
 <!-- Remote Status Modal -->
 {#if remoteStatusVisible}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -236,9 +204,7 @@ keyboardShortcutsService.connectRemote()}>
           <Button class="bits-btn" variant="ghost" onclick={() =>
 remoteStatusVisible = false}>
             ✕
-
         </div>
-
         <!-- Connection status -->
         <div class="mb-6">
           <div class="flex items-center gap-3 mb-2">
@@ -251,11 +217,9 @@ remoteStatusVisible = false}>
             Endpoint: ws://localhost:8085/keyboard-remote
           </div>
         </div>
-
         <!-- Recent commands -->
         <div class="mb-4">
           <h3 class="text-lg font-semibold text-yellow-400 mb-3">Recent Commands</h3>
-
           {#if recentCommands.length > 0}
             <div class="space-y-2 overflow-y-auto max-h-64">
               {#each recentCommands as command}
@@ -279,31 +243,25 @@ remoteStatusVisible = false}>
             </div>
           {/if}
         </div>
-
         <!-- Controls -->
         <div class="flex gap-2">
           {#if $isRemoteConnected}
             <Button class="bits-btn" variant="ghost" onclick={() =>
 keyboardShortcutsService.disconnectRemote()}>
               Disconnect
-
           {:else}
             <Button class="bits-btn" onclick={() =>
 keyboardShortcutsService.connectRemote()}>
               Reconnect
-
           {/if}
-
           <Button class="bits-btn" variant="ghost" onclick={() =>
 $remoteCommands.length && remoteCommands.set([])}>
             Clear History
-
         </div>
       </div>
     </div>
   </div>
 {/if}
-
 <!-- Floating shortcut indicator (when visible prop is true) -->
 {#if visible}
   <div class="fixed bottom-4 right-4 z-40">
@@ -318,7 +276,6 @@ $remoteCommands.length && remoteCommands.set([])}>
     </div>
   </div>
 {/if}
-
 <style>
   kbd {
     @apply inline-block px-1 py-0.5 text-xs font-mono bg-gray-800 border border-gray-600 rounded;

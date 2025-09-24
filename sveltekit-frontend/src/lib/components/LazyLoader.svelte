@@ -1,21 +1,19 @@
-<!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration;
+<!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaratio;
 https://svelte.dev/e/bindable_invalid_location -->
 <!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration -->
 <!-- LazyLoader.svelte - Universal lazy loading wrapper component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
-  import { 
-    lazyLoad, 
-    createLazyStore, 
-    LAZY_LOAD_PRESETS, 
+  import {
+    lazyLoad,
+    createLazyStore,
+    LAZY_LOAD_PRESETS,
     lazyLoadProfiler,
     type LazyLoadOptions,
     type LazyLoadPreset,
     type LazyComponentState
   } from '$lib/utils/intersection-observer.js';
-
   // Component props
   let {
     // Lazy loading configuration
@@ -42,31 +40,26 @@ https://svelte.dev/e/bindable_invalid_location -->
     // Component state binding
     lazyState = $bindable() as LazyComponentState | undefined;
   } = $props();
-
   // Internal state
   let containerElement: HTMLElement;
   let loadError: Error | null = $state(null);
   let isLoading = $state(false);
-
   // Create lazy loading store
   const lazyStore = createLazyStore();
   // Update bound state when internal state changes
   $effect(() => {
     if (lazyState !== undefined) {
-      lazyState = $lazyStore;
+      lazyState = $lazyStor;
     }
   });
-
   // Derived states
   const shouldRender = $derived($lazyStore.hasBeenVisible && !loadError);
   const shouldShowPlaceholder = $derived(showPlaceholder && (!$lazyStore.isVisible || isLoading));
-
   // Determine options from preset or custom
   const options = $derived.by(() => {
     const baseOptions = LAZY_LOAD_PRESETS[preset] || LAZY_LOAD_PRESETS.NORMAL;
     return { ...baseOptions, ...customOptions };
   });
-
   // Handle intersection
   function handleIntersection(entry: unknown) {
     lazyStore.setVisible(entry.isIntersecting, entry.intersectionRatio);
@@ -83,13 +76,11 @@ https://svelte.dev/e/bindable_invalid_location -->
         }
       }
     }
-
     // Handle unloading if configured
     if (unloadWhenHidden && !entry.isIntersecting && $lazyStore.hasBeenVisible) {
       lazyStore.reset();
     }
   }
-
   function handleError(error: Error) {
     loadError = error;
     if (onError) {
@@ -97,7 +88,6 @@ https://svelte.dev/e/bindable_invalid_location -->
     }
     console.error('LazyLoader error:', error);
   }
-
   // Setup intersection observer
   $effect(() => {
     if (containerElement) {
@@ -106,14 +96,12 @@ https://svelte.dev/e/bindable_invalid_location -->
       }
     }
   });
-
   // Cleanup
   onDestroy(() => {
     lazyStore.reset();
   });
 </script>
-
-<!-- 
+<!--
   Container element with intersection observer
   The use:lazyLoad action handles all the intersection logic
 -->
@@ -143,10 +131,9 @@ https://svelte.dev/e/bindable_invalid_location -->
         Retry
       </button>
     </div>
-  
   {:else if shouldShowPlaceholder}
     <!-- Loading placeholder -->
-    <div 
+    <div
       class="lazy-loader-placeholder {placeholderClass}"
       style="min-height: {placeholderHeight}"
       aria-label="Loading content"
@@ -154,7 +141,6 @@ https://svelte.dev/e/bindable_invalid_location -->
       <div class="placeholder-content">
         <div class="loading-spinner" aria-hidden="true"></div>
         <p class="loading-text">{loadingText}</p>
-        
         {#if enableProfiling && $lazyStore.intersectionRatio > 0}
           <div class="debug-info">
             Intersection: {Math.round($lazyStore.intersectionRatio * 100)}%
@@ -162,25 +148,21 @@ https://svelte.dev/e/bindable_invalid_location -->
         {/if}
       </div>
     </div>
-  
   {:else if shouldRender}
     <!-- Actual content - only render when visible -->
     <div class="lazy-loader-content" data-lazy-loaded="true">
-      <slot 
-        isVisible={$lazyStore.isVisible}
+      {#snippet children(isVisible={$lazyStore.isVisible}
         hasBeenVisible={$lazyStore.hasBeenVisible}
         intersectionRatio={$lazyStore.intersectionRatio}
-      />
+      /)}
     </div>
   {/if}
 </div>
-
 <style>
   .lazy-loader-container {
     position: relative;
     width: 100%;
   }
-
   /* Placeholder styles */
   .lazy-loader-placeholder {
     display: flex;
@@ -197,7 +179,6 @@ https://svelte.dev/e/bindable_invalid_location -->
     border-radius: 4px;
     min-height: 200px;
   }
-
   .placeholder-content {
     display: flex;
     flex-direction: column;
@@ -205,7 +186,6 @@ https://svelte.dev/e/bindable_invalid_location -->
     gap: 12px;
     color: rgba(255, 255, 255, 0.7);
   }
-
   /* Loading spinner */
   .loading-spinner {
     width: 32px;
@@ -215,19 +195,16 @@ https://svelte.dev/e/bindable_invalid_location -->
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   .loading-text {
     margin: 0;
     font-size: 14px;
     text-align: center;
   }
-
   .debug-info {
     font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
     font-family: monospace;
   }
-
   /* Error styles */
   .lazy-loader-error {
     display: flex;
@@ -240,17 +217,14 @@ https://svelte.dev/e/bindable_invalid_location -->
     border-radius: 4px;
     color: #ff6b6b;
   }
-
   .error-icon {
     font-size: 32px;
   }
-
   .error-message {
     margin: 0;
     text-align: center;
     font-size: 14px;
   }
-
   .retry-button {
     padding: 8px 16px;
     background: rgba(255, 255, 255, 0.1);
@@ -261,26 +235,23 @@ https://svelte.dev/e/bindable_invalid_location -->
     font-size: 12px;
     transition: background 0.2s ease;
   }
-
   .retry-button:hover {
     background: rgba(255, 255, 255, 0.2);
   }
-
   /* Content styles */
   .lazy-loader-content {
     width: 100%;
   }
-
   /* Animations */
   @keyframes loading-shimmer {
     0% {
-      background-position: -200% 0;
+      background-position: ;
+-200% 0;
     }
     100% {
-      background-position: 200% 0;
+      background-position: 00% 0;
     }
   }
-
   @keyframes spin {
     0% {
       transform: rotate(0deg);
@@ -289,24 +260,20 @@ https://svelte.dev/e/bindable_invalid_location -->
       transform: rotate(360deg);
     }
   }
-
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .placeholder-content {
       gap: 8px;
     }
-    
     .loading-spinner {
       width: 24px;
       height: 24px;
       border-width: 2px;
     }
-    
     .loading-text {
       font-size: 12px;
     }
   }
-
   /* Dark theme optimizations */
   @media (prefers-color-scheme: dark) {
     .lazy-loader-placeholder {
@@ -318,25 +285,21 @@ https://svelte.dev/e/bindable_invalid_location -->
       );
     }
   }
-
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .lazy-loader-placeholder {
       border: 2px solid currentColor;
     }
-    
     .loading-spinner {
       border-color: currentColor;
       border-top-color: transparent;
     }
   }
-
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .loading-spinner {
       animation: none;
     }
-    
     .lazy-loader-placeholder {
       animation: none;
     }

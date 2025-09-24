@@ -1,7 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   // Test state
@@ -12,10 +10,9 @@
   let selectedComponent = $state('sveltekit');
   let testQuery = $state('Context7 legal AI stack analysis');
   const components = [
-    'sveltekit', 'drizzle', 'unocss', 'bits-ui', 'xstate', 
+    'sveltekit', 'drizzle', 'unocss', 'bits-ui', 'xstate',
     'typescript', 'postgresql', 'autogen', 'crewai', 'vllm'
   ];
-
   // Test the real Context7 semantic audit API
   async function runSemanticAuditTest() {
     $isRunning = true;
@@ -24,10 +21,10 @@
     try {
       console.log('[Context7 Test] Starting semantic audit test...');
       const response = await fetch('/api/audit/semantic', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: testQuery,;
+        body: JSON.stringify({,
+          query: testQuery
           component: selectedComponent;
         })
       });
@@ -40,8 +37,8 @@
         {
           test: 'Semantic Audit API',
           status: 'success',
-          timestamp: new Date().toISOString(),;
-          data: data,;
+          timestamp: new Date().toISOString(),
+          data: data
           summary: `Analyzed ${selectedComponent} with ${(data as { results?: any; triggeredAgents?: any }).results?.length || 0} results, ${(data as { results?: any; triggeredAgents?: any }).triggeredAgents?.length || 0} agent triggers`
         }
       ];
@@ -51,8 +48,8 @@
         {
           test: 'Semantic Audit API',
           status: 'error',
-          timestamp: new Date().toISOString(),;
-          error: String(error),;
+          timestamp: new Date().toISOString(),
+          error: String(error),
           summary: `Failed to run semantic audit for ${selectedComponent}`
         }
       ];
@@ -61,7 +58,6 @@
       $currentTest = '';
     }
   }
-
   // Test Context7 semantic search directly
   async function runSemanticSearchTest() {
     $isRunning = true;
@@ -71,10 +67,10 @@
       // Import the performContext7Search function dynamically
       const { performContext7Search } = await import('$lib/ai/types');
       const searchResults = await performContext7Search({
-        query: testQuery,
+        query: testQuery
         maxResults: 5,
         confidenceThreshold: 0.7,
-        includeCode: true,
+        includeCode: true
         includeDocs: true;
       });
       console.log('[Context7 Test] Semantic search completed:', searchResults);
@@ -83,8 +79,8 @@
         {
           test: 'Direct Semantic Search',
           status: 'success',
-          timestamp: new Date().toISOString(),;
-          data: searchResults,;
+          timestamp: new Date().toISOString(),
+          data: searchResults
           summary: `Found ${searchResults.length} search results`
         }
       ];
@@ -93,10 +89,10 @@
       $testResults = [
         ...$testResults,
         {
-          test: 'Direct Semantic Search', 
+          test: 'Direct Semantic Search',
           status: 'error',
-          timestamp: new Date().toISOString(),;
-          error: String(error),;
+          timestamp: new Date().toISOString(),
+          error: String(error),
           summary: 'Failed to run semantic search';
         }
       ];
@@ -105,7 +101,6 @@
       $currentTest = '';
     }
   }
-
   // Test Context7 agent orchestration
   async function runAgentOrchestrationTest() {
     $isRunning = true;
@@ -115,7 +110,7 @@
       const { context7AgentOrchestrator } = await import('$lib/ai/types');
       const trigger = {
         todoId: `test_${Date.now()}`,
-        action: 'analyze' as const,;
+        action: 'analyze' as const,
         status: 'pending' as const;
       };
       const result = await context7AgentOrchestrator.triggerAgent(trigger);
@@ -125,8 +120,8 @@
         {
           test: 'Agent Orchestration',
           status: 'success',
-          timestamp: new Date().toISOString(),;
-          data: result,;
+          timestamp: new Date().toISOString(),
+          data: result
           summary: `Agent ${trigger.action} completed for ${trigger.todoId}`
         }
       ];
@@ -136,9 +131,9 @@
         ...$testResults,
         {
           test: 'Agent Orchestration',
-          status: 'error', 
-          timestamp: new Date().toISOString(),;
-          error: String(error),;
+          status: 'error',
+          timestamp: new Date().toISOString(),
+          error: String(error),
           summary: 'Failed to run agent orchestration';
         }
       ];
@@ -147,20 +142,17 @@
       $currentTest = '';
     }
   }
-
   // Run all tests in sequence
   async function runAllTests() {
     await runSemanticAuditTest();
     await runSemanticSearchTest();
     await runAgentOrchestrationTest();
   }
-
   // Clear test results
   function clearResults() {
     $testResults = [];
   }
 </script>
-
 <div class="space-y-6 p-6 max-w-6xl mx-auto">
   <div class="border-b border-gray-200 pb-4">
     <h2 class="text-2xl font-bold text-gray-900">Context7 Integration Test Suite</h2>
@@ -168,11 +160,9 @@
       Test the real Context7 semantic search, logging, and agent trigger implementations.
     </p>
   </div>
-
   <!-- Test Configuration -->
   <div class="bg-white border border-gray-200 rounded-lg p-6">
     <h3 class="text-lg font-semibold mb-4">Test Configuration</h3>
-    
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label for="component" class="block text-sm font-medium mb-2">Component to Test</label>
@@ -186,7 +176,6 @@
           {/each}
         </select>
       </div>
-      
       <div>
         <label for="query" class="block text-sm font-medium mb-2">Test Query</label>
         <input
@@ -199,11 +188,9 @@
       </div>
     </div>
   </div>
-
   <!-- Test Controls -->
   <div class="bg-white border border-gray-200 rounded-lg p-6">
     <h3 class="text-lg font-semibold mb-4">Test Controls</h3>
-    
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
       <button
         type="button"
@@ -217,7 +204,6 @@
           Semantic Audit
         {/if}
       </button>
-      
       <button
         type="button"
         onclick={runSemanticSearchTest}
@@ -230,7 +216,6 @@
           Semantic Search
         {/if}
       </button>
-      
       <button
         type="button"
         onclick={runAgentOrchestrationTest}
@@ -243,7 +228,6 @@
           Agent Orchestration
         {/if}
       </button>
-      
       <button
         type="button"
         onclick={runAllTests}
@@ -257,7 +241,6 @@
         {/if}
       </button>
     </div>
-    
     <div class="mt-4">
       <button
         type="button"
@@ -268,12 +251,10 @@
       </button>
     </div>
   </div>
-
   <!-- Test Results -->
   {#if $testResults.length > 0}
     <div class="bg-white border border-gray-200 rounded-lg p-6">
       <h3 class="text-lg font-semibold mb-4">Test Results</h3>
-      
       <div class="space-y-4">
         {#each $testResults as result}
           <div class="border border-gray-200 rounded-lg p-4">
@@ -284,16 +265,13 @@
                 {(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).status}
               </span>
             </div>
-            
             <p class="text-sm text-gray-600 mb-2">{(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).summary}</p>
             <p class="text-xs text-gray-500">{(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).timestamp}</p>
-            
             {#if (result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).error}
               <div class="mt-2 p-2 bg-red-50 rounded text-sm text-red-700">
                 Error: {(result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).error}
               </div>
             {/if}
-            
             {#if (result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).data}
               <details class="mt-2">
                 <summary class="text-sm font-medium text-gray-700 cursor-pointer">View Details</summary>
@@ -305,7 +283,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Integration Status -->
   <div class="bg-green-50 border border-green-200 rounded-lg p-6">
     <h3 class="text-lg font-semibold text-green-800 mb-2">Context7 Integration Status</h3>
@@ -320,7 +297,6 @@
           <li>• Context7 MCP tools integration</li>
         </ul>
       </div>
-      
       <div>
         <h4 class="font-medium text-green-700 mb-2">🔧 Available Tools</h4>
         <ul class="space-y-1 text-green-600">
@@ -334,5 +310,3 @@
     </div>
   </div>
 </div>
-
-

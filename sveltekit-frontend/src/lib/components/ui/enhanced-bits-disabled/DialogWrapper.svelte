@@ -1,9 +1,7 @@
 <!-- Dialog Wrapper: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import * as Dialog from 'bits-ui';
-
   interface Props {
     open?: boolean;
     title?: string;
@@ -11,21 +9,17 @@
     analyticsLog?: (event: unknown) => void;
     onClose?: () => void;
   }
-
   let { children,
     open = $bindable(false),
     title = '',
     description = '',
     analyticsLog = () => ,
     onClose = () =>  }: Props = $props();
-
   // Melt UI component creation removed - replace with bits-ui declarative components analyticsLog({ event: 'dialog_closed', timestamp: Date.now() }); } });
-
   $effect(() => {
     if (open) analyticsLog({ event: 'dialog_opened', title, timestamp: Date.now() });
   });
 </script>
-
 {#if $dialogOpen}
   <div use:overlay class="modal-overlay"></div>
   <div use:content class="modal-content">
@@ -41,7 +35,6 @@
     <button use:close class="modal-close">×</button>
   </div>
 {/if}
-
 <style>
   .modal-overlay {
     @apply fixed inset-0 bg-black/60 z-40;
@@ -58,8 +51,7 @@
   }
   .modal-close {
     @apply absolute top-4 right-4 w-8 h-8 rounded-full bg-nier-surface-light;
-    @apply hover:bg-nier-surface-lighter transition-colors;
+    @apply hover:bg-nier-surface-lighter transition-color;
     @apply flex items-center justify-center text-nier-text-muted hover:text-nier-white;
   }
 </style>
-

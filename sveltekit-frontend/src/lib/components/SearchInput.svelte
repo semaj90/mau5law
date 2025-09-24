@@ -1,9 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {   } from "svelte";
   import { Search, X } from 'lucide-svelte';
-
   // Convert to Svelte 5 runes pattern
   let {
     placeholder = 'Search...',
@@ -11,24 +8,19 @@
     debounceTime = 300,
     onsearch = undefined
   } = $props();
-
-  
   let debounceTimer = $state<number | undefined>(undefined);
   let inputElement = $state<HTMLInputElement | null>(null);
   let isFocused = $state(false);
-
   function triggerSearch() {
   	ondispatch?.({ query: value });
   	onsearch?.({ query: value });
   }
-
   function handleInput() {
   	if (debounceTimer) clearTimeout(debounceTimer);
   	debounceTimer = window.setTimeout(() => {
   	  triggerSearch();
   	}, debounceTime);
   }
-
   function handleKeydown(event: KeyboardEvent) {
   	if (event.key === 'Enter') {
   	  if (debounceTimer) clearTimeout(debounceTimer);
@@ -38,7 +30,6 @@
   	  inputElement?.blur();
   	}
   }
-
   function handleFocus() {
   	isFocused = true;
   }
@@ -51,12 +42,10 @@
   	inputElement?.focus();
   }
 </script>
-
 <div class="search-input-container" class:focused={isFocused}>
   <div class="search-icon" aria-hidden="true">
 	<Search size={18} />
   </div>
-
   <input
 	bind:this={inputElement}
 	bind:value
@@ -68,7 +57,6 @@
 	onblur={handleBlur}
 	aria-label="Search"
   />
-
   {#if value}
 	<button
 	  class="clear-button"
@@ -80,10 +68,9 @@
 	</button>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
-  .search-input-container {;
+  .search-input-container {
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -140,4 +127,3 @@
 	transform: scale(0.95);
   }
 </style>
-

@@ -1,13 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { HTMLButtonAttributes } from 'svelte/elements';
   import type { ButtonVariant, ButtonSize } from '$lib/types';
   import type {     Snippet     } from 'svelte';
-
   interface Props extends HTMLButtonAttributes {
     variant?: ButtonVariant;
-    size?: ButtonSize;
+    size?: ButtonSiz;
     loading?: boolean;
     icon?: string;
     iconPosition?: 'left' | 'right';
@@ -16,7 +14,6 @@
     to?: string; // optional navigation href
     children?: Snippet;
   }
-
   let {
     variant = 'primary',
     size = 'md',
@@ -27,9 +24,8 @@
     class: className = '',
   to = undefined,
   children,
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
   let classes = $derived([
     'nier-btn',
     `btn-${variant}`,
@@ -37,9 +33,8 @@
     fullWidth && 'w-full',
     loading && 'btn-loading',
     className
-  ].filter(item => item.join)(' '));
+  ].filter(Boolean).join(' '));
 </script>
-
 {#if to}
   <a class={classes} data-button-root href={to} {...restProps}>
     {#if icon && iconPosition === 'left'}
@@ -80,7 +75,7 @@
   :global(.nier-btn.btn-loading) {
     opacity: 0.6;
     cursor: not-allowed;
-    background: #23272e;
+    background: #23272;
     color: #bcbcbc;
   }
 /* Variant styles */
@@ -112,8 +107,7 @@
     border-radius: 50%;
     animation: spin 0.75s linear infinite;
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: middl;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
-

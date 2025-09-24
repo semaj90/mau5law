@@ -3,7 +3,6 @@
   import type { Snippet } from 'svelte';
   import { accessibleClick } from '$lib/actions/accessibleClick';
   import { fade, scale } from 'svelte/transition';
-
   interface Props {
     class?: string;
     children?: Snippet;
@@ -11,16 +10,14 @@
     title: string;
     onClose: () => void;
   }
-
   let {
-    class: className,
+    class: className
     children,
     open = $bindable(),
     title,
-    onClose;
+    onClo;
   }: Props = $props();
 </script>
-
 {#if open}
   <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" transition:fade>
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative {className || ''}"
@@ -32,7 +29,7 @@
       {#if children}
         {@render children()}
       {/if}
-      <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2";
+      <button class="absolute top-2 right-2 text-gray-400 hover: text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2";
               use:accessibleClick={{ handler: onClose, label: "Close dialog" }}>✕</button>
     </div>
   </div>

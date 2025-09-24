@@ -1,6 +1,5 @@
-// Scoring types for CaseScoringService;
+// Scoring types for CaseScoringService
 }
-
 export interface CaseScoringRequest {
   caseId: string;
   userId: string;
@@ -10,13 +9,12 @@ export interface CaseScoringRequest {
   jurisdiction?: string;
   caseType?: string;
   priority?: 'low' | 'medium' | 'high' | 'critical';
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   // Additional properties used in the service
   scoring_criteria?: ScoringCriteria;
   criteria?: ScoringCriteria;
   temperature?: number;
 }
-
 export interface ScoringCriteria {
   evidence_strength: number;
   witness_reliability: number;
@@ -25,7 +23,6 @@ export interface ScoringCriteria {
   case_complexity: number;
   resource_requirements: number;
 }
-
 export interface CaseScoringResult {
   caseId: string;
   score: number;
@@ -49,7 +46,6 @@ export interface CaseScoringResult {
     accuracy?: number;
   };
 }
-
 export interface ScoringAnalysis {
   overallScore: number;
   criteriaScores: ScoringCriteria;

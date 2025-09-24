@@ -3,7 +3,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:focus) and new syntaxes for event handling is not allowed. Use only the onfocus syntax -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount,   } from "svelte";
   // Svelte 5 props interface
   interface Props {
@@ -38,7 +37,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     gpuAcceleration?: boolean;
     webgpuMode?: boolean;
   }
-
   let {
     value = $bindable(''),
     placeholder = '',
@@ -71,25 +69,20 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     gpuAcceleration = true,
     webgpuMode = false;
   }: Props = $props();
-
   // Events now handled via props in Svelte 5
-  // 
-
+  //
   let inputElement: HTMLInputElement;
   let container: HTMLDivElement;
   let isFocused = $state(false);
   let isHovered = $state(false);
   let audioContext: AudioContext | null = null;
   let spatialPanner: PannerNode | null = null;
-
   // Performance state
   let webglContext: WebGLRenderingContext | null = null;
   let webgpuDevice: GPUDevice | null = null;
   let frameCount = $state(0);
-
   // Generate unique IDs
   const componentId = id || `n64-input-${Math.random.toString-substr(2, 9)}`;
-
   // Dynamic CSS classes based on props
   const inputClasses = $derived(() => {
     const classes = ['n64-input'];
@@ -112,7 +105,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     if (reducedMotion) classes.push('reduced-motion');
     return classes.join(' ');
   });
-
   // Initialize audio context for spatial audio
   $effect(() => {
     (async () => {
@@ -128,17 +120,14 @@ if (spatialAudio && typeof window !== 'undefined') {
         console.warn('N64Input: Spatial audio initialization failed:', error);
       }
     }
-
     // Initialize WebGL/WebGPU contexts for advanced rendering
     if (gpuAcceleration && container) {
       await initializeGPUContext();
     }
-
     // Start animation loop for complex materials
     if (materialType === 'pbr' || meshComplexity === 'ultra') {
       requestAnimationFrame(animationLoop);
     }
-
     return () => {
       if (audioContext) {
         audioContext.close();
@@ -146,7 +135,6 @@ if (spatialAudio && typeof window !== 'undefined') {
     };
     })();
   });
-
   async function initializeGPUContext() {
     if (webgpuMode && 'gpu' in navigator) {
       try {
@@ -159,7 +147,6 @@ if (spatialAudio && typeof window !== 'undefined') {
         console.warn('N64Input: WebGPU initialization failed, falling back to WebGL');
       }
     }
-
     // Fallback to WebGL
     if (!webgpuDevice) {
       const canvas = document.createElement('canvas');
@@ -169,7 +156,6 @@ if (spatialAudio && typeof window !== 'undefined') {
       }
     }
   }
-
   function animationLoop() {
     frameCount++;
     // Update material properties based on frame count
@@ -181,55 +167,44 @@ if (spatialAudio && typeof window !== 'undefined') {
       requestAnimationFrame(animationLoop);
     }
   }
-
   function handleFocus(event: FocusEvent) {
     isFocused = true;
     playSpatialSound('focus', 440, 0.1);
     onFocus?.(event);
   }
-
   function handleBlur(event: FocusEvent) {
     isFocused = false;
     playSpatialSound('blur', 330, 0.1);
     onBlur?.(event);
   }
-
   function handleInput(event: Event) {
     const target = event.target as HTMLInputElement;
-    value = target.value;
+    value = target.valu;
     playSpatialSound('input', 660, 0.05);
     onInput?.(event);
   }
-
   function handleChange(event: Event) {
     onChange?.(event);
   }
-
   function handleMouseEnter() {
     isHovered = true;
     playSpatialSound('hover', 880, 0.03);
   }
-
   function handleMouseLeave() {
     isHovered = false;
   }
-
   function playSpatialSound(type: string, frequency: number, volume: number) {
     if (!spatialAudio || !audioContext || !spatialPanner || reducedMotion) return;
-
     try {
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-
       oscillator.type = 'sine';
       oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
       gainNode.gain.setValueAtTime(0, audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
       gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
-
       oscillator.connect(gainNode);
       gainNode.connect(spatialPanner);
-
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.15);
     } catch (error) {
@@ -237,8 +212,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
   }
 </script>
-
-<div 
+<div
   bind:this={container}
   class="n64-input-container {className}"
   class:material-basic={materialType === 'basic'}
@@ -272,47 +246,39 @@ if (spatialAudio && typeof window !== 'undefined') {
     onmouseenter={handleMouseEnter}
     onmouseleave={handleMouseLeave}
   />
-  
   <!-- N64 Visual Enhancement Layers -->
   <div class="n64-input-overlay" aria-hidden="true">
     <!-- Texture filtering layer -->
     <div class="texture-filter-layer filter-{textureFiltering}"></div>
-    
     <!-- Anti-aliasing layer -->
     {#if antiAliasing !== 'none'}
       <div class="aa-layer aa-{antiAliasing}"></div>
     {/if}
-    
     <!-- Fog effect layer -->
     {#if fogEffect}
       <div class="fog-layer"></div>
     {/if}
-    
     <!-- Depth of field blur -->
     {#if depthOfField}
       <div class="dof-layer"></div>
     {/if}
   </div>
-
   <!-- Focus indicator with N64 styling -->
-  <div 
-    class="n64-focus-indicator" 
+  <div
+    class="n64-focus-indicator"
     class:visible={isFocused}
     aria-hidden="true"
   ></div>
 </div>
-
 <style>
-  .n64-input-container {;
+  .n64-input-container {
     position: relative;
     display: inline-block;
     font-family: 'Press Start 2P', monospace;
-    
     /* 3D perspective for N64 depth */
     perspective: 1000px;
     transform-style: preserve-3d;
   }
-
   /* Base input styling */
   .n64-input {
     position: relative;
@@ -321,78 +287,67 @@ if (spatialAudio && typeof window !== 'undefined') {
     font-family: 'Press Start 2P', monospace;
     font-size: 12px;
     line-height: 1.4;
-    
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
     color: #e0e0e0;
     border: 2px solid #505050;
-    
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    
     /* N64-style 3D depth */
     transform: perspective(1000px) rotateX(2deg) translateZ(0);
-    box-shadow: 
+    box-shadow:
       0 4px 8px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
-
   /* Material variations */
   .material-basic .n64-input {
     background: #1a1a1a;
     border-color: #505050;
   }
-
   .material-phong .n64-input {
-    background: linear-gradient(145deg, 
-      #2a2a2a 0%, 
-      #1a1a1a 50%, 
+    background: linear-gradient(145deg,
+      #2a2a2a 0%,
+      #1a1a1a 50%,
       #0a0a0a 100%);
     border-color: #707070;
-    box-shadow: 
+    box-shadow:
       0 4px 12px rgba(0, 0, 0, 0.4),
       inset 0 2px 4px rgba(255, 255, 255, 0.1),
       inset 0 -2px 4px rgba(0, 0, 0, 0.2);
   }
-
   .material-pbr .n64-input {
-    background: linear-gradient(145deg, 
+    background: linear-gradient(145deg,
       hsl(var(--animation-time, 0) * 0.1 + 240, 20%, 16%) 0%,
       hsl(var(--animation-time, 0) * 0.1 + 240, 25%, 10%) 50%,
       hsl(var(--animation-time, 0) * 0.1 + 240, 30%, 6%) 100%);
     border-color: hsl(var(--animation-time, 0) * 0.1 + 240, 50%, 50%);
-    box-shadow: 
+    box-shadow:
       0 6px 20px rgba(0, 0, 0, 0.5),
       inset 0 3px 6px rgba(255, 255, 255, 0.15),
       inset 0 -3px 6px rgba(0, 0, 0, 0.3);
   }
-
   /* Mesh complexity variations */
   .mesh-low .n64-input {
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
   }
-
   .mesh-medium .n64-input {
     clip-path: polygon(
-      0% 0%, 95% 0%, 100% 5%, 100% 95%, 
+      0% 0%, 95% 0%, 100% 5%, 100% 95%,
       95% 100%, 5% 100%, 0% 95%, 0% 5%
     );
   }
-
   .mesh-high .n64-input {
     clip-path: polygon(
-      0% 0%, 90% 0%, 95% 2%, 100% 5%, 100% 90%, 
-      98% 95%, 95% 100%, 10% 100%, 5% 98%, 
+      0% 0%, 90% 0%, 95% 2%, 100% 5%, 100% 90%,
+      98% 95%, 95% 100%, 10% 100%, 5% 98%,
       0% 95%, 0% 10%, 2% 5%
     );
   }
-
   .mesh-ultra .n64-input {
     clip-path: polygon(
-      0% 0%, 85% 0%, 90% 1%, 95% 3%, 98% 5%, 100% 10%, 100% 85%, 
-      99% 90%, 97% 95%, 95% 98%, 90% 100%, 15% 100%, 10% 99%, 
+      0% 0%, 85% 0%, 90% 1%, 95% 3%, 98% 5%, 100% 10%, 100% 85%,
+      99% 90%, 97% 95%, 95% 98%, 90% 100%, 15% 100%, 10% 99%,
       5% 97%, 3% 95%, 1% 90%, 0% 15%, 0% 10%, 1% 5%, 3% 2%
     );
   }
-
   /* Texture filtering effects */
   .texture-filter-layer {
     position: absolute;
@@ -403,9 +358,8 @@ if (spatialAudio && typeof window !== 'undefined') {
     pointer-events: none;
     z-index: 1;
   }
-
   .filter-nearest .texture-filter-layer {
-    background: 
+    background:
       repeating-linear-gradient(
         0deg,
         transparent 0px,
@@ -413,18 +367,16 @@ if (spatialAudio && typeof window !== 'undefined') {
         transparent 2px
       );
   }
-
   .filter-bilinear .texture-filter-layer {
-    background: 
+    background:
       radial-gradient(
         circle at 50% 50%,
         rgba(255, 255, 255, 0.03) 0%,
         transparent 70%
       );
   }
-
   .filter-trilinear .texture-filter-layer {
-    background: 
+    background:
       conic-gradient(
         from 0deg,
         rgba(255, 215, 0, 0.02),
@@ -433,9 +385,8 @@ if (spatialAudio && typeof window !== 'undefined') {
         rgba(255, 215, 0, 0.02)
       );
   }
-
   .filter-anisotropic .texture-filter-layer {
-    background: 
+    background:
       linear-gradient(45deg,
         rgba(255, 215, 0, 0.03) 0%,
         transparent 25%,
@@ -445,7 +396,6 @@ if (spatialAudio && typeof window !== 'undefined') {
       );
     animation: anisotropic-sweep 3s ease-in-out infinite;
   }
-
   /* Anti-aliasing layers */
   .aa-layer {
     position: absolute;
@@ -456,7 +406,6 @@ if (spatialAudio && typeof window !== 'undefined') {
     pointer-events: none;
     z-index: 2;
   }
-
   .aa-fxaa .aa-layer {
     background: linear-gradient(
       45deg,
@@ -465,9 +414,8 @@ if (spatialAudio && typeof window !== 'undefined') {
       rgba(255, 255, 255, 0.01) 100%
     );
   }
-
   .aa-msaa .aa-layer {
-    background: 
+    background:
       radial-gradient(
         ellipse at top left,
         rgba(255, 255, 255, 0.02) 0%,
@@ -489,7 +437,6 @@ if (spatialAudio && typeof window !== 'undefined') {
         transparent 30%
       );
   }
-
   /* Fog effect */
   .fog-layer {
     position: absolute;
@@ -508,7 +455,6 @@ if (spatialAudio && typeof window !== 'undefined') {
     z-index: 3;
     animation: fog-drift 6s ease-in-out infinite;
   }
-
   /* Depth of field */
   .dof-layer {
     position: absolute;
@@ -522,7 +468,6 @@ if (spatialAudio && typeof window !== 'undefined') {
     pointer-events: none;
     z-index: 4;
   }
-
   /* Focus indicator */
   .n64-focus-indicator {
     position: absolute;
@@ -537,38 +482,32 @@ if (spatialAudio && typeof window !== 'undefined') {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
     z-index: 5;
-    
-    box-shadow: 
+    box-shadow:
       0 0 10px rgba(255, 215, 0, 0.5),
       inset 0 0 10px rgba(255, 215, 0, 0.2);
   }
-
   .n64-focus-indicator.visible {
     opacity: 1;
     transform: scale(1);
   }
-
   /* State variations */
-  .n64-input:focus {
+  .n64-input: focus {
     border-color: #ffd700;
     color: #ffffff;
     transform: perspective(1000px) rotateX(0deg) translateZ(2px);
-    box-shadow: 
+    box-shadow:
       0 6px 16px rgba(255, 215, 0, 0.3),
       inset 0 2px 4px rgba(255, 255, 255, 0.2);
   }
-
-  .n64-input:hover:not(:focus):not(:disabled) {
+  .n64-input: hover:not(:focus):not(:disabled) {
     border-color: #909090;
     transform: perspective(1000px) rotateX(1deg) translateZ(1px);
   }
-
   .n64-input:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: perspective(1000px) rotateX(3deg) translateZ(-1px);
   }
-
   /* GPU acceleration classes */
   .gpu-accelerated .n64-input {
     will-change: transform, box-shadow, border-color;
@@ -577,18 +516,15 @@ if (spatialAudio && typeof window !== 'undefined') {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
   }
-
   .webgpu-active .n64-input {
     image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
+    image-rendering: crisp-edge;
   }
-
   /* Mobile optimizations */
   .mobile-optimized .n64-input {
-    font-size: 16px; /* Prevent iOS zoom */
+    font-size: 16px; /* Prevent iOS zoom */,
     padding: 14px 18px;
   }
-
   /* Reduced motion */
   .reduced-motion .n64-input,
   .reduced-motion .n64-focus-indicator,
@@ -598,38 +534,33 @@ if (spatialAudio && typeof window !== 'undefined') {
     animation: none !important;
     transition: none !important;
   }
-
   /* Lighting effects */
   .lighting-enabled .n64-input {
-    background-image: 
-      linear-gradient(145deg, 
+    background-image:
+      linear-gradient(145deg,
         rgba(255, 255, 255, 0.1) 0%,
         transparent 30%,
         transparent 70%,
         rgba(0, 0, 0, 0.2) 100%
       );
   }
-
   /* Animations */
   @keyframes anisotropic-sweep {
     0% { transform: translateX(-100%); }
     50% { transform: translateX(0%); }
     100% { transform: translateX(100%); }
   }
-
   @keyframes fog-drift {
     0% { transform: translateY(0px); }
     50% { transform: translateY(-2px); }
     100% { transform: translateY(0px); }
   }
-
   /* Placeholder styling */
   .n64-input::placeholder {
     color: #808080;
     font-family: 'Press Start 2P', monospace;
     font-size: 10px;
   }
-
   /* Selection styling */
   .n64-input::selection {
     background: rgba(255, 215, 0, 0.3);

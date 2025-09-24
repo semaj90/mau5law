@@ -3,13 +3,11 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
 </script>
   import Button from '$lib/components/ui/enhanced-bits';
   import * as Card from '$lib/components/ui/card';
   import { onMount } from 'svelte';
-  
   interface Props {
     title: string;
     description?: string;
@@ -17,38 +15,33 @@ https://svelte.dev/e/expected_token -->
     showWelcome?: boolean;
     children: import('svelte').Snippet;
   }
-  
-  let { 
-    title, 
-    description = '', 
+  let {
+    title,
+    description = '',
     showGpuStatus = false,
     showWelcome = false,
-    children 
+    children
   }: Props = $props();
-  
   let pageLoaded = $state(false);
   let gpuStatus = $state({
     gpu: 'RTX 3060 Ti',
-    status: 'Active',;
-    memory: '7.0GB/8.0GB',;
+    status: 'Active',
+    memory: '7.0GB/8.0GB',
     temperature: '51°C';
   });
-  
   $effect(() => {
     (async () => {
 pageLoaded = true;
-    
     if (showGpuStatus) {
       try {
         // Check WebGPU topology status
         const response = await fetch('/api/webgpu/topology');
         const data = await response.json();
-        
         if (data.status === 'operational') {
           gpuStatus = {
             gpu: 'WebGPU',
-            status: 'Ready',;
-            memory: 'Available',;
+            status: 'Ready',
+            memory: 'Available',
             temperature: 'Optimal';
           };
         }
@@ -59,14 +52,12 @@ pageLoaded = true;
     })();
   });
 </script>
-
 <svelte:head>
   <title>{title} - Legal AI Platform</title>
   {#if description}
     <meta name="description" content={description} />
   {/if}
 </svelte:head>
-
 <div class="enhanced-page-layout">
   <!-- GPU Status Indicator -->
   {#if showGpuStatus && pageLoaded}
@@ -94,7 +85,6 @@ pageLoaded = true;
       </div.Root>
     </div>
   {/if}
-
   <!-- Welcome Banner -->
   {#if showWelcome && pageLoaded}
     <div class="welcome-overlay">
@@ -124,44 +114,38 @@ pageLoaded = true;
       </div.Root>
     </div>
   {/if}
-
   <!-- Page Content -->
   <main class="page-content" class:with-overlays={showGpuStatus || showWelcome}>
     {@render children()}
   </main>
 </div>
-
 <style>
-  .enhanced-page-layout {;
+  .enhanced-page-layout {
     position: relative;
     min-height: 100vh;
   }
-  
   .gpu-status-overlay {
     position: fixed;
+d;
     top: 20px;
     left: 20px;
     z-index: 1000;
   }
-  
   .gpu-status-card {
     width: 240px;
     background: rgba(0, 0, 0, 0.9);
     border: 1px solid #00ff41;
     box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
   }
-  
   .gpu-title {
     font-size: 14px;
     color: #00ff41;
   }
-  
   .gpu-metrics {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 8px;
   }
-  
   .metric {
     display: flex;
     flex-direction: column;
@@ -170,13 +154,11 @@ pageLoaded = true;
     background: rgba(0, 255, 65, 0.1);
     border-radius: 3px;
   }
-  
   .metric .label {
     font-size: 9px;
     color: #888;
     text-transform: uppercase;
   }
-  
   .metric .value {
     font-size: 11px;
     font-weight: bold;
@@ -185,25 +167,22 @@ pageLoaded = true;
 .status-active, .status-ready {
     color: #00ff41;
   }
-  
   .welcome-overlay {
     position: fixed;
+d;
     top: 20px;
     right: 20px;
     z-index: 999;
   }
-  
   .welcome-card {
     width: 300px;
     background: rgba(0, 0, 0, 0.95);
     border: 2px solid #00ff41;
     box-shadow: 0 0 25px rgba(0, 255, 65, 0.3);
   }
-  
   .animate-slide-in {
     animation: slideInRight 0.6s ease-out;
   }
-  
   @keyframes slideInRight {
     from {
       opacity: 0;
@@ -214,39 +193,32 @@ pageLoaded = true;
       transform: translateX(0);
     }
   }
-  
   .welcome-features {
     display: flex;
     justify-content: space-around;
     margin-top: 12px;
   }
-  
   .feature {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
   }
-  
   .feature-icon {
     font-size: 18px;
   }
-  
-  .feature span:last-child {;
+  .feature span: last-child {
     font-size: 10px;
     color: #ccc;
     text-align: center;
   }
-  
   .page-content {
     position: relative;
     z-index: 1;
   }
-  
   .page-content.with-overlays {
     padding-top: 20px;
   }
-  
   @media (max-width: 768px) {
 .gpu-status-overlay, .welcome-overlay {
       position: relative;

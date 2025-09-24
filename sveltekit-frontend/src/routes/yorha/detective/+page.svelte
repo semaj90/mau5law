@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Detective Command Center -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
@@ -12,22 +11,18 @@ https://svelte.dev/e/js_parse_error -->
   import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
   import YoRHaModal from '$lib/components/yorha/YoRHaModal.svelte';
   import YoRHaNotificationManager from '$lib/components/yorha/YoRHaNotificationManager.svelte';
-
   // Props
-  let { data }: { data: unknown } = $props(); // PageData;
-
+  let { data }: { data: unknown } = $props(); // PageData
   // State management
   let selectedSection = $state('command-center');
   let showNewCaseModal = $state(false);
   let newCaseData = $state({
-    title: '',;
-    description: '',;
+    title: '',
+    description: '',
     priority: 'medium' as 'low' | 'medium' | 'high' | 'critical';
   });
-
   // Notification state
   let notifications = $state<any[]>([]) => []);
-
   // Navigation sections
   const navigationSections = [
     { id: 'command-center', name: 'Command Center', icon: '🏢' },
@@ -37,7 +32,6 @@ https://svelte.dev/e/js_parse_error -->
     { id: 'search', name: 'Global Search', icon: '🔎' },
     { id: 'terminal', name: 'Terminal', icon: '💻' }
   ];
-
   // Quick stats derived from data
   let quickStats = $derived(() => ({
     activeCases: (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).systemData.activeCases,
@@ -63,35 +57,31 @@ https://svelte.dev/e/js_parse_error -->
         selectedSection = sectionId;
     }
   }
-
   // Handle new case creation
   async function handleCreateCase() {
     try {
       const response = await fetch('/api/cases', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          title: newCaseData.title,;
-          description: newCaseData.description,;
+        body: JSON.stringify({,
+          title: newCaseData.title,
+          description: newCaseData.description,
           priority: newCaseData.priority;
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const result = await (response as { ok?: unknown; json?: unknown }).json();
         showNewCaseModal = false;
         // Reset form
         newCaseData = {
-          title: '',;
-          description: '',;
+          title: '',
+          description: '',
           priority: 'medium';
         };
-
         // Show success notification
         addNotification('success', `Case "${(result as { title?: unknown }).title}" created successfully`, 5000);
-
         // Refresh the page data
         goto($page.url, { invalidateAll: true });
       } else {
@@ -101,17 +91,15 @@ https://svelte.dev/e/js_parse_error -->
       addNotification('error', 'Failed to create case. Please try again.', 5000);
     }
   }
-
   // Cancel new case modal
   function cancelNewCase() {
     showNewCaseModal = false;
     newCaseData = {
-      title: '',;
-      description: '',;
+      title: '',
+      description: '',
       priority: 'medium';
     };
   }
-
   // Helper function to add notifications
   function addNotification(type: string, message: string, duration: number = 5000) {
     const id = crypto.randomUUID();
@@ -122,10 +110,8 @@ https://svelte.dev/e/js_parse_error -->
     }, duration);
   }
 </script>
-
 <!-- Main Detective Interface -->
 <div class="yorha-detective min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-amber-300">
-  
   <!-- Header Bar -->
   <div class="header-bar bg-black bg-opacity-70 border-b border-amber-400 border-opacity-30 p-4">
     <div class="flex justify-between items-center">
@@ -135,15 +121,13 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <h1 class="text-xl font-bold text-amber-300">YoRHa Detective Command Center</h1>
       </div>
-      
       <div class="flex items-center space-x-4">
-        <button 
+        <button
           class="px-4 py-2 bg-amber-600 bg-opacity-20 border border-amber-400 border-opacity-50 text-amber-300 hover:bg-opacity-30 transition-all duration-300"
           onclick={() => showNewCaseModal = true}
         >
           + New Case
         </button>
-        
         <div class="flex items-center space-x-2 text-sm">
           <span>User:</span>
           <span class="text-amber-400">{(data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).user.firstName} {(data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).user.lastName}</span>
@@ -154,10 +138,8 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </div>
-
   <!-- Main Layout -->
   <div class="main-layout flex h-[calc(100vh-80px)]">
-    
     <!-- Sidebar Navigation -->
     <div class="sidebar w-64 bg-black bg-opacity-50 border-r border-amber-400 border-opacity-30 p-4">
       <nav class="space-y-2">
@@ -171,33 +153,27 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         {/each}
       </nav>
-      
       <!-- Quick Stats in Sidebar -->
       <div class="mt-8 space-y-4">
         <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider">Quick Stats</h3>
-        
         <div class="stat-item">
           <div class="text-xs text-amber-400 opacity-70">Active Cases</div>
           <div class="text-lg font-bold text-amber-300">{quickStats.activeCases}</div>
         </div>
-        
         <div class="stat-item">
           <div class="text-xs text-amber-400 opacity-70">Evidence Items</div>
           <div class="text-lg font-bold text-amber-300">{quickStats.evidenceItems}</div>
         </div>
-        
         <div class="stat-item">
           <div class="text-xs text-amber-400 opacity-70">Persons of Interest</div>
           <div class="text-lg font-bold text-amber-300">{quickStats.personsOfInterest}</div>
         </div>
-        
         <div class="stat-item">
           <div class="text-xs text-amber-400 opacity-70">AI Queries</div>
           <div class="text-lg font-bold text-amber-300">{quickStats.aiQueries}</div>
         </div>
       </div>
     </div>
-
     <!-- Main Content Area -->
     <div class="content flex-1 p-6">
       {#if selectedSection === 'command-center'}
@@ -207,12 +183,10 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Evidence Section -->
         <div class="evidence-section">
           <h2 class="text-2xl font-bold text-amber-400 mb-6">Evidence Management</h2>
-          
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Recent Evidence -->
             <div class="recent-evidence bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-6">
               <h3 class="text-lg font-bold text-amber-400 mb-4">Recent Evidence</h3>
-              
               <div class="space-y-3">
                 {#each (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentEvidence.slice(0, 5) as evidence}
                   <div class="evidence-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300">
@@ -232,27 +206,23 @@ https://svelte.dev/e/js_parse_error -->
                 {/each}
               </div>
             </div>
-            
             <!-- Evidence Actions -->
             <div class="evidence-actions bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-6">
               <h3 class="text-lg font-bold text-amber-400 mb-4">Evidence Actions</h3>
-              
               <div class="space-y-3">
-                <button 
+                <button
                   class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
                   onclick={() => goto('/evidence/upload')}
                 >
                   📤 Upload Evidence
                 </button>
-                
-                <button 
+                <button
                   class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
                   onclick={() => goto('/evidence/analyze')}
                 >
                   🔍 Analyze Evidence
                 </button>
-                
-                <button 
+                <button
                   class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
                   onclick={() => goto('/evidence/search')}
                 >
@@ -266,7 +236,6 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Persons of Interest Section -->
         <div class="persons-section">
           <h2 class="text-2xl font-bold text-amber-400 mb-6">Persons of Interest</h2>
-          
           <div class="coming-soon bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-12 text-center">
             <div class="text-6xl mb-4">👤</div>
             <h3 class="text-xl font-bold text-amber-400 mb-2">Coming Soon</h3>
@@ -277,12 +246,10 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Analysis Section -->
         <div class="analysis-section">
           <h2 class="text-2xl font-bold text-amber-400 mb-6">Case Analysis</h2>
-          
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Recent Cases -->
             <div class="recent-cases bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-6">
               <h3 class="text-lg font-bold text-amber-400 mb-4">Recent Cases</h3>
-              
               <div class="space-y-3">
                 {#each (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentCases.slice(0, 5) as case_}
                   <div class="case-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300 cursor-pointer"
@@ -311,27 +278,23 @@ https://svelte.dev/e/js_parse_error -->
                 {/each}
               </div>
             </div>
-            
             <!-- Analysis Tools -->
             <div class="analysis-tools bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-6">
               <h3 class="text-lg font-bold text-amber-400 mb-4">Analysis Tools</h3>
-              
               <div class="space-y-3">
-                <button 
+                <button
                   class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
                   onclick={() => goto('/ai-assistant')}
                 >
                   🤖 AI Assistant
                 </button>
-                
-                <button 
+                <button
                   class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
                   onclick={() => goto('/detective/canvas')}
                 >
                   🎨 Evidence Canvas
                 </button>
-                
-                <button 
+                <button
                   class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
                   onclick={() => goto('/reports')}
                 >
@@ -344,10 +307,9 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   </div>
-
   <!-- New Case Modal -->
   {#if showNewCaseModal}
-    <YoRHaModal 
+    <YoRHaModal
       title="Create New Case"
       open={showNewCaseModal}
       close={cancelNewCase}
@@ -365,7 +327,6 @@ https://svelte.dev/e/js_parse_error -->
             required
           />
         </div>
-
         <!-- Case Description -->
         <div>
           <label for="case-description" class="block text-sm font-medium text-amber-400 mb-2">Description</label>
@@ -377,7 +338,6 @@ https://svelte.dev/e/js_parse_error -->
             placeholder="Enter case description..."
           ></textarea>
         </div>
-
         <!-- Priority -->
         <div>
           <label for="case-priority" class="block text-sm font-medium text-amber-400 mb-2">Priority</label>
@@ -392,7 +352,6 @@ https://svelte.dev/e/js_parse_error -->
             <option value="critical">Critical</option>
           </select>
         </div>
-
         <!-- Actions -->
         <div class="flex justify-end space-x-3 pt-4">
           <button
@@ -413,7 +372,6 @@ https://svelte.dev/e/js_parse_error -->
       </form>
     </YoRHaModal>
   {/if}
-
   <!-- Notification Manager -->
   {#if notifications.length > 0}
     <div class="notifications fixed top-4 right-4 space-y-2 z-50">
@@ -433,16 +391,13 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-
 <style>
   .yorha-detective {
     font-family: 'JetBrains Mono', 'Courier New', monospace;
   }
-
   .nav-item {
     position: relative;
   }
-
   .nav-item::before {
     content: '';
     position: absolute;
@@ -454,40 +409,33 @@ https://svelte.dev/e/js_parse_error -->
     transform: scaleY(0);
     transition: transform 0.3s ease;
   }
-
-  .nav-item:hover::before,
+  .nav-item:hover:: before
   .nav-item.active::before {
     transform: scaleY(1);
   }
-
   .stat-item {
     padding: 12px;
     border: 1px solid rgba(251, 191, 36, 0.2);
     background: rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
   }
-
   .stat-item:hover {
     border-color: rgba(251, 191, 36, 0.4);
     background: rgba(251, 191, 36, 0.05);
   }
-
   .evidence-item,
   .case-item {
     transition: all 0.3s ease;
   }
-
-  .evidence-item:hover,
+  .evidence-item: hover
   .case-item:hover {
     background: rgba(251, 191, 36, 0.05);
     transform: translateX(4px);
   }
-
   .action-button {
     position: relative;
     overflow: hidden;
   }
-
   .action-button::before {
     content: '';
     position: absolute;
@@ -498,15 +446,12 @@ https://svelte.dev/e/js_parse_error -->
     background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.1), transparent);
     transition: left 0.5s ease;
   }
-
   .action-button:hover::before {
     left: 100%;
   }
-
   .coming-soon {
     animation: pulse 2s infinite;
   }
-
   @keyframes pulse {
     0%, 100% {
       opacity: 1;
@@ -515,18 +460,15 @@ https://svelte.dev/e/js_parse_error -->
       opacity: 0.8;
     }
   }
-
   /* Responsive design */
   @media (max-width: 1024px) {
     .main-layout {
       flex-direction: column;
     }
-    
     .sidebar {
       width: 100%;
       height: auto;
     }
-    
     .grid {
       grid-template-columns: 1fr;
     }

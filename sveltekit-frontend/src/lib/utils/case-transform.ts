@@ -2,8 +2,7 @@
  * Case Transformation Utilities
  * Handles snake_case <-> camelCase conversion between database and frontend
  */
-
-// Common field mappings for consistency;
+// Common field mappings for consistency
 export const COMMON_FIELD_MAPPINGS = {
   // User fields
   'first_name': 'firstName',
@@ -20,7 +19,6 @@ export const COMMON_FIELD_MAPPINGS = {
   'updated_at': 'updatedAt',
   'deleted_at': 'deletedAt',
   'avatar_url': 'avatarUrl',
-
   // Case fields
   'case_number': 'caseNumber',
   'case_type': 'caseType',
@@ -29,7 +27,6 @@ export const COMMON_FIELD_MAPPINGS = {
   'due_date': 'dueDate',
   'priority_level': 'priorityLevel',
   'case_embedding': 'caseEmbedding',
-
   // Evidence fields
   'file_path': 'filePath',
   'file_size': 'fileSize',
@@ -39,88 +36,73 @@ export const COMMON_FIELD_MAPPINGS = {
   'collection_date': 'collectionDate',
   'hash_sha256': 'hashSha256',
   'content_text': 'contentText',
-
   // Common timestamp fields
   'uploaded_at': 'uploadedAt',
   'processed_at': 'processedAt',
   'analyzed_at': 'analyzedAt'
 } as const;
-
 // Reverse mapping for camelCase -> snake_case
 export const REVERSE_FIELD_MAPPINGS = Object.fromEntries(
   Object.entries(COMMON_FIELD_MAPPINGS).map(([snake, camel]) => [camel, snake])
 ) as Record<string, string>;
-
 /**
  * Convert snake_case object keys to camelCase
  */;
-export function toCamelCase<T = any>(obj: Record<string, any>): T {
+export function toCamelCase<T = any>(obj: { [key: string]: any }): T {
   if (obj === null || obj === undefined) return obj as unknown as T;
   if (Array.isArray(obj)) {
     return obj.map(item => typeof item === 'object' ? toCamelCase(item) : item) as T;
   }
   if (typeof obj !== 'object') return obj as unknown as T;
-
-  const converted: Record<string, any> = {};
-
+  const converted: { [key: string]: any } = {};
   for (const [key, value] of Object.entries(obj)) {
     // Use explicit mapping first, then fallback to auto-conversion
     const camelKey = COMMON_FIELD_MAPPINGS[key as keyof typeof COMMON_FIELD_MAPPINGS] ||
                      key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase();
-
-    // Recursively convert nested objects and arrays;
+    // Recursively convert nested objects and arrays
     if (value && typeof value === 'object') {
       converted[camelKey] = toCamelCase(value);
     } else {
       converted[camelKey] = value;
     }
   }
-
   return converted as unknown as T;
 }
-
 /**
  * Convert camelCase object keys to snake_case
  */;
-export function toSnakeCase<T = any>(obj: Record<string, any>): T {
+export function toSnakeCase<T = any>(obj: { [key: string]: any }): T {
   if (obj === null || obj === undefined) return obj as unknown as T;
   if (Array.isArray(obj)) {
     return obj.map(item => typeof item === 'object' ? toSnakeCase(item) : item) as T;
   }
   if (typeof obj !== 'object') return obj as unknown as T;
-
-  const converted: Record<string, any> = {};
-
+  const converted: { [key: string]: any } = {};
   for (const [key, value] of Object.entries(obj)) {
     // Use explicit reverse mapping first, then fallback to auto-conversion
     const snakeKey = REVERSE_FIELD_MAPPINGS[key] ||
                      key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-
-    // Recursively convert nested objects and arrays;
+    // Recursively convert nested objects and arrays
     if (value && typeof value === 'object') {
       converted[snakeKey] = toSnakeCase(value);
     } else {
       converted[snakeKey] = value;
     }
   }
-
   return converted as unknown as T;
 }
-
 /**
  * Database-safe query helper - converts camelCase input to snake_case for SQL
  */;
-export function dbQuery<T>(camelCaseData: Record<string, any>): T {
+export function dbQuery<T>(camelCaseData: { [key: string]: any }): T {
   return toSnakeCase(camelCaseData);
 }
-
 /**
  * Frontend-safe response helper - converts snake_case DB results to camelCase
  */;
-export function apiResponse<T>(snakeCaseData: Record<string, any> | Record<string, any>[]): T {
+export function apiResponse<T>(snakeCaseData: { [key: string]: any } | { [key: string]: any }[]): T {
   return toCamelCase(snakeCaseData);
 }
-
 /**
  * Type-safe user transformer specifically for common User operations
  */;
@@ -137,7 +119,6 @@ export interface DatabaseUser {
   avatar_url?: string;
   [key: string]: any;
 }
-
 export interface FrontendUser {
   id: string;
   email: string;
@@ -151,15 +132,12 @@ export interface FrontendUser {
   avatarUrl?: string;
   [key: string]: any;
 }
-
 export function transformUserForFrontend(dbUser: DatabaseUser): FrontendUser {
   return toCamelCase<FrontendUser>(dbUser);
 }
-
 export function transformUserForDatabase(frontendUser: Partial<FrontendUser>): Partial<DatabaseUser> {
   return toSnakeCase<Partial<DatabaseUser>(frontendUser);
 }
-
 /**
  * Drizzle ORM integration helpers
  */;
@@ -172,13 +150,12 @@ export function drizzleSelect<T>(camelCaseFields: string[]): Record<string, bool
   });
   return snakeFields;
 }
-
 /**
  * Batch transformation for arrays
  */
 export function transformArray<T>(
-  items: Record<string, any>[],;
-  transformer: (item: Record<string, any>) => T;
+  items: { [key: string]: any }[],
+  transformer: (item: { [key: string]: any }) => T;
 ): T[] {
   return items.map(transformer);
 }

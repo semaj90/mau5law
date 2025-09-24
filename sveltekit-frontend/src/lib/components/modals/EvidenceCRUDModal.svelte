@@ -1,14 +1,12 @@
 <!-- Evidence CRUD Modal - SPA-style with Svelte 5 + Drizzle + PostgreSQL -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { evidenceStore } from '$lib/stores/evidence';
   import { embeddingsService } from '$lib/services/embeddings-service';
   import { showSuccess, showError } from '$lib/stores/alerts';
   import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';
   import { X, Save, Trash2, Upload, Brain, Tag, FileText, Image, Video, Mic } from 'lucide-svelte';
-
   interface Evidence {
     id?: string;
     title: string;
@@ -20,14 +18,13 @@
     case_id?: string;
     extracted_text?: string;
     embeddings?: number[];
-    metadata?: Record<string, any>;
+    metadata?: { [key: string]: any };
     tags?: string[];
     x?: number;
     y?: number;
     created_at?: string;
     updated_at?: string;
   }
-
   interface Props {
     isOpen: boolean;
     mode: 'create' | 'edit' | 'view';
@@ -36,7 +33,6 @@
     onSave?: (evidence: Evidence) => void;
     onDelete?: (evidenceId: string) => void;
   }
-
   let {
     isOpen = $bindable(),
     mode = 'create',
@@ -45,17 +41,15 @@
     onSave,
     onDelete
   }: Props = $props();
-
   // Svelte 5 state
   let evidence = $state<Evidence>({
     title: '',
     type: 'document',
     content: '',
-    tags: [],;
-    x: 100,;
+    tags: [],
+    x: 100,
     y: 100;
   });
-
   let originalEvidence = $state<Evidence | null>(null);
   let isLoading = $state(false);
   let isSaving = $state(false);
@@ -64,15 +58,12 @@
   let uploadedFile = $state<File | null>(null);
   let tagInput = $state('');
   let errors = $state<Record<string, string>( );
-
   // File upload state
   let uploadProgress = $state(0);
   let dragOver = $state(false);
-
   // Modal management
   let modalElement = $state<HTMLDivElement>();
   let isClosing = $state(false);
-
   // Load evidence when modal opens
   $effect(() => {
     if (isOpen && mode !== 'create' && evidenceId) {
@@ -81,17 +72,14 @@
       resetForm();
     }
   });
-
   async function loadEvidence() {
     if (!evidenceId) return;
-
     isLoading = true;
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`);
       if (!response.ok) {
         throw new Error('Failed to load evidence');
       }
-
       const data = await response.json();
       evidence = { ...data };
       originalEvidence = { ...data };
@@ -103,14 +91,13 @@
       isLoading = false;
     }
   }
-
   function resetForm() {
     evidence = {
       title: '',
       type: 'document',
       content: '',
-      tags: [],;
-      x: 100,;
+      tags: [],
+      x: 100,
       y: 100;
     };
     originalEvidence = null;
@@ -118,29 +105,23 @@
     tagInput = '';
     errors = {};
   }
-
   // Validation
   function validateForm(): boolean {
     errors = {};
     if (!evidence.title.trim()) {
       errors.title = 'Title is required';
     }
-
     if (evidence.title.trim.length < 3) {
       errors.title = 'Title must be at least 3 characters';
     }
-
     if (!evidence.type) {
       errors.type = 'Evidence type is required';
     }
-
     if (mode === 'create' && !evidence.content?.trim() && !uploadedFile) {
       errors.content = 'Content or file is required';
     }
-
     return Object.keys(errors).length === 0;
   }
-
   // File handling
   function handleFileUpload(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -149,21 +130,17 @@
       processFile(file);
     }
   }
-
   function handleFileDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
-
     const file = event.dataTransfer?.files[0];
     if (file) {
       processFile(file);
     }
   }
-
   async function processFile(file: File) {
-    uploadedFile = file;
+    uploadedFile = fil;
     uploadProgress = 0;
-
     // Auto-detect evidence type
     if (file.type.startsWith('image/')) {
       evidence.type = 'image';
@@ -174,21 +151,17 @@
     } else {
       evidence.type = 'document';
     }
-
     // Set title if empty
     if (!evidence.title.trim()) {
       evidence.title = file.name.replace(/\.[^/.]+$/, '');
     }
-
     // Simulate upload progress
     for (let i = 0; i <= 100; i += 10) {
       uploadProgress = i;
       await new Promise(resolve => setTimeout(resolve, 100));
     }
-
     showSuccess(`File ${file.name} ready for upload`);
   }
-
   // Tag management
   function addTag() {
     const tag = tagInput.trim();
@@ -197,34 +170,28 @@
       tagInput = '';
     }
   }
-
   function removeTag(tagToRemove: string) {
     evidence.tags = evidence.tags?.filter(tag => tag !== tagToRemove) || [];
   }
-
   function handleTagKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
       addTag();
     }
   }
-
   // AI Analysis
   async function analyzeEvidence() {
     if (isAnalyzing) return;
-
     isAnalyzing = true;
     try {
-      const textContent = evidence.content || evidence.extracted_text || evidence.title;
+      const textContent = evidence.content || evidence.extracted_text || evidence.titl;
       const result = await embeddingsService.generateEmbedding(textContent);
-
       evidence.embeddings = result.embedding;
       evidence.metadata = {
         ...evidence.metadata,
         embedding_dimension: result.dimension,
         analyzed_at: new Date().toISOString()
       };
-
       showSuccess('AI analysis completed');
     } catch (error) {
       console.error('❌ AI analysis failed:', error);
@@ -233,18 +200,15 @@
       isAnalyzing = false;
     }
   }
-
   // CRUD operations
   async function handleSave() {
     if (!validateForm()) {
       showError('Please fix validation errors');
       return;
     }
-
     isSaving = true;
     try {
       let savedEvidence: Evidence;
-
       if (mode === 'create') {
         // Create new evidence
         const formData = new FormData();
@@ -253,28 +217,22 @@
         formData.append('content', evidence.content || '');
         formData.append('x', String(evidence.x || 100));
         formData.append('y', String(evidence.y || 100));
-
         if (evidence.tags) {
           formData.append('tags', JSON.stringify(evidence.tags));
         }
-
         if (evidence.metadata) {
           formData.append('metadata', JSON.stringify(evidence.metadata));
         }
-
         if (uploadedFile) {
           formData.append('file', uploadedFile);
         }
-
         const response = await fetch('/api/evidence', {
-          method: 'POST',;
+          method: 'POST',
           body: formData;
         });
-
         if (!response.ok) {
           throw new Error('Failed to create evidence');
         }
-
         savedEvidence = await response.json();
         showSuccess('Evidence created successfully');
       } else {
@@ -285,35 +243,29 @@
           content: evidence.content,
           tags: evidence.tags,
           metadata: evidence.metadata,
-          embeddings: evidence.embeddings,;
-          x: evidence.x,;
+          embeddings: evidence.embeddings,
+          x: evidence.x,
           y: evidence.y;
         };
-
         const response = await fetch(`/api/evidence/${evidenceId}`, {
-          method: 'PUT',;
-          headers: { 'Content-Type': 'application/json' },;
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updateData);
         });
-
         if (!response.ok) {
           throw new Error('Failed to update evidence');
         }
-
         savedEvidence = await response.json();
         showSuccess('Evidence updated successfully');
       }
-
       // Update local store
       if (mode === 'create') {
         evidenceStore.addEvidence(savedEvidence);
       } else {
         evidenceStore.updateEvidence(savedEvidence.id!, savedEvidence);
       }
-
       onSave?.(savedEvidence);
       handleClose();
-
     } catch (error) {
       console.error('❌ Save failed:', error);
       showError('Failed to save evidence');
@@ -321,28 +273,22 @@
       isSaving = false;
     }
   }
-
   async function handleDelete() {
     if (!evidenceId || mode === 'create') return;
-
     const confirmed = confirm('Are you sure you want to delete this evidence? This action cannot be undone.');
     if (!confirmed) return;
-
     isDeleting = true;
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
         method: 'DELETE';
       });
-
       if (!response.ok) {
         throw new Error('Failed to delete evidence');
       }
-
       evidenceStore.removeEvidence(evidenceId);
       onDelete?.(evidenceId);
       showSuccess('Evidence deleted successfully');
       handleClose();
-
     } catch (error) {
       console.error('❌ Delete failed:', error);
       showError('Failed to delete evidence');
@@ -350,10 +296,8 @@
       isDeleting = false;
     }
   }
-
   function handleClose() {
     if (isSaving || isDeleting) return;
-
     isClosing = true;
     setTimeout(() => {
       isOpen = false;
@@ -361,7 +305,6 @@
       onClose();
     }, 200);
   }
-
   // Keyboard handling
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
@@ -371,17 +314,15 @@
       handleSave();
     }
   }
-
   // Icon mapping
   const typeIcons = {
-    document: FileText,
-    image: Image,
-    video: Video,;
-    audio: Mic,;
+    document: FileText
+    image: Image
+    video: Video
+    audio: Mic
     transcript: FileText;
   };
 </script>
-
 <!-- Modal Backdrop -->
 {#if isOpen}
   <div
@@ -417,7 +358,6 @@
                  mode === 'edit' ? 'Edit Evidence' : 'View Evidence'}
               </CardTitle>
             </div>
-
             <Button
               variant="ghost"
               size="sm"
@@ -428,7 +368,6 @@
             </Button>
           </div>
         </CardHeader>
-
         <CardContent class="p-6 overflow-y-auto max-h-[70vh]">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Left Column: Basic Info -->
@@ -447,7 +386,6 @@
                   <p class="text-sm text-red-500 mt-1">{errors.title}</p>
                 {/if}
               </div>
-
               <!-- Type -->
               <div>
                 <Label for="type">Type *</Label>
@@ -468,7 +406,6 @@
                   <p class="text-sm text-red-500 mt-1">{errors.type}</p>
                 {/if}
               </div>
-
               <!-- Content -->
               <div>
                 <Label for="content">Content</Label>
@@ -485,7 +422,6 @@
                   <p class="text-sm text-red-500 mt-1">{errors.content}</p>
                 {/if}
               </div>
-
               <!-- Tags -->
               <div>
                 <Label for="tags">Tags</Label>
@@ -506,7 +442,6 @@
                       <Tag class="w-4 h-4" />
                     </Button>
                   </div>
-
                   {#if evidence.tags?.length}
                     <div class="flex flex-wrap gap-2">
                       {#each evidence.tags as tag}
@@ -527,7 +462,6 @@
                 </div>
               </div>
             </div>
-
             <!-- Right Column: File & Analysis -->
             <div class="space-y-4">
               <!-- File Upload -->
@@ -575,7 +509,6 @@
                   </div>
                 </div>
               {/if}
-
               <!-- AI Analysis -->
               <div>
                 <div class="flex items-center justify-between mb-2">
@@ -596,7 +529,6 @@
                     </Button>
                   {/if}
                 </div>
-
                 {#if evidence.embeddings?.length}
                   <div class="p-3 bg-muted/50 rounded">
                     <p class="text-sm text-green-600 mb-1">✓ Embeddings generated</p>
@@ -612,7 +544,6 @@
                   </div>
                 {/if}
               </div>
-
               <!-- Position -->
               <div class="grid grid-cols-2 gap-3">
                 <div>
@@ -634,7 +565,6 @@
                   />
                 </div>
               </div>
-
               <!-- Metadata -->
               {#if evidence.metadata}
                 <div>
@@ -647,7 +577,6 @@
             </div>
           </div>
         </CardContent>
-
         <!-- Footer -->
         <div class="border-t p-6 flex items-center justify-between bg-muted/30">
           <div class="flex items-center gap-2">
@@ -667,12 +596,10 @@
               </Button>
             {/if}
           </div>
-
           <div class="flex items-center gap-2">
             <Button variant="ghost" onclick={handleClose}>
               Cancel
             </Button>
-
             {#if mode !== 'view'}
               <Button
                 onclick={handleSave}
@@ -692,13 +619,11 @@
     </div>
   </div>
 {/if}
-
 <style>
   @keyframes fadeOut {
     from { opacity: 1; }
     to { opacity: 0; }
   }
-
   @keyframes scaleIn {
     from {
       opacity: 0;
@@ -709,7 +634,6 @@
       transform: scale(1);
     }
   }
-
   @keyframes scaleOut {
     from {
       opacity: 1;
@@ -720,16 +644,13 @@
       transform: scale(0.95);
     }
   }
-
   .animate-fadeOut {
-    animation: fadeOut 200ms ease-out forwards;
+    animation: fadeOut 200ms ease-out forward;
   }
-
   .animate-scaleIn {
-    animation: scaleIn 200ms ease-out forwards;
+    animation: scaleIn 200ms ease-out forward;
   }
-
   .animate-scaleOut {
-    animation: scaleOut 200ms ease-out forwards;
+    animation: scaleOut 200ms ease-out forward;
   }
 </style>

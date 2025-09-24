@@ -1,17 +1,16 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Advanced Command Interface - Complete 3D System -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import type { 
-    SystemMetrics, 
-    CommandResult, 
+  import type {
+    SystemMetrics,
+    CommandResult,
     YoRHaModule,
-    HolographicData 
+    HolographicData
   } from '$lib/types/yorha-interface';
   // Core system stores
   const systemStatus = writable<'ONLINE' | 'DEGRADED' | 'OFFLINE'>('ONLINE');
@@ -91,8 +90,8 @@ https://svelte.dev/e/js_parse_error -->
       name: 'COMMUNICATIONS',
       status: 'ACTIVE',
       power: 87.4,
-      description: 'Multi-Protocol Communication Hub',;
-      icon: 'radio',;
+      description: 'Multi-Protocol Communication Hub',
+      icon: 'radio',
       color: '#06b6d4';
     }
   ];
@@ -109,8 +108,9 @@ https://svelte.dev/e/js_parse_error -->
     const initialData: HolographicData[] = [
       {
         id: 'central-core',
-        type: 'sphere',;
-        position: { x: 0, y: 0, z: 0 },
+        type: 'sphere',
+        position: ;
+{ x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#00ff88',
@@ -119,8 +119,9 @@ https://svelte.dev/e/js_parse_error -->
       },
       {
         id: 'data-streams',
-        type: 'lines',;
-        position: { x: 0, y: 0, z: 0 },
+        type: 'lines',
+        position: ;
+{ x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#3b82f6',
@@ -129,12 +130,13 @@ https://svelte.dev/e/js_parse_error -->
       },
       {
         id: 'neural-nodes',
-        type: 'points',;
-        position: { x: 0, y: 0, z: 0 },
+        type: 'points',
+        position: ;
+{ x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: 1.0,
-        color: '#8b5cf6',;
-        opacity: 0.9,;
+        color: '#8b5cf6',
+        opacity: 0.9,
         animation: 'pulse';
       }
     ];
@@ -171,7 +173,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!glContext) return;
     // Vertex shader for holographic effects
     const vertexShaderSource = `
-      attribute vec4 position;
+      attribute vec4 positio;
       attribute vec3 normal;
       uniform mat4 modelViewMatrix;
       uniform mat4 projectionMatrix;
@@ -179,10 +181,10 @@ https://svelte.dev/e/js_parse_error -->
       varying vec3 vNormal;
       varying float vGlow;
       void main() {
-        vec4 pos = position;
+        vec4 pos = positio;
         pos.y += sin(pos.x * 2.0 + time * 3.0) * 0.1;
         pos.x += cos(pos.z * 1.5 + time * 2.0) * 0.05;
-        gl_Position = projectionMatrix * modelViewMatrix * pos;
+        gl_Position = projectionMatrix * modelViewMatrix * po;
         vNormal = normal;
         vGlow = abs(sin(time * 4.0 + position.x)) * 0.5 + 0.5;
       }
@@ -238,8 +240,8 @@ https://svelte.dev/e/js_parse_error -->
       id: `cmd-${Date.now()}`,
       command,
       timestamp: new Date().toISOString(),
-      status: 'PROCESSING',;
-      output: 'Executing command...',;
+      status: 'PROCESSING',
+      output: 'Executing command...',
       module: 'YORHA-CORE';
     };
     commandHistory.update(history => [result, ...history.slice(0, 9)]);
@@ -277,8 +279,8 @@ https://svelte.dev/e/js_parse_error -->
   async function executeLegalCommand(cmd: string): Promise<any> {
     // Integration with legal AI services
     const response = await fetch('/api/v1/legal-ai/query', {
-      method: 'POST',;
-      headers: { 'Content-Type': 'application/json' },;
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: cmd, source: 'yorha-interface' })
     });
     if ((response as { output?: unknown; data?: unknown; ok?: unknown; json?: unknown }).ok) {
@@ -293,44 +295,44 @@ https://svelte.dev/e/js_parse_error -->
   }
   async function executeAnalysisCommand(cmd: string): Promise<any> {
     return {
-      output: `Analysis initiated: ${cmd.replace('analyze ', '')}`,;
+      output: `Analysis initiated: ${cmd.replace('analyze ', '')}`,
       data: { analysis_id: 'ANL-' + Date.now(), status: 'queued' }
     };
   }
   async function executeSearchCommand(cmd: string): Promise<any> {
     const query = cmd.replace('search ', '');
     return {
-      output: `Searching database for: "${query}"`,;
+      output: `Searching database for: "${query}"`,
       data: { query, results_count: Math.floor(Math.random() * 50) + 1 }
     };
   }
   function executeSystemCommand(cmd: string) {
     if (cmd.includes('status')) {
       return {
-        output: 'All systems operational. YoRHa interface running at optimal parameters.',;
-        data: $metrics;
+        output: 'All systems operational. YoRHa interface running at optimal parameters.',
+        data: $metric;
       };
     } else if (cmd.includes('modules')) {
       return {
-        output: `${$activeModules.length} modules active`,;
-        data: $activeModules;
+        output: `${$activeModules.length} modules active`,
+        data: $activeModule;
       };
     } else {
       return {
-        output: 'System command processed',;
+        output: 'System command processed',
         data: { status: 'ok' }
       };
     }
   }
   async function executeNeuralCommand(cmd: string): Promise<any> {
     return {
-      output: 'Neural network processing initiated',;
+      output: 'Neural network processing initiated',
       data: { neural_activity: $metrics.neural_activity }
     };
   }
   function executeHelpCommand(cmd: string) {
     return {
-      output: `Available commands: LEGAL <query>, ANALYZE <target>, SEARCH <terms>, SYSTEM STATUS, NEURAL SCAN`,;
+      output: `Available commands: LEGAL <query>, ANALYZE <target>, SEARCH <terms>, SYSTEM STATUS, NEURAL SCAN`,
       data: { commands: ['legal', 'analyze', 'search', 'system', 'neural'] }
     };
   }
@@ -357,7 +359,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <!-- YoRHa Interface Styles -->
 <style>
   .yorha-container {
@@ -366,7 +367,6 @@ https://svelte.dev/e/js_parse_error -->
     overflow: hidden;
     position: relative;
   }
-  
   .scanlines {
     position: absolute;
     top: 0;
@@ -382,16 +382,13 @@ https://svelte.dev/e/js_parse_error -->
     pointer-events: none;
     z-index: 1;
   }
-  
   @keyframes scanline-scroll {
     0% { transform: translateY(0); }
     100% { transform: translateY(2px); }
   }
-  
   .glitch-effect {
     animation: glitch 0.2s ease-in-out;
   }
-  
   @keyframes glitch {
     0% { transform: translateX(0); filter: hue-rotate(0deg); }
     20% { transform: translateX(-2px); filter: hue-rotate(90deg); }
@@ -400,45 +397,38 @@ https://svelte.dev/e/js_parse_error -->
     80% { transform: translateX(1px); filter: hue-rotate(360deg); }
     100% { transform: translateX(0); filter: hue-rotate(0deg); }
   }
-  
   .cyber-border {
     border: 1px solid #00ff88;
-    box-shadow: 
+    box-shadow:
       0 0 5px rgba(0, 255, 136, 0.3),
       inset 0 0 5px rgba(0, 255, 136, 0.1);
   }
-  
   .hologram-text {
     color: #00ff88;
     text-shadow: 0 0 10px currentColor;
     animation: hologram-flicker 2s ease-in-out infinite alternate;
   }
-  
   @keyframes hologram-flicker {
     0% { opacity: 0.8; }
     50% { opacity: 1; }
     100% { opacity: 0.9; }
   }
-  
   .module-panel {
     background: rgba(0, 20, 40, 0.8);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 255, 136, 0.3);
     transition: all 0.3s ease;
   }
-  
   .module-panel:hover {
     border-color: #00ff88;
     box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
     transform: translateY(-2px);
   }
-  
   .command-terminal {
     background: rgba(0, 0, 0, 0.8);
     border: 1px solid #00ff88;
     font-family: 'Courier New', monospace;
   }
-  
   .command-input {
     background: transparent;
     border: none;
@@ -447,24 +437,20 @@ https://svelte.dev/e/js_parse_error -->
     outline: none;
     width: 100%;
   }
-  
   .command-input::placeholder {
     color: rgba(0, 255, 136, 0.5);
   }
-  
   .status-indicator {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     animation: status-pulse 2s ease-in-out infinite;
   }
-  
   @keyframes status-pulse {
     0% { opacity: 1; }
     50% { opacity: 0.5; }
     100% { opacity: 1; }
   }
-  
   .holographic-canv.data-stream {
     position: absolute;
     width: 2px;
@@ -472,54 +458,46 @@ https://svelte.dev/e/js_parse_error -->
     background: linear-gradient(to bottom, transparent, #00ff88, transparent);
     animation: data-flow 3s linear infinite;
   }
-  
   @keyframes data-flow {
     0% { transform: translateY(-100%); opacity: 0; }
     50% { opacity: 1; }
     100% { transform: translateY(100vh); opacity: 0; }
   }
 </style>
-
 <!-- YoRHa Command Interface -->
 <div class="yorha-container" class:glitch-effect={glitchActive}>
   <!-- Scanline overlay -->
   <div class="scanlines" style="opacity: {scanlineOpacity}"></div>
-  
   <!-- Background holographic canvas -->
   <canvas ;
     bind:this={canvas3D}
     class="holographic-canvas"
-    width="800" 
+    width="800"
     height="600"
     style="filter: {hologramFlicker ? 'brightness(1.5) hue-rotate(180deg)' : 'brightness(1)'}"
   ></canvas>
-  
   <!-- Animated data streams -->
   {#each Array(12) as _, i}
-    <div 
-      class="data-stream" 
+    <div
+      class="data-stream"
       style="left: {5 + i * 8}%; animation-delay: {i * 0.3}s"
     ></div>
   {/each}
-  
   <!-- Main interface content -->
   <div class="relative z-10 p-6 h-screen flex flex-col">
-    
     <!-- Header -->
     <header class="flex justify-between items-center mb-8">
       <div>
         <h1 class="hologram-text text-4xl font-bold mb-2">YoRHa COMMAND INTERFACE</h1>
         <p class="text-cyan-400 text-sm">BUNKER UNIT 001 • LEGAL AI OPERATIONS CENTER</p>
       </div>
-      
       <div class="flex items-center space-x-6">
         <div class="text-right">
           <div class="hologram-text text-2xl font-mono">{$powerLevel.toFixed(1)}%</div>
           <div class="text-cyan-400 text-xs">POWER LEVEL</div>
         </div>
-        
         <div class="flex items-center space-x-2">
-          <div 
+          <div
             class="status-indicator"
             style="background-color: {getStatusColor($systemStatus)}"
           ></div>
@@ -527,21 +505,18 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </header>
-    
     <!-- System modules grid -->
     <div class="grid grid-cols-3 gap-6 mb-8">
       {#each $activeModules as module}
         <div class="module-panel p-4 rounded-lg">
           <div class="flex justify-between items-start mb-3">
             <h3 class="hologram-text font-bold text-sm">{module.name}</h3>
-            <div 
+            <div
               class="status-indicator"
               style="background-color: {getStatusColor(module.status)}"
             ></div>
           </div>
-          
           <p class="text-cyan-300 text-xs mb-3">{module.description}</p>
-          
           <div class="flex justify-between items-center">
             <span class="text-white text-xs">{module.status}</span>
             <div class="text-right">
@@ -549,10 +524,9 @@ https://svelte.dev/e/js_parse_error -->
               <div class="text-cyan-400 text-xs">PWR</div>
             </div>
           </div>
-          
           <!-- Mini progress bar -->
           <div class="w-full bg-slate-700 h-1 rounded mt-2">
-            <div 
+            <div
               class="h-1 rounded"
               style="width: {module.power}%; background-color: {module.color}"
             ></div>
@@ -560,30 +534,25 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       {/each}
     </div>
-    
     <!-- System metrics -->
     <div class="grid grid-cols-4 gap-4 mb-8">
       <div class="cyber-border p-3 rounded bg-black bg-opacity-50">
         <div class="hologram-text font-mono text-xl">{$metrics.cpu_usage.toFixed(1)}%</div>
         <div class="text-cyan-400 text-xs">CPU USAGE</div>
       </div>
-      
       <div class="cyber-border p-3 rounded bg-black bg-opacity-50">
         <div class="hologram-text font-mono text-xl">{$metrics.memory_usage.toFixed(1)}%</div>
         <div class="text-cyan-400 text-xs">MEMORY</div>
       </div>
-      
       <div class="cyber-border p-3 rounded bg-black bg-opacity-50">
         <div class="hologram-text font-mono text-xl">{$metrics.gpu_utilization.toFixed(1)}%</div>
         <div class="text-cyan-400 text-xs">GPU</div>
       </div>
-      
       <div class="cyber-border p-3 rounded bg-black bg-opacity-50">
         <div class="hologram-text font-mono text-xl">{$metrics.neural_activity.toFixed(1)}%</div>
         <div class="text-cyan-400 text-xs">NEURAL</div>
       </div>
     </div>
-    
     <!-- Command terminal -->
     <div class="flex-1 flex flex-col">
       <div class="command-terminal rounded-lg p-4 flex-1 flex flex-col">
@@ -600,14 +569,13 @@ https://svelte.dev/e/js_parse_error -->
             <div class="hologram-text text-sm ml-2">PROCESSING...</div>
           {/if}
         </div>
-        
         <!-- Command history -->
         <div class="flex-1 overflow-y-auto space-y-2">
           {#each $commandHistory as result}
             <div class="border-b border-cyan-900 pb-2">
               <div class="flex justify-between items-center mb-1">
                 <span class="text-cyan-300 text-sm">$ {(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).command}</span>
-                <span 
+                <span
                   class="text-xs px-2 py-1 rounded"
                   class:bg-green-900={(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status === 'SUCCESS'}
                   class:bg-red-900={(result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status === 'ERROR'}
@@ -628,7 +596,6 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-    
     <!-- Footer -->
     <footer class="mt-4 text-center text-cyan-400 text-xs">
       <div>YoRHa Legal AI Interface v2.0 • Bunker Operations • Quantum Security Enabled</div>

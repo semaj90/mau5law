@@ -4,7 +4,6 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
@@ -38,7 +37,6 @@
     Save,
     Upload
   } from 'lucide-svelte';
-
   interface Case {
     id: string;
     title: string;
@@ -49,7 +47,6 @@
     description?: string;
     assignedTo?: string;
   }
-
   interface EvidenceItem {
     id: string;
     caseId: string;
@@ -62,7 +59,6 @@
     uploadedAt: string;
     size: number;
   }
-
   interface ChatMessage {
     id: string;
     role: 'user' | 'assistant' | 'system';
@@ -71,7 +67,6 @@
     context?: 'evidence' | 'case' | 'citation' | 'analysis';
     relatedId?: string;
   }
-
   // State management with Svelte 5 runes
   let currentCase = $state<Case | null>(null);
   let cases = $state<Case[]>([]);
@@ -83,111 +78,93 @@
   let citations = $state<string[]>([]);
   let isAIProcessing = $state(false);
   let systemStatus = $state({
-    evidenceCanvas: true,
-    detectiveAnalysis: true,
-    aiAssistant: false,
-    webgpuAcceleration: false,
+    evidenceCanvas: true
+    detectiveAnalysis: true
+    aiAssistant: false
+    webgpuAcceleration: false
     ollamaConnection: false
   });
-
   // Create a new case
   async function createCase(title: string, description: string = '') {
     const newCase: Case = {
       id: `case-${Date.now()}`,
       title,
       description,
-      status: 'active',;
+      status: 'active',
       priority: 'medium',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       assignedTo: 'current-user';
     };
-
     cases = [newCase, ...cases];
-    currentCase = newCase;
-
+    currentCase = newCa;
     // Add system message
     addChatMessage('system', `New case created: ${title}`, 'case', newCase.id);
-
-    return newCase;
+    return newCa;
   }
-
   // Evidence handling
   function handleEvidenceUploaded(event: CustomEvent) {
     const { file, position } = event.detail;
     console.log('🔍 Evidence uploaded:', file.name, 'at position:', position);
-
     const newEvidence: EvidenceItem = {
       id: `evidence-${Date.now()}`,
       caseId: currentCase?.id || 'unknown',
       title: file.name,
       type: getEvidenceType(file.type),
-      status: 'analyzing',;
+      status: 'analyzing',
       tags: [],
-      uploadedAt: new Date().toISOString(),;
-      size: file.size;
+      uploadedAt: new Date().toISOString(),
+      size: file.siz;
     };
-
     evidence = [newEvidence, ...evidence];
     addChatMessage('system', `Evidence uploaded: ${file.name}. Starting AI analysis...`, 'evidence', newEvidence.id);
   }
-
   function handleAnalysisComplete(event: CustomEvent) {
     const { fileId, analysis, confidence } = event.detail;
     console.log('🧠 Analysis complete:', analysis);
-
     // Update evidence with analysis
     evidence = evidence.map((item) => {
       if (item.title === fileId || (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).id === fileId) {
         return {
           ...item,
           status: 'analyzed',
-          aiAnalysis: analysis.summary || 'Analysis completed',;
-          confidence: confidence || 0.85,;
+          aiAnalysis: analysis.summary || 'Analysis completed',
+          confidence: confidence || 0.85,
           tags: analysis.tags || ['analyzed'];
         };
       }
       return item;
     });
-
     addChatMessage('assistant', `Analysis completed for ${fileId}: ${analysis.summary || 'Evidence processed successfully'}`, 'evidence', fileId);
   }
-
   function handleDetectiveInsights(event: CustomEvent) {
     const { patterns, conflicts, relevance } = event.detail;
     console.log('🕵️ Detective insights:', patterns);
-
     if (conflicts && conflicts.length > 0) {
       addChatMessage('assistant', `⚠️ Potential conflicts detected: ${conflicts.map((c: unknown) => c.description).join(', ')}`, 'analysis');
     }
-
     if (patterns && patterns.length > 0) {
       addChatMessage('assistant', `🔍 Patterns identified: ${patterns.map((p: unknown) => p.type).join(', ')}`, 'analysis');
     }
   }
-
   // AI Chat functionality
   function addChatMessage(role: 'user' | 'assistant' | 'system', content: string, context?: string, relatedId?: string) {
     const message: ChatMessage = {
       id: `msg-${Date.now()}`,
       role,
-      content,;
+      content,
       timestamp: new Date().toISOString(),
       context,
       relatedId;
     };
-
     chatMessages = [...chatMessages, message];
   }
-
   async function sendChatMessage() {
     if (!currentChatMessage.trim()) return;
-
     const userMessage = currentChatMessage.trim();
     addChatMessage('user', userMessage);
     currentChatMessage = '';
     isAIProcessing = true;
-
     try {
       // Send to AI assistant with context
       const context = {
@@ -196,17 +173,15 @@
         investigationNotes,
         citations
       };
-
       const response = await fetch('/api/ai/chat', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({;
-          message: userMessage,
+        body: JSON.stringify({,
+          message: userMessage
           context,
-          conversationHistory: chatMessages.slice(-10) // Last 10 messages for context;
+          conversationHistory: chatMessages.slice(-10) // Last 10 messages for context
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
         addChatMessage('assistant', (data as { response?: unknown }).response || 'I understand. How can I assist with this investigation?');
@@ -220,7 +195,6 @@
       isAIProcessing = false;
     }
   }
-
   // Utility functions
   function getEvidenceType(mimeType: string): EvidenceItem['type'] {
     if (mimeType.startsWith('image/')) return 'image';
@@ -229,7 +203,6 @@
     if (mimeType.includes('pdf') || mimeType.includes('document')) return 'document';
     return 'digital';
   }
-
   function getPriorityColor(priority: string) {
     switch (priority) {
       case 'critical': return 'bg-red-500';
@@ -239,7 +212,6 @@
       default: return 'bg-gray-500';
     }
   }
-
   function getStatusColor(status: string) {
     switch (status) {
       case 'analyzing': return 'bg-blue-500';
@@ -249,19 +221,15 @@
       default: return 'bg-gray-500';
     }
   }
-
   // Initialize
   $effect(() => {
     console.log('🚀 Legal Investigation Workspace initialized');
-
     // Load existing cases and evidence
     loadCases();
     loadSystemStatus();
-
     // Add welcome message
     addChatMessage('assistant', 'Welcome to the Legal Investigation Workspace. I can help you analyze evidence, manage cases, and provide legal insights. How can I assist you today?');
   });
-
   async function loadCases() {
     // Mock data - replace with actual API call
     cases = [
@@ -277,19 +245,17 @@
       {
         id: 'case-002',
         title: 'Contract Dispute Analysis',
-        status: 'active',;
+        status: 'active',
         priority: 'medium',
         createdAt: '2024-01-18T09:00:00Z',
-        updatedAt: '2024-01-18T09:00:00Z',;
+        updatedAt: '2024-01-18T09:00:00Z',
         description: 'Breach of contract claim requiring evidence analysis';
       }
     ];
-
     if (!currentCase && cases.length > 0) {
       currentCase = cases[0];
     }
   }
-
   async function loadSystemStatus() {
     try {
       const response = await fetch('/api/system/status');
@@ -301,28 +267,24 @@
       console.log('Could not load system status:', error);
     }
   }
-
   // Save investigation progress
   async function saveInvestigation() {
     if (!currentCase) return;
-
     try {
       const investigationData = {
         caseId: currentCase.id,
-        notes: investigationNotes,;
+        notes: investigationNotes
         evidence: evidence.filter(e => e.caseId === currentCase.id),
         citations,
-        chatHistory: chatMessages,
+        chatHistory: chatMessages
         updatedAt: new Date().toISOString();
       };
-
       // Save to backend
       const response = await fetch(`/api/cases/${currentCase.id}/investigation`, {
-        method: 'PUT',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(investigationData);
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         addChatMessage('system', 'Investigation progress saved successfully.');
       }
@@ -332,12 +294,10 @@
     }
   }
 </script>
-
 <svelte:head>
   <title>Legal Investigation Workspace - YoRHa Legal AI</title>
   <meta name="description" content="Integrated workspace for legal investigation with AI-powered evidence analysis" />
 </svelte:head>
-
 <div class="investigation-workspace">
   <!-- Header -->
   <div class="workspace-header">
@@ -354,13 +314,11 @@
           </div>
         {/if}
       </div>
-
       <div class="workspace-actions">
   <Button class="bits-btn" onclick={saveInvestigation} variant="ghost" size="sm">
 <Save class="w-4 h-4 mr-2" />
           Save Progress
 </Button>
-
         <!-- System Status Indicators -->
         <div class="status-indicators">
           <div class="status-item" class:active={systemStatus.evidenceCanvas} title="Evidence Canvas">
@@ -382,7 +340,6 @@
       </div>
     </div>
   </div>
-
   <!-- Main Content -->
   <div class="workspace-content">
     <Tabs.Root bind:value={activeTab} class="w-full h-full">
@@ -404,7 +361,6 @@
           Citations & References
         </Tabs.Trigger>
       </Tabs.List>
-
       <!-- Evidence Analysis Tab -->
       <Tabs.Content value="evidence" class="tab-content">
         <div class="evidence-layout">
@@ -431,7 +387,6 @@
               </div>
             </div>
           </div>
-
           <div class="evidence-sidebar">
             <div.Root>
               <div.Header>
@@ -448,7 +403,6 @@
                           {(item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).status}
                         </Badge>
                       </div>
-
                       {#if (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).confidence}
                         <div class="confidence-meter">
                           <span class="confidence-label">Confidence: {Math.round.confidence * 100)}%</span>
@@ -460,11 +414,9 @@
                           </div>
                         </div>
                       {/if}
-
                       {#if (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).aiAnalysis}
                         <p class="evidence-analysis">{(item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).aiAnalysis}</p>
                       {/if}
-
                       {#if (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).tags.length > 0}
                         <div class="evidence-tags">
                           {#each (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).tags as tag}
@@ -474,7 +426,6 @@
                       {/if}
                     </div>
                   {/each}
-
                   {#if evidence.length === 0}
                     <div class="empty-state">
                       <Upload class="w-8 h-8 text-gray-400 mb-2" />
@@ -487,7 +438,6 @@
           </div>
         </div>
       </Tabs.Content>
-
       <!-- Investigation Notes Tab -->
       <Tabs.Content value="investigation" class="tab-content">
         <div.Root class="h-full">
@@ -505,7 +455,6 @@
           </div>
         </div>
       </Tabs.Content>
-
       <!-- AI Assistant Tab -->
       <Tabs.Content value="chat" class="tab-content">
         <div.Root class="h-full">
@@ -529,7 +478,6 @@
           </div>
         </div>
       </Tabs.Content>
-
             <div class="chat-input">
               <Input
                 bind:value={currentChatMessage}
@@ -544,7 +492,6 @@
           </div>
         </div>
       </Tabs.Content>
-
       <!-- Citations Tab -->
       <Tabs.Content value="citations" class="tab-content">
         <div.Root class="h-full">
@@ -562,7 +509,6 @@
           </div>
         </div>
       </Tabs.Content>
-
                 {#if citations.length === 0}
                   <div class="empty-state">
                     <Database class="w-8 h-8 text-gray-400 mb-2" />
@@ -577,9 +523,8 @@
     </Tabs.Root>
   </div>
 </div>
-
 <style>
-  .investigation-workspace {;
+  .investigation-workspace {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -587,48 +532,40 @@
     color: #00ff88;
     font-family: 'Courier New', monospace;
   }
-
   .workspace-header {
     border-bottom: 2px solid #00ff88;
     background: rgba(0, 255, 136, 0.1);
     padding: 1rem 2rem;
   }
-
   .header-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
   }
-
   .case-info h1 {
     font-size: 1.5rem;
     font-weight: bold;
     margin: 0 0 0.5rem 0;
     text-shadow: 0 0 10px #00ff88;
   }
-
   .case-details {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .case-title {
     font-weight: 600;
     color: #FFD700;
   }
-
   .workspace-actions {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .status-indicators {
     display: flex;
     gap: 0.5rem;
   }
-
   .status-item {
     display: flex;
     align-items: center;
@@ -639,89 +576,73 @@
     border-radius: 4px;
     transition: all 0.3s ease;
   }
-
   .status-.active {
     background: rgba(0, 255, 136, 0.2);
     border-color: #00ff88;
     color: #00ff88;
   }
-
   .workspace-content {
     flex: 1;
     overflow: hidden;
   }
-
   .workspace-tabs {
     background: rgba(0, 0, 0, 0.8);
     border-bottom: 1px solid #00ff88;
   }
-
   .tab-trigger {
     color: #cccccc;
     transition: color 0.3s ease;
   }
-
-  .tab-trigger:hover,
+  .tab-trigger: hover
   .tab-trigger[data-state="active"] {
     color: #00ff88;
     background: rgba(0, 255, 136, 0.1);
   }
-
   .tab-content {
     height: calc(100vh - 140px);
     padding: 1rem;
     overflow: auto;
   }
-
   .evidence-layout {
     display: grid;
     grid-template-columns: 1fr 300px;
     gap: 1rem;
     height: 100%;
   }
-
   .evidence-canvas-section {
     min-height: 0;
   }
-
   .evidence-sidebar {
     overflow-y: auto;
   }
-
   .evidence-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .evidence-item {
     padding: 1rem;
     border: 1px solid rgba(0, 255, 136, 0.3);
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.5);
   }
-
   .evidence-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.5rem;
   }
-
   .evidence-title {
     font-weight: 600;
     font-size: 0.9rem;
   }
-
   .confidence-meter {
     margin: 0.5rem 0;
   }
-
   .confidence-label {
     font-size: 0.8rem;
     color: #FFD700;
   }
-
   .confidence-bar {
     width: 100%;
     height: 4px;
@@ -730,68 +651,57 @@
     overflow: hidden;
     margin-top: 2px;
   }
-
   .confidence-fill {
     height: 100%;
     background: linear-gradient(to right, #ff4444, #ffaa00, #00ff88);
     transition: width 0.3s ease;
   }
-
   .evidence-analysis {
     font-size: 0.8rem;
     color: #cccccc;
     margin: 0.5rem 0;
     line-height: 1.4;
   }
-
   .evidence-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
     margin-top: 0.5rem;
   }
-
   .tag {
     font-size: 0.7rem;
   }
-
   .chat-container {
     display: flex;
     flex-direction: column;
   }
-
   .chat-content {
     display: flex;
     flex-direction: column;
     height: 100%;
   }
-
   .messages-container {
     flex: 1;
     overflow-y: auto;
     margin-bottom: 1rem;
     padding-right: 0.5rem;
   }
-
   .message {
     margin-bottom: 1rem;
     padding: 1rem;
     border-radius: 8px;
     max-width: 90%;
   }
-
   .message.user {
     margin-left: auto;
     background: rgba(0, 255, 136, 0.1);
     border-left: 3px solid #00ff88;
   }
-
   .message.assistant {
     margin-right: auto;
     background: rgba(255, 215, 0, 0.1);
     border-left: 3px solid #FFD700;
   }
-
   .message.system {
     background: rgba(0, 150, 255, 0.1);
     border-left: 3px solid #0096ff;
@@ -800,16 +710,14 @@
     text-align: center;
     font-size: 0.9rem;
   }
-
   .message-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.5rem;
     font-size: 0.8rem;
     opacity: 0.7;
   }
-
   .message-role {
     display: flex;
     align-items: center;
@@ -817,20 +725,16 @@
     font-weight: 600;
     text-transform: uppercase;
   }
-
   .message-time {
     font-size: 0.7rem;
   }
-
   .message-content {
     line-height: 1.5;
   }
-
   .thinking-indicator {
     display: flex;
     gap: 0.25rem;
   }
-
   .thinking-indicator span {
     width: 6px;
     height: 6px;
@@ -838,15 +742,12 @@
     border-radius: 50%;
     animation: thinking 1.5s ease-in-out infinite;
   }
-
-  .thinking-indicator span:nth-child(2) {;
-    animation-delay: 0.3s;
+  .thinking-indicator span:nth-child(2) {
+    animation-delay: 0.3;
   }
-
-  .thinking-indicator span:nth-child(3) {;
-    animation-delay: 0.6s;
+  .thinking-indicator span:nth-child(3) {
+    animation-delay: 0.6;
   }
-
   @keyframes thinking {
     0%, 80%, 100% {
       opacity: 0.3;
@@ -857,7 +758,6 @@
       transform: scale(1);
     }
   }
-
   .chat-input {
     display: flex;
     gap: 0.5rem;
@@ -865,24 +765,20 @@
     padding-top: 1rem;
     border-top: 1px solid rgba(0, 255, 136, 0.3);
   }
-
   .citations-container {
     display: flex;
     flex-direction: column;
     height: 100%;
   }
-
   .add-citation {
     margin-bottom: 2rem;
   }
-
   .citations-list {
     flex: 1;
   }
-
   .citation-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 0.75rem;
     border: 1px solid rgba(0, 255, 136, 0.3);
@@ -890,12 +786,10 @@
     margin-bottom: 0.5rem;
     background: rgba(0, 0, 0, 0.3);
   }
-
   .citation-text {
     flex: 1;
     font-size: 0.9rem;
   }
-
   .empty-state {
     display: flex;
     flex-direction: column;
@@ -905,29 +799,24 @@
     text-align: center;
     opacity: 0.6;
   }
-
   /* Responsive */
   @media (max-width: 1024px) {
     .evidence-layout {
       grid-template-columns: 1fr;
     }
-
     .evidence-sidebar {
       max-height: 300px;
     }
   }
-
   @media (max-width: 768px) {
     .workspace-header {
       padding: 0.5rem 1rem;
     }
-
     .header-content {
       flex-direction: column;
       gap: 1rem;
       align-items: flex-start;
     }
-
     .tab-content {
       padding: 0.5rem;
     }

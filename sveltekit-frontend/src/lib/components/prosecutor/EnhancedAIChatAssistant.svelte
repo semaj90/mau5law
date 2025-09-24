@@ -4,7 +4,6 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { Props } from "$lib/types/global";
   import {
     Card,
@@ -18,39 +17,35 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';
-  import { 
-    Bot, 
-    User, 
-    Send, 
-    Brain, 
-    Eye, 
-    Zap, 
+  import {
+    Bot,
+    User,
+    Send,
+    Brain,
+    Eye,
+    Zap,
     Search,
     FileText,
     Scale,
     AlertTriangle
   } from 'lucide-svelte';
   import { onMount } from 'svelte';
-
   let {
     caseId,
     enableSelfPrompting = true,
     enableElementalAwareness = true,
     enableEnhancedRAG = true
   }: Props = $props();
-
   // Chat state
   let messages: unknown[] = $state([]);
   let currentMessage = $state('');
   let isTyping = $state(false);
   let hoveredElement: string | null = $state(null);
   let elementAnalysis: unknown = $state(null);
-
   // AI capabilities
   let ragSources: unknown[] = $state([]);
   let aiConfidence = $state(0);
   let selfPromptSuggestions: string[] = $state([]);
-
   // Initialize chat with prosecutor context
   $effect(() => {
     if (enableSelfPrompting) {
@@ -59,34 +54,31 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     // Add welcome message
     messages = [{
       id: crypto.randomUUID(),
-      role: 'assistant',;
+      role: 'assistant',
       content: `Hello! I'm your AI legal assistant powered by Gemma3Legal. I can help you with:
-
   • Evidence analysis and correlation
-  • Legal precedent research  
+  • Legal precedent research
   • Case strategy recommendations
   • Document synthesis and review
   • Timeline reconstruction
-
   ${caseId ? `I'm ready to assist with Case ${caseId}.` : 'Select a case to get started with case-specific insights.'}`,
-      timestamp: new Date(),;
+      timestamp: new Date(),
       metadata: {
-        model: 'gemma3-legal:latest',;
+        model: 'gemma3-legal:latest',
         confidence: 1.0,
         capabilities: ['evidence_analysis', 'legal_research', 'case_strategy'];
       }
     }];
   });
-
   // Self-prompting system
   const generateSelfPromptSuggestions = async () => {
     if (!caseId) return;
     try {
       const response = await fetch('/api/ai/self-prompt', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          caseId,;
+          caseId,
           context: 'prosecutor_workflow',
           currentPhase: 'evidence_review';
         })
@@ -102,7 +94,6 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       console.error('Self-prompt generation failed:', error);
     }
   };
-
   // Elemental awareness (YOLO-style hover analysis)
   const handleElementHover = async (event: MouseEvent) => {
     if (!enableElementalAwareness) return;
@@ -110,94 +101,88 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     const elementType = target.tagName.toLowerCase();
     const elementText = target.textContent?.substring(0, 100) || '';
     if (elementText.length < 3) return;
-    hoveredElement = elementType;
+    hoveredElement = elementTyp;
     // Analyze element with AI for legal relevance
     try {
       const response = await fetch('/api/ai/analyze-element', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           elementType,
-          content: elementText,;
+          content: elementText
           context: 'legal_analysis';
         })
       });
       const analysis = await (response as { json?: unknown }).json();
-      elementAnalysis = analysis;
+      elementAnalysis = analysi;
     } catch (error) {
       console.error('Element analysis failed:', error);
     }
   };
-
   // Enhanced RAG chat with vector search
   const sendMessage = async () => {
     if (!currentMessage.trim()) return;
     const userMessage = {
       id: crypto.randomUUID(),
-      role: 'user',;
-      content: currentMessage,;
+      role: 'user',
+      content: currentMessage
       timestamp: new Date();
     };
     messages = [...messages, userMessage];
-    const userQuery = currentMessage;
+    const userQuery = currentMessag;
     currentMessage = '';
     isTyping = true;
     ragSources = [];
-
     try {
       // Enhanced RAG query with vector search
       if (enableEnhancedRAG) {
         const ragResponse = await fetch('/api/enhanced-rag/query', {
-          method: 'POST',;
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({;
-            query: userQuery,
+          body: JSON.stringify({,
+            query: userQuery
             caseId,
-            includeEvidence: true,
-            includePrecedents: true,
+            includeEvidence: true
+            includePrecedents: true
             vectorSearch: true;
           })
         });
         const ragResult = await ragResponse.json();
         ragSources = ragResult.sources || [];
       }
-
       // Send to AI with context
       const aiResponse = await fetch('/api/ai/chat', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           messages: messages.slice(-5), // Last 5 messages for context
-          query: userQuery,
+          query: userQuery
           caseId,
           ragSources,
-          enableSelfPrompting,;
+          enableSelfPrompting,
           context: {
-            role: 'prosecutor',;
-            mode: 'evidence_analysis',;
+            role: 'prosecutor',
+            mode: 'evidence_analysis',
             capabilities: ['legal_research', 'evidence_correlation', 'strategy_planning'];
           }
         })
       });
-
       const aiResult = await aiResponse.json();
       aiConfidence = aiResult.confidence || 0;
-
       const assistantMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
         content: aiResult.content || aiResult.answer,
         timestamp: new Date(),
-        sources: ragSources,;
+        sources: ragSources
         metadata: {
-          model: 'gemma3-legal:latest',;
-          confidence: aiConfidence,
+          model: 'gemma3-legal:latest',
+          confidence: aiConfidence
           ragSources: ragSources.length,
           processingTime: aiResult.processingTime || 0;
         }
       };
       messages = [...messages, assistantMessage];
-
       // Generate new self-prompt suggestions based on conversation
       if (enableSelfPrompting) {
         setTimeout(generateSelfPromptSuggestions, 1000);
@@ -207,8 +192,8 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       const errorMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: 'I apologize, but I encountered an error processing your request. Please try again.',;
-        timestamp: new Date(),;
+        content: 'I apologize, but I encountered an error processing your request. Please try again.',
+        timestamp: new Date(),
         error: true;
       };
       messages = [...messages, errorMessage];
@@ -216,13 +201,11 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       isTyping = false;
     }
   };
-
   // Quick action for self-prompt suggestions
   const useSelfPrompt = (suggestion: string) => {
-    currentMessage = suggestion;
+    currentMessage = suggestio;
     sendMessage();
   };
-
   // Keyboard handler
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -231,9 +214,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
     }
   };
 </script>
-
 <svelte:window onmouseover={handleElementHover as any} />
-
 <div class="flex flex-col h-full max-w-4xl mx-auto">
   <!-- Chat Header -->
   <div class="mb-4 nes-container">
@@ -244,7 +225,6 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           Legal AI Assistant
           <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Gemma3Legal</span>
         </div>
-        
         <div class="flex items-center gap-2 text-sm">
           {#if enableEnhancedRAG}
             <Badge variant="ghost">
@@ -268,7 +248,6 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
       </h3>
     </div>
   </div>
-
   <!-- Self-Prompt Suggestions -->
   {#if enableSelfPrompting && selfPromptSuggestions.length > 0}
     <div class="mb-4 nes-container">
@@ -279,21 +258,19 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         </h4>
         <div class="flex flex-wrap gap-2">
           {#each selfPromptSuggestions as suggestion}
-            <Button class="bits-btn" 
-              variant="ghost" 
+            <Button class="bits-btn"
+              variant="ghost"
               size="sm"
               onclick={() =>
 useSelfPrompt(suggestion)}
               disabled={isTyping}
             >
               {suggestion}
-
           {/each}
         </div>
       </div>
     </div>
   {/if}
-
   <!-- Elemental Analysis Tooltip -->
   {#if enableElementalAwareness && elementAnalysis}
     <div class="fixed top-4 right-4 z-50 p-3 bg-black text-white rounded-lg shadow-lg max-w-xs">
@@ -307,7 +284,6 @@ useSelfPrompt(suggestion)}
       {/if}
     </div>
   {/if}
-
   <!-- Chat Messages -->
   <div class="flex-1 flex flex-col nes-container">
     <div class="yorha-panel-content flex-1 overflow-y-auto p-4 space-y-4">
@@ -318,11 +294,9 @@ useSelfPrompt(suggestion)}
               <Bot class="w-8 h-8 p-1.5 bg-blue-100 text-blue-600 rounded-full" />
             </div>
           {/if}
-          
           <div class="flex-1 max-w-[80%] {message.role === 'user' ? 'order-1' : ''}">
             <div class="p-3 rounded-lg {message.role === 'user' ? 'bg-blue-500 text-white ml-auto' : 'bg-gray-100'}">
               <p class="text-sm whitespace-pre-wrap">{message.content}</p>
-              
               {#if message.metadata?.confidence}
                 <div class="mt-2 flex items-center gap-2">
                   <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(message.metadata.confidence * 100)}% confident</span>
@@ -331,7 +305,6 @@ useSelfPrompt(suggestion)}
                   {/if}
                 </div>
               {/if}
-              
               {#if message.sources?.length > 0}
                 <div class="mt-3 space-y-2">
                   <h5 class="text-xs font-medium opacity-75">Sources:</h5>
@@ -348,12 +321,10 @@ useSelfPrompt(suggestion)}
                 </div>
               {/if}
             </div>
-            
             <p class="text-xs text-gray-500 mt-1 {message.role === 'user' ? 'text-right' : ''}">
               {new Date(message.timestamp).toLocaleTimeString()}
             </p>
           </div>
-          
           {#if message.role === 'user'}
             <div class="flex-shrink-0">
               <User class="w-8 h-8 p-1.5 bg-gray-100 text-gray-600 rounded-full" />
@@ -361,7 +332,6 @@ useSelfPrompt(suggestion)}
           {/if}
         </div>
       {/each}
-      
       {#if isTyping}
         <div class="flex items-start gap-3">
           <Bot class="w-8 h-8 p-1.5 bg-blue-100 text-blue-600 rounded-full animate-pulse" />
@@ -375,7 +345,6 @@ useSelfPrompt(suggestion)}
         </div>
       {/if}
     </div>
-
     <!-- Chat Input -->
     <div class="border-t p-4">
       <div class="flex gap-2">
@@ -387,14 +356,12 @@ useSelfPrompt(suggestion)}
             disabled={isTyping}
           />
         </div>
-        <Button class="bits-btn" 
+        <Button class="bits-btn"
           onclick={sendMessage}
           disabled={isTyping || !currentMessage.trim()}
         >
 <Send class="w-4 h-4" />
-
       </div>
-      
       <!-- AI Status Indicators -->
       {#if caseId}
         <div class="flex items-center justify-between mt-2 text-xs text-gray-500">
@@ -416,7 +383,6 @@ useSelfPrompt(suggestion)}
               </span>
             {/if}
           </div>
-          
           <div class="flex items-center gap-2">
             {#if enableEnhancedRAG}
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">RAG Active</span>
@@ -430,32 +396,25 @@ useSelfPrompt(suggestion)}
     </div>
   </div>
 </div>
-
 <style>
   /* Enhanced chat styling */
-  :global(.chat-message) {;
+  :global(.chat-message) {
     animation: fadeIn 0.3s ease-in-out;
   }
-  
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  
   /* Elemental awareness hover effects */
   :global(*:hover) {
     position: relative;
   }
-  
   /* Self-prompting suggestion animations */
   :global(.suggestion-button) {
     transition: all 0.2s ease;
   }
-  
-  :global(.suggestion-button:hover) {
+  :global($1) {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 </style>
-
-

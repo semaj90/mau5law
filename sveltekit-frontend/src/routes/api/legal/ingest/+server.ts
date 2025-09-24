@@ -1,17 +1,14 @@
 
 import type { RequestHandler } from './$types.js'
-
 /*
  * Enhanced Legal PDF Ingestion API
  * Handles multiple PDFs with jurisdiction-aware processing
  * Features: Who/What/Why/How extraction, fact-checking, enhanced RAG scoring
  */
-
 import { json, error } from '@sveltejs/kit'
 import pdf from 'pdf-parse'
 import crypto from 'node:crypto'
 import { v4 as uuidv4 } from 'uuid'
-
 // Enhanced RAG processing pipeline
 export interface LegalDocument {
     id: string
@@ -24,16 +21,14 @@ export interface LegalDocument {
     prosecutionScore: number
     processingMetadata: ProcessingMetadata
 }
-
 export interface LegalEntity {
-    type: 'WHO' | 'WHAT' | 'WHY' | 'HOW' | 'WHERE' | 'WHEN'
+    type: 'WHO' | 'WHAT' | 'WHY' | 'HOW' | 'WHERE' | 'WHEN',
     text: string
     confidence: number
     startIndex: number
     endIndex: number
     jurisdiction: string
 }
-
 export interface DocumentChunk {
     id: string
     text: string
@@ -42,7 +37,6 @@ export interface DocumentChunk {
     legalRelevance: number
     entities: string[]
 }
-
 export interface FactCheck {
     claim: string
     status: 'FACT' | 'FICTION' | 'UNVERIFIED' | 'DISPUTED'
@@ -50,7 +44,6 @@ export interface FactCheck {
     confidence: number
     jurisdiction: string
 }
-
 export interface ProcessingMetadata {
     extractionTime: number
     embeddingTime: number
@@ -61,7 +54,6 @@ export interface ProcessingMetadata {
     pageCount: number
     wordCount: number
 }
-
 // Legal jurisdictions and their patterns
 const JURISDICTION_PATTERNS = {
     'federal': {
@@ -85,7 +77,6 @@ const JURISDICTION_PATTERNS = {
         weight: 0.9
     }
 }
-
 // Entity extraction patterns for legal documents
 const LEGAL_ENTITY_PATTERNS = {
     WHO: [
@@ -119,7 +110,6 @@ const LEGAL_ENTITY_PATTERNS = {
         /(?:within|after|before)\s+(\d+\s+(?:days|months|years))/gi
     ]
 }
-
 // Fact-checking trusted sources for legal validation
 const TRUSTED_LEGAL_SOURCES = [
     'supreme court opinions',
@@ -130,61 +120,47 @@ const TRUSTED_LEGAL_SOURCES = [
     'bar associations',
     'law reviews'
 ]
-
 export const POST: RequestHandler = async ({ request }) => {
     const startTime = Date.now()
-
     try {
         const formData = await request.formData()
         const files = formData.getAll('pdfFiles') as File[]
         const jurisdiction = formData.get('jurisdiction') as string || 'federal'
         const caseId = formData.get('caseId') as string || uuidv4()
         const enhanceRAG = formData.get('enhanceRAG') === 'true'
-
         if (files.length === 0) {
             throw error(400, 'No PDF files provided')
         }
-
         console.log(`🔍 Processing ${files.length} legal documents for case ${caseId}`)
         console.log(`⚖️ Jurisdiction: ${jurisdiction}`)
-
         const processedDocuments: LegalDocument[] = []
-
         // Process each PDF in parallel for performance
         const processingPromises = files.map(async (file, index) => {
             const fileStartTime = Date.now()
             const fileBuffer = Buffer.from(await file.arrayBuffer()
             const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex')
-
             console.log(`📄 Processing: ${file.name} (${file.size} bytes)`)
-
             // Extract text from PDF
             const pdfData = await pdf(fileBuffer)
             const extractionTime = Date.now() - fileStartTime
-
             // Detect and validate jurisdiction
             const detectedJurisdiction = detectJurisdiction(pdfData.text, jurisdiction)
-
             // Extract legal entities using WHO/WHAT/WHY/HOW patterns
             const entityStartTime = Date.now()
             const entities = extractLegalEntities(pdfData.text, detectedJurisdiction)
             const entityTime = Date.now() - entityStartTime
-
             // Chunk document for enhanced RAG processing
             const chunkStartTime = Date.now()
             const chunks = createSmartChunks(pdfData.text, entities)
             const chunkTime = Date.now() - chunkStartTime
-
             // Generate embeddings for RAG (simulate with nomic-embed-text)
             const embeddingStartTime = Date.now()
             const chunksWithEmbeddings = await generateEmbeddings(chunks)
             const embeddingTime = Date.now() - embeddingStartTime
-
             // Perform fact-checking against trusted sources
             const factCheckStartTime = Date.now()
             const factChecks = performFactChecking(entities, detectedJurisdiction)
             const factCheckTime = Date.now() - factCheckStartTime
-
             // Calculate prosecution relevance score
             const prosecutionScore = calculateProsecutionScore(
                 entities,
@@ -192,22 +168,20 @@ export const POST: RequestHandler = async ({ request }) => {
                 detectedJurisdiction,
                 chunksWithEmbeddings
             )
-
             const totalProcessingTime = Date.now() - fileStartTime
-
             const document: LegalDocument = {
                 id: uuidv4(),
                 filename: file.name,
-                jurisdiction: detectedJurisdiction,
+                jurisdiction: detectedJurisdiction
                 extractedText: pdfData.text,
                 entities,
-                chunks: chunksWithEmbeddings,
+                chunks: chunksWithEmbeddings
                 factChecks,
                 prosecutionScore,
                 processingMetadata: {
                     extractionTime,
                     embeddingTime,
-                    factCheckTime: factCheckTime,
+                    factCheckTime: factCheckTime
                     totalProcessingTime,
                     fileHash,
                     fileSize: file.size,
@@ -215,42 +189,32 @@ export const POST: RequestHandler = async ({ request }) => {
                     wordCount: pdfData.text.split(/\s+/).length
                 }
             }
-
             // Log processing results
             console.log(`✅ ${file.name}: ${entities.length} entities, score: ${prosecutionScore.toFixed(3)}`)
-
             return document
         })
-
         // Wait for all documents to be processed
         const results = await Promise.all(processingPromises)
         processedDocuments.push(...results)
-
         // Enhanced RAG integration if requested
         if (enhanceRAG) {
             console.log('🧠 Applying enhanced RAG processing...')
             await enhanceWithRAG(processedDocuments, caseId)
         }
-
         // Store in database (PostgreSQL + pgvector simulation)
         await storeDocumentsInDatabase(processedDocuments, caseId)
-
         // Update Neo4j graph with entity relationships
         await updateKnowledgeGraph(processedDocuments, caseId)
-
         // Cache results in Redis for fast retrieval
         await cacheProcessingResults(processedDocuments, caseId)
-
         const totalTime = Date.now() - startTime
-
         // Auto-populate case AI summary score
         const caseAISummaryScore = calculateCaseAISummaryScore(processedDocuments)
-
         const response = {
-            success: true,
+            success: true
             caseId,
             documentsProcessed: processedDocuments.length,
-            totalProcessingTime: totalTime,
+            totalProcessingTime: totalTime
             averageProcessingTime: totalTime / processedDocuments.length,
             jurisdiction,
             caseAISummaryScore,
@@ -264,7 +228,7 @@ export const POST: RequestHandler = async ({ request }) => {
                     unverified: processedDocuments.reduce((sum, doc) => sum + doc.factChecks.filter((fc: any) => fc.status === 'UNVERIFIED').length, 0)
                 }
             },
-            documents: processedDocuments.map((doc: any) => ({
+            documents: processedDocuments.map((doc: any) => ({,
                 id: doc.id,
                 filename: doc.filename,
                 jurisdiction: doc.jurisdiction,
@@ -287,53 +251,39 @@ export const POST: RequestHandler = async ({ request }) => {
                 'Case AI summary score updated'
             ]
         }
-
         console.log(`🎉 Legal document processing complete: ${processedDocuments.length} documents, ${totalTime}ms`)
-
         return json(response)
-
     } catch (err: any) {
         const processingTime = Date.now() - startTime
         console.error('❌ Legal document processing failed:', err)
-
         return json({
-            success: false,
+            success: false
             error: err instanceof Error ? err.message: 'Unknown processing error',
             processingTime
         }, { status: 500 })
     }
 }
-
 // Helper Functions
-
 function detectJurisdiction(text: string, providedJurisdiction: string): string {
     const textLower = text.toLowerCase()
-
     // Calculate jurisdiction scores based on keyword matches
     const scores = Object.entries(JURISDICTION_PATTERNS).map(([jurisdiction, patterns]) => {
         const keywordMatches = patterns.keywords.filter((keyword: any) => textLower.includes(keyword.toLowerCase()
         ).length
-
         const statuteMatches = patterns.statutes.filter((statute: any) => textLower.includes(statute.toLowerCase()
         ).length
-
         const score = (keywordMatches * 2 + statuteMatches * 3) * patterns.weight
-
         return { jurisdiction, score }
     })
-
     // Find highest scoring jurisdiction
     const detectedJurisdiction = scores.reduce((max, current) =>
         current.score > max.score ? current : max
     )
-
     // Use detected if score is high enough, otherwise use provided
     return detectedJurisdiction.score > 3 ? detectedJurisdiction.jurisdiction: providedJurisdiction
 }
-
 function extractLegalEntities(text: string, jurisdiction: string): LegalEntity[] {
     const entities: LegalEntity[] = []
-
     Object.entries(LEGAL_ENTITY_PATTERNS).forEach(([type, patterns]) => {
         patterns.forEach((pattern: any) => {
             let match
@@ -351,7 +301,6 @@ function extractLegalEntities(text: string, jurisdiction: string): LegalEntity[]
             }
         })
     })
-
     // Remove duplicates and sort by confidence
     return entities
         .filter((entity, index, self) =>
@@ -359,73 +308,55 @@ function extractLegalEntities(text: string, jurisdiction: string): LegalEntity[]
         )
         .sort((a, b) => b.confidence - a.confidence)
 }
-
 function calculateEntityConfidence(text: string, type: string, context: string): number {
     let confidence = 0.5; // Base confidence
-
     // Length bonus (longer entities are often more specific)
     if (text.length > 10) confidence += 0.1
     if (text.length > 20) confidence += 0.1
-
     // Context frequency bonus
     const occurrences = (context.match(new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length
     if (occurrences > 1) confidence += Math.min(0.2, occurrences * 0.05)
-
     // Type-specific bonuses
     if (type === 'WHO' && /\b(?:Inc|Corp|LLC|Ltd)\b/i.test(text)) confidence += 0.15
     if (type === 'WHAT' && /\$[\d]+/.test(text)) confidence += 0.2
     if (type === 'WHEN' && /\d{4}/.test(text)) confidence += 0.15
-
     return Math.min(0.95, confidence)
 }
-
 function createSmartChunks(text: string, entities: LegalEntity[]): DocumentChunk[] {
     const chunks: DocumentChunk[] = []
     const chunkSize = 500; // Words per chunk
     const overlap = 50; // Word overlap between chunks
-
     const words = text.split(/\s+/)
-
     for (let i = 0; i < words.length; i += chunkSize - overlap) {
         const chunkWords = words.slice(i, i + chunkSize)
         const chunkText = chunkWords.join(' ')
-
         // Find entities within this chunk
         const chunkEntities = entities
             .filter((entity: any) => chunkText.includes(entity.text)
             .map((entity: any) => entity.text)
-
         // Calculate legal relevance based on entity density and types
         const legalRelevance = calculateLegalRelevance(chunkText, chunkEntities)
-
         chunks.push({
             id: uuidv4(),
-            text: chunkText,
-            position: i,
+            text: chunkText
+            position: i
             legalRelevance,
             entities: chunkEntities
         })
     }
-
     return chunks
 }
-
 function calculateLegalRelevance(text: string, entities: string[]): number {
     let relevance = 0.3; // Base relevance
-
     // Entity density bonus
     relevance += Math.min(0.4, entities.length * 0.05)
-
     // Legal keyword density
     const legalKeywords = ['court', 'judge', 'law', 'statute', 'contract', 'agreement', 'liability', 'damages', 'evidence']
     const keywordMatches = legalKeywords.filter((keyword: any) => text.toLowerCase().includes(keyword)
     ).length
-
     relevance += Math.min(0.3, keywordMatches * 0.04)
-
     return Math.min(0.95, relevance)
 }
-
 async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChunk[]> {
     // Simulate embedding generation with nomic-embed-text
     // In production, this would call the actual embedding model
@@ -434,21 +365,17 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
         embedding: Array.from({ length: 384 }, () => Math.random() - 0.5) // Mock 384-dim embedding
     })
 }
-
 function performFactChecking(entities: LegalEntity[], jurisdiction: string): FactCheck[] {
     const factChecks: FactCheck[] = []
-
     // Extract claims from entities (simplified for demo)
     const claims = entities
         .filter((entity: any) => entity.type === 'WHAT' || entity.type === 'WHY')
         .slice(0, 5); // Limit for performance
-
     claims.forEach((entity: any) => {
         // Simulate fact-checking against trusted sources
         const confidence = Math.random() * 0.4 + 0.6; // 0.6-1.0 range
         const status = confidence > 0.8 ? 'FACT' :
                       confidence > 0.6 ? 'UNVERIFIED' : 'DISPUTED'
-
         factChecks.push({
             claim: entity.text,
             status: status as FactCheck['status'],
@@ -457,69 +384,54 @@ function performFactChecking(entities: LegalEntity[], jurisdiction: string): Fac
             jurisdiction
         })
     })
-
     return factChecks
 }
-
 function calculateProsecutionScore(
-    entities: LegalEntity[],
-    factChecks: FactCheck[],
-    jurisdiction: string,
+    entities: LegalEntity[]
+    factChecks: FactCheck[]
+    jurisdiction: string
     chunks: DocumentChunk[]
 ): number {
     let score = 0.3; // Base score
-
     // Entity quality bonus
     const highConfidenceEntities = entities.filter((e: any) => e.confidence > 0.8).length
     score += Math.min(0.2, highConfidenceEntities * 0.02)
-
     // Fact-checking bonus
     const verifiedFacts = factChecks.filter((fc: any) => fc.status === 'FACT').length
     const totalFacts = factChecks.length
     if (totalFacts > 0) {
         score += (verifiedFacts / totalFacts) * 0.3
     }
-
     // Jurisdiction weight
     const jurisdictionWeight = JURISDICTION_PATTERNS[jurisdiction]?.weight || 0.5
     score *= jurisdictionWeight
-
     // Document completeness bonus
     const avgChunkRelevance = chunks.reduce((sum, chunk) => sum + chunk.legalRelevance, 0) / chunks.length
     score += avgChunkRelevance * 0.2
-
     return Math.min(0.95, score)
 }
-
 function calculateCaseAISummaryScore(documents: LegalDocument[]): number {
     if (documents.length === 0) return 0
-
     const totalScore = documents.reduce((sum, doc) => sum + doc.prosecutionScore, 0)
     const avgScore = totalScore / documents.length
-
     // Adjust based on document completeness
     const avgEntityCount = documents.reduce((sum, doc) => sum + doc.entities.length, 0) / documents.length
     const completenessBonus = Math.min(0.1, avgEntityCount / 50); // Bonus for rich entity extraction
-
     return Math.min(100, Math.round((avgScore + completenessBonus) * 100)
 }
-
 // Database integration functions (mock implementations)
 async function storeDocumentsInDatabase(documents: LegalDocument[], caseId: string): Promise<void> {
     console.log(`💾 Storing ${documents.length} documents in PostgreSQL + pgvector`)
     // TODO: Implement actual database storage with Drizzle ORM
 }
-
 async function updateKnowledgeGraph(documents: LegalDocument[], caseId: string): Promise<void> {
     console.log(`🕸️ Updating Neo4j knowledge graph with entity relationships`)
     // TODO: Implement Neo4j graph updates
 }
-
 async function cacheProcessingResults(documents: LegalDocument[], caseId: string): Promise<void> {
     console.log(`⚡ Caching results in Redis for fast retrieval`)
     // TODO: Implement Redis caching
 }
-
 async function enhanceWithRAG(documents: LegalDocument[], caseId: string): Promise<void> {
     console.log(`🧠 Applying enhanced RAG processing with Context7 integration`)
     // TODO: Implement enhanced RAG pipeline

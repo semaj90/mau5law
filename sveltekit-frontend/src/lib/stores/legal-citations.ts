@@ -2,19 +2,16 @@
  * Legal Citations Management System
  * AI-powered citation extraction, validation, and relationship mapping
  */
-
 import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
 import { fastParse, fastStringify, createSIMDJSONCache } from '$lib/utils/simd-json-cache';
 import { createWorkerPool } from '$lib/workers/legal-ai-worker-pool';
-
 // Citation Types and Interfaces
 export interface LegalCitation {
   id: string;
   type: 'case_law' | 'statute' | 'regulation' | 'constitution' | 'treaty' | 'law_review' | 'secondary_source' | 'custom';
   citation: string; // Full citation text (e.g., "Brown v. Board of Education, 347 U.S. 483 (1954)")
   shortCitation?: string; // Abbreviated form (e.g., "Brown, 347 U.S. at 483")
-
   // Core Information
   title: string;
   court?: string;
@@ -23,7 +20,6 @@ export interface LegalCitation {
   volume?: string;
   reporter?: string;
   page?: string;
-
   // Case-specific
   parties?: {
     plaintiff: string[];
@@ -31,51 +27,42 @@ export interface LegalCitation {
     appellant?: string[];
     appellee?: string[];
   };
-
   // Statute-specific
   code?: string;
   section?: string;
   chapter?: string;
-
   // Content Analysis
   summary?: string;
   keyHoldings?: string[];
   legalPrinciples?: string[];
   precedentialValue: 'binding' | 'persuasive' | 'informational';
-
   // AI Enhancement
   aiExtracted: boolean;
   aiConfidence?: number;
   extractionSource?: string; // Document/case ID where found
   contextSnippet?: string; // Surrounding text where citation was found
   relevanceScore?: number; // Relevance to current case/research
-
   // Embeddings and Semantic Data
   embeddings?: number[][];
   semanticTags?: string[];
   relatedCitations?: string[]; // IDs of related citations
-
   // Database Integration
   neo4jNodeId?: string;
   postgresId?: string;
   ragDocumentId?: string;
-
   // User Interaction
   userNotes?: string;
   bookmarked: boolean;
   tags: string[];
   verificationStatus: 'unverified' | 'verified' | 'disputed' | 'outdated';
-
   // Metadata
   createdAt: Date;
   updatedAt: Date;
   createdBy: string;
   lastVerifiedAt?: Date;
-
   // Processing Status
   processingStatus: 'pending' | 'processing' | 'completed' | 'failed';
   processingJobId?: string;
-
   // External Links
   externalLinks?: {
     westlaw?: string;
@@ -85,7 +72,6 @@ export interface LegalCitation {
     justia?: string;
   };
 }
-
 export interface CitationFilters {
   search: string;
   type: string;
@@ -98,7 +84,6 @@ export interface CitationFilters {
   aiExtracted?: boolean;
   tags: string[];
 }
-
 export interface CitationStats {
   total: number;
   byType: Record<string, number>;
@@ -111,23 +96,20 @@ export interface CitationStats {
   averageRelevance: number;
   recentlyAdded: number;
 }
-
 // Stores
 export const legalCitations = writable<LegalCitation[]>([]);
 export const citationFilters = writable<CitationFilters>({
   search: '',
   type: '',
   jurisdiction: '',
-  court: '',;
+  court: '',
   tags: []
 });
-
 // Filtered citations with enhanced search
 export const filteredCitations = derived(
   [legalCitations, citationFilters],
   ([$citations, $filters]) => {
     let citations = $citations;
-
     // Apply filters
     if ($filters.type) {
       citations = citations.filter(c => c.type === $filters.type);
@@ -159,7 +141,6 @@ export const filteredCitations = derived(
         $filters.tags.some(tag => c.tags.includes(tag))
       );
     }
-
     // Enhanced search
     if ($filters.search.trim()) {
       const searchTerm = $filters.search.toLowerCase();
@@ -176,27 +157,22 @@ export const filteredCitations = derived(
         ].some(field => field?.toLowerCase().includes(searchTerm));
       });
     }
-
     // Sort by relevance and date
     return citations.sort((a, b) => {
       // Bookmarked first
       if (a.bookmarked && !b.bookmarked) return -1;
       if (!a.bookmarked && b.bookmarked) return 1;
-
       // Then by relevance score
       const aRelevance = a.relevanceScore || 0;
       const bRelevance = b.relevanceScore || 0;
       if (aRelevance !== bRelevance) return bRelevance - aRelevance;
-
       // Then by year (more recent first)
       if (a.year !== b.year) return b.year - a.year;
-
       // Finally by update date
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
   }
 );
-
 // Citation statistics
 export const citationStats = derived(legalCitations, ($citations): CitationStats => {
   const stats: CitationStats = {
@@ -206,77 +182,62 @@ export const citationStats = derived(legalCitations, ($citations): CitationStats
     byCourt: {},
     byYear: {},
     aiExtracted: 0,
-    verified: 0,;
+    verified: 0,
     bookmarked: 0,
     averageRelevance: 0,
     recentlyAdded: 0
   };
-
   const recentThreshold = Date.now() - (7 * 24 * 60 * 60 * 1000); // 7 days
   let totalRelevance = 0;
   let relevanceCount = 0;
-
   for (const citation of $citations) {
     // Count by type
     stats.byType[citation.type] = (stats.byType[citation.type] || 0) + 1;
-
     // Count by jurisdiction
     stats.byJurisdiction[citation.jurisdiction] = (stats.byJurisdiction[citation.jurisdiction] || 0) + 1;
-
     // Count by court
     if (citation.court) {
       stats.byCourt[citation.court] = (stats.byCourt[citation.court] || 0) + 1;
     }
-
     // Count by year
     stats.byYear[citation.year] = (stats.byYear[citation.year] || 0) + 1;
-
     // AI extracted count
     if (citation.aiExtracted) stats.aiExtracted++;
-
     // Verified count
     if (citation.verificationStatus === 'verified') stats.verified++;
-
     // Bookmarked count
     if (citation.bookmarked) stats.bookmarked++;
-
     // Relevance tracking
     if (citation.relevanceScore !== undefined) {
       totalRelevance += citation.relevanceScore;
       relevanceCount++;
     }
-
     // Recently added count
     const createdTime = new Date(citation.createdAt).getTime();
     if (createdTime > recentThreshold) stats.recentlyAdded++;
   }
-
   stats.averageRelevance = relevanceCount > 0 ? totalRelevance / relevanceCount : 0;
-
   return stats;
 });
-
 class LegalCitationsManager {
   private static instance: LegalCitationsManager;
   private dbPrefix = "legal-citation-";
   private simdCache = createSIMDJSONCache({
     defaultTTL: 7200, // 2 hours for citations
-    compressionEnabled: true,
+    compressionEnabled: true
     enableMetrics: true
   });
   private workerPool = createWorkerPool({
     maxWorkers: 4,
-    enableSIMD: true,
+    enableSIMD: true
     redisCache: true
   });
-
   static getInstance(): LegalCitationsManager {
     if (!LegalCitationsManager.instance) {
       LegalCitationsManager.instance = new LegalCitationsManager();
     }
     return LegalCitationsManager.instance;
   }
-
   // Extract citations from text using AI
   async extractCitationsFromText(text: string, sourceDocId?: string): Promise<LegalCitation[]> {
     try {
@@ -285,42 +246,34 @@ class LegalCitationsManager {
         'legal_citation_extraction',
         'gemma3:legal-latest'
       );
-
       if (!extractionResult.success) {
         throw new Error('Citation extraction failed');
       }
-
       const citations: LegalCitation[] = [];
       const extractedCitations = extractionResult.data.citations || [];
-
       for (const extracted of extractedCitations) {
         const citation = await this.createCitationFromExtraction(extracted, text, sourceDocId);
         citations.push(citation);
       }
-
       // Store all citations
       for (const citation of citations) {
         await this.saveCitation(citation);
       }
-
       return citations;
-
     } catch (error) {
       console.error('Citation extraction failed:', error);
       return [];
     }
   }
-
   // Create citation from AI extraction
   private async createCitationFromExtraction(
-    extracted: any,
-    sourceText: string,
+    extracted: any
+    sourceText: string
     sourceDocId?: string
   ): Promise<LegalCitation> {
     const citationId = `cite-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
     const citation: LegalCitation = {
-      id: citationId,
+      id: citationId
       type: extracted.type || 'case_law',
       citation: extracted.fullCitation,
       shortCitation: extracted.shortCitation,
@@ -339,12 +292,12 @@ class LegalCitationsManager {
       keyHoldings: extracted.keyHoldings || [],
       legalPrinciples: extracted.legalPrinciples || [],
       precedentialValue: extracted.precedentialValue || 'informational',
-      aiExtracted: true,
+      aiExtracted: true
       aiConfidence: extracted.confidence || 0.8,
-      extractionSource: sourceDocId,
+      extractionSource: sourceDocId
       contextSnippet: this.extractContext(sourceText, extracted.fullCitation),
       relevanceScore: extracted.relevance || 0.5,
-      bookmarked: false,;
+      bookmarked: false
       tags: extracted.tags || [],
       verificationStatus: 'unverified',
       createdAt: new Date(),
@@ -352,24 +305,18 @@ class LegalCitationsManager {
       createdBy: 'ai-extraction',
       processingStatus: 'completed'
     };
-
     // Generate embeddings
     await this.enhanceCitationWithAI(citation);
-
     return citation;
   }
-
   // Extract context around citation in text
   private extractContext(text: string, citation: string, contextLength: number = 200): string {
     const index = text.toLowerCase().indexOf(citation.toLowerCase());
     if (index === -1) return '';
-
     const start = Math.max(0, index - contextLength);
     const end = Math.min(text.length, index + citation.length + contextLength);
-
     return text.substring(start, end).trim();
   }
-
   // Enhance citation with AI analysis
   private async enhanceCitationWithAI(citation: LegalCitation): Promise<void> {
     try {
@@ -378,18 +325,15 @@ class LegalCitationsManager {
         `${citation.citation} ${citation.title} ${citation.summary || ''}`,
         'embeddinggemma:latest'
       );
-
       if (embeddingResult.success) {
         citation.embeddings = embeddingResult.data.embeddings;
       }
-
       // Enhance with legal analysis
       const analysisResult = await this.workerPool.analyzeDocument(
         `Citation: ${citation.citation}\nTitle: ${citation.title}\nSummary: ${citation.summary || 'No summary available'}`,
         'legal_citation_analysis',
         'gemma3:legal-latest'
       );
-
       if (analysisResult.success) {
         const analysis = analysisResult.data;
         citation.keyHoldings = analysis.keyHoldings || citation.keyHoldings;
@@ -397,39 +341,34 @@ class LegalCitationsManager {
         citation.semanticTags = analysis.semanticTags || [];
         citation.summary = analysis.summary || citation.summary;
       }
-
       // Store in Neo4j
       await this.storeInNeo4j(citation);
-
       // Index in RAG system
       await this.indexInRAG(citation);
-
     } catch (error) {
       console.error('Citation AI enhancement failed:', error);
     }
   }
-
   // Store citation in Neo4j
   private async storeInNeo4j(citation: LegalCitation): Promise<void> {
     try {
       const response = await fetch('/api/graph/neo4j/citations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           citationId: citation.id,
           type: citation.type,
           citation: citation.citation,
           title: citation.title,
           court: citation.court,
           jurisdiction: citation.jurisdiction,
-          year: citation.year,;
+          year: citation.year,
           parties: citation.parties,
           keyHoldings: citation.keyHoldings,
           legalPrinciples: citation.legalPrinciples,
           precedentialValue: citation.precedentialValue
         })
       });
-
       if (response.ok) {
         const result = await response.json();
         citation.neo4jNodeId = result.nodeId;
@@ -438,29 +377,26 @@ class LegalCitationsManager {
       console.warn('Neo4j citation storage failed:', error);
     }
   }
-
   // Index citation in RAG system
   private async indexInRAG(citation: LegalCitation): Promise<void> {
     try {
       const content = `${citation.citation}\n${citation.title}\n${citation.summary || ''}\nKey Holdings: ${citation.keyHoldings?.join(', ') || 'None'}`;
-
       const response = await fetch('/api/rag/index/citations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           documentId: citation.id,
-          content: content,
+          content: content
           embeddings: citation.embeddings,
           metadata: {
             type: citation.type,
             jurisdiction: citation.jurisdiction,
-            court: citation.court,;
+            court: citation.court,
             year: citation.year,
             precedentialValue: citation.precedentialValue
           }
         })
       });
-
       if (response.ok) {
         const result = await response.json();
         citation.ragDocumentId = result.documentId;
@@ -469,12 +405,10 @@ class LegalCitationsManager {
       console.warn('RAG citation indexing failed:', error);
     }
   }
-
   // Save citation
   async saveCitation(citation: LegalCitation): Promise<void> {
     const now = new Date();
     citation.updatedAt = now;
-
     // Update store
     legalCitations.update((citations) => {
       const existingIndex = citations.findIndex(c => c.id === citation.id);
@@ -485,7 +419,6 @@ class LegalCitationsManager {
         return [citation, ...citations];
       }
     });
-
     // Save to storage
     if (browser) {
       try {
@@ -495,18 +428,14 @@ class LegalCitationsManager {
         console.warn('Failed to save citation to storage:', error);
       }
     }
-
     // Sync to server
     this.syncCitationToServer(citation);
   }
-
   // Load citations from storage
   async loadCitations(): Promise<void> {
     if (!browser) return;
-
     try {
       const citations: LegalCitation[] = [];
-
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key?.startsWith(this.dbPrefix)) {
@@ -525,16 +454,13 @@ class LegalCitationsManager {
           }
         }
       }
-
       legalCitations.set(citations.sort((a, b) =>
         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       ));
-
     } catch (error) {
       console.error('Failed to load citations:', error);
     }
   }
-
   // Semantic search for citations
   async searchCitations(query: string, limit: number = 20): Promise<LegalCitation[]> {
     try {
@@ -543,11 +469,9 @@ class LegalCitationsManager {
         query,
         'embeddinggemma:latest'
       );
-
       if (!queryEmbedding.success) {
         return [];
       }
-
       // Get all citations with embeddings
       const allCitations = await new Promise<LegalCitation[]>((resolve) => {
         const unsubscribe = legalCitations.subscribe((citations) => {
@@ -555,7 +479,6 @@ class LegalCitationsManager {
           unsubscribe();
         });
       });
-
       // Calculate similarities
       const similarities = allCitations.map(citation => {
         const similarity = this.cosineSimilarity(
@@ -564,7 +487,6 @@ class LegalCitationsManager {
         );
         return { citation, similarity };
       });
-
       // Return top results
       return similarities
         .sort((a, b) => b.similarity - a.similarity)
@@ -573,13 +495,11 @@ class LegalCitationsManager {
           ...item.citation,
           relevanceScore: item.similarity
         }));
-
     } catch (error) {
       console.error('Citation search failed:', error);
       return [];
     }
   }
-
   // Validate citations using external APIs
   async validateCitation(citationId: string): Promise<{ valid: boolean; details?: any; error?: string }> {
     try {
@@ -587,34 +507,26 @@ class LegalCitationsManager {
       if (!citation) {
         return { valid: false, error: 'Citation not found' };
       }
-
       // Use external validation service
       const response = await fetch('/api/citations/validate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },;
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ citation: citation.citation, type: citation.type })
       });
-
       if (response.ok) {
         const result = await response.json();
-
         // Update citation status
         citation.verificationStatus = result.valid ? 'verified' : 'disputed';
         citation.lastVerifiedAt = new Date();
-
         await this.saveCitation(citation);
-
         return result;
       }
-
       return { valid: false, error: 'Validation service unavailable' };
-
     } catch (error) {
       console.error('Citation validation failed:', error);
       return { valid: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
   }
-
   // Get citation by ID
   private async getCitation(citationId: string): Promise<LegalCitation | null> {
     return new Promise((resolve) => {
@@ -625,7 +537,6 @@ class LegalCitationsManager {
       });
     });
   }
-
   // Utility functions
   private cosineSimilarity(a: number[], b: number[]): number {
     const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
@@ -633,7 +544,6 @@ class LegalCitationsManager {
     const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
     return dotProduct / (magnitudeA * magnitudeB);
   }
-
   private isValidCitation(obj: any): obj is LegalCitation {
     return (
       obj &&
@@ -643,38 +553,32 @@ class LegalCitationsManager {
       typeof obj.title === 'string'
     );
   }
-
   private async syncCitationToServer(citation: LegalCitation): Promise<void> {
     try {
       await fetch('/api/citations/sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },;
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(citation)
       });
     } catch (error) {
       console.warn('Failed to sync citation to server:', error);
     }
   }
-
   // Remove citation
   async removeCitation(citationId: string): Promise<void> {
     legalCitations.update((citations) => citations.filter(c => c.id !== citationId));
-
     if (browser) {
       localStorage.removeItem(`${this.dbPrefix}${citationId}`);
     }
-
     try {
       await fetch(`/api/citations/${citationId}`, { method: 'DELETE' });
     } catch (error) {
       console.warn('Failed to remove citation from server:', error);
     }
   }
-
   // Bulk import citations
   async importCitations(citationsData: any[]): Promise<{ success: number; failed: number; errors: string[] }> {
     const result = { success: 0, failed: 0, errors: [] as string[] };
-
     for (const data of citationsData) {
       try {
         const citation = await this.createCitationFromImport(data);
@@ -685,15 +589,12 @@ class LegalCitationsManager {
         result.errors.push(error instanceof Error ? error.message : 'Unknown error');
       }
     }
-
     return result;
   }
-
   private async createCitationFromImport(data: any): Promise<LegalCitation> {
     const citationId = `import-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
     return {
-      id: citationId,
+      id: citationId
       type: data.type || 'case_law',
       citation: data.citation,
       shortCitation: data.shortCitation,
@@ -709,8 +610,8 @@ class LegalCitationsManager {
       keyHoldings: data.keyHoldings || [],
       legalPrinciples: data.legalPrinciples || [],
       precedentialValue: data.precedentialValue || 'informational',
-      aiExtracted: false,
-      bookmarked: false,;
+      aiExtracted: false
+      bookmarked: false
       tags: data.tags || [],
       verificationStatus: 'unverified',
       createdAt: new Date(),
@@ -720,51 +621,40 @@ class LegalCitationsManager {
     };
   }
 }
-
 // Export singleton
 export const citationsManager = LegalCitationsManager.getInstance();
-
 // Convenience functions
 export async function extractCitations(text: string, sourceDocId?: string): Promise<LegalCitation[]> {
   return citationsManager.extractCitationsFromText(text, sourceDocId);
 }
-
 export async function saveCitation(citation: LegalCitation): Promise<void> {
   await citationsManager.saveCitation(citation);
 }
-
 export async function loadCitations(): Promise<void> {
   await citationsManager.loadCitations();
 }
-
 export async function searchCitations(query: string, limit?: number): Promise<LegalCitation[]> {
   return citationsManager.searchCitations(query, limit);
 }
-
 export async function validateCitation(citationId: string): Promise<{ valid: boolean; details?: any; error?: string }> {
   return citationsManager.validateCitation(citationId);
 }
-
 export async function removeCitation(citationId: string): Promise<void> {
   await citationsManager.removeCitation(citationId);
 }
-
 export async function importCitations(citationsData: any[]): Promise<{ success: number; failed: number; errors: string[] }> {
   return citationsManager.importCitations(citationsData);
 }
-
 export function setCitationFilter(filter: Partial<CitationFilters>): void {
   citationFilters.update((current) => ({ ...current, ...filter }));
 }
-
 export function clearCitationFilters(): void {
   citationFilters.set({
     search: '',
     type: '',
     jurisdiction: '',
-    court: '',;
+    court: '',
     tags: []
   });
 }
-
 export default citationsManager;

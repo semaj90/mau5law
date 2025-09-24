@@ -1,5 +1,5 @@
 
-// Legal AI System Type Definitions;
+// Legal AI System Type Definitions
 export interface LegalCase {
   id: string;
   caseNumber: string;
@@ -16,7 +16,6 @@ export interface LegalCase {
   courtName?: string;
   documents?: LegalDocument[];
 }
-
 export interface LegalDocument {
   id: string;
   title: string;
@@ -38,9 +37,8 @@ export interface LegalDocument {
   updatedAt: Date;
   confidentialityLevel: number;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface AIInsights {
   documentId: string;
   analysisType: "FULL_COMPLIANCE_CHECK" | "QUICK_SCAN" | "ENTITY_EXTRACTION";
@@ -55,7 +53,6 @@ export interface AIInsights {
   processingTime: number;
   analyzedAt: Date;
 }
-
 export interface LegalEntity {
   type:
     | "CASE_NUMBER"
@@ -70,14 +67,13 @@ export interface LegalEntity {
     | "ORGANIZATION";
   value: string;
   confidence: number;
-  position: {;
+  position: {
     start: number;
     end: number;
   };
   context?: string;
   normalizedValue?: string;
 }
-
 export interface ComplianceCheck {
   rule: string;
   description: string;
@@ -87,7 +83,6 @@ export interface ComplianceCheck {
   details?: string;
   recommendation?: string;
 }
-
 export interface RiskAssessment {
   score: number; // 0-1, where 1 is highest risk
   level: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
@@ -95,7 +90,6 @@ export interface RiskAssessment {
   recommendations: string[];
   mitigationSteps?: string[];
 }
-
 export interface RiskFactor {
   type: string;
   severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
@@ -103,7 +97,6 @@ export interface RiskFactor {
   impact: string;
   likelihood: number; // 0-1
 }
-
 export interface LegalAnalysis {
   document: LegalDocument;
   insights: AIInsights;
@@ -111,7 +104,6 @@ export interface LegalAnalysis {
   riskAssessment: RiskAssessment;
   analyzedAt: Date;
 }
-
 export interface AIAnalysisResult {
   documentId: string;
   analysisType: string;
@@ -127,7 +119,6 @@ export interface AIAnalysisResult {
   processingTime: number;
   error?: string;
 }
-
 export interface AuditLogEntry {
   id: string;
   action: string;
@@ -136,11 +127,10 @@ export interface AuditLogEntry {
   userId: string;
   ipAddress?: string;
   userAgent?: string;
-  details?: Record<string, any>;
+  details?: { [key: string]: any };
   timestamp: Date;
   severity: "INFO" | "WARNING" | "ERROR" | "CRITICAL";
 }
-
 export interface User {
   id: string;
   email: string;
@@ -152,7 +142,6 @@ export interface User {
   createdAt: Date;
   isActive: boolean;
 }
-
 export interface CacheMetrics {
   hits: number;
   misses: number;
@@ -161,10 +150,9 @@ export interface CacheMetrics {
   cacheSize: number;
   hitRate: string;
 }
-
 export interface SystemHealth {
   status: "healthy" | "degraded" | "unhealthy";
-  services: {;
+  services: {
     database: ServiceStatus;
     ai: ServiceStatus;
     cache: ServiceStatus;
@@ -179,22 +167,19 @@ export interface SystemHealth {
   };
   lastChecked: Date;
 }
-
 export interface ServiceStatus {
   status: "online" | "offline" | "degraded";
   responseTime: number;
   lastChecked: Date;
   error?: string;
 }
-
 export interface ProcessingResult {
   success: boolean;
   processedData?: any;
   error?: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
-// AI Model Configuration;
+// AI Model Configuration
 export interface AIModelConfig {
   modelName: string;
   endpoint: string;
@@ -205,8 +190,7 @@ export interface AIModelConfig {
   retryAttempts: number;
   capabilities: string[];
 }
-
-// Search and Filter Types;
+// Search and Filter Types
 export interface SearchQuery {
   query: string;
   filters: {
@@ -224,16 +208,14 @@ export interface SearchQuery {
   limit?: number;
   offset?: number;
 }
-
 export interface SearchResult<T> {
   items: T[];
   total: number;
   hasMore: boolean;
-  aggregations?: Record<string, any>;
+  aggregations?: { [key: string]: any };
   query: SearchQuery;
 }
-
-// API Response Types;
+// API Response Types
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -248,10 +230,9 @@ export interface ApiResponse<T> {
     processingTime: number;
   };
 }
-
 export interface PaginatedResponse<T> {
   items: T[];
-  pagination: {;
+  pagination: {
     page: number;
     pageSize: number;
     total: number;
@@ -260,8 +241,7 @@ export interface PaginatedResponse<T> {
     hasPrev: boolean;
   };
 }
-
-// Document Processing Types;
+// Document Processing Types
 export interface DocumentProcessingJob {
   id: string;
   documentId: string;
@@ -274,7 +254,6 @@ export interface DocumentProcessingJob {
   error?: string;
   retryCount: number;
 }
-
 export interface UploadedFile {
   name: string;
   size: number;
@@ -282,8 +261,7 @@ export interface UploadedFile {
   lastModified: Date;
   content?: string | ArrayBuffer;
 }
-
-// Notification Types;
+// Notification Types
 export interface SystemNotification {
   id: string;
   type: "info" | "success" | "warning" | "error";
@@ -296,29 +274,27 @@ export interface SystemNotification {
   expiresAt?: Date;
   actions?: NotificationAction[];
 }
-
 export interface NotificationAction {
   label: string;
   action: string;
   style: "primary" | "secondary" | "destructive";
 }
-
-// Configuration Types;
+// Configuration Types
 export interface AppConfig {
-  app: {;
+  app: {
     name: string;
     version: string;
     environment: "development" | "staging" | "production";
   };
-  database: {;
+  database: {
     host: string;
     port: number;
     name: string;
   };
-  ai: {;
+  ai: {
     enabled: boolean;
     models: AIModelConfig[];
-    cache: {;
+    cache: {
       enabled: boolean;
       ttl: number;
       maxSize: number;
@@ -337,8 +313,7 @@ export interface AppConfig {
     encryption: boolean;
   };
 }
-
-// Event Types for Real-time Updates;
+// Event Types for Real-time Updates
 export interface SystemEvent {
   type: "CASE_UPDATED" | "DOCUMENT_ANALYZED" | "USER_ACTION" | "SYSTEM_ALERT";
   payload: any;
@@ -346,8 +321,7 @@ export interface SystemEvent {
   userId?: string;
   sessionId?: string;
 }
-
-// Legal-specific Types;
+// Legal-specific Types
 export interface CourtInfo {
   name: string;
   jurisdiction: string;
@@ -356,7 +330,6 @@ export interface CourtInfo {
   website?: string;
   judges?: string[];
 }
-
 export interface LegalPrecedent {
   caseTitle: string;
   citation: string;
@@ -366,7 +339,6 @@ export interface LegalPrecedent {
   summary: string;
   keyHoldings: string[];
 }
-
 export interface ContractClause {
   title: string;
   content: string;

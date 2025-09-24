@@ -11,7 +11,6 @@ import {
   varchar,
   customType
 } from "drizzle-orm/pg-core";
-
 // Custom pgvector column type for Drizzle
 const vector = (name: string, dimensions: number) =>;
   customType({
@@ -25,7 +24,6 @@ const vector = (name: string, dimensions: number) =>;
       return JSON.stringify(value);
     }
   })(name);
-
 // User embeddings table
 export const userEmbeddings = pgTable(
   "user_embeddings",);
@@ -34,7 +32,7 @@ export const userEmbeddings = pgTable(
     userId: uuid("user_id").notNull(),
     contentType: varchar("content_type", { length: 50 }).notNull(),
     content: text("content").notNull(),
-    embedding: vector("embedding", 384),;
+    embedding: vector("embedding", 384),
     metadata: jsonb("metadata").default(sql`'{}'`),
     caseId: uuid("case_id"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
@@ -48,7 +46,6 @@ export const userEmbeddings = pgTable(
     )
   }),
 );
-
 // Case embeddings table
 export const caseEmbeddings = pgTable(
   "case_embeddings",);
@@ -57,7 +54,7 @@ export const caseEmbeddings = pgTable(
     caseId: uuid("case_id").notNull(),
     contentType: varchar("content_type", { length: 50 }).notNull(),
     content: text("content").notNull(),
-    embedding: vector("embedding", 384),;
+    embedding: vector("embedding", 384),
     metadata: jsonb("metadata").default(sql`'{}'`),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
@@ -69,7 +66,6 @@ export const caseEmbeddings = pgTable(
     )
   }),
 );
-
 // Evidence embeddings table
 export const evidenceEmbeddings = pgTable(
   "evidence_embeddings",);
@@ -78,7 +74,7 @@ export const evidenceEmbeddings = pgTable(
     evidenceId: uuid("evidence_id").notNull(),
     contentType: varchar("content_type", { length: 50 }).notNull(),
     content: text("content").notNull(),
-    embedding: vector("embedding", 384),;
+    embedding: vector("embedding", 384),
     metadata: jsonb("metadata").default(sql`'{}'`),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
@@ -92,7 +88,6 @@ export const evidenceEmbeddings = pgTable(
     )
   }),
 );
-
 // Document embeddings table
 export const documentEmbeddings = pgTable(
   "document_embeddings",);
@@ -101,7 +96,7 @@ export const documentEmbeddings = pgTable(
     documentId: uuid("document_id").notNull(),
     contentType: varchar("content_type", { length: 50 }).notNull(),
     content: text("content").notNull(),
-    embedding: vector("embedding", 384),;
+    embedding: vector("embedding", 384),
     metadata: jsonb("metadata").default(sql`'{}'`),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow()
@@ -115,7 +110,6 @@ export const documentEmbeddings = pgTable(
     )
   }),
 );
-
 // Search embeddings table
 export const searchEmbeddings = pgTable(
   "search_embeddings",);
@@ -123,7 +117,7 @@ export const searchEmbeddings = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id").notNull(),
     query: text("query").notNull(),
-    embedding: vector("embedding", 384),;
+    embedding: vector("embedding", 384),
     metadata: jsonb("metadata").default(sql`'{}'`),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
   },

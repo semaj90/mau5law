@@ -1,5 +1,5 @@
 // @ts-nocheck
-// SQLite schema for development;
+// SQLite schema for development
 import {
   sqliteTable,
   text,
@@ -8,9 +8,7 @@ import {
   blob
 } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
-
 // === AUTHENTICATION & USER MANAGEMENT ===
-
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
   email: text("email").notNull().unique(),
@@ -19,15 +17,13 @@ export const users = sqliteTable("users", {
   name: text("name"),
   firstName: text("first_name"),
   lastName: text("last_name"),
-  avatarUrl: text("avatar_url"),;
+  avatarUrl: text("avatar_url"),
   role: text("role").default("prosecutor").notNull(),
   isActive: integer("is_active", { mode: "boolean" }).default(true).notNull(),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
   updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull()
 });
-
 // === CASE MANAGEMENT ===
-
 export const cases = sqliteTable("cases", {
   id: text("id").primaryKey(),
   caseNumber: text("case_number").notNull().unique(),
@@ -46,16 +42,14 @@ export const cases = sqliteTable("cases", {
   assignedTeam: text("assigned_team").default("[]").notNull(), // JSON string
   tags: text("tags").default("[]").notNull(), // JSON string
   aiSummary: text("ai_summary"),
-  aiTags: text("ai_tags").default("[]").notNull(), // JSON string;
+  aiTags: text("ai_tags").default("[]").notNull(), // JSON string
   metadata: text("metadata").default("{}").notNull(), // JSON string
   createdBy: text("created_by"),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
   updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull(),
   closedAt: text("closed_at")
 });
-
 // === CRIMINAL RECORDS ===
-
 export const criminals = sqliteTable("criminals", {
   id: text("id").primaryKey(),
   firstName: text("first_name").notNull(),
@@ -77,7 +71,7 @@ export const criminals = sqliteTable("criminals", {
   photoUrl: text("photo_url"),
   fingerprints: text("fingerprints").default("{}").notNull(), // JSON string
   threatLevel: text("threat_level").default("low").notNull(),
-  status: text("status").default("active").notNull(),;
+  status: text("status").default("active").notNull(),
   notes: text("notes"),
   aiSummary: text("ai_summary"),
   aiTags: text("ai_tags").default("[]").notNull(), // JSON string
@@ -85,9 +79,7 @@ export const criminals = sqliteTable("criminals", {
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
   updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull()
 });
-
 // === EVIDENCE MANAGEMENT ===
-
 export const evidence = sqliteTable("evidence", {
   id: text("id").primaryKey(),
   caseId: text("case_id"),
@@ -110,7 +102,7 @@ export const evidence = sqliteTable("evidence", {
   labAnalysis: text("lab_analysis").default("{}").notNull(), // JSON string
   aiAnalysis: text("ai_analysis").default("{}").notNull(), // JSON string
   aiTags: text("ai_tags").default("[]").notNull(), // JSON string
-  aiSummary: text("ai_summary"),;
+  aiSummary: text("ai_summary"),
   summary: text("summary"),
   isAdmissible: integer("is_admissible", { mode: "boolean" })
     .default(true)
@@ -123,9 +115,7 @@ export const evidence = sqliteTable("evidence", {
   uploadedAt: text("uploaded_at").default("CURRENT_TIMESTAMP").notNull(),
   updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull()
 });
-
 // === CASE ACTIVITIES & TIMELINE ===
-
 export const caseActivities = sqliteTable("case_activities", {
   id: text("id").primaryKey(),
   caseId: text("case_id").notNull(),
@@ -138,15 +128,13 @@ export const caseActivities = sqliteTable("case_activities", {
   priority: text("priority").default("medium").notNull(),
   assignedTo: text("assigned_to"),
   relatedEvidence: text("related_evidence").default("[]").notNull(), // JSON string
-  relatedCriminals: text("related_criminals").default("[]").notNull(), // JSON string;
+  relatedCriminals: text("related_criminals").default("[]").notNull(), // JSON string
   metadata: text("metadata").default("{}").notNull(), // JSON string
   createdBy: text("created_by"),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
   updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull()
 });
-
 // === RELATIONSHIPS ===
-
 export const usersRelations = relations(users, ({ many }) => ({
   casesAsLead: many(cases, { relationName: "leadProsecutor" }),
   casesCreated: many(cases, { relationName: "createdBy" }),
@@ -155,7 +143,6 @@ export const usersRelations = relations(users, ({ many }) => ({
   activitiesCreated: many(caseActivities, { relationName: "createdBy" }),
   criminalsCreated: many(criminals)
 });
-
 export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
     fields: [cases.leadProsecutor],
@@ -167,29 +154,26 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
     references: [users.id],
     relationName: "createdBy"
   }),
-  evidence: many(evidence),;
+  evidence: many(evidence),
   activities: many(caseActivities)
 });
-
 export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [criminals.createdBy],
     references: [users.id]
-  }),;
+  }),
   evidence: many(evidence)
 });
-
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
     fields: [evidence.uploadedBy],
     references: [users.id]
   }),
   case: one(cases, {
-    fields: [evidence.caseId],;
+    fields: [evidence.caseId],
     references: [cases.id]
   })
 });
-
 export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
   case: one(cases, {
     fields: [caseActivities.caseId],
@@ -201,7 +185,7 @@ export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
     relationName: "assignedTo"
   }),
   createdBy: one(users, {
-    fields: [caseActivities.createdBy],;
+    fields: [caseActivities.createdBy],
     references: [users.id],
     relationName: "createdBy"
   })

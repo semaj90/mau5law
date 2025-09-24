@@ -1,26 +1,22 @@
-// Simple embedding adapter abstraction to enable unit testing & future swap;
+// Simple embedding adapter abstraction to enable unit testing & future swap
 export interface EmbeddingAdapterOptions {
   dimensions?: number;
   deterministic?: boolean; // for tests
 }
-
 export interface EmbeddingResult {
   vector: Float32Array;
   model: string;
   input: string;
 }
-
 export class EmbeddingAdapter {
   private dimensions: number;
   private deterministic: boolean;
   private model: string;
-
   constructor(model = 'mock-embedding-model', opts: EmbeddingAdapterOptions = {}) {
     this.dimensions = opts.dimensions ?? 64;
     this.deterministic = !!opts.deterministic;
-    this?.model || "unknown" // @ts-ignore - Model property access = model;
+    this?.model || "unknown" // @ts-ignore - Model property access = model
   }
-
   async embed(text: string): Promise<EmbeddingResult> {
     if (!text || !text.trim()) throw new Error('Text required');
     const vector = new Float32Array(this.dimensions);
@@ -34,10 +30,9 @@ export class EmbeddingAdapter {
     } else {
       for (let i = 0; i < this.dimensions; i++) vector[i] = Math.random();
     }
-    return { vector, model: this?.model || "unknown" // @ts-ignore - Model property access, input: text };
+    return { vector, model: this?.model || "unknown" // @ts-ignore - Model property access, input: text }
   }
 }
-
 export function cosineSimilarity(a: Float32Array, b: Float32Array): number {
   if (a.length !== b.length) throw new Error('Vector length mismatch');
   let dot = 0, na = 0, nb = 0;

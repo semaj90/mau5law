@@ -1,19 +1,16 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Brain, Zap, TrendingUp, Users, Tag, Clock, CheckCircle, AlertTriangle } from 'lucide-svelte';
   import { Card } from './index';
   import type { AIAnalysis, EvidenceItem } from './types';
-
   interface Props {
-    analysis: AIAnalysis;
+    analysis: AIAnalysi;
     evidence: EvidenceItem;
     variant?: 'compact' | 'detailed' | 'summary';
     showRefresh?: boolean;
     showExport?: boolean;
     class?: string;
   }
-
   let {
     analysis,
     evidence,
@@ -21,38 +18,32 @@
     showRefresh = true,
     showExport = false,
     class: className = '',
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
   let isRefreshing = $state(false);
   let showFullSummary = $state(false);
-
   // Confidence level styling
   let confidenceLevel = $derived(() => {
     if (analysis.confidence > 0.8) return { color: 'text-green-600', level: 'High', bg: 'bg-green-100' };
     if (analysis.confidence > 0.6) return { color: 'text-yellow-600', level: 'Medium', bg: 'bg-yellow-100' };
     return { color: 'text-red-600', level: 'Low', bg: 'bg-red-100' };
   });
-
   // Sort entities by confidence
   let sortedEntities = $derived(analysis.entities
     .slice.sort((a, b) => b.confidence - a.confidence)
     .slice(0, variant === 'compact' ? 3 : 8)
   );
-
   // Sort themes by weight
   let sortedThemes = $derived(analysis.themes
     .slice.sort((a, b) => b.weight - a.weight)
     .slice(0, variant === 'compact' ? 2 : 5)
   );
-
   async function refreshAnalysis() {
     isRefreshing = true;
     // Simulate API call to re-analyze evidence
     await new Promise(resolve => setTimeout(resolve, 2000));
     isRefreshing = false;
   }
-
   function exportAnalysis() {
     const exportData = {
       evidenceId: evidence.id,
@@ -60,7 +51,6 @@
       analysis,
       exportedAt: new Date().toISOString()
     };
-
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -72,7 +62,6 @@
     URL.revokeObjectURL(url);
   }
 </script>
-
 <Card class="nes-container is-rounded bg-white {className}" {...restProps}>
   <!-- Header -->
   <div class="yorha-panel-header pb-3 mb-4">
@@ -84,7 +73,6 @@
           <span class="text-xs text-gray-500">for {evidence.title}</span>
         {/if}
       </div>
-
       <div class="flex items-center gap-2">
         {#if showRefresh}
           <button
@@ -98,7 +86,6 @@
             {isRefreshing ? 'Analyzing...' : 'Refresh'}
           </button>
         {/if}
-
         {#if showExport}
           <button
             class="nes-btn is-small is-success"
@@ -111,7 +98,6 @@
       </div>
     </div>
   </div>
-
   <div class="yorha-panel-content space-y-4">
     <!-- Confidence Score -->
     <div class="flex items-center justify-between p-3 rounded-lg {confidenceLevel.bg}">
@@ -136,7 +122,6 @@
         </div>
       </div>
     </div>
-
     {#if variant !== 'compact'}
       <!-- Summary -->
       <div class="bg-gray-50 p-3 rounded-lg">
@@ -159,7 +144,6 @@
         </p>
       </div>
     {/if}
-
     <!-- Entities -->
     {#if sortedEntities.length > 0}
       <div>
@@ -168,7 +152,6 @@
           <span class="font-medium text-sm">Detected Entities</span>
           <span class="text-xs text-gray-500">({analysis.entities.length} total)</span>
         </div>
-
         <div class="grid gap-2 {variant === 'compact' ? 'grid-cols-1' : 'grid-cols-2'}">
           {#each sortedEntities as entity}
             <div class="flex items-center justify-between p-2 bg-purple-50 rounded border">
@@ -186,7 +169,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Themes -->
     {#if sortedThemes.length > 0 && variant !== 'compact'}
       <div>
@@ -194,7 +176,6 @@
           <Tag class="w-4 h-4 text-orange-600" />
           <span class="font-medium text-sm">Key Themes</span>
         </div>
-
         <div class="space-y-2">
           {#each sortedThemes as theme}
             <div class="flex items-center gap-3">
@@ -215,7 +196,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Analysis Timestamp -->
     {#if variant === 'detailed'}
       <div class="flex items-center gap-2 text-xs text-gray-500 pt-2 border-t">
@@ -223,7 +203,6 @@
         <span>Analysis completed: {new Date().toLocaleString()}</span>
       </div>
     {/if}
-
     <!-- Legal Relevance Score -->
     {#if variant === 'detailed'}
       <div class="bg-blue-50 p-3 rounded-lg">
@@ -252,18 +231,15 @@
     {/if}
   </div>
 </Card>
-
 <style>
   /* Confidence indicator animations */
   .yorha-panel-content .bg-green-100 { border-left: 4px solid #10b981; }
   .yorha-panel-content .bg-yellow-100 { border-left: 4px solid #f59e0b; }
   .yorha-panel-content .bg-red-100 { border-left: 4px solid #ef4444; }
-
   /* Theme weight bar animations */
   .bg-orange-500 {
     transition: width 0.8s ease-in-out;
   }
-
   /* Entity card hover effects */
   .bg-purple-50:hover {
     background-color: rgba(139, 92, 246, 0.15);

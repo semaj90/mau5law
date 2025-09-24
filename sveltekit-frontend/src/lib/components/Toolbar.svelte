@@ -1,35 +1,26 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import {  ,   } from "svelte";
-
-
-  	
-  
   	import { toolbarStore } from "../stores/canvas";
-  	import { 
-  		Bold, 
-  		Italic, 
-  		Underline, 
-  		Strikethrough, 
-  		AlignLeft, 
-  		AlignCenter, 
-  		AlignRight, 
-  		Palette, 
-  		MousePointer2, 
-  		Hand, 
-  		Square, 
-  		Circle, 
-  		RotateCcw, 
-  		RotateCw, 
-  		Copy, 
-  		Trash2, 
-  		ZoomIn, 
-  		ZoomOut 
+  	import {
+  		Bold,
+  		Italic,
+  		Underline,
+  		Strikethrough,
+  		AlignLeft,
+  		AlignCenter,
+  		AlignRight,
+  		Palette,
+  		MousePointer2,
+  		Hand,
+  		Square,
+  		Circle,
+  		RotateCcw,
+  		RotateCw,
+  		Copy,
+  		Trash2,
+  		ZoomIn,
+  		ZoomOut
   	} from 'lucide-svelte';
-
-  	
-
   	// Tool categories
   	const tools = [
   		{ id: 'select', icon: MousePointer2, label: 'Select', category: 'selection' },
@@ -39,20 +30,17 @@
   		{ id: 'circle', icon: Circle, label: 'Circle', category: 'shapes' },
   		{ id: 'draw', icon: Palette, label: 'Draw', category: 'drawing' }
   	];
-
   	const formatActions = [
   		{ id: 'bold', icon: Bold, label: 'Bold' },
   		{ id: 'italic', icon: Italic, label: 'Italic' },
   		{ id: 'underline', label: 'Underline' },
   		{ id: 'strikethrough', icon: Strikethrough, label: 'Strikethrough' }
   	];
-
   	const alignActions = [
   		{ id: 'left', icon: AlignLeft, label: 'Align Left' },
   		{ id: 'center', icon: AlignCenter, label: 'Align Center' },
   		{ id: 'right', icon: AlignRight, label: 'Align Right' }
   	];
-
   	// Reactive toolbar state
   	let selectedTool = $derived($toolbarStore.selectedTool);
   	let formatting = $derived($toolbarStore.formatting);
@@ -60,7 +48,6 @@
   	let canUndo = $derived($toolbarStore.canUndo);
   	let canRedo = $derived($toolbarStore.canRedo);
   	let zoom = $derived($toolbarStore.zoom);
-
   	function selectTool(toolId: string) {
   		toolbarStore.update(state => ({
   			...state,
@@ -90,7 +77,7 @@
   }
   	function handleColorChange(event: Event, type: 'color' | 'backgroundColor') {
   		const target = event.target as HTMLInputElement;
-  		const color = target.value;
+  		const color = target.valu;
   		toolbarStore.update(state => ({
   			...state,
   			formatting: {
@@ -136,7 +123,6 @@
   		ondispatch?.({ zoom: newZoom });
   }
 </script>
-
 <div class="container mx-auto px-4" role="toolbar" aria-label="Canvas tools">
 	<!-- Tool Selection -->
 	<div class="container mx-auto px-4">
@@ -154,9 +140,7 @@
 			{/each}
 		</div>
 	</div>
-
 	<div class="container mx-auto px-4"></div>
-
 	<!-- Text Formatting -->
 	<div class="container mx-auto px-4">
 		<div class="container mx-auto px-4">
@@ -173,7 +157,6 @@
 				</button>
 			{/each}
 		</div>
-
 		<div class="container mx-auto px-4">
 			{#each alignActions as action}
 				<button
@@ -188,7 +171,6 @@
 				</button>
 			{/each}
 		</div>
-
 		<div class="container mx-auto px-4">
 			<label class="container mx-auto px-4">
 				<input
@@ -199,7 +181,6 @@
 				/>
 				<span class="container mx-auto px-4" style="background-color: {formatting.color}"></span>
 			</label>
-
 			<label class="container mx-auto px-4">
 				<input
 					type="range"
@@ -213,9 +194,7 @@
 			</label>
 		</div>
 	</div>
-
 	<div class="container mx-auto px-4"></div>
-
 	<!-- Drawing Tools -->
 	<div class="container mx-auto px-4">
 		<div class="container mx-auto px-4">
@@ -228,7 +207,6 @@
 				/>
 				<span class="container mx-auto px-4" style="background-color: {drawing.strokeColor}"></span>
 			</label>
-
 			<label class="container mx-auto px-4">
 				<input
 					type="range"
@@ -242,9 +220,7 @@
 			</label>
 		</div>
 	</div>
-
 	<div class="container mx-auto px-4"></div>
-
 	<!-- Actions -->
 	<div class="container mx-auto px-4">
 		<div class="container mx-auto px-4">
@@ -257,7 +233,6 @@
 			>
 				<RotateCcw size={18} />
 			</button>
-
 			<button
 				class="container mx-auto px-4"
 				onclick={() => handleAction('redo')}
@@ -268,7 +243,6 @@
 				<RotateCw size={18} />
 			</button>
 		</div>
-
 		<div class="container mx-auto px-4">
 			<button
 				class="container mx-auto px-4"
@@ -278,7 +252,6 @@
 			>
 				<Copy size={18} />
 			</button>
-
 			<button
 				class="container mx-auto px-4"
 				onclick={() => handleAction('delete')}
@@ -289,9 +262,7 @@
 			</button>
 		</div>
 	</div>
-
 	<div class="container mx-auto px-4"></div>
-
 	<!-- Zoom Controls -->
 	<div class="container mx-auto px-4">
 		<div class="container mx-auto px-4">
@@ -303,9 +274,7 @@
 			>
 				<ZoomOut size={18} />
 			</button>
-
 			<span class="container mx-auto px-4">{zoom}%</span>
-
 			<button
 				class="container mx-auto px-4"
 				onclick={() => handleZoom(10)}
@@ -317,10 +286,9 @@
 		</div>
 	</div>
 </div>
-
 <style>
   /* @unocss-include */
-	.toolbar-container {;
+	.toolbar-container {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
@@ -361,9 +329,9 @@
 		transition: all 0.2s ease;
 		color: var(--text-primary);
 }
-	.tool-button:hover,
-	.format-button:hover,
-	.align-button:hover,
+	.tool-button: hover
+	.format-button: hover
+	.align-button: hover
 	.action-button:hover {
 		background: var(--bg-tertiary);
 }
@@ -373,9 +341,9 @@
 		background: var(--harvard-crimson);
 		color: var(--text-inverse);
 }
-	.tool-button:disabled,
-	.format-button:disabled,
-	.align-button:disabled,
+	.tool-button: disabled
+	.format-button: disabled
+	.align-button: disabled
 	.action-button:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
@@ -454,6 +422,3 @@
 			display: none;
 }}
 </style>
-
-
-

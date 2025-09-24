@@ -4,10 +4,8 @@
  * @property {string} email
  * @property {boolean} [isAdmin]
  */
-
 // Simple in-memory rate limiter for storage operations. Not persistent across restarts.
 const rateMap = new Map(); // userId -> array of timestamps
-
 export const StorageRateLimit = {
   /**
    * Check and increment rate for user
@@ -30,7 +28,6 @@ export const StorageRateLimit = {
     return true;
   }
 };
-
 /**
  * Require an authenticated session via `event.locals.auth.validate()` (Lucia pattern)
  * @param {import('@sveltejs/kit').RequestEvent} event
@@ -53,7 +50,6 @@ export async function requireAuthentication(event) {
     return null;
   }
 }
-
 /**
  * Check ownership of an object key. Allows user to operate on keys prefixed with `userId/` or if user is admin.
  * @param {AuthenticatedUser} user
@@ -65,7 +61,6 @@ export function checkOwnership(user, key) {
   if (!key) return false;
   return key.startsWith(`${user.id}/`);
 }
-
 export default {
   requireAuthentication,
   StorageRateLimit,

@@ -1,33 +1,28 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { PageData, ActionData } from './$types.js';
   import { onMount, onDestroy } from 'svelte';
   import { enhance } from '$app/forms';
   import { invalidateAll } from '$app/navigation';
-  
   // Enhanced-Bits orchestrated components
-  import { 
-    Button, 
-    Card, 
+  import {
+    Button,
+    Card,
     Input,
     Badge
   } from '$lib/components/ui/enhanced-bits';
-  import { 
+  import {
     OrchestratedCard,
     OrchestratedButton,
     getConfidenceClass
   } from '$lib/components/ui/orchestrated';
-  
   // Icons for Redis admin
-  import { 
+  import {
     Database, HardDrive, Activity, Zap, Trash2, Plus,
     RefreshCw, AlertCircle, CheckCircle, Clock, BarChart3,
     Settings, Eye, Key, Server, Cpu, Memory
   } from 'lucide-svelte';
-
   let { data, form }: { data: PageData; form: ActionData } = $props();
-  
   // Svelte 5 runes for admin interface state
   let selectedTab = $state<'overview' | 'keys' | 'performance' | 'tools'>('overview');
   let isAutoRefresh = $state(false);
@@ -39,33 +34,27 @@
   let selectedKey = $state<string | null>(null);
   let keyDetails = $state<any>(null);
   let isLoading = $state(false);
-
   // Derived state for filtered keys
   let filteredKeys = $derived(
     data.recentKeys.filter(item => item.includes(keyFilter.toLowerCase())
     )
   );
-
   // Redis connection status
   let connectionStatusColor = $derived(
     data.connectionStatus === 'connected' ? 'text-green-600' : 'text-red-600'
   );
-
   // Performance metrics colors
   function getMetricColor(value: number, threshold: number): string {
     return value >= threshold ? 'text-green-600' : 'text-yellow-600';
   }
-
   function getMemoryColor(efficiency: number): string {
     if (efficiency >= 80) return 'text-green-600';
     if (efficiency >= 60) return 'text-yellow-600';
     return 'text-red-600';
   }
-
   // Auto-refresh functionality
   function toggleAutoRefresh() {
     isAutoRefresh = !isAutoRefresh;
-    
     if (isAutoRefresh) {
       refreshInterval = setInterval(() => {
         invalidateAll();
@@ -75,19 +64,16 @@
       refreshInterval = null;
     }
   }
-
   // Manual refresh
   async function refreshData() {
     isLoading = true;
     await invalidateAll();
     isLoading = false;
   }
-
   // Key management
   async function viewKeyDetails(key: string) {
     selectedKey = key;
     isLoading = true;
-    
     try {
       const response = await fetch(`/api/redis/key/${encodeURIComponent(key)}`);
       if (response.ok) {
@@ -100,36 +86,30 @@
       isLoading = false;
     }
   }
-
   // Format bytes to human readable
   function formatBytes(bytes: string): string {
     if (typeof bytes === 'string' && bytes.includes('B')) {
-      return bytes;
+      return byte;
     }
     const size = parseFloat(bytes);
     const units = ['B', 'KB', 'MB', 'GB'];
     let unitIndex = 0;
-    let convertedSize = size;
-    
+    let convertedSize = siz;
     while (convertedSize >= 1024 && unitIndex < units.length - 1) {
       convertedSize /= 1024;
       unitIndex++;
     }
-    
     return `${convertedSize.toFixed(1)}${units[unitIndex]}`;
   }
-
   // Format uptime
   function formatUptime(seconds: number): string {
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
-    
     if (days > 0) return `${days}d ${hours}h ${mins}m`;
     if (hours > 0) return `${hours}h ${mins}m`;
     return `${mins}m`;
   }
-
   // Cleanup on destroy
   onDestroy(() => {
     if (refreshInterval) {
@@ -137,11 +117,9 @@
     }
   });
 </script>
-
 <svelte:head>
   <title>Redis Cache Administration - Legal AI Platform</title>
 </svelte:head>
-
 <div class="container mx-auto p-6 space-y-6">
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -154,10 +132,9 @@
         Performance management and cache administration
       </p>
     </div>
-    
     <div class="flex items-center gap-3">
       <!-- Connection Status -->
-      <Badge 
+      <Badge
         variant={data.connectionStatus === 'connected' ? 'default' : 'destructive'}
         class="gap-1"
       >
@@ -169,17 +146,15 @@
           Disconnected
         {/if}
       </Badge>
-      
       <!-- Auto Refresh Toggle -->
-      <Button 
-        variant="ghost" 
+      <Button
+        variant="ghost"
         size="sm"
         onclick={toggleAutoRefresh}
         class="gap-2"
       >
         <Activity class="w-4 h-4 {isAutoRefresh ? 'text-green-600' : ''}" />
         {isAutoRefresh ? 'Auto Refresh On' : 'Auto Refresh Off'}
-
       <!-- Manual Refresh -->
       <OrchestratedButton.Enhanced
         variant="ghost"
@@ -193,20 +168,17 @@
       </OrchestratedButton.Enhanced>
     </div>
   </div>
-
   <!-- Form Messages -->
   {#if form?.success}
     <div class="p-3 bg-green-50 border border-green-200 rounded-md text-green-800">
       {form.message}
     </div>
   {/if}
-  
   {#if form?.error}
     <div class="p-3 bg-red-50 border border-red-200 rounded-md text-red-800">
       {form.error}
     </div>
   {/if}
-
   <!-- Tab Navigation -->
   <div class="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
     {#each [
@@ -222,10 +194,8 @@
       >
         {@render tab.icon({ class: "w-4 h-4" })}
         {tab.label}
-
     {/each}
   </div>
-
   <!-- Overview Tab -->
   {#if selectedTab === 'overview'}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -241,7 +211,6 @@
           <p class="text-xs nes-text is-disabled">Role: {data.redisInfo.role}</p>
         </NesCardContent>
       </OrchestratedCard.Analysis>
-
       <!-- Memory Usage -->
       <OrchestratedCard.Analysis>
         <div.Content class="p-6 nes-container">
@@ -254,7 +223,6 @@
           <p class="text-xs nes-text is-disabled">Peak: {data.redisInfo.used_memory_peak}</p>
         </NesCardContent>
       </OrchestratedCard.Analysis>
-
       <!-- Operations -->
       <OrchestratedCard.Analysis>
         <div.Content class="p-6 nes-container">
@@ -267,7 +235,6 @@
           <p class="text-xs nes-text is-disabled">Total processed</p>
         </NesCardContent>
       </OrchestratedCard.Analysis>
-
       <!-- Uptime -->
       <OrchestratedCard.Analysis>
         <div.Content class="p-6 nes-container">
@@ -281,7 +248,6 @@
         </NesCardContent>
       </OrchestratedCard.Analysis>
     </div>
-
     <!-- Hit/Miss Statistics -->
     <OrchestratedCard.Analysis>
       <div.Header class="nes-container">
@@ -314,7 +280,6 @@
       </NesCardContent>
     </OrchestratedCard.Analysis>
   {/if}
-
   <!-- Keys Tab -->
   {#if selectedTab === 'keys'}
     <div class="space-y-6">
@@ -336,7 +301,6 @@
             placeholder="Filter keys..."
             class="max-w-md"
           />
-          
           <!-- Key List -->
           <div class="grid gap-2 max-h-96 overflow-y-auto">
             {#each filteredKeys as key}
@@ -356,7 +320,6 @@
                     onclick={() => viewKeyDetails(key.key)}
                   >
                     <Eye class="w-3 h-3" />
-
                   <form method="POST" action="?/deleteKey" use:enhance>
                     <input type="hidden" name="key" value={key.key} />
                     <Button
@@ -366,7 +329,6 @@
                       class="text-red-600 hover:bg-red-50"
                     >
                       <Trash2 class="w-3 h-3" />
-
                   </form>
                 </div>
               </div>
@@ -374,7 +336,6 @@
           </div>
         </NesCardContent>
       </OrchestratedCard.Analysis>
-
       <!-- Add New Key -->
       <OrchestratedCard.Analysis>
         <div.Header class="nes-container">
@@ -409,13 +370,11 @@
             <Button type="submit" class="gap-2">
               <Plus class="w-4 h-4" />
               Add Key
-
           </form>
         </NesCardContent>
       </OrchestratedCard.Analysis>
     </div>
   {/if}
-
   <!-- Performance Tab -->
   {#if selectedTab === 'performance'}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -444,7 +403,6 @@
           </div>
         </NesCardContent>
       </OrchestratedCard.Analysis>
-
       <OrchestratedCard.Analysis>
         <div.Header class="nes-container">
           <div.Title class="nes-container">Key Statistics</NesCardTitle>
@@ -472,7 +430,6 @@
       </OrchestratedCard.Analysis>
     </div>
   {/if}
-
   <!-- Tools Tab -->
   {#if selectedTab === 'tools'}
     <OrchestratedCard.Analysis>
@@ -499,9 +456,7 @@
           >
             <Trash2 class="w-4 h-4" />
             Flush All Cache
-
         </form>
-        
         <div class="text-sm nes-text is-disabled">
           <p>Last updated: {new Date(data.timestamp).toLocaleString()}</p>
         </div>

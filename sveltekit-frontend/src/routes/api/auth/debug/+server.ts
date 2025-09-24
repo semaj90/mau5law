@@ -1,5 +1,4 @@
 import type { RequestHandler } from './$types.js'
-
 export const GET: RequestHandler = async ({ locals }) => {
   const info = {
     hasUser: !!locals.user,

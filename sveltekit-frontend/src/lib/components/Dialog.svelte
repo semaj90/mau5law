@@ -1,27 +1,21 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { aiStore } from "$lib/stores/canvas";
-  	import {  , onMount  } from "svelte";
+  	import { onMount  } from "svelte";
   	import { quintOut } from 'svelte/easing';
   	import { fade, fly } from 'svelte/transition';
   	import { Bot, Send, User, X } from 'lucide-svelte';
-
   	interface Props {
   		title?: string;
   		open?: boolean;
   	}
-
   	let { title = 'AI Assistant', open = false }: Props = $props();
-
-  	
   let dialogElement = $state<HTMLElement | null>(null);
   	let promptInput: HTMLTextAreaElement;
   	let messagesContainer: HTMLElement;
-
   	// Vibe options
   	const vibes = [
   		{ id: 'professional', label: 'Professional', description: 'Formal and structured' },
@@ -30,7 +24,6 @@ https://svelte.dev/e/js_parse_error -->
   		{ id: 'dramatic', label: 'Dramatic', description: 'Engaging and vivid' },
   		{ id: 'technical', label: 'Technical', description: 'Detailed and precise' }
   	]);
-
   	// Reactive state
   	let selectedVibe = $derived($aiStore.selectedVibe);
   	let prompt = $derived($aiStore.prompt);
@@ -38,24 +31,20 @@ https://svelte.dev/e/js_parse_error -->
   	let isGenerating = $derived($aiStore.isGenerating);
   	let history = $derived($aiStore.history);
   let currentPrompt = $state('');
-
   	$effect(() => {
   		if (open) {
   			focusInput();
   		}
   	});
-
   	function focusInput() {
   		setTimeout(() => {
   			promptInput?.focus();
   		}, 100);
   	}
-
   	function handleClose() {
   		aiStore.update(state => ({ ...state, dialogOpen: false }));
-  		ondispatch?.();
+  		// ondispatch removed;
   	}
-
   	function handleKeydown(event: KeyboardEvent) {
   		if (event.key === 'Escape') {
   			handleClose();
@@ -63,91 +52,77 @@ https://svelte.dev/e/js_parse_error -->
   			handleSubmit();
   		}
   	}
-
   	function handleVibeChange(vibeId: string) {
   		aiStore.update(state => ({ ...state, selectedVibe: vibeId }));
   	}
-
   	async function handleSubmit() {
   		if (!currentPrompt.trim() || isGenerating) return;
-
   		const userMessage = {
   			id: crypto.randomUUID(),
-  			role: 'user',;
-  			content: currentPrompt.trim(),;
+  			role: 'user',
+  			content: currentPrompt.trim(),
   			timestamp: new Date().toISOString();
   		};
-
   		// Add user message to history
   		aiStore.update(state => ({
   			...state,
-  			isGenerating: true,
-  			prompt: currentPrompt.trim(),;
+  			isGenerating: true
+  			prompt: currentPrompt.trim(),
   			history: [...state.history, userMessage];
   		}));
-
   		// Clear input
   		currentPrompt = '';
-
   		try {
   			// Send request to AI API
   			const response = await fetch('/api/ai/suggest', {
-  				method: 'POST',;
+  				method: 'POST',
   				headers: {
   					'Content-Type': 'application/json'
   				},
-  				body: JSON.stringify({
-  					prompt: userMessage.content,;
-  					vibe: selectedVibe,;
+  				body: JSON.stringify({,
+  					prompt: userMessage.content,
+  					vibe: selectedVibe
   					context: 'canvas';
   				})
   			});
-
   			if (!response.ok) {
   				throw new Error('Failed to get AI response');
   			}
-
   			const data = await response.json();
-
   			const aiMessage = {
   				id: crypto.randomUUID(),
-  				role: 'assistant',;
-  				content: data.response || 'Sorry, I could not generate a response.',;
+  				role: 'assistant',
+  				content: data.response || 'Sorry, I could not generate a response.',
   				timestamp: new Date().toISOString();
   			};
-
   			// Add AI response to history
   			aiStore.update(state => ({
   				...state,
-  				isGenerating: false,
-  				response: data.response,;
+  				isGenerating: false
+  				response: data.response,
   				history: [...state.history, aiMessage];
   			}));
-
   			// Emit event for parent component
   			ondispatch?.({
-  				prompt: userMessage.content,;
-  				response: data.response,;
-  				vibe: selectedVibe;
+  				prompt: userMessage.content,
+  				response: data.response,
+  				vibe: selectedVib;
   			});
-
   		} catch (error) {
   			console.error('AI request failed:', error);
   			const errorMessage = {
   				id: crypto.randomUUID(),
-  				role: 'assistant',;
-  				content: 'Sorry, I encountered an error. Please try again.',;
+  				role: 'assistant',
+  				content: 'Sorry, I encountered an error. Please try again.',
   				timestamp: new Date().toISOString(),
   				isError: true;
   			};
-
   			aiStore.update(state => ({
   				...state,
-  				isGenerating: false,
+  				isGenerating: false
   				history: [...state.history, errorMessage];
   			}));
   		}
-
   		// Scroll to bottom of messages
   		setTimeout(() => {
   			if (messagesContainer) {
@@ -155,23 +130,20 @@ https://svelte.dev/e/js_parse_error -->
   			}
   		}, 100);
   	}
-
   	function clearHistory() {
   		aiStore.update(state => ({
   			...state,
-  			history: [],;
-  			prompt: '',;
+  			history: [],
+  			prompt: '',
   			response: '';
   		}));
   	}
-
   	function formatTimestamp(timestamp: string) {
   		return new Date(timestamp).toLocaleTimeString('en-US', {
-  			hour: '2-digit',;
+  			hour: '2-digit',
   			minute: '2-digit';
   		});
   	}
-
   	// Close on outside click
   	function handleBackdropClick(event: MouseEvent) {
   		if (event.target === event.currentTarget) {
@@ -179,9 +151,8 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	}
 </script>
-
 {#if open}
-	<div 
+	<div
 		class="mx-auto px-4 max-w-7xl"
 		transitifade={{ duration: 200  "
 		onclick={() => handleBackdropClick()}
@@ -191,7 +162,7 @@ https://svelte.dev/e/js_parse_error -->
 		aria-labelledby="dialog-title"
 		tabindex={-1}
 	>
-		<div 
+		<div
 			class="mx-auto px-4 max-w-7xl"
 			bind:this={dialogElement}
 			/* transition removed */
@@ -200,7 +171,6 @@ https://svelte.dev/e/js_parse_error -->
 					<X size={20} />
 				</button>
 			</div>
-
 			<!-- Vibe Selection -->
 			<div class="mx-auto px-4 max-w-7xl">
 				<h3 class="mx-auto px-4 max-w-7xl">Select AI Vibe:</h3>
@@ -217,7 +187,6 @@ https://svelte.dev/e/js_parse_error -->
 					{/each}
 				</div>
 			</div>
-
 			<!-- Messages -->
 			<div class="mx-auto px-4 max-w-7xl" bind:this={messagesContainer}>
 				{#if history.length === 0}
@@ -260,7 +229,6 @@ https://svelte.dev/e/js_parse_error -->
 						</div>
 					{/each}
 				{/if}
-
 				{#if isGenerating}
 					<div class="mx-auto px-4 max-w-7xl">
 						<div class="mx-auto px-4 max-w-7xl">
@@ -279,7 +247,6 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 				{/if}
 			</div>
-
 			<!-- Input -->
 			<div class="mx-auto px-4 max-w-7xl">
 				<div class="mx-auto px-4 max-w-7xl">
@@ -317,10 +284,10 @@ https://svelte.dev/e/js_parse_error -->
 		</div>
 	</div>
 {/if}
-
 <style>
 	.dialog-backdrop {
 		position: fixed;
+d;
 		top: 0;
 		left: 0;
 		right: 0;
@@ -332,7 +299,6 @@ https://svelte.dev/e/js_parse_error -->
 		z-index: 2000;
 		padding: 1rem;
 	}
-
 	.dialog-container {
 		width: 100%;
 		max-width: 600px;
@@ -344,23 +310,20 @@ https://svelte.dev/e/js_parse_error -->
 		flex-direction: column;
 		overflow: hidden;
 	}
-
 	.dialog-header {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		padding: 1.5rem;
 		border-bottom: 1px solid var(--pico-muted-border-color);
 		background: var(--pico-background-color);
 	}
-
 	.dialog-title {
 		margin: 0;
 		font-size: 1.25rem;
 		font-weight: 600;
 		color: var(--pico-color);
 	}
-
 	.close-button {
 		display: flex;
 		align-items: center;
@@ -374,31 +337,26 @@ https://svelte.dev/e/js_parse_error -->
 		transition: background 0.2s ease;
 		color: var(--pico-muted-color);
 	}
-
 	.close-button:hover {
 		background: var(--pico-secondary-background);
 		color: var(--pico-color);
 	}
-
 	.vibe-section {
 		padding: 1rem 1.5rem;
 		border-bottom: 1px solid var(--pico-muted-border-color);
 		background: var(--pico-background-color);
 	}
-
 	.vibe-title {
 		margin: 0 0 0.75rem;
 		font-size: 0.875rem;
 		font-weight: 600;
 		color: var(--pico-color);
 	}
-
 	.vibe-options {
 		display: flex;
 		gap: 0.5rem;
 		flex-wrap: wrap;
 	}
-
 	.vibe-button {
 		padding: 0.5rem 1rem;
 		background: var(--pico-secondary-background);
@@ -409,63 +367,52 @@ https://svelte.dev/e/js_parse_error -->
 		transition: all 0.2s ease;
 		font-size: 0.8rem;
 	}
-
 	.vibe-button:hover {
 		background: var(--pico-primary-background);
 		border-color: var(--pico-primary);
 		color: var(--pico-primary);
 	}
-
 	.vibe-button.active {
 		background: var(--pico-primary);
 		border-color: var(--pico-primary);
 		color: var(--pico-primary-inverse);
 	}
-
 	.messages-container {
 		flex: 1;
 		overflow-y: auto;
 		padding: 1rem 1.5rem;
 		max-height: 400px;
 	}
-
 	.welcome-message {
 		text-align: center;
 		padding: 2rem 1rem;
 		color: var(--pico-muted-color);
 	}
-
 	.welcome-icon {
 		margin-bottom: 1rem;
 		color: var(--pico-primary);
 	}
-
 	.welcome-message h3 {
 		margin: 0 0 1rem;
 		color: var(--pico-color);
 	}
-
 	.welcome-message ul {
 		text-align: left;
 		max-width: 300px;
 		margin: 1rem auto 0;
 	}
-
 	.message {
 		display: flex;
 		gap: 0.75rem;
 		margin-bottom: 1.5rem;
 	}
-
 	.message.user {
-		flex-direction: row-reverse;
+		flex-direction: row-rever;
 	}
-
 	.message.error .message-content {
 		background: var(--pico-del-background);
 		border-color: var(--pico-del-color);
 	}
-
 	.message-avatar {
 		display: flex;
 		align-items: center;
@@ -477,35 +424,29 @@ https://svelte.dev/e/js_parse_error -->
 		color: var(--pico-primary);
 		flex-shrink: 0;
 	}
-
 	.message.user .message-avatar {
 		background: var(--pico-secondary-background);
 		color: var(--pico-color);
 	}
-
 	.message-content {
 		flex: 1;
 		min-width: 0;
 	}
-
 	.message-header {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		margin-bottom: 0.5rem;
 	}
-
 	.message-role {
 		font-size: 0.8rem;
 		font-weight: 600;
 		color: var(--pico-color);
 	}
-
 	.message-time {
 		font-size: 0.75rem;
 		color: var(--pico-muted-color);
 	}
-
 	.message-text {
 		background: var(--pico-background-color);
 		border: 1px solid var(--pico-muted-border-color);
@@ -514,13 +455,11 @@ https://svelte.dev/e/js_parse_error -->
 		line-height: 1.5;
 		color: var(--pico-color);
 	}
-
 	.message.user .message-text {
 		background: var(--pico-primary);
 		color: var(--pico-primary-inverse);
 		border-color: var(--pico-primary);
 	}
-
 	.typing-indicator {
 		display: flex;
 		align-items: center;
@@ -530,12 +469,10 @@ https://svelte.dev/e/js_parse_error -->
 		border: 1px solid var(--pico-muted-border-color);
 		border-radius: 12px;
 	}
-
 	.typing-dots {
 		display: flex;
 		gap: 0.25rem;
 	}
-
 	.typing-dots span {
 		width: 8px;
 		height: 8px;
@@ -543,27 +480,22 @@ https://svelte.dev/e/js_parse_error -->
 		border-radius: 50%;
 		animation: typing 1.4s infinite ease-in-out;
 	}
-
 	.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
 	.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-
 	.typing-text {
 		font-size: 0.875rem;
 		color: var(--pico-muted-color);
 	}
-
 	.input-section {
 		padding: 1.5rem;
 		border-top: 1px solid var(--pico-muted-border-color);
 		background: var(--pico-background-color);
 	}
-
 	.input-container {
 		display: flex;
 		gap: 0.75rem;
 		align-items: flex-end;
 	}
-
 	.input-container textarea {
 		flex: 1;
 		resize: none;
@@ -574,13 +506,11 @@ https://svelte.dev/e/js_parse_error -->
 		color: var(--pico-color);
 		line-height: 1.4;
 	}
-
-	.input-container textarea:focus {;
+	.input-container textarea:focus {
 		outline: none;
 		border-color: var(--pico-primary);
 		box-shadow: 0 0 0 2px var(--pico-primary-background);
 	}
-
 	.send-button {
 		display: flex;
 		align-items: center;
@@ -595,40 +525,34 @@ https://svelte.dev/e/js_parse_error -->
 		transition: all 0.2s ease;
 		flex-shrink: 0;
 	}
-
-	.send-button:hover:not(:disabled) {
+	.send-button:hover:not(:disabled) {,
 		background: var(--pico-primary-hover);
 		transform: translateY(-1px);
 	}
-
 	.send-button:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
 		transform: none;
 	}
-
 	.input-help {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		margin-top: 0.75rem;
 		font-size: 0.75rem;
 		color: var(--pico-muted-color);
 	}
-
 	.clear-button {
 		background: transparent;
 		border: none;
 		color: var(--pico-primary);
 		cursor: pointer;
 		font-size: 0.75rem;
-		text-decoration: underline;
+		text-decoration: underli;
 	}
-
 	.clear-button:hover {
 		color: var(--pico-primary-hover);
 	}
-
 	@keyframes typing {
 		0%, 60%, 100% {
 			transform: scale(1);
@@ -639,52 +563,41 @@ https://svelte.dev/e/js_parse_error -->
 			opacity: 1;
 		}
 	}
-
 	/* Custom scrollbar */
 	.messages-container::-webkit-scrollbar {
 		width: 6px;
 	}
-
 	.messages-container::-webkit-scrollbar-track {
 		background: var(--pico-background-color);
 	}
-
 	.messages-container::-webkit-scrollbar-thumb {
 		background: var(--pico-muted-border-color);
 		border-radius: 3px;
 	}
-
 	.messages-container::-webkit-scrollbar-thumb:hover {
 		background: var(--pico-primary);
 	}
-
 	/* Responsive */
 	@media (max-width: 768px) {
 		.dialog-container {
 			max-height: 90vh;
 			margin: 0.5rem;
 		}
-
 		.dialog-header,
 		.vibe-section,
 		.input-section {
 			padding: 1rem;
 		}
-
 		.messages-container {
 			padding: 1rem;
 		}
-
 		.vibe-options {
 			gap: 0.25rem;
 		}
-
 		.vibe-button {
 			padding: 0.4rem 0.8rem;
 			font-size: 0.75rem;
 		}
 	}
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

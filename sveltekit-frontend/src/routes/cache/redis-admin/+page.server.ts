@@ -1,17 +1,14 @@
 import type { PageServerLoad, Actions } from './$types.js';
 import { error, fail } from '@sveltejs/kit';
 import { redisService } from '$lib/server/redis-service';
-
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {
     throw error(401, 'Authentication required');
   }
-
-  // Check if user has admin privileges (implement your own auth logic);
+  // Check if user has admin privileges (implement your own auth logic)
   if (!isAdminUser(locals.user)) {
     throw error(403, 'Admin privileges required');
   }
-
   try {
     // Get Redis information and statistics
     const [redisInfo, keyStats, recentKeys, connectionStatus, performanceMetrics] =
@@ -22,7 +19,6 @@ export const load: PageServerLoad = async ({ locals }) => {
         checkRedisConnection(),
         getPerformanceMetrics()
       ]);
-
     return {
       redisInfo,
       keyStats,
@@ -33,8 +29,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     };
   } catch (err) {
     console.error('Error loading Redis admin data:', err);
-
-    // Return mock data for development/demo;
+    // Return mock data for development/demo
     return {
       redisInfo: {
         version: '7.2.3',
@@ -71,18 +66,16 @@ export const load: PageServerLoad = async ({ locals }) => {
         ops_per_sec: 142,
         latency_avg: 0.85,
         memory_efficiency: 76.3
-      },;
+      },
       timestamp: new Date().toISOString()
     };
   }
 };
-
 export const actions: Actions = {
   flushCache: async ({ locals }) => {
     if (!locals.user || !isAdminUser(locals.user)) {
       return fail(403, { error: 'Admin privileges required' });
     }
-
     try {
       // await redisService.flushall(); // Method not available in current redis service
       console.log('Redis cache flushed by admin:', locals.user.email);
@@ -92,19 +85,15 @@ export const actions: Actions = {
       return fail(500, { error: 'Failed to clear cache' });
     }
   },
-
   deleteKey: async ({ request, locals }) => {
     if (!locals.user || !isAdminUser(locals.user)) {
       return fail(403, { error: 'Admin privileges required' });
     }
-
     const data = await request.formData();
     const key = data.get('key') as string;
-
     if (!key) {
       return fail(400, { error: 'Key is required' });
     }
-
     try {
       await redisService.del(key);
       console.log(`Redis key deleted by admin: ${key}`);
@@ -114,21 +103,17 @@ export const actions: Actions = {
       return fail(500, { error: 'Failed to delete key' });
     }
   },
-
   setKey: async ({ request, locals }) => {
     if (!locals.user || !isAdminUser(locals.user)) {
       return fail(403, { error: 'Admin privileges required' });
     }
-
     const data = await request.formData();
     const key = data.get('key') as string;
     const value = data.get('value') as string;
     const ttl = parseInt(data.get('ttl') as string) || null;
-
     if (!key || !value) {
       return fail(400, { error: 'Key and value are required' });
     }
-
     try {
       if (ttl && ttl > 0) {
         await redisService.setex(key, ttl, value);
@@ -143,7 +128,6 @@ export const actions: Actions = {
     }
   }
 };
-
 async function getRedisInfo() {
   try {
     // Get Redis server info - replace with actual Redis client calls
@@ -152,10 +136,9 @@ async function getRedisInfo() {
     throw new Error('Failed to get Redis info');
   }
 }
-
 async function getKeyStatistics() {
   try {
-    // Get key statistics - replace with actual implementation;
+    // Get key statistics - replace with actual implementation
     return {
       total_keys: await redisService.dbsize() || 0,
       expired_count: 0,
@@ -167,7 +150,6 @@ async function getKeyStatistics() {
     throw new Error('Failed to get key statistics');
   }
 }
-
 async function getRecentKeys() {
   try {
     // Get recent keys - replace with actual implementation
@@ -175,14 +157,13 @@ async function getRecentKeys() {
     return keys?.slice(0, 10).map(key => ({
       key,
       type: 'string',
-      ttl: -1,;
+      ttl: -1,
       size: '1KB'
     })) || [];
   } catch (error) {
     return [];
   }
 }
-
 async function checkRedisConnection() {
   try {
     await redisService.ping();
@@ -191,10 +172,9 @@ async function checkRedisConnection() {
     return 'disconnected';
   }
 }
-
 async function getPerformanceMetrics() {
   try {
-    // Calculate performance metrics from Redis INFO;
+    // Calculate performance metrics from Redis INFO
     return {
       hit_rate: 85.0,
       miss_rate: 15.0,
@@ -206,7 +186,6 @@ async function getPerformanceMetrics() {
     throw new Error('Failed to get performance metrics');
   }
 }
-
 function isAdminUser(user: any): boolean {
   // Implement your admin check logic
   return user?.role === 'admin' || user?.email?.includes('admin') || true; // Allow all for demo

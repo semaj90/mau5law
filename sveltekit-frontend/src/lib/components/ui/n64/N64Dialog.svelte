@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount,  , tick  } from "svelte";
   import { fade, fly, scale } from 'svelte/transition';
   import type { Snippet } from 'svelte';
@@ -45,7 +44,6 @@
     webgpuMode?: boolean;
     renderQuality?: 'low' | 'medium' | 'high' | 'ultra';
   }
-
   let { children,
     title,
     description,
@@ -85,32 +83,25 @@
     webgpuMode = false,
     renderQuality = 'medium';
    }: Props = $props();
-
-  
-
   let dialogElement: HTMLDialogElement;
   let backdropElement: HTMLDivElement;
   let contentElement: HTMLElement;
   let previouslyFocusedElement: HTMLElement | null = null;
   let audioContext: AudioContext | null = null;
   let spatialPanner: PannerNode | null = null;
-
   // Performance state
   let webglContext: WebGLRenderingContext | null = null;
   let webgpuDevice: GPUDevice | null = null;
   let frameCount = $state(0);
   let fogDensity = $state(0.5);
-
   // Focus trap elements
   let focusableElements: HTMLElement[] = [];
   let firstFocusableElement: HTMLElement | null = null;
   let lastFocusableElement: HTMLElement | null = null;
-
   // Generate unique IDs
   const componentId = `n64-dialog-${Math.random.toString-substr(2, 9)}`;
   const titleId = `${componentId}-title`;
   const descId = `${componentId}-description`;
-
   // Dynamic CSS classes based on props
   const dialogClasses = $derived(() => {
     const classes = ['n64-dialog'];
@@ -134,7 +125,6 @@
     if (reducedMotion) classes.push('reduced-motion');
     return classes.join(' ');
   });
-
   // Dynamic backdrop classes
   const backdropClasses = $derived(() => {
     const classes = ['n64-dialog-backdrop'];
@@ -144,17 +134,15 @@
     if (reducedMotion) classes.push('reduced-motion');
     return classes.join(' ');
   });
-
   // Dynamic inline styles
   const dialogStyles = $derived(() => {
     return `
       --fog-density: ${fogDensity};
-      --animation-duration: ${animationDuration}ms;
+      --animation-duration: ${animationDuration}m;
       --frame-count: ${frameCount};
       --fog-animation-time: ${frameCount * 0.02};
     `;
   });
-
   // Watch open state changes
   $effect(() => {
     if (open) {
@@ -163,7 +151,6 @@
       closeDialog();
     }
   });
-
   // Initialize audio and GPU contexts
   $effect(() => {
     (async () => {
@@ -179,17 +166,14 @@ if (spatialAudio && typeof window !== 'undefined') {
         console.warn('N64Dialog: Spatial audio initialization failed:', error);
       }
     }
-
     // Initialize GPU contexts
     if (gpuAcceleration) {
       await initializeGPUContext();
     }
-
     // Start animation loop for fog effects
     if (fogEffect !== 'none' || materialType === 'pbr') {
       requestAnimationFrame(animationLoop);
     }
-
     // Setup global escape key handler
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && closeOnEscape && open) {
@@ -197,9 +181,7 @@ if (spatialAudio && typeof window !== 'undefined') {
         handleClose();
       }
     };
-
     document.addEventListener('keydown', handleEscape);
-
     return () => {
       document.removeEventListener('keydown', handleEscape);
       if (audioContext) {
@@ -208,7 +190,6 @@ if (spatialAudio && typeof window !== 'undefined') {
     };
     })();
   });
-
   async function initializeGPUContext() {
     if (webgpuMode && 'gpu' in navigator) {
       try {
@@ -221,7 +202,6 @@ if (spatialAudio && typeof window !== 'undefined') {
         console.warn('N64Dialog: WebGPU initialization failed, falling back to WebGL');
       }
     }
-
     // Fallback to WebGL
     if (!webgpuDevice) {
       const canvas = document.createElement('canvas');
@@ -231,7 +211,6 @@ if (spatialAudio && typeof window !== 'undefined') {
       }
     }
   }
-
   function animationLoop() {
     frameCount++;
     // Update fog density based on time and effect level
@@ -245,7 +224,6 @@ if (spatialAudio && typeof window !== 'undefined') {
       requestAnimationFrame(animationLoop);
     }
   }
-
   function getFogIntensity(effect: string): number {
     const intensityMap = {
       'none': 0,
@@ -256,56 +234,43 @@ if (spatialAudio && typeof window !== 'undefined') {
     };
     return intensityMap[effect] || 0.5;
   }
-
   async function openDialog() {
     if (!dialogElement) return;
-
     // Store previously focused element for restoration
     if (restoreFocus) {
       previouslyFocusedElement = document.activeElement as HTMLElement;
     }
-
     // Show dialog
     if (modal) {
       dialogElement.showModal();
     } else {
       dialogElement.show();
     }
-
     // Setup focus trap
     if (trapFocus) {
       await tick();
       setupFocusTrap();
       focusFirstElement();
     }
-
     // Play open sound
     playSpatialSound('open', 440, 0.1);
-
-    ondispatch?.();
+    // ondispatch removed;
   }
-
   function closeDialog() {
     if (!dialogElement) return;
-
     // Close dialog
     dialogElement.close();
-
     // Restore focus
     if (restoreFocus && previouslyFocusedElement) {
       previouslyFocusedElement.focus();
       previouslyFocusedElement = null;
     }
-
     // Play close sound
     playSpatialSound('close', 330, 0.08);
-
-    ondispatch?.();
+    // ondispatch removed;
   }
-
   function setupFocusTrap() {
     if (!contentElement) return;
-
     const focusableSelectors = [
       'button:not([disabled])',
       'input:not([disabled])',
@@ -314,15 +279,12 @@ if (spatialAudio && typeof window !== 'undefined') {
       'a[href]',
       '[tabindex]:not([tabindex="-1"])'
     ];
-
     focusableElements = Array.from(
       contentElement.querySelectorAll(focusableSelectors.join(', '))
     ) as HTMLElement[];
-
     firstFocusableElement = focusableElements[0] || null;
     lastFocusableElement = focusableElements[focusableElements.length - 1] || null;
   }
-
   function focusFirstElement() {
     if (firstFocusableElement) {
       firstFocusableElement.focus();
@@ -330,13 +292,10 @@ if (spatialAudio && typeof window !== 'undefined') {
       contentElement.focus();
     }
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (!trapFocus || !open) return;
-
     if (event.key === 'Tab') {
       if (focusableElements.length === 0) return;
-
       if (event.shiftKey) {
         // Shift + Tab: Move to previous element
         if (document.activeElement === firstFocusableElement) {
@@ -352,63 +311,54 @@ if (spatialAudio && typeof window !== 'undefined') {
       }
     }
   }
-
   function handleBackdropClick(event: MouseEvent) {
     if (closeOnOutsideClick && event.target === backdropElement) {
       handleClose();
     }
   }
-
   function handleClose() {
     open = false;
   }
-
   function playSpatialSound(type: string, frequency: number, volume: number) {
     if (!spatialAudio || !audioContext || !spatialPanner || reducedMotion) return;
-
     try {
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-
       oscillator.type = 'triangle';
       oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
       gainNode.gain.setValueAtTime(0, audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.02);
       gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
-
       oscillator.connect(gainNode);
       gainNode.connect(spatialPanner);
-
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.3);
     } catch (error) {
       console.warn('N64Dialog: Spatial sound playback failed:', error);
     }
   }
-
   // Animation transition functions
   function getTransitionFunction(node: Element) {
     if (reducedMotion) {
       return fade(node, { duration: 0 });
     }
-
     switch (animationType) {
       case 'fly':
-        return fly(node, { 
-          duration: animationDuration, ;
-          y: -50,;
+        return fly(node, {
+          duration: animationDuration
+          y: -50,
           opacity: 0 ;
         });
       case 'scale':
-        return scale(node, { 
-          duration: animationDuration, ;
-          start: 0.8,;
+        return scale(node, {
+          duration: animationDuration
+          start: 0.8,
           opacity: 0 ;
         });
       case 'slide':
-        return fly(node, { 
-          duration: animationDuration, ;
-          x: -100,;
+        return fly(node, {
+          duration: animationDuration
+          x: -100,
           opacity: 0 ;
         });
       default:
@@ -418,7 +368,6 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
   }
 </script>
-
 <!-- Dialog backdrop -->
 {#if open}
   <div
@@ -433,7 +382,6 @@ if (spatialAudio && typeof window !== 'undefined') {
     <div class="fog-layer fog-layer-1"></div>
     <div class="fog-layer fog-layer-2"></div>
     <div class="fog-layer fog-layer-3"></div>
-    
     <!-- Depth of field blur layers -->
     {#if depthOfField}
       <div class="dof-layer dof-near"></div>
@@ -441,7 +389,6 @@ if (spatialAudio && typeof window !== 'undefined') {
     {/if}
   </div>
 {/if}
-
 <!-- Dialog element -->
 {#if open}
   <dialog
@@ -460,23 +407,19 @@ if (spatialAudio && typeof window !== 'undefined') {
       <div class="n64-dialog-overlay" aria-hidden="true">
         <!-- Texture filtering layer -->
         <div class="texture-filter-layer filter-{textureFiltering}"></div>
-        
         <!-- Anti-aliasing layer -->
         {#if antiAliasing !== 'none'}
           <div class="aa-layer aa-{antiAliasing}"></div>
         {/if}
-        
         <!-- Internal fog layer -->
         {#if fogEffect !== 'none'}
           <div class="internal-fog-layer"></div>
         {/if}
-        
         <!-- Shadow layer -->
         {#if shadowCasting}
           <div class="shadow-layer"></div>
         {/if}
       </div>
-
       <!-- Dialog content -->
       <article
         bind:this={contentElement}
@@ -494,14 +437,12 @@ if (spatialAudio && typeof window !== 'undefined') {
             {/if}
           </header>
         {/if}
-
         <!-- Dialog body -->
         <div class="n64-dialog-body">
           {#if children}
             {@render children()}
           {/if}
         </div>
-
         <!-- Close button -->
         <button
           type="button"
@@ -515,9 +456,9 @@ if (spatialAudio && typeof window !== 'undefined') {
     </div>
   </dialog>
 {/if}
-
-<style>/* Dialog backdrop */ .n64-dialog-backdrop {;
+<style>/* Dialog backdrop */ .n64-dialog-backdrop {
     position: fixed;
+d;
     top: 0;
     left: 0;
     right: 0;
@@ -527,7 +468,6 @@ if (spatialAudio && typeof window !== 'undefined') {
 /* N64 perspective setup */ perspective: 2000px;
     perspective-origin: center center;
   }
-
   .n64-dialog-backdrop.backdrop-blur {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -540,17 +480,14 @@ if (spatialAudio && typeof window !== 'undefined') {
     bottom: 0;
     pointer-events: none;
   }
-
   .fog-layer-1 {
 background: linear-gradient( 45deg, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.3)) 0%, transparent 50%, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.2)) 100% );
     animation: fog-drift-1 12s ease-in-out infinite;
   }
-
   .fog-layer-2 {
 background: radial-gradient( ellipse at 30% 70%, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.4)) 0%, transparent 60% );
     animation: fog-drift-2 15s ease-in-out infinite;
   }
-
   .fog-layer-3 {
 background: radial-gradient( ellipse at 70% 30%, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.25)) 0%, transparent 70% );
     animation: fog-drift-3 18s ease-in-out infinite;
@@ -569,7 +506,6 @@ background: radial-gradient( ellipse at 70% 30%, rgba(var(--fog-color-rgb, 100, 
     position: absolute;
     pointer-events: none;
   }
-
   .dof-near {
     top: 0;
     left: 0;
@@ -578,7 +514,6 @@ background: radial-gradient( ellipse at 70% 30%, rgba(var(--fog-color-rgb, 100, 
 background: linear-gradient( to bottom, rgba(var(--fog-color-rgb, 100, 150, 255), 0.1) 0%, transparent 100% );
     filter: blur(2px);
   }
-
   .dof-far {
     bottom: 0;
     left: 0;
@@ -589,6 +524,7 @@ background: linear-gradient( to top, rgba(var(--fog-color-rgb, 100, 150, 255), 0
   }
 /* Dialog element */ .n64-dialog {
     position: fixed;
+d;
     top: 0;
     left: 0;
     width: 100vw;
@@ -602,11 +538,9 @@ background: linear-gradient( to top, rgba(var(--fog-color-rgb, 100, 150, 255), 0
     align-items: center;
     justify-content: center;
   }
-
   .n64-dialog::backdrop {
     display: none; /* Use custom backdrop */
   }
-
   .n64-dialog-container {
     position: relative;
     max-width: 90vw;
@@ -631,12 +565,10 @@ box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 3px 6px rgba(255, 255, 255, 
     border-color: #505050;
 box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1);
   }
-
   .material-phong .n64-dialog-content {
 background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 50%, #0a0a0a 100%);
     border-color: #707070;
   }
-
   .material-pbr .n64-dialog-content {
 background: linear-gradient(145deg, hsl(calc(var(--fog-animation-time, 0) * 30 + 240), 20%, 16%) 0%, hsl(calc(var(--fog-animation-time, 0) * 30 + 240), 25%, 10%) 50%, hsl(calc(var(--fog-animation-time, 0) * 30 + 240), 30%, 6%) 100%);
     border-color: hsl(calc(var(--fog-animation-time, 0) * 30 + 240), 50%, 50%);
@@ -644,15 +576,12 @@ background: linear-gradient(145deg, hsl(calc(var(--fog-animation-time, 0) * 30 +
 /* Mesh complexity variations */ .mesh-low .n64-dialog-content {
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
   }
-
   .mesh-medium .n64-dialog-content {
 clip-path: polygon( 0% 0%, 95% 0%, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0% 95%, 0% 5% );
   }
-
   .mesh-high .n64-dialog-content {
 clip-path: polygon( 0% 0%, 90% 0%, 95% 3%, 100% 10%, 100% 90%, 97% 95%, 90% 100%, 10% 100%, 5% 97%, 0% 90%, 0% 10%, 3% 5% );
   }
-
   .mesh-ultra .n64-dialog-content {
 clip-path: polygon( 0% 0%, 85% 0%, 90% 2%, 95% 5%, 98% 10%, 100% 15%, 100% 85%, 98% 90%, 95% 95%, 90% 98%, 85% 100%, 15% 100%, 10% 98%, 5% 95%, 2% 90%, 0% 85%, 0% 15%, 2% 10%, 5% 5%, 10% 2% );
   }
@@ -675,22 +604,18 @@ clip-path: polygon( 0% 0%, 85% 0%, 90% 2%, 95% 5%, 98% 10%, 100% 15%, 100% 85%, 
 /* Texture filtering effects */ .filter-nearest .texture-filter-layer {
 background: repeating-linear-gradient( 0deg, transparent 0px, rgba(255, 255, 255, 0.02) 1px, transparent 2px ), repeating-linear-gradient( 90deg, transparent 0px, rgba(255, 255, 255, 0.02) 1px, transparent 2px );
   }
-
   .filter-bilinear .texture-filter-layer {
 background: radial-gradient( circle at 25% 25%, rgba(255, 255, 255, 0.03) 0%, transparent 40% ), radial-gradient( circle at 75% 75%, rgba(255, 255, 255, 0.03) 0%, transparent 40% );
   }
-
   .filter-trilinear .texture-filter-layer {
 background: conic-gradient( from 0deg at 50% 50%, rgba(255, 215, 0, 0.02), rgba(0, 255, 65, 0.02), rgba(255, 0, 65, 0.02), rgba(0, 127, 255, 0.02), rgba(255, 215, 0, 0.02) );
   }
-
   .filter-anisotropic .texture-filter-layer {
 background: linear-gradient( calc(var(--fog-animation-time, 0) * 10deg + 45deg), rgba(255, 215, 0, 0.03) 0%, transparent 30%, rgba(0, 255, 65, 0.03) 50%, transparent 70%, rgba(255, 0, 65, 0.03) 100% );
   }
 /* Anti-aliasing layers */ .aa-fxaa .aa-layer {
 background: linear-gradient(45deg, rgba(255, 255, 255, 0.008) 0%, transparent 50%), linear-gradient(-45deg, rgba(255, 255, 255, 0.008) 0%, transparent 50%);
   }
-
   .aa-msaa .aa-layer {
 background: radial-gradient( circle at top left, rgba(255, 255, 255, 0.01) 0%, transparent 20% ), radial-gradient( circle at top right, rgba(255, 255, 255, 0.01) 0%, transparent 20% ), radial-gradient( circle at bottom left, rgba(255, 255, 255, 0.01) 0%, transparent 20% ), radial-gradient( circle at bottom right, rgba(255, 255, 255, 0.01) 0%, transparent 20% );
   }
@@ -709,7 +634,6 @@ background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rg
     padding-bottom: 16px;
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
   }
-
   .n64-dialog-title {
     font-size: 16px;
     font-weight: normal;
@@ -719,7 +643,6 @@ background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rg
     margin: 0 0 8px 0;
     text-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
   }
-
   .n64-dialog-description {
     font-size: 12px;
     color: #b0b0b0;
@@ -746,29 +669,23 @@ background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rg
     font-size: 16px;
     cursor: pointer;
     z-index: 12;
-    
     display: flex;
     align-items: center;
     justify-content: center;
-    
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    
     transform: perspective(100px) rotateX(2deg);
 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
   }
-
   .n64-dialog-close:hover {
     background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
     border-color: #707070;
     color: #ffffff;
     transform: perspective(100px) rotateX(0deg) translateY(-1px);
   }
-
   .n64-dialog-close:active {
     transform: perspective(100px) rotateX(3deg) translateY(1px);
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.1);
   }
-
   .n64-dialog-close:focus-visible {
     outline: 2px solid #ffd700;
     outline-offset: 2px;
@@ -777,26 +694,21 @@ box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.
     background: #1a1a1a;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   }
-
   .lighting-gouraud .n64-dialog-content {
     background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
   }
-
   .lighting-phong .n64-dialog-content {
 background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
   }
-
   .lighting-blinn-phong .n64-dialog-content {
 background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, transparent 40%), radial-gradient(ellipse at 75% 75%, rgba(255, 255, 255, 0.08) 0%, transparent 60%), linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
   }
 /* Quality optimizations */ .quality-low .texture-filter-layer, .quality-low .aa-layer {
     display: none;
   }
-
   .quality-medium .internal-fog-layer {
     opacity: 0.7;
   }
-
   .quality-ultra {
     filter: contrast(1.1) brightness(1.05);
   }
@@ -807,25 +719,21 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
   }
-
   .webgpu-active .n64-dialog-content {
     image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
+    image-rendering: crisp-edge;
   }
 /* Mobile optimizations */ .mobile-optimized .n64-dialog-container {
     max-width: 95vw;
     max-height: 95vh;
   }
-
   .mobile-optimized .n64-dialog-content {
     padding: 16px;
     min-width: 280px;
   }
-
   .mobile-optimized .n64-dialog-title {
     font-size: 14px;
   }
-
   .mobile-optimized .n64-dialog-body {
     font-size: 11px;
   }
@@ -840,21 +748,18 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     66% { transform: translateX(0px) translateY(10px); }
     100% { transform: translateX(-10px) translateY(0px); }
   }
-
   @keyframes fog-drift-2 {
     0% { transform: translateX(5px) translateY(5px); }
     33% { transform: translateX(-8px) translateY(0px); }
     66% { transform: translateX(3px) translateY(-8px); }
     100% { transform: translateX(5px) translateY(5px); }
   }
-
   @keyframes fog-drift-3 {
     0% { transform: translateX(0px) translateY(-3px); }
     33% { transform: translateX(8px) translateY(5px); }
     66% { transform: translateX(-5px) translateY(0px); }
     100% { transform: translateX(0px) translateY(-3px); }
   }
-
   @keyframes internal-fog-drift {
     0% { opacity: 0.7; transform: translateY(0px); }
     50% { opacity: 1; transform: translateY(-2px); }

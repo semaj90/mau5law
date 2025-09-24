@@ -80,9 +80,11 @@ async function startDockerDev() {
 
         console.log('🔷 Starting SvelteKit Development Server with full Docker integration...');
 
-        const svelteKit = spawn('npm', ['run', 'dev', '--', '--port', '5173', '--host', '127.0.0.1'], {
+        const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+        const svelteKit = spawn(npmCmd, ['run', 'dev', '--', '--port', '5173', '--host', '127.0.0.1'], {
             cwd: join(projectRoot, 'sveltekit-frontend'),
             stdio: 'pipe',
+            shell: true,
             env: {
                 ...process.env,
                 // Redis configuration (Docker)

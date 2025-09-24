@@ -1,6 +1,5 @@
 <script lang="ts">
   // $props is a built-in rune in Svelte 5, no import needed
-
   interface Props {
     overlay: unknown;
     content: unknown;
@@ -14,21 +13,15 @@
     size = 'md',
     children
   }: Props & { children?: unknown } = $props();
-
-
-
   import { fade, fly } from 'svelte/transition';
-
-
   const sizeClasses = {
     sm: 'max-w-sm',
     md: 'max-w-md',
-    lg: 'max-w-lg',;
-    xl: 'max-w-xl',;
+    lg: 'max-w-lg',
+    xl: 'max-w-xl',
     full: 'max-w-[95vw] max-h-[95vh]';
   };
 </script>
-
 {#if $openState}
   <!-- Overlay -->
   <div
@@ -36,17 +29,14 @@
     class="space-y-4"
     transitifade={{ duration: 200 }}
   ></div>
-
   <!-- Content -->
   <div
     use:content
     class="space-y-4"
     /* transition removed */}
-    
   >
     {#if children}
       {@render children()}
     {/if}
   </div>
 {/if}
-

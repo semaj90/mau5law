@@ -1,11 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { debounce } from '$lib/utils/debounce';
   import { Plus, Tag, X } from 'lucide-svelte';
-  import {   } from "svelte";
   import { scale } from 'svelte/transition';
-
   // Props using Svelte 5 syntax
   let {
     tags = [],
@@ -22,36 +19,28 @@
     allowCustomTags?: boolean;
     readonly?: boolean;
   } = $props();
-
-  
-
   // State using Svelte 5 syntax
   let inputValue = $state('');
   let showSuggestions = $state(false);
   let inputElement: HTMLInputElement;
   let suggestionsContainer: HTMLElement;
   let activeIndex = $state(-1);
-
   let filteredSuggestions = $derived(
     availableTags
       .filter((tag) => !tags.includes(tag) && tag.toLowerCase().includes(inputValue.toLowerCase()))
       .slice(0, 5)
   );
-
   let suggestions = $derived(filteredSuggestions);
-
   const debouncedSearch = debounce(async (query: string) => {
     ondispatch?.(query);
-
     // Also fetch suggestions from Qdrant API
     if (query.length > 1) {
       try {
         const response = await fetch('/api/qdrant/tag', {
-          method: 'POST',;
-          headers: { 'Content-Type': 'application/json' },;
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query, limit: 5 }),
         });
-
         if (response.ok) {
           const data = await response.json();
           const apiSuggestions = data.suggestions.map((s: unknown) => s.tag);
@@ -63,43 +52,32 @@
       }
     }
   }, 300);
-
   function handleInput() {
     showSuggestions = inputValue.length > 0;
     activeIndex = -1;
     debouncedSearch(inputValue);
   }
-
   function addTag(tag: string) {
     if (!tag.trim()) return;
-
     const trimmedTag = tag.trim();
-
     if (tags.includes(trimmedTag)) return;
     if (tags.length >= maxTags) return;
-
     const newTags = [...tags, trimmedTag];
-    tags = newTags;
-
+    tags = newTag;
     ondispatch?.(newTags);
     ondispatch?.(trimmedTag);
-
     inputValue = '';
     showSuggestions = false;
     activeIndex = -1;
   }
-
   function removeTag(tag: string) {
     const newTags = tags.filter((t) => t !== tag);
-    tags = newTags;
-
+    tags = newTag;
     ondispatch?.(newTags);
     ondispatch?.(tag);
   }
-
   function handleKeyDown(event: KeyboardEvent) {
     if (readonly) return;
-
     switch (event.key) {
       case 'Enter':
         event.preventDefault();
@@ -109,23 +87,19 @@
           addTag(inputValue);
         }
         break;
-
       case 'ArrowDown':
         event.preventDefault();
         activeIndex = Math.min(activeIndex + 1, suggestions.length - 1);
         break;
-
       case 'ArrowUp':
         event.preventDefault();
         activeIndex = Math.max(activeIndex - 1, -1);
         break;
-
       case 'Escape':
         showSuggestions = false;
         activeIndex = -1;
         inputElement?.blur();
         break;
-
       case 'Backspace':
         if (!inputValue && tags.length > 0) {
           removeTag(tags[tags.length - 1]);
@@ -133,28 +107,23 @@
         break;
     }
   }
-
   function handleSuggestionClick(tag: string) {
     addTag(tag);
     inputElement?.focus();
   }
-
   function handleClickOutside(event: MouseEvent) {
     if (!suggestionsContainer?.contains(event.target as Node)) {
       showSuggestions = false;
       activeIndex = -1;
     }
   }
-
   function handleFocus() {
     if (inputValue.length > 0) {
       showSuggestions = true;
     }
   }
 </script>
-
 <svelte:window onclick={handleClickOutside} />
-
 <div class="mx-auto px-4 max-w-7xl" class:readonly>
   <div class="mx-auto px-4 max-w-7xl">
     {#each tags as tag (tag)}
@@ -171,7 +140,6 @@
         {/if}
       </div>
     {/each}
-
     {#if !readonly && tags.length < maxTags}
       <div class="mx-auto px-4 max-w-7xl" bind:this={suggestionsContainer}>
         <input
@@ -185,7 +153,6 @@
           {placeholder}
           aria-label="Add new tag"
         />
-
         {#if showSuggestions && suggestions.length > 0}
           <div class="mx-auto px-4 max-w-7xl" role="listbox">
             {#each suggestions as suggestion, index (suggestion)}
@@ -205,7 +172,6 @@
         {/if}
       </div>
     {/if}
-
     {#if !readonly && allowCustomTags && inputValue.trim() && !suggestions.includes(inputValue.trim())}
       <button
         type="button"
@@ -218,72 +184,61 @@
       </button>
     {/if}
   </div>
-
   {#if tags.length >= maxTags}
     <div class="mx-auto px-4 max-w-7xl" role="status" aria-live="polite">
       Maximum {maxTags} tags allowed
     </div>
   {/if}
 </div>
-
 <style>
-  .tag-list {;
+  .tag-list {
     width: 100%;
   }
-
   .tag-container {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     align-items: center;
   }
-
   .tag {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
     padding: 0.25rem 0.5rem;
-    background-color: #dbeafe;
+    background-color: #dbeaf;
     color: #1e40af;
     border-radius: 9999px;
     font-size: 0.875rem;
-    border: 1px solid #bfdbfe;
-    transition: all 0.2s;
+    border: 1px solid #bfdbf;
+    transition: all 0.2;
   }
-
   .tag:hover {
-    background-color: #bfdbfe;
+    background-color: #bfdbf;
   }
-
   .tag-text {
     font-weight: 500;
   }
-
   .tag-remove {
     margin-left: 0.25rem;
     padding: 0.125rem;
     border-radius: 9999px;
     color: #2563eb;
-    transition: all 0.15s;
+    transition: all 0.15;
     border: none;
     background: none;
     cursor: pointer;
   }
-
-  .tag-remove:hover {
+  .tag-remove: hover {
     background-color: #93c5fd;
     color: #1e40af;
   }
-
   .tag-remove:focus {
     outline: none;
     box-shadow: 0 0 0 2px #3b82f6;
   }
-
   .tag-input-container {
     position: relative;
   }
-
   .tag-input {
     padding: 0.375rem 0.75rem;
     border: 1px solid #d1d5db;
@@ -292,13 +247,11 @@
     background-color: white;
     min-width: 8rem;
   }
-
   .tag-input:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
   }
-
   .suggestions {
     position: absolute;
     top: 100%;
@@ -313,7 +266,6 @@
     overflow-y: auto;
     z-index: 50;
   }
-
   .suggestion {
     width: 100%;
     padding: 0.5rem 0.75rem;
@@ -322,22 +274,19 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.15s;
+    transition: all 0.15;
     border: none;
     background: none;
     cursor: pointer;
   }
-
-  .suggestion:hover,
+  .suggestion: hover
   .suggestionfocus {
     background-color: #eff6ff;
     outline: none;
   }
-
   .suggestion.active {
     background-color: #eff6ff;
   }
-
   .add-custom-tag {
     display: inline-flex;
     align-items: center;
@@ -347,27 +296,23 @@
     color: #2563eb;
     border: 1px dashed #93c5fd;
     border-radius: 0.375rem;
-    transition: all 0.15s;
+    transition: all 0.15;
     background: none;
     cursor: pointer;
   }
-
   .add-custom-tag:hover {
     color: #1e40af;
     border-color: #3b82f6;
   }
-
   .add-custom-tag:focus {
     outline: none;
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
   }
-
   .max-tags-message {
     font-size: 0.75rem;
     color: #6b7280;
     margin-top: 0.25rem;
   }
-
   .readonly .tag {
     background-color: #f3f4f6;
     color: #374151;

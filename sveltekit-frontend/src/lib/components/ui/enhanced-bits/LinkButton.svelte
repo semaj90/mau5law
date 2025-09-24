@@ -2,7 +2,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import Button from './Button.svelte';
-
   interface Props {
     href: string;
     replace?: boolean;
@@ -13,7 +12,6 @@
     onclick?: (event: MouseEvent) => void;
     children?: any;
   }
-
   let {
     href,
     replace = false,
@@ -22,18 +20,15 @@
     disabled = false,
     class: className = '',
     onclick,
-    children;
+    childre;
   }: Props = $props();
-
   function handleClick(event: MouseEvent) {
     if (disabled) return;
-
     event.preventDefault();
     goto(href, { replace });
     onclick?.(event);
   }
 </script>
-
 <Button
   {variant}
   {size}

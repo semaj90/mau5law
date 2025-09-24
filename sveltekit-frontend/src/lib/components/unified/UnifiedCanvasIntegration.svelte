@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be uniqu;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Unified Canvas Integration - Bridge Between Enhanced Evidence Canvas and Detective Board -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import { onMount } from 'svelte';
   	import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
   	import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
@@ -14,36 +13,32 @@ https://svelte.dev/e/attribute_duplicate -->
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  	import Button from '$lib/components/ui/button/Button.svelte';
+  	import Button from '$lib/components/ui/Button.svelte';
   	// Badge replaced with span - not available in enhanced-bits
   	import { Activity, Cpu, Database, Zap, Eye, Grid3X3, Canvas } from 'lucide-svelte';
-
   	// Svelte 5 state management
   	let viewMode = $state<'canvas' | 'board' | 'hybrid'>('hybrid');
   	let activeAnalysis = $state<any[]>([]);
   	let canvasEvidence = $state<any[]>([]);
   	let processingQueue = $state<any[]>([]);
   	let systemIntegration = $state({
-  		canvasActive: false,
-  		detectiveActive: false,
-  		aiProcessingActive: false,
-  		realTimeSync: false,
+  		canvasActive: false
+  		detectiveActive: false
+  		aiProcessingActive: false
+  		realTimeSync: false
   		gpuAcceleration: false
   	});
-
   	let performanceMetrics = $state({
   		canvasFrameRate: 60,
   		evidenceCount: 0,
   		processingLatency: 0,
   		memoryUsage: 0
   	});
-
   	// Component props
-  	let { 
+  	let {
   		caseId = 'unified-case-001',
   		evidence = [] as any[]
   	} = $props();
-
   	// Initialize unified integration
   	$effect(() => {
     (async () => {
@@ -51,7 +46,6 @@ await initializeUnifiedSystems();
   		startPerformanceMonitoring();
     })();
   });
-
   	async function initializeUnifiedSystems() {
   		console.log('🚀 Initializing Unified Canvas Integration for caseItem:', caseId);
   		// Initialize canvas system
@@ -72,7 +66,6 @@ await initializeUnifiedSystems();
   		// Start AI processing integration
   		systemIntegration.aiProcessingActive = true;
   	}
-
   	function startPerformanceMonitoring() {
   		setInterval(() => {
   			performanceMetrics.evidenceCount = evidence.length;
@@ -80,12 +73,10 @@ await initializeUnifiedSystems();
   			performanceMetrics.memoryUsage = Math.round(Math.random() * 30 + 40);
   		}, 2000);
   	}
-
   	function switchViewMode(mode: 'canvas' | 'board' | 'hybrid') {
-  		viewMode = mode;
+  		viewMode = mod;
   		console.log(`📋 Switched to ${mode} view mode`);
   	}
-
   	async function handleEvidenceAnalysis(evidenceItem: unknown) {
   		console.log('🔍 Starting evidence analysis:', evidenceItem.title);
   		// Add to processing queue
@@ -93,10 +84,10 @@ await initializeUnifiedSystems();
   		// Simulate AI processing
   		try {
   			const response = await fetch('/api/ai/analyze-evidence', {
-  				method: 'POST',;
+  				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify({
-  					evidenceId: evidenceItem.id,;
+  				body: JSON.stringify({,
+  					evidenceId: evidenceItem.id,
   					content: evidenceItem.description || evidenceItem.title,
   					forceReanalyze: false;
   				})
@@ -117,28 +108,23 @@ await initializeUnifiedSystems();
   			processingQueue = processingQueue.filter(item => item.id) !== evidenceItem.id);
   		}
   	}
-
   	function handleCanvasEvidenceUpdate(evidenceData: unknown[]) {
   		canvasEvidence = evidenceData;
   		console.log(`🎨 Canvas evidence updated: ${evidenceData.length} items`);
   	}
-
   	function handleDetectiveAnalysis(analysisData: unknown) {
   		console.log('🕵️ Detective analysis received:', analysisData);
   		activeAnalysis = [...activeAnalysis, analysisData];
   	}
-
   	// Integration bridge functions
   	async function syncCanvasToBoard() {
   		console.log('🔄 Syncing canvas data to detective board...');
   		// Convert canvas evidence to detective board format
   	}
-
   	async function syncBoardToCanvas() {
   		console.log('🔄 Syncing detective board data to canvas...');
   		// Convert detective board evidence to canvas format
   	}
-
   	async function processUnifiedAnalysis() {
   		console.log('🧠 Starting unified AI analysis across all evidence...');
   		// Combine evidence from both canvas and board
@@ -150,7 +136,6 @@ await initializeUnifiedSystems();
   		}
   	}
 </script>
-
 <!-- Unified Canvas Integration Interface -->
 <div class="w-full h-full flex flex-col bg-background">
 	<!-- Integration Header -->
@@ -166,7 +151,6 @@ await initializeUnifiedSystems();
 						<p class="text-sm nes-text is-disabled">Enhanced Canvas + Detective Board Integration</p>
 					</div>
 				</div>
-				
 				<div class="flex items-center gap-3">
 					<!-- View Mode Switcher -->
 					<div class="flex gap-1 bg-muted rounded-md p-1">
@@ -179,7 +163,6 @@ switchViewMode('canvas')}
 						>
 							<Canvas class="w-4 h-4 mr-1" />
 							Canvas
-
 						<Button class="bits-btn"
 							variant={viewMode === 'board' ? 'default' : 'ghost'}
 							size="sm"
@@ -189,7 +172,6 @@ switchViewMode('board')}
 						>
 							<Grid3X3 class="w-4 h-4 mr-1" />
 							Board
-
 						<Button class="bits-btn"
 							variant={viewMode === 'hybrid' ? 'default' : 'ghost'}
 							size="sm"
@@ -199,9 +181,7 @@ switchViewMode('hybrid')}
 						>
 							<Eye class="w-4 h-4 mr-1" />
 							Hybrid
-
 					</div>
-					
 					<!-- System Status Indicators -->
 					<div class="flex gap-2">
 						<Badge variant={systemIntegration.canvasActive ? "default" : "secondary"}>
@@ -217,7 +197,6 @@ switchViewMode('hybrid')}
 			</div>
 		</div>
 	</div>
-
 	<!-- Performance Metrics Bar -->
 	<div class="mb-4 nes-container">
 		<div class="yorha-panel-content py-3">
@@ -240,22 +219,17 @@ switchViewMode('hybrid')}
 						<span class="text-sm">Memory: {performanceMetrics.memoryUsage}%</span>
 					</div>
 				</div>
-				
 				<div class="flex gap-2">
 					<Button class="bits-btn" variant="ghost" size="sm" onclick={syncCanvasToBoard}>
 Sync Canvas → Board
-
 					<Button class="bits-btn" variant="ghost" size="sm" onclick={syncBoardToCanvas}>
 Sync Board → Canvas
-
 					<Button class="bits-btn" variant="default" size="sm" onclick={processUnifiedAnalysis}>
 Analyze All Evidence
-
 				</div>
 			</div>
 		</div>
 	</div>
-
 	<!-- Main Integration View -->
 	<div class="flex-1 relative">
 		{#if viewMode === 'canvas'}
@@ -294,7 +268,6 @@ Analyze All Evidence
 						/>
 					</div>
 				</div>
-				
 				<!-- Right Panel - Detective Board -->
 				<div class="h-full nes-container">
 					<div class="yorha-panel-header pb-2">
@@ -313,7 +286,6 @@ Analyze All Evidence
 			</div>
 		{/if}
 	</div>
-
 	<!-- Analysis Results Overlay -->
 	{#if activeAnalysis.length > 0}
 		<div class="absolute bottom-4 right-4 w-80">
@@ -345,26 +317,23 @@ Analyze All Evidence
 		</div>
 	{/if}
 </div>
-
 <style>
 	/* Enhanced integration styles */
-	:global(.unified-canvas-integration) {;
+	:global(.unified-canvas-integration) {
 		height: 100vh;
 		overflow: hidden;
 	}
-	
 	/* Performance indicator animations */
 	@keyframes pulse-green {
-		0%, 100% { 
+		0%, 100% {
 			background-color: rgb(34, 197, 94);
 			transform: scale(1);
 		}
-		50% { 
+		50% {
 			background-color: rgb(22, 163, 74);
 			transform: scale(1.05);
 		}
 	}
-	
 	.status-indicator-active {
 		animation: pulse-green 2s ease-in-out infinite;
 	}

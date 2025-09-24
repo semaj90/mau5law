@@ -2,12 +2,10 @@
  * Legal Case Management XState Machine
  * Type-Safe Implementation with Production-Grade Error Handling
  */
-
 import { createMachine, assign, fromPromise } from 'xstate';
 import type { CaseForm, TimelineEvent, LegalContext, CaseMetrics } from '../types/case.js';
 import type { User } from '../types/user.js';
 import crypto from "crypto";
-
 // Legal Case Events - Strongly Typed
 export type LegalCaseEvent =
   | { type: 'LOAD_CASE'; caseId: string }
@@ -33,61 +31,51 @@ export type LegalCaseEvent =
   | { type: 'RESTORE_CASE' }
   | { type: 'RETRY' }
   | { type: 'RESET' };
-
-// Legal Case Context - Production Ready;
+// Legal Case Context - Production Ready
 export interface LegalCaseContext {
   // Core case data
   currentCase: CaseForm | null;
   caseId: string | null;
   isLoading: boolean;
   lastUpdated: Date | null;
-
   // Case components
   evidence: EvidenceItem[];
-  id: 'legalCase',;
+  id: 'legalCase',
   timeline: TimelineEvent[];
   assignedUsers: CaseAssignment[];
-
   // AI and analysis
   aiAnalysis: AIAnalysisResult | null;
   isAnalyzing: boolean;
   analysisProgress: number;
   analysisQueue: AnalysisRequest[];
-
   // Legal context
   legalContext: LegalContext | null;
   jurisdiction: JurisdictionInfo | null;
   applicableLaws: LegalReference[];
   precedents: LegalPrecedent[];
-
   // Metrics and analytics
   caseMetrics: CaseMetrics | null;
   performanceData: PerformanceData;
   auditTrail: AuditLogEntry[];
-
   // UI state
   activeTab: string;
   selectedItems: string[];
   filters: CaseFilters;
   sortBy: SortOptions;
-
   // Error handling
   error: ErrorState | null;
   retryCount: number;
   lastError: Date | null;
-
   // Permissions and access
   currentUser: User | null;
   permissions: CasePermissions;
   accessLevel: AccessLevel;
-
   // Real-time collaboration
   collaborators: ActiveCollaborator[];
   notifications: CaseNotification[];
   conflictResolution: ConflictResolutionState;
 }
-
-// Supporting Types;
+// Supporting Types
 export interface EvidenceData {
   id?: string;
   type: 'document' | 'physical' | 'digital' | 'testimony' | 'expert_opinion';
@@ -98,7 +86,6 @@ export interface EvidenceData {
   custodyChain: CustodyEntry[];
   metadata: Record<string, unknown>;
 }
-
 export interface EvidenceItem extends EvidenceData {
   id: string;
   caseId: string;
@@ -107,7 +94,6 @@ export interface EvidenceItem extends EvidenceData {
   verifiedAt?: Date;
   challenges?: Challenge[];
 }
-
 export interface DocumentData {
   id?: string;
   title: string;
@@ -117,7 +103,6 @@ export interface DocumentData {
   confidentiality: 'public' | 'confidential' | 'attorney_client' | 'work_product';
   tags: string[];
 }
-
 export interface DocumentItem extends DocumentData {
   id: string;
   caseId: string;
@@ -129,7 +114,6 @@ export interface DocumentItem extends DocumentData {
   version: number;
   parentId?: string;
 }
-
 export type AnalysisType =
   | 'case_strength'
   | 'risk_assessment'
@@ -139,7 +123,6 @@ export type AnalysisType =
   | 'evidence_correlation'
   | 'legal_research';
 }
-
 export interface AIAnalysisResult {
   id: string;
   type: AnalysisType;
@@ -151,7 +134,6 @@ export interface AIAnalysisResult {
   createdAt: Date;
   processingTime: number;
 }
-
 export interface AnalysisRequest {
   id: string;
   type: AnalysisType;
@@ -160,7 +142,6 @@ export interface AnalysisRequest {
   requestedAt: Date;
   estimatedTime?: number;
 }
-
 export interface AnalysisSource {
   type: 'document' | 'precedent' | 'statute' | 'regulation';
   id: string;
@@ -168,7 +149,6 @@ export interface AnalysisSource {
   relevanceScore: number;
   excerpt: string;
 }
-
 export type AssignmentRole =
   | 'lead_attorney'
   | 'associate_attorney'
@@ -178,7 +158,6 @@ export type AssignmentRole =
   | 'consultant'
   | 'client';
 }
-
 export interface CaseAssignment {
   userId: string;
   user: User;
@@ -189,10 +168,8 @@ export interface CaseAssignment {
   responsibilities: string[];
   status: 'active' | 'inactive' | 'pending';
 }
-
 export type ExportFormat = 'pdf' | 'docx' | 'json' | 'csv' | 'zip';
 }
-
 export interface JurisdictionInfo {
   code: string;
   name: string;
@@ -200,7 +177,6 @@ export interface JurisdictionInfo {
   courts: CourtInfo[];
   statutes: StatuteReference[];
 }
-
 export interface CourtInfo {
   id: string;
   name: string;
@@ -209,7 +185,6 @@ export interface CourtInfo {
   jurisdiction: string;
   rules: RuleReference[];
 }
-
 export interface LegalReference {
   id: string;
   type: 'statute' | 'regulation' | 'case_law' | 'rule';
@@ -219,7 +194,6 @@ export interface LegalReference {
   relevanceScore: number;
   applicability: 'direct' | 'analogous' | 'distinguishable';
 }
-
 export interface LegalPrecedent extends LegalReference {
   court: string;
   date: Date;
@@ -227,26 +201,22 @@ export interface LegalPrecedent extends LegalReference {
   keyFacts: string[];
   legalPrinciples: string[];
 }
-
 export interface StatuteReference extends LegalReference {
   code: string;
   section: string;
   effectiveDate: Date;
   amendments: Amendment[];
 }
-
 export interface RuleReference extends LegalReference {
   ruleNumber: string;
   category: string;
   lastModified: Date;
 }
-
 export interface Amendment {
   date: Date;
   description: string;
   impact: 'major' | 'minor' | 'technical';
 }
-
 export interface PerformanceData {
   loadTime: number;
   queryTime: number;
@@ -255,7 +225,6 @@ export interface PerformanceData {
   cacheHitRatio: number;
   errorRate: number;
 }
-
 export interface AuditLogEntry {
   id: string;
   timestamp: Date;
@@ -266,7 +235,6 @@ export interface AuditLogEntry {
   newValue?: unknown;
   metadata: Record<string, unknown>;
 }
-
 export interface CaseFilters {
   status?: CaseForm['status'][];
   priority?: CaseForm['priority'][];
@@ -275,12 +243,10 @@ export interface CaseFilters {
   dateRange?: { start: Date; end: Date };
   tags?: string[];
 }
-
 export interface SortOptions {
   field: keyof CaseForm | 'lastActivity' | 'priority' | 'dueDate';
   direction: 'asc' | 'desc';
 }
-
 export interface ErrorState {
   code: string;
   message: string;
@@ -289,7 +255,6 @@ export interface ErrorState {
   recoverable: boolean;
   context?: Record<string, unknown>;
 }
-
 export interface CasePermissions {
   canView: boolean;
   canEdit: boolean;
@@ -300,10 +265,8 @@ export interface CasePermissions {
   canExport: boolean;
   canArchive: boolean;
 }
-
 export type AccessLevel = 'read_only' | 'contributor' | 'editor' | 'admin' | 'owner';
 }
-
 export interface ActiveCollaborator {
   userId: string;
   user: User;
@@ -311,7 +274,6 @@ export interface ActiveCollaborator {
   lastActivity: Date;
   currentSection?: string;
 }
-
 export interface CaseNotification {
   id: string;
   type: 'info' | 'warning' | 'error' | 'update';
@@ -321,19 +283,16 @@ export interface CaseNotification {
   read: boolean;
   actions?: NotificationAction[];
 }
-
 export interface NotificationAction {
   label: string;
   action: string;
   style?: 'primary' | 'secondary' | 'danger';
 }
-
 export interface ConflictResolutionState {
   hasConflicts: boolean;
   conflicts: DataConflict[];
   resolutionStrategy: 'auto' | 'manual' | 'latest_wins' | 'merge';
 }
-
 export interface DataConflict {
   field: string;
   localValue: unknown;
@@ -341,7 +300,6 @@ export interface DataConflict {
   timestamp: Date;
   userId: string;
 }
-
 export interface CustodyEntry {
   transferredTo: string;
   transferredFrom: string;
@@ -350,7 +308,6 @@ export interface CustodyEntry {
   condition: string;
   witnessed?: string;
 }
-
 export interface Challenge {
   id: string;
   type: 'authenticity' | 'relevance' | 'hearsay' | 'privilege' | 'chain_of_custody';
@@ -360,30 +317,28 @@ export interface Challenge {
   filedAt: Date;
   resolvedAt?: Date;
 }
-
-// XState Machine Implementation;
+// XState Machine Implementation
 export const legalCaseMachine = createMachine({
   id: 'legalCase',
   initial: 'idle',
-
   context: {
-    currentCase: null,
-    caseId: null,
-    isLoading: false,
-    lastUpdated: null,
+    currentCase: null
+    caseId: null
+    isLoading: false
+    lastUpdated: null
     evidence: [],
     documents: [],
     timeline: [],
     assignedUsers: [],
-    aiAnalysis: null,
-    isAnalyzing: false,
+    aiAnalysis: null
+    isAnalyzing: false
     analysisProgress: 0,
     analysisQueue: [],
-    legalContext: null,
-    jurisdiction: null,
+    legalContext: null
+    jurisdiction: null
     applicableLaws: [],
     precedents: [],
-    caseMetrics: null,
+    caseMetrics: null
     performanceData: {
       loadTime: 0,
       queryTime: 0,
@@ -395,56 +350,54 @@ export const legalCaseMachine = createMachine({
     auditTrail: [],
     activeTab: 'overview',
     selectedItems: [],
-    filters: Record<string, any>,
+    filters: { [key: string]: any },
     sortBy: { field: 'dateCreated', direction: 'desc' },
-    error: null,
+    error: null
     retryCount: 0,
-    lastError: null,
-    currentUser: null,
+    lastError: null
+    currentUser: null
     permissions: {
-      canView: false,
-      canEdit: false,
-      canDelete: false,
-      canAddEvidence: false,
-      canAddDocuments: false,
-      canAssignUsers: false,
-      canExport: false,
+      canView: false
+      canEdit: false
+      canDelete: false
+      canAddEvidence: false
+      canAddDocuments: false
+      canAssignUsers: false
+      canExport: false
       canArchive: false
     },
     accessLevel: 'read_only',
     collaborators: [],
     notifications: [],
     conflictResolution: {
-      hasConflicts: false,
+      hasConflicts: false
       conflicts: [],
       resolutionStrategy: 'auto'
     }
   },
-
   states: {
     idle: {
       on: {
         LOAD_CASE: {
           target: 'loading',
-          actions: assign({
+          actions: assign({,
             caseId: ({ event }) => event.caseId,
-            isLoading: true,
+            isLoading: true
             error: null
           })
         },
         CREATE_CASE: {
           target: 'creating',
-          actions: assign({
-            isLoading: true,
+          actions: assign({,
+            isLoading: true
             error: null
           })
         }
       }
     },
-
     loading: {
       invoke: {
-        id: 'loadCase',;
+        id: 'loadCase',
         src: fromPromise(async ({ input }: { input: { caseId: string } }) => {
           const response = await fetch(`/api/v1/cases/${input.caseId}`);
           if (!response.ok) {
@@ -455,23 +408,23 @@ export const legalCaseMachine = createMachine({
         input: ({ context }) => ({ caseId: context.caseId! }),
         onDone: {
           target: 'loaded',
-          actions: assign({
+          actions: assign({,
             currentCase: ({ event }) => event.output,
-            isLoading: false,
+            isLoading: false
             lastUpdated: new Date(),
-            error: null,
+            error: null
             retryCount: 0
           })
         },
         onError: {
           target: 'error',
-          actions: assign({
-            isLoading: false,
+          actions: assign({,
+            isLoading: false
             error: ({ event, context }) => ({
               code: 'LOAD_FAILED',
               message: (event.error as any)?.message || 'Failed to load case',
               timestamp: new Date(),
-              recoverable: true,
+              recoverable: true
               context: { caseId: context.caseId }
             }),
             lastError: new Date()
@@ -479,14 +432,13 @@ export const legalCaseMachine = createMachine({
         }
       }
     },
-
     creating: {
       invoke: {
         id: 'createCase',
         src: fromPromise(async ({ input }: { input: { caseData: Partial<CaseForm> } }) => {
           const response = await fetch('/api/v1/cases', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },;
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(input.caseData)
           });
           if (!response.ok) {
@@ -497,18 +449,18 @@ export const legalCaseMachine = createMachine({
         input: ({ event }) => ({ caseData: event.caseData }),
         onDone: {
           target: 'loaded',
-          actions: assign({
+          actions: assign({,
             currentCase: ({ event }) => event.output,
             caseId: ({ event }) => event.output.id,
-            isLoading: false,
+            isLoading: false
             lastUpdated: new Date(),
             error: null
           })
         },
         onError: {
           target: 'error',
-          actions: assign({
-            isLoading: false,
+          actions: assign({,
+            isLoading: false
             error: ({ event }) => ({
               code: 'CREATE_FAILED',
               message: (event.error as any)?.message || 'Failed to create case',
@@ -519,12 +471,11 @@ export const legalCaseMachine = createMachine({
         }
       }
     },
-
     loaded: {
       on: {
         UPDATE_CASE: {
           target: 'updating',
-          actions: assign({
+          actions: assign({,
             isLoading: true
           })
         },
@@ -564,12 +515,12 @@ export const legalCaseMachine = createMachine({
         },
         START_AI_ANALYSIS: {
           target: 'analyzing',
-          actions: assign({
-            isAnalyzing: true,
+          actions: assign({,
+            isAnalyzing: true
             analysisProgress: 0
           })
         },
-        SET_STATUS: {;
+        SET_STATUS: {
           actions: assign({
             currentCase: ({ context, event }) =>;
               context.currentCase ? {
@@ -578,7 +529,7 @@ export const legalCaseMachine = createMachine({
               } : null
           })
         },
-        SET_PRIORITY: {;
+        SET_PRIORITY: {
           actions: assign({
             currentCase: ({ context, event }) =>;
               context.currentCase ? {
@@ -589,14 +540,13 @@ export const legalCaseMachine = createMachine({
         }
       }
     },
-
     updating: {
       invoke: {
-        id: 'updateCase',;
+        id: 'updateCase',
         src: fromPromise(async ({ input }: { input: { caseId: string; updates: Partial<CaseForm> } }) => {
           const response = await fetch(`/api/v1/cases/${input.caseId}`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },;
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(input.updates)
           });
           if (!response.ok) {
@@ -610,16 +560,16 @@ export const legalCaseMachine = createMachine({
         }),
         onDone: {
           target: 'loaded',
-          actions: assign({
+          actions: assign({,
             currentCase: ({ event }) => event.output,
-            isLoading: false,
+            isLoading: false
             lastUpdated: new Date()
           })
         },
         onError: {
           target: 'loaded',
-          actions: assign({
-            isLoading: false,
+          actions: assign({,
+            isLoading: false
             error: ({ event }) => ({
               code: 'UPDATE_FAILED',
               message: (event.error as any)?.message || 'Failed to update case',
@@ -630,16 +580,15 @@ export const legalCaseMachine = createMachine({
         }
       }
     },
-
     analyzing: {
       invoke: {
-        id: 'runAnalysis',;
+        id: 'runAnalysis',
         src: fromPromise(async ({ input }: { input: { query: string; analysisType?: AnalysisType; caseId?: string } }) => {
           const response = await fetch('/api/v1/ai/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              query: input.query,;
+            body: JSON.stringify({,
+              query: input.query,
               type: input.analysisType || 'case_strength',
               caseId: input.caseId
             })
@@ -655,16 +604,16 @@ export const legalCaseMachine = createMachine({
         }),
         onDone: {
           target: 'loaded',
-          actions: assign({
+          actions: assign({,
             aiAnalysis: ({ event }) => event.output,
-            isAnalyzing: false,
+            isAnalyzing: false
             analysisProgress: 100
           })
         },
         onError: {
           target: 'loaded',
-          actions: assign({
-            isAnalyzing: false,
+          actions: assign({,
+            isAnalyzing: false
             analysisProgress: 0,
             error: ({ event }) => ({
               code: 'ANALYSIS_FAILED',
@@ -678,19 +627,18 @@ export const legalCaseMachine = createMachine({
       on: {
         CANCEL_AI_ANALYSIS: {
           target: 'loaded',
-          actions: assign({
-            isAnalyzing: false,
+          actions: assign({,
+            isAnalyzing: false
             analysisProgress: 0
           })
         }
       }
     },
-
     deleting: {
       invoke: {
         id: 'deleteCase',
         src: fromPromise(async ({ input }: { input: { caseId: string } }) => {
-          const response = await fetch(`/api/v1/cases/${input.caseId}`, {;
+          const response = await fetch(`/api/v1/cases/${input.caseId}`, {
             method: 'DELETE'
           });
           if (!response.ok) {
@@ -701,9 +649,9 @@ export const legalCaseMachine = createMachine({
         input: ({ context }) => ({ caseId: context.caseId! }),
         onDone: {
           target: 'idle',
-          actions: assign({
-            currentCase: null,
-            caseId: null,
+          actions: assign({,
+            currentCase: null
+            caseId: null
             evidence: [],
             documents: [],
             timeline: [],
@@ -712,7 +660,7 @@ export const legalCaseMachine = createMachine({
         },
         onError: {
           target: 'loaded',
-          actions: assign({
+          actions: assign({,
             error: ({ event }) => ({
               code: 'DELETE_FAILED',
               message: (event.error as any)?.message || 'Failed to delete case',
@@ -723,20 +671,19 @@ export const legalCaseMachine = createMachine({
         }
       }
     },
-
-    error: {;
+    error: {
       on: {
         RETRY: [;
           {
             target: 'loading',
             guard: ({ context }) => context.retryCount < 3,
-            actions: assign({
+            actions: assign({,
               retryCount: ({ context }) => context.retryCount + 1,
               error: null
             })
           },
           {
-            actions: assign({
+            actions: assign({,
               error: {
                 code: 'MAX_RETRIES_EXCEEDED',
                 message: 'Maximum retry attempts exceeded',
@@ -748,10 +695,10 @@ export const legalCaseMachine = createMachine({
         ],
         RESET: {
           target: 'idle',
-          actions: assign({
-            currentCase: null,
-            caseId: null,;
-            error: null,
+          actions: assign({,
+            currentCase: null
+            caseId: null
+            error: null
             retryCount: 0,
             isLoading: false
           })

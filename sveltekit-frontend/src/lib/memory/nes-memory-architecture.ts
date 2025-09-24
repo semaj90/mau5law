@@ -9,65 +9,57 @@
  * - Performance optimization with 8-bit addressing patterns
  * - Real-time garbage collection with legal priority scoring
  */
-
-// Nintendo NES Memory Map (authentic constraints);
+// Nintendo NES Memory Map (authentic constraints)
 const NES_MEMORY_MAP = {
-  // Internal RAM (2KB, mirrored to fill 8KB space);
+  // Internal RAM (2KB, mirrored to fill 8KB space)
   INTERNAL_RAM: {
     start: 0x0000,
     end: 0x07ff,
-    size: 2048,;
-    mirrored: true,
+    size: 2048,
+    mirrored: true
     mirrorSize: 8192, // $0000-$1FFF
   },
-
-  // PPU registers (for UI components);
+  // PPU registers (for UI components)
   PPU_REGISTERS: {
     start: 0x2000,
     end: 0x2007,
-    size: 8,;
-    mirrored: true,
+    size: 8,
+    mirrored: true
     mirrorSize: 8192, // $2000-$3FFF
   },
-
-  // APU and I/O registers (for audio/input);
+  // APU and I/O registers (for audio/input)
   APU_IO_REGISTERS: {
     start: 0x4000,
-    end: 0x4017,;
+    end: 0x4017,
     size: 24,
   },
-
-  // Expansion ROM (for legal plugins);
+  // Expansion ROM (for legal plugins)
   EXPANSION_ROM: {
     start: 0x4020,
-    end: 0x5fff,;
+    end: 0x5fff,
     size: 8160,
   },
-
-  // Save RAM (for persistent legal data);
+  // Save RAM (for persistent legal data)
   SAVE_RAM: {
     start: 0x6000,
-    end: 0x7fff,;
+    end: 0x7fff,
     size: 8192,
   },
-
-  // PRG-ROM (Program ROM - for legal processing logic);
+  // PRG-ROM (Program ROM - for legal processing logic)
   PRG_ROM: {
     start: 0x8000,
-    end: 0xffff,;
+    end: 0xffff,
     size: 32768,
-    bankSwitchable: true,
+    bankSwitchable: true
   },
-
-  // CHR-ROM (Character ROM - for legal document patterns);
+  // CHR-ROM (Character ROM - for legal document patterns)
   CHR_ROM: {
     start: 0x0000, // Separate PPU address space
-    end: 0x1fff,;
+    end: 0x1fff,
     size: 8192,
-    bankSwitchable: true,
+    bankSwitchable: true
   },
 } as const;
-
 export interface LegalDocument {
   readonly id: string;
   readonly type: 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent';
@@ -86,7 +78,6 @@ export interface LegalDocument {
     readonly vectorEmbedding?: Float32Array;
   };
 }
-
 export interface MemoryBank {
   readonly id: number;
   readonly type: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';
@@ -99,7 +90,6 @@ export interface MemoryBank {
   lastBankSwitch: number;
   compressionRatio: number;
 }
-
 export interface MemoryStats {
   readonly totalRAM: number;
   readonly usedRAM: number;
@@ -113,118 +103,108 @@ export interface MemoryStats {
   readonly documentCount: number;
   readonly averageAccessTime: number;
 }
-
 export class NESMemoryArchitecture {
   private readonly memoryBanks: Map<string, MemoryBank> = new Map();
   private activeBank: string = 'INTERNAL_RAM';
   private bankSwitchCount = 0;
   private gcCount = 0;
   private compressionWorker: Worker | null = null;
-
-  // NES-style memory management state;
+  // NES-style memory management state
   private readonly memoryState = {
     currentScanline: 0,
-    vblankActive: false,
+    vblankActive: false
     ppu2000: 0, // PPU control register
     ppu2001: 0, // PPU mask register
     ppu2002: 0, // PPU status register
     oamaddr: 0, // OAM address register
     ppuscroll: { x: 0, y: 0 }, // PPU scroll registers
-    ppuaddr: 0, // PPU address register;
+    ppuaddr: 0, // PPU address register
     ppudata: 0, // PPU data register
   } as const;
-
-  // Legal AI priority scoring;
+  // Legal AI priority scoring
   private readonly LEGAL_PRIORITIES = {
     critical: 255, // Active court case documents
     high: 192, // Evidence and contracts under review
     medium: 128, // Research documents and precedents
-    low: 64, // Archived or reference materials;
+    low: 64, // Archived or reference materials
     background: 32, // AI-generated summaries and metadata
   };
-
   constructor() {
     this.initializeMemoryBanks();
     this.setupCompressionWorker();
     this.startVBlankCycle();
   }
-
   private initializeMemoryBanks() {
-    // Internal RAM bank (2KB - most frequently accessed);
+    // Internal RAM bank (2KB - most frequently accessed)
     this.memoryBanks.set('INTERNAL_RAM', {
       id: 0,
       type: 'INTERNAL_RAM',
       startAddress: NES_MEMORY_MAP.INTERNAL_RAM.start,
       endAddress: NES_MEMORY_MAP.INTERNAL_RAM.end,
       size: NES_MEMORY_MAP.INTERNAL_RAM.size,
-      used: 0,;
+      used: 0,
       documents: new Map(),
-      isActive: true,
+      isActive: true
       lastBankSwitch: Date.now(),
       compressionRatio: 1.0,
     });
-
-    // CHR-ROM bank (8KB - legal document patterns);
+    // CHR-ROM bank (8KB - legal document patterns)
     this.memoryBanks.set('CHR_ROM', {
       id: 1,
       type: 'CHR_ROM',
       startAddress: NES_MEMORY_MAP.CHR_ROM.start,
       endAddress: NES_MEMORY_MAP.CHR_ROM.end,
       size: NES_MEMORY_MAP.CHR_ROM.size,
-      used: 0,;
+      used: 0,
       documents: new Map(),
-      isActive: true,
+      isActive: true
       lastBankSwitch: Date.now(),
       compressionRatio: 1.0,
     });
-
-    // PRG-ROM bank (32KB - legal processing logic);
+    // PRG-ROM bank (32KB - legal processing logic)
     this.memoryBanks.set('PRG_ROM', {
       id: 2,
       type: 'PRG_ROM',
       startAddress: NES_MEMORY_MAP.PRG_ROM.start,
       endAddress: NES_MEMORY_MAP.PRG_ROM.end,
       size: NES_MEMORY_MAP.PRG_ROM.size,
-      used: 0,;
+      used: 0,
       documents: new Map(),
-      isActive: true,
+      isActive: true
       lastBankSwitch: Date.now(),
       compressionRatio: 1.0,
     });
-
-    // Save RAM bank (8KB - persistent legal data);
+    // Save RAM bank (8KB - persistent legal data)
     this.memoryBanks.set('SAVE_RAM', {
       id: 3,
       type: 'SAVE_RAM',
       startAddress: NES_MEMORY_MAP.SAVE_RAM.start,
       endAddress: NES_MEMORY_MAP.SAVE_RAM.end,
       size: NES_MEMORY_MAP.SAVE_RAM.size,
-      used: 0,;
+      used: 0,
       documents: new Map(),
-      isActive: true,
+      isActive: true
       lastBankSwitch: Date.now(),
       compressionRatio: 1.0,
     });
-
-    // Expansion ROM bank (8KB - legal plugins);
+    // Expansion ROM bank (8KB - legal plugins)
     this.memoryBanks.set('EXPANSION_ROM', {
       id: 4,
       type: 'EXPANSION_ROM',
       startAddress: NES_MEMORY_MAP.EXPANSION_ROM.start,
       endAddress: NES_MEMORY_MAP.EXPANSION_ROM.end,
       size: NES_MEMORY_MAP.EXPANSION_ROM.size,
-      used: 0,;
+      used: 0,
       documents: new Map(),
       isActive: false, // Activated on-demand
       lastBankSwitch: Date.now(),
       compressionRatio: 1.0,
     });
   }
-
   private setupCompressionWorker(): void {
-    // Modern compression using browser APIs instead of inline worker;
+    // Modern compression using browser APIs instead of inline worker
     try {
-      // Check for compression support;
+      // Check for compression support
       if (typeof CompressionStream !== 'undefined') {
         // Use modern Compression Stream API
         console.log('Using modern CompressionStream API for legal document compression');
@@ -236,21 +216,17 @@ export class NESMemoryArchitecture {
       console.warn('Compression setup failed:', error);
     }
   }
-
   private startVBlankCycle(): void {
-    // NES-style VBlank cycle for memory management (60Hz);
+    // NES-style VBlank cycle for memory management (60Hz)
     setInterval(() => {
       (this.memoryState as any).vblankActive = true;
       this.performVBlankOperations();
-
       setTimeout(() => {
         (this.memoryState as any).vblankActive = false;
       }, 1350); // VBlank period (~1.35ms)
-
       (this.memoryState as any).currentScanline = ((this.memoryState as any).currentScanline + 1) % 262;
     }, 16.67); // ~60 FPS
   }
-
   private performVBlankOperations(): void {
     // Use VBlank period for memory management operations
     const currentScanline = (this.memoryState as any).currentScanline;
@@ -258,16 +234,14 @@ export class NESMemoryArchitecture {
       // Every second, check for garbage collection
       this.checkGarbageCollection();
     }
-
     if (currentScanline % 180 === 0) {
       // Every 3 seconds, optimize memory layout
       this.optimizeMemoryLayout();
     }
   }
-
   async allocateDocument(
     document: Omit<LegalDocument, 'lastAccessed'>,
-    data: ArrayBuffer,;
+    data: ArrayBuffer
     options: {
       preferredBank?: string;
       compress?: boolean;
@@ -279,29 +253,24 @@ export class NESMemoryArchitecture {
       compress = true,
       compressionLevel = 2,
     } = options;
-
     try {
       const bank = this.memoryBanks.get(preferredBank);
       if (!bank) {
         throw new Error(`Invalid memory bank: ${preferredBank}`);
       }
-
       // Check if document fits in bank
       let documentSize = data.byteLength;
       let finalData = data;
       let compressionRatio = 1.0;
-
       if (compress && this.compressionWorker) {
         const compressed = await this.compressDocument(data, document, compressionLevel);
         finalData = compressed.data;
         documentSize = compressed.data.byteLength;
         compressionRatio = compressed.ratio;
       }
-
       if (bank.used + documentSize > bank.size) {
         // Try garbage collection
         await this.garbageCollectBank(preferredBank);
-
         if (bank.used + documentSize > bank.size) {
           // Try bank switching if supported
           if ((bank.type === 'PRG_ROM' || bank.type === 'CHR_ROM') && NES_MEMORY_MAP[bank.type].bankSwitchable) {
@@ -315,24 +284,20 @@ export class NESMemoryArchitecture {
           }
         }
       }
-
       // Calculate legal priority
       const priority = this.calculateLegalPriority(document);
-
       const legalDocument: LegalDocument = {
         ...document,
         priority,
-        size: documentSize,
-        lastAccessed: Date.now(),;
-        compressed: compress,
+        size: documentSize
+        lastAccessed: Date.now(),
+        compressed: compress
         bankId: bank.id,
       };
-
       // Allocate document in bank
       bank.documents.set(document.id, legalDocument);
       bank.used += documentSize;
       bank.compressionRatio = bank.compressionRatio * 0.9 + compressionRatio * 0.1;
-
       console.log(
         `✅ Allocated ${document.type} document ${document.id} in ${preferredBank} (${this.formatBytes(documentSize)})`
       );
@@ -342,46 +307,38 @@ export class NESMemoryArchitecture {
       return false;
     }
   }
-
   private selectOptimalBank(document: Omit<LegalDocument, 'lastAccessed'>, size: number): string {
     // NES-style bank selection based on document characteristics
-
-    // Critical legal documents go to fast RAM;
+    // Critical legal documents go to fast RAM
     if (document.riskLevel === 'critical' || document.confidenceLevel > 0.9) {
       if (this.memoryBanks.get('INTERNAL_RAM')!.used + size <= this.memoryBanks.get('INTERNAL_RAM')!.size) {
         return 'INTERNAL_RAM';
       }
     }
-
-    // Contracts and evidence patterns go to CHR-ROM;
+    // Contracts and evidence patterns go to CHR-ROM
     if (document.type === 'contract' || document.type === 'evidence') {
       if (this.memoryBanks.get('CHR_ROM')!.used + size <= this.memoryBanks.get('CHR_ROM')!.size) {
         return 'CHR_ROM';
       }
     }
-
-    // Legal processing logic goes to PRG-ROM;
+    // Legal processing logic goes to PRG-ROM
     if (document.type === 'brief' || document.type === 'precedent') {
       if (this.memoryBanks.get('PRG_ROM')!.used + size <= this.memoryBanks.get('PRG_ROM')!.size) {
         return 'PRG_ROM';
       }
     }
-
-    // Persistent data goes to Save RAM;
+    // Persistent data goes to Save RAM
     if (document.metadata?.caseId) {
       if (this.memoryBanks.get('SAVE_RAM')!.used + size <= this.memoryBanks.get('SAVE_RAM')!.size) {
         return 'SAVE_RAM';
       }
     }
-
     // Default to PRG-ROM (largest bank)
     return 'PRG_ROM';
   }
-
   private calculateLegalPriority(document: Omit<LegalDocument, 'lastAccessed' | 'priority'>): number {
     let priority = this.LEGAL_PRIORITIES.medium; // Base priority
-
-    // Risk level adjustment;
+    // Risk level adjustment
     switch (document.riskLevel) {
       case 'critical':
         priority = this.LEGAL_PRIORITIES.critical;
@@ -396,48 +353,41 @@ export class NESMemoryArchitecture {
         priority = this.LEGAL_PRIORITIES.low;
         break;
     }
-
     // Confidence level adjustment (0-31 range)
     const confidenceBoost = Math.floor(document.confidenceLevel * 31);
     priority = Math.min(255, priority + confidenceBoost);
-
     // Document type adjustment
     if (document.type === 'evidence') priority += 16;
     if (document.type === 'contract') priority += 8;
     if (document.metadata?.aiGenerated) priority -= 16;
-
     return Math.max(0, Math.min(255, priority));
   }
-
   private async compressDocument(
-    data: ArrayBuffer,;
+    data: ArrayBuffer
     document: Omit<LegalDocument, 'lastAccessed'>,
     compressionLevel: number
   ): Promise<any> {
     if (!this.compressionWorker) {
       return { data, ratio: 1.0, priority: 128 };
     }
-
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error('Compression timeout'));
       }, 5000);
-
       this.compressionWorker!.onmessage = (e: any) => {
         clearTimeout(timeout);
         if (e.data.success) {
           resolve({
             data: e.data.compressedData,
-            ratio: e.data.compressionRatio,;
+            ratio: e.data.compressionRatio,
             priority: e.data.legalPriority,
           });
         } else {
           reject(new Error(e.data.error));
         }
       };
-
       this.compressionWorker!.postMessage({
-        documentData: data,
+        documentData: data
         legalContext: {
           type: document.type,
           riskLevel: document.riskLevel,
@@ -447,40 +397,33 @@ export class NESMemoryArchitecture {
       });
     });
   }
-
   private async performBankSwitch(bankName: string, document: Omit<LegalDocument, 'lastAccessed'>): Promise<boolean> {
     const bank = this.memoryBanks.get(bankName);
     const memoryMapEntry = NES_MEMORY_MAP[bank?.type as keyof typeof NES_MEMORY_MAP];
     if (!bank || !('bankSwitchable' in memoryMapEntry) || !memoryMapEntry.bankSwitchable) {
       return false;
     }
-
     try {
       // Find least important documents to swap out
       const documents = Array.from(bank.documents.entries());
       documents.sort((a, b) => {
         const [, docA] = a;
         const [, docB] = b;
-
-        // Sort by priority (low first) and last access time (old first);
+        // Sort by priority (low first) and last access time (old first)
         if (docA.priority !== docB.priority) {
           return docA.priority - docB.priority;
         }
         return docA.lastAccessed - docB.lastAccessed;
       });
-
       // Swap out documents until we have enough space
       const requiredSpace = document.size || 1024; // Estimate if not provided
       let freedSpace = 0;
       const swappedDocs: string[] = [];
-
       for (const [docId, doc] of documents) {
         if (freedSpace >= requiredSpace) break;
-
         // Don't swap critical documents
         if (doc.riskLevel === 'high' || doc.priority > 200) continue;
-
-        // Move to expansion ROM or remove if not critical;
+        // Move to expansion ROM or remove if not critical
         if (doc.riskLevel === 'low' || doc.riskLevel === 'medium') {
           await this.swapToExpansionROM(docId, doc);
           bank.documents.delete(docId);
@@ -489,10 +432,8 @@ export class NESMemoryArchitecture {
           swappedDocs.push(docId);
         }
       }
-
       this.bankSwitchCount++;
       bank.lastBankSwitch = Date.now();
-
       console.log(
         `🔄 Bank switch in ${bankName}: swapped ${swappedDocs.length} documents, freed ${this.formatBytes(freedSpace)}`
       );
@@ -502,11 +443,9 @@ export class NESMemoryArchitecture {
       return false;
     }
   }
-
   private async swapToExpansionROM(docId: string, document: LegalDocument): Promise<void> {
     const expansionBank = this.memoryBanks.get('EXPANSION_ROM');
     if (!expansionBank) return;
-
     if (expansionBank.used + document.size <= expansionBank.size) {
       expansionBank.documents.set(docId, {
         ...document,
@@ -516,22 +455,17 @@ export class NESMemoryArchitecture {
       expansionBank.isActive = true;
     }
   }
-
   private async garbageCollectBank(bankName: string): Promise<void> {
     const bank = this.memoryBanks.get(bankName);
     if (!bank) return;
-
     const documents = Array.from(bank.documents.entries());
     const currentTime = Date.now();
     const oldThreshold = 5 * 60 * 1000; // 5 minutes
-
     let freedSpace = 0;
     const removedDocs: string[] = [];
-
     for (const [docId, document] of documents) {
       const age = currentTime - document.lastAccessed;
-
-      // Remove old, low-priority documents;
+      // Remove old, low-priority documents
       if (age > oldThreshold && document.priority < 100 && document.riskLevel !== 'critical') {
         bank.documents.delete(docId);
         bank.used -= document.size;
@@ -539,7 +473,6 @@ export class NESMemoryArchitecture {
         removedDocs.push(docId);
       }
     }
-
     if (removedDocs.length > 0) {
       this.gcCount++;
       console.log(
@@ -547,22 +480,18 @@ export class NESMemoryArchitecture {
       );
     }
   }
-
   private checkGarbageCollection(): void {
     for (const [bankName, bank] of this.memoryBanks) {
       const utilizationRate = bank.used / bank.size;
-
       if (utilizationRate > 0.85) {
         this.garbageCollectBank(bankName);
       }
     }
   }
-
   private optimizeMemoryLayout(): void {
-    // NES-style memory optimization during VBlank;
+    // NES-style memory optimization during VBlank
     for (const [bankName, bank] of this.memoryBanks) {
       if (bank.documents.size === 0) continue;
-
       const documents = Array.from(bank.documents.values());
       documents.sort((a, b) => {
         // Sort by access frequency and priority
@@ -570,12 +499,10 @@ export class NESMemoryArchitecture {
         const priorityWeight = (255 - a.priority) / 255;
         return accessWeight + priorityWeight - (Date.now() - b.lastAccessed) / 1000 + (255 - b.priority) / 255;
       });
-
       // Update internal layout for better cache locality
       // (This would typically involve actual memory reorganization)
     }
   }
-
   getDocument(documentId: string): LegalDocument | null {
     for (const bank of this.memoryBanks.values()) {
       const document = bank.documents.get(documentId);
@@ -586,7 +513,6 @@ export class NESMemoryArchitecture {
     }
     return null;
   }
-
   removeDocument(documentId: string): boolean {
     for (const bank of this.memoryBanks.values()) {
       if (bank.documents.has(documentId)) {
@@ -598,7 +524,6 @@ export class NESMemoryArchitecture {
     }
     return false;
   }
-
   getMemoryStats(): MemoryStats {
     let totalRAM = 0,
       usedRAM = 0;
@@ -609,10 +534,8 @@ export class NESMemoryArchitecture {
     let documentCount = 0;
     let totalAccessTime = 0;
     let accessCount = 0;
-
     for (const bank of this.memoryBanks.values()) {
       documentCount += bank.documents.size;
-
       switch (bank.type) {
         case 'INTERNAL_RAM':
           totalRAM += bank.size;
@@ -627,14 +550,12 @@ export class NESMemoryArchitecture {
           usedPRG += bank.used;
           break;
       }
-
       for (const doc of bank.documents.values()) {
         const accessTime = Date.now() - doc.lastAccessed;
         totalAccessTime += accessTime;
         accessCount++;
       }
     }
-
     return {
       totalRAM,
       usedRAM,
@@ -649,7 +570,6 @@ export class NESMemoryArchitecture {
       averageAccessTime: accessCount > 0 ? totalAccessTime / accessCount : 0,
     };
   }
-
   private calculateCompressionSavings(): number {
     let totalSavings = 0;
     for (const bank of this.memoryBanks.values()) {
@@ -660,8 +580,7 @@ export class NESMemoryArchitecture {
     }
     return totalSavings;
   }
-
-  // PPU-style register access for UI components;
+  // PPU-style register access for UI components
   writePPU(register: number, value: number): void {
     const state = this.memoryState as any;
     switch (register) {
@@ -682,7 +601,6 @@ export class NESMemoryArchitecture {
         break;
     }
   }
-
   readPPU(register: number): number {
     const state = this.memoryState as any;
     switch (register) {
@@ -694,7 +612,6 @@ export class NESMemoryArchitecture {
         return 0;
     }
   }
-
   private formatBytes(bytes: number): string {
     if (bytes === 0) return '0 B';
     const k = 1024;
@@ -702,28 +619,23 @@ export class NESMemoryArchitecture {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   async destroy(): Promise<void> {
-    // Clean up all documents and resources;
+    // Clean up all documents and resources
     for (const bank of this.memoryBanks.values()) {
       bank.documents.clear();
       bank.used = 0;
     }
-
     if (this.compressionWorker) {
       this.compressionWorker.terminate();
       this.compressionWorker = null;
     }
-
     this.memoryBanks.clear();
     console.log('🎮 NES Memory Architecture destroyed');
   }
 }
-
 // Export singleton instance
 export const nesMemory = new NESMemoryArchitecture();
 // Export types already declared above - no need to re-export
-
 /**
  * ================= AlphaGo / MCTS Planner Memory Extension =================
  * Lightweight, NES-themed memory manager for multi-step graph traversal planning.
@@ -736,14 +648,12 @@ export const nesMemory = new NESMemoryArchitecture();
  *  - Eviction + recycling when capacity exceeded (FIFO by insertion index)
  *  - Integration points to NES memory banks (stores planner buffers in EXPANSION_ROM if free)
  */
-
 interface PlannerNodeRecord {
-  handle: number; // index in typed arrays
+  handle: number; // index in typed arrays,
   graphNodeId: string; // external graph node id (Neo4j id)
-  parentHandle: number; // -1 for root
+  parentHandle: number; // -1 for root,
   depth: number;
 }
-
 class PlannerMemoryManager {
   private capacity: number;
   private visits: Uint32Array; // visit counts
@@ -759,7 +669,6 @@ class PlannerMemoryManager {
   private freeList: number[] = [];
   private transpositionCache: Map<string, { visits: number; value: number; updated: number }>;
   private lastAllocation = 0;
-
   constructor(capacity = 8192) {
     this.capacity = capacity;
     this.visits = new Uint32Array(capacity);
@@ -771,12 +680,10 @@ class PlannerMemoryManager {
     this.depth = new Uint16Array(capacity);
     this.transpositionCache = new Map();
   }
-
   allocate(graphNodeId: string, parentHandle: number, prior: number, depth: number): number {
     // Reuse existing if seen (transposition) — return existing handle.
     const existing = this.handleByGraphId.get(graphNodeId);
     if (existing !== undefined) return existing;
-
     let handle: number = -1;
     if (this.freeList.length) {
       handle = this.freeList.pop()!;
@@ -784,7 +691,7 @@ class PlannerMemoryManager {
       handle = this.records.length;
       this.records.push({ handle, graphNodeId, parentHandle, depth });
     } else {
-      // Evict oldest (excluding root if possible);
+      // Evict oldest (excluding root if possible)
       while (this.insertionOrder.length) {
         const victim = this.insertionOrder.shift()!;
         if (victim === 0) {
@@ -802,14 +709,11 @@ class PlannerMemoryManager {
         this.free(handle);
       }
     }
-
-    // Ensure handle is always assigned;
+    // Ensure handle is always assigned
     if (handle === -1) {
       throw new Error('Failed to allocate handle in memory architecture');
     }
-
     this.records[handle] = { handle, graphNodeId, parentHandle, depth };
-
     this.handleByGraphId.set(graphNodeId, handle);
     this.insertionOrder.push(handle);
     this.lastAllocation = handle;
@@ -820,8 +724,7 @@ class PlannerMemoryManager {
     this.nextSibling[handle] = -1;
     this.parent[handle] = parentHandle;
     this.depth[handle] = depth;
-
-    // Link into siblings list;
+    // Link into siblings list
     if (parentHandle >= 0) {
       const oldFirst = this.firstChild[parentHandle];
       this.firstChild[parentHandle] = handle;
@@ -829,7 +732,6 @@ class PlannerMemoryManager {
     }
     return handle;
   }
-
   private free(handle: number) {
     const rec = this.records[handle];
     if (!rec) return;
@@ -843,12 +745,10 @@ class PlannerMemoryManager {
     this.depth[handle] = 0;
     this.freeList.push(handle);
   }
-
   update(handle: number, value: number) {
     this.visits[handle] += 1;
     this.valueSum[handle] += value;
   }
-
   selectChildUCB(parentHandle: number, explorationC = 1.4): number | null {
     const parentVisits = Math.max(1, this.visits[parentHandle]);
     let bestHandle: number | null = null;
@@ -866,38 +766,33 @@ class PlannerMemoryManager {
     }
     return bestHandle;
   }
-
   getStats(handle: number) {
     return {
       visits: this.visits[handle],
       valueSum: this.valueSum[handle],
-      prior: this.prior[handle],;
+      prior: this.prior[handle],
       depth: this.depth[handle],
       graphNodeId: this.records[handle]?.graphNodeId,
     };
   }
-
   cacheTransposition(graphNodeId: string, visits: number, value: number) {
     this.transpositionCache.set(graphNodeId, { visits, value, updated: Date.now() });
   }
   getTransposition(graphNodeId: string) {
     return this.transpositionCache.get(graphNodeId);
   }
-
   summarize() {
     return {
       capacity: this.capacity,
       allocated: this.records.length - this.freeList.length,
-      free: this.freeList.length,;
+      free: this.freeList.length,
       transpositions: this.transpositionCache.size,
     };
   }
 }
-
 // Singleton planner memory (exposed for planner integration)
 export const plannerMemory = new PlannerMemoryManager(4096);
-
-// Convenience bridge API to integrate with Neo4jAlphaGoPlanner without import cycles.;
+// Convenience bridge API to integrate with Neo4jAlphaGoPlanner without import cycles.
 export const nesPlannerBridge = {
   allocateNode(params: { graphNodeId: string; parentHandle: number; prior: number; depth: number }) {
     return plannerMemory.allocate(params.graphNodeId, params.parentHandle, params.prior, params.depth);

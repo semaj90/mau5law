@@ -1,48 +1,42 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: enhanced-microservice
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 /// <reference types="vite/client" />
 import type { RequestHandler } from './$types.js'
-
 // Enhanced API Route for Go Microservice Integration
 // Connects SvelteKit frontend with enhanced legal AI processing
 // Supports local Gemma3-legal GGUF model with CUDA acceleration
-
 import { json } from "@sveltejs/kit"
 import { URL } from "url"
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 }
-
 export interface GoMicroserviceConfig {
   baseUrl: string
   timeout: number
   retries: number
   enableCache: boolean
 }
-
 export interface ProcessDocumentRequest {
   content: string
   document_type: string
   practice_area?: string
   jurisdiction: string
-  metadata?: Record<string, any>
+  metadata?: { [key: string]: any }
 }
-
 export interface SearchRequest {
   query: string
   limit?: number
@@ -50,66 +44,55 @@ export interface SearchRequest {
   use_rag?: boolean
   include_context?: boolean
 }
-
 const config: GoMicroserviceConfig = {
   baseUrl: import.meta.env.GO_MICROSERVICE_URL || "http://localhost:8080",
   timeout: parseInt(import.meta.env.GO_MICROSERVICE_TIMEOUT || "30000"),
   retries: 3,
   enableCache: true
 }
-
 class GoMicroserviceClient {
   private baseUrl: string
   private timeout: number
   private retries: number
-
   constructor(config: GoMicroserviceConfig) {
     this.baseUrl = config.baseUrl
     this.timeout = config.timeout
     this.retries = config.retries
   }
-
   private async makeRequest(
-    endpoint: string,
+    endpoint: string
     method: string = "GET",
     body?: unknown
   ): Promise<any> {
     const url = `${this.baseUrl}${endpoint}`
-
     for (let attempt = 1; attempt <= this.retries; attempt++) {
       try {
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), this.timeout)
-
         const response = await fetch(url, {
           method,
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json"
           },
-          body: body ? JSON.stringify(body) : undefined,
+          body: body ? JSON.stringify(body) : undefined
           signal: controller.signal
         })
-
         clearTimeout(timeoutId)
-
         if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
           throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`)
         }
-
         return await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json()
       } catch (error: any) {
         console.warn(
           `Attempt ${attempt} failed for ${endpoint}:`,
           error.message
         )
-
         if (attempt === this.retries) {
           throw new Error(
             `Failed to connect to Go microservice after ${this.retries} attempts: ${error.message}`
           )
         }
-
         // Exponential backoff
         await new Promise((resolve) =>
           setTimeout(resolve, Math.pow(2, attempt) * 1000)
@@ -117,36 +100,29 @@ class GoMicroserviceClient {
       }
     }
   }
-
   async healthCheck(): Promise<any> {
     return this.makeRequest("/api/v1/health")
   }
-
   async processDocument(request: ProcessDocumentRequest): Promise<any> {
     return this.makeRequest("/api/v1/documents/process", "POST", request)
   }
-
   async searchDocuments(request: SearchRequest): Promise<any> {
     return this.makeRequest("/api/v1/search", "POST", request)
   }
 }
-
 // Initialize the client
 const goClient = new GoMicroserviceClient(config)
-
 // Health check endpoint
 const originalGETHandler: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get("action")
-
   try {
     if (action === "health") {
       const health = await goClient.healthCheck()
-
       return json({
         status: "success",
         timestamp: new Date().toISOString(),
         service: "sveltekit-api-gateway",
-        microservice: health,
+        microservice: health
         config: {
           baseUrl: config.baseUrl,
           timeout: config.timeout,
@@ -155,7 +131,6 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         }
       })
     }
-
     return json({
         status: "error",
         message: "Invalid action parameter",
@@ -165,7 +140,6 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     )
   } catch (error: any) {
     console.error("Health check failed:", error)
-
     return json()
       {
         status: "error",
@@ -177,14 +151,11 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 // Document processing and search endpoints
 const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get("action")
-
   try {
     const body = await request.json()
-
     switch (action) {
       case "process-document": {
         // Validate required fields
@@ -197,7 +168,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             { status: 400 }
           )
         }
-
         const processRequest: ProcessDocumentRequest = {
           content: body.content,
           document_type: body.document_type,
@@ -205,13 +175,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           jurisdiction: body.jurisdiction,
           metadata: body.metadata || {}
         }
-
         const result = await goClient.processDocument(processRequest)
-
         return json({
           status: "success",
           timestamp: new Date().toISOString(),
-          result: result,
+          result: result
           metadata: {
             processingTime: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).processing_time,
             chunksCreated: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).chunks?.length || 0,
@@ -220,7 +188,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           }
         })
       }
-
       case "search": {
         if (!body.query) {
           return json({
@@ -230,7 +197,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             { status: 400 }
           )
         }
-
         const searchRequest: SearchRequest = {
           query: body.query,
           limit: body.limit || 10,
@@ -238,13 +204,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           use_rag: body.use_rag || false,
           include_context: body.include_context || false
         }
-
         const result = await goClient.searchDocuments(searchRequest)
-
         return json({
           status: "success",
           timestamp: new Date().toISOString(),
-          result: result,
+          result: result
           metadata: {
             queryProcessingTime: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).processing_time,
             resultsFound: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).total_found,
@@ -253,7 +217,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           }
         })
       }
-
       case "enhanced-rag": {
         if (!body.query) {
           return json({
@@ -263,21 +226,18 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             { status: 400 }
           )
         }
-
         // Enhanced RAG with multiple microservice calls
         const searchRequest: SearchRequest = {
           query: body.query,
           limit: body.limit || 20,
           filters: body.filters || {},
-          use_rag: true,
+          use_rag: true
           include_context: true
         }
-
         const [searchResult, healthStatus] = await Promise.all([
           goClient.searchDocuments(searchRequest),
           goClient.healthCheck()
         ])
-
         // Enhanced response with microservice status
         return json({
           status: "success",
@@ -296,7 +256,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
                 embedding_model: "nomic-embed-text",
                 llm_model: "gemma3-legal:8b",
                 cuda_enabled: healthStatus.config?.enable_gpu || false,
-                vector_similarity: true,
+                vector_similarity: true
                 semantic_analysis: true
               }
             }
@@ -304,7 +264,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           metadata: {
             queryProcessingTime: searchResult.processing_time,
             resultsFound: searchResult.total_found,
-            enhancedRAG: true,
+            enhancedRAG: true
             microserviceStatus: healthStatus.status,
             processingMode: healthStatus.config?.enable_gpu
               ? "GPU-Accelerated"
@@ -312,7 +272,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           }
         })
       }
-
       case "legal-analysis": {
         if (!body.content) {
           return json({
@@ -322,7 +281,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             { status: 400 }
           )
         }
-
         // Comprehensive legal analysis combining processing and search
         const processRequest: ProcessDocumentRequest = {
           content: body.content,
@@ -331,14 +289,12 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           jurisdiction: body.jurisdiction || "federal",
           metadata: {
             analysis_type: "comprehensive",
-            include_risk_assessment: true,
-            include_entity_extraction: true,
+            include_risk_assessment: true
+            include_entity_extraction: true
             ...body.metadata
           }
         }
-
         const processResult = await goClient.processDocument(processRequest)
-
         // Follow up with related document search
         const searchQueries = [
           ...processResult.keywords.slice(0, 3),
@@ -346,27 +302,25 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             .map((entity: any) => entity.text)
             .slice(0, 2)
         ]
-
         const relatedSearches = await Promise.all(
           searchQueries.map((query: string) =>
             goClient
               .searchDocuments({
                 query,
                 limit: 5,
-                use_rag: true,
+                use_rag: true
                 include_context: true
               })
               .catch(() => ({ results: [], total_found: 0 })
           )
         )
-
         return json({
           status: "success",
           timestamp: new Date().toISOString(),
           result: {
-            document_analysis: processResult,
+            document_analysis: processResult
             related_research: {
-              keyword_searches: relatedSearches,
+              keyword_searches: relatedSearches
               total_related_documents: relatedSearches.reduce(
                 (sum, search) => sum + (search.total_found || 0),
                 0
@@ -395,9 +349,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           }
         })
       }
-
       default:
-        return json({
+        return json({,
             status: "error",
             message: "Invalid action parameter",
             availableActions: [
@@ -412,7 +365,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
     }
   } catch (error: any) {
     console.error(`API action failed (${action}):`, error)
-
     return json()
       {
         status: "error",
@@ -425,24 +377,19 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
     )
   }
 }
-
 // Helper functions
 function calculateConfidenceScore(results: any[]): number {
   if (!results || results.length === 0) return 0
-
   const scores = results.map((result) => {
     if ((result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).similarity) return (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).similarity
     if ((result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).risk_assessment?.confidence)
       return (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).risk_assessment.confidence
     return 0.5; // Default confidence
   })
-
   return scores.reduce((sum, score) => sum + score, 0) / scores.length
 }
-
 function extractCrossReferences(searches: any[]): string[] {
   const references = new Set<string>()
-
   searches.forEach((search) => {
     if (search.results) {
       search.results.forEach((result: any) => {
@@ -452,30 +399,25 @@ function extractCrossReferences(searches: any[]): string[] {
       })
     }
   })
-
   return Array.from(references)
 }
-
 function generateRecommendations(
-  processResult: any,
+  processResult: any
   relatedSearches: any[]
 ): string[] {
   const recommendations: string[] = []
-
   // Risk-based recommendations
   if (processResult.risk_assessment?.overall_score > 0.7) {
     recommendations.push(
       "High risk detected - recommend immediate legal review"
     )
   }
-
   // Entity-based recommendations
   if (processResult.legal_entities?.length > 5) {
     recommendations.push(
       "Multiple legal entities identified - consider entity relationship mapping"
     )
   }
-
   // Related document recommendations
   const totalRelated = relatedSearches.reduce(
     (sum, search) => sum + (search.total_found || 0),
@@ -486,17 +428,13 @@ function generateRecommendations(
       "Extensive related documentation found - suggest comprehensive case analysis"
     )
   }
-
   // Default recommendations
   if (recommendations.length === 0) {
     recommendations.push(
       "Document analyzed successfully - consider cross-referencing with similar cases"
     )
   }
-
   return recommendations
 }
-
-
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

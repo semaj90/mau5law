@@ -1,30 +1,22 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * WebAssembly Inference Test API Endpoint
  * Tests the complete WebAssembly RAG inference pipeline
  */
-
 import { json } from '@sveltejs/kit'
 import { wasmInferenceMachine, WASMInferenceRAGService } from '$lib/services/webasm-inference-rag.js'
 import { rabbitMQIntegration } from '$lib/messaging/rabbitmq-xstate-integration.js'
-
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now()
   console.log('🧠 WebAssembly inference test request received')
-
   try {
     const { prompt, enableRAG = true, maxTokens = 1024, temperature = 0.7 } = await request.json()
-
     if (!prompt) {
       return json({ error: 'Prompt is required' }, { status: 400 })
     }
-
     console.log(`🔍 Processing WASM inference: "${prompt.slice(0, 50)}..."`)
-
     // Test 1: Direct WebAssembly Inference Service
     console.log('📊 Test 1: Direct WASM Inference Service')
-
     const wasmRequest = {
       id: `test_wasm_${Date.now()}_${Math.random().toString(36).slice(2)}`,
       prompt,
@@ -35,16 +27,15 @@ export const POST: RequestHandler = async ({ request }) => {
       systemMessage:
         'You are a legal AI assistant specialized in analyzing legal documents and providing expert insights.'
     }
-
     const wasmContext = {
-      wasmModule: null,
-      wasmInstance: null,
-      isInitialized: false,
+      wasmModule: null
+      wasmInstance: null
+      isInitialized: false
       config: {
         modelPath: '/models/gemma3-legal-q4.wasm',
         threads: 8,
         contextLength: 4096,
-        enableGPU: true,
+        enableGPU: true
         batchSize: 4,
         quantization: 'q4_0' as const
       },
@@ -58,16 +49,13 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       error: null
     }
-
     const directResult = await WASMInferenceRAGService.processInferenceWithRAG(
       wasmRequest,
       wasmContext
     )
     console.log('✅ Direct WASM inference completed')
-
     // Test 2: RabbitMQ Message Queue Integration
     console.log('📊 Test 2: RabbitMQ Integration')
-
     let rabbitMQResult = null
     try {
       await rabbitMQIntegration.publishMessage({
@@ -83,13 +71,11 @@ export const POST: RequestHandler = async ({ request }) => {
         },
         priority: 8
       })
-
       rabbitMQResult = {
         status: 'queued',
         messageType: 'wasm_inference',
         queuedAt: new Date().toISOString()
       }
-
       console.log('✅ RabbitMQ message queued successfully')
     } catch (rabbitError) {
       console.warn('⚠️ RabbitMQ test failed:', rabbitError)
@@ -99,27 +85,21 @@ export const POST: RequestHandler = async ({ request }) => {
         fallback: 'Direct processing mode available'
       }
     }
-
     // Test 3: PostgreSQL-Qdrant Sync Integration
     console.log('📊 Test 3: PostgreSQL-Qdrant Sync')
-
     let syncResult = null
     try {
       const { postgresqlQdrantSync } = await import('$lib/services/postgresql-qdrant-sync.js')
-
       // Test health check
       const health = await postgresqlQdrantSync.healthCheck()
-
       // Test WASM statistics
       const wasmStats = postgresqlQdrantSync.getWASMStats()
-
       syncResult = {
         health,
         wasmStats,
         status: 'operational',
         optimizedRetrieval: true
       }
-
       console.log('✅ PostgreSQL-Qdrant sync test completed')
     } catch (syncError) {
       console.warn('⚠️ PostgreSQL-Qdrant sync test failed:', syncError)
@@ -129,10 +109,8 @@ export const POST: RequestHandler = async ({ request }) => {
         fallback: 'Enhanced RAG service fallback available'
       }
     }
-
     // Test 4: XState Machine Integration
     console.log('📊 Test 4: XState Machine')
-
     const machineResult = {
       machineId: wasmInferenceMachine.id,
       initialState: wasmInferenceMachine.initialState.value,
@@ -144,15 +122,12 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       status: 'configured'
     }
-
     console.log('✅ XState machine test completed')
-
     const totalTime = Date.now() - startTime
-
     // Comprehensive test results
     const testResults = {
-      success: true,
-      processingTime: totalTime,
+      success: true
+      processingTime: totalTime
       timestamp: new Date().toISOString(),
       request: {
         prompt: prompt.slice(0, 100) + (prompt.length > 100 ? '...' : ''),
@@ -170,8 +145,8 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: directResult.metadata,
           cacheHit: directResult.cacheHit
         },
-        rabbitMQIntegration: rabbitMQResult,
-        postgresqlQdrantSync: syncResult,
+        rabbitMQIntegration: rabbitMQResult
+        postgresqlQdrantSync: syncResult
         xstateMachine: machineResult
       },
       integration: {
@@ -184,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
       performance: {
         totalProcessingTime: `${totalTime}ms`,
         wasmInferenceTime: `${directResult.processingTime}ms`,
-        ragEnabled: enableRAG,
+        ragEnabled: enableRAG
         documentsRetrieved: directResult.ragContext?.documentsUsed || 0,
         memoryUsage: `${directResult.memoryUsage} bytes`,
         cacheUtilization: directResult.cacheHit ? 'Cache Hit' : 'Cache Miss'
@@ -199,9 +174,7 @@ export const POST: RequestHandler = async ({ request }) => {
         ]
       }
     }
-
     console.log(`🎉 WebAssembly inference test completed successfully in ${totalTime}ms`)
-
     return json(testResults, {
       status: 200,
       headers: {
@@ -214,13 +187,12 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error('Unknown error')
     console.error('❌ WebAssembly inference test failed:', err)
-
     const errorTime = Date.now() - startTime
     return json()
       {
-        success: false,
+        success: false
         error: err.message,
-        processingTime: errorTime,
+        processingTime: errorTime
         timestamp: new Date().toISOString(),
         stack: err.stack,
         troubleshooting: {
@@ -251,22 +223,18 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // GET endpoint for quick health check
 export const GET: RequestHandler = async () => {
   try {
     console.log('🏥 WebAssembly inference health check')
-
     const { WASMInferenceRAGService } = await import('$lib/services/webasm-inference-rag.js')
     const healthStatus = WASMInferenceRAGService.getHealthStatus()
-
     // Quick connectivity tests
     const services = {
       wasmInferenceService: healthStatus.status === 'healthy',
-      enhancedRAGService: false,
+      enhancedRAGService: false
       postgresqlQdrantSync: false
     }
-
     // Test Enhanced RAG Service
     try {
       const ragResponse = await fetch('http://localhost:8094/api/health', {
@@ -276,7 +244,6 @@ export const GET: RequestHandler = async () => {
     } catch {
       services.enhancedRAGService = false
     }
-
     // Test PostgreSQL-Qdrant Sync
     try {
       const { postgresqlQdrantSync } = await import('$lib/services/postgresql-qdrant-sync.js')
@@ -285,14 +252,12 @@ export const GET: RequestHandler = async () => {
     } catch {
       services.postgresqlQdrantSync = false
     }
-
     const overallHealth = Object.values(services).every((service) => service === true)
-
     return json({
       status: overallHealth ? 'healthy' : 'degraded',
       timestamp: new Date().toISOString(),
       services,
-      wasmHealth: healthStatus,
+      wasmHealth: healthStatus
       endpoints: {
         testInference: '/api/test-wasm-inference (POST)',
         healthCheck: '/api/test-wasm-inference (GET)',

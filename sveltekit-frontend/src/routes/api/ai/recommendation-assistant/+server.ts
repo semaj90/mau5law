@@ -2,11 +2,9 @@
  * 🤖 AI Assistant for Recommendations
  * Integrates Gemma3 Legal model with recommendation engine
  */
-
 import type { RequestHandler } from './$types'
 import { json } from '@sveltejs/kit'
 import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem'
-
 interface AIRecommendationRequest {
   context: {
     recentCases?: string[]
@@ -19,7 +17,6 @@ interface AIRecommendationRequest {
   query?: string
   type: 'case-analysis' | 'search-suggestion' | 'workflow-optimization' | 'precedent-discovery'
 }
-
 interface AIRecommendationResponse {
   recommendations: AIRecommendation[]
   reasoning: string
@@ -27,7 +24,6 @@ interface AIRecommendationResponse {
   suggestedActions: AIAction[]
   relatedTopics: string[]
 }
-
 interface AIRecommendation {
   id: string
   type: 'case' | 'document' | 'search' | 'workflow' | 'precedent'
@@ -38,44 +34,37 @@ interface AIRecommendation {
   metadata: any
   aiInsight: string
 }
-
 interface AIAction {
   action: string
   description: string
-  priority: 'low' | 'medium' | 'high' | 'critical'
+  priority: 'low' | 'medium' | 'high' | 'critical',
   estimatedTime: string
   tools?: string[]
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: AIRecommendationRequest = await request.json()
     const { context, query, type } = body
-
     if (!context || !type) {
       return json({
-        success: false,
+        success: false
         error: 'Missing required fields: context, type'
       }, { status: 400 })
     }
-
     // Generate cache key based on request
     const cacheKey = `ai-recommendation-${type}-${JSON.stringify(context).slice(0, 50)}`
-
     // Check cache first (15-minute TTL for AI responses)
     const cached = await multiLayerCache.get<AIRecommendationResponse>(cacheKey)
     if (cached) {
       return json({
-        success: true,
-        data: cached,
-        fromCache: true,
+        success: true
+        data: cached
+        fromCache: true
         timestamp: new Date().toISOString()
       })
     }
-
     // Generate AI recommendations based on type
     let aiResponse: AIRecommendationResponse
-
     switch (type) {
       case 'case-analysis':
         aiResponse = await generateCaseAnalysis(context, query)
@@ -90,19 +79,17 @@ export const POST: RequestHandler = async ({ request }) => {
         aiResponse = await generatePrecedentDiscovery(context, query)
         break
       default:
-        return json({
-          success: false,
+        return json({,
+          success: false
           error: 'Invalid recommendation type'
         }, { status: 400 })
     }
-
     // Cache the AI response
     await multiLayerCache.set(cacheKey, aiResponse, 900, 180); // 15min TTL, high priority
-
     return json({
-      success: true,
-      data: aiResponse,
-      fromCache: false,
+      success: true
+      data: aiResponse
+      fromCache: false
       timestamp: new Date().toISOString(),
       meta: {
         type,
@@ -111,10 +98,8 @@ export const POST: RequestHandler = async ({ request }) => {
         processingTime: 150 // Mock processing time
       }
     })
-
   } catch (error) {
     console.error('AI recommendation error:', error)
-
     // Return mock AI recommendations on failure
     const mockResponse: AIRecommendationResponse = {
       recommendations: [
@@ -152,12 +137,11 @@ export const POST: RequestHandler = async ({ request }) => {
       ],
       relatedTopics: ['Employment Law', 'Contract Analysis', 'Legal Precedents']
     }
-
     return json({
-      success: false,
+      success: false
       error: 'failure default to mock',
-      data: mockResponse,
-      fromCache: false,
+      data: mockResponse
+      fromCache: false
       timestamp: new Date().toISOString(),
       meta: {
         type,
@@ -169,11 +153,9 @@ export const POST: RequestHandler = async ({ request }) => {
     }, { status: 500 })
   }
 }
-
 async function generateCaseAnalysis(context: any, query?: string): Promise<AIRecommendationResponse> {
   // Simulate Gemma3 Legal model analysis
   // In production, this would call your CUDA service worker with Gemma3:legal-latest
-
   const recommendations: AIRecommendation[] = [
     {
       id: 'case-rec-001',
@@ -219,7 +201,6 @@ async function generateCaseAnalysis(context: any, query?: string): Promise<AIRec
       aiInsight: 'Martinez v. TechSolutions establishes new standard for constructive dismissal in at-will employment states.'
     }
   ]
-
   return {
     recommendations,
     reasoning: `Based on analysis of ${context.recentCases?.length || 0} recent cases and current employment law trends, I've identified key strategic opportunities. The case pattern suggests a 73% likelihood of favorable outcome with proper evidence development.`,
@@ -255,7 +236,6 @@ async function generateCaseAnalysis(context: any, query?: string): Promise<AIRec
     ]
   }
 }
-
 async function generateSearchSuggestions(context: any, query?: string): Promise<AIRecommendationResponse> {
   // AI-powered search query optimization
   const recommendations: AIRecommendation[] = [
@@ -303,7 +283,6 @@ async function generateSearchSuggestions(context: any, query?: string): Promise<
       aiInsight: 'California-specific protections may provide additional remedies not available federally.'
     }
   ]
-
   return {
     recommendations,
     reasoning: `Search pattern analysis shows 68% improvement in result relevance with AI-optimized queries. Your recent searches suggest focus on employment law with emphasis on documentation and procedural compliance.`,
@@ -332,7 +311,6 @@ async function generateSearchSuggestions(context: any, query?: string): Promise<
     ]
   }
 }
-
 async function generateWorkflowOptimization(context: any, query?: string): Promise<AIRecommendationResponse> {
   // Workflow efficiency analysis
   const recommendations: AIRecommendation[] = [
@@ -381,7 +359,6 @@ async function generateWorkflowOptimization(context: any, query?: string): Promi
       aiInsight: 'Setting up saved search templates for common precedent patterns saves significant time.'
     }
   ]
-
   return {
     recommendations,
     reasoning: `Workflow analysis based on 2 weeks of activity data shows 23% efficiency improvement opportunities. Primary gains available through document processing automation and priority rebalancing.`,
@@ -417,7 +394,6 @@ async function generateWorkflowOptimization(context: any, query?: string): Promi
     ]
   }
 }
-
 async function generatePrecedentDiscovery(context: any, query?: string): Promise<AIRecommendationResponse> {
   // Precedent discovery and analysis
   const recommendations: AIRecommendation[] = [
@@ -467,7 +443,6 @@ async function generatePrecedentDiscovery(context: any, query?: string): Promise
       aiInsight: 'AI bias in hiring is becoming a major litigation area - early precedents are still developing.'
     }
   ]
-
   return {
     recommendations,
     reasoning: `Precedent analysis using natural language processing identified 847 relevant cases, with 23 showing high impact potential. Current legal landscape shows rapid evolution in technology-employment intersection.`,

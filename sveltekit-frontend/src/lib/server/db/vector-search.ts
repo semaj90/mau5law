@@ -3,25 +3,22 @@
  * Direct pgvector database operations for semantic search
  * Optimized for legal document retrieval with Gemma embeddings
  */
-
 import { db } from './connection.js';
 import { sql } from 'drizzle-orm';
 import type { VectorSearchOptions, VectorSearchResult } from '$lib/types/vector-search.js';
 import { performance } from 'perf_hooks';
-
 interface EmbeddingVector {
   id: string;
   content: string;
   embedding: number[];
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   similarity?: number;
 }
-
 /**
  * Perform semantic vector search using pgvector
  */
 export async function vectorSearch(
-  queryEmbedding: number[],
+  queryEmbedding: number[]
   options: VectorSearchOptions = {}
 ): Promise<VectorSearchResult> {
   const startTime = performance.now();
@@ -32,35 +29,27 @@ export async function vectorSearch(
     includeMetadata = true,
     filters = {}
   } = options;
-
   try {
     // Convert embedding to pgvector format
     const embeddingVector = `[${queryEmbedding.join(',')}]`;
-
     // Build dynamic WHERE clause for filters
     let whereClause = sql``;
     const conditions: any[] = [];
-
     if (filters.documentType?.length) {
       conditions.push(sql`metadata->>'documentType' = ANY(${filters.documentType})`);
     }
-
     if (filters.dateRange?.start) {
       conditions.push(sql`created_at >= ${filters.dateRange.start}`);
     }
-
     if (filters.dateRange?.end) {
       conditions.push(sql`created_at <= ${filters.dateRange.end}`);
     }
-
     if (filters.tags?.length) {
       conditions.push(sql`metadata->'tags' ?| ${filters.tags}`);
     }
-
     if (conditions.length > 0) {
       whereClause = sql`WHERE ${sql.join(conditions, sql` AND `)}`;
     }
-
     // Optimized vector search query with cosine similarity
     const searchQuery = sql`
       SELECT
@@ -75,21 +64,18 @@ export async function vectorSearch(
       ORDER BY embedding <=> ${embeddingVector}::vector
       LIMIT ${limit}
     `;
-
     const results = await db.execute(searchQuery);
     const queryTime = performance.now() - startTime;
-
     // Transform results to expected format
-    const documents = results.rows.map((row: any) => ({
+    const documents = results.rows.map((row: any) => ({,
       id: row.id,
       content: row.content,
       metadata: row.metadata,
-      similarity: parseFloat(row.similarity),;
+      similarity: parseFloat(row.similarity),
       score: parseFloat(row.similarity) // Alias for compatibility
     }));
-
     return {
-      results: documents,
+      results: documents
       totalResults: documents.length,
       queryTime: Math.round(queryTime),
       searchStrategy: 'pgvector_cosine_similarity',
@@ -97,17 +83,15 @@ export async function vectorSearch(
       threshold,
       embedding: {
         dimensions: queryEmbedding.length,
-        model: 'gemma',;
+        model: 'gemma',
         format: 'float32'
       }
     };
-
   } catch (error) {
     console.error('Vector search error:', error);
     throw new Error(`Vector search failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
-
 /**
  * Get vector search statistics
  */
@@ -120,10 +104,8 @@ export async function getVectorSearchStats() {
         COUNT(CASE WHEN embedding IS NOT NULL THEN 1 END) as documents_with_embeddings
       FROM legal_documents
     `;
-
     const result = await db.execute(statsQuery);
     const stats = result.rows[0];
-
     return {
       totalDocuments: parseInt(stats.total_documents),
       avgEmbeddingDimensions: parseInt(stats.avg_embedding_dimensions || '0'),
@@ -132,22 +114,20 @@ export async function getVectorSearchStats() {
       similarityFunction: 'cosine',
       vectorType: 'vector(768)' // Gemma embedding dimension
     };
-
   } catch (error) {
     console.error('Vector stats error:', error);
     throw new Error(`Failed to get vector statistics: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
-
 /**
  * Batch insert embeddings for multiple documents
  */
 export async function batchInsertEmbeddings(
-  documents: Array<{;
+  documents: Array<{,
     id: string;
     content: string;
     embedding: number[];
-    metadata?: Record<string, any>;
+    metadata?: { [key: string]: any };
   }>
 ) {
   try {
@@ -157,7 +137,7 @@ export async function batchInsertEmbeddings(
         documents.map(doc => sql`(
           ${doc.id},
           ${doc.content},
-          ${`[${doc.embedding.join(',')}]`}::vector,
+          ${`[${doc.embedding.join(',')}]`}:: vector
           ${JSON.stringify(doc.metadata || {})},
           NOW(),
           NOW()
@@ -170,16 +150,13 @@ export async function batchInsertEmbeddings(
         metadata = EXCLUDED.metadata,
         updated_at = NOW()
     `;
-
     await db.execute(insertQuery);
     return { success: true, inserted: documents.length };
-
   } catch (error) {
     console.error('Batch insert error:', error);
     throw new Error(`Batch insert failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
-
 /**
  * Update vector index for optimal performance
  */
@@ -189,30 +166,25 @@ export async function optimizeVectorIndex() {
     await db.execute(sql`
       DROP INDEX IF EXISTS ivfflat_embedding_idx
     `);
-
     await db.execute(sql`
       CREATE INDEX CONCURRENTLY ivfflat_embedding_idx
       ON legal_documents
       USING ivfflat (embedding vector_cosine_ops)
       WITH (lists = 100)
     `);
-
     // Analyze table for query optimization
     await db.execute(sql`ANALYZE legal_documents`);
-
     return {
-      success: true,
+      success: true
       indexType: 'ivfflat',
-      lists: 100,;
+      lists: 100,
       operation: 'cosine_similarity'
     };
-
   } catch (error) {
     console.error('Index optimization error:', error);
     throw new Error(`Index optimization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
-
 /**
  * Health check for vector search capability
  */
@@ -224,18 +196,15 @@ export async function vectorSearchHealthCheck() {
              pg_extension_version('vector') as vector_version,
              current_setting('shared_preload_libraries') as preload_libs
     `;
-
     const result = await db.execute(testQuery);
     const info = result.rows[0];
-
     // Check if vector extension is loaded
     const vectorLoaded = info.preload_libs?.includes('vector') || false;
-
     return {
-      healthy: true,
+      healthy: true
       vectorExtension: info.vector_version || 'not_found',
-      extensionLoaded: vectorLoaded,
-      database: 'postgresql',;
+      extensionLoaded: vectorLoaded
+      database: 'postgresql',
       capabilities: [
         'cosine_similarity',
         'euclidean_distance',
@@ -243,11 +212,10 @@ export async function vectorSearchHealthCheck() {
         'ivfflat_indexing'
       ]
     };
-
   } catch (error) {
     console.error('Vector health check failed:', error);
     return {
-      healthy: false,;
+      healthy: false
       error: error instanceof Error ? error.message : 'Unknown error',
       vectorExtension: 'unknown',
       extensionLoaded: false

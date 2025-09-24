@@ -5,20 +5,12 @@ https://svelte.dev/e/js_parse_error -->
   Neural Performance Dashboard - Real-time GPU & Neural Network Monitoring
   Integrates with Legal AI Platform GPU acceleration and neural processing
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   const { updateInterval: number = 2000, maxHistoryPoints: number = 30, showAdvancedMetrics: boolean = true } = $props();
-
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
-
   // Props
-  
-  
-  
-
   // Performance metrics interface
   interface PerformanceMetrics {
     timestamp: number;
@@ -29,7 +21,6 @@ https://svelte.dev/e/js_parse_error -->
     activeConnections: number;
     temperature: number;
   }
-
   interface ServiceStatus {
     gpu: 'healthy' | 'degraded' | 'offline';
     webgpu: 'healthy' | 'degraded' | 'offline';
@@ -37,25 +28,22 @@ https://svelte.dev/e/js_parse_error -->
     vectordb: 'healthy' | 'degraded' | 'offline';
     lastCheck: Date;
   }
-
   // Real-time data stores
   const performanceHistory = writable<PerformanceMetrics[]>([]);
   const currentMetrics = writable<PerformanceMetrics | null>(null);
   const serviceStatus = writable<ServiceStatus>({
     gpu: 'healthy',
-    webgpu: 'healthy', ;
-    neural: 'healthy',;
+    webgpu: 'healthy',
+    neural: 'healthy',
     vectordb: 'healthy',
     lastCheck: new Date();
   });
   const connectionStatus = writable<'connected' | 'disconnected' | 'error'>('disconnected');
-
   // Dashboard state
   let isMonitoring = $state(false);
   let monitoringInterval: NodeJS.Timeout | null = null;
   let lastUpdate = $state(Date.now());
   let selectedTimeRange = $state('5min');
-
   // Derived performance indicators
   const overallGrade = derived([currentMetrics], ([$metrics]) => {
     if (!$metrics) return { grade: 'N/A', color: 'text-gray-400', bg: 'bg-gray-500/20' };
@@ -67,7 +55,6 @@ https://svelte.dev/e/js_parse_error -->
     if (efficiency >= 60) return { grade: 'C', color: 'text-orange-400', bg: 'bg-orange-500/20' };
     return { grade: 'D', color: 'text-red-400', bg: 'bg-red-500/20' };
   });
-
   const systemHealthScore = derived([serviceStatus], ([$status]) => {
     const services = Object.values.filter(s => typeof s === 'string') as string[];
     const healthyCount = services.filter(item => item.length);
@@ -79,22 +66,20 @@ https://svelte.dev/e/js_parse_error -->
     if (percentage >= 50) return { score: percentage, status: 'Service Degradation', color: 'text-orange-400' };
     return { score: percentage, status: 'Critical Issues', color: 'text-red-400' };
   });
-
   // Generate realistic performance data
   function generateMetrics(): PerformanceMetrics {
     const now = Date.now();
     const baseGpuUtilization = 70 + Math.sin(now / 10000) * 20;
     return {
-      timestamp: now,
+      timestamp: now
       gpuUtilization: Math.max(0, Math.min(100, baseGpuUtilization + (Math.random() - 0.5) * 10)),
       memoryUsage: 60 + Math.random() * 30,
       neuralEfficiency: 85 + Math.sin(now / 15000) * 10 + (Math.random() - 0.5) * 5,
       processingSpeed: 1200 + Math.sin(now / 8000) * 300 + (Math.random() - 0.5) * 100,
-      activeConnections: Math.floor(5 + Math.sin(now / 20000) * 3 + Math.random() * 2),;
+      activeConnections: Math.floor(5 + Math.sin(now / 20000) * 3 + Math.random() * 2),
       temperature: 65 + Math.sin(now / 25000) * 8 + (Math.random() - 0.5) * 3;
     };
   }
-
   // Update performance history
   function updateHistory(metrics: PerformanceMetrics) {
     performanceHistory.update(history => {
@@ -102,18 +87,16 @@ https://svelte.dev/e/js_parse_error -->
       return newHistory.slice(-maxHistoryPoints);
     });
   }
-
   // Simulate service health checks
   function checkServiceHealth(): ServiceStatus {
     return {
       gpu: Math.random() > 0.1 ? 'healthy' : 'degraded',
-      webgpu: Math.random() > 0.05 ? 'healthy' : 'degraded',;
-      neural: Math.random() > 0.08 ? 'healthy' : 'degraded',;
+      webgpu: Math.random() > 0.05 ? 'healthy' : 'degraded',
+      neural: Math.random() > 0.08 ? 'healthy' : 'degraded',
       vectordb: Math.random() > 0.03 ? 'healthy' : 'degraded',
       lastCheck: new Date();
     };
   }
-
   // Start monitoring
   function startMonitoring() {
     if (isMonitoring) return;
@@ -136,7 +119,6 @@ https://svelte.dev/e/js_parse_error -->
       }
     }, updateInterval);
   }
-
   // Stop monitoring
   function stopMonitoring() {
     if (!isMonitoring) return;
@@ -147,21 +129,17 @@ https://svelte.dev/e/js_parse_error -->
       monitoringInterval = null;
     }
   }
-
   // Component lifecycle
   $effect(() => {
     startMonitoring();
   });
-
   onDestroy(() => {
     stopMonitoring();
   });
-
   // Helper functions
   function formatNumber(num: number, decimals: number = 1): string {
     return num.toFixed(decimals);
   }
-
   function getServiceStatusColor(status: string): string {
     switch (status) {
       case 'healthy': return 'text-green-400';
@@ -170,7 +148,6 @@ https://svelte.dev/e/js_parse_error -->
       default: return 'text-gray-400';
     }
   }
-
   function getServiceStatusIcon(status: string): string {
     switch (status) {
       case 'healthy': return '✅';
@@ -180,7 +157,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="neural-dashboard">
   <!-- Header -->
   <div class="dashboard-header">
@@ -191,7 +167,6 @@ https://svelte.dev/e/js_parse_error -->
         {$connectionStatus === 'connected' ? 'Live Monitoring' : $connectionStatus === 'error' ? 'Connection Error' : 'Disconnected'}
       </div>
     </div>
-    
     <div class="header-controls">
       <select bind:value={selectedTimeRange} class="time-range-select">
         <option value="1min">1 Minute</option>
@@ -199,7 +174,6 @@ https://svelte.dev/e/js_parse_error -->
         <option value="15min">15 Minutes</option>
         <option value="1hour">1 Hour</option>
       </select>
-      
       <div class="control-buttons">
         {#if isMonitoring}
           <button class="btn btn-warning" onclick={stopMonitoring}>
@@ -213,7 +187,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </div>
-
   <!-- Performance Grade -->
   <div class="performance-grade {$overallGrade.bg}">
     <div class="grade-content">
@@ -230,7 +203,6 @@ https://svelte.dev/e/js_parse_error -->
       <div class="health-percentage">{formatNumber($systemHealthScore.score)}% Healthy</div>
     </div>
   </div>
-
   <!-- Real-time Metrics Grid -->
   {#if $currentMetrics}
     <div class="metrics-grid">
@@ -244,7 +216,6 @@ https://svelte.dev/e/js_parse_error -->
           <div class="metric-fill" style="width: {$currentMetrics.gpuUtilization}%"></div>
         </div>
       </div>
-
       <div class="metric-nier-bits-card memory-usage">
         <div class="metric-header">
           <span class="metric-icon">💾</span>
@@ -255,7 +226,6 @@ https://svelte.dev/e/js_parse_error -->
           <div class="metric-fill" style="width: {$currentMetrics.memoryUsage}%"></div>
         </div>
       </div>
-
       <div class="metric-nier-bits-card processing-speed">
         <div class="metric-header">
           <span class="metric-icon">⚡</span>
@@ -264,7 +234,6 @@ https://svelte.dev/e/js_parse_error -->
         <div class="metric-value">{formatNumber($currentMetrics.processingSpeed, 0)}</div>
         <div class="metric-unit">ops/sec</div>
       </div>
-
       <div class="metric-nier-bits-card temperature">
         <div class="metric-header">
           <span class="metric-icon">🌡️</span>
@@ -275,7 +244,6 @@ https://svelte.dev/e/js_parse_error -->
           {$currentMetrics.temperature > 80 ? 'High' : 'Normal'}
         </div>
       </div>
-
       <div class="metric-nier-bits-card connections">
         <div class="metric-header">
           <span class="metric-icon">🔗</span>
@@ -284,7 +252,6 @@ https://svelte.dev/e/js_parse_error -->
         <div class="metric-value">{$currentMetrics.activeConnections}</div>
         <div class="metric-unit">concurrent</div>
       </div>
-
       <div class="metric-nier-bits-card efficiency">
         <div class="metric-header">
           <span class="metric-icon">🎯</span>
@@ -297,7 +264,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   {/if}
-
   <!-- Service Status -->
   <div class="service-status">
     <h3>🔧 Service Health Monitor</h3>
@@ -311,7 +277,6 @@ https://svelte.dev/e/js_parse_error -->
           </span>
         </div>
       </div>
-
       <div class="service-item">
         <span class="service-icon">{getServiceStatusIcon($serviceStatus.webgpu)}</span>
         <div class="service-info">
@@ -321,7 +286,6 @@ https://svelte.dev/e/js_parse_error -->
           </span>
         </div>
       </div>
-
       <div class="service-item">
         <span class="service-icon">{getServiceStatusIcon($serviceStatus.neural)}</span>
         <div class="service-info">
@@ -331,7 +295,6 @@ https://svelte.dev/e/js_parse_error -->
           </span>
         </div>
       </div>
-
       <div class="service-item">
         <span class="service-icon">{getServiceStatusIcon($serviceStatus.vectordb)}</span>
         <div class="service-info">
@@ -342,12 +305,10 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-    
     <div class="last-check">
       Last health check: {$serviceStatus.lastCheck.toLocaleTimeString()}
     </div>
   </div>
-
   <!-- Performance History Chart (Simple visualization) -->
   {#if $performanceHistory.length > 0}
     <div class="performance-chart">
@@ -367,7 +328,6 @@ https://svelte.dev/e/js_parse_error -->
             Memory Usage
           </div>
         </div>
-        
         <div class="simple-chart">
           {#each $performanceHistory as point, i}
             <div class="chart-point" style="left: {(i / ($performanceHistory.length - 1)) * 100}%">
@@ -381,9 +341,8 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-
 <style>
-  .neural-dashboard {;
+  .neural-dashboard {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
@@ -392,22 +351,19 @@ https://svelte.dev/e/js_parse_error -->
     min-height: 100vh;
     color: #e2e8f0;
   }
-
   .dashboard-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 2px solid #3b82f6;
   }
-
   .header-title h2 {
     margin: 0;
     color: #e2e8f0;
     font-size: 1.8rem;
   }
-
   .connection-status {
     display: flex;
     align-items: center;
@@ -416,24 +372,20 @@ https://svelte.dev/e/js_parse_error -->
     color: #94a3b8;
     margin-top: 0.5rem;
   }
-
   .status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     display: block;
   }
-
   .status-dot.connected { background: #10b981; }
   .status-dot.error { background: #ef4444; }
   .status-dot.disconnected { background: #6b7280; }
-
   .header-controls {
     display: flex;
     gap: 1rem;
     align-items: center;
   }
-
   .time-range-select {
     background: #1e293b;
     border: 1px solid #475569;
@@ -441,7 +393,6 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.5rem;
     border-radius: 6px;
   }
-
   .control-buttons .btn {
     padding: 0.5rem 1rem;
     border: none;
@@ -452,13 +403,11 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     gap: 0.5rem;
   }
-
   .btn-primary { background: #3b82f6; color: white; }
   .btn-warning { background: #f59e0b; color: white; }
-
   .performance-grade {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 2rem;
     border-radius: 12px;
@@ -466,13 +415,11 @@ https://svelte.dev/e/js_parse_error -->
     background: rgba(59, 130, 246, 0.1);
     border: 1px solid rgba(59, 130, 246, 0.2);
   }
-
   .grade-content {
     display: flex;
     align-items: center;
     gap: 1.5rem;
   }
-
   .grade-badge {
     font-size: 3rem;
     font-weight: bold;
@@ -486,38 +433,31 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 50%;
     border: 2px solid currentColor;
   }
-
   .grade-info h3 {
     margin: 0 0 0.5rem 0;
     color: #e2e8f0;
   }
-
   .grade-info p {
     margin: 0;
     color: #94a3b8;
   }
-
   .system-health {
     text-align: right;
   }
-
   .system-health h4 {
     margin: 0 0 0.5rem 0;
     font-size: 1.1rem;
   }
-
   .health-percentage {
     font-size: 0.9rem;
     color: #94a3b8;
   }
-
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
   }
-
   .metric-card {
     background: linear-gradient(145deg, #1e293b, #0f172a);
     padding: 1.5rem;
@@ -525,30 +465,25 @@ https://svelte.dev/e/js_parse_error -->
     border: 1px solid #334155;
     transition: all 0.3s ease;
   }
-
   .metric-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     border-color: #3b82f6;
   }
-
   .metric-header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 1rem;
   }
-
   .metric-icon {
     font-size: 1.5rem;
   }
-
   .metric-header h3 {
     margin: 0;
     color: #e2e8f0;
     font-size: 1rem;
   }
-
   .metric-value {
     font-size: 2.5rem;
     font-weight: bold;
@@ -556,24 +491,19 @@ https://svelte.dev/e/js_parse_error -->
     line-height: 1;
     margin-bottom: 0.5rem;
   }
-
   .metric-unit, .metric-status, .efficiency-indicator {
     font-size: 0.85rem;
     color: #94a3b8;
   }
-
   .metric-status.warning, .efficiency-indicator.needs-improvement {
     color: #f59e0b;
   }
-
   .efficiency-indicator.excellent {
     color: #10b981;
   }
-
   .efficiency-indicator.good {
     color: #3b82f6;
   }
-
   .metric-bar {
     width: 100%;
     height: 6px;
@@ -582,14 +512,12 @@ https://svelte.dev/e/js_parse_error -->
     margin-top: 0.75rem;
     overflow: hidden;
   }
-
   .metric-fill {
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #10b981);
     border-radius: 3px;
     transition: width 0.3s ease;
   }
-
   .service-status {
     background: linear-gradient(145deg, #1e293b, #0f172a);
     padding: 1.5rem;
@@ -597,19 +525,16 @@ https://svelte.dev/e/js_parse_error -->
     border: 1px solid #334155;
     margin-bottom: 2rem;
   }
-
   .service-status h3 {
     margin: 0 0 1.5rem 0;
     color: #e2e8f0;
   }
-
   .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     margin-bottom: 1rem;
   }
-
   .service-item {
     display: flex;
     align-items: center;
@@ -620,27 +545,22 @@ https://svelte.dev/e/js_parse_error -->
     border: 1px solid transparent;
     transition: all 0.2s ease;
   }
-
   .service-item:hover {
     border-color: #3b82f6;
   }
-
   .service-icon {
     font-size: 1.5rem;
   }
-
   .service-info h4 {
     margin: 0 0 0.25rem 0;
     color: #e2e8f0;
     font-size: 0.9rem;
   }
-
   .service-status-text {
     font-size: 0.8rem;
     font-weight: 500;
     text-transform: uppercase;
   }
-
   .last-check {
     font-size: 0.8rem;
     color: #64748b;
@@ -648,25 +568,21 @@ https://svelte.dev/e/js_parse_error -->
     padding-top: 1rem;
     border-top: 1px solid #334155;
   }
-
   .performance-chart {
     background: linear-gradient(145deg, #1e293b, #0f172a);
     padding: 1.5rem;
     border-radius: 12px;
     border: 1px solid #334155;
   }
-
   .performance-chart h3 {
     margin: 0 0 1rem 0;
     color: #e2e8f0;
   }
-
   .chart-legend {
     display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
   }
-
   .legend-item {
     display: flex;
     align-items: center;
@@ -674,17 +590,14 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.8rem;
     color: #94a3b8;
   }
-
   .legend-color {
     width: 12px;
     height: 12px;
     border-radius: 2px;
   }
-
   .legend-color.gpu { background: #3b82f6; }
   .legend-color.neural { background: #10b981; }
   .legend-color.memory { background: #f59e0b; }
-
   .simple-chart {
     position: relative;
     height: 150px;
@@ -692,23 +605,19 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 6px;
     margin-top: 1rem;
   }
-
   .chart-point {
     position: absolute;
     width: 2px;
   }
-
   .point-gpu, .point-neural, .point-memory {
     position: absolute;
     width: 2px;
     height: 2px;
     border-radius: 50%;
   }
-
   .point-gpu { background: #3b82f6; }
   .point-neural { background: #10b981; }
   .point-memory { background: #f59e0b; }
-
   /* Color classes for service status */
   .text-green-400 { color: #4ade80; }
   .text-yellow-400 { color: #facc15; }
@@ -717,29 +626,24 @@ https://svelte.dev/e/js_parse_error -->
   .text-blue-400 { color: #60a5fa; }
   .text-orange-400 { color: #fb923c; }
   .text-emerald-400 { color: #34d399; }
-
   /* Responsive */
   @media (max-width: 768px) {
     .neural-dashboard {
       padding: 1rem;
     }
-
     .dashboard-header {
       flex-direction: column;
       gap: 1rem;
       align-items: stretch;
     }
-
     .performance-grade {
       flex-direction: column;
       gap: 1rem;
       text-align: center;
     }
-
     .metrics-grid {
       grid-template-columns: 1fr;
     }
-
     .services-grid {
       grid-template-columns: 1fr;
     }

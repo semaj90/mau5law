@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   N64 Texture Filtering Cache Integration Component
   Enhances N643DButton with advanced texture caching and filtering
-  
   Features:
   - Real-time texture filtering cache with bilinear, trilinear, anisotropic support
   - GPU-accelerated texture processing with WebGPU integration
@@ -12,22 +11,19 @@ https://svelte.dev/e/js_parse_error -->
   - WASM-accelerated cache operations for complex filtering
   - Integration with NES-GPU memory bridge for optimal performance
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import type { N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
   import { enhancedGPUCache } from '../../../../services/enhanced-gpu-cache-service.js';
   import { nesGPUBridge } from '../../../../gpu/nes-gpu-memory-bridge.js';
   import type { TextureCacheEntry } from '../../../../services/enhanced-gpu-cache-service.js';
-
   interface Props {
     // Texture configuration
     textureId: string;
     textureSource?: string | HTMLImageElement | ImageData | ArrayBuffer;
-    renderingOptions?: N64RenderingOptions;
+    renderingOptions?: N64RenderingOption;
     // Cache settings
     enableCache?: boolean;
     cacheKey?: string;
@@ -47,7 +43,6 @@ https://svelte.dev/e/js_parse_error -->
     onCacheMiss?: (textureId: string) => void;
     onPerformanceUpdate?: (metrics: unknown) => void;
   }
-
   let {
     textureId,
     textureSource,
@@ -67,7 +62,6 @@ https://svelte.dev/e/js_parse_error -->
     onCacheMiss,
     onPerformanceUpdate
   }: Props = $props();
-
   // Component state
   let canvasElement = $state<HTMLCanvasElement | null >(null);
   let gpuContext = $state<GPUCanvasContext | null >(null);
@@ -97,30 +91,29 @@ https://svelte.dev/e/js_parse_error -->
   const filteringPresets = {
     performance: {
       ...N64_TEXTURE_PRESETS.performance,
-      enableBilinearFiltering: true,
-      enableTrilinearFiltering: false,
+      enableBilinearFiltering: true
+      enableTrilinearFiltering: false
       anisotropicLevel: 1
     },
     balanced: {
       ...N64_TEXTURE_PRESETS.balanced,
-      enableBilinearFiltering: true,
-      enableTrilinearFiltering: true,
+      enableBilinearFiltering: true
+      enableTrilinearFiltering: true
       anisotropicLevel: 4
     },
     quality: {
       ...N64_TEXTURE_PRESETS.quality,
-      enableBilinearFiltering: true,
-      enableTrilinearFiltering: true,
+      enableBilinearFiltering: true
+      enableTrilinearFiltering: true
       anisotropicLevel: 8
-    },;
+    },
     ultra: {
       ...N64_TEXTURE_PRESETS.ultra,
-      enableBilinearFiltering: true,
-      enableTrilinearFiltering: true,
+      enableBilinearFiltering: true
+      enableTrilinearFiltering: true
       anisotropicLevel: 16
     }
   };
-
   /**
    * Initialize texture filtering cache system
    */
@@ -169,7 +162,6 @@ https://svelte.dev/e/js_parse_error -->
       isLoading = false;
     }
   }
-
   /**
    * Load and cache texture with specified filtering options
    */
@@ -187,11 +179,11 @@ https://svelte.dev/e/js_parse_error -->
         await new Promise((resolve, reject) => {
           image.onload = resolve);
           image.onerror = reject;
-          image.src = textureSource;
+          image.src = textureSourc;
         });
-        imageData = image;
+        imageData = imag;
       } else {
-        imageData = textureSource;
+        imageData = textureSourc;
       }
       // Cache texture with GPU service
       cacheEntry = await enhancedGPUCache.cacheN64Texture(
@@ -204,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
       }
       textureLoadTime = performance.now() - startTime;
       // Update filtering type based on cache entry
-      currentFilteringType = cacheEntry.filteringType;
+      currentFilteringType = cacheEntry.filteringTyp;
       // Notify texture loaded
       onTextureLoaded?.(cacheEntry);
       console.log(`🎨 Texture "${textureId}" cached with ${currentFilteringType} filtering in ${textureLoadTime.toFixed(2)}ms`);
@@ -212,7 +204,6 @@ https://svelte.dev/e/js_parse_error -->
       throw new Error(`Failed to load and cache texture: ${error.message}`);
     }
   }
-
   /**
    * Load texture without caching (fallback)
    */
@@ -226,17 +217,17 @@ https://svelte.dev/e/js_parse_error -->
       await new Promise((resolve, reject) => {
         image.onload = resolve);
         image.onerror = reject;
-        image.src = textureSource;
+        image.src = textureSourc;
       });
       // Create basic texture entry for display
       cacheEntry = {
-        id: textureId,
+        id: textureId
         textureType: 'n64',
-        filteringType: determineFilteringType(renderingOptions),;
+        filteringType: determineFilteringType(renderingOptions),
         dimensions: { width: image.width, height: image.height },
-        gpuTexture: null,
-        gpuBuffer: null,
-        bindGroup: null,
+        gpuTexture: null
+        gpuBuffer: null
+        bindGroup: null
         lastUsed: Date.now(),
         accessCount: 1,
         memorySize: image.width * image.height * 4,
@@ -247,13 +238,12 @@ https://svelte.dev/e/js_parse_error -->
       throw new Error(`Failed to load texture: ${error.message}`);
     }
   }
-
   /**
    * Apply adaptive quality adjustment based on performance
    */
   function applyAdaptiveQuality(): void {
     if (!adaptiveQuality || !performanceMetrics.fps) return;
-    const currentFPS = performanceMetrics.fps;
+    const currentFPS = performanceMetrics.fp;
     const fpsRatio = currentFPS / targetFPS;
   let newPreset = $state<keyof typeof filteringPresetsif (fpsRatio < 0.7) {
       // Performance is poor, reduce quality
@@ -272,24 +262,22 @@ https://svelte.dev/e/js_parse_error -->
     // Only update if options changed significantly
     if (JSON.stringify(newOptions) !== JSON.stringify(renderingOptions)) {
       console.log(`🔧 Adaptive quality: switching to ${newPreset} preset (FPS: ${currentFPS.toFixed(1)})`);
-      renderingOptions = newOptions;
+      renderingOptions = newOption;
       // Reload texture with new options if caching is enabled
       if (enableCache && cacheEntry) {
         loadAndCacheTexture().catch(console.error);
       }
     }
   }
-
   /**
    * Update cache performance metrics
    */
   function updateCacheMetrics(isHit: boolean): void {
     const analytics = enhancedGPUCache.getCacheAnalytics();
-    cacheHitRate = analytics.hitRate;
-    performanceMetrics.cacheEfficiency = analytics.hitRate;
-    performanceMetrics.memoryUsage = analytics.totalSize;
+    cacheHitRate = analytics.hitRat;
+    performanceMetrics.cacheEfficiency = analytics.hitRat;
+    performanceMetrics.memoryUsage = analytics.totalSiz;
   }
-
   /**
    * Start performance monitoring loop
    */
@@ -298,15 +286,15 @@ https://svelte.dev/e/js_parse_error -->
     let lastTime = performance.now();
     const updateMetrics = () => {
       const now = performance.now();
-      const deltaTime = now - lastTime;
+      const deltaTime = now - lastTim;
       frameCount++;
       if (deltaTime >= 1000) {
         // Update FPS
-        performanceMetrics.fps = (frameCount * 1000) / deltaTime;
+        performanceMetrics.fps = (frameCount * 1000) / deltaTim;
         performanceMetrics.frameTime = deltaTime / frameCount;
         // Update other metrics
         const analytics = enhancedGPUCache.getCacheAnalytics();
-        performanceMetrics.cacheEfficiency = analytics.hitRate;
+        performanceMetrics.cacheEfficiency = analytics.hitRat;
         performanceMetrics.memoryUsage = analytics.totalSize / (1024 * 1024); // MB
         // Calculate filtering quality score
         performanceMetrics.filteringQuality = cacheEntry?.qualityScore || 0;
@@ -324,7 +312,6 @@ https://svelte.dev/e/js_parse_error -->
     };
     animationId = requestAnimationFrame(updateMetrics);
   }
-
   /**
    * Helper functions
    */
@@ -333,7 +320,6 @@ https://svelte.dev/e/js_parse_error -->
     if (options.anisotropicLevel && options.anisotropicLevel > 1) return 'anisotropic';
     return 'bilinear';
   }
-
   function calculateQualityScore(options: N64RenderingOptions): number {
   let score = $state(0.3);
     if (options.enableBilinearFiltering) score += 0.2;
@@ -346,7 +332,6 @@ https://svelte.dev/e/js_parse_error -->
     }
     return Math.min(score, 1.0);
   }
-
   /**
    * Component lifecycle
    */
@@ -357,19 +342,16 @@ if (preloadTextures) {
     }
     })();
   });
-
   onDestroy(() => {
     if (animationId) {
       cancelAnimationFrame(animationId);
     }
   });
-
   // Derived states using Svelte 5 runes
   let filteringQualityClass = $derived(
     currentFilteringType === 'anisotropic' ? 'ultra-quality' :
     currentFilteringType === 'trilinear' ? 'high-quality' : 'standard-quality'
   );
-
   let cacheStatusColor = $derived(
     cacheHitRate > 0.8 ? '#00ff00' :
     cacheHitRate > 0.5 ? '#ffff00' : '#ff6600'
@@ -381,10 +363,8 @@ if (preloadTextures) {
     }
   });
 </script>
-
 <!-- N64 Texture Filtering Cache Component -->
 <div class="n64-texture-cache-container {filteringQualityClass}" class:debug-mode={enableDebugMode}>
-  
   <!-- Main Canvas for GPU-accelerated rendering -->
   <canvas
     bind:this={canvasElement}
@@ -394,7 +374,6 @@ if (preloadTextures) {
     width="256"
     height="256"
   ></canvas>
-  
   <!-- Cache Status Indicator -->
   {#if showCacheStatus && cacheEntry}
     <div class="cache-status-overlay">
@@ -407,7 +386,6 @@ if (preloadTextures) {
       </div>
     </div>
   {/if}
-  
   <!-- Performance Metrics Overlay -->
   {#if showPerformanceMetrics && isInitialized}
     <div class="performance-overlay">
@@ -420,17 +398,14 @@ if (preloadTextures) {
             {performanceMetrics.fps.toFixed(1)}
           </span>
         </div>
-        
         <div class="metric">
           <span class="metric-label">Cache</span>
           <span class="metric-value">{(performanceMetrics.cacheEfficiency * 100).toFixed(0)}%</span>
         </div>
-        
         <div class="metric">
           <span class="metric-label">Quality</span>
           <span class="metric-value quality-score">{(performanceMetrics.filteringQuality * 100).toFixed(0)}%</span>
         </div>
-        
         <div class="metric">
           <span class="metric-label">Memory</span>
           <span class="metric-value">{performanceMetrics.memoryUsage.toFixed(1)}MB</span>
@@ -438,7 +413,6 @@ if (preloadTextures) {
       </div>
     </div>
   {/if}
-  
   <!-- Loading State -->
   {#if isLoading}
     <div class="loading-overlay">
@@ -448,7 +422,6 @@ if (preloadTextures) {
       </div>
     </div>
   {/if}
-  
   <!-- Error State -->
   {#if hasError}
     <div class="error-overlay">
@@ -459,7 +432,6 @@ if (preloadTextures) {
       </button>
     </div>
   {/if}
-  
   <!-- Debug Information -->
   {#if enableDebugMode && cacheEntry}
     <div class="debug-panel">
@@ -477,44 +449,37 @@ if (preloadTextures) {
     </div>
   {/if}
 </div>
-
 <style>
-  .n64-texture-cache-container {;
+  .n64-texture-cache-container {
     position: relative;
     display: inline-block;
     border-radius: 4px;
     overflow: hidden;
     font-family: 'Rajdhani', 'Courier New', monospace;
   }
-  
   .n64-texture-canvas {
     display: block;
     image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    
+    image-rendering: -moz-crisp-edge;
+    image-rendering: crisp-edge;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 2px solid rgba(74, 144, 226, 0.3);
   }
-  
   /* Quality-based styling */
   .standard-quality .n64-texture-canv.high-quality .n64-texture-canv.ultra-quality .n64-texture-canvas {
     filter: contrast(1.1) brightness(1.05) saturate(1.2) sharpen(0.1);
     border-color: rgba(0, 255, 0, 0.7);
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
   }
-  
   /* Canvas states */
   .n64-texture-canvas.loading {
     opacity: 0.6;
     filter: blur(1px);
   }
-  
   .n64-texture-canvas.error {
     border-color: rgba(255, 0, 0, 0.7);
     box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
   }
-  
   /* Cache Status Overlay */
   .cache-status-overlay {
     position: absolute;
@@ -522,7 +487,6 @@ if (preloadTextures) {
     right: 8px;
     z-index: 10;
   }
-  
   .cache-indicator {
     display: flex;
     align-items: center;
@@ -535,27 +499,22 @@ if (preloadTextures) {
     font-size: 10px;
     font-weight: bold;
   }
-  
   .cache-icon {
     font-size: 12px;
   }
-  
   .cache-info {
     display: flex;
     flex-direction: column;
     gap: 1px;
   }
-  
   .cache-type {
     color: var(--status-color, #4a90e2);
     font-size: 9px;
   }
-  
   .cache-hit-rate {
     font-size: 8px;
     opacity: 0.8;
   }
-  
   /* Performance Overlay */
   .performance-overlay {
     position: absolute;
@@ -564,7 +523,6 @@ if (preloadTextures) {
     right: 8px;
     z-index: 10;
   }
-  
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -574,44 +532,36 @@ if (preloadTextures) {
     border-radius: 4px;
     border: 1px solid rgba(74, 144, 226, 0.3);
   }
-  
   .metric {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2px;
   }
-  
   .metric-label {
     font-size: 8px;
     color: rgba(255, 255, 255, 0.7);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-  
   .metric-value {
     font-size: 10px;
     font-weight: bold;
     color: #4a90e2;
   }
-  
   .metric-value.good {
     color: #00ff00;
   }
-  
   .metric-value.warning {
     color: #ffff00;
   }
-  
   .metric-value.critical {
     color: #ff6600;
     animation: pulse 1s infinite;
   }
-  
   .metric-value.quality-score {
     color: #ff00ff;
   }
-  
   /* Loading Overlay */
   .loading-overlay {
     position: absolute;
@@ -622,7 +572,6 @@ if (preloadTextures) {
     background: rgba(0, 0, 0, 0.8);
     z-index: 20;
   }
-  
   .n64-spinner {
     display: flex;
     flex-direction: column;
@@ -630,7 +579,6 @@ if (preloadTextures) {
     gap: 12px;
     color: #4a90e2;
   }
-  
   .spinner-ring {
     width: 40px;
     height: 40px;
@@ -640,7 +588,6 @@ if (preloadTextures) {
     border-radius: 50%;
     animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
   }
-  
   .spinner-text {
     font-size: 10px;
     font-weight: bold;
@@ -648,7 +595,6 @@ if (preloadTextures) {
     letter-spacing: 1px;
     animation: pulse 2s ease-in-out infinite;
   }
-  
   /* Error Overlay */
   .error-overlay {
     position: absolute;
@@ -663,18 +609,15 @@ if (preloadTextures) {
     text-align: center;
     z-index: 20;
   }
-  
   .error-icon {
     font-size: 32px;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
   }
-  
   .error-message {
     font-size: 10px;
     max-width: 200px;
     line-height: 1.3;
   }
-  
   .retry-button {
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid white;
@@ -686,12 +629,10 @@ if (preloadTextures) {
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  
   .retry-button:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: translateY(-1px);
   }
-  
   /* Debug Panel */
   .debug-panel {
     position: absolute;
@@ -706,87 +647,74 @@ if (preloadTextures) {
     border-top: none;
     z-index: 15;
   }
-  
   .debug-panel h4 {
     margin: 0 0 6px 0;
     color: #00ffff;
     font-size: 11px;
     text-transform: uppercase;
   }
-  
   .debug-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2px;
     font-family: 'Courier New', monospace;
   }
-  
   .debug-grid div {
     padding: 1px 0;
   }
-  
   .debug-grid strong {
     color: #ffff00;
   }
-  
   /* Debug mode styling */
   .debug-mode {
     border: 2px dashed #00ff00;
   }
-  
   .debug-mode .n64-texture-canvas {
     border-color: #00ff00;
   }
-  
   /* Animations */
   @keyframes spin {
-    0% { 
-      transform: rotate(0deg) scale(1); 
+    0% {
+      transform: rotate(0deg) scale(1);
       border-width: 3px 2px 1px 3px;
     }
-    50% { 
-      transform: rotate(180deg) scale(1.1); 
+    50% {
+      transform: rotate(180deg) scale(1.1);
       border-width: 1px 3px 3px 2px;
     }
-    100% { 
-      transform: rotate(360deg) scale(1); 
+    100% {
+      transform: rotate(360deg) scale(1);
       border-width: 3px 2px 1px 3px;
     }
   }
-  
   @keyframes pulse {
-    0%, 100% { 
-      opacity: 1; 
+    0%, 100% {
+      opacity: 1;
       transform: scale(1);
     }
-    50% { 
-      opacity: 0.7; 
+    50% {
+      opacity: 0.7;
       transform: scale(1.05);
     }
   }
-  
   /* Responsive design */
   @media (max-width: 768px) {
     .metrics-grid {
       grid-template-columns: repeat(2, 1fr);
     }
-    
     .debug-grid {
       grid-template-columns: 1fr;
     }
-    
     .cache-indicator {
       padding: 2px 6px;
       gap: 4px;
     }
   }
-  
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .n64-texture-cache-container {
       border: 2px solid white;
     }
-    
     .cache-indicator,
     .metrics-grid,
     .debug-panel {
@@ -794,18 +722,15 @@ if (preloadTextures) {
       border-color: white;
     }
   }
-  
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .spinner-ring {
       animation: none;
       border: 3px solid #4a90e2;
     }
-    
     .spinner-text {
       animation: none;
     }
-    
     .metric-value.critical {
       animation: none;
       color: #ff0000;

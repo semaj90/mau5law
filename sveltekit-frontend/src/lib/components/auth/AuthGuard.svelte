@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
   // AuthGuard component - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';
@@ -14,7 +13,6 @@
     fallback?: import('svelte').Snippet;
     showLoading?: boolean;
   }
-
   let {
     children,
     requiredRole,
@@ -23,7 +21,6 @@
     fallback,
     showLoading = true
   }: Props = $props();
-
   let isAuthorized = $derived(() => {
     if (authStore.isLoading) return null; // Loading state
     if (!authStore.isAuthenticated) return false;
@@ -35,7 +32,6 @@
     }
     return true;
   });
-
   // Handle unauthorized access
   $effect(() => {
     if (isAuthorized === false && typeof window !== 'undefined') {
@@ -47,7 +43,6 @@
     }
   });
 </script>
-
 {#if isAuthorized === null && showLoading}
   <div class="auth-loading" role="status" aria-label="Loading authentication">
     <div class="loading-spinner"></div>
@@ -60,7 +55,6 @@
 {:else if isAuthorized === false && fallback}
   {@render fallback()}
 {/if}
-
 <style>
   .auth-loading {
     display: flex;
@@ -70,7 +64,6 @@
     padding: 2rem;
     color: #6b7280;
   }
-
   .loading-spinner {
     width: 1rem;
     height: 1rem;
@@ -79,7 +72,6 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     to {
       transform: rotate(360deg);

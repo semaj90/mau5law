@@ -3,15 +3,12 @@ export class CognitiveRoutingOrchestrator {
     console.log('🧠 Cognitive routing orchestrator processing route:', route);
     return { processed: true, route, context };
   }
-
   initialize() {
     console.log('🚀 Cognitive routing orchestrator initialized');
   }
-
   shutdown() {
     console.log('🛑 Cognitive routing orchestrator shutdown');
   }
-
   getLearningState() {
     return {
       memoryState: {
@@ -23,12 +20,10 @@ export class CognitiveRoutingOrchestrator {
       adaptationScore: 0.75
     };
   }
-
   updateLearningState(state: any) {
     console.log('🧠 Updating learning state:', state);
     return true;
   }
-
   getEfficiencyScore() {
     const learningState = this.getLearningState();
     // Calculate efficiency based on learning rate and adaptation score
@@ -36,5 +31,4 @@ export class CognitiveRoutingOrchestrator {
     return Math.round(efficiency * 100) / 100; // Round to 2 decimal places
   }
 }
-
 export const cognitiveRoutingOrchestrator = new CognitiveRoutingOrchestrator();

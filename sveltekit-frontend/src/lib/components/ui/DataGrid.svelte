@@ -3,15 +3,12 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { Props } from "$lib/types/global";
   import { cn } from '$lib/utils/cn';
   import { ChevronDown, ChevronUp, MoreHorizontal, Search, Filter } from 'lucide-svelte';
-
   interface DataGridProps extends Props {
     onSelectionChange?: (event: { selectedRows: Array<string | number> }) => void;
   }
-
   let {
     columns,
     data = [],
@@ -29,7 +26,6 @@ https://svelte.dev/e/js_parse_error -->
   let sortConfig = $state(null);
   let searchQuery = $state('');
   let columnFilters = $state<Map<string, string>('')>(new Map());
-
   let filteredData = $derived(() => {
     let filtered = data;
     // Apply search filter
@@ -48,7 +44,6 @@ https://svelte.dev/e/js_parse_error -->
     }
     return filtered;
   });
-
   let sortedData = $derived(() => {
     if (!sortConfig) return filteredData;
     return [...filteredData].sort((a, b) => {
@@ -59,7 +54,6 @@ https://svelte.dev/e/js_parse_error -->
       return sortConfig.direction === 'desc' ? -result : result;
     });
   });
-
   function handleSort(column: string) {
     if (!sortable) return;
     if (sortConfig?.column === column) {
@@ -71,7 +65,6 @@ https://svelte.dev/e/js_parse_error -->
       sortConfig = { column, direction: 'asc' };
     }
   }
-
   function handleRowSelect(rowId: string | number) {
     if (!selectable) return;
     if (multiSelect) {
@@ -81,13 +74,12 @@ https://svelte.dev/e/js_parse_error -->
       } else {
         newSelection.add(rowId);
       }
-      selectedRows = newSelection;
+      selectedRows = newSelectio;
     } else {
       selectedRows = new Set([rowId]);
     }
     onSelectionChange?.({ selectedRows: Array.from(selectedRows) });
   }
-
   function handleSelectAll() {
     if (!multiSelect) return;
     if (selectedRows.size === sortedData.length) {
@@ -97,7 +89,6 @@ https://svelte.dev/e/js_parse_error -->
     }
     onSelectionChange?.({ selectedRows: Array.from(selectedRows) });
   }
-
   function handleColumnFilter(column: string, value: string) {
     if (value.trim()) {
       columnFilters.set(column, value);
@@ -107,7 +98,6 @@ https://svelte.dev/e/js_parse_error -->
     columnFilters = new Map(columnFilters);
   }
 </script>
-
 <div class={cn('modern-data-grid', class)}>
   <!-- Header with search and filters -->
   {#if filterable}
@@ -121,7 +111,6 @@ https://svelte.dev/e/js_parse_error -->
           class="search-input"
         />
       </div>
-      
       <div class="filter-actions">
         <button class="filter-button">
           <Filter class="h-4 w-4" />
@@ -130,7 +119,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   {/if}
-
   <!-- Data table -->
   <div class="table-container">
     <table class="data-table">
@@ -145,7 +133,6 @@ https://svelte.dev/e/js_parse_error -->
               />
             </th>
           {/if}
-          
           {#each columns as column}
             <th class="header-cell">
               <button
@@ -170,13 +157,11 @@ https://svelte.dev/e/js_parse_error -->
               </button>
             </th>
           {/each}
-          
           <th class="actions-header">
             <MoreHorizontal class="h-4 w-4 text-gray-400" />
           </th>
         </tr>
       </thead>
-      
       <tbody class="table-body">
         {#if loading}
           <tr>
@@ -198,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
           </tr>
         {:else}
           {#each sortedData as row, index}
-            <tr 
+            <tr
               class={cn('data-row', {
                 'row-selected': selectedRows.has(row.id),
                 'row-even': index % 2 === 0,
@@ -215,7 +200,6 @@ https://svelte.dev/e/js_parse_error -->
                   />
                 </td>
               {/if}
-              
               {#each columns as column}
                 <td class="data-cell">
                   <div class="cell-content">
@@ -227,7 +211,6 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </td>
               {/each}
-              
               <td class="actions-cell">
                 {@render children?.({ row, index })}
               </td>
@@ -238,9 +221,8 @@ https://svelte.dev/e/js_parse_error -->
     </table>
   </div>
 </div>
-
 <style>
-  .modern-data-grid {;
+  .modern-data-grid {
     background-color: white;
     border: 1px solid rgb(229 231 235);
     border-radius: 12px;
@@ -249,22 +231,19 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   }
-
   .grid-toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 1rem 1.5rem;
     border-bottom: 1px solid rgb(243 244 246);
     background-color: rgb(249 250 251);
   }
-
   .search-container {
     position: relative;
     flex: 1;
     max-width: 24rem;
   }
-
   .search-icon {
     position: absolute;
     left: 0.75rem;
@@ -274,7 +253,6 @@ https://svelte.dev/e/js_parse_error -->
     height: 1rem;
     color: rgb(156 163 175);
   }
-
   .search-input {
     width: 100%;
     padding: 0.5rem 0.75rem 0.5rem 2.5rem;
@@ -282,20 +260,17 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
     font-size: 0.875rem;
     background-color: white;
-    transition: border-color 0.15s;
+    transition: border-color 0.15;
   }
-
   .search-input:focus {
     outline: none;
     border-color: rgb(59 130 246);
     box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
   }
-
   .filter-actions {
     display: flex;
     gap: 0.5rem;
   }
-
   .filter-button {
     display: inline-flex;
     align-items: center;
@@ -307,53 +282,47 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.875rem;
     font-weight: 500;
     color: rgb(55 65 81);
-    transition: all 0.15s;
+    transition: all 0.15;
   }
-
   .filter-button:hover {
     background-color: rgb(249 250 251);
     border-color: rgb(156 163 175);
   }
-
   .table-container {
-    overflow: auto;
+    overflow: aut;
+o;
     max-height: 70vh;
   }
-
   .data-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: collap;
     font-size: 0.875rem;
   }
-
   .table-header {
     background-color: rgb(249 250 251);
     position: sticky;
+y;
     top: 0;
     z-index: 10;
   }
-
   .header-row {
     border-bottom: 1px solid rgb(229 231 235);
   }
-
   .select-header, .actions-header {
     width: 3rem;
     padding: 0.75rem;
     text-align: center;
   }
-
   .header-cell {
     padding: 0;
     text-align: left;
     font-weight: 600;
     color: rgb(55 65 81);
   }
-
   .header-button {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
     width: 100%;
     padding: 0.75rem 1rem;
     background: none;
@@ -362,73 +331,58 @@ https://svelte.dev/e/js_parse_error -->
     font-weight: inherit;
     color: inherit;
     cursor: pointer;
-    transition: background-color 0.15s;
+    transition: background-color 0.15;
   }
-
   .header-button:hover:not(:disabled) {
     background-color: rgb(243 244 246);
   }
-
   .header-button:disabled {
     cursor: default;
   }
-
   .header-text {
     font-weight: 600;
     color: rgb(55 65 81);
   }
-
   .sort-icons {
     display: flex;
     align-items: center;
     margin-left: 0.5rem;
   }
-
   .table-body {
     background-color: white;
   }
-
   .data-row {
     border-bottom: 1px solid rgb(243 244 246);
-    transition: background-color 0.15s;
+    transition: background-color 0.15;
   }
-
   .data-row:hover {
     background-color: rgb(249 250 251);
   }
-
   .row-selected {
     background-color: rgb(239 246 255);
   }
-
   .row-selected:hover {
     background-color: rgb(219 234 254);
   }
-
   .row-clickable {
     cursor: pointer;
   }
-
   .select-cell, .actions-cell {
     width: 3rem;
     padding: 0.75rem;
     text-align: center;
   }
-
   .data-cell {
     padding: 0.75rem 1rem;
     border-right: 1px solid rgb(243 244 246);
   }
-
   .data-cell:last-child {
     border-right: none;
   }
-
   .cell-content {
     color: rgb(55 65 81);
     line-height: 1.5;
   }
-
   .checkbox-input {
     width: 1rem;
     height: 1rem;
@@ -436,17 +390,14 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.25rem;
     cursor: pointer;
   }
-
   .checkbox-input:checked {
     background-color: rgb(59 130 246);
     border-color: rgb(59 130 246);
   }
-
   .loading-cell, .empty-cell {
     padding: 3rem 1.5rem;
     text-align: center;
   }
-
   .loading-content, .empty-content {
     display: flex;
     flex-direction: column;
@@ -454,7 +405,6 @@ https://svelte.dev/e/js_parse_error -->
     gap: 1rem;
     color: rgb(107 114 128);
   }
-
   .loading-spinner {
     width: 2rem;
     height: 2rem;
@@ -463,16 +413,13 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   .loading-text, .empty-text {
     font-weight: 500;
   }
-
   .empty-icon {
     font-size: 2rem;
     opacity: 0.5;
   }
-
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
@@ -482,19 +429,14 @@ https://svelte.dev/e/js_parse_error -->
       gap: 1rem;
       align-items: stretch;
     }
-    
     .search-container {
       max-width: none;
     }
-    
     .data-table {
       font-size: 0.75rem;
     }
-    
     .data-cell, .header-cell {
       padding: 0.5rem;
     }
   }
 </style>
-
-

@@ -1,13 +1,11 @@
 <script lang="ts">
   	import type {    Snippet    } from 'svelte';
   	import { Dialog as BitsDialog } from 'bits-ui';
-  	import {   } from "svelte";
   	import { cn } from '$lib/utils';
-
   	interface Props {
   		open?: boolean;
   		onOpenChange?: (open: boolean) => void;
-  		// Dialog configuration  
+  		// Dialog configuration
   		preventScroll?: boolean;
   		closeOnOutsideClick?: boolean;
   		closeOnEscape?: boolean;
@@ -39,19 +37,17 @@
   		trigger,
   		children,
   		footer,
-  		onClose;
+  		onClo;
   	}: Props = $props();
-  	
-
   	function handleOpenChange(newOpen: boolean) {
   		if (onOpenChange) {
   			onOpenChange(newOpen);
   		}
   		ondispatch?.({ open: newOpen });
   		if (newOpen) {
-  			ondispatch?.();
+  			// ondispatch removed;
   		} else {
-  			ondispatch?.();
+  			// ondispatch removed;
   			if (onClose) {
   				onClose();
   			}
@@ -61,9 +57,8 @@
   	const defaultOverlayClass = 'fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0';
   	// Default content styles
   	const defaultContentClass = 'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-gray-200 bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg md:w-full dark:border-gray-800 dark:bg-gray-950';
-  	type $$Props = Props;
+  	type $$Props = Prop;
 </script>
-
 <BitsDialog.Root {open} onOpenChange={handleOpenChange}>
 	<!-- Trigger -->
 	{#if trigger}
@@ -73,16 +68,14 @@
 			{@render trigger()}
 		</BitsDialog.Trigger>
 	{/if}
-
 	<!-- Dialog Portal -->
 	<BitsDialog.Portal>
 		<!-- Overlay -->
-		<BitsDialog.Overlay 
+		<BitsDialog.Overlay
 			class={cn(defaultOverlayClass, overlayClass)}
 		/>
-		
 		<!-- Content -->
-		<BitsDialog.Content 
+		<BitsDialog.Content
 			class={cn(defaultContentClass, contentClass, className)}
 		>
 			<!-- Close button -->
@@ -94,7 +87,6 @@
 				</svg>
 				<span class="sr-only">Close</span>
 			</BitsDialog.Close>
-			
 			<!-- Title -->
 			{#if title}
 				<div class="flex flex-col space-y-1.5 text-center sm:text-left">
@@ -105,7 +97,6 @@
 					</BitsDialog.Title>
 				</div>
 			{/if}
-			
 			<!-- Description -->
 			{#if description}
 				<BitsDialog.Description
@@ -114,14 +105,12 @@
 					{description}
 				</BitsDialog.Description>
 			{/if}
-			
 			<!-- Main content -->
 			{#if children}
 				<div class="py-4">
 					{@render children()}
 				</div>
 			{/if}
-			
 			<!-- Footer -->
 			{#if footer}
 				<div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">

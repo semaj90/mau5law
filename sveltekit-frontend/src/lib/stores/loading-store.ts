@@ -1,5 +1,4 @@
 import { writable } from 'svelte/store';
-
 export interface LoadingOperation {
   id: string;
   title: string;
@@ -10,26 +9,22 @@ export interface LoadingOperation {
   startTime: number;
   estimatedTime?: number;
 }
-
 interface LoadingState {
   operations: Map<string, LoadingOperation>;
   isAnyLoading: boolean;
 }
-
 function createLoadingStore() {
   const { subscribe, set, update } = writable<LoadingState>({
     operations: new Map(),
     isAnyLoading: false
   });
-
   return {
     subscribe,
-
-    startOperation: (
-      id: string,
-      title: string,;
+    startOperation: (,
+      id: string
+      title: string
       operation: LoadingOperation['operation'] = 'processing',
-      description?: string,
+      description?: string
       estimatedTime?: number;
     ) => {
       update(state => {
@@ -37,19 +32,17 @@ function createLoadingStore() {
           id,
           title,
           description,
-          progress: 0,;
+          progress: 0,
           status: 'loading',
           operation,
           startTime: Date.now(),
           estimatedTime
         };
-
         state.operations.set(id, newOperation);
         state.isAnyLoading = state.operations.size > 0;
         return state;
       });
-
-      // Track operation globally for performance monitoring;
+      // Track operation globally for performance monitoring
       if (typeof window !== 'undefined') {
         if (!(window as any).__aiOperations) {
           (window as any).__aiOperations = new Set();
@@ -57,7 +50,6 @@ function createLoadingStore() {
         (window as any).__aiOperations.add(id);
       }
     },
-
     updateProgress: (id: string, progress: number, description?: string) => {
       update(state => {
         const operation = state.operations.get(id);
@@ -69,15 +61,13 @@ function createLoadingStore() {
         return state;
       });
     },
-
     completeOperation: (id: string, status: 'success' | 'error' | 'warning' = 'success') => {
       update(state => {
         const operation = state.operations.get(id);
         if (operation) {
           operation.status = status;
           operation.progress = 100;
-
-          // Remove after a delay to show completion;
+          // Remove after a delay to show completion
           setTimeout(() => {
             update(s => {
               s.operations.delete(id);
@@ -88,38 +78,32 @@ function createLoadingStore() {
         }
         return state;
       });
-
-      // Clean up global tracking;
+      // Clean up global tracking
       if (typeof window !== 'undefined' && (window as any).__aiOperations) {
         (window as any).__aiOperations.delete(id);
       }
     },
-
     removeOperation: (id: string) => {
       update(state => {
         state.operations.delete(id);
         state.isAnyLoading = Array.from(state.operations.values()).some(op => op.status === 'loading');
         return state;
       });
-
-      // Clean up global tracking;
+      // Clean up global tracking
       if (typeof window !== 'undefined' && (window as any).__aiOperations) {
         (window as any).__aiOperations.delete(id);
       }
     },
-
     clearAll: () => {
       set({
         operations: new Map(),
         isAnyLoading: false
       });
-
-      // Clean up global tracking;
+      // Clean up global tracking
       if (typeof window !== 'undefined') {
         (window as any).__aiOperations = new Set();
       }
     },
-
     getOperation: (id: string) => {
       let operation: LoadingOperation | undefined;
       update(state => {
@@ -130,60 +114,47 @@ function createLoadingStore() {
     }
   };
 }
-
 export const loadingStore = createLoadingStore();
-
-// Convenience functions for common operations;
+// Convenience functions for common operations
 export const aiLoading = {
   start: (id: string, title: string, description?: string) =>
     loadingStore.startOperation(id, title, 'ai', description),
-
   progress: (id: string, progress: number, description?: string) =>
     loadingStore.updateProgress(id, progress, description),
-;
   complete: (id: string, status: 'success' | 'error' | 'warning' = 'success') =>
     loadingStore.completeOperation(id, status)
 };
-
 export const gpuLoading = {
   start: (id: string, title: string, description?: string) =>
     loadingStore.startOperation(id, title, 'gpu', description),
-
   progress: (id: string, progress: number, description?: string) =>
     loadingStore.updateProgress(id, progress, description),
-;
   complete: (id: string, status: 'success' | 'error' | 'warning' = 'success') =>
     loadingStore.completeOperation(id, status)
 };
-
 export const uploadLoading = {
   start: (id: string, title: string, description?: string) =>
     loadingStore.startOperation(id, title, 'upload', description),
-
   progress: (id: string, progress: number, description?: string) =>
     loadingStore.updateProgress(id, progress, description),
-;
   complete: (id: string, status: 'success' | 'error' | 'warning' = 'success') =>
     loadingStore.completeOperation(id, status)
 };
-
 // Auto-cleanup for long-running operations
 export function withLoadingTimeout<T>(
-  promise: Promise<T>,
-  id: string,
-  title: string,;
+  promise: Promise<T>
+  id: string
+  title: string
   operation: LoadingOperation['operation'] = 'processing',
   timeoutMs: number = 30000;
 ): Promise<T> {
   loadingStore.startOperation(id, title, operation);
-
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => {
       loadingStore.completeOperation(id, 'error');
       reject(new Error(`Operation ${title} timed out after ${timeoutMs}ms`);
     }, timeoutMs);
   });
-
   return Promise.race([;
     promise.then(result => {
       loadingStore.completeOperation(id, 'success');

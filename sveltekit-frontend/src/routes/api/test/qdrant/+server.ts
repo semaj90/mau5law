@@ -1,13 +1,10 @@
 import type { RequestHandler } from './$types.js'
-
 // Optimized Qdrant Service Test API
 // Tests the memory-efficient Qdrant service with SOM clustering and NES cache integration
-
 import { json } from '@sveltejs/kit'
 import { optimizedQdrantService } from '$lib/services/optimized-qdrant-service'
 import { URL } from "url"
 }
-
 export interface TestResult {
   test: string
   status: 'success' | 'error' | 'warning'
@@ -15,11 +12,9 @@ export interface TestResult {
   error?: string
   duration?: number
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test') || 'all'
   const results: TestResult[] = []
-
   try {
     // Test 1: Health Check
     if (testType === 'all' || testType === 'health') {
@@ -29,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'qdrant_health_check',
           status: health.status === 'healthy' ? 'success' : 'warning',
-          data: health,
+          data: health
           duration: Date.now() - startTime
         })
       } catch (error: any) {
@@ -41,7 +36,6 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 2: Collection Setup
     if (testType === 'all' || testType === 'collection') {
       const startTime = Date.now()
@@ -62,21 +56,18 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 3: Sample Vector Search
     if (testType === 'all' || testType === 'search') {
       const startTime = Date.now()
       try {
         // Generate a sample 768-dimensional vector for nomic-embed
         const sampleVector = Array.from({ length: 768 }, () => Math.random() * 2 - 1)
-        
         const searchResult = await optimizedQdrantService.searchVectors(sampleVector, {
           limit: 5,
           threshold: 0.1,
-          useCache: true,
+          useCache: true
           enableSOM: true
         })
-
         results.push({
           test: 'vector_search',
           status: 'success',
@@ -96,7 +87,6 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 4: Sample Vector Upsert
     if (testType === 'all' || testType === 'upsert') {
       const startTime = Date.now()
@@ -123,15 +113,13 @@ export const GET: RequestHandler = async ({ url }) => {
             }
           }
         ]
-
         const upsertResult = await optimizedQdrantService.upsertVectors(sampleVectors)
-        
         results.push({
           test: 'vector_upsert',
           status: 'success',
           data: {
             vectors_inserted: sampleVectors.length,
-            upsert_result: upsertResult,
+            upsert_result: upsertResult
             vector_dimensions: sampleVectors[0].vector.length
           },
           duration: Date.now() - startTime
@@ -145,14 +133,12 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 5: PostgreSQL Sync (dry run)
     if (testType === 'all' || testType === 'sync') {
       const startTime = Date.now()
       try {
         // Test sync capability without full sync
         const health = await optimizedQdrantService.healthCheck()
-        
         results.push({
           test: 'postgresql_sync_test',
           status: 'success',
@@ -173,26 +159,22 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     // Test 6: Memory Usage and Performance
     if (testType === 'all' || testType === 'performance') {
       const startTime = Date.now()
       try {
         const health = await optimizedQdrantService.healthCheck()
-        
         // Simulate multiple search operations to test caching
         const searchPromises = Array.from({ length: 3 }, async (_, i) => {
           const vector = Array.from({ length: 768 }, () => Math.random() * 2 - 1)
           return await optimizedQdrantService.searchVectors(vector, {
             limit: 3,
-            useCache: true,
+            useCache: true
             enableSOM: true
           })
         })
-
         const searchResults = await Promise.all(searchPromises)
         const cacheHits = searchResults.filter(item => item.length)
-
         results.push({
           test: 'performance_test',
           status: 'success',
@@ -216,12 +198,11 @@ export const GET: RequestHandler = async ({ url }) => {
         })
       }
     }
-
     return json({
-      success: true,
+      success: true
       timestamp: new Date().toISOString(),
       service: 'optimized_qdrant_service',
-      tests: results,
+      tests: results
       summary: {
         total: results.length,
         passed: results.filter(item => item.length),
@@ -240,19 +221,16 @@ export const GET: RequestHandler = async ({ url }) => {
         memory_limit_mb: 32
       }
     })
-
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 })
   }
 }
-
 export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action')
-  
   if (action === 'sync') {
     try {
       const body = await request.json()
@@ -261,27 +239,24 @@ export const POST: RequestHandler = async ({ request, url }) => {
         batchSize: body.batchSize || 50,
         sinceTimestamp: body.sinceTimestamp ? new Date(body.sinceTimestamp) : undefined
       }
-
       const syncResult = await optimizedQdrantService.syncFromPostgreSQL(options)
-      
       return json({
-        success: true,
+        success: true
         action: 'postgresql_sync',
-        result: syncResult,
+        result: syncResult
         timestamp: new Date().toISOString()
       })
     } catch (error: any) {
       return json({
-        success: false,
+        success: false
         action: 'postgresql_sync',
         error: error instanceof Error ? error.message: String(error),
         timestamp: new Date().toISOString()
       }, { status: 500 })
     }
   }
-
   return json({
-    success: false,
+    success: false
     error: 'Invalid action. Supported actions: sync',
     timestamp: new Date().toISOString()
   }, { status: 400 })

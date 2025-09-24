@@ -1,32 +1,26 @@
 // 🎯 Global Type Definitions for Svelte 5 + Legal AI System
 // Eliminates 800+ type definition errors across the codebase
-
 // =====================================================
 // CORE COMPONENT INTERFACES
-// =====================================================;
+// =====================================================
 }
-
 export interface Props {
   data?: unknown;
   children?: import('svelte').Snippet;
   [key: string]: unknown;
 }
-
 export interface LayoutProps {
   children: import('svelte').Snippet;
   data?: unknown;
 }
-
 export interface PageProps {
   data: any;
   form?: unknown;
 }
-
 // =====================================================
 // SYSTEM STATUS & HEALTH
-// =====================================================;
+// =====================================================
 }
-
 export interface SystemStatus {
   // Core service flags – made optional to tolerate partial initialization in pages
   database?: boolean;
@@ -47,27 +41,24 @@ export interface SystemStatus {
   localModels?: Array<any>;
   recommendations?: string[];
 }
-
 export interface ServiceHealth {
   service: string;
   status: 'healthy' | 'unhealthy' | 'degraded';
   last_check: string;
   response_time: number;
   error_count: number;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 // =====================================================
 // SEARCH & RETRIEVAL
-// =====================================================;
+// =====================================================
 }
-
 export interface SearchResults {
   documents: LegalDocument[];
   total: number;
   processingTime: number;
   query: string;
-  facets?: Record<string, any>;
+  facets?: { [key: string]: any };
   suggestions?: string[];
   // Extended properties for legal AI demo
   executionTime?: number;
@@ -80,7 +71,6 @@ export interface SearchResults {
     filters: any[];
   };
 }
-
 export interface TestResults {
   // Core fields (optional to allow progressive assignment)
   query?: string;
@@ -110,7 +100,6 @@ export interface TestResults {
     environment?: string;
   };
 }
-
 export interface AnalysisResults {
   content?: string;
   analysis?: {
@@ -154,12 +143,10 @@ export interface AnalysisResults {
       };
   similarity?: number;
 }
-
 // =====================================================
 // LEGAL DOMAIN TYPES
-// =====================================================;
+// =====================================================
 }
-
 export interface LegalDocument {
   id: string;
   title: string;
@@ -183,7 +170,6 @@ export interface LegalDocument {
   embedding?: number[];
   vector_id?: string;
 }
-
 export interface CaseFile {
   id: string;
   case_name: string;
@@ -196,7 +182,6 @@ export interface CaseFile {
   created_at: string;
   updated_at: string;
 }
-
 export interface Evidence {
   id: string;
   case_id: string;
@@ -206,10 +191,9 @@ export interface Evidence {
   file_path?: string;
   hash?: string;
   chain_of_custody: CustodyEntry[];
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   created_at: string;
 }
-
 export interface PersonOfInterest {
   id: string;
   name: string;
@@ -222,7 +206,6 @@ export interface PersonOfInterest {
   notes: string;
   cases: string[];
 }
-
 export interface CustodyEntry {
   id: string;
   evidence_id: string;
@@ -232,7 +215,6 @@ export interface CustodyEntry {
   location: string;
   notes?: string;
 }
-
 export interface TimelineEvent {
   id: string;
   case_id: string;
@@ -243,10 +225,9 @@ export interface TimelineEvent {
   participants?: string[];
   evidence_ids?: string[];
 }
-
 // =====================================================
 // DOCUMENT / LEGAL DOCUMENT
-// A lightweight, canonical Document type used across frontend components;
+// A lightweight, canonical Document type used across frontend components
 export interface Document {
   id: string;
   title: string;
@@ -254,16 +235,14 @@ export interface Document {
   documentType?: string; // e.g., 'deed', 'contract', 'report'
   caseId?: string;
   fileUrl?: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   createdAt?: string;
   updatedAt?: string;
 }
-
 // =====================================================
 // USER & AUTHENTICATION
-// =====================================================;
+// =====================================================
 }
-
 export interface User {
   id: string;
   email: string;
@@ -274,12 +253,10 @@ export interface User {
   created_at: string;
   last_login?: string;
 }
-
 export interface Permission {
   resource: string;
   actions: ('read' | 'write' | 'delete' | 'admin')[];
 }
-
 export interface UserPreferences {
   theme: 'light' | 'dark' | 'auto';
   language: string;
@@ -287,19 +264,16 @@ export interface UserPreferences {
   ai_assistance: boolean;
   default_view: string;
 }
-
 export interface DemoUser {
   email: string;
   password: string;
   name: string;
   role: 'prosecutor' | 'defense' | 'judge' | 'investigator' | 'admin' | 'analyst' | 'user';
 }
-
 // =====================================================
 // AI & MACHINE LEARNING
-// =====================================================;
+// =====================================================
 }
-
 export interface AIResponse {
   response: string;
   confidence: number;
@@ -309,22 +283,19 @@ export interface AIResponse {
   suggestions?: string[];
   citations?: Citation[];
 }
-
 export interface EmbeddingResult {
   text: string;
   embedding: number[];
   model: string;
   processing_time: number;
 }
-
 export interface VectorSearchResult {
   id: string;
   content: string;
   score: number;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   highlights?: string[];
 }
-
 export interface Entity {
   text: string;
   label: string;
@@ -332,7 +303,6 @@ export interface Entity {
   end: number;
   confidence: number;
 }
-
 export interface Citation {
   id: string;
   title: string;
@@ -342,12 +312,10 @@ export interface Citation {
   relevance_score: number;
   excerpt?: string;
 }
-
 // =====================================================
 // FILE UPLOAD & PROCESSING
-// =====================================================;
+// =====================================================
 }
-
 export interface UploadedFile {
   id: string;
   name: string;
@@ -370,7 +338,6 @@ export interface UploadedFile {
   thumbnailUrl?: string;
   error?: string;
 }
-
 export interface FileUploadOptions {
   accept?: string;
   maxFileSize?: number;
@@ -379,12 +346,10 @@ export interface FileUploadOptions {
   extractText?: boolean;
   generateThumbnails?: boolean;
 }
-
 // =====================================================
 // CHAT & MESSAGING
-// =====================================================;
+// =====================================================
 }
-
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
@@ -397,7 +362,6 @@ export interface ChatMessage {
     citations?: Citation[];
   };
 }
-
 export interface ChatSession {
   id: string;
   user_id: string;
@@ -405,14 +369,12 @@ export interface ChatSession {
   title?: string;
   created_at: string;
   updated_at: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 // =====================================================
 // ERROR HANDLING & VALIDATION
-// =====================================================;
+// =====================================================
 }
-
 export interface APIError {
   code: string;
   message: string;
@@ -420,27 +382,23 @@ export interface APIError {
   timestamp: string;
   request_id?: string;
 }
-
 export interface ValidationError {
   field: string;
   message: string;
   code: string;
   value?: unknown;
 }
-
 export interface ValidationFormState {
   isValid: boolean;
   isSubmitting: boolean;
   errors: ValidationError[];
   touched: Record<string, boolean>;
-  values: Record<string, any>;
+  values: { [key: string]: any };
 }
-
 // =====================================================
 // PERFORMANCE & MONITORING
-// =====================================================;
+// =====================================================
 }
-
 export interface PerformanceMetrics {
   response_time: number;
   throughput: number;
@@ -451,7 +409,6 @@ export interface PerformanceMetrics {
   active_connections: number;
   timestamp: string;
 }
-
 export interface GPUMetrics {
   gpu_utilization: number;
   memory_used: number;
@@ -460,21 +417,18 @@ export interface GPUMetrics {
   power_draw: number;
   driver_version: string;
 }
-
 // =====================================================
 // WORKFLOW & STATE MANAGEMENT
-// =====================================================;
+// =====================================================
 }
-
 export interface WorkflowState {
   current_step: string;
   completed_steps: string[];
-  data: Record<string, any>;
+  data: { [key: string]: any };
   errors: string[];
   started_at: string;
   updated_at: string;
 }
-
 export interface TaskProgress {
   id: string;
   name: string;
@@ -485,19 +439,16 @@ export interface TaskProgress {
   estimated_completion?: string;
   error_message?: string;
 }
-
 // =====================================================
 // MISSING TYPES FOR STATE.TS IMPORTS
-// =====================================================;
+// =====================================================
 }
-
 export interface TokenUsage {
   promptTokens: number;
   completionTokens: number;
   totalTokens: number;
   cost?: number;
 }
-
 export interface ModelAvailability {
   [modelName: string]: {
     available: boolean;
@@ -506,7 +457,6 @@ export interface ModelAvailability {
     capabilities?: string[];
   };
 }
-
 export interface Toast {
   id: string;
   type: 'success' | 'error' | 'warning' | 'info';
@@ -515,7 +465,6 @@ export interface Toast {
   duration?: number;
   dismissible?: boolean;
 }
-
 export interface AIModel {
   id: string;
   name: string;
@@ -525,7 +474,6 @@ export interface AIModel {
   maxTokens?: number;
   contextWindow?: number;
 }
-
 export interface SearchFilters {
   dateRange?: { start: Date; end: Date };
   documentType?: string[];
@@ -534,7 +482,6 @@ export interface SearchFilters {
   minScore?: number;
   maxResults?: number;
 }
-
 export interface SearchFacets {
   [category: string]: {
     [value: string]: number;

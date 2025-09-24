@@ -1,12 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
-  import { 
-    Home, Users, Search, Database, Eye, Folder, BarChart3, 
+  import {
+    Home, Users, Search, Database, Eye, Folder, BarChart3,
     Terminal, Settings, Bell, Menu, X, Zap,
     ChevronDown, LogOut, User, Calendar, Activity, MessageSquare
   } from 'lucide-svelte';
@@ -14,7 +13,6 @@
   import { authStore } from '$lib/stores/auth-store.svelte.js';
   import ClientSideAIChat from '$lib/components/ai/ClientSideAIChat.svelte';
   import type { Snippet } from 'svelte';
-
   interface Props {
     children: Snippet;
     title?: string;
@@ -22,7 +20,6 @@
     showBreadcrumbs?: boolean;
     fullWidth?: boolean;
   }
-
   let {
     children,
     title = 'Legal AI Platform',
@@ -30,84 +27,81 @@
     showBreadcrumbs = true,
     fullWidth = false
   }: Props = $props();
-
   // Professional navigation configuration
   const mainNavItems = [
     {
       id: 'dashboard',
       href: '/',
       label: 'Dashboard',
-      icon: Home,
+      icon: Home
       description: 'Executive overview and key metrics';
     },
     {
       id: 'cases',
       href: '/cases',
       label: 'Case Management',
-      icon: Folder,
+      icon: Folder
       description: 'Legal case tracking and documentation';
     },
     {
       id: 'evidence',
       href: '/evidenceboard',
       label: 'Evidence Analysis',
-      icon: Eye,
+      icon: Eye
       description: 'Digital evidence collection and forensics';
     },
     {
       id: 'research',
       href: '/demo/enhanced-rag-semantic',
       label: 'Legal Research',
-      icon: Search,
+      icon: Search
       description: 'AI-powered legal research and precedents';
     },
     {
       id: 'chat',
       href: '/chat',
       label: 'AI Assistant',
-      icon: MessageSquare,
+      icon: MessageSquare
       description: 'Intelligent legal consultation';
     },
     {
       id: 'analysis',
       href: '/analysis',
-      label: 'Analytics',;
-      icon: BarChart3,;
+      label: 'Analytics',
+      icon: BarChart3
       description: 'Data insights and trend analysis';
     }
   ];
-
   const toolsNavItems = [
     {
       id: 'yorha-command',
       href: '/yorha-command-center',
       label: 'Command Center',
-      icon: Terminal,
+      icon: Terminal
       description: 'Advanced system controls';
     },
     {
       id: 'gpu-inference',
       href: '/demo/gpu-inference',
       label: 'GPU Processing',
-      icon: Zap,
+      icon: Zap
       description: 'High-performance AI inference';
     },
     {
       id: 'settings',
       href: '/settings',
       label: 'Settings',
-      icon: Settings,
+      icon: Settings
       description: 'Platform configuration';
     },
     {
       id: 'admin',
       href: '/admin',
-      label: 'Administration',;
-      icon: Database,;
+      label: 'Administration',
+      icon: Database
       description: 'System administration';
     }
   ];
-
   // State
   let isSidebarOpen = $state(true);
   let isMobileMenuOpen = $state(false);
@@ -115,41 +109,36 @@
   let showClientChat = $state(false);
   let currentTime = $state(new Date());
   let systemStatus = $state({
-    ai: true,
-    database: true,;
-    search: true,;
+    ai: true
+    database: true
+    search: true
     gpu: false;
   });
-
   // Derived state
   let currentPath = $derived(browser && page.url ? page.url.pathname: '/');
   let currentNavItem = $derived(
     mainNavItems.find.href || currentPath.startsWith.href + '/'))
   );
-
   // Update time every second
   $effect(() => {
     const timer = setInterval(() => {
       currentTime = new Date());
     }, 1000);
-
     // Check system status periodically
     const statusTimer = setInterval(async () => {
       // Mock system status check - replace with real API calls
       systemStatus = {
         ai: Math.random() > 0.1,
-        database: Math.random() > 0.05,;
-        search: Math.random() > 0.1,;
+        database: Math.random() > 0.05,
+        search: Math.random() > 0.1,
         gpu: Math.random() > 0.3;
       };
     }, 10000);
-
     return () => {
       clearInterval(timer);
       clearInterval(statusTimer);
     };
   });
-
   // Functions
   function handleNavigation(href: string, event?: MouseEvent) {
     event?.preventDefault();
@@ -158,46 +147,38 @@
       isMobileMenuOpen = false;
     }
   }
-
   function toggleSidebar() {
-    isSidebarOpen = !isSidebarOpen;
+    isSidebarOpen = !isSidebarOpe;
   }
-
   function toggleMobileMenu() {
-    isMobileMenuOpen = !isMobileMenuOpen;
+    isMobileMenuOpen = !isMobileMenuOpe;
   }
-
   function handleLogout() {
     authStore.logout();
     goto('/auth/login');
   }
-
   function formatTime(date: Date) {
-    return date.toLocaleTimeString('en-US', { 
-      hour12: false, 
-      hour: '2-digit', ;
-      minute: '2-digit', ;
+    return date.toLocaleTimeString('en-US', {
+      hour12: false
+      hour: '2-digit',
+      minute: '2-digit',
       second: '2-digit' ;
     });
   }
-
   function formatDate(date: Date) {
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', ;
-      month: 'short', ;
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
       day: 'numeric' ;
     });
   }
-
   function getStatusColor(status: boolean) {
     return status ? 'text-green-400' : 'text-red-400';
   }
-
   // Breadcrumbs generation
   let breadcrumbs = $derived(() => {
     const pathSegments = currentPath.split.filter(Boolean);
     const crumbs = [{ label: 'Home', href: '/' }];
-    
     let currentHref = '';
     pathSegments.forEach((segment, index) => {
       currentHref += '/' + segment;
@@ -206,23 +187,20 @@
         href: currentHref;
       });
     });
-    
-    return crumbs;
+    return crumb;
   });
 </script>
-
 <div class="yorha-production-layout">
   <!-- Mobile Menu Overlay -->
   {#if isMobileMenuOpen}
-    <div 
+    <div
       class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 lg:hidden"
-      role="button" 
+      role="button"
       tabindex="-1"
       onclick={toggleMobileMenu}
       onkeydown={(e) => e.key === 'Escape' && toggleMobileMenu()}
     ></div>
   {/if}
-
   <!-- Professional Sidebar Navigation -->
   <aside class={cn(
     "fixed top-0 left-0 h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-amber-500/20 transition-all duration-300 z-40 shadow-2xl",
@@ -254,7 +232,6 @@
           {/if}
         </div>
       </div>
-
       <!-- Professional Navigation Menu -->
       <nav class="flex-1 p-6 space-y-8 overflow-y-auto">
         <!-- Main Navigation -->
@@ -284,7 +261,6 @@
             </button>
           {/each}
         </div>
-
         <!-- Professional Tools Section -->
         <div class="space-y-3">
           {#if isSidebarOpen}
@@ -312,7 +288,6 @@
             </button>
           {/each}
         </div>
-
         <!-- Professional System Status -->
         {#if isSidebarOpen}
           <div class="space-y-4 pt-6 border-t border-amber-500/20">
@@ -325,7 +300,6 @@
                   <span class={cn("font-semibold", getStatusColor(systemStatus.ai))}>{systemStatus.ai ? 'Online' : 'Offline'}</span>
                 </div>
               </div>
-
               <div class="flex items-center justify-between text-sm">
                 <span class="text-slate-400 font-medium">Database</span>
                 <div class="flex items-center gap-2">
@@ -333,7 +307,6 @@
                   <span class={cn("font-semibold", getStatusColor(systemStatus.database))}>{systemStatus.database ? 'Active' : 'Error'}</span>
                 </div>
               </div>
-
               <div class="flex items-center justify-between text-sm">
                 <span class="text-slate-400 font-medium">GPU Acceleration</span>
                 <div class="flex items-center gap-2">
@@ -345,7 +318,6 @@
           </div>
         {/if}
       </nav>
-
       <!-- Professional Sidebar Footer -->
       {#if isSidebarOpen}
         <div class="p-6 border-t border-amber-500/20">
@@ -370,7 +342,6 @@
       {/if}
     </div>
   </aside>
-
   <!-- Professional Main Content Area -->
   <div class={cn(
     "min-h-screen transition-all duration-300 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900",
@@ -387,14 +358,12 @@
           >
             <Menu class="w-6 h-6" />
           </button>
-
           <button
             class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 lg:hidden rounded-lg hover:bg-slate-800/50"
             onclick={toggleMobileMenu}
           >
             <Menu class="w-6 h-6" />
           </button>
-
           <!-- Breadcrumbs -->
           {#if showBreadcrumbs}
             <nav class="hidden md:flex items-center space-x-2 text-sm">
@@ -402,7 +371,7 @@
                 {#if index > 0}
                   <ChevronDown class="w-4 h-4 text-gray-500 rotate-[-90deg]" />
                 {/if}
-                <button 
+                <button
                   class={cn(
                     "hover:text-yellow-400 transition-colors",
                     index === breadcrumbs.length - 1 ? "text-yellow-400 font-medium" : "text-gray-400"
@@ -415,7 +384,6 @@
             </nav>
           {/if}
         </div>
-
         <!-- Professional Header Center - Page Title -->
         <div class="flex-1 text-center hidden lg:block">
           <h1 class="text-2xl font-bold text-amber-400 tracking-tight">{title}</h1>
@@ -423,7 +391,6 @@
             <p class="text-base text-slate-400 font-medium">{subtitle}</p>
           {/if}
         </div>
-
         <!-- Header Right -->
         <div class="flex items-center gap-3">
           <!-- Professional AI Chat Toggle -->
@@ -437,7 +404,6 @@
               <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-green-400 to-green-500 rounded-full group-hover:animate-pulse shadow-lg shadow-green-500/50"></div>
             </button>
           </div>
-
           <!-- Professional Notifications -->
           <div class="relative">
             <button
@@ -448,7 +414,6 @@
               <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-red-400 to-red-500 rounded-full shadow-lg shadow-red-500/50"></div>
             </button>
           </div>
-
           <!-- Professional User Menu -->
           {#if authStore.isAuthenticated}
             <div class="relative group">
@@ -464,7 +429,6 @@
                 </div>
                 <ChevronDown class="w-4 h-4 group-hover:rotate-180 transition-transform" />
               </button>
-
               <!-- Professional Dropdown Menu -->
               <div class="absolute right-0 top-full mt-2 w-56 bg-slate-800/95 backdrop-blur-md border border-amber-500/20 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                 <div class="p-3 space-y-2">
@@ -512,7 +476,6 @@
         </div>
       </div>
     </header>
-
     <!-- Page Content -->
     <main id="app" class={cn(
       "min-h-[calc(100vh-4rem)]",
@@ -520,7 +483,6 @@
     )}>
       {@render children()}
     </main>
-
     <!-- Professional Floating Client-Side AI Chat -->
     {#if showClientChat}
       <div class="fixed bottom-8 right-8 z-50 w-96 max-w-[calc(100vw-2rem)]">
@@ -529,7 +491,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Professional Footer -->
     <footer class="border-t border-amber-500/20 bg-slate-900/95 backdrop-blur-md shadow-xl p-2">
       <div class="container mx-auto flex items-center justify-between text-xs text-slate-400">
@@ -551,7 +512,6 @@
     </footer>
   </div>
 </div>
-
 <style>
   .yorha-production-layout {
     @apply min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white;
@@ -562,49 +522,41 @@
     width: 12px;
     height: 12px;
   }
-
   :global(.yorha-production-layout *::-webkit-scrollbar-track) {
     background: rgba(15, 23, 42, 0.8);
     border-radius: 6px;
   }
-
   :global(.yorha-production-layout *::-webkit-scrollbar-thumb) {
     background: linear-gradient(180deg, rgba(245, 158, 11, 0.6), rgba(217, 119, 6, 0.6));
     border-radius: 6px;
     border: 2px solid rgba(15, 23, 42, 0.8);
   }
-
-  :global(.yorha-production-layout *::-webkit-scrollbar-thumb:hover) {
+  :global($1) {
     background: linear-gradient(180deg, rgba(245, 158, 11, 0.8), rgba(217, 119, 6, 0.8));
   }
 /* Professional animation effects */
   :global(.professional-glow) {
     animation: professional-glow 3s ease-in-out infinite;
   }
-
   @keyframes professional-glow {
     0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.1); }
     50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.2); }
   }
-
   /* Enhanced backdrop blur effects */
   .backdrop-blur-md {
     backdrop-filter: blur(12px) saturate(180%);
   }
-
   /* Professional responsive typography */
   @media (max-width: 768px) {
     .yorha-production-layout {
       font-size: 15px;
     }
   }
-
   @media (max-width: 640px) {
     .yorha-production-layout {
       font-size: 14px;
     }
   }
-
   /* Professional smooth transitions */
   :global(*) {
     transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;

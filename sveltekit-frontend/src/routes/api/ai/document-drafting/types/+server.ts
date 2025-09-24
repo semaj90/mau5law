@@ -1,30 +1,27 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: document-drafting\types
  * Category: minimal
  * Memory Bank: SAVE_RAM
  * Priority: 120
  * Redis Type: documentProcessing
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: minimal
  * - Memory Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 /**
  * Document Types API
  * GET /api/ai/document-drafting/types - Get available document types
  */
-
 import { json } from '@sveltejs/kit'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
-
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const documentTypes = [
@@ -118,9 +115,8 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         ]
       }
     ]
-
     return json({
-      success: true,
+      success: true
       documentTypes,
       meta: {
         total: documentTypes.length,
@@ -128,7 +124,6 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         complexityLevels: Array.from(new Set(documentTypes.map(dt => dt.complexity))
       }
     })
-
   } catch (error) {
     console.error('Error fetching document types:', error)
     return json(
@@ -137,5 +132,4 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 export const GET = redisOptimized.documentProcessing(originalGETHandler)

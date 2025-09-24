@@ -1,23 +1,20 @@
-<!-- @migration-task Error while migrating Svelte code: Complex binding patterns require an initialization value;
+<!-- @migration-task Error while migrating Svelte code: Complex binding patterns require an initialization valu;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Complex binding patterns require an initialization value -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   let { sessionId }: string;
   let { query }: string;
   let { candidateIds }: string[] = [];
   let { chosenId }: string | null = null;
   let sending = $state(false);
   let lastResp = $state<any >(null);
-
   async function sendFeedback(reward: number) {
     sending = true;
     try {
       const res = await fetch('/api/feedback', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sessionId,
           query,
@@ -35,7 +32,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="feedback-buttons">
   <button class="up" onclick={() => sendFeedback(1)} disabled={sending}>👍 Helpful</button>
   <button class="down" onclick={() => sendFeedback(0)} disabled={sending}>👎 Not helpful</button>
@@ -45,7 +41,6 @@ https://svelte.dev/e/js_parse_error -->
     <span>status: {String(lastResp.ok)}</span>
   {/if}
 </div>
-
 <style>
   .feedback-buttons {
     display: flex;
@@ -58,7 +53,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
   }
   .up {
-    background: #e6f6ea;
+    background: #e6f6ease;
     color: #047857;
   }
   .down {
@@ -66,8 +61,3 @@ https://svelte.dev/e/js_parse_error -->
     color: #b91c1c;
   }
 </style>
-
-
-
-
-

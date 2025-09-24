@@ -1,6 +1,5 @@
 
 import type { RequestHandler } from './$types.js'
-
 export const GET: RequestHandler = async ({ url }) => {
 	try {
 		// Forward request to Enhanced Semantic Architecture service
@@ -10,15 +9,12 @@ export const GET: RequestHandler = async ({ url }) => {
 				'Content-Type': 'application/json'
 			}
 		})
-
 		if (!response.ok) {
 			throw new Error(`Enhanced Semantic Architecture API returned ${response.status}: ${response.statusText}`)
 		}
-
 		const data = await response.json()
-		
 		return json({
-			success: true,
+			success: true
 			data: data.data || [],
 			count: data.count || 0,
 			timestamp: data.timestamp || new Date().toISOString(),
@@ -33,10 +29,8 @@ export const GET: RequestHandler = async ({ url }) => {
 				'MinIO Object Storage'
 			]
 		})
-		
 	} catch (error: any) {
 		console.error('Enhanced Semantic API Error:', error)
-		
 		// Fallback: Generate mock intelligent todos based on system analysis
 		const mockTodos = [
 			{
@@ -100,10 +94,9 @@ export const GET: RequestHandler = async ({ url }) => {
 				som_cluster: { x: 7, y: 13 }
 			}
 		]
-
 		return json({
-			success: true,
-			data: mockTodos,
+			success: true
+			data: mockTodos
 			count: mockTodos.length,
 			timestamp: new Date().toISOString(),
 			source: 'Fallback Generator',
@@ -117,11 +110,9 @@ export const GET: RequestHandler = async ({ url }) => {
 		})
 	}
 }
-
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const { text, options } = await request.json()
-		
 		// Forward to Enhanced Semantic Architecture for processing
 		const response = await fetch('http://localhost:8095/api/intelligent-todos', {
 			method: 'POST',
@@ -131,26 +122,22 @@ export const POST: RequestHandler = async ({ request }) => {
 			body: JSON.stringify({
 				text,
 				options: {
-					som_clustering: true,
-					pagerank_scoring: true,
-					webgpu_acceleration: true,
+					som_clustering: true
+					pagerank_scoring: true
+					webgpu_acceleration: true
 					...options
 				}
 			})
 		})
-
 		if (!response.ok) {
 			throw new Error(`Enhanced Semantic Architecture API returned ${response.status}`)
 		}
-
 		const data = await response.json()
 		return json(data)
-		
 	} catch (error: any) {
 		console.error('Enhanced Semantic API POST Error:', error)
-		
 		return json({
-			success: false,
+			success: false
 			error: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
 		}, { status: 500 })

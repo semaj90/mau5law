@@ -1,29 +1,26 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: suggestions\stream
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import type { RequestEvent } from '@sveltejs/kit'
 import { ollamaSuggestionsService } from '$lib/services/ollama-suggestions-service.js'
 import { enhancedRAGSuggestionsService } from '$lib/services/enhanced-rag-suggestions-service.js'
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
-
 /*
  * Server-Sent Events endpoint for streaming AI suggestions
  */
@@ -37,11 +34,9 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       useRAGStreaming = true,
       maxSuggestions = 5
     } = data
-
     if (!content) {
       return new Response('Content is required', { status: 400 })
     }
-
     // Set up Server-Sent Events headers
     const headers = {
       'Content-Type': 'text/event-stream',
@@ -50,25 +45,20 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': 'Content-Type'
     }
-
     const stream = new ReadableStream({
       async start(controller) {
         const encoder = new TextEncoder()
-        
         // Send initial connection message
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
           type: 'connection',
           message: 'Streaming AI suggestions started',
           timestamp: new Date().toISOString()
         })}\\n\\n`)
-
         let suggestionCount = 0
         const maxTotal = maxSuggestions
-
         try {
           // Stream from multiple services in parallel
           const streamPromises: Promise<void>[] = []
-
           // Ollama streaming
           if (useOllamaStreaming && suggestionCount < maxTotal) {
             streamPromises.push((async () => {
@@ -79,9 +69,8 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                     maxSuggestions: Math.max(1, Math.floor(maxTotal / 2)
                   })) {
                     if (suggestionCount >= maxTotal) break
-                    
                     suggestionCount++
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
                       type: 'suggestion',
                       source: 'ollama',
                       suggestion: {
@@ -96,13 +85,13 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                         }
                       },
                       progress: {
-                        current: suggestionCount,
+                        current: suggestionCount
                         total: maxTotal
                       }
                     })}\\n\\n`)
                   }
                 } catch (error: any) {
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
                     type: 'error',
                     source: 'ollama',
                     message: 'Ollama streaming failed',
@@ -112,7 +101,6 @@ export async function POST({ request }: RequestEvent): Promise<any> {
               })()
             )
           }
-
           // Enhanced RAG streaming
           if (useRAGStreaming && suggestionCount < maxTotal) {
             streamPromises.push((async () => {
@@ -124,9 +112,8 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                     confidenceThreshold: 0.6
                   })) {
                     if (suggestionCount >= maxTotal) break
-                    
                     suggestionCount++
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
                       type: 'suggestion',
                       source: 'enhanced-rag',
                       suggestion: {
@@ -141,13 +128,13 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                         }
                       },
                       progress: {
-                        current: suggestionCount,
+                        current: suggestionCount
                         total: maxTotal
                       }
                     })}\\n\\n`)
                   }
                 } catch (error: any) {
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
                     type: 'error',
                     source: 'enhanced-rag',
                     message: 'Enhanced RAG streaming failed',
@@ -157,21 +144,18 @@ export async function POST({ request }: RequestEvent): Promise<any> {
               })()
             )
           }
-
           // Wait for all streaming services to complete
           await Promise.allSettled(streamPromises)
-
           // Send completion message
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
             type: 'complete',
             message: 'All AI suggestion streams completed',
-            totalSuggestions: suggestionCount,
+            totalSuggestions: suggestionCount
             timestamp: new Date().toISOString()
           })}\\n\\n`)
-
         } catch (error: any) {
           // Send error message
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({,
             type: 'error',
             message: 'Streaming failed',
             error: error instanceof Error ? error.message: 'Unknown error',
@@ -183,34 +167,29 @@ export async function POST({ request }: RequestEvent): Promise<any> {
         }
       }
     })
-
     return new Response(stream, { headers })
-
   } catch (error: any) {
     console.error('Streaming endpoint error:', error)
-    return new Response(JSON.stringify({ 
-        error: 'Failed to start streaming', 
-        details: error instanceof Error ? error.message: 'Unknown error' 
-      }), 
-      { 
+    return new Response(JSON.stringify({
+        error: 'Failed to start streaming',
+        details: error instanceof Error ? error.message: 'Unknown error'
+      }),
+      {
         status: 500,
-        headers: { 'Content-Type': 'application/json' } 
+        headers: { 'Content-Type': 'application/json' }
       }
     )
   }
 }
-
 /*
  * Handle GET requests for stream testing
  */
 export async function GET({ url }: RequestEvent): Promise<any> {
   const content = url.searchParams.get('content')
   const reportType = url.searchParams.get('report_type') || 'prosecution_memo'
-  
   if (!content) {
     return new Response('Content parameter is required', { status: 400 })
   }
-
   // Convert GET to POST format and reuse the streaming logic
   const mockRequest = new Request('', {
     method: 'POST',
@@ -223,7 +202,5 @@ export async function GET({ url }: RequestEvent): Promise<any> {
       maxSuggestions: parseInt(url.searchParams.get('max') || '5')
     })
   })
-
   return await POST({ request: mockRequest } as RequestEvent)
 }
-

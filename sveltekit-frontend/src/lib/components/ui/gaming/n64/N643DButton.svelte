@@ -1,7 +1,6 @@
 <!--
   N64 3D Button Component
   Advanced 3D styling with texture filtering, anti-aliasing, and fog effects
-  
   Features:
   - True 3D perspective transformations
   - Texture filtering and anti-aliasing
@@ -12,12 +11,10 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Button as BitsButton } from 'bits-ui';
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
-
   interface Props extends GamingComponentProps {
     // Button specific props
     type?: 'button' | 'submit' | 'reset';
@@ -44,7 +41,6 @@
     children?: unknown;
     class?: string;
   }
-
   let {
     era = 'n64',
     variant = 'primary',
@@ -74,12 +70,10 @@
     class: className = '',
     onClick,
     onHover,
-    onFocus;
+    onFocu;
   }: Props = $props();
-
   // Events now handled via props in Svelte 5
-  // 
-
+  //
   let isPressed = $state(false);
   let isHovered = $state(false);
   let isFocused = $state(false);
@@ -88,7 +82,6 @@
   let audioContext = $state<AudioContext | null >(null);
   let buttonElement = $state<HTMLButtonElement | null >(null);
   let animationId = $state<number | null >(null);
-
   // Default to balanced N64 rendering options
   const effectiveRenderOptions: N64RenderingOptions = {
     ...N64_TEXTURE_PRESETS.balanced,
@@ -97,7 +90,6 @@
     enableFog,
     ...renderOptions
   };
-
   // Create N64-style spatial audio
   const playN64Sound = async () => {
     try {
@@ -124,7 +116,7 @@
         impulseL[i] = (Math.random() * 2 - 1) * decay * 0.1;
         impulseR[i] = (Math.random() * 2 - 1) * decay * 0.1;
       }
-      reverbNode.buffer = impulse;
+      reverbNode.buffer = impul;
       // Connect audio chain
       oscillator.connect(pannerNode);
       pannerNode.connect(reverbNode);
@@ -142,14 +134,12 @@
       console.warn('Could not play N64 sound:', error);
     }
   };
-
   const handleMouseMove = (event: MouseEvent) => {
     if (!buttonElement || disabled) return;
     const rect = buttonElement.getBoundingClientRect();
     mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     mouseY = ((event.clientY - rect.top) / rect.height) * 2 - 1;
   };
-
   const handleClick = async () => {
     if (disabled || loading) return;
     isPressed = true;
@@ -162,37 +152,31 @@
       isPressed = false;
     }, 150);
     onClick?.();
-    ondispatch?.();
+    // ondispatch removed;
   };
-
   const handleHover = () => {
     if (disabled) return;
     isHovered = true;
     onHover?.();
-    ondispatch?.();
+    // ondispatch removed;
   };
-
   const handleUnhover = () => {
     isHovered = false;
   };
-
   const handleFocus = () => {
     if (disabled) return;
     isFocused = true;
     onFocus?.();
-    ondispatch?.();
+    // ondispatch removed;
   };
-
   const handleBlur = () => {
     isFocused = false;
   };
-
   const createParticleEffect = () => {
     // Simple particle effect using CSS animations
     const particles = 8;
     const container = buttonElement?.parentElement;
     if (!container) return;
-
     for (let i = 0; i < particles; i++) {
       const particle = document.createElement('div');
       particle.className = 'n64-particle';
@@ -203,7 +187,7 @@
         background: radial-gradient(circle, #fff, #4a90e2);
         border-radius: 50%;
         pointer-events: none;
-        animation: particleExplosion 0.8s ease-out forwards;
+        animation: particleExplosion 0.8s ease-out forward;
         --angle: ${(360 / particles) * i}deg;
         --distance: ${50 + Math.random() * 30}px;
         top: 50%;
@@ -217,7 +201,6 @@
       }, 800);
     }
   };
-
   // Generate texture filtering CSS classes based on render options
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
@@ -243,7 +226,6 @@
     }
     return classes.join(' ');
   };
-
   // Get 3D material styles based on variant and material type
   const getMaterialStyles = (variant: string, material: string) => {
     const baseColors = {
@@ -251,12 +233,10 @@
       secondary: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
       success: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' },
       warning: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' },
-      error: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' },;
+      error: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' },
       info: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
     };
-
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
-
     const materialMap = {
       basic: {
         background: colors.base,
@@ -271,7 +251,7 @@
           0 8px 16px rgba(0,0,0,0.3)
         `
       },
-      pbr: {;
+      pbr: {
         background: `
           linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 30%, ${colors.shadow} 70%, ${colors.base} 100%),
           radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%)
@@ -285,59 +265,52 @@
         `
       }
     };
-
     return materialMap[material as keyof typeof materialMap] || materialMap.phong;
   };
-
   const getSizeStyles = (size: string) => {
     const sizeMap = {
       small: { padding: '12px 20px', fontSize: '12px', minHeight: '40px' },
       medium: { padding: '16px 24px', fontSize: '14px', minHeight: '48px' },
-      large: { padding: '20px 28px', fontSize: '16px', minHeight: '56px' },;
+      large: { padding: '20px 28px', fontSize: '16px', minHeight: '56px' },
       xl: { padding: '24px 32px', fontSize: '18px', minHeight: '64px' }
     };
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
   };
-
   // Dynamic 3D transformations based on mouse position and state
   let dynamicRotationX = $derived(rotationX + (isHovered ? mouseY * 10 : 0) + (isPressed ? 5 : 0));
   let dynamicRotationY = $derived(rotationY + (isHovered ? mouseX * 10 : 0));
   let dynamicRotationZ = $derived(rotationZ);
   let dynamicScale = $derived(isPressed ? 0.95 : isHovered ? 1.05 : 1);
-
   let sizeStyles = $derived(getSizeStyles(size));
   let materialStyles = $derived(getMaterialStyles(variant, materialType));
   let transform3D = $derived(`
-    perspective(${perspective}px) 
-    rotateX(${dynamicRotationX}deg) 
-    rotateY(${dynamicRotationY}deg) 
-    rotateZ(${dynamicRotationZ}deg) 
+    perspective(${perspective}px)
+    rotateX(${dynamicRotationX}deg)
+    rotateY(${dynamicRotationY}deg)
+    rotateZ(${dynamicRotationZ}deg)
     scale(${dynamicScale})
   `);
-
   $effect(() => {
     // Add particle explosion keyframe
     const style = document.createElement('style');
     style.textContent = `
       @keyframes particleExplosion {
         to {
-          transform: translate(-50%, -50%) 
-                     rotate(var(--angle)) 
-                     translateY(calc(-1 * var(--distance))) 
+          transform: translate(-50%, -50%)
+                     rotate(var(--angle))
+                     translateY(calc(-1 * var(--distance)))
                      scale(0);
           opacity: 0;
         }
       }
     `;
     document.head.appendChild(style);
-
     return () => {
       if (animationId) cancelAnimationFrame(animationId);
       style.remove();
     };
   });
 </script>
-
 <BitsButton.Root
   bind:el={buttonElement}
   {type}
@@ -346,13 +319,13 @@
   {name}
   {value}
   onclick={handleClick}
-  ononmouseenter={handleHover}
-  ononmouseleave={handleUnhover}
+  onmouseenter={handleHover}
+  onmouseleave={handleUnhover}
   onMousemove={handleMouseMove}
   onfocus={handleFocus}
   onblur={handleBlur}
   class="n64-3d-button {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
-  style=";
+  style="
     --material-bg: {materialStyles.background};
     --material-shadow: {materialStyles.boxShadow};
     --button-padding: {sizeStyles.padding};
@@ -371,16 +344,13 @@
     <div class="button-content">
       {@render children?.()}
     </div>
-    
     {#if enableLighting}
       <div class="lighting-overlay"></div>
     {/if}
-    
     {#if enableReflections}
       <div class="reflection-overlay"></div>
     {/if}
 </BitsButton.Root>
-
 <style>
   :global(.n64-3d-button) {
 /* Base N64 button styling */ font-family: 'Rajdhani', 'Arial', sans-serif;
@@ -399,7 +369,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 /* Advanced shadows and lighting */ box-shadow: var(--material-shadow);
-    
     transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
 /* Remove default button styles */ -webkit-appearance: none;
     -moz-appearance: none;
@@ -452,16 +421,14 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 
 /* Mesh complexity variations */ :global(.n64-3d-button.mesh-high) {
     border-radius: 6px;
   }
-
   :global(.n64-3d-button.mesh-high .lighting-overlay) {
 background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 40%), linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
   }
-
   :global(.n64-3d-button.mesh-low) {
     border-radius: 2px;
     transform-style: flat;
   }
-/* Disabled state */ :global(.n64-3d-button:disabled) {
+/* Disabled state */ :global($1) {
     background: linear-gradient(145deg, #6c757d 0%, #495057 50%, #343a40 100%);
     color: #adb5bd;
     cursor: not-allowed;
@@ -469,7 +436,7 @@ background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 40%
     transform: perspective(1000px) scale(0.98);
 box-shadow: 0 2px 0 #343a40, inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 8px rgba(0,0,0,0.2);
   }
-/* Focus styles for accessibility */ :global(.n64-3d-button:focus-visible) {
+/* Focus styles for accessibility */ :global($1) {
     outline: 2px solid #ffffff;
     outline-offset: 3px;
 box-shadow: var(--material-shadow), 0 0 0 3px rgba(255, 255, 255, 0.3);
@@ -482,7 +449,6 @@ box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow
     align-items: center;
     justify-content: center;
   }
-
   .n64-spinner {
     width: 20px;
     height: 20px;
@@ -494,18 +460,17 @@ box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow
     animation: n64Spin 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
     transform-style: preserve-3d;
   }
-
   @keyframes n64Spin {
-    0% { 
-      transform: rotateY(0deg) rotateZ(0deg); 
+    0% {
+      transform: rotateY(0deg) rotateZ(0deg);
       border-width: 3px 2px 1px 3px;
     }
-    50% { 
-      transform: rotateY(180deg) rotateZ(180deg); 
+    50% {
+      transform: rotateY(180deg) rotateZ(180deg);
       border-width: 1px 3px 3px 2px;
     }
-    100% { 
-      transform: rotateY(360deg) rotateZ(360deg); 
+    100% {
+      transform: rotateY(360deg) rotateZ(360deg);
       border-width: 3px 2px 1px 3px;
     }
   }
@@ -514,7 +479,7 @@ box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow
     -webkit-backface-visibility: hidden;
     -webkit-perspective: 1000;
 /* Enhanced texture filtering */ image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
+    image-rendering: crisp-edge;
 /* Advanced anti-aliasing */ -webkit-font-smoothing: subpixel-antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -535,15 +500,13 @@ box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow
 /* Anisotropic filtering levels */ :global(.n64-3d-button.anisotropic-4x) {
     filter: blur(0.1px) sharpen(0.3px) contrast(1.03);
   }
-  
   :global(.n64-3d-button.anisotropic-8x) {
     filter: blur(0.05px) sharpen(0.5px) contrast(1.05);
   }
-  
   :global(.n64-3d-button.anisotropic-16x) {
     filter: sharpen(0.8px) contrast(1.08) brightness(1.02);
   }
-/* Fog effects */ :global(.n64-3d-button::before) {
+/* Fog effects */ :global($1) {
     content: '';
     position: absolute;
     top: 0;
@@ -564,8 +527,7 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
 .lighting-overlay, .reflection-overlay {
       display: none;
     }
-    
-    :global(.n64-3d-button::before) {
+    :global($1) {
       display: none;
     }
   }
@@ -574,7 +536,6 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
       transform: none !important;
       transition: opacity 150ms ease;
     }
-    
     .n64-spinner {
       animation: none;
       border: 3px solid currentColor;
@@ -595,7 +556,7 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
       transform: none;
       box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
     }
-.lighting-overlay, .reflection-overlay, :global(.n64-3d-button::before) {
+.lighting-overlay, .reflection-overlay, :global($1) {
       display: none;
     }
   }

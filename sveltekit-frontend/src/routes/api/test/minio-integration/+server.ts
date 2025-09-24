@@ -1,25 +1,21 @@
 import type { RequestHandler } from './$types.js'
-
 /**
  * MinIO Integration Test API
  * Basic functionality test for Phase 1: upload, AI analysis, storage
  */
-
 export const GET: RequestHandler = async ({ url, fetch }) => {
   const testResults: any[] = []
   const startTime = Date.now()
-
   try {
     // Test 1: Health Check
     console.log('🔍 Testing MinIO health check...')
     try {
       const healthResponse = await fetch('/api/v1/minio/health')
       const healthData = await healthResponse.json()
-
       testResults.push({
         test: 'health-check',
         status: healthResponse.ok ? 'passed' : 'failed',
-        response: healthData,
+        response: healthData
         timing: `${Date.now() - startTime}ms`
       })
     } catch (error) {
@@ -29,7 +25,6 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         error: error instanceof Error ? error.message: 'Unknown error'
       })
     }
-
     // Test 2: Initialize MinIO
     console.log('⚙️ Testing MinIO initialization...')
     try {
@@ -39,11 +34,10 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         body: JSON.stringify({ action: 'initialize' })
       })
       const initData = await initResponse.json()
-
       testResults.push({
         test: 'initialization',
         status: initResponse.ok ? 'passed' : 'failed',
-        response: initData,
+        response: initData
         timing: `${Date.now() - startTime}ms`
       })
     } catch (error) {
@@ -53,20 +47,17 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         error: error instanceof Error ? error.message: 'Unknown error'
       })
     }
-
     // Test 3: Bucket Management
     console.log('📦 Testing bucket management...')
     try {
       const bucketsResponse = await fetch('/api/v1/minio/buckets')
       const bucketsData = await bucketsResponse.json()
-
       testResults.push({
         test: 'bucket-listing',
         status: bucketsResponse.ok ? 'passed' : 'failed',
-        response: bucketsData,
+        response: bucketsData
         timing: `${Date.now() - startTime}ms`
       })
-
       // Ensure all buckets exist
       const ensureBucketsResponse = await fetch('/api/v1/minio/buckets', {
         method: 'POST',
@@ -74,11 +65,10 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         body: JSON.stringify({ action: 'ensure-all' })
       })
       const ensureBucketsData = await ensureBucketsResponse.json()
-
       testResults.push({
         test: 'bucket-creation',
         status: ensureBucketsResponse.ok ? 'passed' : 'failed',
-        response: ensureBucketsData,
+        response: ensureBucketsData
         timing: `${Date.now() - startTime}ms`
       })
     } catch (error) {
@@ -88,64 +78,52 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         error: error instanceof Error ? error.message: 'Unknown error'
       })
     }
-
     // Test 4: Create test file and upload
     console.log('📄 Testing file upload...')
     try {
       const testFileContent = `Legal Document Test
-
 This is a test legal document for Phase 1 functionality testing.
-
 Content includes:
 - Contract terms and conditions
 - Evidence documentation
 - Case reference materials
 - Witness testimony summary
-
 Generated at: ${new Date().toISOString()}
 Test ID: ${Math.random().toString(36).substring(7)}
       `
-
       const testFile = new File([testFileContent], 'test-legal-document.txt', {
         type: 'text/plain'
       })
-
       const formData = new FormData()
       formData.append('file', testFile)
       formData.append('bucket', 'legal-documents')
       formData.append('enableAI', 'true')
       formData.append('caseId', '12345')
-
       const uploadResponse = await fetch('/api/v1/minio/process', {
         method: 'POST',
         body: formData
       })
       const uploadData = await uploadResponse.json()
-
       testResults.push({
         test: 'upload-and-ai-analysis',
         status: uploadResponse.ok ? 'passed' : 'failed',
-        response: uploadData,
+        response: uploadData
         timing: `${Date.now() - startTime}ms`
       })
-
       // Test 5: File listing after upload
       if (uploadResponse.ok && uploadData.success) {
         console.log('📋 Testing file listing...')
         const listResponse = await fetch('/api/v1/minio/files?bucket=legal-documents&limit=10')
         const listData = await listResponse.json()
-
         testResults.push({
           test: 'file-listing',
           status: listResponse.ok ? 'passed' : 'failed',
-          response: listData,
+          response: listData
           timing: `${Date.now() - startTime}ms`
         })
-
         // Test 6: File download
         console.log('⬇️ Testing file download...')
         const downloadResponse = await fetch(`/api/v1/minio/download?bucket=legal-documents&file=${uploadData.upload.fileName}`)
-
         testResults.push({
           test: 'file-download',
           status: downloadResponse.ok ? 'passed' : 'failed',
@@ -164,35 +142,32 @@ Test ID: ${Math.random().toString(36).substring(7)}
         error: error instanceof Error ? error.message: 'Unknown error'
       })
     }
-
     const totalTime = Date.now() - startTime
     const passedTests = testResults.filter(item => item.length)
     const failedTests = testResults.filter(item => item.length)
     const errorTests = testResults.filter(item => item.length)
-
     return new Response(JSON.stringify({
       testSuite: 'MinIO Integration Phase 1',
       summary: {
         total: testResults.length,
-        passed: passedTests,
-        failed: failedTests,
-        errors: errorTests,
+        passed: passedTests
+        failed: failedTests
+        errors: errorTests
         successRate: `${Math.round((passedTests / testResults.length) * 100)}%`,
         totalTime: `${totalTime}ms`
       },
-      results: testResults,
+      results: testResults
       timestamp: new Date().toISOString(),
       phase: 'Phase 1: Basic upload, AI analysis, storage functionality'
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     })
-
   } catch (error) {
     return new Response(JSON.stringify({
       testSuite: 'MinIO Integration Phase 1',
       error: error instanceof Error ? error.message: 'Test suite failed',
-      partialResults: testResults,
+      partialResults: testResults
       timestamp: new Date().toISOString()
     }), {
       status: 500,

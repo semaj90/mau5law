@@ -1,6 +1,5 @@
 // Database Integration API for Legal Documents
 // Handles storage with Drizzle ORM and PostgreSQL
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { db } from '$lib/server/database'
@@ -8,38 +7,31 @@ import { documents, cases, users, userSessions } from '$lib/server/database/sche
 import { validateAuthSession } from '$lib/server/auth'
 import { nanoid } from 'nanoid'
 import { eq, and } from 'drizzle-orm'
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const session = await validateAuthSession(request)
     if (!session) {
       return json({ error: 'Unauthorized' }, { status: 401 })
     }
-
     const { documents: uploadResults, caseId, userId, legalContext, metadata } = await request.json()
-
     if (!uploadResults || !Array.isArray(uploadResults)) {
       return json({ error: 'Invalid documents data' }, { status: 400 })
     }
-
     // Begin transaction for atomic operations
     const dbOperations = []
     const documentIds = []
-
     for (const result of uploadResults) {
       if (!(result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).success) continue; // Skip failed uploads
-
       const documentId = (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).documentId || nanoid()
       documentIds.push(documentId)
-
       // Prepare document data for database insertion
       const documentData = {
-        id: documentId,
+        id: documentId
         fileName: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).fileName,
         fileSize: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).metadata?.fileSize || 0,
         fileType: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).metadata?.fileType || 'unknown',
         hash: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).metadata?.hash || '',
-        caseId: caseId || null,
+        caseId: caseId || null
         userId: session.userId,
         textContent: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).metadata?.textContent || '',
         aiAnalysis: {
@@ -55,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
         uploadedAt: new Date(),
         metadata: {
           legalContext,
-          uploadMetadata: metadata,
+          uploadMetadata: metadata
           chainOfCustody: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).metadata?.chain_of_custody || [{
             timestamp: new Date().toISOString(),
             actor: session.userId,
@@ -65,15 +57,12 @@ export const POST: RequestHandler = async ({ request }) => {
           analysisResults: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).aiInsights || {}
         }
       }
-
       dbOperations.push(
         db.insert(documents).values(documentData)
       )
     }
-
     // Execute all database operations
     await Promise.all(dbOperations)
-
     // Update case document count if case is specified
     if (caseId) {
       try {
@@ -89,18 +78,15 @@ export const POST: RequestHandler = async ({ request }) => {
         console.warn('Failed to update case metadata:', error)
       }
     }
-
     // Update user analytics
     try {
       const userUploadStats = await db
         .select()
         .from(documents)
         .where(eq(documents.userId, session.userId)
-
       const totalUploads = userUploadStats.length
       const successfulUploads = uploadResults.filter(item => item.length)
       const successRate = totalUploads > 0 ? successfulUploads / totalUploads : 1.0
-
       // Update user session with analytics
       await db.update(userSessions)
         .set({
@@ -115,11 +101,9 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         })
         .where(eq(userSessions.userId, session.userId)
-
     } catch (error) {
       console.warn('Failed to update user analytics:', error)
     }
-
     // Generate search embeddings for successful documents (background task)
     if (documentIds.length > 0) {
       // This would typically be handled by a background job queue
@@ -127,15 +111,13 @@ export const POST: RequestHandler = async ({ request }) => {
         console.warn('Failed to generate search embeddings:', error)
       })
     }
-
     return json({
-      success: true,
+      success: true
       documentsStored: documentIds.length,
-      documentIds: documentIds,
-      caseId: caseId,
+      documentIds: documentIds
+      caseId: caseId
       message: `Successfully stored ${documentIds.length} documents`
     })
-
   } catch (error) {
     console.error('Database storage error:', error)
     return json({
@@ -144,7 +126,6 @@ export const POST: RequestHandler = async ({ request }) => {
     }, { status: 500 })
   }
 }
-
 // Background task to generate search embeddings
 async function generateSearchEmbeddings(documentIds: string[]) {
   try {
@@ -155,33 +136,27 @@ async function generateSearchEmbeddings(documentIds: string[]) {
         .from(documents)
         .where(eq(documents.id, documentId)
         .limit(1)
-
       if (document.length === 0) continue
-
       const docData = document[0]
       const textContent = docData.textContent || docData.aiAnalysis?.summary || ''
-
       if (textContent.length < 10) continue; // Skip documents with minimal content
-
       // Generate embeddings using Ollama
       const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           model: 'mxbai-embed-large',
           prompt: textContent.slice(0, 2000) // Limit content for embedding
         })
       })
-
       if (embeddingResponse.ok) {
         const embeddingResult = await embeddingResponse.json()
-
         // Store embedding in pgvector table
         await db.insert(embeddings).values({
           id: nanoid(),
-          documentId: documentId,
+          documentId: documentId
           embedding: embeddingResult.embedding,
           content: textContent.slice(0, 2000),
           metadata: {
@@ -197,13 +172,11 @@ async function generateSearchEmbeddings(documentIds: string[]) {
     console.error('Embedding generation failed:', error)
   }
 }
-
 // Health check endpoint
 export const GET: RequestHandler = async () => {
   try {
     // Test database connection
     await db.select().from(users).limit(1)
-
     return json({
       status: 'healthy',
       database: 'connected',

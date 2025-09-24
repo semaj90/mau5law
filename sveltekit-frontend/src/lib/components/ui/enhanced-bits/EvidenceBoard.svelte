@@ -2,20 +2,19 @@
   import { createEventDispatcher } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-
   interface EvidenceItem {
     id: string;
     type: 'document' | 'image' | 'video' | 'audio' | 'note' | 'link';
     title: string;
     content?: string;
     thumbnail?: string;
-    position: { x: number; y: number };
+    position: ;
+{ x: number; y: number };
     size: { width: number; height: number };
     color?: string;
     connections?: string[];
-    metadata?: Record<string, any>;
+    metadata?: { [key: string]: any };
   }
-
   interface EvidenceBoardProps {
     theme?: 'default' | 'legal' | 'gaming' | 'yorha';
     items?: EvidenceItem[];
@@ -26,7 +25,6 @@
     showConnections?: boolean;
     readonly?: boolean;
   }
-
   let {
     theme = 'yorha',
     items = $bindable([]),
@@ -37,44 +35,44 @@
     showConnections = true,
     readonly = false
   }: EvidenceBoardProps = $props();
-
   const dispatch = createEventDispatcher();
-
   let boardElement: HTMLDivElement;
   let draggedItem: EvidenceItem | null = $state(null);
   let dragOffset = $state({ x: 0, y: 0 });
   let connectionStart: string | null = $state(null);
   let selectedItems = $state<Set<string>>(new Set());
   let isConnecting = $state(false);
-
   // Sample evidence items for demo
   const sampleItems: EvidenceItem[] = [
     {
       id: '1',
       type: 'document',
       title: 'Contract Agreement',
-      content: 'Employment contract between parties',;
-      position: { x: 100, y: 100 },
+      content: 'Employment contract between parties',
+      position: ;
+{ x: 100, y: 100 },
       size: { width: 200, height: 150 },
-      color: '#3b82f6',;
+      color: '#3b82f6',
       metadata: { fileType: 'pdf', size: '2.4MB' }
     },
     {
       id: '2',
       type: 'image',
       title: 'Signed Document',
-      content: 'Signature verification',;
-      position: { x: 350, y: 150 },
+      content: 'Signature verification',
+      position: ;
+{ x: 350, y: 150 },
       size: { width: 180, height: 120 },
-      color: '#10b981',;
+      color: '#10b981',
       metadata: { resolution: '1920x1080', format: 'PNG' }
     },
     {
       id: '3',
       type: 'note',
       title: 'Legal Analysis',
-      content: 'Key points:\n- Clause 4.2 needs review\n- Liability section unclear\n- Termination conditions',;
-      position: { x: 150, y: 300 },
+      content: 'Key points:\n- Clause 4.2 needs review\n- Liability section unclear\n- Termination conditions',
+      position: ;
+{ x: 150, y: 300 },
       size: { width: 250, height: 180 },
       color: '#f59e0b',
       connections: ['1', '2'];
@@ -83,21 +81,20 @@
       id: '4',
       type: 'link',
       title: 'Case Precedent',
-      content: 'Similar case: Johnson v. TechCorp (2023)',;
-      position: { x: 450, y: 350 },
+      content: 'Similar case: Johnson v. TechCorp (2023)',
+      position: ;
+{ x: 450, y: 350 },
       size: { width: 200, height: 100 },
-      color: '#8b5cf6',;
+      color: '#8b5cf6',
       connections: ['3'];
     }
   ];
-
   // Initialize with sample data if empty
   $effect(() => {
     if (items.length === 0) {
       items = [...sampleItems];
     }
   });
-
   const themeStyles = {
     default: {
       background: 'bg-gray-50 dark:bg-gray-900',
@@ -119,66 +116,55 @@
     },
     yorha: {
       background: 'bg-black',
-      grid: 'opacity-40 stroke-green-400',;
-      item: 'border-2 border-green-400 bg-black text-green-400 shadow-[0_0_20px_rgba(0,255,65,0.4)] font-mono',;
+      grid: 'opacity-40 stroke-green-400',
+      item: 'border-2 border-green-400 bg-black text-green-400 shadow-[0_0_20px_rgba(0,255,65,0.4)] font-mono',
       connection: 'stroke-green-400 stroke-2';
     }
   };
-
   function getItemIcon(type: EvidenceItem['type']): string {
     const icons = {
       document: '📄',
       image: '🖼️',
       video: '🎥',
-      audio: '🎵',;
-      note: '📝',;
+      audio: '🎵',
+      note: '📝',
       link: '🔗';
     };
     return icons[type];
   }
-
   function startDrag(event: MouseEvent, item: EvidenceItem) {
     if (readonly) return;
-
     const rect = boardElement.getBoundingClientRect();
     draggedItem = item;
     dragOffset = {
-      x: event.clientX - rect.left - item.position.x,;
+      x: event.clientX - rect.left - item.position.x,
       y: event.clientY - rect.top - item.position.y;
     };
-
     document.addEventListener('mousemove', handleDrag);
     document.addEventListener('mouseup', stopDrag);
     event.preventDefault();
   }
-
   function handleDrag(event: MouseEvent) {
     if (!draggedItem || !boardElement) return;
-
     const rect = boardElement.getBoundingClientRect();
     let newX = event.clientX - rect.left - dragOffset.x;
     let newY = event.clientY - rect.top - dragOffset.y;
-
     // Snap to grid if enabled
     if (snapToGrid) {
-      newX = Math.round(newX / gridSize) * gridSize;
-      newY = Math.round(newY / gridSize) * gridSize;
+      newX = Math.round(newX / gridSize) * gridSiz;
+      newY = Math.round(newY / gridSize) * gridSiz;
     }
-
     // Keep within bounds
     newX = Math.max(0, Math.min(width - draggedItem.size.width, newX));
     newY = Math.max(0, Math.min(height - draggedItem.size.height, newY));
-
     draggedItem.position = { x: newX, y: newY };
     items = [...items]; // Trigger reactivity
   }
-
   function stopDrag() {
     draggedItem = null;
     document.removeEventListener('mousemove', handleDrag);
     document.removeEventListener('mouseup', stopDrag);
   }
-
   function selectItem(id: string, event: MouseEvent) {
     if (event.ctrlKey || event.metaKey) {
       if (selectedItems.has(id)) {
@@ -192,16 +178,13 @@
     }
     selectedItems = new Set(selectedItems); // Trigger reactivity
   }
-
   function startConnection(itemId: string) {
     if (readonly) return;
     connectionStart = itemId;
     isConnecting = true;
   }
-
   function completeConnection(targetId: string) {
     if (!connectionStart || connectionStart === targetId || readonly) return;
-
     const sourceItem = items.find(item => item.id === connectionStart);
     if (sourceItem) {
       if (!sourceItem.connections) {
@@ -213,56 +196,45 @@
         dispatch('connectionCreated', { from: connectionStart, to: targetId });
       }
     }
-
     connectionStart = null;
     isConnecting = false;
   }
-
   function deleteSelected() {
     if (readonly || selectedItems.size === 0) return;
-
     items = items.filter(item => !selectedItems.has(item.id));
     selectedItems.clear();
     dispatch('itemsDeleted', { deletedIds: Array.from(selectedItems) });
   }
-
   function addNewItem(type: EvidenceItem['type']) {
     if (readonly) return;
-
     const newItem: EvidenceItem = {
       id: Date.now().toString(),
-      type,;
+      type,
       title: `New ${type}`,
-      content: '',;
-      position: { x: 50, y: 50 },
-      size: { width: 200, height: 150 },;
+      content: '',
+      position: ;
+{ x: 50, y: 50 },
+      size: { width: 200, height: 150 },
       color: '#6b7280';
     };
-
     items = [...items, newItem];
     dispatch('itemAdded', { item: newItem });
   }
-
   // Calculate connection paths
   function getConnectionPath(fromId: string, toId: string): string {
     const fromItem = items.find(item => item.id === fromId);
     const toItem = items.find(item => item.id === toId);
-
     if (!fromItem || !toItem) return '';
-
     const fromCenter = {
-      x: fromItem.position.x + fromItem.size.width / 2,;
+      x: fromItem.position.x + fromItem.size.width / 2,
       y: fromItem.position.y + fromItem.size.height / 2;
     };
-
     const toCenter = {
-      x: toItem.position.x + toItem.size.width / 2,;
+      x: toItem.position.x + toItem.size.width / 2,
       y: toItem.position.y + toItem.size.height / 2;
     };
-
     return `M ${fromCenter.x} ${fromCenter.y} L ${toCenter.x} ${toCenter.y}`;
   }
-
   // Handle keyboard shortcuts
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Delete' || event.key === 'Backspace') {
@@ -275,9 +247,7 @@
     }
   }
 </script>
-
 <svelte:window onkeydown={handleKeyDown} />
-
 <div
   bind:this={boardElement}
   class={`
@@ -305,7 +275,6 @@
       <rect width="100%" height="100%" fill="url(#grid)" />
     </svg>
   {/if}
-
   <!-- Connection Lines -->
   {#if showConnections}
     <svg class="absolute inset-0 pointer-events-none" width={width} height={height}>
@@ -323,7 +292,6 @@
           {/each}
         {/if}
       {/each}
-
       <!-- Arrow marker -->
       <defs>
         <marker
@@ -343,7 +311,6 @@
       </defs>
     </svg>
   {/if}
-
   <!-- Evidence Items -->
   {#each items as item (item.id)}
     <div
@@ -392,7 +359,6 @@
             {item.title}
           </h4>
         </div>
-
         {#if !readonly}
           <button
             onclick={(e) => {
@@ -409,7 +375,6 @@
           </button>
         {/if}
       </div>
-
       <!-- Item Content -->
       {#if item.content}
         <div class={`
@@ -419,7 +384,6 @@
           {item.content}
         </div>
       {/if}
-
       <!-- Item Metadata -->
       {#if item.metadata}
         <div class="mt-2 flex flex-wrap gap-1">
@@ -436,7 +400,6 @@
           {/each}
         </div>
       {/if}
-
       <!-- Connection indicators -->
       {#if item.connections && item.connections.length > 0}
         <div class="absolute -top-1 -right-1">
@@ -453,7 +416,6 @@
       {/if}
     </div>
   {/each}
-
   <!-- Toolbar -->
   {#if !readonly}
     <div class={`
@@ -476,7 +438,6 @@
       >
         📝 Note
       </button>
-
       <button
         onclick={() => addNewItem('document')}
         class={`
@@ -490,7 +451,6 @@
       >
         📄 Doc
       </button>
-
       <button
         onclick={() => addNewItem('link')}
         class={`
@@ -504,7 +464,6 @@
       >
         🔗 Link
       </button>
-
       {#if selectedItems.size > 0}
         <button
           onclick={deleteSelected}
@@ -522,7 +481,6 @@
       {/if}
     </div>
   {/if}
-
   <!-- Instructions -->
   {#if items.length === 0}
     <div class="absolute inset-0 flex items-center justify-center">
@@ -543,13 +501,11 @@
     </div>
   {/if}
 </div>
-
 <style>
   /* Smooth animations for YoRHa theme */
-  :global(.yorha-evidence-item) {;
+  :global(.yorha-evidence-item) {
     animation: yorha-item-glow 2s ease-in-out infinite alternate;
   }
-
   @keyframes yorha-item-glow {
     from {
       box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);

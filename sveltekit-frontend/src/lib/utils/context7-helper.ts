@@ -1,6 +1,5 @@
 // Context7 Helper - Maps legacy API to MCP Context7.2 implementation
 import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
-
 /**
  * Legacy API compatibility for resolveLibraryId
  * Maps library names to Context7.2 compatible library IDs
@@ -20,17 +19,15 @@ export async function resolveLibraryId(libraryName: string): Promise<string> {
     'drizzle': '/drizzle-team/drizzle-orm',
     'pgvector': '/pgvector/pgvector'
   };
-
   return libraryMapping[libraryName.toLowerCase()] || `/unknown/${libraryName}`;
 }
-
 /**
  * Legacy API compatibility for getLibraryDocs
  * Fetches documentation using MCP Context7.2
  */
 export async function getLibraryDocs(
-  libraryId: string, 
-  topic?: string, 
+  libraryId: string
+  topic?: string
   tokens?: number;
 ): Promise<string> {
   try {
@@ -41,6 +38,5 @@ export async function getLibraryDocs(
     return `Error fetching documentation for ${libraryId}: ${error instanceof Error ? error.message: 'Unknown error'}`;
   }
 }
-
 // Re-export MCP functions for direct usage
 export { mcpContext72GetLibraryDocs, getSvelte5Docs, getBitsUIv2Docs, getMeltUIDocs, getXStateDocs } from '$lib/mcp-context72-get-library-docs';

@@ -1,24 +1,21 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-import { 
+import {
   getMessageQueueRedisBestPractices,
-  getRabbitMQDocs, 
+  getRabbitMQDocs,
   getAllRedisDocs,
   getRedisErrorHandling,
   getNodeRedisAdvancedFeatures
 } from '$lib/mcp-rabbitmq-redis-docs.js'
-
 export const GET: RequestHandler = async ({ url, fetch }) => {
   try {
     console.log('🔍 Testing MCP library documentation access...')
-    
     const topic = url.searchParams.get('topic')
     const results: any = {
       timestamp: new Date().toISOString(),
       success: [],
       errors: []
     }
-
     // Test 1: Message Queue + Redis Best Practices
     try {
       const practices = await getMessageQueueRedisBestPractices(fetch)
@@ -36,7 +33,6 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       })
       console.error('❌ Message Queue + Redis Best Practices failed:', error.message)
     }
-
     // Test 2: RabbitMQ Integration Patterns
     try {
       const rabbitDocs = await getRabbitMQDocs(topic || 'integration-patterns', fetch)
@@ -54,7 +50,6 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       })
       console.error('❌ RabbitMQ Integration Patterns failed:', error.message)
     }
-
     // Test 3: Redis Error Handling
     try {
       const errorHandling = await getRedisErrorHandling(fetch)
@@ -72,7 +67,6 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       })
       console.error('❌ Redis Error Handling failed:', error.message)
     }
-
     // Test 4: Node Redis Advanced Features
     try {
       const nodeRedis = await getNodeRedisAdvancedFeatures(fetch)
@@ -90,7 +84,6 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       })
       console.error('❌ Node Redis Advanced Features failed:', error.message)
     }
-
     // Test 5: All Redis Documentation (comprehensive test)
     try {
       const allRedis = await getAllRedisDocs(fetch)
@@ -108,7 +101,6 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       })
       console.error('❌ All Redis Documentation failed:', error.message)
     }
-
     return json({
       status: results.errors.length === 0 ? 'success' : 'partial',
       message: `MCP Documentation Test completed. ${results.success.length} successful, ${results.errors.length} errors`,
@@ -124,7 +116,6 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         'typescript'
       ]
     })
-
   } catch (error: any) {
     console.error('❌ MCP Documentation test failed:', error)
     return json({

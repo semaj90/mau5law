@@ -2,7 +2,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import * as Dialog from 'bits-ui';
-
   interface Props {
     open?: boolean;
     title?: string;
@@ -11,7 +10,6 @@
     onClose?: () => void;
     children?: Snippet;
   }
-
   let {
     children,
     open = $bindable(false),
@@ -20,7 +18,6 @@
     analyticsLog = () => {},
     onClose = () => {}
   }: Props = $props();
-
   $effect(() => {
     if (open) {
       analyticsLog({ event: 'dialog_opened', title, timestamp: Date.now() });
@@ -28,13 +25,11 @@
       analyticsLog({ event: 'dialog_closed', timestamp: Date.now() });
     }
   });
-
   function handleClose() {
     open = false;
     onClose();
   }
 </script>
-
 <Dialog.Root bind:open>
   <Dialog.Portal>
     <Dialog.Overlay class="modal-overlay" />
@@ -54,7 +49,6 @@
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
   :global(.modal-overlay) {
     @apply fixed inset-0 bg-black/60 z-40;
@@ -71,7 +65,7 @@
   }
   :global(.modal-close) {
     @apply absolute top-4 right-4 w-8 h-8 rounded-full bg-nier-surface-light;
-    @apply hover:bg-nier-surface-lighter transition-colors;
+    @apply hover:bg-nier-surface-lighter transition-color;
     @apply flex items-center justify-center text-nier-text-muted hover:text-nier-white;
   }
 </style>

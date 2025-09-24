@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-
   interface Props {
     description: unknown;
     children?: Snippet;
@@ -10,7 +9,6 @@
     children
   }: Props = $props();
 </script>
-
 <p use:description class="space-y-4">
   {#if children}{@render children()}{/if}
 </p>

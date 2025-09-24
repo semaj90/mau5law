@@ -3,28 +3,23 @@
  * Timestamp formatting, mini-text truncation, and consistent UI helpers
  * Used across global components: AI Assistant, Reports, Citations, Evidence
  */
-
 // Timestamp formatting for consistent time display across the app
 export function formatTimestamp(date: Date | string, options?: {
   style?: 'relative' | 'absolute' | 'smart';
   includeTime?: boolean;
 }): string {
   const { style = 'smart', includeTime = false } = options || {};
-
   const targetDate = typeof date === 'string' ? new Date(date) : date;
   const now = new Date();
   const diff = now.getTime() - targetDate.getTime();
-
   // Handle invalid dates
   if (isNaN(targetDate.getTime())) {
     return 'Invalid date';
   }
-
   // Handle future dates
   if (diff < 0) {
     return 'Future date';
   }
-
   const seconds = Math.floor(diff / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
@@ -32,13 +27,11 @@ export function formatTimestamp(date: Date | string, options?: {
   const weeks = Math.floor(days / 7);
   const months = Math.floor(days / 30);
   const years = Math.floor(days / 365);
-
   if (style === 'absolute') {
     return includeTime
       ? targetDate.toLocaleString()
       : targetDate.toLocaleDateString();
   }
-
   if (style === 'relative' || style === 'smart') {
     // Smart relative formatting
     if (seconds < 30) return 'Just now';
@@ -54,10 +47,8 @@ export function formatTimestamp(date: Date | string, options?: {
     if (years === 1) return '1 year ago';
     return `${years}y ago`;
   }
-
   return targetDate.toLocaleDateString();
 }
-
 // Enhanced text truncation with smart word boundaries
 export function truncateText(text: string, options?: {
   maxLength?: number;
@@ -66,18 +57,14 @@ export function truncateText(text: string, options?: {
   preserveWords?: boolean;
 }): string {
   if (!text || typeof text !== 'string') return '';
-
   const {
     maxLength = 50,
     wordBoundary = true,
     suffix = '...',
     preserveWords = true
   } = options || {};
-
   if (text.length <= maxLength) return text;
-
   let truncated = text.slice(0, maxLength - suffix.length);
-
   if (wordBoundary && preserveWords) {
     // Find the last complete word
     const lastSpaceIndex = truncated.lastIndexOf(' ');
@@ -85,41 +72,31 @@ export function truncateText(text: string, options?: {
       truncated = truncated.slice(0, lastSpaceIndex);
     }
   }
-
   return truncated.trim() + suffix;
 }
-
 // Smart title extraction from content
 export function extractTitle(content: string, fallback: string = 'Untitled'): string {
   if (!content) return fallback;
-
   // Try to extract first meaningful line
   const lines = content.split('\n').map(line => line.trim()).filter(Boolean);
   if (lines.length === 0) return fallback;
-
   const firstLine = lines[0];
-
   // If first line looks like a title (short, no periods except end)
   if (firstLine.length < 100 && !firstLine.includes('.') || firstLine.endsWith('.')) {
     return truncateText(firstLine, { maxLength: 60, wordBoundary: true });
   }
-
   // Otherwise truncate first line
   return truncateText(firstLine, { maxLength: 60, wordBoundary: true });
 }
-
 // File size formatting
 export function formatFileSize(bytes: number): string {
   if (!bytes || bytes === 0) return '0 B';
-
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
   const k = 1024;
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-
   const size = parseFloat((bytes / Math.pow(k, i)).toFixed(1));
   return `${size} ${units[i]}`;
 }
-
 // Priority formatting with colors and icons
 export function formatPriority(priority: string): {
   label: string;
@@ -149,16 +126,14 @@ export function formatPriority(priority: string): {
     critical: {
       label: 'Critical',
       color: 'text-red-600',
-      bgColor: 'bg-red-100',;
+      bgColor: 'bg-red-100',
       icon: '●'
     }
   };
-
   return priorityMap[priority as keyof typeof priorityMap] || priorityMap.low;
 }
-
 // Status formatting
-export function formatStatus(status: string, type: 'case' | 'evidence' | 'report' | 'citation' = 'case'): {;
+export function formatStatus(status: string, type: 'case' | 'evidence' | 'report' | 'citation' = 'case'): {
   label: string;
   color: string;
   bgColor: string;
@@ -185,20 +160,18 @@ export function formatStatus(status: string, type: 'case' | 'evidence' | 'report
     },
     citation: {
       relevant: { label: 'Relevant', color: 'text-green-600', bgColor: 'bg-green-100', icon: '⭐' },
-      referenced: { label: 'Referenced', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '🔗' },;
+      referenced: { label: 'Referenced', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '🔗' },
       archived: { label: 'Archived', color: 'text-gray-400', bgColor: 'bg-gray-50', icon: '📚' }
     }
   };
-
   const map = statusMaps[type];
   return map[status as keyof typeof map] || {
     label: status.replace('_', ' '),
     color: 'text-gray-500',
-    bgColor: 'bg-gray-100',;
+    bgColor: 'bg-gray-100',
     icon: '○'
   };
 }
-
 // Entity type formatting
 export function formatEntityType(type: string): {
   label: string;
@@ -214,49 +187,41 @@ export function formatEntityType(type: string): {
     photo: { label: 'Photo', icon: '📸', color: 'text-pink-600' },
     video: { label: 'Video', icon: '🎥', color: 'text-red-600' },
     audio: { label: 'Audio', icon: '🎵', color: 'text-indigo-600' },
-    physical: { label: 'Physical', icon: '📦', color: 'text-orange-600' },;
+    physical: { label: 'Physical', icon: '📦', color: 'text-orange-600' },
     digital: { label: 'Digital', icon: '💾', color: 'text-cyan-600' }
   };
-
   return typeMap[type as keyof typeof typeMap] || {
     label: type.charAt(0).toUpperCase() + type.slice(1),
-    icon: '📄',;
+    icon: '📄',
     color: 'text-gray-600'
   };
 }
-
 // Search highlighting
 export function highlightSearchTerm(text: string, searchTerm: string): string {
   if (!searchTerm.trim()) return text;
-
   const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
   return text.replace(regex, '<mark class="bg-yellow-200 text-yellow-900 px-0.5 rounded">$1</mark>');
 }
-
 // Progress calculation
-export function calculateProgress(completed: number, total: number): {;
+export function calculateProgress(completed: number, total: number): {
   percentage: number;
   label: string;
   color: string;
 } {
   if (total === 0) return { percentage: 0, label: '0%', color: 'bg-gray-200' };
-
   const percentage = Math.round((completed / total) * 100);
-
   let color = 'bg-gray-200';
   if (percentage >= 100) color = 'bg-green-500';
   else if (percentage >= 75) color = 'bg-blue-500';
   else if (percentage >= 50) color = 'bg-yellow-500';
   else if (percentage >= 25) color = 'bg-orange-500';
   else color = 'bg-red-500';
-
   return {
     percentage,
     label: `${percentage}%`,
     color
   };
 }
-
 // User role formatting
 export function formatUserRole(role: string): {
   label: string;
@@ -292,19 +257,17 @@ export function formatUserRole(role: string): {
     viewer: {
       label: 'Viewer',
       color: 'text-gray-600',
-      bgColor: 'bg-gray-100',;
+      bgColor: 'bg-gray-100',
       icon: '👁️'
     }
   };
-
   return roleMap[role as keyof typeof roleMap] || {
     label: role.charAt(0).toUpperCase() + role.slice(1),
     color: 'text-gray-600',
-    bgColor: 'bg-gray-100',;
+    bgColor: 'bg-gray-100',
     icon: '👤'
   };
 }
-
 // Activity type formatting
 export function formatActivityType(type: string): {
   label: string;
@@ -321,32 +284,27 @@ export function formatActivityType(type: string): {
     ai_analysis: { label: 'AI Analysis', icon: '🤖', color: 'text-indigo-600' },
     system_update: { label: 'System Update', icon: '⚙️', color: 'text-gray-600' }
   };
-
   return activityMap[type as keyof typeof activityMap] || {
     label: type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-    icon: '📝',;
+    icon: '📝',
     color: 'text-gray-600'
   };
 }
-
 // Content preview extraction
 export function extractPreview(content: string, maxLength: number = 100): string {
   if (!content) return '';
-
   // Remove markdown, HTML, and extra whitespace
   let preview = content
     .replace(/[#*_`]/g, '') // Remove markdown
     .replace(/<[^>]*>/g, '') // Remove HTML
     .replace(/\s+/g, ' ') // Normalize whitespace
     .trim();
-
   return truncateText(preview, {
     maxLength,
-    wordBoundary: true,
+    wordBoundary: true
     preserveWords: true
   });
 }
-
 // Legal jurisdiction formatting
 export function formatJurisdiction(jurisdiction: string): string {
   const jurisdictionMap: Record<string, string> = {
@@ -365,11 +323,9 @@ export function formatJurisdiction(jurisdiction: string): string {
     'nc': 'North Carolina',
     'mi': 'Michigan'
   };
-
   return jurisdictionMap[jurisdiction.toLowerCase()] ||
          jurisdiction.charAt(0).toUpperCase() + jurisdiction.slice(1);
 }
-
 // Array chunking for pagination
 export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
   const chunks: T[][] = [];
@@ -378,24 +334,20 @@ export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
   }
   return chunks;
 }
-
 // Debounce function for search
-export function debounce<T extends (...args: any[]) => any>(
-  func: T,;
+export function debounce<T extends (...args: any[]) => any>(,
+  func: T
   wait: number
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
-
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
   };
 }
-
 // Generate initials from name
 export function getInitials(name: string): string {
   if (!name) return '?';
-
   return name
     .split(' ')
     .map(n => n.charAt(0))
@@ -403,18 +355,15 @@ export function getInitials(name: string): string {
     .toUpperCase()
     .slice(0, 2);
 }
-
 // Color generation from string (for consistent user avatars)
 export function stringToColor(str: string): string {
   const colors = [
     'bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500',
     'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-gray-500'
   ];
-
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
-
   return colors[Math.abs(hash) % colors.length];
 }

@@ -1,11 +1,8 @@
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import type { RequestHandler } from './$types.js'
-
-
 const execAsync = promisify(exec)
 }
-
 export interface ParsedError {
   id: string
   code: string
@@ -13,26 +10,21 @@ export interface ParsedError {
   file: string
   line: number
   column: number
-  severity: 'error' | 'warning'
+  severity: 'error' | 'warning',
   category: string
 }
-
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     console.log('🚀 Starting FlashAttention2 GPU Error Processing...')
-
     // Get current TypeScript errors
     const { stdout: tsOutput } = await execAsync('npx tsc --noEmit --skipLibCheck 2>&1 || true')
-
   // Parse TypeScript errors
     const errorLines = tsOutput
       .split('\n')
       .filter((line) => line.includes('TS') && (line.includes('error') || line.includes('warning'))
-
     const parsedErrors: ParsedError[] = errorLines.map((line, index) => {
       const tsCodeMatch = line.match(/TS(\d+)/)
       const fileMatch = line.match(/([^(]+)\((\d+),(\d+)\)/)
-
       return {
         id: `error-${index}`,
         code: tsCodeMatch ? `TS${tsCodeMatch[1]}` : `TS-${index}`,
@@ -44,45 +36,38 @@ export const POST: RequestHandler = async ({ request, url }) => {
         category: detectErrorCategory(tsCodeMatch ? `TS${tsCodeMatch[1]}` : '', line)
       }
     })
-
     console.log(`📊 Found ${parsedErrors.length} TypeScript errors`)
-
     // Categorize errors for GPU processing
     const categorizedErrors = categorizeErrorsForGPU(parsedErrors)
-
     // Simulate FlashAttention GPU processing
     const startTime = performance.now()
     const fixes = await processErrorsWithGPU(categorizedErrors)
     const endTime = performance.now()
-
     const processingTime = endTime - startTime
-
     const result = {
       batchId: `gpu-batch-${Date.now()}`,
       totalErrors: parsedErrors.length,
       processedErrors: fixes.length,
       fixes: fixes.slice(0, 50), // Return first 50 fixes
       performance: {
-        processing_time_ms: processingTime,
+        processing_time_ms: processingTime
         gpu_utilization: 78.5 + Math.random() * 15, // Simulated GPU usage
         memory_usage_mb: 1024 + Math.random() * 500,
         tokens_per_second: (fixes.length * 150) / processingTime * 1000
       },
       status: 'completed',
       categories: Object.entries(categorizedErrors).map(([category, errors]) => ({
-        name: category,
+        name: category
         count: errors.length,
         avgConfidence:
           errors.reduce((acc, err) => acc + (Math.random() * 0.25 + 0.7), 0) / errors.length
       })
     }
-
     console.log(`⚡ GPU processing complete:`)
     console.log(`   - Total errors: ${(result as { totalErrors?: any; processedErrors?: any; performance?: any }).totalErrors}`)
     console.log(`   - Fixes generated: ${(result as { totalErrors?: any; processedErrors?: any; performance?: any }).processedErrors}`)
     console.log(`   - Processing time: ${processingTime.toFixed(2)}ms`)
     console.log(`   - GPU utilization: ${(result as { totalErrors?: any; processedErrors?: any; performance?: any }).performance.gpu_utilization.toFixed(1)}%`)
-
     return json(result)
   } catch (error: any) {
     console.error('❌ GPU error processing failed:', error)
@@ -95,7 +80,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
     )
   }
 }
-
 function detectErrorCategory(code: string, message: string): string {
   if (message.includes('export let') || message.includes('$props')) return 'svelte5'
   if (code.startsWith('TS2307') || message.includes('Cannot find module')) return 'import'
@@ -104,25 +88,20 @@ function detectErrorCategory(code: string, message: string): string {
   if (message.includes('bind:') || message.includes('on:')) return 'binding'
   return 'unknown'
 }
-
 function categorizeErrorsForGPU(errors: ParsedError[]): Record<string, ParsedError[]> {
   const categories: Record<string, ParsedError[]> = {}
-
   for (const error of errors) {
     if (!categories[error.category]) {
       categories[error.category] = []
     }
     categories[error.category].push(error)
   }
-
   return categories
 }
-
 async function processErrorsWithGPU(
   categorizedErrors: Record<string, ParsedError[]>
 ): Promise<any[]> {
   const fixes: any[] = []
-
   for (const [category, errors] of Object.entries(categorizedErrors)) {
     for (const error of errors.slice(0, 100)) {
       // Limit processing for demo
@@ -132,10 +111,8 @@ async function processErrorsWithGPU(
       }
     }
   }
-
   return fixes
 }
-
 function generateErrorFix(error: ParsedError, category: string): any {
   const fixTemplates = {
     svelte5: {
@@ -171,7 +148,6 @@ function generateErrorFix(error: ParsedError, category: string): any {
     priority: category === 'svelte5' ? 'high' : category === 'syntax' ? 'critical' : 'medium'
   }
 }
-
 export const GET: RequestHandler = async () => {
   return json({
     service: 'FlashAttention2 GPU Error Processor',

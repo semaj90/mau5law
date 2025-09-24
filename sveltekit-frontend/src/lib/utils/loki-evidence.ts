@@ -1,5 +1,4 @@
 import { randomUUID } from "crypto";
-
 // Loki.js based local memory and sync service for enhanced performance
 // Browser environment check
 const browser = typeof window !== "undefined";
@@ -7,7 +6,6 @@ import Loki from 'lokijs';
 import type { Collection } from '$lib/stores/comprehensive-types';
 import type { Evidence } from '$lib/stores/evidenceStore.js';
 }
-
 export interface LokiEvidence extends Evidence {
   $loki?: number;
   meta?: unknown;
@@ -28,7 +26,6 @@ export class LokiEvidenceService {
   private syncQueue: Collection<SyncOperation> | null = null;
   private isInitialized = false;
   private syncInProgress = false;
-
   constructor() {
     if (browser) {
       this.initializeDatabase();
@@ -38,15 +35,15 @@ export class LokiEvidenceService {
     return new Promise((resolve, reject) => {
       try {
         this.db = new Loki('evidence_db.json', {
-          adapter: new LokiIndexedAdapter('evidence_db'),;
-          autoload: true,
+          adapter: new LokiIndexedAdapter('evidence_db'),
+          autoload: true
           autoloadCallback: () => {
             this.setupCollections();
             this.isInitialized = true;
             console.log('✅ Loki database initialized');
             resolve();
           },
-          autosave: true,
+          autosave: true
           autosaveInterval: 4000
         });
       } catch (error: any) {
@@ -57,33 +54,29 @@ export class LokiEvidenceService {
   }
   private setupCollections() {
     if (!this.db) return;
-
     // Evidence collection with indices for fast queries
     this.evidenceCollection =
       (this.db.getCollection('evidence') as unknown as Collection<LokiEvidence>) ||;
       (this.db.addCollection('evidence', {
-        indices: ['id', 'caseId', 'type'],;
+        indices: ['id', 'caseId', 'type'],
         unique: ['id']
       }) as unknown as Collection<LokiEvidence>);
-
     // Sync queue for offline operations
     this.syncQueue =
       (this.db.getCollection('syncQueue') as unknown as Collection<SyncOperation>) ||;
       (this.db.addCollection('syncQueue', {
         indices: ['timestamp', 'synced', 'type']
       }) as unknown as Collection<SyncOperation>);
-
     // Clean up old synced operations (keep last 1000)
     const syncedOps = this.syncQueue.find({ synced: true });
     if (syncedOps.length > 1000) {
       const toDelete = syncedOps
         .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
         .slice(0, syncedOps.length - 1000);
-
       toDelete.forEach((op) => this.syncQueue?.remove(op);
     }
   }
-  // Evidence CRUD operations with local caching;
+  // Evidence CRUD operations with local caching
   public async createEvidence(evidence: Evidence): Promise<void> {
     if (!this.evidenceCollection) {
       throw new Error('Database not initialized');
@@ -91,20 +84,18 @@ export class LokiEvidenceService {
     try {
       // Insert into local collection
       this.evidenceCollection.insert({ ...evidence });
-
-      // Add to sync queue;
+      // Add to sync queue
       await this.addToSyncQueue({
         id: crypto.randomUUID(),
         type: 'CREATE',
         collectionName: 'evidence',
         recordId: evidence.id,
-        data: evidence,
-        timestamp: new Date().toISOString(),;
-        synced: false,
+        data: evidence
+        timestamp: new Date().toISOString(),
+        synced: false
         retryCount: 0
       });
-
-      // Trigger sync if online;
+      // Trigger sync if online
       if (navigator.onLine) {
         this.processSyncQueue();
       }
@@ -124,7 +115,7 @@ export class LokiEvidenceService {
       if (!existing) {
         throw new Error(`Evidence ${evidenceId} not found in local storage`);
       }
-      // Update local record;
+      // Update local record
       const updated = {
         ...existing,
         ...changes,
@@ -134,20 +125,18 @@ export class LokiEvidenceService {
         }
       };
       this.evidenceCollection.update(updated);
-
-      // Add to sync queue;
+      // Add to sync queue
       await this.addToSyncQueue({
         id: crypto.randomUUID(),
         type: 'UPDATE',
         collectionName: 'evidence',
-        recordId: evidenceId,
-        data: changes,
-        timestamp: new Date().toISOString(),;
-        synced: false,
+        recordId: evidenceId
+        data: changes
+        timestamp: new Date().toISOString(),
+        synced: false
         retryCount: 0
       });
-
-      // Trigger sync if online;
+      // Trigger sync if online
       if (navigator.onLine) {
         this.processSyncQueue();
       }
@@ -169,19 +158,17 @@ export class LokiEvidenceService {
       }
       // Remove from local collection
       this.evidenceCollection.remove(existing);
-
-      // Add to sync queue;
+      // Add to sync queue
       await this.addToSyncQueue({
         id: crypto.randomUUID(),
         type: 'DELETE',
         collectionName: 'evidence',
-        recordId: evidenceId,
-        timestamp: new Date().toISOString(),;
-        synced: false,
+        recordId: evidenceId
+        timestamp: new Date().toISOString(),
+        synced: false
         retryCount: 0
       });
-
-      // Trigger sync if online;
+      // Trigger sync if online
       if (navigator.onLine) {
         this.processSyncQueue();
       }
@@ -190,7 +177,7 @@ export class LokiEvidenceService {
       throw error;
     }
   }
-  // Query methods with advanced filtering;
+  // Query methods with advanced filtering
   public getAllEvidence(): LokiEvidence[] {
     if (!this.evidenceCollection) return [];
     return this.evidenceCollection.find({});
@@ -205,7 +192,6 @@ export class LokiEvidenceService {
   }
   public searchEvidence(query: string): LokiEvidence[] {
     if (!this.evidenceCollection) return [];
-
     return this.evidenceCollection.where((obj: LokiEvidence) => {
       const searchFields = [
         (obj as any).title || '',
@@ -216,7 +202,6 @@ export class LokiEvidenceService {
       ]
         .join(' ')
         .toLowerCase();
-
       return searchFields.includes(query.toLowerCase();
     });
   }
@@ -226,7 +211,6 @@ export class LokiEvidenceService {
   }
   public getEvidenceByDateRange(startDate: string, endDate: string): LokiEvidence[] {
     if (!this.evidenceCollection) return [];
-
     return this.evidenceCollection.where((obj: LokiEvidence) => {
       const createdAt = new Date((obj as any).timeline?.createdAt || 0);
       const start = new Date(startDate);
@@ -234,35 +218,30 @@ export class LokiEvidenceService {
       return createdAt >= start && createdAt <= end;
     });
   }
-  // Advanced analytics queries;
+  // Advanced analytics queries
   public getEvidenceStats() {
     if (!this.evidenceCollection) {
-      return { total: 0, byType: Record<string, any>, byCase: Record<string, any>, recentCount: 0 };
+      return { total: 0, byType: { [key: string]: any }, byCase: { [key: string]: any }, recentCount: 0 };
     }
     const all = this.evidenceCollection.find({});
     const byType: Record<string, number> = {};
     const byCase: Record<string, number> = {};
     let recentCount = 0;
-
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
     all.forEach((evidence) => {
       // Count by type
       const type = (evidence as any).type || 'unknown';
       byType[type] = (byType[type] || 0) + 1;
-
       // Count by case
       const caseId = (evidence as any).caseId || 'unknown';
       byCase[caseId] = (byCase[caseId] || 0) + 1;
-
       // Count recent evidence
       const timeline = (evidence as any).timeline;
       if (timeline?.createdAt && new Date(timeline.createdAt) > oneWeekAgo) {
         recentCount++;
       }
     });
-
     return {
       total: all.length,
       byType,
@@ -270,34 +249,27 @@ export class LokiEvidenceService {
       recentCount
     };
   }
-  // Sync queue management;
+  // Sync queue management
   private async addToSyncQueue(operation: SyncOperation): Promise<void> {
     if (!this.syncQueue) return;
-
     this.syncQueue.insert(operation);
   }
   public async processSyncQueue(): Promise<void> {
     if (!this.syncQueue || this.syncInProgress) return;
-
     this.syncInProgress = true;
-
     try {
       const pendingOps = this.syncQueue.find({ synced: false });
-
       for (const operation of pendingOps) {
         try {
           await this.syncOperation(operation);
-
           // Mark as synced
           operation.synced = true;
           this.syncQueue.update(operation);
         } catch (error: any) {
           console.error(`Sync failed for operation ${operation.id}:`, error);
-
           // Increment retry count
           operation.retryCount++;
-
-          // Remove operations that failed too many times;
+          // Remove operations that failed too many times
           if (operation.retryCount > 5) {
             this.syncQueue.remove(operation);
             console.warn(
@@ -314,32 +286,29 @@ export class LokiEvidenceService {
   }
   private async syncOperation(operation: SyncOperation): Promise<void> {
     const { type, recordId, data } = operation;
-
     switch (type) {
-      case 'CREATE':;
+      case 'CREATE':
         await fetch('/api/evidence', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },;
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
         break;
-
-      case 'UPDATE':;
+      case 'UPDATE':
         await fetch(`/api/evidence/${recordId}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },;
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
         break;
-
-      case 'DELETE':;
+      case 'DELETE':
         await fetch(`/api/evidence/${recordId}`, {
           method: 'DELETE'
         });
         break;
     }
   }
-  // Sync status and conflict resolution;
+  // Sync status and conflict resolution
   public getSyncStatus() {
     if (!this.syncQueue) {
       return { pending: 0, failed: 0, total: 0, inProgress: false };
@@ -347,7 +316,6 @@ export class LokiEvidenceService {
     const all = this.syncQueue.find({});
     const pending = all.filter((op) => !op.synced && op.retryCount < 5).length;
     const failed = all.filter((op) => !op.synced && op.retryCount >= 5).length;
-
     return {
       pending,
       failed,
@@ -357,18 +325,14 @@ export class LokiEvidenceService {
   }
   public async syncWithServer(serverEvidence: Evidence[]): Promise<void> {
     if (!this.evidenceCollection) return;
-
     // Get local evidence
     const localEvidence = this.evidenceCollection.find({});
-
     // Create maps for efficient lookup
     const localMap = new Map(localEvidence.map((e: any) => [(e as any).id, e]);
     const serverMap = new Map(serverEvidence.map((e: any) => [e.id, e]);
-
-    // Find conflicts and resolve them;
+    // Find conflicts and resolve them
     for (const [id, serverItem] of Array.from(serverMap)) {
       const localItem = localMap.get(id);
-
       if (!localItem) {
         // Server has item that local doesn't have - add it
         this.evidenceCollection.insert(serverItem as LokiEvidence);
@@ -376,7 +340,6 @@ export class LokiEvidenceService {
         // Both have the item - check timestamps and resolve conflict
         const serverUpdated = new Date(serverItem.timeline?.updatedAt || 0);
         const localUpdated = new Date((localItem as any).timeline?.updatedAt || 0);
-
         if (serverUpdated > localUpdated) {
           // Server is newer - update local
           this.evidenceCollection.update(Object.assign({}, localItem, serverItem);
@@ -388,24 +351,21 @@ export class LokiEvidenceService {
     const pendingIds = new Set(
       this.syncQueue?.find({ synced: false }).map((op) => op.recordId) || []
     );
-
     for (const [id, localItem] of Array.from(localMap)) {
       if (!serverMap.has(id as string) && !pendingIds.has(id as string)) {
         this.evidenceCollection?.remove(localItem);
       }
     }
   }
-  // Database maintenance;
+  // Database maintenance
   public async compactDatabase(): Promise<void> {
     if (!this.db) return;
-
     // This is a placeholder - Loki.js doesn't have a direct compact method
     // In a real implementation, you might recreate the database with current data
     console.log('Database compaction requested - implement based on Loki.js version');
   }
   public async clearLocalData(): Promise<void> {
     if (!this.evidenceCollection || !this.syncQueue) return;
-
     this.evidenceCollection.clear();
     this.syncQueue.clear();
   }
@@ -413,29 +373,23 @@ export class LokiEvidenceService {
     return this.isInitialized;
   }
 }
-// LokiIndexedAdapter for better browser persistence;
+// LokiIndexedAdapter for better browser persistence
 class LokiIndexedAdapter {
   constructor(private dbname: string) {}
-
   loadDatabase(dbname: string, callback: (data: any) => void): void {
     // Load from IndexedDB
     const request = indexedDB.open(this.dbname, 1);
-
     request.onerror = () => callback(null);
-
     request.onsuccess = (event: any) => {
       const db = (event.target as IDBOpenDBRequest).result;
       const transaction = db.transaction(["data"], "readonly");
       const store = transaction.objectStore("data");
       const getRequest = store.get(dbname);
-
       getRequest.onsuccess = () => {
         callback(getRequest.result ? getRequest.result.data: null);
       };
-
       getRequest.onerror = () => callback(null);
     };
-
     request.onupgradeneeded = (event: any) => {
       const db = (event.target as IDBOpenDBRequest).result;
       if (!db.objectStoreNames.contains("data")) {
@@ -446,18 +400,14 @@ class LokiIndexedAdapter {
   saveDatabase(dbname: string, dbstring: string, callback: () => void): void {
     // Save to IndexedDB
     const request = indexedDB.open(this.dbname, 1);
-
     request.onsuccess = (event: any) => {
       const db = (event.target as IDBOpenDBRequest).result;
       const transaction = db.transaction(["data"], "readwrite");
       const store = transaction.objectStore("data");
-
       store.put({ id: dbname, data: dbstring });
-
       transaction.oncomplete = () => callback();
       transaction.onerror = () => callback();
     };
-
     request.onerror = () => callback();
   }
   deleteDatabase(dbname: string, callback: () => void): void {
@@ -468,4 +418,3 @@ class LokiIndexedAdapter {
 }
 // Export singleton instance
 export const lokiEvidenceService = new LokiEvidenceService();
-;

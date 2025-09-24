@@ -1,13 +1,10 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * Production Evidence Processing API
  * Smart detection and analysis pipeline
  */
-
 import { URL } from "url"
 }
-
 export interface EvidenceItem {
   id: string
   case_id: string
@@ -22,7 +19,6 @@ export interface EvidenceItem {
   created_at: string
   updated_at: string
 }
-
 export interface ProcessingJob {
   id: string
   evidence_id: string
@@ -33,7 +29,6 @@ export interface ProcessingJob {
   error_message?: string
   created_at: string
 }
-
 // Mock database operations (replace with actual database client)
 const mockEvidenceData: EvidenceItem[] = [
   {
@@ -52,7 +47,7 @@ const mockEvidenceData: EvidenceItem[] = [
         context: 'liability clauses'
       },
       {
-        detection_type: 'legal_entity', 
+        detection_type: 'legal_entity',
         detected_value: 'indemnification',
         confidence_score: 0.88,
         context: 'indemnification provisions'
@@ -62,7 +57,6 @@ const mockEvidenceData: EvidenceItem[] = [
     updated_at: new Date().toISOString()
   }
 ]
-
 const mockProcessingJobs: ProcessingJob[] = [
   {
     id: 'job-001',
@@ -78,7 +72,6 @@ const mockProcessingJobs: ProcessingJob[] = [
     created_at: new Date().toISOString()
   }
 ]
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const searchParams = url.searchParams
@@ -86,24 +79,19 @@ export const GET: RequestHandler = async ({ url }) => {
     const status = searchParams.get('status')
     const limit = parseInt(searchParams.get('limit') || '10')
     const offset = parseInt(searchParams.get('offset') || '0')
-    
     // Filter evidence based on query parameters
     let filteredEvidence = [...mockEvidenceData]
-    
     if (caseId) {
       filteredEvidence = filteredEvidence.filter(e => e.case_id === caseId)
     }
-    
     if (status) {
       filteredEvidence = filteredEvidence.filter(e => e.status === status)
     }
-    
     // Apply pagination
     const paginatedEvidence = filteredEvidence.slice(offset, offset + limit)
-    
     return json({
-      success: true,
-      data: paginatedEvidence,
+      success: true
+      data: paginatedEvidence
       pagination: {
         total: filteredEvidence.length,
         limit,
@@ -116,32 +104,28 @@ export const GET: RequestHandler = async ({ url }) => {
         environment: 'production'
       }
     })
-    
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const data = await request.json()
-    
     // Validate required fields
     const requiredFields = ['case_id', 'title']
     for (const field of requiredFields) {
       if (!data[field]) {
         return json({
-          success: false,
+          success: false
           error: `Missing required field: ${field}`,
           timestamp: new Date().toISOString()
         }, { status: 400 })
       }
     }
-    
     // Create new evidence item
     const newEvidence: EvidenceItem = {
       id: `evd-${Date.now()}`,
@@ -155,10 +139,8 @@ export const POST: RequestHandler = async ({ request }) => {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }
-    
     // Simulate database insert
     mockEvidenceData.push(newEvidence)
-    
     // Create processing job for smart detection
     const processingJob: ProcessingJob = {
       id: `job-${Date.now()}`,
@@ -168,16 +150,13 @@ export const POST: RequestHandler = async ({ request }) => {
       progress: 0,
       created_at: new Date().toISOString()
     }
-    
     mockProcessingJobs.push(processingJob)
-    
     // Simulate smart detection processing
     if (data.auto_process !== false) {
       setTimeout(() => {
         // Update job status
         processingJob.status = 'processing'
         processingJob.progress = 50
-        
         setTimeout(() => {
           // Complete processing
           processingJob.status = 'completed'
@@ -187,11 +166,9 @@ export const POST: RequestHandler = async ({ request }) => {
             confidence_avg: Math.random() * 0.3 + 0.7,
             processing_time_ms: Math.floor(Math.random() * 2000) + 500
           }
-          
           // Update evidence status
           newEvidence.status = 'processed'
           newEvidence.updated_at = new Date().toISOString()
-          
           // Add mock smart detection results
           newEvidence.smart_detection_results = [
             {
@@ -204,67 +181,58 @@ export const POST: RequestHandler = async ({ request }) => {
         }, 1000)
       }, 500)
     }
-    
     return json({
-      success: true,
+      success: true
       data: {
-        evidence: newEvidence,
+        evidence: newEvidence
         processing_job: processingJob
       },
       message: 'Evidence item created and queued for processing',
       timestamp: new Date().toISOString()
     }, { status: 201 })
-    
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
   }
 }
-
 export const PUT: RequestHandler = async ({ request, url }) => {
   try {
     const data = await request.json()
     const evidenceId = url.searchParams.get('id')
-    
     if (!evidenceId) {
       return json({
-        success: false,
+        success: false
         error: 'Evidence ID required',
         timestamp: new Date().toISOString()
       }, { status: 400 })
     }
-    
     // Find and update evidence
     const evidenceIndex = mockEvidenceData.findIndex(e => e.id === evidenceId)
-    
     if (evidenceIndex === -1) {
       return json({
-        success: false,
+        success: false
         error: 'Evidence not found',
         timestamp: new Date().toISOString()
       }, { status: 404 })
     }
-    
     // Update evidence
     mockEvidenceData[evidenceIndex] = {
       ...mockEvidenceData[evidenceIndex],
       ...data,
       updated_at: new Date().toISOString()
     }
-    
     return json({
-      success: true,
-      data: mockEvidenceData[evidenceIndex],
+      success: true
+      data: mockEvidenceData[evidenceIndex]
       message: 'Evidence updated successfully',
       timestamp: new Date().toISOString()
     })
-    
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: error.message,
       timestamp: new Date().toISOString()
     }, { status: 500 })

@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter';
   import {
@@ -11,30 +10,25 @@
   } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { MessageSquare, Brain, Zap, Cpu } from 'lucide-svelte';
-
   // Props
   interface Props {
     collapsed?: boolean;
     showStatus?: boolean;
   }
-
   let { collapsed = false, showStatus = true }: Props = $props();
-
   // State
   let chatInput = $state('');
   let messages = $state<any[]>([]) => []);
   let isProcessing = $state(false);
   let isInitialized = $state(false);
   let error = $state<string | null>(null);
-  
   // System status
   let systemStatus = $state({
-    webgpu: false,
-    webasm: false,;
-    model: false,;
+    webgpu: false
+    webasm: false
+    model: false
     adapter: false;
   });
-
   // Quick prompts
   let quickPrompts = [
     'What are the key legal considerations for AI in healthcare?',
@@ -42,29 +36,25 @@
     'How do AI liability laws work?',
     'What are the privacy risks of machine learning?'
   ];
-
   async function initializeAI() {
     try {
       console.log('🤖 Initializing client-side AI...');
-      
       const initialized = await webAssemblyAIAdapter.initialize();
       if (initialized) {
         const health = webAssemblyAIAdapter.getHealthStatus();
         systemStatus = {
           webgpu: health.webgpuEnabled || false,
-          webasm: health.wasmSupported || false,;
-          model: health.modelLoaded || false,;
+          webasm: health.wasmSupported || false,
+          model: health.modelLoaded || false,
           adapter: health.initialized || false;
         };
-        
         isInitialized = true;
         console.log('✅ Client-side AI ready:', health);
-        
         // Add welcome message
         messages.push({
           id: 'welcome',
-          role: 'assistant',;
-          content: 'Hello! I\'m running locally in your browser using WebAssembly and the Gemma 270MB model. Ask me anything about legal AI, compliance, or contract analysis.',;
+          role: 'assistant',
+          content: 'Hello! I\'m running locally in your browser using WebAssembly and the Gemma 270MB model. Ask me anything about legal AI, compliance, or contract analysis.',
           timestamp: Date.now();
         });
       } else {
@@ -75,52 +65,41 @@
       console.error('❌ AI initialization failed:', err);
     }
   }
-
   async function sendMessage(prompt?: string) {
     const message = prompt || chatInput.trim();
     if (!message || isProcessing || !isInitialized) return;
-    
     const userMessage = {
       id: `user_${Date.now()}`,
-      role: 'user' as const,;
-      content: message,;
+      role: 'user' as const,
+      content: message
       timestamp: Date.now();
     };
-    
     messages.push(userMessage);
     messages = [...messages]; // Trigger reactivity
-    
     isProcessing = true;
     error = null;
-    
     // Clear input if it was user-typed
     if (!prompt) chatInput = '';
-    
     try {
       console.log('🚀 Processing:', message);
-      
       const response = await webAssemblyAIAdapter.sendMessage.map(msg => ({
-          type: msg.role,;
-          content: msg.content,;
+          type: msg.role,
+          content: msg.content,
           timestamp: msg.timestamp;
         }))
       });
-      
       const assistantMessage = {
         id: `assistant_${Date.now()}`,
-        role: 'assistant' as const,;
-        content: response.content,;
+        role: 'assistant' as const,
+        content: response.content,
         timestamp: Date.now();
       };
-      
       messages.push(assistantMessage);
       messages = [...messages]; // Trigger reactivity
-      
-      console.log('✅ Response generated:', {;
+      console.log('✅ Response generated:', {
         method: response.metadata?.method,
-        processingTime: response.metadata?.processingTime;
+        processingTime: response.metadata?.processingTim;
       });
-      
     } catch (err) {
       error = err instanceof Error ? err.message: 'Failed to process message';
       console.error('❌ Message processing failed:', err);
@@ -128,29 +107,25 @@
       isProcessing = false;
     }
   }
-
   function clearChat() {
     messages = [{
       id: 'welcome',
-      role: 'assistant',;
-      content: 'Chat cleared. How can I help you with legal AI questions?',;
+      role: 'assistant',
+      content: 'Chat cleared. How can I help you with legal AI questions?',
       timestamp: Date.now();
     }];
     error = null;
   }
-
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
-
   $effect(() => {
     initializeAI();
   });
 </script>
-
 <div class="client-ai-chat" class:collapsed data-testid="ai-chat-container">
   <div class="bg-gray-900/90 backdrop-blur-md border-yellow-500/30 shadow-xl nes-container">
     <div class="yorha-panel-header pb-3">
@@ -165,7 +140,6 @@
           </div>
         {/if}
       </h3>
-      
       {#if showStatus && !collapsed}
         <div class="flex items-center gap-2 text-xs">
           <span class="flex items-center gap-1">
@@ -183,7 +157,6 @@
         </div>
       {/if}
     </div>
-    
     <main>
       {#if !collapsed}
         <!-- Messages -->
@@ -200,7 +173,7 @@
                 </div>
                 <div class="content">
                   <div class="text-xs text-gray-400 mb-1 font-mono">
-                    {message.role === 'user' ? 'You' : 'Gemma 270MB'} • 
+                    {message.role === 'user' ? 'You' : 'Gemma 270MB'} •
                     {new Date(message.timestamp).toLocaleTimeString()}
                   </div>
                   <div class="text-sm {message.role === 'user' ? 'text-blue-300' : 'text-green-300'}">
@@ -210,7 +183,6 @@
               </div>
             </div>
           {/each}
-          
           {#if isProcessing}
             <div class="message assistant processing">
               <div class="flex items-start gap-2">
@@ -231,7 +203,6 @@
             </div>
           {/if}
         </div>
-
         <!-- Quick Prompts -->
         {#if messages.length <= 1}
           <div class="quick-prompts">
@@ -249,14 +220,12 @@
             </div>
           </div>
         {/if}
-
         <!-- Error Display -->
         {#if error}
           <div class="error-message bg-red-900/30 border border-red-500/50 rounded p-2" aria-live="polite" role="alert">
             <div class="text-xs text-red-400 font-mono">⚠️ {error}</div>
           </div>
         {/if}
-
         <!-- Input -->
         <div class="input-container">
           <div class="flex gap-2">
@@ -278,7 +247,6 @@
               {isProcessing ? '...' : 'Send'}
             </button>
           </div>
-          
           <div class="flex justify-between items-center mt-2">
             <div class="text-xs text-gray-500 font-mono">
               Running locally • No data sent to servers
@@ -304,56 +272,45 @@
     </div>
   </div>
 </div>
-
 <style>
-  .client-ai-chat {;
+  .client-ai-chat {
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     max-width: 320px;
   }
-
   .client-ai-chat.collapsed {
     max-width: 200px;
   }
-
   .messages-container {
-    scrollbar-width: thin;
+    scrollbar-width: thi;
     scrollbar-color: #4B5563 transparent;
   }
-
   .messages-container::-webkit-scrollbar {
     width: 4px;
   }
-
   .messages-container::-webkit-scrollbar-track {
     background: transparent;
   }
-
   .messages-container::-webkit-scrollbar-thumb {
     background: #4B5563;
     border-radius: 2px;
   }
-
   .message {
     padding: 8px;
     border-radius: 6px;
     margin: 4px 0;
   }
-
   .message.user {
     background: rgba(59, 130, 246, 0.1);
     border: 1px solid rgba(59, 130, 246, 0.3);
   }
-
   .message.assistant {
     background: rgba(16, 185, 129, 0.1);
     border: 1px solid rgba(16, 185, 129, 0.3);
   }
-
   .message.processing {
     background: rgba(251, 191, 36, 0.1);
     border: 1px solid rgba(251, 191, 36, 0.3);
   }
-
   .icon {
     display: flex;
     align-items: center;
@@ -364,28 +321,23 @@
     flex-shrink: 0;
     margin-top: 2px;
   }
-
   .icon.user {
     background: rgba(59, 130, 246, 0.2);
     color: #60A5FA;
   }
-
   .icon.assistant {
     background: rgba(16, 185, 129, 0.2);
     color: #34D399;
   }
-
   .content {
     flex: 1;
     min-width: 0;
   }
-
   .typing-indicator {
     display: flex;
     gap: 2px;
     align-items: center;
   }
-
   .typing-indicator span {
     width: 4px;
     height: 4px;
@@ -393,15 +345,12 @@
     background: #FCD34D;
     animation: typing 1.4s ease-in-out infinite;
   }
-
-  .typing-indicator span:nth-child(2) {;
-    animation-delay: 0.2s;
+  .typing-indicator span:nth-child(2) {
+    animation-delay: 0.2;
   }
-
-  .typing-indicator span:nth-child(3) {;
-    animation-delay: 0.4s;
+  .typing-indicator span:nth-child(3) {
+    animation-delay: 0.4;
   }
-
   @keyframes typing {
     0%, 60%, 100% {
       transform: translateY(0);
@@ -412,21 +361,17 @@
       opacity: 1;
     }
   }
-
   .quick-prompts button {
     font-size: 10px;
     transition: all 0.2s ease;
   }
-
-  .quick-prompts button:hover:not(:disabled) {;
+  .quick-prompts button:hover:not(:disabled) {,
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
-
   .error-message {
     animation: shake 0.5s ease-in-out;
   }
-
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-2px); }

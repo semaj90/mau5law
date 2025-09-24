@@ -1,18 +1,15 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { gpuTelemetryService } from '../../gpu/gpu-telemetry-service.js';
   import { gpuVectorProcessor } from '../../gpu/gpu-vector-processor.js';
   import { telemetryBus } from '../../telemetry/telemetry-bus.js';
-
   let aggregates: unknown[] = [];
   let recent: unknown[] = [];
   let errors: unknown[] = [];
   let demotions: unknown[] = [];
   let memory: unknown = null;
   let expanded = false;
-
   let unsub: () => void;
   function refresh() {
     aggregates = gpuTelemetryService.getAggregates();
@@ -21,7 +18,6 @@
     demotions = gpuTelemetryService.getDemotions(10);
     memory = (window as any).gpuContextProvider?.getMemoryUsage?.() || null;
   }
-
   $effect(() => {
     refresh();
     const interval = setInterval(refresh, 1200);
@@ -29,7 +25,6 @@
     return () => { clearInterval(interval); unsub && unsub(); };
   });
 </script>
-
 <style>
   .panel { font-family: system-ui, sans-serif; background:#111; color:#eee; padding:0.75rem; border:1px solid #333; border-radius:8px; font-size:12px; }
   .section { margin-top:0.75rem; }
@@ -44,7 +39,6 @@
   .grid { display:grid; gap:4px; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); }
   .badge { background:#222; padding:2px 6px; border-radius:4px; font-size:10px; }
 </style>
-
 <div class="panel">
   <div style="display:flex; justify-content:space-between; align-items:center;">
     <strong>GPU Diagnostics</strong>
@@ -70,7 +64,6 @@
         </tbody>
       </table>
     </div>
-
     <div class="section">
       <strong>Recent</strong>
       <div class="grid">
@@ -79,7 +72,6 @@
         {/each}
       </div>
     </div>
-
     <div class="section">
       <strong>Errors</strong>
       {#if errors.length === 0}
@@ -92,7 +84,6 @@
         </div>
       {/if}
     </div>
-
     <div class="section">
       <strong>Backend Demotions</strong>
       {#if demotions.length === 0}
@@ -105,7 +96,6 @@
         </div>
       {/if}
     </div>
-
     <div class="section">
       <strong>Memory</strong>
       {#if memory}
@@ -119,7 +109,6 @@
         <div class="badge">N/A</div>
       {/if}
     </div>
-
     <div class="section">
       <strong>Dump State</strong>
       <pre style="max-height:200px; overflow:auto; background:#000; padding:6px;">{JSON.stringify(gpuVectorProcessor.dumpState(), null, 2)}</pre>

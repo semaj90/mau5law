@@ -1,11 +1,9 @@
 import crypto from "crypto";
-
 // Global authentication store with AI assistant integration
 import { writable, derived, get } from "svelte/store";
 import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
 }
-
 export interface AuthUser {
   id: string;
   email: string;
@@ -17,7 +15,6 @@ export interface AuthUser {
   isActive: boolean;
   createdAt: Date;
 }
-
 export interface AuthState {
   user: AuthUser | null;
   isAuthenticated: boolean;
@@ -25,101 +22,90 @@ export interface AuthState {
   sessionId?: string;
   lastActivity?: Date;
 }
-
-// Core authentication state;
+// Core authentication state
 const createAuthStore = () => {
   const { subscribe, set, update } = writable<AuthState>({
-    user: null,
-    isAuthenticated: false,
+    user: null
+    isAuthenticated: false
     isLoading: true
   });
-
   return {
     subscribe,
-
-    // Initialize authentication state from server;
+    // Initialize authentication state from server
     async init() {
       if (!browser) return;
-
       try {
         const response = await fetch("/api/auth/me", {
           credentials: "include"
         });
-
         if ((response as { ok?: any; json?: any }).ok) {
           const userData = await (response as { ok?: any; json?: any }).json();
           set({
             user: userData.user,
-            isAuthenticated: true,
-            isLoading: false,
+            isAuthenticated: true
+            isLoading: false
             sessionId: userData.sessionId,
             lastActivity: new Date()
           });
         } else {
           set({
-            user: null,
-            isAuthenticated: false,
+            user: null
+            isAuthenticated: false
             isLoading: false
           });
         }
       } catch (error: any) {
         console.error("Failed to initialize auth:", error);
         set({
-          user: null,
-          isAuthenticated: false,
+          user: null
+          isAuthenticated: false
           isLoading: false
         });
       }
     },
-
-    // Login user;
+    // Login user
     async login(email: string, password: string) {
       update((state: any) => ({ ...state, isLoading: true });
-
       try {
         const response = await fetch("/api/auth/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ email, password }),;
+          body: JSON.stringify({ email, password }),
           credentials: "include"
         });
-
         if ((response as { ok?: any; json?: any }).ok) {
           const userData = await (response as { ok?: any; json?: any }).json();
           set({
             user: userData.user,
-            isAuthenticated: true,
-            isLoading: false,
+            isAuthenticated: true
+            isLoading: false
             sessionId: userData.sessionId,
             lastActivity: new Date()
           });
-
           // Initialize AI assistant for user
           aiAssistantStore.initializeForUser(userData.user);
-
           return { success: true };
         } else {
           const error = await (response as { ok?: any; json?: any }).json();
           set({
-            user: null,
-            isAuthenticated: false,
+            user: null
+            isAuthenticated: false
             isLoading: false
           });
           return { success: false, error: error.message };
         }
       } catch (error: any) {
         set({
-          user: null,
-          isAuthenticated: false,
+          user: null
+          isAuthenticated: false
           isLoading: false
         });
         return { success: false, error: "Network error" };
       }
     },
-
-    // Register new user;
+    // Register new user
     async register(userData: {
       email: string;
       password: string;
@@ -128,90 +114,79 @@ const createAuthStore = () => {
       role?: string;
     }) {
       update((state: any) => ({ ...state, isLoading: true });
-
       try {
         const response = await fetch("/api/auth/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(userData),;
+          body: JSON.stringify(userData),
           credentials: "include"
         });
-
         if ((response as { ok?: any; json?: any }).ok) {
           const result = await (response as { ok?: any; json?: any }).json();
           set({
             user: (result as { user?: any; sessionId?: any }).user,
-            isAuthenticated: true,
-            isLoading: false,
+            isAuthenticated: true
+            isLoading: false
             sessionId: (result as { user?: any; sessionId?: any }).sessionId,
             lastActivity: new Date()
           });
-
           // Initialize AI assistant for new user
           aiAssistantStore.initializeForUser((result as { user?: any; sessionId?: any }).user);
-
           return { success: true };
         } else {
           const error = await (response as { ok?: any; json?: any }).json();
           set({
-            user: null,
-            isAuthenticated: false,
+            user: null
+            isAuthenticated: false
             isLoading: false
           });
           return { success: false, error: error.message };
         }
       } catch (error: any) {
         set({
-          user: null,
-          isAuthenticated: false,
+          user: null
+          isAuthenticated: false
           isLoading: false
         });
         return { success: false, error: "Network error" };
       }
     },
-
-    // Logout user;
+    // Logout user
     async logout() {
       try {
         await fetch("/api/auth/logout", {
-          method: "POST",;
+          method: "POST",
           credentials: "include"
         });
       } catch (error: any) {
         console.error("Logout error:", error);
       }
-
       set({
-        user: null,
-        isAuthenticated: false,
+        user: null
+        isAuthenticated: false
         isLoading: false
       });
-
       // Clear AI assistant state
       aiAssistantStore.clear();
-
       // Redirect to login
       goto("/login");
     },
-
-    // Update user profile;
+    // Update user profile
     async updateProfile(updates: Partial<AuthUser>) {
       const currentState = get({ subscribe });
       if (!currentState.user)
         return { success: false, error: "Not authenticated" };
-
       try {
         const response = await fetch("/api/auth/profile", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(updates),;
+          body: JSON.stringify(updates),
           credentials: "include"
         });
-
         if ((response as { ok?: any; json?: any }).ok) {
           const updatedUser = await (response as { ok?: any; json?: any }).json();
           update((state: any) => ({
@@ -219,7 +194,6 @@ const createAuthStore = () => {
             user: { ...state.user!, ...updatedUser },
             lastActivity: new Date()
           });
-
           return { success: true };
         } else {
           const error = await (response as { ok?: any; json?: any }).json();
@@ -229,8 +203,7 @@ const createAuthStore = () => {
         return { success: false, error: "Network error" };
       }
     },
-
-    // Update last activity;
+    // Update last activity
     updateActivity() {
       update((state: any) => ({
         ...state,
@@ -239,7 +212,6 @@ const createAuthStore = () => {
     }
   };
 };
-
 export const authStore = createAuthStore();
 // Derived stores for common checks (repaired syntax)
 export const isAuthenticated = derived(authStore, ($auth: any) => $auth.isAuthenticated);
@@ -248,8 +220,7 @@ export const userRole = derived(authStore, ($auth: any) => $auth.user?.role);
 export const isAdmin = derived(authStore, ($auth: any) => $auth.user?.role === "admin");
 export const isProsecutor = derived(authStore, ($auth: any) => $auth.user?.role === "prosecutor");
 export const isDetective = derived(authStore, ($auth: any) => $auth.user?.role === "detective");
-
-// AI Assistant integration store;
+// AI Assistant integration store
 export interface AIAssistantState {
   isEnabled: boolean;
   userId?: string;
@@ -265,27 +236,24 @@ export interface AIAssistantState {
     reportId?: string;
   };
   conversationHistory: Array<any>
-
 const createAIAssistantStore = () => {
   const { subscribe, set, update } = writable<AIAssistantState>({
-    isEnabled: false,
+    isEnabled: false
     preferences: {
-      autoSuggest: true,
-      contextAwareness: true,
-      legalSpecialization: true,
+      autoSuggest: true
+      contextAwareness: true
+      legalSpecialization: true
       confidenceThreshold: 0.7
     },
     conversationHistory: []
   });
-
   return {
     subscribe,
-
-    // Initialize AI assistant for user;
+    // Initialize AI assistant for user
     initializeForUser(user: AuthUser) {
       update((state: any) => ({
         ...state,
-        isEnabled: true,
+        isEnabled: true
         userId: user.id,
         preferences: {
           ...state.preferences,
@@ -293,18 +261,15 @@ const createAIAssistantStore = () => {
             user.role === "prosecutor" || user.role === "detective"
         }
       });
-
       // Load user's AI preferences from server
       this.loadPreferences();
     },
-
-    // Load AI preferences from server;
+    // Load AI preferences from server
     async loadPreferences() {
       try {
         const response = await fetch("/api/ai/preferences", {
           credentials: "include"
         });
-
         if ((response as { ok?: any; json?: any }).ok) {
           const preferences = await (response as { ok?: any; json?: any }).json();
           update((state: any) => ({
@@ -316,8 +281,7 @@ const createAIAssistantStore = () => {
         console.error("Failed to load AI preferences:", error);
       }
     },
-
-    // Update AI preferences;
+    // Update AI preferences
     async updatePreferences(updates: Partial<AIAssistantState["preferences"]>) {
       try {
         const response = await fetch("/api/ai/preferences", {
@@ -325,10 +289,9 @@ const createAIAssistantStore = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(updates),;
+          body: JSON.stringify(updates),
           credentials: "include"
         });
-
         if ((response as { ok?: any; json?: any }).ok) {
           update((state: any) => ({
             ...state,
@@ -342,15 +305,13 @@ const createAIAssistantStore = () => {
         return { success: false, error: "Network error" };
       }
     },
-
-    // Set current context for AI assistance;
+    // Set current context for AI assistance
     setContext(context: AIAssistantState["currentContext"]) {
       update((state: any) => ({
         ...state,
         currentContext: context
       });
     },
-
     // Add conversation to history
     addConversation(
       conversation: Omit<
@@ -360,10 +321,9 @@ const createAIAssistantStore = () => {
     ) {
       const newConversation = {
         ...conversation,
-        id: crypto.randomUUID(),;
+        id: crypto.randomUUID(),
         timestamp: new Date()
       };
-
       update((state: any) => ({
         ...state,
         conversationHistory: [
@@ -372,15 +332,14 @@ const createAIAssistantStore = () => {
         ], // Keep last 50
       });
     },
-
-    // Clear AI assistant state;
+    // Clear AI assistant state
     clear() {
       set({
-        isEnabled: false,
+        isEnabled: false
         preferences: {
-          autoSuggest: true,
-          contextAwareness: true,
-          legalSpecialization: true,
+          autoSuggest: true
+          contextAwareness: true
+          legalSpecialization: true
           confidenceThreshold: 0.7
         },
         conversationHistory: []
@@ -388,13 +347,11 @@ const createAIAssistantStore = () => {
     }
   };
 };
-
 export const aiAssistantStore = createAIAssistantStore();
 // Derived stores for AI assistant (repaired syntax)
 export const aiEnabled = derived(aiAssistantStore, ($ai: any) => $ai.isEnabled);
 export const aiPreferences = derived(aiAssistantStore, ($ai: any) => $ai.preferences);
 export const aiContext = derived(aiAssistantStore, ($ai: any) => $ai.currentContext);
 export const recentConversations = derived(aiAssistantStore, ($ai: any) => $ai.conversationHistory.slice(0, 10);
-
 // Note: Auth initialization is now handled server-side via hooks.server.ts
 // Client-side initialization only when explicitly needed to prevent redirect loops

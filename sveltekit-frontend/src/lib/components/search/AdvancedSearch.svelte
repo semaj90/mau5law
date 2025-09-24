@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     items?: Evidence[];
     onResults?: (results: Evidence[]) => void;
@@ -13,7 +12,6 @@ https://svelte.dev/e/js_parse_error -->
     showFilters?: boolean;
     showTags?: boolean;
   }
-
   let {
     items = [],
     onResults = () => ,
@@ -23,22 +21,12 @@ https://svelte.dev/e/js_parse_error -->
     showFilters = true,
     showTags = true
   }: Props = $props();
-
-
   // Replaced melt with bits-ui components
   // Global Svelte runes are declared in src/types/svelte-helpers.d.ts
   import { fly } from 'svelte/transition';
   import Fuse from "fuse.js";
   import { Search, X, Tag, Calendar, FileType } from 'lucide-svelte';
   import type { Evidence } from '$lib/stores/report';
-
-  
-  
-  
-  
-  
-  
-  
   let searchValue = $state('');
   let fuse: Fuse<Evidence> = $state(undefined as any);
   let searchResults = $state<Evidence[]>([]);
@@ -46,10 +34,8 @@ https://svelte.dev/e/js_parse_error -->
   let selectedTags = $state<string[]>([]);
   let selectedTypes = $state<string[]>([]);
   let dateRange = $state( );
-
   // Fuse.js configuration for fuzzy search
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   // Initialize Fuse when items change
   $effect(() => {
     if (items.length > 0) {
@@ -57,7 +43,6 @@ https://svelte.dev/e/js_parse_error -->
       allTags = [...new Set(items.flatMap.tags || []))];
     }
   });
-
   // Perform search when input changes
   $effect(() => {
     if (fuse && searchValue) {
@@ -69,7 +54,6 @@ https://svelte.dev/e/js_parse_error -->
       searchResults = items.slice(0, maxResults);
     }
   });
-
   // Apply filters (wrap in derived function)
   let filteredResults = $derived(() => {
     return searchResults.filter((item: Evidence) => {
@@ -93,23 +77,19 @@ https://svelte.dev/e/js_parse_error -->
       return true;
     });
   });
-
   // Update results when filters change
   $effect(() => {
     onResults(filteredResults);
   });
-
   // Sync input value from combobox state
   $effect(() => {
-    searchValue = $inputValue;
+    searchValue = $inputValu;
   });
-
   // Handle item selection
   const handleSelect = (item: Evidence) => {
     onSelect(item);
     inputValue.set('');
   };
-
   // Clear search
   const clearSearch = () => {
     inputValue.set('');
@@ -117,7 +97,6 @@ https://svelte.dev/e/js_parse_error -->
     selectedTypes = [];
     dateRange = {};
   };
-
   // Toggle tag filter
   const toggleTag = (tag: string) => {
     if (selectedTags.includes(tag)) {
@@ -126,7 +105,6 @@ https://svelte.dev/e/js_parse_error -->
       selectedTags = [...selectedTags, tag];
     }
   };
-
   // Toggle type filter
   const toggleType = (type: string) => {
     if (selectedTypes.includes(type)) {
@@ -135,10 +113,8 @@ https://svelte.dev/e/js_parse_error -->
       selectedTypes = [...selectedTypes, type];
     }
   };
-
   // Evidence types
   const evidenceTypes = ['document', 'image', 'video', 'audio', 'link'];
-
   // Highlight search matches
   const highlightMatches = (text: string, searchTerm: string): string => {
     if (!searchTerm) return text;
@@ -146,14 +122,12 @@ https://svelte.dev/e/js_parse_error -->
     return text.replace(regex, '<mark>$1</mark>');
   };
 </script>
-
 <div class="advanced-search">
   <!-- Search Input -->
   <div class="search-input-container">
     <div class="search-input-wrapper">
       <Search size={20} class="search-icon" />
       <input
-        
         class="search-input"
         type="text"
         {placeholder}
@@ -169,11 +143,9 @@ https://svelte.dev/e/js_parse_error -->
         </button>
       {/if}
     </div>
-
     <!-- Results dropdown -->
     {#if $open && searchResults.length > 0}
       <div
-        
         class="search-results"
         transitionfly={{ duration: 150, y: -10 }}
       >
@@ -193,7 +165,6 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="result-type-badge {(item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type}">{(item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type[0].toUpperCase()}</div>
               {/if}
             </div>
-
             <div class="result-content">
               <div class="result-title">
                 {@html highlightMatches((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).title, searchValue)}
@@ -204,7 +175,6 @@ https://svelte.dev/e/js_parse_error -->
                   {#if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).description.length > 100}...{/if}
                 </div>
               {/if}
-
               {#if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).tags && (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).tags.length > 0}
                 <div class="result-tags">
                   {#each (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).tags.slice(0, 3) as tag}
@@ -213,7 +183,6 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               {/if}
             </div>
-
             <div class="result-meta">
               <span class="result-type">{(item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type}</span>
               <span class="result-date">
@@ -222,7 +191,6 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </button>
         {/each}
-
         {#if filteredResults.length === 0}
           <div class="no-results">
             <Search size={24} />
@@ -233,7 +201,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   </div>
-
   <!-- Filters -->
   {#if showFilters}
     <div class="search-filters">
@@ -255,7 +222,6 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
       </div>
-
       <!-- Tag filters -->
       {#if showTags && allTags.length > 0}
         <div class="filter-group">
@@ -276,7 +242,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       {/if}
-
       <!-- Date range -->
       <div class="filter-group">
         <label class="filter-label">
@@ -301,12 +266,10 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   {/if}
-
   <!-- Active filters summary -->
   {#if selectedTags.length > 0 || selectedTypes.length > 0 || dateRange.start || dateRange.end}
     <div class="active-filters">
       <span class="active-filters-label">Active filters:</span>
-
       {#each selectedTypes as type}
         <span class="active-filter">
           {type}
@@ -315,7 +278,6 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         </span>
       {/each}
-
       {#each selectedTags as tag}
         <span class="active-filter">
           #{tag}
@@ -324,7 +286,6 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         </span>
       {/each}
-
       {#if dateRange.start || dateRange.end}
         <span class="active-filter">
           {dateRange.start?.toLocaleDateString() || '...'} - {dateRange.end?.toLocaleDateString() || '...'}
@@ -333,37 +294,31 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         </span>
       {/if}
-
       <button class="clear-all-filters" onclick={() => clearSearch()}>
         Clear all
       </button>
     </div>
   {/if}
 </div>
-
 <style>
-.advanced-search {;
+.advanced-search {
   position: relative;
   width: 100%;
 }
-
 .search-input-container {
   position: relative;
 }
-
 .search-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
-
 .search-icon {
   position: absolute;
   left: 0.75rem;
   color: #6b7280;
   z-index: 1;
 }
-
 .search-input {
   width: 100%;
   padding: 0.75rem 2.5rem 0.75rem 2.75rem;
@@ -373,13 +328,11 @@ https://svelte.dev/e/js_parse_error -->
   background: #ffffff;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-
 .search-input:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
-
 .clear-button {
   position: absolute;
   right: 0.75rem;
@@ -395,11 +348,9 @@ https://svelte.dev/e/js_parse_error -->
   cursor: pointer;
   transition: color 0.15s ease;
 }
-
 .clear-button:hover {
   color: #374151;
 }
-
 .search-results {
   position: absolute;
   top: 100%;
@@ -414,7 +365,6 @@ https://svelte.dev/e/js_parse_error -->
   z-index: 50;
   margin-top: 0.25rem;
 }
-
 .search-result-item {
   display: flex;
   align-items: flex-start;
@@ -428,16 +378,13 @@ https://svelte.dev/e/js_parse_error -->
   transition: background-color 0.15s ease;
   border-bottom: 1px solid #f1f5f9;
 }
-
-.search-result-item:hover,
+.search-result-item: hover
 .search-result-.highlighted {
   background: #f8fafc;
 }
-
 .search-result-item:last-child {
   border-bottom: none;
 }
-
 .result-icon {
   flex-shrink: 0;
   width: 2rem;
@@ -446,14 +393,12 @@ https://svelte.dev/e/js_parse_error -->
   align-items: center;
   justify-content: center;
 }
-
 .result-thumbnail {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 0.25rem;
 }
-
 .result-type-badge {
   width: 100%;
   height: 100%;
@@ -465,37 +410,31 @@ https://svelte.dev/e/js_parse_error -->
   color: white;
   border-radius: 0.25rem;
 }
-
 .result-type-badge.document { background: #3b82f6; }
 .result-type-badge.video { background: #8b5cf6; }
 .result-type-badge.audio { background: #f59e0b; }
 .result-type-badge.link { background: #06b6d4; }
-
 .result-content {
   flex: 1;
   min-width: 0;
 }
-
 .result-title {
   font-weight: 500;
   color: #111827;
   margin-bottom: 0.25rem;
   word-break: break-word;
 }
-
 .result-description {
   font-size: 0.875rem;
   color: #6b7280;
   line-height: 1.4;
   margin-bottom: 0.25rem;
 }
-
 .result-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
 }
-
 .result-tag {
   font-size: 0.75rem;
   background: #eff6ff;
@@ -503,7 +442,6 @@ https://svelte.dev/e/js_parse_error -->
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
 }
-
 .result-meta {
   flex-shrink: 0;
   display: flex;
@@ -513,12 +451,10 @@ https://svelte.dev/e/js_parse_error -->
   font-size: 0.75rem;
   color: #9ca3af;
 }
-
 .result-type {
-  text-transform: capitalize;
+  text-transform: capitaliz;
   font-weight: 500;
 }
-
 .no-results {
   display: flex;
   flex-direction: column;
@@ -528,30 +464,25 @@ https://svelte.dev/e/js_parse_error -->
   color: #6b7280;
   text-align: center;
 }
-
 .no-results p {
   margin: 0.5rem 0 0.25rem;
   font-weight: 500;
 }
-
 .no-results small {
   font-size: 0.75rem;
   opacity: 0.8;
 }
-
 .search-filters {
   margin-top: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
 .filter-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-
 .filter-label {
   display: flex;
   align-items: center;
@@ -560,13 +491,11 @@ https://svelte.dev/e/js_parse_error -->
   font-weight: 500;
   color: #374151;
 }
-
 .filter-options {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
-
 .filter-chip {
   padding: 0.375rem 0.75rem;
   border: 1px solid #d1d5db;
@@ -577,31 +506,26 @@ https://svelte.dev/e/js_parse_error -->
   cursor: pointer;
   transition: all 0.15s ease;
 }
-
-.filter-chip:hover {
+.filter-chip: hover {
   border-color: #3b82f6;
   background: #f8fafc;
 }
-
 .filter-chip.active {
   background: #3b82f6;
   color: white;
   border-color: #3b82f6;
 }
-
 .date-range-inputs {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-
 .date-input {
   padding: 0.375rem 0.5rem;
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   font-size: 0.875rem;
 }
-
 .active-filters {
   display: flex;
   flex-wrap: wrap;
@@ -612,13 +536,11 @@ https://svelte.dev/e/js_parse_error -->
   background: #f8fafc;
   border-radius: 0.5rem;
 }
-
 .active-filters-label {
   font-size: 0.875rem;
   font-weight: 500;
   color: #374151;
 }
-
 .active-filter {
   display: flex;
   align-items: center;
@@ -630,7 +552,6 @@ https://svelte.dev/e/js_parse_error -->
   font-size: 0.75rem;
   font-weight: 500;
 }
-
 .active-filter button {
   display: flex;
   align-items: center;
@@ -642,11 +563,9 @@ https://svelte.dev/e/js_parse_error -->
   cursor: pointer;
   transition: background-color 0.15s ease;
 }
-
-.active-filter button:hover {;
+.active-filter button:hover {
   background: rgba(255, 255, 255, 0.5);
 }
-
 .clear-all-filters {
   padding: 0.25rem 0.5rem;
   border: 1px solid #d1d5db;
@@ -657,12 +576,10 @@ https://svelte.dev/e/js_parse_error -->
   cursor: pointer;
   transition: all 0.15s ease;
 }
-
-.clear-all-filters:hover {
+.clear-all-filters: hover {
   border-color: #ef4444;
   color: #ef4444;
 }
-
 /* Search highlighting */
 :global(mark) {
   background: #fef08a;
@@ -671,5 +588,3 @@ https://svelte.dev/e/js_parse_error -->
   border-radius: 0.125rem;
 }
 </style>
-
-

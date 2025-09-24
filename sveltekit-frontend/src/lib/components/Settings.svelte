@@ -1,8 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
-https://svelte.dev/e/props_duplicate -->
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than onc;
+https: //svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
-  export interface Settings {;
+  export interface Settings {
     theme: string;
     language: string;
     ttsEngine: string;
@@ -15,27 +15,24 @@ https://svelte.dev/e/props_duplicate -->
     fontFamily: string;
     fontSize: string;
   }
-
   // Default settings object
   const defaultSettings: Settings = {
-    theme: 'light',;
+    theme: 'light',
     language: 'en',
     ttsEngine: 'default',
     voiceLanguage: 'en-US',
-    enableSuggestions: true,
-    enableMasking: false,
-    enableAutoSave: false,
+    enableSuggestions: true
+    enableMasking: false
+    enableAutoSave: false
     maxHistoryItems: 50,
-    enableNotifications: true,
+    enableNotifications: true
     fontFamily: 'Arial',
     fontSize: '16px';
   };
-
   // Bindable props with defaults
   let { isOpen = $bindable(false)  }: { isOpen = $bindable(false) : unknown } = $props();
   let { settings = $bindable<Settings>(defaultSettings)  }: { settings = $bindable<Settings>(defaultSettings) : unknown } = $props();
 </script>
-
 {#if isOpen}
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
@@ -48,7 +45,6 @@ https://svelte.dev/e/props_duplicate -->
             <option value="dark">Dark</option>
           </select>
         </label>
-
         <label>
           Language:
           <select bind:value={settings.language}>
@@ -57,7 +53,6 @@ https://svelte.dev/e/props_duplicate -->
             <!-- Add more languages as needed -->
           </select>
         </label>
-
         <label>
           TTS Engine:
           <select bind:value={settings.ttsEngine}>
@@ -66,7 +61,6 @@ https://svelte.dev/e/props_duplicate -->
             <!-- Add more TTS engines as needed -->
           </select>
         </label>
-
         <label>
           Voice Language:
           <select bind:value={settings.voiceLanguage}>
@@ -76,32 +70,26 @@ https://svelte.dev/e/props_duplicate -->
             <!-- Add more voice languages as needed -->
           </select>
         </label>
-
         <label>
           Enable Suggestions:
           <input type="checkbox" bind:checked={settings.enableSuggestions} />
         </label>
-
         <label>
           Enable Masking:
           <input type="checkbox" bind:checked={settings.enableMasking} />
         </label>
-
         <label>
           Enable Auto-Save:
           <input type="checkbox" bind:checked={settings.enableAutoSave} />
         </label>
-
         <label>
           Max History Items:
           <input type="number" bind:value={settings.maxHistoryItems} />
         </label>
-
         <label>
           Enable Notifications:
           <input type="checkbox" bind:checked={settings.enableNotifications} />
         </label>
-
         <label>
           Font Family:
           <select bind:value={settings.fontFamily}>
@@ -112,15 +100,12 @@ https://svelte.dev/e/props_duplicate -->
             <!-- Add more font families as needed -->
           </select>
         </label>
-
         <label>
           Font Size:
           <input type="text" bind:value={settings.fontSize} placeholder="e.g., 16px" />
         </label>
-
         <button type="submit">Save Settings</button>
       </form>
     </div>
   </div>
 {/if}
-

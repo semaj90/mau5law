@@ -9,63 +9,53 @@ import { vectorOps } from '$lib/server/db/enhanced-vector-operations';
 import { apiError, apiSuccess, CommonErrors } from '$lib/server/api/response';
 import { cuid } from '$lib/utils/cuid';
 import { URL } from "url";
-
-// Validation schemas;
+// Validation schemas
 const createCaseSchema = z.object({
   title: z.string().min(1, 'Case title is required').max(500, 'Case title too long'),
   description: z.string().optional(),
   priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
   status: z.enum(['open', 'investigating', 'pending', 'closed', 'archived']).default('open'),
   incidentDate: z.string().optional().transform(str => str ? new Date(str) : undefined),
-  location: z.string().optional(),;
+  location: z.string().optional(),
   jurisdiction: z.string().optional()
 });
-
 const addEvidenceSchema = z.object({
   caseId: z.string().min(1, 'Case ID is required'),
   title: z.string().min(1, 'Evidence title is required').max(255, 'Title too long'),
   description: z.string().optional(),
-  evidenceType: z.enum(['document', 'photo', 'video', 'audio', 'physical', 'digital', 'testimony']).default('document'),;
+  evidenceType: z.enum(['document', 'photo', 'video', 'audio', 'physical', 'digital', 'testimony']).default('document'),
   tags: z.string().optional()
 });
-
 export const load: PageServerLoad = async ({ url, locals, parent }) => {
   // Ensure user is authenticated
   const user = locals.user;
   if (!user?.id) {
     throw redirect(302, '/login');
   }
-
   // Wait for layout data
   const layoutData = await parent();
-
   const caseIdToView = url.searchParams.get("view");
   const page = parseInt(url.searchParams.get('page') || '1');
   const limit = parseInt(url.searchParams.get('limit') || '50');
   const search = url.searchParams.get('search') || '';
   const statusFilter = url.searchParams.get('status') || '';
   const priorityFilter = url.searchParams.get('priority') || '';
-
   try {
     // Initialize forms
     const createCaseForm = await superValidate(zod(createCaseSchema));
     const addEvidenceForm = await superValidate(zod(addEvidenceSchema));
-
-    // If viewing a specific case;
+    // If viewing a specific case
     if (caseIdToView) {
       const caseOps = new CaseOperations();
       const activeCase = await caseOps.getCaseById(caseIdToView, user.id);
-
       if (!activeCase) {
         throw redirect(302, '/cases');
       }
-
-      // Fetch evidence for this case with vector embeddings;
+      // Fetch evidence for this case with vector embeddings
   const caseEvidence = await (db.query as any).evidence.findMany({
         where: helpers.eq ? helpers.eq(evidence.case_id, caseIdToView) : undefined,
         orderBy: helpers.desc ? [helpers.desc(evidence.created_at)] : undefined
       });
-
       return {
         activeCase,
         caseEvidence,
@@ -75,21 +65,18 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
         addEvidenceForm
       };
     }
-
     // Load cases with enhanced filtering and pagination
     const caseOps = new CaseOperations();
     const searchOptions = {
       userId: user.id,
       search: search.trim(),
-      status: statusFilter || undefined,;
+      status: statusFilter || undefined,
       priority: priorityFilter || undefined,
       page,
       limit
     };
-
     const { cases: userCases, total, stats } = await caseOps.searchCases(searchOptions);
-
-    // Enhanced case statistics;
+    // Enhanced case statistics
     const caseStats = {
       total: stats.total || 0,
       open: stats.open || 0,
@@ -99,12 +86,11 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
       archived: stats.archived || 0,
       highPriority: stats.high || 0,
       critical: stats.critical || 0,
-      medium: stats.medium || 0,;
+      medium: stats.medium || 0,
       low: stats.low || 0
     };
-
     return {
-      activeCase: null,
+      activeCase: null
       caseEvidence: [],
       userCases,
       caseStats,
@@ -113,49 +99,42 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
       pagination: {
         page,
         limit,
-        total,;
+        total,
         pages: Math.ceil(total / limit)
       }
     };
   } catch (error: any) {
     console.error('Error in cases page load:', error);
-
     // Fallback data
     const createCaseForm = await superValidate(zod(createCaseSchema));
     const addEvidenceForm = await superValidate(zod(addEvidenceSchema));
-
     return {
-      activeCase: null,
+      activeCase: null
       caseEvidence: [],
       userCases: [],
       caseStats: { total: 0, open: 0, closed: 0, highPriority: 0 },
       createCaseForm,
-      addEvidenceForm,;
+      addEvidenceForm,
       error: 'Failed to load cases'
     };
   }
 };
-
 export const actions: Actions = {
-  // Create new case with vector embedding;
+  // Create new case with vector embedding
   createCase: async ({ request, locals }) => {
     const user = locals.user;
     if (!user) {
       return fail(401, { message: "Unauthorized" });
     }
-
     const form = await superValidate(request, zod(createCaseSchema));
-
     if (!form.valid) {
       return fail(400, { form });
     }
-
     try {
       const caseOps = new CaseOperations();
       // Generate unique case number
       const year = new Date().getFullYear();
       const caseNumber = `CR-${year}-${Date.now()}`;
-
       const newCaseData = {
         id: cuid(),
         caseNumber,
@@ -168,15 +147,13 @@ export const actions: Actions = {
         status: form.data.status,
         incidentDate: form.data.incidentDate || null,
         location: form.data.location || null,
-        jurisdiction: form.data.jurisdiction || null,;
-        metadata: Record<string, any>,
+        jurisdiction: form.data.jurisdiction || null,
+        metadata: {} as { [key: string]: any },
         created_at: new Date(),
         updated_at: new Date()
       };
-
       const newCase = await caseOps.createCase(newCaseData);
-
-      // Generate vector embedding for semantic search;
+      // Generate vector embedding for semantic search
       if (form.data.description?.trim()) {
         await vectorOps.generateEmbedding({
           id: newCase.id,
@@ -185,15 +162,14 @@ export const actions: Actions = {
             type: 'case',
             caseId: newCase.id,
             userId: user.id,
-            priority: form.data.priority,;
+            priority: form.data.priority,
             status: form.data.status
           }
         });
       }
-
       return {
         form,
-        success: true,;
+        success: true
         case: newCase
       };
     } catch (error: any) {
@@ -204,29 +180,23 @@ export const actions: Actions = {
       });
     }
   },
-
-  // Add evidence to case with vector indexing;
+  // Add evidence to case with vector indexing
   addEvidence: async ({ request, locals }) => {
     const user = locals.user;
     if (!user) {
       return fail(401, { message: "Unauthorized" });
     }
-
     const form = await superValidate(request, zod(addEvidenceSchema));
-
     if (!form.valid) {
       return fail(400, { form });
     }
-
     try {
       const caseOps = new CaseOperations();
-
       // Verify case ownership
       const case_ = await caseOps.getCaseById(form.data.caseId, user.id);
       if (!case_) {
         return fail(404, { form, message: "Case not found" });
       }
-
       const evidenceData = {
         id: cuid(),
         caseId: form.data.caseId,
@@ -237,25 +207,23 @@ export const actions: Actions = {
         evidence_type: form.data.evidenceType, // alias for database field
         type: form.data.evidenceType, // another alias
         tags: form.data.tags ? form.data.tags.split(',').map(t => t.trim()) : [],
-        createdBy: user.id,;
-        metadata: Record<string, any>,
+        createdBy: user.id,
+        metadata: {} as { [key: string]: any },
         collectedAt: new Date(),
         created_at: new Date(),
         updated_at: new Date()
       };
-
       const newEvidence = await db
         .insert(evidence)
         .values(evidenceData)
         .returning();
-
       // Generate vector embedding for evidence search
       const content = `${form.data.title}. ${form.data.description || ''} ${form.data.tags || ''}`;
       if (content.trim().length > 10) {
         await vectorOps.generateEmbedding({
           id: newEvidence[0].id,
           content: content.trim(),
-          metadata: {;
+          metadata: {
             type: 'evidence',
             caseId: form.data.caseId,
             evidenceType: form.data.evidenceType,
@@ -263,10 +231,9 @@ export const actions: Actions = {
           }
         });
       }
-
       return {
         form,
-        success: true,;
+        success: true
         evidence: newEvidence[0]
       };
     } catch (error: any) {
@@ -277,47 +244,39 @@ export const actions: Actions = {
       });
     }
   },
-
-  // Delete evidence with vector cleanup;
+  // Delete evidence with vector cleanup
   deleteEvidence: async ({ request, locals }) => {
     const user = locals.user;
     if (!user) {
       return fail(401, { message: "Unauthorized" });
     }
-
     const formData = await request.formData();
     const evidenceId = formData.get("evidenceId") as string;
-
     if (!evidenceId) {
       return fail(400, { message: "Missing evidence ID" });
     }
-
     try {
-      // Verify evidence exists and user has access;
+      // Verify evidence exists and user has access
   const existingEvidence = await (db.query as any).evidence.findFirst({
-        where: helpers.eq ? helpers.eq(evidence.id, evidenceId) : undefined,
+        where: helpers.eq ? helpers.eq(evidence.id, evidenceId) : undefined
         with: {
-          case: {;
+          case: {
             columns: { createdBy: true }
           }
         }
       });
-
   if (!existingEvidence || (existingEvidence as any).case?.createdBy !== user.id) {
         return fail(404, { message: "Evidence not found" });
       }
-
       // Delete from database
   await db.delete(evidence).where(helpers.eq ? helpers.eq(evidence.id, evidenceId) : undefined);
-
-      // Remove from vector index;
+      // Remove from vector index
       try {
         await vectorOps.deleteEmbedding(evidenceId);
       } catch (vectorError) {
         console.warn('Failed to delete vector embedding:', vectorError);
         // Don't fail the request if vector deletion fails
       }
-
       return { success: true };
     } catch (error: any) {
       console.error("Failed to delete evidence:", error);

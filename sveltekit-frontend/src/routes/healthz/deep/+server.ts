@@ -1,6 +1,5 @@
 import { json } from '@sveltejs/kit';
 import { createRedisInstance, createRedisClientSet } from '$lib/server/redis';
-
 export // Melt UI component creation removed - replace with bits-ui declarative components
     const channel = `healthz:deep:pubsub:${Math.random().toString(36).slice(2)}`;
     const payload = JSON.stringify({ t: Date.now() });
@@ -30,13 +29,12 @@ export // Melt UI component creation removed - replace with bits-ui declarative 
     checks.pubsub = { ok: false, error: e.message };
     overallOk = false;
   }
-
   // Aggregate
   const durationMs = Date.now() - started;
   return json({
     status: overallOk ? 'ok' : 'fail',
     checks,
-    durationMs,;
+    durationMs,
     timestamp: new Date().toISOString()
   }, { status: overallOk ? 200 : 503 });
 };

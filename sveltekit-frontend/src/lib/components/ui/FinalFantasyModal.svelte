@@ -1,11 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { fade, scale } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-
   interface Props {
     isOpen?: boolean;
     title?: string;
@@ -17,7 +15,6 @@
     children?: import('svelte').Snippet;
     actions?: import('svelte').Snippet;
   }
-
   let {
     isOpen = false,
     title = 'Final Fantasy Modal',
@@ -29,50 +26,41 @@
     children,
     actions
   }: Props = $props();
-
-  
   let modalElement: HTMLDivElement = $state()!;
   let contentElement: HTMLDivElement = $state()!;
-
   const sizeClasses = {
     small: 'w-80 h-64',
-    medium: 'w-96 h-80',;
-    large: 'w-[32rem] h-96',;
+    medium: 'w-96 h-80',
+    large: 'w-[32rem] h-96',
     fullscreen: 'w-[90vw] h-[80vh]';
   };
-
   const typeColors = {
     menu: 'from-blue-900/90 to-blue-800/90',
     dialog: 'from-purple-900/90 to-purple-800/90',
     battle: 'from-red-900/90 to-red-800/90',
-    shop: 'from-green-900/90 to-green-800/90',;
-    inventory: 'from-amber-900/90 to-amber-800/90',;
+    shop: 'from-green-900/90 to-green-800/90',
+    inventory: 'from-amber-900/90 to-amber-800/90',
     status: 'from-cyan-900/90 to-cyan-800/90';
   };
-
   const cornerClasses = {
-    classic: 'ff-corner-classic',;
-    modern: 'ff-corner-modern',;
+    classic: 'ff-corner-classic',
+    modern: 'ff-corner-modern',
     hybrid: 'ff-corner-hybrid';
   };
-
   function handleClose() {
-    ondispatch?.();
+    // ondispatch removed;
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       handleClose();
     }
   }
-
   $effect(() => {
     if (isOpen && modalElement) {
       modalElement.focus();
     }
   });
 </script>
-
 {#if isOpen}
   <!-- Final Fantasy Style Backdrop -->
   <div
@@ -89,7 +77,7 @@
   >
     <!-- FF-Style Modal Container -->
     <div
-      class="relative {sizeClasses[size]} bg-gradient-to-br {typeColors[type]} 
+      class="relative {sizeClasses[size]} bg-gradient-to-br {typeColors[type]}
              border-2 border-amber-400/80 shadow-2xl overflow-hidden
              {cornerClasses[cornerStyle]}"
       transitiscale={{ duration: 400, easing: quintOut, start: 0.8 }};
@@ -102,10 +90,9 @@
         <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-yellow-300"></div>
         <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-yellow-300"></div>
       {/if}
-
       <!-- FF-Style Title Bar -->
       {#if title}
-        <div class="relative px-6 py-3 bg-gradient-to-r from-amber-600/90 to-yellow-500/90 
+        <div class="relative px-6 py-3 bg-gradient-to-r from-amber-600/90 to-yellow-500/90
                     border-b border-amber-400/50">
           <h2 id="modal-title" class="text-lg font-bold text-white tracking-wider uppercase
                                    text-shadow-lg shadow-black/50">
@@ -121,12 +108,10 @@
           </button>
         </div>
       {/if}
-
       <!-- Modal Content Area -->
       <div class="flex-1 p-6 overflow-y-auto custom-scrollbar">
         {@render children?.()}
       </div>
-
       <!-- FF-Style Action Bar (if actions snippet provided) -->
       {#if actions}
         <div class="px-6 py-4 bg-gradient-to-r from-slate-800/90 to-slate-700/90
@@ -139,16 +124,13 @@
     </div>
   </div>
 {/if}
-
 <style>/* Final Fantasy Corner Styles */ .ff-corner-classic {
 clip-path: polygon( 0% 8px, 8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px) );
   }
-
   .ff-corner-modern {
     border-radius: 0.5rem;
     position: relative;
   }
-
   .ff-corner-modern::before {
     content: '';
     position: absolute;
@@ -157,7 +139,6 @@ clip-path: polygon( 0% 8px, 8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100
     border-radius: 0.5rem;
     z-index: -1;
   }
-
   .ff-corner-hybrid {
 clip-path: polygon( 0% 12px, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0% calc(100% - 12px) );
     border-radius: 0.25rem;
@@ -165,17 +146,14 @@ clip-path: polygon( 0% 12px, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc
 /* Custom Scrollbar */ .custom-scrollbar::-webkit-scrollbar {
     width: 8px;
   }
-
   .custom-scrollbar::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
   }
-
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #fbbf24, #d97706);
     border-radius: 4px;
   }
-
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, #f59e0b, #b45309);
   }
@@ -186,7 +164,6 @@ clip-path: polygon( 0% 12px, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc
     0%, 100% { opacity: 0.8; }
     50% { opacity: 1; }
   }
-
   .ff-corner-classic::after {
     content: '';
     position: absolute;

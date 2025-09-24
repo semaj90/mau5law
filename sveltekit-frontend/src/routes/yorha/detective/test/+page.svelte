@@ -1,26 +1,23 @@
 <!-- Test page for YoRHa Detective functionality -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   let testResult = $state('');
   let isLoading = $state(false);
-
   async function testCaseCreation() {
     isLoading = true;
     try {
       const response = await fetch('/api/cases', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          title: 'Test Case from YoRHa Detective',;
-          description: 'This is a test case created from the YoRHa Detective interface',;
+        body: JSON.stringify({,
+          title: 'Test Case from YoRHa Detective',
+          description: 'This is a test case created from the YoRHa Detective interface',
           priority: 'medium';
         })
       });
-
       const result = await (response as { json?: unknown; ok?: unknown }).json();
       if ((response as { json?: unknown; ok?: unknown }).ok) {
         testResult = `✅ Case created successfully!\nID: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.id}\nCase Number: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.caseNumber}\nTitle: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.title}`;
@@ -33,7 +30,6 @@
       isLoading = false;
     }
   }
-
   async function testCaseList() {
     isLoading = true;
     try {
@@ -51,20 +47,17 @@
     }
   }
 </script>
-
 <div class="test-page p-8 bg-gray-900 text-green-400 min-h-screen font-mono">
   <h1 class="text-3xl font-bold mb-8 text-yellow-400">YoRHa Detective API Test</h1>
-  
   <div class="space-y-4 mb-8">
-    <button 
+    <button
       class="px-4 py-2 bg-blue-600 text-white border border-blue-400 hover:bg-blue-700 transition-colors disabled:opacity-50"
       onclick={testCaseCreation}
       disabled={isLoading}
     >
       {isLoading ? 'Testing...' : 'Test Case Creation'}
     </button>
-    
-    <button 
+    <button
       class="px-4 py-2 bg-green-600 text-white border border-green-400 hover:bg-green-700 transition-colors disabled:opacity-50"
       onclick={testCaseList}
       disabled={isLoading}
@@ -72,14 +65,12 @@
       {isLoading ? 'Testing...' : 'Test Case Listing'}
     </button>
   </div>
-
   {#if testResult}
     <div class="bg-black p-4 border border-gray-600 rounded">
       <h3 class="text-lg font-bold mb-2 text-yellow-400">Test Result:</h3>
       <pre class="whitespace-pre-wrap text-sm">{testResult}</pre>
     </div>
   {/if}
-
   <div class="mt-8">
     <h2 class="text-xl font-bold mb-4 text-yellow-400">Route Info</h2>
     <ul class="space-y-2 text-sm">

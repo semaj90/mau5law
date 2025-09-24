@@ -1,20 +1,17 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	// ================================================================================
   	// WEBGPU + THREE.JS + SERVICE WORKER OPTIMIZATION COMPONENT
   	// ================================================================================
   	// Advanced 3D rendering with WebGPU compute shaders, LOD optimization,
   	// service worker caching, and multi-threaded processing
   	// ================================================================================
-
   	import { onMount, onDestroy } from 'svelte';
   import * as THREE from 'three';
   	import { writable, derived } from 'svelte/stores';
-
   	// Props
   	let { scene3D = true,
   		enableGPUCompute = true,
@@ -27,38 +24,32 @@ https://svelte.dev/e/js_parse_error -->
   		lodOptimization = true,
   		cacheStrategy = 'aggressive'
   	: unknown } = $props();
-
   	// ============================================================================
   	// WEBGPU INTEGRATION
   	// ============================================================================
-
   	interface WebGPUDevice {
-  		device: GPUDevice;
+  		device: GPUDevic;
   		adapter: GPUAdapter;
   		features: GPUFeatureName[];
-  		limits: GPUSupportedLimits;
+  		limits: GPUSupportedLimit;
   	}
-
   	interface ComputeShader {
   		id: string;
   		source: string;
-  		pipeline: GPUComputePipeline;
+  		pipeline: GPUComputePipeli;
   		bindGroup: GPUBindGroup;
   		workgroupSize: [number, number, number];
   	}
-
   	interface GPUBuffer {
   		id: string;
   		buffer: GPUBuffer;
   		size: number;
-  		usage: GPUBufferUsageFlags;
+  		usage: GPUBufferUsageFlag;
   		data: Float32Array | Uint32Array;
   	}
-
   	// ============================================================================
   	// THREE.JS + LOD SYSTEM
   	// ============================================================================
-
   	interface LODLevel {
   		distance: number;
   		geometry: THREE.BufferGeometry;
@@ -66,7 +57,6 @@ https://svelte.dev/e/js_parse_error -->
   		polyCount: number;
   		textureSize: number;
   	}
-
   	interface RenderObject {
   		id: string;
   		mesh: THREE.Mesh;
@@ -75,11 +65,9 @@ https://svelte.dev/e/js_parse_error -->
   		cached: boolean;
   		gpuOptimized: boolean;
   	}
-
   	// ============================================================================
   	// SERVICE WORKER CACHE
   	// ============================================================================
-
   	interface ServiceWorkerCache {
   		name: string;
   		strategy: 'cache-first' | 'network-first' | 'stale-while-revalidate';
@@ -87,7 +75,6 @@ https://svelte.dev/e/js_parse_error -->
   		maxAge: number;
   		maxSize: number;
   	}
-
   	interface CachedResource {
   		url: string;
   		data: ArrayBuffer;
@@ -95,91 +82,81 @@ https://svelte.dev/e/js_parse_error -->
   		etag: string;
   		compressed: boolean;
   	}
-
   	// ============================================================================
   	// REACTIVE STORES
   	// ============================================================================
-
   	const webgpuStore = writable({
-  		device: null,
+  		device: null
   		shaders: new Map(),
   		buffers: new Map(),
-  		active: false,;
+  		active: false
   		performance: {
   			computeTime: 0,
-  			memoryUsage: 0,;
+  			memoryUsage: 0,
   			throughput: 0;
   		}
   	});
-
   	const threeStore = writable({
-  		scene: null,
-  		renderer: null,;
-  		camera: null,;
+  		scene: null
+  		renderer: null
+  		camera: null
   		objects: new Map(),
   		lodManager: {
   			currentLevel: 1,
-  			autoOptimize: true,
+  			autoOptimize: true
   			performanceTarget: 60 // 60 FPS
   		}
   	});
-
   	const serviceWorkerStore = writable({
-  		registration: null,;
+  		registration: null
   		cache: {
   			name: 'webgpu-3d-cache-v1',
   			strategy: 'cache-first',
   			resources: new Map(),
   			maxAge: 86400000, // 24 hours
-  			maxSize: 100 * 1024 * 1024 // 100MB;
+  			maxSize: 100 * 1024 * 1024 // 100MB
   		},
-  		messageChannel: null,;
+  		messageChannel: null
   		performance: {
   			cacheHitRate: 0,
   			averageLatency: 0,
   			totalRequests: 0
   		}
   	});
-
   	// Derived performance metrics
   	const performanceMetrics = derived(
   		[webgpuStore, threeStore, serviceWorkerStore],
   		([$webgpu, $three, $sw]) => ({
-  			gpu: $webgpu.performance,;
+  			gpu: $webgpu.performance,
   			rendering: {
   				fps: $three.lodManager.performanceTarget,
   				objects: $three.objects.size,
   				currentLOD: $three.lodManager.currentLevel;
   			},
-  			cache: $sw.performance,;
+  			cache: $sw.performance,
   			overall: {
-  				memory: getMemoryUsage(),;
-  				cpu: getCPUUsage(),;
+  				memory: getMemoryUsage(),
+  				cpu: getCPUUsage(),
   				network: getNetworkUsage();
   			}
   		})
   	);
-
   	// ============================================================================
   	// WEBGPU INITIALIZATION
   	// ============================================================================
-
   	async function initializeWebGPU(): Promise<WebGPUDevice | null> {
   		try {
   			if (!navigator.gpu) {
   				console.warn('WebGPU not supported');
   				return null;
   			}
-
   			const adapter = await navigator.gpu.requestAdapter({
   				powerPreference: 'high-performance'
   			});
-
   			if (!adapter) {
   				console.error('Failed to get WebGPU adapter');
   				return null;
   			}
-
   			const device = await adapter.requestDevice({
   				requiredFeatures: ['shader-f16'] as GPUFeatureName[],
   				requiredLimits: {
@@ -187,38 +164,31 @@ https://svelte.dev/e/js_parse_error -->
   					maxComputeWorkgroupStorageSize: adapter.limits.maxComputeWorkgroupStorageSize
   				}
   			});
-
   			const webgpuDevice: WebGPUDevice = {
   				device,
   				adapter,
-  				features: Array.from(device.features),;
-  				limits: device.limits;
+  				features: Array.from(device.features),
+  				limits: device.limit;
   			};
-
-  			console.log('✅ WebGPU initialized:', {;
+  			console.log('✅ WebGPU initialized:', {
   				features: webgpuDevice.features,
   				maxBufferSize: webgpuDevice.limits.maxStorageBufferBindingSize,
   				maxWorkgroupSize: webgpuDevice.limits.maxComputeWorkgroupSizeX;
   			});
-
-  			return webgpuDevice;
-
+  			return webgpuDevic;
   		} catch (error) {
   			console.error('WebGPU initialization failed:', error);
   			return null;
   		}
   	}
-
   	// ============================================================================
   	// COMPUTE SHADERS
   	// ============================================================================
-
   	const matrixMultiplyShader = `
   		@group(0) @binding(0) var<storage, read> matrixA: array<f32>;
   		@group(0) @binding(1) var<storage, read> matrixB: array<f32>;
   		@group(0) @binding(2) var<storage, read_write> result: array<f32>;
   		@group(0) @binding(3) var<uniform> dimensions: vec3<u32>;
-
   		@compute @workgroup_size(16, 16)
   		fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   			let row = global_id.x;
@@ -226,27 +196,22 @@ https://svelte.dev/e/js_parse_error -->
   			let width = dimensions.x;
   			let height = dimensions.y;
   			let depth = dimensions.z;
-
   			if (row >= height || col >= width) {
   				return;
   			}
-
   			var sum: f32 = 0.0;
   			for (var k: u32 = 0u; k < depth; k++) {
   				let a_val = matrixA[row * depth + k];
   				let b_val = matrixB[k * width + col];
   				sum += a_val * b_val;
   			}
-
   			result[row * width + col] = sum;
   		}
   	`;
-
   	const vectorEmbeddingShader = `
   		@group(0) @binding(0) var<storage, read> input: array<f32>;
   		@group(0) @binding(1) var<storage, read_write> output: array<f32>;
   		@group(0) @binding(2) var<uniform> params: vec4<f32>;
-
   		@compute @workgroup_size(256)
   		fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   			let index = global_id.x;
@@ -254,7 +219,6 @@ https://svelte.dev/e/js_parse_error -->
   			if (index >= size) {
   				return;
   			}
-
   			// Apply normalization and encoding
   			let value = input[index];
   			let normalized = (value - params.y) / params.z; // mean, std
@@ -262,135 +226,116 @@ https://svelte.dev/e/js_parse_error -->
   			output[index] = encoded;
   		}
   	`;
-
   	async function createComputeShader(
-  		device: GPUDevice, 
-  		source: string, ;
+  		device: GPUDevice
+  		source: string
   		label: string
   	): Promise<ComputeShader> {
   		const shaderModule = device.createShaderModule({
-  			label: `${label}-shader`,;
-  			code: source;
+  			label: `${label}-shader`,
+  			code: sourc;
   		});
-
   		const pipeline = device.createComputePipeline({
   			label: `${label}-pipeline`,
-  			layout: 'auto',;
-  			compute: {;
-  				module: shaderModule,
+  			layout: 'auto',
+  			compute: {
+  				module: shaderModule
   				entryPoint: 'main';
   			}
   		});
-
   		// Create bind group layout
   		const bindGroupLayout = pipeline.getBindGroupLayout(0);
   		return {
-  			id: label,
+  			id: label
   			source,
   			pipeline,
   			bindGroup: null as any, // Will be set when buffers are bound
   			workgroupSize: [16, 16, 1];
   		};
   	}
-
   	// ============================================================================
   	// THREE.JS SETUP WITH LOD
   	// ============================================================================
-
   	function initializeThreeJS(canvas: HTMLCanvasElement) {
   		// Scene setup
   		const scene = new THREE.Scene();
   		scene.background = new THREE.Color(0x0a0a0a);
-
   		// Camera
   		const camera = new THREE.PerspectiveCamera(
-  			75, 
-  			canvas.clientWidth / canvas.clientHeight, 
-  			0.1, 
+  			75,
+  			canvas.clientWidth / canvas.clientHeight,
+  			0.1,
   			1000
   		);
   		camera.position.set(0, 0, 5);
-
   		// Renderer with WebGL2
   		const renderer = new THREE.WebGLRenderer({
   			canvas,
-  			antialias: true,
+  			antialias: true
   			powerPreference: 'high-performance';
   		});
   		renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   		renderer.shadowMap.enabled = true;
   		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
   		// Enable WebGL extensions
   		const gl = renderer.getContext();
   		gl.getExtension('EXT_color_buffer_float');
   		gl.getExtension('OES_texture_float_linear');
-
   		return { scene, camera, renderer };
   	}
-
   	function createLODGeometry(baseGeometry: THREE.BufferGeometry): LODLevel[] {
   		const levels: LODLevel[] = [];
-
   		// High detail (close)
   		levels.push({
   			distance: 10,
-  			geometry: baseGeometry.clone(),;
-  			material: new THREE.MeshStandardMaterial({ 
-  				color: 0x00ff88,;
-  				roughness: 0.3,;
+  			geometry: baseGeometry.clone(),
+  			material: new THREE.MeshStandardMaterial({ ,
+  				color: 0x00ff88,
+  				roughness: 0.3,
   				metalness: 0.7;
   			}),
   			polyCount: baseGeometry.attributes.position.count / 3,
   			textureSize: 1024
   		});
-
   		// Medium detail
   		const mediumGeometry = baseGeometry.clone();
   		// Simplify geometry (pseudo-decimation)
   		levels.push({
   			distance: 50,
-  			geometry: mediumGeometry,;
-  			material: new THREE.MeshStandardMaterial({ 
-  				color: 0x0088ff,;
-  				roughness: 0.5,;
+  			geometry: mediumGeometry
+  			material: new THREE.MeshStandardMaterial({ ,
+  				color: 0x0088ff,
+  				roughness: 0.5,
   				metalness: 0.5;
   			}),
   			polyCount: Math.floor(baseGeometry.attributes.position.count / 6),
   			textureSize: 512
   		});
-
   		// Low detail (far)
   		const lowGeometry = new THREE.BoxGeometry(1, 1, 1);
   		levels.push({
-  			distance: 100,;
-  			geometry: lowGeometry,;
+  			distance: 100,
+  			geometry: lowGeometry
   			material: new THREE.MeshBasicMaterial({ color: 0xff8800 }),
   			polyCount: 12, // 6 faces * 2 triangles
   			textureSize: 128
   		});
-
-  		return levels;
+  		return level;
   	}
-
   	// ============================================================================
   	// SERVICE WORKER REGISTRATION
   	// ============================================================================
-
   	async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
   		if (!('serviceWorker' in navigator)) {
   			console.warn('Service Workers not supported');
   			return null;
   		}
-
   		try {
   			const registration = await navigator.serviceWorker.register('/sw-webgpu.js', {
   				scope: '/webgpu/';
   			});
-
   			console.log('✅ Service Worker registered:', registration.scope);
-
   			// Setup message channel
   			const messageChannel = new MessageChannel();
   			// Listen for messages from service worker
@@ -398,22 +343,18 @@ https://svelte.dev/e/js_parse_error -->
   				console.log('Message from service worker:', event.data);
   				handleServiceWorkerMessage(event.data);
   			};
-
   			// Send port to service worker
   			if (registration.active) {
-  				registration.active.postMessage({ 
+  				registration.active.postMessage({
   					type: 'INIT_PORT' ;
   				}, [messageChannel.port2]);
   			}
-
-  			return registration;
-
+  			return registratio;
   		} catch (error) {
   			console.error('Service Worker registration failed:', error);
   			return null;
   		}
   	}
-
   	function handleServiceWorkerMessage(message: unknown) {
   		switch (message.type) {
   			case 'CACHE_HIT':
@@ -437,11 +378,9 @@ https://svelte.dev/e/js_parse_error -->
   				break;
   		}
   	}
-
   	// ============================================================================
   	// PERFORMANCE OPTIMIZATION
   	// ============================================================================
-
   	function optimizeLOD(objects: Map<string, RenderObject>, camera: THREE.Camera) {
   		objects.forEach((obj) => {
   			const distance = camera.position.distanceTo(obj.mesh.position);
@@ -453,7 +392,6 @@ https://svelte.dev/e/js_parse_error -->
   				}
   				targetLOD = obj.lodLevels.length - 1;
   			}
-
   			if (obj.currentLOD !== targetLOD) {
   				const level = obj.lodLevels[targetLOD];
   				obj.mesh.geometry.dispose();
@@ -464,64 +402,53 @@ https://svelte.dev/e/js_parse_error -->
   			}
   		});
   	}
-
   	function getMemoryUsage(): number {
   		return (performance as any).memory?.usedJSHeapSize || 0;
   	}
-
   	function getCPUUsage(): number {
   		// Estimate based on frame timing
   		return Math.min(100, (16.67 / (performance.now() % 16.67)) * 100);
   	}
-
   	function getNetworkUsage(): number {
   		return (navigator as any).connection?.downlink || 0;
   	}
-
   	// ============================================================================
   	// COMPONENT LIFECYCLE
   	// ============================================================================
-
   	let canvas: HTMLCanvasElement;
   	let animationFrame: number;
   let initialized = $state(false);
-
   	$effect(() => {
     (async () => {
 console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
-
   		// Initialize WebGPU
   		if (enableGPUCompute) {
   			const webgpuDevice = await initializeWebGPU();
   			if (webgpuDevice) {
   				webgpuStore.update(store => ({
   					...store,
-  					device: webgpuDevice,;
+  					device: webgpuDevice
   					active: true;
   				}));
-
   				// Create compute shaders
   				const matrixShader = await createComputeShader(
   					webgpuDevice.device,
   					matrixMultiplyShader,
   					'matrix-multiply'
   				);
-
   				const embeddingShader = await createComputeShader(
   					webgpuDevice.device,
   					vectorEmbeddingShader,
   					'vector-embedding'
   				);
-
   				webgpuStore.update(store => {
   					store.shaders.set('matrix-multiply', matrixShader);
   					store.shaders.set('vector-embedding', embeddingShader);
-  					return store;
+  					return stor;
     })();
   });
   			}
   		}
-
   		// Initialize Three.js
   		if (scene3D && canvas) {
   			const { scene, camera, renderer } = initializeThreeJS(canvas);
@@ -531,7 +458,6 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
   				camera,
   				renderer
   			}));
-
   			// Add sample objects with LOD
   			const geometry = new THREE.IcosahedronGeometry(1, 2);
   			const lodLevels = createLODGeometry(geometry);
@@ -543,64 +469,54 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
   					(Math.random() - 0.5) * 10
   				);
   				scene.add(mesh);
-
   				const renderObject: RenderObject = {
   					id: `object-${i}`,
   					mesh,
   					lodLevels,
-  					currentLOD: 0,;
-  					cached: false,
-  					gpuOptimized: enableGPUCompute;
+  					currentLOD: 0,
+  					cached: false
+  					gpuOptimized: enableGPUComput;
   				};
-
   				threeStore.update(store => {
   					store.objects.set(renderObject.id, renderObject);
-  					return store;
+  					return stor;
   				});
   			}
-
   			// Lighting
   			const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
   			scene.add(ambientLight);
-
   			const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
   			directionalLight.position.set(10, 10, 5);
   			directionalLight.castShadow = true;
   			scene.add(directionalLight);
-
   			// Start render loop
   			function animate() {
   				animationFrame = requestAnimationFrame(animate);
-
   				// LOD optimization
   				if (lodOptimization) {
   					threeStore.update(store => {
   						if (store.objects && store.camera) {
   							optimizeLOD(store.objects, store.camera);
   						}
-  						return store;
+  						return stor;
   					});
   				}
-
   				// Rotate objects
   				threeStore.update(store => {
   					store.objects.forEach(obj => {
   						obj.mesh.rotation.x += 0.01;
   						obj.mesh.rotation.y += 0.01;
   					});
-  					return store;
+  					return stor;
   				});
-
   				// Render
-  				const $three = threeStore;
+  				const $three = threeStor;
   				if ($three && $three.renderer && $three.scene && $three.camera) {
   					$three.renderer.render($three.scene, $three.camera);
   				}
   			}
-
   			animate();
   		}
-
   		// Register Service Worker
   		if (enableServiceWorker) {
   			const registration = await registerServiceWorker();
@@ -611,16 +527,13 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
   				}));
   			}
   		}
-
   		initialized = true;
   		console.log('✅ WebGPU + Three.js + Service Worker system initialized');
   	});
-
   	onDestroy(() => {
   		if (animationFrame) {
   			cancelAnimationFrame(animationFrame);
   		}
-
   		// Cleanup Three.js
   		threeStore.update(store => {
   			if (store.renderer) {
@@ -634,57 +547,47 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
   					obj.mesh.material.dispose();
   				}
   			});
-  			return store;
+  			return stor;
   		});
-
   		// Cleanup WebGPU
   		webgpuStore.update(store => {
   			if (store.device) {
   				store.device.device.destroy();
   			}
-  			return store;
+  			return stor;
   		});
   	});
-
   	// ============================================================================
   	// REACTIVE STATEMENTS
   	// ============================================================================
-
   	// TODO: Convert to $derived: if (canvas && !initialized) {
   		// Canvas is ready, initialization will happen in onMount
   	}
-
   	let metrics = $derived($performanceMetrics)
 </script>
-
 <!-- ============================================================================ -->
 <!-- TEMPLATE -->
 <!-- ============================================================================ -->
-
 <div class="webgpu-processor">
 	<div class="controls">
 		<h3>🌐 WebGPU + Three.js + Service Worker System</h3>
-		
 		<div class="status-grid">
 			<div class="status-item" class:active={$webgpuStore.active}>
 				<span class="icon">🔧</span>
 				<span>WebGPU</span>
 				<span class="value">{$webgpuStore.active ? 'Active' : 'Inactive'}</span>
 			</div>
-			
 			<div class="status-item" class:active={$threeStore.scene !== null}>
 				<span class="icon">🎮</span>
 				<span>Three.js</span>
 				<span class="value">{$threeStore.objects.size} Objects</span>
 			</div>
-			
 			<div class="status-item" class:active={$serviceWorkerStore.registration !== null}>
 				<span class="icon">⚡</span>
 				<span>Service Worker</span>
 				<span class="value">{$serviceWorkerStore.performance.cacheHitRate.toFixed(1)}% Hit Rate</span>
 			</div>
 		</div>
-
 		<div class="performance-metrics">
 			<h4>📊 Performance Metrics</h4>
 			<div class="metrics-grid">
@@ -715,15 +618,13 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
 			</div>
 		</div>
 	</div>
-
 	<div class="render-area">
-		<canvas 
+		<canvas
 			bind:this={canvas as any}
-			width="800" 
+			width="800"
 			height="600"
 			class="three-canvas"
 		></canvas>
-		
 		{#if !initialized}
 			<div class="loading-overlay">
 				<div class="loading-spinner"></div>
@@ -732,13 +633,11 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
 		{/if}
 	</div>
 </div>
-
 <!-- ============================================================================ -->
 <!-- STYLES -->
 <!-- ============================================================================ -->
-
 <style>
-	.webgpu-processor {;
+	.webgpu-processor {
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
@@ -748,25 +647,21 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
 		border: 1px solid #333;
 		color: #fff;
 	}
-
 	.controls {
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
 	}
-
 	.controls h3 {
 		margin: 0;
 		color: #00ff88;
 		font-family: 'Courier New', monospace;
 	}
-
 	.status-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 		gap: 1rem;
 	}
-
 	.status-item {
 		display: flex;
 		align-items: center;
@@ -777,47 +672,39 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
 		border: 1px solid #333;
 		transition: all 0.3s ease;
 	}
-
 	.status-.active {
 		border-color: #00ff88;
 		background: rgba(0, 255, 136, 0.1);
 	}
-
 	.status-item .icon {
 		font-size: 1.2rem;
 	}
-
 	.status-item .value {
 		margin-left: auto;
 		font-family: 'Courier New', monospace;
 		color: #00ff88;
 	}
-
 	.performance-metrics h4 {
 		margin: 0 0 0.5rem 0;
 		color: #0088ff;
 	}
-
 	.metrics-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 		gap: 0.5rem;
 	}
-
 	.metric {
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-betwee;
 		padding: 0.5rem;
 		background: rgba(255, 255, 255, 0.03);
 		border-radius: 4px;
 		font-size: 0.9rem;
 	}
-
-	.metric span:last-child {;
+	.metric span:last-child {
 		color: #ff8800;
 		font-family: 'Courier New', monospace;
 	}
-
 	.render-area {
 		position: relative;
 		background: #000;
@@ -825,7 +712,6 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
 		overflow: hidden;
 		border: 1px solid #333;
 	}
-
 	.three-canv.loading-overlay {
 		position: absolute;
 		top: 0;
@@ -840,7 +726,6 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
 		gap: 1rem;
 		color: #fff;
 	}
-
 	.loading-spinner {
 		width: 40px;
 		height: 40px;
@@ -849,25 +734,20 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
 		border-radius: 50%;
 		animation: spin 1s linear infinite;
 	}
-
 	@keyframes spin {
 		0% { transform: rotate(0deg); }
 		100% { transform: rotate(360deg); }
 	}
-
 	@media (max-width: 768px) {
 		.webgpu-processor {
 			padding: 0.5rem;
 		}
-		
 		.status-grid {
 			grid-template-columns: 1fr;
 		}
-		
 		.metrics-grid {
 			grid-template-columns: 1fr 1fr;
 		}
-		
 		.three-canvas {
 			height: 400px;
 		}

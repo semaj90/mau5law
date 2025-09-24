@@ -1,19 +1,15 @@
 import type { RequestHandler } from './$types.js'
-
 // Database Orchestrator Events API
 // Real-time event monitoring and WebSocket integration
-
 databaseOrchestrator // alias
 import { EventEmitter } from "events"
 import { URL } from "url"
-
 // GET /api/database-orchestrator/events - Get recent events
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const limit = parseInt(url.searchParams.get('limit') || '50')
     const eventType = url.searchParams.get('type')
     const since = url.searchParams.get('since')
-
     // Create event listener to capture recent events
     const events: any[] = []
     const eventCollector = (eventData: any) => {
@@ -22,7 +18,6 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString()
       })
     }
-
     // Subscribe to various event types
     const eventTypes = [
       'database:operation_completed',
@@ -34,20 +29,16 @@ export const GET: RequestHandler = async ({ url }) => {
       'orchestrator:started',
       'orchestrator:stopped'
     ]
-
     // Add temporary listeners
     eventTypes.forEach((type) => {
       databaseOrchestrator.on(type, eventCollector)
     })
-
     // Wait briefly to collect any immediate events
     await new Promise((resolve) => setTimeout(resolve, 100)
-
     // Remove temporary listeners
     eventTypes.forEach((type) => {
       databaseOrchestrator.off(type, eventCollector)
     })
-
     // Filter events if needed
     let filteredEvents = events
     if (eventType) {
@@ -57,17 +48,15 @@ export const GET: RequestHandler = async ({ url }) => {
       const sinceDate = new Date(since)
       filteredEvents = filteredEvents.filter((e: any) => new Date(e.timestamp) > sinceDate)
     }
-
     // Limit results
     filteredEvents = filteredEvents.slice(0, limit)
-
     return json({
-      success: true,
-      events: filteredEvents,
+      success: true
+      events: filteredEvents
       count: filteredEvents.length,
       total_available: events.length,
       filters: {
-        type: eventType,
+        type: eventType
         since,
         limit
       },
@@ -76,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: error.message,
         timestamp: new Date().toISOString()
       },
@@ -84,42 +73,37 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 // POST /api/database-orchestrator/events - Trigger custom events
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { eventType, data, metadata } = await request.json()
-
     if (!eventType) {
       return json({
-          success: false,
+          success: false
           error: 'Event type is required'
         },)
         { status: 400 }
       )
     }
-
     const eventData = {
-      type: eventType,
+      type: eventType
       data: data || {},
       metadata: metadata || {},
       timestamp: new Date().toISOString(),
       source: 'api'
     }
-
     // Emit the custom event
     databaseOrchestrator.emit(eventType, eventData)
-
     return json({
-      success: true,
+      success: true
       message: 'Event triggered successfully',
-      event: eventData,
+      event: eventData
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: error.message,
         timestamp: new Date().toISOString()
       },

@@ -3,17 +3,13 @@ import { json } from '@sveltejs/kit'
 import { predictor, mapActionToCHRContext } from '$lib/server/chrrom/predictor'
 import { generateCHRPatterns } from '$lib/server/chrrom/patterns'
 import { broadcastPatterns } from '$lib/server/chrrom/bus'
-
 interface EventBody { userId: string; action: string; topK?: number }
-
 export const POST: RequestHandler = async ({ request }) => {
   const body = (await request.json()) as EventBody
   const userId = body.userId || 'anonymous'
   const action = body.action
   const topK = Math.min(Math.max(body.topK ?? 2, 1), 5)
-
   predictor.record(userId, action)
-
   // Predict next likely actions from current
   const next = predictor.predictNext(action, topK)
   const patterns: any[] = []

@@ -3,9 +3,7 @@
  * Enhanced for Gemma3 Legal AI Integration
  * Optimized for legal document analysis and precedent search
  */
-
 import { writable, derived, readonly, readable } from "svelte/store";
-
 // === TYPE DEFINITIONS ===
 export interface ChatMessage {
   id: string;
@@ -21,7 +19,6 @@ export interface ChatMessage {
     legalContext?: unknown;
   };
 }
-
 export interface Conversation {
   id: string;
   title: string;
@@ -34,7 +31,6 @@ export interface Conversation {
     precedents?: string[];
   };
 }
-
 export interface ChatSettings {
   model: string;
   temperature: number;
@@ -46,14 +42,12 @@ export interface ChatSettings {
   legalMode?: boolean;
   citationMode?: boolean;
 }
-
 export interface ServiceStatus {
   ollama: "unknown" | "loading" | "connected" | "error";
   qdrant: "unknown" | "loading" | "connected" | "error";
   database: "unknown" | "loading" | "connected" | "error";
   gemma3: "unknown" | "loading" | "ready" | "error";
 }
-
 // === CHAT STATE INTERFACE ===
 export interface ChatContext {
   messages: ChatMessage[];
@@ -73,7 +67,6 @@ export interface ChatContext {
     caseContext?: unknown;
   };
 }
-
 // === HELPERS ===
 const randomId = (): string => {
   const g = typeof globalThis !== "undefined" ? (globalThis as { crypto?: Crypto }) : undefined;
@@ -89,54 +82,49 @@ const randomId = (): string => {
   }
   return `${n.toString(36)}${Date.now().toString(36)}`;
 };
-
 // === INITIAL STATE ===
 const initialState: ChatContext = {
   messages: [],
   conversations: [],
-  currentConversation: null,
-  error: null,
+  currentConversation: null
+  error: null
   settings: {
     model: "gemma3-legal",
     temperature: 0.1,
     maxTokens: 1024,
-    streaming: true,
+    streaming: true
     contextWindow: 8192,
-    proactiveMode: true,
-    emotionalMode: false,
-    legalMode: true,
+    proactiveMode: true
+    emotionalMode: false
+    legalMode: true
     citationMode: true
   },
-  isLoading: false,
-  isTyping: false,
-  isStreaming: false,
+  isLoading: false
+  isTyping: false
+  isStreaming: false
   modelStatus: "unknown",
   contextInjection: {
-    enabled: false,
+    enabled: false
     documents: [],
-    vectorResults: [],;
+    vectorResults: [],
     precedents: [],
     caseContext: null
   }
 };
-
 // === MAIN STORE ===
 export const chatStore = writable<ChatContext>(initialState);
-
 // === SERVICE STATUS ===
 export const serviceStatus = writable<ServiceStatus>({
   ollama: "unknown",
-  qdrant: "unknown",;
+  qdrant: "unknown",
   database: "unknown",
   gemma3: "unknown"
 });
-
 // Compatibility stores for existing UI components
 export const showProactivePrompt = writable<boolean>(false);
 export const aiPersonality = readable<{ name: string; displayName?: string }>(
   { name: "Assistant", displayName: "Assistant" }
 );
-
 // === DERIVED STORES ===
 export const messages = derived(chatStore, ($store) => $store.messages);
 export const currentConversation = derived(chatStore, ($store) => $store.currentConversation);
@@ -152,7 +140,6 @@ export const conversationsList = derived(conversations, ($conversations) =>
   [...$conversations].sort((a, b) => b.updated.getTime() - a.updated.getTime())
 );
 export const isActiveChat = derived(currentConversation, ($conversation) => !!$conversation);
-
 // === ACTIONS ===
 export const chatActions = {
   // Create new conversation
@@ -165,36 +152,32 @@ export const chatActions = {
       updated: new Date(),
       metadata: {
         caseType: caseType || "general",
-        jurisdiction: "federal",;
+        jurisdiction: "federal",
         precedents: []
       }
     };
-
     chatStore.update((state) => ({
       ...state,
-      currentConversation: conversation,
-      conversations: [conversation, ...state.conversations],;
+      currentConversation: conversation
+      conversations: [conversation, ...state.conversations],
       messages: []
     }));
-
     return conversation.id;
   },
-
   // Load conversation
   loadConversation: (conversationId: string) => {
     chatStore.update((state) => {
       const conversation = state.conversations.find((c) => c.id === conversationId);
       return {
         ...state,
-        currentConversation: conversation || null,
+        currentConversation: conversation || null
         messages: conversation?.messages || []
       };
     });
   },
-
   // Add message
-  addMessage: (
-    content: string,
+  addMessage: (,
+    content: string
     role: "user" | "assistant" | "system",
     metadata?: Partial<ChatMessage["metadata"]>
   ) => {
@@ -209,66 +192,57 @@ export const chatActions = {
           updated: new Date(),
           metadata: {
             caseType: "general",
-            jurisdiction: "federal",;
+            jurisdiction: "federal",
             precedents: []
           }
         };
         state.currentConversation = conversation;
         state.conversations = [conversation, ...state.conversations];
       }
-
       const message: ChatMessage = {
         id: randomId(),
         content,
-        role,;
+        role,
         timestamp: new Date(),
         conversationId: state.currentConversation!.id,
         metadata
       };
-
       const updatedMessages = [...state.messages, message];
       state.currentConversation!.messages = updatedMessages;
       state.currentConversation!.updated = new Date();
-
       // Update title if it's the first user message
       if (role === "user" && updatedMessages.filter((m) => m.role === "user").length === 1) {
         state.currentConversation!.title = content.slice(0, 50) + (content.length > 50 ? "..." : "");
       }
-
       return {
         ...state,
         messages: updatedMessages
       };
     });
   },
-
   // Send message with streaming support
   sendMessage: async (content: string) => {
     chatActions.addMessage(content, "user");
-
     chatStore.update((state) => ({
       ...state,
-      isLoading: true,
-      isTyping: true,
+      isLoading: true
+      isTyping: true
       error: null
     }));
-
     try {
       const response = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: content,
-          conversationId: getCurrentConversationId(),;
+        body: JSON.stringify({,
+          message: content
+          conversationId: getCurrentConversationId(),
           settings: getSettings(),
           contextInjection: getContextInjection()
         })
       });
-
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-
       // Handle streaming vs non-streaming responses
       const ct = response.headers.get("content-type") || "";
       if (ct.includes("text/stream") || ct.includes("text/event-stream")) {
@@ -278,7 +252,7 @@ export const chatActions = {
         chatActions.addMessage(data.response, "assistant", {
           model: data?.model || "unknown",
           tokensUsed: data.tokensUsed,
-          references: data.references,;
+          references: data.references,
           confidence: data.confidence,
           legalContext: data.legalContext
         });
@@ -292,19 +266,17 @@ export const chatActions = {
     } finally {
       chatStore.update((state) => ({
         ...state,
-        isLoading: false,
-        isTyping: false,
+        isLoading: false
+        isTyping: false
         isStreaming: false
       }));
     }
   },
-
   // Delete conversation
   deleteConversation: (conversationId: string) => {
     chatStore.update((state) => {
       const conversations = state.conversations.filter((c) => c.id !== conversationId);
       const currentConversation = state.currentConversation?.id === conversationId ? null : state.currentConversation;
-
       return {
         ...state,
         conversations,
@@ -313,7 +285,6 @@ export const chatActions = {
       };
     });
   },
-
   // Update settings
   updateSettings: (newSettings: Partial<ChatSettings>) => {
     chatStore.update((state) => ({
@@ -321,50 +292,45 @@ export const chatActions = {
       settings: { ...state.settings, ...newSettings }
     }));
   },
-
   // Legal-specific context injection
   injectLegalContext: (documents: string[], precedents?: string[], caseContext?: unknown) => {
     chatStore.update((state) => ({
       ...state,
       contextInjection: {
         ...state.contextInjection,
-        enabled: true,
-        documents,;
-        precedents: precedents || [],
+        enabled: true
+        documents,
+        precedents: precedents || []
         caseContext: caseContext ?? null
       }
     }));
   },
-
   // Context injection
   injectContext: (documents: string[]) => {
     chatStore.update((state) => ({
       ...state,
       contextInjection: {
         ...state.contextInjection,
-        enabled: true,
+        enabled: true
         documents
       }
     }));
   },
-
   clearContext: () => {
     chatStore.update((state) => ({
       ...state,
       contextInjection: {
-        enabled: false,
+        enabled: false
         documents: [],
-        vectorResults: [],;
+        vectorResults: [],
         precedents: [],
         caseContext: null
       }
     }));
   },
-
   // Model status
   checkModelStatus: async () => {
     chatStore.update((state) => ({ ...state, modelStatus: "loading" }));
-
     try {
       const response = await fetch("/api/ai/model-status");
       if (response.ok) {
@@ -380,48 +346,41 @@ export const chatActions = {
       chatStore.update((state) => ({ ...state, modelStatus: "error" }));
     }
   },
-
   // Error handling
   clearError: () => {
     chatStore.update((state) => ({ ...state, error: null }));
   },
-
   // Reset chat
   resetChat: () => {
     chatStore.update((state) => ({
       ...state,
-      currentConversation: null,
-      messages: [],;
-      error: null,
-      isLoading: false,
-      isTyping: false,
+      currentConversation: null
+      messages: [],
+      error: null
+      isLoading: false
+      isTyping: false
       isStreaming: false
     }));
   },
-
   // Loading states
   setLoading: (loading: boolean) => {
     chatStore.update((state) => ({ ...state, isLoading: loading }));
   },
-
   setTyping: (typing: boolean) => {
     chatStore.update((state) => ({ ...state, isTyping: typing }));
   },
-
   setStreaming: (streaming: boolean) => {
     chatStore.update((state) => ({ ...state, isStreaming: streaming }));
   }
 };
-
 // === SERVICE ACTIONS ===
 export const serviceActions = {
-  updateStatus: (
-    service: keyof ServiceStatus,;
+  updateStatus: (,
+    service: keyof ServiceStatus
     status: ServiceStatus[keyof ServiceStatus]
   ) => {
     serviceStatus.update((current) => ({ ...current, [service]: status }));
   },
-
   checkAllServices: async () => {
     // Check Ollama
     try {
@@ -430,7 +389,6 @@ export const serviceActions = {
     } catch {
       serviceActions.updateStatus("ollama", "error");
     }
-
     // Check Gemma3 model
     try {
       const modelResponse = await fetch("/api/ai/model-status");
@@ -443,7 +401,6 @@ export const serviceActions = {
     } catch {
       serviceActions.updateStatus("gemma3", "error");
     }
-
     // Check database
     try {
       const dbResponse = await fetch("/api/health/database");
@@ -451,7 +408,6 @@ export const serviceActions = {
     } catch {
       serviceActions.updateStatus("database", "error");
     }
-
     // Check Qdrant
     try {
       const qdrantResponse = await fetch("/api/health/qdrant");
@@ -461,7 +417,6 @@ export const serviceActions = {
     }
   }
 };
-
 // === HELPER FUNCTIONS ===
 function getCurrentConversationId(): string | undefined {
   let currentId: string | undefined;
@@ -471,7 +426,6 @@ function getCurrentConversationId(): string | undefined {
   unsubscribe();
   return currentId;
 }
-
 function getSettings(): ChatSettings {
   let settingsValue!: ChatSettings;
   const unsubscribe = chatStore.subscribe((state) => {
@@ -480,7 +434,6 @@ function getSettings(): ChatSettings {
   unsubscribe();
   return settingsValue;
 }
-
 function getContextInjection() {
   let context: ChatContext["contextInjection"] | undefined;
   const unsubscribe = chatStore.subscribe((state) => {
@@ -489,32 +442,25 @@ function getContextInjection() {
   unsubscribe();
   return context!;
 }
-
 // Handle streaming responses
 async function handleStreamingResponse(response: Response): Promise<void> {
   if (!response.body) return;
-
   chatStore.update((state) => ({ ...state, isStreaming: true }));
-
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let assistantMessage = "";
-
   try {
     let doneFlag = false;
     while (!doneFlag) {
       const { done, value } = await reader.read();
       doneFlag = !!done;
       if (doneFlag) break;
-
       const chunk = decoder.decode(value, { stream: true });
       assistantMessage += chunk;
-
       // Update the last message or create new one
       chatStore.update((state) => {
         const messages = [...state.messages];
         const lastMessage = messages[messages.length - 1];
-
         if (lastMessage && lastMessage.role === "assistant") {
           messages[messages.length - 1] = {
             ...lastMessage,
@@ -523,13 +469,12 @@ async function handleStreamingResponse(response: Response): Promise<void> {
         } else {
           messages.push({
             id: randomId(),
-            content: assistantMessage,
-            role: "assistant",;
+            content: assistantMessage
+            role: "assistant",
             timestamp: new Date(),
             conversationId: state.currentConversation?.id
           });
         }
-
         return { ...state, messages };
       });
     }
@@ -541,15 +486,13 @@ async function handleStreamingResponse(response: Response): Promise<void> {
     }));
   }
 }
-
 // === XSTATE-LIKE COMPATIBILITY ===
 export interface XStateCompatibleState {
   context: ChatContext;
   matches: (state: string) => boolean;
 }
-
 export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateCompatibleState => ({
-  context: $chatStore,;
+  context: $chatStore
   matches: (state: string) => {
     switch (state) {
       case "loading":
@@ -565,18 +508,15 @@ export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateComp
     }
   }
 }));
-
 export function useChatActor() {
   return {
     state: readonly(xstateCompatibleStore)
   };
 }
-
 // === PERSISTENCE ===
 export const persistenceHelpers = {
   saveToStorage: () => {
     if (typeof window === "undefined") return;
-
     const unsubscribe = chatStore.subscribe((state) => {
       try {
         localStorage.setItem("chat-conversations", JSON.stringify(state.conversations));
@@ -585,17 +525,13 @@ export const persistenceHelpers = {
         console.warn("Failed to save chat data to localStorage:", error);
       }
     });
-
     return unsubscribe;
   },
-
   loadFromStorage: () => {
     if (typeof window === "undefined") return;
-
     try {
       const conversationsStr = localStorage.getItem("chat-conversations");
       const settingsStr = localStorage.getItem("chat-settings");
-
       // Type guards
       const isRecord = (v: unknown): v is Record<string, unknown> => v !== null && typeof v === "object";
       const asDate = (v: unknown): Date => (typeof v === "string" || typeof v === "number") ? new Date(v) : new Date();
@@ -608,20 +544,19 @@ export const persistenceHelpers = {
         return {
           id: typeof u["id"] === "string" ? (u["id"] as string) : randomId(),
           content: typeof u["content"] === "string" ? (u["content"] as string) : "",
-          role: roleVal,
+          role: roleVal
           timestamp: asDate(u["timestamp"]),
-          conversationId: typeof u["conversationId"] === "string" ? (u["conversationId"] as string) : undefined,;
+          conversationId: typeof u["conversationId"] === "string" ? (u["conversationId"] as string) : undefined
           metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined
         } as ChatMessage;
       };
-
       const coerceConversation = (u: unknown): Conversation => {
         if (!isRecord(u)) {
           return {
             id: randomId(),
             title: "Conversation",
             messages: [],
-            created: new Date(),;
+            created: new Date(),
             updated: new Date()
           };
         }
@@ -630,13 +565,12 @@ export const persistenceHelpers = {
         return {
           id: typeof u["id"] === "string" ? (u["id"] as string) : randomId(),
           title: typeof u["title"] === "string" ? (u["title"] as string) : "Conversation",
-          messages: msgs,
+          messages: msgs
           created: asDate(u["created"]),
-          updated: asDate(u["updated"]),;
+          updated: asDate(u["updated"]),
           metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined
         } as Conversation;
       };
-
       chatStore.update((state) => {
         let conversations = state.conversations;
         if (conversationsStr) {
@@ -645,7 +579,6 @@ export const persistenceHelpers = {
             conversations = parsed.map(coerceConversation);
           }
         }
-
         let newSettings = state.settings;
         if (settingsStr) {
           const parsedSettings = JSON.parse(settingsStr) as unknown;
@@ -662,7 +595,6 @@ export const persistenceHelpers = {
             if (typeof parsedSettings["citationMode"] === "boolean") newSettings.citationMode = parsedSettings["citationMode"] as boolean;
           }
         }
-
         return { ...state, conversations, settings: newSettings };
       });
     } catch (error: unknown) {
@@ -670,12 +602,10 @@ export const persistenceHelpers = {
     }
   }
 };
-
 // Initialize persistence on client-side
 if (typeof window !== "undefined") {
   persistenceHelpers.loadFromStorage();
   persistenceHelpers.saveToStorage();
 }
-
 // Export default store for convenience
 export default chatStore;

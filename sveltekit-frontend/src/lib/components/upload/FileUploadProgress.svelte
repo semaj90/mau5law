@@ -1,13 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-
   interface Props {
     progress?: number;
     fileName?: string;
@@ -16,7 +14,6 @@
     status?: 'uploading' | 'completed' | 'error' | 'paused';
     showPercentage?: boolean;
   }
-
   let {
     progress = 0,
     fileName = '',
@@ -25,7 +22,6 @@
     status = 'uploading',
     showPercentage = true
   }: Props = $props();
-
   // Computed values
   let progressVariant = $derived(() => {
     switch (status) {
@@ -35,7 +31,6 @@
       default: return variant === 'yorha' ? 'yorha' : variant === 'legal' ? 'legal' : 'info';
     }
   });
-
   let badgeVariant = $derived(() => {
     switch (status) {
       case 'completed': return 'success';
@@ -44,7 +39,6 @@
       default: return 'info';
     }
   });
-
   let statusText = $derived(() => {
     switch (status) {
       case 'completed': return 'Completed';
@@ -54,7 +48,6 @@
     }
   });
 </script>
-
 <div variant={variant} class="w-full nes-container">
   <!-- File info header -->
   <div class="flex items-center justify-between mb-4">
@@ -65,13 +58,11 @@
         <p class="text-xs nes-text is-disabled">{label}</p>
       </div>
     </div>
-    
     <!-- Status Badge -->
     <Badge variant={badgeVariant()} size="sm">
       {statusText()}
     </Badge>
   </div>
-
   <!-- Progress Bar -->
   <Progress
     value={progress}
@@ -80,7 +71,6 @@
     size="default"
     class="mb-2"
   />
-
   <!-- Additional Info -->
   {#if status === 'error'}
     <p class="text-xs text-red-600 mt-2">
@@ -96,4 +86,3 @@
     </p>
   {/if}
 </div>
-

@@ -1,119 +1,121 @@
 <!--
-Enhanced-Bits Alert Component
-NES-styled alert with legal AI theming
+  Enhanced Bits - Alert
+  Flexible alert component for notifications and messages
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-
-	import type { Snippet } from 'svelte';
-  import { cn } from '$lib/utils';
-  
-  interface AlertProps {
-    variant?: 'default' | 'destructive' | 'warning' | 'success' | 'info';
-    class?: string;
-    children?: import('svelte').Snippet;
+  interface Props {
+    variant?: 'info' | 'success' | 'warning' | 'error';
+    title?: string;
+    dismissible?: boolean;
+    icon?: any;
+    children?: any;
   }
-  
   let {
-    variant = 'default',
-    class: className = '',
-    children;
-  }: AlertProps = $props();
-  
-  // NES-style alert classes
-  const alertClasses = $derived(
-    cn(
-      // Base styles
-      'bits-alert',
-      'relative w-full rounded-lg border-2 p-4',
-      'font-mono text-sm',
-      'transition-all duration-300',
-      
-      // Variant styles
-      {
-        'bg-white border-gray-300 text-gray-900': variant === 'default',
-        'bg-red-50 border-red-300 text-red-900': variant === 'destructive',
-        'bg-yellow-50 border-yellow-300 text-yellow-900': variant === 'warning',
-        'bg-green-50 border-green-300 text-green-900': variant === 'success',
-        'bg-blue-50 border-blue-300 text-blue-900': variant === 'info',
-      },
-      
-      // NES styling
-      'shadow-lg',
-      'image-rendering: pixelated',
-      
-      className
-    )
-  );
-  
-  // Get emoji for variant
-  const variantEmoji = $derived(() => {
-    switch (variant) {
-      case 'destructive': return '⚠️';
-      case 'warning': return '⚡';
-      case 'success': return '✅';
-      case 'info': return 'ℹ️';
-      default: return '📋';
-    }
-  });
+    variant = 'info',
+    title,
+    dismissible = false,
+    icon,
+    children
+  }: Props = $props();
+  let visible = $state(true);
+  function dismiss() {
+    visible = false;
+  }
 </script>
-
-<div 
-  class={alertClasses}
-  role="alert"
-  aria-live="polite"
->
-  <div class="flex items-start gap-3">
-    <span class="text-lg flex-shrink-0">{variantEmoji()}</span>
-    <div class="flex-1">
-      {#if children}
-        {@render children()}
+{#if visible}
+  <div class="alert alert-{variant}" role="alert">
+    <div class="alert-content">
+      {#if icon}
+        <div class="alert-icon">
+          {@render icon()}
+        </div>
+      {/if}
+      <div class="alert-body">
+        {#if title}
+          <div class="alert-title">{title}</div>
+        {/if}
+        <div class="alert-message">
+          {@render children?.()}
+        </div>
+      </div>
+      {#if dismissible}
+        <button class="alert-dismiss" onclick={dismiss} aria-label="Dismiss">
+          ×
+        </button>
       {/if}
     </div>
   </div>
-</div>
-
+{/if}
 <style>
-  .bits-alert {
-    font-family: 'Courier New', monospace;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
+  .alert {
+    border-radius: var(--radius-md, 8px);
+    padding: 16px;
+    margin: 16px 0;
+    border: 1px solid;
+    position: relative;
   }
-/* NES-style borders with inset effect */ .bits-alert {
-box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.2), inset 2px 2px 0px rgba(255, 255, 255, 0.8);
+  .alert-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
   }
-/* Hover effect for interactive alerts */ .bits-alert:hover {
-    transform: translateY(-1px);
-box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.3), inset 2px 2px 0px rgba(255, 255, 255, 0.9), 0 4px 8px rgba(0, 0, 0, 0.1);
+  .alert-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
   }
-/* Destructive variant animation */ .bits-alert[data-variant="error"] {
-    animation: alert-pulse 2s ease-in-out infinite;
+  .alert-body {
+    flex: 1;
   }
-  
-  @keyframes alert-pulse {
-    0%, 100% {
-      border-color: rgb(252, 165, 165);
-    }
-    50% {
-      border-color: rgb(239, 68, 68);
-    }
+  .alert-title {
+    font-weight: 600;
+    margin-bottom: 4px;
   }
-/* Success variant animation */ .bits-alert[data-variant="success"] {
-    animation: alert-success 0.5s ease-out;
+  .alert-message {
+    line-height: 1.5;
   }
-  
-  @keyframes alert-success {
-    0% {
-      transform: scale(0.95);
-      opacity: 0;
-    }
-    50% {
-      transform: scale(1.02);
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
+  .alert-dismiss {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+  .alert-dismiss:hover {
+    opacity: 1;
+  }
+  /* Variants */
+  .alert-info {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    color: #1e40af;
+  }
+  .alert-success {
+    background: #f0fdf4;
+    border-color: #10b981;
+    color: #166534;
+  }
+  .alert-warning {
+    background: #fefce8;
+    border-color: #f59e0b;
+    color: #a16207;
+  }
+  .alert-error {
+    background: #fef2f2;
+    border-color: #ef4444;
+    color: #dc2626;
+  }
+  @media (max-width: 768px) {
+    .alert {
+      padding: 12px;
+      margin: 12px 0;
     }
   }
 </style>

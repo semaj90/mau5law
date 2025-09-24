@@ -2,7 +2,6 @@
 <!-- Uses Svelte 5 patterns with bits-ui components -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from '$lib/components/ui/enhanced-bits';
   import { Textarea } from "$lib/components/ui/textarea/index";
   import { notifications } from "$lib/stores/notification";
@@ -11,24 +10,20 @@
   import { tick } from "svelte";
   import { enhancedEmbeddingService } from "$lib/services/enhanced-embedding-service";
   import type { EmbeddedDocument, SemanticSearchResult } from "$lib/services/enhanced-embedding-service";
-
   interface Props {
     height?: string;
     caseId?: string;
     documents?: string[];
     showDocumentAnalysis?: boolean;
   }
-
   let {
     height = "500px",
     caseId,
     documents = [],
     showDocumentAnalysis = true
   }: Props = $props();
-
   // Svelte 5 state management
   let messages = $state<any[]>([]) => []);
-
   let messageInput = $state("");
   let isLoading = $state(false);
   let isTyping = $state(false);
@@ -37,49 +32,40 @@
   let similarityThreshold = $state(0.4);
   let messagesContainer: HTMLElement;
   let inputElement: HTMLTextAreaElement = $state(undefined as any);
-
   // Enhanced embedding options - use derived for reactive updates
   let embeddingOptions = $derived({
     model: "embeddinggemma",
-    useGPU: true,;
+    useGPU: true
     temperature: 0.7,
-    contextLimit: contextLimit,;
+    contextLimit: contextLimit
     threshold: similarityThreshold;
   });
-
   // Document management state
   let availableDocuments = $state<string[]>(documents);
   let selectedDocuments = $state<string[]>([]);
   let embeddedDocuments = $state<EmbeddedDocument[]>([]);
   let lastSearchResults = $state<SemanticSearchResult[]>([]);
   let serviceHealth = $state<any>(null);
-
   async function sendMessage() {
     if (!messageInput.trim()) return;
-
     const userMessage = messageInput.trim();
     messageInput = "";
-
     // Add user message
     messages = [...messages, {
-      role: 'user',;
-      content: userMessage,;
+      role: 'user',
+      content: userMessage
       timestamp: new Date().toLocaleTimeString();
     }];
-
     try {
       isLoading = true;
       isTyping = true;
-
-      let response: Response;
+      let response: Respon;
       let responseData: unknown;
-
       if (useAdvancedRAG && (availableDocuments.length > 0 || selectedDocuments.length > 0)) {
         // Use Enhanced Embedding Service with full infrastructure integration
         const documentsToUse = selectedDocuments.length > 0
           ? selectedDocuments
           : availableDocuments.slice(0, contextLimit);
-
         try {
           // Perform enhanced RAG query using integrated service
           const ragResult = await enhancedEmbeddingService.enhancedRAGQuery(
@@ -88,28 +74,23 @@
             {
               model: embeddingOptions.model,
               useGPU: embeddingOptions.useGPU,
-              contextLimit: embeddingOptions.contextLimit,;
-              temperature: embeddingOptions.temperature,;
+              contextLimit: embeddingOptions.contextLimit,
+              temperature: embeddingOptions.temperature,
               threshold: embeddingOptions.threshold,
               practiceArea: caseId ? 'legal' : undefined;
             }
           );
-
           // Store results for debugging/analysis
-          lastSearchResults = ragResult.similarDocuments;
+          lastSearchResults = ragResult.similarDocument;
           embeddedDocuments = [ragResult.queryEmbedding, ...ragResult.documentEmbeddings];
-
           // Create enhanced response with detailed infrastructure info
           let assistantResponse = `**🧠 AI Analysis with EmbeddingGemma Infrastructure:**\n\n`;
-
           // Infrastructure info
           assistantResponse += `**System:** ${ragResult.metadata.infrastructureUsed.join(' + ')}\n`;
           assistantResponse += `**Model:** ${ragResult.metadata.model} (${ragResult.queryEmbedding.metadata.dimensions}D vectors)\n`;
           assistantResponse += `**Performance:** ${ragResult.processingTime}ms total, ${ragResult.metadata.cacheHits}/${ragResult.metadata.totalDocuments + 1} cache hits\n\n`;
-
           if (ragResult.similarDocuments.length > 0) {
             assistantResponse += `**📚 Found ${ragResult.similarDocuments.length} relevant documents:**\n\n`;
-
             ragResult.similarDocuments.forEach((result, index) => {
               const doc = (result as { document?: unknown; similarity?: unknown; queued?: unknown }).document;
               assistantResponse += `**Document ${index + 1}** (Similarity: ${((result as { document?: unknown; similarity?: unknown; queued?: unknown }).similarity * 100).toFixed(1)}%)\n`;
@@ -119,27 +100,22 @@
               }
               assistantResponse += `\n`;
             });
-
             assistantResponse += `---\n\n`;
           }
-
           assistantResponse += `**🎯 Analysis Response:**\n\n`;
           assistantResponse += `Based on semantic similarity analysis of your query "${userMessage}", I've identified the most relevant context from ${ragResult.metadata.totalDocuments} available documents.\n\n`;
-
           if (ragResult.similarDocuments.length > 0) {
             assistantResponse += `The highest similarity score was ${(Math.max(...ragResult.similarDocuments.map(r => r.similarity)) * 100).toFixed(1)}%, indicating strong semantic relevance. `;
           }
-
           assistantResponse += `Processing leveraged ${ragResult.metadata.infrastructureUsed.includes('GPU-Acceleration') ? 'GPU-accelerated' : 'CPU-based'} embeddings with ${ragResult.metadata.infrastructureUsed.includes('GPU-Cache-Middleware') ? 'advanced caching' : 'basic caching'}.`;
-
           // Add assistant message with comprehensive metadata
           messages = [...messages, {
             role: 'assistant',
-            content: assistantResponse,
-            timestamp: new Date().toLocaleTimeString(),;
+            content: assistantResponse
+            timestamp: new Date().toLocaleTimeString(),
             metadata: {
-              ragEnabled: true,
-              enhancedService: true,
+              ragEnabled: true
+              enhancedService: true
               model: ragResult.metadata.model,
               processingTime: ragResult.processingTime,
               similarityScores: ragResult.similarDocuments.map(r => r.similarity),
@@ -149,243 +125,204 @@
               infrastructure: ragResult.metadata.infrastructureUsed,
               queryEmbeddingId: ragResult.queryEmbedding.id;
             },
-            references: ragResult.similarDocuments.map(r => ({
+            references: ragResult.similarDocuments.map(r => ({,
               id: r.document.id,
               content: r.document.content,
               similarity: r.similarity,
-              score: r.score,;
-              index: r.index,;
+              score: r.score,
+              index: r.index,
               metadata: r.document.metadata;
             }))
           }];
-
         } catch (ragError) {
           console.error('Enhanced RAG service failed, falling back to API:', ragError);
-
           // Fallback to original RAG API
           const ragRequest = {
-            query: userMessage,
-            documents: documentsToUse,;
+            query: userMessage
+            documents: documentsToUse
             options: {
               useGPU: embeddingOptions.useGPU,
               model: 'gemma3-legal:latest',
-              contextLimit: embeddingOptions.contextLimit,;
-              temperature: embeddingOptions.temperature,;
+              contextLimit: embeddingOptions.contextLimit,
+              temperature: embeddingOptions.temperature,
               threshold: embeddingOptions.threshold;
             }
           };
-
           response = await fetch("/api/v1/embeddings/rag", {
-            method: "POST",;
-            headers: { "Content-Type": "application/json" },;
-            body: JSON.stringify(ragRequest),;
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(ragRequest),
           });
-
           if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
             throw new Error(`RAG API fallback error: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status} ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
           }
-
           responseData = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
-
           if (!responseData.success) {
             throw new Error(responseData.error || "RAG query failed");
           }
-
           // Process fallback response
           const ragContext = responseData.context;
           let assistantResponse = `**⚠️ AI Analysis (Fallback Mode):**\n\n`;
-
           if (ragContext.similarDocs && ragContext.similarDocs.length > 0) {
             assistantResponse += `Found ${ragContext.similarDocs.length} relevant document(s):\n\n`;
-
             ragContext.similarDocs.forEach((doc: unknown, index: number) => {
               assistantResponse += `**Document ${index + 1}** (Similarity: ${(doc.score * 100).toFixed(1)}%)\n`;
               assistantResponse += `${doc.document}\n\n`;
             });
-
             assistantResponse += `---\n\n`;
           }
-
           assistantResponse += `Based on fallback analysis: "${userMessage}"\n\n`;
           assistantResponse += `Processed ${ragContext.similarDocs?.length || 0} documents in ${ragContext.processingTime}ms using ${ragContext.metadata?.model || 'fallback'} embeddings.`;
-
           messages = [...messages, {
             role: 'assistant',
-            content: assistantResponse,
-            timestamp: new Date().toLocaleTimeString(),;
+            content: assistantResponse
+            timestamp: new Date().toLocaleTimeString(),
             metadata: {
-              ragEnabled: true,
-              fallbackMode: true,
+              ragEnabled: true
+              fallbackMode: true
               model: ragContext.metadata?.model || 'fallback',
               processingTime: ragContext.processingTime,
               similarityScores: ragContext.similarDocs?.map((d: unknown) => d.score) || [],
               vectorDimensions: ragContext.metadata?.vectorDimensions || 384,
               gpuAccelerated: ragContext.metadata?.gpuUsed || false;
-            },;
+            },
             references: ragContext.similarDocs || [];
           }];
         }
-
       } else {
         // Fallback to regular chat API
         response = await fetch("/api/ai/chat", {
-          method: "POST",;
+          method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            messages: messages.map(m => ({ role: m.role, content: m.content })),;
+          body: JSON.stringify({,
+            messages: messages.map(m => ({ role: m.role, content: m.content })),
             context: { caseId }
           }),
         });
-
         if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
           throw new Error("Failed to get AI response");
         }
-
         responseData = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
-
         if (!responseData.success || !responseData.data) {
           throw new Error(responseData.error || "Invalid response format");
         }
-
         messages = [...messages, {
-          role: 'assistant',;
+          role: 'assistant',
           content: (responseData.data as { infrastructureUsed?: unknown; model?: unknown; dimensions?: unknown; cacheHits?: unknown; totalDocuments?: unknown; practiceArea?: unknown; content?: unknown; metadata?: unknown }).content,
-          timestamp: new Date().toLocaleTimeString(),;
+          timestamp: new Date().toLocaleTimeString(),
           metadata: (responseData.data as { infrastructureUsed?: unknown; model?: unknown; dimensions?: unknown; cacheHits?: unknown; totalDocuments?: unknown; practiceArea?: unknown; content?: unknown; metadata?: unknown }).metadata
         }];
       }
-
       // Scroll to bottom
       setTimeout(scrollToBottom, 100);
-
     } catch (error) {
       console.error("Chat error:", error);
-
       messages = [...messages, {
-        role: 'assistant',;
+        role: 'assistant',
         content: `Error: ${error instanceof Error ? error.message: 'Failed to process your request'}`,
-        timestamp: new Date().toLocaleTimeString(),;
+        timestamp: new Date().toLocaleTimeString(),
         metadata: { error: true }
       }];
-
       notifications.add({
-        type: "error",;
-        title: "Chat Error",;
-        message: "Failed to get response from AI assistant",;
+        type: "error",
+        title: "Chat Error",
+        message: "Failed to get response from AI assistant",
       });
     } finally {
       isLoading = false;
       isTyping = false;
     }
   }
-
   function scrollToBottom() {
     if (messagesContainer) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }
-
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
-
   function autoResize() {
     if (inputElement) {
       inputElement.style.height = "auto";
       inputElement.style.height = Math.min(inputElement.scrollHeight, 120) + "px";
     }
   }
-
   async function analyzeDocuments() {
     if (availableDocuments.length === 0) {
       notifications.add({
-        type: "warning",;
-        title: "No Documents",;
-        message: "No documents available for analysis.",;
+        type: "warning",
+        title: "No Documents",
+        message: "No documents available for analysis.",
       });
       return;
     }
-
     try {
       isLoading = true;
-
       // Pre-generate embeddings for all documents using enhanced service
       const embedResults = await enhancedEmbeddingService.generateBatchEmbeddings(
         availableDocuments,
         {
           model: embeddingOptions.model,
-          practiceArea: caseId ? 'legal' : undefined,;
+          practiceArea: caseId ? 'legal' : undefined
           jurisdiction: caseId ? 'us-federal' : undefined;
         }
       );
-
-      embeddedDocuments = embedResults;
-
+      embeddedDocuments = embedResult;
       notifications.add({
-        type: "success",;
-        title: "Documents Processed",;
+        type: "success",
+        title: "Documents Processed",
         message: `Generated ${embedResults.length} embeddings using ${embedResults[0]?.metadata.model || 'unknown'} model.`,
       });
-
       // Auto-analyze available documents
       const analysisQuery = `Please analyze these ${availableDocuments.length} document(s) for key insights, legal implications, and important findings. Focus on patterns, risks, and actionable recommendations.`;
-
       messageInput = analysisQuery;
       await sendMessage();
-
     } catch (error) {
       console.error('Document analysis failed:', error);
       notifications.add({
-        type: "error",;
-        title: "Analysis Failed",;
-        message: error instanceof Error ? error.message: "Failed to analyze documents",;
+        type: "error",
+        title: "Analysis Failed",
+        message: error instanceof Error ? error.message: "Failed to analyze documents",
       });
     } finally {
       isLoading = false;
     }
   }
-
   async function checkServiceHealth() {
     try {
       const health = await enhancedEmbeddingService.getServiceHealth();
       serviceHealth = health;
-
       const statusColor = health.status === 'healthy' ? 'success' :
                          health.status === 'degraded' ? 'warning' : 'error';
-
       notifications.add({
-        type: statusColor,;
-        title: "Service Health Check",;
+        type: statusColor
+        title: "Service Health Check",
         message: `Status: ${health.status}. Capabilities: ${health.capabilities.join(', ')}`,
       });
-
     } catch (error) {
       console.error('Health check failed:', error);
       notifications.add({
-        type: "error",;
-        title: "Health Check Failed",;
-        message: "Could not check service health",;
+        type: "error",
+        title: "Health Check Failed",
+        message: "Could not check service health",
       });
     }
   }
-
   async function queueEmbeddingJobs() {
     if (availableDocuments.length === 0) {
       notifications.add({
-        type: "warning",;
-        title: "No Documents",;
-        message: "No documents to queue for processing.",;
+        type: "warning",
+        title: "No Documents",
+        message: "No documents to queue for processing.",
       });
       return;
     }
-
     try {
       isLoading = true;
       let successCount = 0;
-
       for (let i = 0; i < availableDocuments.length; i++) {
         const doc = availableDocuments[i];
         const result = await enhancedEmbeddingService.queueEmbeddingJob(
@@ -393,40 +330,35 @@
           `doc-${Date.now()}-${i}`,
           doc
         );
-
         if ((result as { document?: unknown; similarity?: unknown; queued?: unknown }).queued) successCount++;
       }
-
       notifications.add({
-        type: successCount === availableDocuments.length ? "success" : "warning",;
-        title: "Jobs Queued",;
+        type: successCount === availableDocuments.length ? "success" : "warning",
+        title: "Jobs Queued",
         message: `Successfully queued ${successCount}/${availableDocuments.length} embedding jobs`,
       });
-
     } catch (error) {
       console.error('Job queuing failed:', error);
       notifications.add({
-        type: "error",;
-        title: "Queue Failed",;
-        message: "Failed to queue embedding jobs",;
+        type: "error",
+        title: "Queue Failed",
+        message: "Failed to queue embedding jobs",
       });
     } finally {
       isLoading = false;
     }
   }
-
   function addDocument() {
     const newDoc = prompt("Enter document content:");
     if (newDoc?.trim()) {
       availableDocuments = [...availableDocuments, newDoc.trim()];
       notifications.add({
-        type: "success",;
-        title: "Document Added",;
-        message: "Document successfully added to context.",;
+        type: "success",
+        title: "Document Added",
+        message: "Document successfully added to context.",
       });
     }
   }
-
   function toggleDocumentSelection(index: number) {
     const doc = availableDocuments[index];
     if (selectedDocuments.includes(doc)) {
@@ -435,7 +367,6 @@
       selectedDocuments = [...selectedDocuments, doc];
     }
   }
-
   // Reactive scroll to bottom when new messages arrive
   $effect(() => {
     if (messages.length > 0) {
@@ -443,7 +374,6 @@
     }
   });
 </script>
-
 <div class="flex flex-col h-full max-w-4xl mx-auto p-4">
   <!-- Enhanced Header with EmbeddingGemma Controls -->
   <div class="flex items-center justify-between mb-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border">
@@ -458,7 +388,6 @@
         </p>
       </div>
     </div>
-
     <div class="flex items-center gap-2">
       <Button class="bits-btn"
         variant="ghost"
@@ -477,7 +406,6 @@ useAdvancedRAG = !useAdvancedRAG}
           {/if}
         {/snippet}
 </Button>
-
       {#if showDocumentAnalysis}
         <Button class="bits-btn"
           variant="ghost"
@@ -491,7 +419,6 @@ useAdvancedRAG = !useAdvancedRAG}
           {/snippet}
 </Button>
       {/if}
-
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
@@ -507,7 +434,6 @@ useAdvancedRAG = !useAdvancedRAG}
           Health
         {/snippet}
 </Button>
-
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
@@ -521,7 +447,6 @@ useAdvancedRAG = !useAdvancedRAG}
 </Button>
     </div>
   </div>
-
   <!-- Document Management Panel (when RAG is enabled) -->
   {#if useAdvancedRAG}
     <div class="mb-4 p-3 bg-gray-50 rounded-lg border">
@@ -550,7 +475,6 @@ useAdvancedRAG = !useAdvancedRAG}
           </label>
         </div>
       </div>
-
       {#if availableDocuments.length > 0}
         <div class="space-y-1 max-h-24 overflow-y-auto">
           {#each availableDocuments as doc, index}
@@ -570,7 +494,6 @@ useAdvancedRAG = !useAdvancedRAG}
       {/if}
     </div>
   {/if}
-
   <!-- Messages Container -->
   <div;
     bind:this={messagesContainer}
@@ -587,7 +510,6 @@ useAdvancedRAG = !useAdvancedRAG}
         <p class="text-gray-600 mb-4">
           Advanced semantic AI powered by Google's EmbeddingGemma model with 768D→384D quantized embeddings.
         </p>
-
         {#if useAdvancedRAG}
           <div class="text-sm text-blue-600 bg-blue-50 rounded p-3 max-w-md mx-auto">
             🧠 <strong>RAG Mode Active:</strong> I'll analyze your documents using semantic similarity search and provide contextual responses.
@@ -604,7 +526,6 @@ useAdvancedRAG = !useAdvancedRAG}
         <AIChatMessage {message} showReferences={useAdvancedRAG} />
       {/each}
     {/if}
-
     <!-- Typing Indicator -->
     {#if isTyping}
       <div class="flex items-center gap-2 p-3">
@@ -620,7 +541,6 @@ useAdvancedRAG = !useAdvancedRAG}
       </div>
     {/if}
   </div>
-
   <!-- Input Area -->
   <div class="mt-4 p-4 bg-gray-50 rounded-lg border">
     <div class="flex gap-3">
@@ -637,7 +557,6 @@ useAdvancedRAG = !useAdvancedRAG}
           disabled={isLoading}
         />
       </div>
-
       <Button class="bits-btn"
         variant="default"
         size="default"
@@ -653,7 +572,6 @@ useAdvancedRAG = !useAdvancedRAG}
         {/snippet}
 </Button>
     </div>
-
     <!-- Status Bar -->
     <div class="flex items-center justify-between mt-2 text-xs text-gray-500">
       <div class="flex items-center gap-4">
@@ -666,7 +584,6 @@ useAdvancedRAG = !useAdvancedRAG}
           <span>GPU: {embeddingOptions.useGPU ? 'Enabled' : 'Disabled'}</span>
         {/if}
       </div>
-
       <div class="flex items-center gap-2">
         {#if useAdvancedRAG}
           <span class="text-purple-600">🧠 EmbeddingGemma</span>

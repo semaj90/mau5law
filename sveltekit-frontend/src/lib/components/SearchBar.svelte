@@ -1,19 +1,16 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import SearchInput from './SearchInput.svelte';
   	import { Filter, ArrowUpDown } from 'lucide-svelte';
-
   	interface Props {
   		placeholder?: string;
   		value?: string;
   		showFilters?: boolean;
-  		sortOptions?: Array;
+  		sortOptions?: Array<{id: string; label: string}>;
   		onsearch?: (event: CustomEvent) => void;
   		onsortChanged?: (event: CustomEvent) => void;
   		onfiltersChanged?: (event: CustomEvent) => void;
   	}
-
   	// Props using Svelte 5 syntax
   	let {
   		placeholder = 'Search...',
@@ -29,17 +26,15 @@
   		onsortChanged,
   		onfiltersChanged
   	}: Props = $props();
-
   	// State using Svelte 5 syntax
   	let selectedSort = $state('relevance');
   	let filtersOpen = $state(false);
   	// Filter state
   	let selectedFileTypes: string[] = $state([]);
   	let dateRange = $state({
-  		from: '',;
-  		to: '';
+  		from: '',
+  		to: ''
   	});
-
   	function handleSearch(event: CustomEvent) {
   		onsearch?.(event);
   	}
@@ -52,7 +47,8 @@
   		if (filtersOpen) {
   			// Dispatch current filter state when opening
   			dispatchFilters();
-  }}
+  	}
+  }
   	function handleFileTypeChange(event: Event) {
   		const target = event.target as HTMLInputElement;
   		const value = target.value;
@@ -69,13 +65,12 @@
   	function dispatchFilters() {
   		onfiltersChanged?.(new CustomEvent('filtersChanged', {
   			detail: {
-  				fileTypes: selectedFileTypes,
+  				fileTypes: selectedFileTypes
   				dateRange: dateRange
   			}
   		}));
   	}
 </script>
-
 <div class="search-bar-container">
 	<!-- Main Search Input -->
 	<SearchInput
@@ -83,7 +78,6 @@
 		{value}
 		onsearch={handleSearch}
 	/>
-
 	<!-- Controls -->
 	{#if showFilters}
 		<div class="search-controls">
@@ -101,7 +95,6 @@
 				</select>
 				<ArrowUpDown size={16} />
 			</div>
-
 			<!-- Filter Button -->
 			<button
 				class="filter-button"
@@ -115,7 +108,6 @@
 		</div>
 	{/if}
 </div>
-
 <!-- Advanced Filters -->
 {#if filtersOpen}
 	<div class="filters-panel">
@@ -160,7 +152,6 @@
 				</label>
 			</div>
 		</div>
-
 		<div class="filter-group">
 			<span class="filter-label">Date Range:</span>
 			<div class="date-range">
@@ -181,7 +172,6 @@
 				/>
 			</div>
 		</div>
-
 		<div class="filter-actions">
 			<button
 				type="button"
@@ -197,7 +187,6 @@
 		</div>
 	</div>
 {/if}
-
 <style>
   /* @unocss-include */
 	.search-bar-container {
@@ -344,5 +333,3 @@
 			align-items: stretch;
 }}
 </style>
-
-

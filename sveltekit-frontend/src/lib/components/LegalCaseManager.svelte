@@ -1,19 +1,17 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
+https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 /// <reference types="vite/client" />
 <!-- @migration-task Error while migrating Svelte code: Identifier 'caseId' has already been declared;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     caseId?: string | null;
   }
   let {
     caseId = null
   }: Props = $props();
-
   import { onMount } from 'svelte';
   import { fade, slide } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
@@ -27,9 +25,7 @@ https://svelte.dev/e/js_parse_error -->
   import ReviewSubmitForm from './ReviewSubmitForm.svelte';
   import ProgressIndicator from './ProgressIndicator.svelte';
   import LoadingSpinner from './LoadingSpinner.svelte';
-
   // Form state management (caseId already declared above)
-
   interface FormData {
     caseInfo: {
       title: string;
@@ -65,7 +61,6 @@ https://svelte.dev/e/js_parse_error -->
       ready_for_submission: boolean;
     }
   }
-
   // Initialize form data
   const formData = writable<FormData>({
     caseInfo: {
@@ -94,21 +89,19 @@ https://svelte.dev/e/js_parse_error -->
       risk_factors: [],
       recommendations: [],
       similar_cases: [];
-    },;
+    },
     review: {
       final_review: '',
       quality_score: 0,
-      completeness_check: false,
+      completeness_check: false
       ready_for_submission: false
     }
   });
-
   // Form step management
   const currentStep = writable(1);
   const totalSteps = 5;
   const isLoading = writable(false);
   const processingMessage = writable('');
-
   // Form validation state
   const stepValidation = derived([formData, currentStep], ([$formData, $currentStep]) => {
     const validations = {
@@ -120,7 +113,6 @@ https://svelte.dev/e/js_parse_error -->
     }
     return validations[$currentStep as keyof typeof validations] || false;
   });
-
   // Auto-save functionality
   let autoSaveTimeout = $state({}) {
     if ($formData) {
@@ -130,7 +122,6 @@ https://svelte.dev/e/js_parse_error -->
       }, 2000);
     }
   });
-
   async function saveFormData() {
     try {
       localStorage.setItem(`legal-case-form-${caseId || 'new'}`, JSON.stringify($formData));
@@ -139,7 +130,6 @@ https://svelte.dev/e/js_parse_error -->
       console.error('❌ Failed to auto-save form data:', error);
     }
   }
-
   async function loadFormData() {
     try {
       const saved = localStorage.getItem(`legal-case-form-${caseId || 'new'}`);
@@ -152,71 +142,57 @@ https://svelte.dev/e/js_parse_error -->
       console.error('❌ Failed to load form data:', error);
     }
   }
-
   // Document processing
   async function processDocuments(files: File[]) {
     isLoading.set(true);
     processingMessage.set('Processing uploaded documents...');
-
     try {
       formData.update(data => ({
         ...data,
         documents: {
           ...data.documents,
-          uploaded_files: files,
+          uploaded_files: files
           processing_status: 'processing'
         }
       }));
-
       const ocrResults: OCRResult[] = [];
-
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         processingMessage.set(`Processing document ${i + 1}/${files.length}: ${file.name}`);
-
         // Save file temporarily for processing
         const formData_upload = new FormData();
         formData_upload.append('file', file);
-
         const uploadResponse = await fetch('/api/upload-temp', {
-          method: 'POST',;
+          method: 'POST',
           body: formData_upload;
         });
-
         if (!uploadResponse.ok) {
           throw new Error(`Failed to upload ${file.name}`);
         }
-
         const { filePath } = await uploadResponse.json();
-
         // Process with OCR
         const ocrResult = await ocrProcessor.processDocument(filePath);
         ocrResults.push(ocrResult);
-
         // Clean up temp file
         await fetch('/api/cleanup-temp', {
-          method: 'POST',;
-          headers: { 'Content-Type': 'application/json' },;
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ filePath })
         });
       }
-
       formData.update(data => ({
         ...data,
         documents: {
           ...data.documents,
-          ocr_results: ocrResults,
+          ocr_results: ocrResults
           processing_status: 'completed'
         }
       }));
-
       console.log('✅ Document processing completed');
-
       // Auto-advance to next step
       setTimeout(() => {
         nextStep();
       }, 1000);
-
     } catch (error) {
       console.error('❌ Document processing failed:', error);
       formData.update(data => ({
@@ -231,35 +207,28 @@ https://svelte.dev/e/js_parse_error -->
       processingMessage.set('');
     }
   }
-
   // Evidence extraction
   async function extractEvidence() {
     isLoading.set(true);
     processingMessage.set('Extracting legal entities and evidence...');
-
     try {
       const response = await fetch('/api/evidence/extract', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
-        body: JSON.stringify({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({,
           ocr_results: $formData.documents.ocr_results,
           case_context: $formData.caseInfo
         })
       });
-
       if (!(response as { ok?: unknown; json?: unknown }).ok) {
         throw new Error('Evidence extraction failed');
       }
-
       const evidenceData = await (response as { ok?: unknown; json?: unknown }).json();
-
       formData.update(data => ({
         ...data,
         evidence: evidenceData;
       }));
-
       console.log('✅ Evidence extraction completed');
-
     } catch (error) {
       console.error('❌ Evidence extraction failed:', error);
     } finally {
@@ -267,36 +236,29 @@ https://svelte.dev/e/js_parse_error -->
       processingMessage.set('');
     }
   }
-
   // AI analysis
   async function performAIAnalysis() {
     isLoading.set(true);
     processingMessage.set('Performing AI case analysis...');
-
     try {
       const response = await fetch('/api/ai/analyze-case', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           case_info: $formData.caseInfo,
-          evidence: $formData.evidence,;
-          documents: $formData.documents.ocr_results;
+          evidence: $formData.evidence,
+          documents: $formData.documents.ocr_result;
         })
       });
-
       if (!(response as { ok?: unknown; json?: unknown }).ok) {
         throw new Error('AI analysis failed');
       }
-
       const analysisData = await (response as { ok?: unknown; json?: unknown }).json();
-
       formData.update(data => ({
         ...data,
         ai_analysis: analysisData
       }));
-
       console.log('✅ AI analysis completed');
-
     } catch (error) {
       console.error('❌ AI analysis failed:', error);
     } finally {
@@ -304,50 +266,40 @@ https://svelte.dev/e/js_parse_error -->
       processingMessage.set('');
     }
   }
-
   // Navigation functions
   function nextStep() {
     if ($currentStep < totalSteps) {
       currentStep.update(step => step + 1);
     }
   }
-
   function prevStep() {
     if ($currentStep > 1) {
       currentStep.update(step => step - 1);
     }
   }
-
   function goToStep(step: number) {
     if (step >= 1 && step <= totalSteps) {
       currentStep.set(step);
     }
   }
-
   // Form submission
   async function submitForm() {
     isLoading.set(true);
     processingMessage.set('Submitting case for review...');
-
     try {
       const response = await fetch('/api/cases/submit', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify($formData);
       });
-
       if (!(response as { ok?: unknown; json?: unknown }).ok) {
         throw new Error('Case submission failed');
       }
-
       const result = await (response as { ok?: unknown; json?: unknown }).json();
-
       // Clear form data
       localStorage.removeItem(`legal-case-form-${caseId || 'new'}`);
-
       // Redirect to case details
       window.location.href = `/cases/${(result as { case_id?: unknown }).case_id}`;
-
     } catch (error) {
       console.error('❌ Case submission failed:', error);
     } finally {
@@ -355,23 +307,19 @@ https://svelte.dev/e/js_parse_error -->
       processingMessage.set('');
     }
   }
-
   $effect(() => {
     loadFormData();
   });
 </script>
-
 <div class="legal-case-manager">
   <!-- Component content placeholder -->
 </div>
-
 <div class="legal-case-manager">
   <!-- Progress Header -->
   <div class="progress-header">
     <h1 class="text-3xl font-bold text-gray-900 mb-4">
       {caseId ? 'Edit Case' : 'Create New Legal Case'}
     </h1>
-
     <ProgressIndicator
       currentStep={$currentStep}
       totalSteps={totalSteps}
@@ -385,7 +333,6 @@ https://svelte.dev/e/js_parse_error -->
       stepclick={(e) => goToStep(e.detail)}
     />
   </div>
-
   <!-- Loading Overlay -->
   {#if $isLoading}
     <div class="loading-overlay" transitifade={{ duration: 300 }}>
@@ -393,7 +340,6 @@ https://svelte.dev/e/js_parse_error -->
       <p class="loading-message">{$processingMessage}</p>
     </div>
   {/if}
-
   <!-- Form Steps -->
   <div class="form-container" class:loading={$isLoading}>
     {#if $currentStep === 1}
@@ -447,7 +393,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   </div>
-
   <!-- Debug Panel (Development only) -->
   {#if import.meta.env.DEV}
     <div class="debug-panel">
@@ -458,21 +403,19 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-
 <style>
-  .legal-case-manager {;
+  .legal-case-manager {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
     position: relative;
   }
-
   .progress-header {
     margin-bottom: 3rem;
   }
-
   .loading-overlay {
     position: fixed;
+d;
     top: 0;
     left: 0;
     right: 0;
@@ -484,23 +427,19 @@ https://svelte.dev/e/js_parse_error -->
     justify-content: center;
     z-index: 1000;
   }
-
   .loading-message {
     color: white;
     font-size: 1.1rem;
     margin-top: 1rem;
     text-align: center;
   }
-
   .form-container {
     transition: opacity 0.3s ease;
   }
-
   .form-container.loading {
     opacity: 0.3;
     pointer-events: none;
   }
-
   .debug-panel {
     margin-top: 2rem;
     padding: 1rem;
@@ -508,23 +447,20 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 8px;
     font-size: 0.8rem;
   }
-
   .debug-panel pre {
     max-height: 300px;
-    overflow: auto;
+    overflow: aut;
+o;
     background: white;
     padding: 1rem;
     border-radius: 4px;
   }
-
   @media (max-width: 768px) {
     .legal-case-manager {
       padding: 1rem;
     }
-
     .progress-header h1 {
       font-size: 1.8rem;
     }
   }
 </style>
-

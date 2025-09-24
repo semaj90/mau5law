@@ -1,23 +1,17 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from '$lib/components/ui/enhanced-bits';
   import type { Citation } from "$lib/types/api";
   import { Copy, Search, Star, Tag, Trash2 } from "lucide-svelte";
-  import {   } from "svelte";
   // Badge replaced with span - not available in enhanced-bits
   import Input from '$lib/components/ui/Input.svelte';
-
-  let { citations = $bindable()  }: { citations = $bindable() : any } = $props(); // Citation[] = [];
-
-  
+  let { citations = $bindable()  }: { citations = $bindable() : any } = $props(); // Citation[] = []
   let searchQuery = $state("");
   let selectedCategory = $state("all");
   let filteredCitations = $state<Citation[] >([]);
-
   // Categories for filtering
   const categories = [
     { value: "all", label: "All Citations" },
@@ -27,7 +21,6 @@ https://svelte.dev/e/js_parse_error -->
     { value: "case-law", label: "Case Law" },
     { value: "evidence", label: "Evidence" },
   ];
-
   // Reactive filtering
   // TODO: Convert to $derived: {
     filteredCitations = citations.filter((citation) => {
@@ -39,10 +32,8 @@ https://svelte.dev/e/js_parse_error -->
         citation.tags.some((tag) =>
           tag.toLowerCase().includes(searchQuery.toLowerCase())
         )
-
       const matchesCategory =
         selectedCategory === "all" || citation.category === selectedCategory;
-
       return matchesSearch && matchesCategory;
     });
   }
@@ -58,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   function toggleFavorite(citation: Citation) {
     // Update favorite status - in real app, this would update the database
-    citation.isFavorite = !citation.isFavorite;
+    citation.isFavorite = !citation.isFavorit;
     ondispatch?.(citation);
   }
   // Drag and drop functionality
@@ -69,7 +60,6 @@ https://svelte.dev/e/js_parse_error -->
       event.dataTransfer.effectAllowed = "copy";
   }}
 </script>
-
 <div class="container mx-auto px-4">
   <div class="container mx-auto px-4">
     <h2 class="container mx-auto px-4">Saved Citations</h2>
@@ -77,7 +67,6 @@ https://svelte.dev/e/js_parse_error -->
       {filteredCitations.length} of {citations.length} citations
     </p>
   </div>
-
   <!-- Search and Filters -->
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
@@ -89,14 +78,12 @@ https://svelte.dev/e/js_parse_error -->
         class="container mx-auto px-4"
       />
     </div>
-
     <select bind:value={selectedCategory} class="container mx-auto px-4">
       {#each categories as category}
         <option value={category.value}>{category.label}</option>
       {/each}
     </select>
   </div>
-
   <!-- Citations List -->
   <div class="container mx-auto px-4">
     {#each filteredCitations as citation (citation.id)}
@@ -113,7 +100,6 @@ https://svelte.dev/e/js_parse_error -->
               >
                 <Star class="container mx-auto px-4" />
               </button>
-
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
@@ -123,7 +109,6 @@ copyCitation(citation)}
               >
                 <Copy class="container mx-auto px-4" />
 </Button>
-
               <button class="nes-btn"
                 variant="ghost"
                 size="sm"
@@ -135,16 +120,13 @@ copyCitation(citation)}
 </Button>
             </div>
           </div>
-
           <div class="container mx-auto px-4">
             <p class="container mx-auto px-4">{citation.content}</p>
             <p class="container mx-auto px-4">Source: {citation.source}</p>
-
             {#if citation.notes}
               <p class="container mx-auto px-4">Notes: {citation.notes}</p>
             {/if}
           </div>
-
           <!-- Tags -->
           {#if citation.tags.length > 0}
             <div class="container mx-auto px-4">
@@ -156,7 +138,6 @@ copyCitation(citation)}
               {/each}
             </div>
           {/if}
-
           <!-- Drag Handle -->
           <div
             class="container mx-auto px-4"
@@ -179,7 +160,6 @@ copyCitation(citation)}
             </div>
             <span class="container mx-auto px-4">Drag to report</span>
           </div>
-
           <div class="container mx-auto px-4">
             <span class="container mx-auto px-4">
               Saved {new Date(citation.savedAt).toLocaleDateString()}
@@ -189,7 +169,6 @@ copyCitation(citation)}
         </div>
       </div>
     {/each}
-
     {#if filteredCitations.length === 0}
       <div class="container mx-auto px-4">
         {#if searchQuery || selectedCategory !== "all"}
@@ -215,7 +194,6 @@ copyCitation(citation)}
     {/if}
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .citation-sidebar {
@@ -283,7 +261,7 @@ copyCitation(citation)}
 }
   .citation-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: flex-start;
     margin-bottom: 12px;
 }
@@ -301,13 +279,13 @@ copyCitation(citation)}
     opacity: 0;
     transition: opacity 0.2s ease;
 }
-  :global(.citation-card:hover .citation-actions) {
+  :global($1) {
     opacity: 1;
 }
   :global(.favorite-btn.favorited) {
     color: #f59e0b !important;
 }
-  :global(.delete-btn:hover) {
+  :global($1) {
     color: #dc2626 !important;
 }
   .citation-body {
@@ -381,7 +359,7 @@ copyCitation(citation)}
 }
   .citation-meta {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     font-size: 11px;
     color: #9ca3af;
@@ -411,6 +389,4 @@ copyCitation(citation)}
     line-height: 1.4;
 }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

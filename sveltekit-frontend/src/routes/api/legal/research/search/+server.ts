@@ -1,6 +1,5 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 interface SearchRequest {
   query: string
   mode: 'semantic' | 'boolean' | 'phrase'
@@ -15,7 +14,6 @@ interface SearchRequest {
   page: number
   limit: number
 }
-
 interface LegalDocument {
   id: string
   title: string
@@ -34,37 +32,32 @@ interface LegalDocument {
   content?: string
   embedding?: number[]
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const searchRequest: SearchRequest = await request.json()
     const { query, mode, filters, sort, page, limit } = searchRequest
-
     // Vector search for semantic mode
     if (mode === 'semantic') {
       const results = await performSemanticSearch(query, filters, sort, page, limit)
       return json({
-        success: true,
+        success: true
         results: results.documents,
         total: results.total,
         relatedTopics: results.relatedTopics,
-        searchMode: mode,
+        searchMode: mode
         processingTime: results.processingTime
       })
     }
-
     // Boolean/phrase search
     const results = await performKeywordSearch(query, mode, filters, sort, page, limit)
-    
     return json({
-      success: true,
+      success: true
       results: results.documents,
       total: results.total,
       relatedTopics: results.relatedTopics,
-      searchMode: mode,
+      searchMode: mode
       processingTime: results.processingTime
     })
-
   } catch (error) {
     console.error('Legal research search error:', error)
     return json(
@@ -73,22 +66,19 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 async function performSemanticSearch(
-  query: string,
-  filters: any,
-  sort: string,
-  page: number,
+  query: string
+  filters: any
+  sort: string
+  page: number
   limit: number
 ) {
   const startTime = Date.now()
-
   // Generate embedding for the query
   const queryEmbedding = await generateQueryEmbedding(query)
-  
   // Build the vector similarity query
   let sql = `
-    SELECT 
+    SELECT
       ld.*,
       1 - (ld.embedding <=> $1::vector) AS relevance_score,
       array_agg(DISTINCT kw.keyword) FILTER (WHERE kw.keyword IS NOT NULL) as key_topics
@@ -96,38 +86,31 @@ async function performSemanticSearch(
     LEFT JOIN LATERAL unnest(ld.keywords) as kw(keyword) ON true
     WHERE ld.embedding IS NOT NULL
   `
-
   const params: any[] = [JSON.stringify(queryEmbedding)]
   let paramIndex = 2
-
   // Apply filters
   if (filters.jurisdiction) {
     sql += ` AND ld.jurisdiction = $${paramIndex}`
     params.push(filters.jurisdiction)
     paramIndex++
   }
-
   if (filters.court) {
     sql += ` AND ld.court = $${paramIndex}`
     params.push(filters.court)
     paramIndex++
   }
-
   if (filters.documentType) {
     sql += ` AND ld.document_type = $${paramIndex}`
     params.push(filters.documentType)
     paramIndex++
   }
-
   if (filters.precedentialValue) {
     sql += ` AND ld.precedential_value = $${paramIndex}`
     params.push(filters.precedentialValue)
     paramIndex++
   }
-
   // Group by for aggregation
   sql += ` GROUP BY ld.id, ld.embedding`
-
   // Apply sorting
   switch (sort) {
     case 'relevance':
@@ -147,51 +130,43 @@ async function performSemanticSearch(
     default:
       sql += ` ORDER BY relevance_score DESC`
   }
-
   // Apply pagination
   sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`
   params.push(limit, (page - 1) * limit)
-
   try {
     // Mock database query for demo - in production, use actual database connection
     const mockResults = generateMockSemanticResults(query, filters, page, limit)
-    
     const relatedTopics = generateRelatedTopics(query)
     const processingTime = Date.now() - startTime
-
     return {
       documents: mockResults.documents,
       total: mockResults.total,
       relatedTopics,
       processingTime
     }
-
   } catch (error) {
     console.error('Database query error:', error)
     throw error
   }
 }
-
 async function performKeywordSearch(
-  query: string,
+  query: string
   mode: 'boolean' | 'phrase',
-  filters: any,
-  sort: string,
-  page: number,
+  filters: any
+  sort: string
+  page: number
   limit: number
 ) {
   const startTime = Date.now()
-
   let sql: string
   const params: any[] = []
   let paramIndex = 1
-
   if (mode === 'phrase') {
     // Exact phrase search using full-text search
     sql = `
-      SELECT 
+      SELECT
         ld.*,
-        ts_rank(to_tsvector('english', coalesce(ld.content, ld.full_text, '')), 
+        ts_rank(to_tsvector('english', coalesce(ld.content, ld.full_text, '')),
                  phraseto_tsquery('english', $1)) as relevance_score,
         array_agg(DISTINCT kw.keyword) FILTER (WHERE kw.keyword IS NOT NULL) as key_topics
       FROM legal_documents ld
@@ -204,9 +179,9 @@ async function performKeywordSearch(
   } else {
     // Boolean search
     sql = `
-      SELECT 
+      SELECT
         ld.*,
-        ts_rank(to_tsvector('english', coalesce(ld.content, ld.full_text, '')), 
+        ts_rank(to_tsvector('english', coalesce(ld.content, ld.full_text, '')),
                  to_tsquery('english', $1)) as relevance_score,
         array_agg(DISTINCT kw.keyword) FILTER (WHERE kw.keyword IS NOT NULL) as key_topics
       FROM legal_documents ld
@@ -217,34 +192,28 @@ async function performKeywordSearch(
     params.push(query.replace(/\s+/g, ' & '); // Convert to boolean query
     paramIndex++
   }
-
   // Apply filters (same as semantic search)
   if (filters.jurisdiction) {
     sql += ` AND ld.jurisdiction = $${paramIndex}`
     params.push(filters.jurisdiction)
     paramIndex++
   }
-
   if (filters.court) {
     sql += ` AND ld.court = $${paramIndex}`
     params.push(filters.court)
     paramIndex++
   }
-
   if (filters.documentType) {
     sql += ` AND ld.document_type = $${paramIndex}`
     params.push(filters.documentType)
     paramIndex++
   }
-
   if (filters.precedentialValue) {
     sql += ` AND ld.precedential_value = $${paramIndex}`
     params.push(filters.precedentialValue)
     paramIndex++
   }
-
   sql += ` GROUP BY ld.id`
-
   // Apply sorting
   switch (sort) {
     case 'relevance':
@@ -256,41 +225,35 @@ async function performKeywordSearch(
     default:
       sql += ` ORDER BY relevance_score DESC`
   }
-
   sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`
   params.push(limit, (page - 1) * limit)
-
   try {
     // Mock implementation for demo
     const mockResults = generateMockKeywordResults(query, mode, filters, page, limit)
     const relatedTopics = generateRelatedTopics(query)
     const processingTime = Date.now() - startTime
-
     return {
       documents: mockResults.documents,
       total: mockResults.total,
       relatedTopics,
       processingTime
     }
-
   } catch (error) {
     console.error('Keyword search error:', error)
     throw error
   }
 }
-
 async function generateQueryEmbedding(query: string): Promise<number[]> {
   try {
     // In production, call your embedding service (OpenAI, local model, etc.)
     const response = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: JSON.stringify({,
         model: 'nomic-embed-text',
         prompt: query
       })
     })
-
     if (response.ok) {
       const data = await response.json()
       return data.embedding
@@ -298,11 +261,9 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
   } catch (error) {
     console.error('Embedding generation failed:', error)
   }
-
   // Fallback: return mock embedding
   return Array.from({ length: 768 }, () => Math.random() - 0.5)
 }
-
 function generateMockSemanticResults(query: string, filters: any, page: number, limit: number) {
   const allResults: LegalDocument[] = [
     {
@@ -354,45 +315,35 @@ function generateMockSemanticResults(query: string, filters: any, page: number, 
       url: `/legal/documents/circuit-court-${query.toLowerCase().replace(/\s+/g, '-')}`
     }
   ]
-
   // Apply filters
   let filteredResults = allResults
-  
   if (filters.jurisdiction) {
     filteredResults = filteredResults.filter(r => r.jurisdiction === filters.jurisdiction)
   }
-  
   if (filters.documentType) {
     filteredResults = filteredResults.filter(r => r.documentType === filters.documentType)
   }
-  
   if (filters.precedentialValue) {
     filteredResults = filteredResults.filter(r => r.precedentialValue === filters.precedentialValue)
   }
-
   // Pagination
   const startIndex = (page - 1) * limit
   const endIndex = startIndex + limit
   const paginatedResults = filteredResults.slice(startIndex, endIndex)
-
   return {
-    documents: paginatedResults,
+    documents: paginatedResults
     total: filteredResults.length
   }
 }
-
 function generateMockKeywordResults(query: string, mode: string, filters: any, page: number, limit: number) {
   // Similar to semantic results but with different relevance scoring
   const results = generateMockSemanticResults(query, filters, page, limit)
-  
   // Adjust relevance scores for keyword matching
   results.documents.forEach(doc => {
     doc.relevanceScore = Math.max(0.6, doc.relevanceScore - 0.1)
   })
-
   return results
 }
-
 function generateRelatedTopics(query: string): string[] {
   const baseTopics = [
     'Constitutional interpretation',
@@ -402,17 +353,14 @@ function generateRelatedTopics(query: string): string[] {
     'Civil procedure',
     'Evidence standards'
   ]
-
   // Generate query-specific related topics
   const queryWords = query.toLowerCase().split(' ')
   const relatedTopics = []
-
   queryWords.forEach(word => {
     if (word.length > 3) {
       relatedTopics.push(`${word} precedents`)
       relatedTopics.push(`${word} regulations`)
     }
   })
-
   return [...relatedTopics.slice(0, 3), ...baseTopics.slice(0, 3)]
 }

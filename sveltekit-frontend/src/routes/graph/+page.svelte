@@ -5,15 +5,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   Graph Engine Page
   WASM Graph Engine with Neo4j Remote Query Caching
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { wasmGraphEngine } from '$lib/wasm/graphEngine';
   import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';
-  import ModernButton from '$lib/components/ui/button/Button.svelte';
-
+  import ModernButton from '$lib/components/ui/Button.svelte';
   let engineStats = $state(null);
   let hotQueries = $state([]);
   let queryInput = $state('MATCH (n) RETURN n LIMIT 10');
@@ -21,53 +18,43 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let queryHistory = $state([]);
   let isExecuting = $state(false);
   let cacheStats = $state(null);
-
   $effect(() => {
     (async () => {
 await loadEngineData();
-
     // Refresh data periodically
     const interval = setInterval(loadEngineData, 3000);
     return () => clearInterval(interval);
     })();
   });
-
   async function loadEngineData() {
     engineStats = wasmGraphEngine.getStats();
     hotQueries = await unifiedServiceRegistry.getHotQueries(10);
     cacheStats = unifiedServiceRegistry.getCacheStats();
   }
-
   async function executeQuery() {
     if (!queryInput.trim() || isExecuting) return;
-
     isExecuting = true;
     const startTime = Date.now();
-
     try {
       const result = await wasmGraphEngine.executeQuery(queryInput);
       const executionTime = Date.now() - startTime;
-
       queryResult = result;
-
       // Add to history
       queryHistory.unshift({
-        query: queryInput,
-        result,;
+        query: queryInput
+        result,
         timestamp: new Date(),
-        executionTime;
+        executionTim;
       });
-
       // Keep only last 5 queries in history
       if (queryHistory.length > 5) {
         queryHistory = queryHistory.slice(0, 5);
       }
-
       await loadEngineData();
     } catch (error) {
       queryResult = {
-        error: error.message,;
-        metadata: {;
+        error: error.message,
+        metadata: {
           source: 'error',
           queryTime: Date.now() - startTime,
           resultCount: 0;
@@ -77,36 +64,29 @@ await loadEngineData();
       isExecuting = false;
     }
   }
-
   async function useHotQuery(query) {
     queryInput = query;
     await executeQuery();
   }
-
   async function getRecommendations() {
     if (queryResult?.nodes?.length > 0) {
       const firstNode = queryResult.nodes[0];
       const recommendations = await wasmGraphEngine.getRecommendations(firstNode.id, firstNode.type);
-
       queryResult = {
         ...queryResult,
         recommendations
       };
     }
   }
-
   async function hydrateCache() {
     const hydrated = await wasmGraphEngine.hydrateFromCache();
     await loadEngineData();
-
     // Show notification
     console.log(`✅ Cache hydrated with ${hydrated} queries`);
   }
-
   function formatBytes(bytes) {
     return bytes ? `${Math.round(bytes / 1024)}KB` : '0KB';
   }
-
   const commonQueries = [
     'MATCH (caseItem:Case) RETURN case LIMIT 5',
     'MATCH (evidence:Evidence)-[:BELONGS_TO]->(caseItem:Case) RETURN evidence, case LIMIT 3',
@@ -114,11 +94,9 @@ await loadEngineData();
     'MATCH (doc:Document)-[:CONTAINS]->(evidence:Evidence) RETURN doc, evidence LIMIT 5'
   ];
 </script>
-
 <svelte:head>
   <title>Graph Engine - YoRHa Legal AI</title>
 </svelte:head>
-
 <div class="space-y-6">
   <header>
     <h1 class="text-3xl font-bold text-nier-accent-warm mb-2">WASM Graph Engine</h1>
@@ -126,7 +104,6 @@ await loadEngineData();
       Local graph processing with Neo4j remote query caching
     </p>
   </header>
-
   <!-- Engine Status Dashboard -->
   <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">
     <!-- Engine Statistics -->
@@ -155,7 +132,6 @@ await loadEngineData();
         <div class="text-nier-text-muted">Engine not initialized</div>
       {/if}
     </div>
-
     <!-- Cache Statistics -->
     <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-4">
       <h3 class="font-bold text-nier-accent-warm mb-3">Cache Stats</h3>
@@ -184,7 +160,6 @@ await loadEngineData();
         <div class="text-nier-text-muted">Cache stats unavailable</div>
       {/if}
     </div>
-
     <!-- Hot Queries -->
     <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-4">
       <h3 class="font-bold text-nier-accent-warm mb-3">Hot Queries</h3>
@@ -207,7 +182,6 @@ await loadEngineData();
         {/if}
       </div>
     </div>
-
     <!-- Cache Actions -->
     <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-4">
       <h3 class="font-bold text-nier-accent-warm mb-3">Actions</h3>
@@ -238,11 +212,9 @@ await loadEngineData();
       </div>
     </div>
   </div>
-
   <!-- Query Interface -->
   <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-6">
     <h3 class="font-bold text-nier-accent-warm mb-4">Graph Query Interface</h3>
-
     <div class="space-y-4">
       <!-- Query Input -->
       <div>
@@ -255,7 +227,6 @@ await loadEngineData();
           class="w-full bg-nier-bg-primary border border-nier-border-muted rounded px-3 py-2 font-mono text-sm text-nier-text-primary focus:outline-none focus:border-nier-accent-warm"
         ></textarea>
       </div>
-
       <!-- Action Buttons -->
       <div class="flex gap-4">
         <ModernButton
@@ -265,7 +236,6 @@ await loadEngineData();
         >
           {isExecuting ? '⚡ Executing...' : '▶️ Execute Query'}
         </ModernButton>
-
         {#if queryResult?.nodes?.length > 0}
           <ModernButton
             onclick={getRecommendations}
@@ -276,7 +246,6 @@ await loadEngineData();
           </ModernButton>
         {/if}
       </div>
-
       <!-- Common Queries -->
       <div>
         <label class="block text-sm font-medium text-nier-text-secondary mb-2">
@@ -295,7 +264,6 @@ await loadEngineData();
       </div>
     </div>
   </div>
-
   <!-- Query Results -->
   {#if queryResult}
     <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-6">
@@ -315,7 +283,6 @@ await loadEngineData();
           <span>Results: <span class="font-mono">{queryResult.metadata.resultCount}</span></span>
         </div>
       </div>
-
       {#if queryResult.error}
         <div class="bg-red-500/10 border border-red-500/30 rounded p-4">
           <div class="text-red-400 font-mono text-sm">
@@ -346,7 +313,6 @@ await loadEngineData();
               {/each}
             </div>
           </div>
-
           <!-- Edges -->
           <div>
             <h4 class="font-semibold text-nier-text-primary mb-3">
@@ -369,7 +335,6 @@ await loadEngineData();
             </div>
           </div>
         </div>
-
         <!-- Recommendations -->
         {#if queryResult.recommendations?.length > 0}
           <div class="mt-6 border-t border-nier-border-muted pt-4">
@@ -391,7 +356,6 @@ await loadEngineData();
         {/if}
     </div>
   {/if}
-
   <!-- Query History -->
   {#if queryHistory.length > 0}
     <div class="bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-6">
@@ -416,22 +380,18 @@ await loadEngineData();
     </div>
   {/if}
 </div>
-
 <style>
   /* Custom scrollbar for query results */
-  .overflow-y-auto::-webkit-scrollbar {;
+  .overflow-y-auto::-webkit-scrollbar {
     width: 6px;
   }
-
   .overflow-y-auto::-webkit-scrollbar-track {
     background: var(--nier-bg-tertiary);
   }
-
   .overflow-y-auto::-webkit-scrollbar-thumb {
     background: var(--nier-accent-warm);
     border-radius: 3px;
   }
-
   .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: var(--nier-accent-cool);
   }

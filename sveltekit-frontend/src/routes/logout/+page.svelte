@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { goto, invalidateAll } from '$app/navigation';
   import { onMount } from 'svelte';
   $effect(() => {
@@ -8,7 +7,7 @@
 try {
       // Call logout API endpoint
       const response = await fetch('/api/auth/logout', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
   }
@@ -30,11 +29,9 @@ try {
   }
   });
 </script>
-
 <svelte:head>
   <title>Logging out... - WardenNet</title>
 </svelte:head>
-
 <div class="space-y-4">
   <div class="space-y-4">
     <div class="space-y-4">
@@ -46,4 +43,3 @@ try {
     </div>
   </div>
 </div>
-

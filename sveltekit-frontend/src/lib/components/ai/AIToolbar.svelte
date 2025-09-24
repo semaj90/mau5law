@@ -3,7 +3,6 @@
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import {
     Card,
     CardHeader,
@@ -17,7 +16,6 @@
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Textarea } from '$lib/components/ui/textarea/index.js';
   import { Loader2, Bot, MessageSquare, FileText, Search, Sparkles, Zap } from 'lucide-svelte';
-
   // Props
   let { onAISearch = null,
     onAIChat = null,
@@ -30,7 +28,6 @@
     disabled = false,
     compact = false,
   : any } = $props();
-
   // State
   let aiSearchQuery = $state('');
   let errorMessage = $state('');
@@ -43,27 +40,24 @@
   let aiSearchResults = $state([]);
   let aiChatResponse = $state('');
   let summaryResult = $state('');
-
   // Enhanced AI Search with LangChain.js and vector similarity
   async function performAISearch() {
     if (!aiSearchQuery.trim() || isAISearching) return;
-
     isAISearching = true;
     aiSearchResults = [];
-
     try {
       try {
     const response = await fetch('/api/ai/enhanced-legal-search', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: aiSearchQuery,;
-          jurisdiction: 'all',;
+        body: JSON.stringify({,
+          query: aiSearchQuery
+          jurisdiction: 'all',
           category: 'all',
           maxResults: 10,
-          useAI: true,
+          useAI: true
           advancedOptions: {
-            useVector: true,
+            useVector: true
             similarityThreshold: 0.7,
           },
         }));
@@ -75,15 +69,12 @@
     throw error;
   },
       });
-
       const result = await (response as { json?: any }).json();
-
       if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).success) {
         aiSearchResults = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).results || [];
         console.log.searchTime}`
         );
         console.log.analytics);
-
         if (onAISearch) {
           onAISearch(result);
         }
@@ -96,24 +87,22 @@
       console.error('Enhanced AI search error:', error);
       // Fallback to basic search
       await performFallbackSearch();
-    
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';} finally {
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'} finally {
       isAISearching = false;
     }
   }
-
   // Fallback search method
   async function performFallbackSearch() {
     try {
       try {
     const response = await fetch('/api/ai/legal-search', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: aiSearchQuery,;
-          jurisdiction: 'all',;
+        body: JSON.stringify({,
+          query: aiSearchQuery
+          jurisdiction: 'all',
           category: 'all',
-          useAI: true,;
+          useAI: true
         }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -123,9 +112,7 @@
     throw error;
   },
       });
-
       const result = await (response as { json?: any }).json();
-
       if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).success) {
         aiSearchResults = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).laws || [];
         if (onAISearch) {
@@ -136,22 +123,19 @@
       console.error('Fallback search also failed:', fallbackError);
     }
   }
-
   // AI Chat
   async function performAIChat() {
     if (!aiChatMessage.trim() || isAIChatting) return;
-
     isAIChatting = true;
     aiChatResponse = '';
-
     try {
       try {
     const response = await fetch('/api/ai/chat', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: aiChatMessage,;
-          temperature: 0.7,;
+        body: JSON.stringify({,
+          message: aiChatMessage
+          temperature: 0.7,
         }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -161,11 +145,9 @@
     throw error;
   },
       });
-
       const result = await (response as { json?: any }).json();
-
       if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).response) {
-        aiChatResponse = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).response;
+        aiChatResponse = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).respon;
         if (onAIChat) {
           onAIChat(result);
         }
@@ -174,27 +156,23 @@
       }
     } catch (error) {
       console.error('AI chat error:', error);
-    
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';} finally {
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'} finally {
       isAIChatting = false;
     }
   }
-
   // AI Summarization
   async function performAISummarization() {
     if (!summarizeText.trim() || isSummarizing) return;
-
     isSummarizing = true;
     summaryResult = '';
-
     try {
       try {
     const response = await fetch('/api/ai/summarize', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: summarizeText,;
-          type: 'legal',;
+        body: JSON.stringify({,
+          text: summarizeText
+          type: 'legal',
           options: { max_tokens: 500 },
         }));
     if (!response.ok) {
@@ -205,9 +183,7 @@
     throw error;
   },
       });
-
       const result = await (response as { json?: any }).json();
-
       if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).success) {
         summaryResult = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).summary;
         if (onAISummarize) {
@@ -218,12 +194,10 @@
       }
     } catch (error) {
       console.error('AI summarization error:', error);
-    
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';} finally {
+    errorMessage = error instanceof Error ? error.message: 'An error occurred'} finally {
       isSummarizing = false;
     }
   }
-
   // Keyboard handlers
   function handleAISearchKeydown(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -231,21 +205,18 @@
       performAISearch();
     }
   }
-
   function handleAIChatKeydown(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       performAIChat();
     }
   }
-
   function clearResults() {
     aiSearchResults = [];
     aiChatResponse = '';
     summaryResult = '';
   }
 </script>
-
 <div class="space-y-6">
   <div class="text-center">
     <h2 class="text-2xl font-bold flex items-center justify-center gap-2">
@@ -256,7 +227,6 @@
       Intelligent search, chat, and summarization powered by local AI
     </p>
   </div>
-
   <div class="grid grid-cols-1 {compact ? 'lg:grid-cols-1' : 'lg:grid-cols-3'} gap-6">
     <!-- AI Search -->
     <div class="border-primary/20 nes-container">
@@ -288,7 +258,6 @@
             {/if}
 </Button>
         </div>
-
         {#if aiSearchResults.length > 0}
           <div class="space-y-2 max-h-32 overflow-y-auto">
             {#each aiSearchResults.slice(0, 3) as result}
@@ -305,7 +274,6 @@
         {/if}
       </div>
     </div>
-
     <!-- AI Chat -->
     <div class="border-green-500/20 nes-container">
       <div class="yorha-panel-header pb-3">
@@ -337,7 +305,6 @@
             {/if}
 </Button>
         </div>
-
         {#if aiChatResponse}
           <div
             class="p-3 bg-green-50 dark:bg-green-950/30 rounded text-sm max-h-32 overflow-y-auto">
@@ -348,7 +315,6 @@
         {/if}
       </div>
     </div>
-
     <!-- AI Summarization -->
     <div class="border-blue-500/20 nes-container">
       <div class="yorha-panel-header pb-3">
@@ -379,7 +345,6 @@
             {/if}
 </Button>
         </div>
-
         {#if summaryResult}
           <div class="p-3 bg-blue-50 dark:bg-blue-950/30 rounded text-sm max-h-32 overflow-y-auto">
             <div class="prose prose-sm max-w-none">
@@ -390,7 +355,6 @@
       </div>
     </div>
   </div>
-
   <!-- Clear Results Button -->
   {#if aiSearchResults.length > 0 || aiChatResponse || summaryResult}
     <div class="text-center">
@@ -399,7 +363,6 @@ Clear All Results
 </Button>
     </div>
   {/if}
-
   <!-- Quick Actions -->
   <div class="flex flex-wrap gap-2 justify-center">
     <Button class="bits-btn"
@@ -440,11 +403,8 @@ Clear All Results
 </Button>
   </div>
 </div>
-
 <style>
   :global(.prose p) {
     @apply text-sm leading-relaxed mb-2 last:mb-0;
   }
 </style>
-
-

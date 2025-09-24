@@ -4,15 +4,12 @@ import postgres from 'postgres';
 // Environment check that works in both SvelteKit and worker contexts
 const isDev = process.env.NODE_ENV === 'development';
 import * as schema from './schema-unified.js';
-
 // Connection strings with role separation
-const RUNTIME_DATABASE_URL = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
-const ADMIN_DATABASE_URL = process.env.DATABASE_URL_ADMIN || process.env.ADMIN_DATABASE_URL || 'postgresql://postgres:123456@localhost:5434/legal_ai_db';
-
+const RUNTIME_DATABASE_URL = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db'
+const ADMIN_DATABASE_URL = process.env.DATABASE_URL_ADMIN || process.env.ADMIN_DATABASE_URL || 'postgresql://postgres:123456@localhost:5434/legal_ai_db'
 // Create connections with role separation
 let runtimeConnectionSingleton: postgres.Sql;
 let adminConnectionSingleton: postgres.Sql;
-
 function createRuntimeConnection() {
 	if (!runtimeConnectionSingleton) {
 		runtimeConnectionSingleton = postgres(RUNTIME_DATABASE_URL, {
@@ -23,7 +20,7 @@ function createRuntimeConnection() {
 			// Enable prepared statements for better performance
 			prepare: !isDev, // Disable in isDev for better DX with schema changes
 			// SSL settings (disable for local isDev)
-			ssl: false,
+			ssl: false
 			// Transform settings for compatibility
 			transform: {
 				undefined: null
@@ -39,7 +36,6 @@ function createRuntimeConnection() {
 	}
 	return runtimeConnectionSingleton;
 }
-
 function createAdminConnection() {
 	if (!adminConnectionSingleton) {
 		adminConnectionSingleton = postgres(ADMIN_DATABASE_URL, {
@@ -48,7 +44,7 @@ function createAdminConnection() {
 			idle_timeout: 10,
 			max_lifetime: 60 * 10, // 10 minutes
 			prepare: false, // Admin operations don't need prepared statements
-			ssl: false,
+			ssl: false
 			transform: {
 				undefined: null
 			},
@@ -62,21 +58,17 @@ function createAdminConnection() {
 	}
 	return adminConnectionSingleton;
 }
-
 // Create Drizzle clients with role separation
-export const db = drizzle(createRuntimeConnection(), { 
+export const db = drizzle(createRuntimeConnection(), {
 	schema,
 	logger: isDev
 });
-
 export const adminDb = drizzle(createAdminConnection(), {
 	schema,
 	logger: isDev
 });
-
 // Initialize database (run migrations if needed with admin privileges)
 let initialized = false;
-
 async function initializeDatabase() {
 	if (!initialized && !isDev) {
 		try {
@@ -89,15 +81,12 @@ async function initializeDatabase() {
 		initialized = true;
 	}
 }
-
 // Auto-initialize in production, skip in isDev
 if (!isDev) {
 	initializeDatabase();
 }
-
 // Export schema for type safety
 export * from './schema-postgres.js';
-
 // Health check utilities
 export async function testRuntimeConnection(): Promise<boolean> {
 	try {
@@ -109,7 +98,6 @@ export async function testRuntimeConnection(): Promise<boolean> {
 		return false;
 	}
 }
-
 export async function testAdminConnection(): Promise<boolean> {
 	try {
 		const result = await adminDb.execute('SELECT 1 as test');
@@ -120,10 +108,8 @@ export async function testAdminConnection(): Promise<boolean> {
 		return false;
 	}
 }
-
 // Legacy alias for backward compatibility
 export const testConnection = testRuntimeConnection;
-
 // Graceful shutdown for both connections
 export function closeConnections() {
 	if (runtimeConnectionSingleton) {
@@ -135,8 +121,6 @@ export function closeConnections() {
 		console.log('🔌 Admin database connection closed');
 	}
 }
-
 // Legacy alias
 export const closeConnection = closeConnections;
-
 export default db;

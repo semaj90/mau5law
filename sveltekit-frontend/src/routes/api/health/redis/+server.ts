@@ -1,18 +1,15 @@
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
-
 export const GET: RequestHandler = async () => {
   try {
     // Check if Redis is accessible via the main health endpoint
     const healthResponse = await fetch('http://localhost:5174/api/health')
     const healthData = await healthResponse.json()
-    
     const redisStatus = healthData.services?.databases?.redis || healthData.redis
-    
     if (redisStatus) {
       return json({
         status: 'healthy',
-        redis: redisStatus,
+        redis: redisStatus
         port: 6379,
         host: 'localhost',
         timestamp: new Date().toISOString(),

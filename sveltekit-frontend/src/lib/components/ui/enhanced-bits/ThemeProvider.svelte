@@ -2,7 +2,6 @@
   import { writable } from 'svelte/store';
   import { browser } from '$app/environment';
   import { createEventDispatcher, setContext } from 'svelte';
-
   interface ThemeProviderProps {
     defaultTheme?: 'light' | 'dark' | 'system';
     storageKey?: string;
@@ -10,7 +9,6 @@
     enableSystem?: boolean;
     disableTransitionOnChange?: boolean;
   }
-
   let {
     defaultTheme = 'system',
     storageKey = 'enhanced-bits-theme',
@@ -19,13 +17,10 @@
     disableTransitionOnChange = false,
     children
   }: ThemeProviderProps = $props();
-
   const dispatch = createEventDispatcher();
-
   // Theme store
   const createThemeStore = () => {
     const { subscribe, set, update } = writable<'light' | 'dark' | 'system'>(defaultTheme);
-
     return {
       subscribe,
       set: (theme: 'light' | 'dark' | 'system') => {
@@ -43,7 +38,7 @@
         }
         applyTheme(newTheme);
         dispatch('themeChange', { theme: newTheme });
-        return newTheme;
+        return newThem;
       }),
       init: () => {
         if (browser) {
@@ -59,42 +54,35 @@
       }
     };
   };
-
   const themeStore = createThemeStore();
-
   let currentTheme = $state<'light' | 'dark' | 'system'>(defaultTheme);
   let resolvedTheme = $state<'light' | 'dark'>('light');
-
   // Set context for child components
   setContext('theme', {
     theme: () => currentTheme,
     resolvedTheme: () => resolvedTheme,
     setTheme: (theme: 'light' | 'dark' | 'system') => {
-      currentTheme = theme;
+      currentTheme = them;
       themeStore.set(theme);
     },
     toggleTheme: () => {
       themeStore.toggle();
     }
   });
-
   function getSystemTheme(): 'light' | 'dark' {
     if (!browser) return 'light';
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
-
   function applyTheme(theme: 'light' | 'dark' | 'system') {
     if (!browser) return;
-
     const root = document.documentElement;
-    const resolved = theme === 'system' ? getSystemTheme() : theme;
-
+    const resolved = theme === 'system' ? getSystemTheme() : them;
     // Disable transitions temporarily if requested
     if (disableTransitionOnChange) {
       const css = document.createElement('style');
       css.appendChild(document.createTextNode(`
         *,
-        *::before,
+        *:: before
         *::after {
           transition-duration: 0.01ms !important;
           animation-duration: 0.01ms !important;
@@ -102,20 +90,17 @@
         }
       `));
       document.head.appendChild(css);
-
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           document.head.removeChild(css);
         });
       });
     }
-
     // Apply theme classes
     root.classList.remove('light', 'dark');
     root.classList.add(resolved);
     root.setAttribute(attribute, resolved);
     root.style.colorScheme = resolved;
-
     // Update CSS custom properties for Enhanced-Bits
     if (resolved === 'dark') {
       root.style.setProperty('--enhanced-bits-bg', '#000000');
@@ -144,43 +129,35 @@
       root.style.setProperty('--enhanced-bits-error', '#e53e3e');
       root.style.setProperty('--enhanced-bits-shadow', '0 4px 6px -1px rgba(0, 0, 0, 0.1)');
     }
-
     resolvedTheme = resolved;
   }
-
   // Initialize theme on mount
   $effect(() => {
     if (browser) {
       themeStore.init();
     }
   });
-
   // Listen for system theme changes
   $effect(() => {
     if (browser && enableSystem && currentTheme === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
       const handleChange = () => {
         applyTheme('system');
       };
-
       mediaQuery.addEventListener('change', handleChange);
       return () => mediaQuery.removeEventListener('change', handleChange);
     }
   });
-
   // Subscribe to theme store
   $effect(() => {
     const unsubscribe = themeStore.subscribe((theme) => {
-      currentTheme = theme;
+      currentTheme = them;
     });
-    return unsubscribe;
+    return unsubscrib;
   });
 </script>
-
 <!-- Theme Provider doesn't render its own content, just provides context -->
 {@render children?.()}
-
 <style>
   /* Global theme variables */
   :global(:root) {
@@ -190,18 +167,16 @@
     --enhanced-bits-border: #e2e8f0;
     --enhanced-bits-text: #1a202c;
     --enhanced-bits-text-muted: #718096;
-    --enhanced-bits-primary: #3182ce;
+    --enhanced-bits-primary: #3182c;
     --enhanced-bits-secondary: #ed8936;
     --enhanced-bits-accent: #805ad5;
     --enhanced-bits-success: #38a169;
-    --enhanced-bits-warning: #d69e2e;
-    --enhanced-bits-error: #e53e3e;
+    --enhanced-bits-warning: #d69e2;
+    --enhanced-bits-error: #e53e3;
     --enhanced-bits-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-
     /* Transition properties */
     --enhanced-bits-transition: all 0.2s ease-in-out;
   }
-
   :global(.dark) {
     /* Dark theme colors */
     --enhanced-bits-bg: #000000;
@@ -217,7 +192,6 @@
     --enhanced-bits-error: #d00000;
     --enhanced-bits-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
   }
-
   /* Gaming theme overrides */
   :global(.gaming) {
     --enhanced-bits-primary: #00ff41;
@@ -229,14 +203,12 @@
     --enhanced-bits-text: #00ff41;
     --enhanced-bits-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   }
-
   /* Legal theme overrides */
   :global(.legal) {
     --enhanced-bits-primary: #1e40af;
     --enhanced-bits-secondary: #059669;
     --enhanced-bits-accent: #7c3aed;
   }
-
   :global(.legal.dark) {
     --enhanced-bits-bg: #0f172a;
     --enhanced-bits-surface: #1e293b;
@@ -244,7 +216,6 @@
     --enhanced-bits-text: #f1f5f9;
     --enhanced-bits-text-muted: #cbd5e1;
   }
-
   /* Smooth transitions */
   :global(*) {
     transition: background-color var(--enhanced-bits-transition),
@@ -252,7 +223,6 @@
                 color var(--enhanced-bits-transition),
                 box-shadow var(--enhanced-bits-transition);
   }
-
   /* Disable transitions on theme change if requested */
   :global(.disable-transitions *) {
     transition: none !important;

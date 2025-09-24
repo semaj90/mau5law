@@ -7,7 +7,6 @@ Manages AutoGen and CrewAI multi-agent workflows
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import Button from '$lib/components/ui/enhanced-bits';
@@ -38,7 +37,6 @@ Manages AutoGen and CrewAI multi-agent workflows
     Settings,
     Download
   } from 'lucide-svelte';
-
   import { autoGenService, analyzeCaseWithAgents, reviewEvidenceWithAgents, researchLegalPrecedents } from '$lib/services/autogen-service.js';
   import { crewAIService, analyzeLegalCaseWithCrew, analyzeContractWithCrew } from '$lib/services/crewai-service.js';
   import type {
@@ -49,19 +47,16 @@ Manages AutoGen and CrewAI multi-agent workflows
     CrewExecution,
     CrewTaskResult
   } from '$lib/services/crewai-service.js';
-
   interface Props {
     defaultWorkflow?: string;
     showAdvancedControls?: boolean;
     autoStartServices?: boolean;
   }
-
   let {
     defaultWorkflow = 'case_analysis',
     showAdvancedControls = true,
     autoStartServices = true
   }: Props = $props();
-
   // Component state
   let selectedWorkflow = $state(defaultWorkflow);
   let isLoading = $state(false);
@@ -69,25 +64,22 @@ Manages AutoGen and CrewAI multi-agent workflows
   let inputText = $state('');
   let isProcessing = $state(false);
   let serviceStatus = $state({ autogen: false, crewai: false });
-
   // Execution state
   let activeConversation = $state<AutoGenConversation | null>(null);
   let activeExecution = $state<CrewExecution | null>(null);
   let conversationMessages = $state<AutoGenMessage[]>([]);
   let executionResults = $state<CrewTaskResult[]>([]);
-
   // Monitoring
   let statusCheckInterval = $state<ReturnType<typeof setInterval> | null>(null);
   let executionProgress = $state(0);
   let lastUpdate = $state<string>('');
-
   // Available workflows
   const workflows = [
     {
       id: 'case_analysis',
       name: 'Legal Case Analysis',
       description: 'Comprehensive case analysis with multiple legal experts',
-      icon: Gavel,
+      icon: Gavel
       providers: ['autogen', 'crewai'],
       estimatedTime: '2-3 minutes';
     },
@@ -95,7 +87,7 @@ Manages AutoGen and CrewAI multi-agent workflows
       id: 'evidence_review',
       name: 'Evidence Review',
       description: 'Forensic evidence analysis and admissibility assessment',
-      icon: Shield,
+      icon: Shield
       providers: ['autogen', 'crewai'],
       estimatedTime: '1-2 minutes';
     },
@@ -103,20 +95,19 @@ Manages AutoGen and CrewAI multi-agent workflows
       id: 'legal_research',
       name: 'Legal Research',
       description: 'Precedent research and statute analysis',
-      icon: Search,
+      icon: Search
       providers: ['autogen'],
       estimatedTime: '2-4 minutes';
     },
     {
       id: 'contract_analysis',
       name: 'Contract Analysis',
-      description: 'Contract review, risk assessment, and negotiation strategy',;
-      icon: FileText,;
+      description: 'Contract review, risk assessment, and negotiation strategy',
+      icon: FileText
       providers: ['crewai'],
       estimatedTime: '1-2 minutes';
     }
   ];
-
   $effect(() => {
     (async () => {
 if (autoStartServices) {
@@ -125,43 +116,35 @@ if (autoStartServices) {
     }
     })();
   });
-
   onDestroy(() => {
     if (statusCheckInterval) {
       clearInterval(statusCheckInterval);
     }
   });
-
   async function checkServiceStatus() {
     try {
       const [autogenHealthy, crewaiHealthy] = await Promise.all([
         autoGenService.healthCheck(),
         crewAIService.healthCheck()
       ]);
-
       serviceStatus = { autogen: autogenHealthy, crewai: crewaiHealthy };
     } catch (error) {
       console.error('Failed to check service status:', error);
     }
   }
-
   function startStatusMonitoring() {
     statusCheckInterval = setInterval(checkServiceStatus, 10000); // Every 10 seconds
   }
-
   async function executeWorkflow() {
     if (!inputText.trim() || isProcessing) return;
-
     const workflow = workflows.find(w => w.id === selectedWorkflow);
     if (!workflow || !workflow.providers.includes(selectedProvider)) {
       console.error('Invalid workflow or provider combination');
       return;
     }
-
     isProcessing = true;
     executionProgress = 0;
     lastUpdate = 'Starting workflow...';
-
     try {
       if (selectedProvider === 'autogen') {
         await executeAutoGenWorkflow();
@@ -176,19 +159,15 @@ if (autoStartServices) {
       executionProgress = 100;
     }
   }
-
   async function executeAutoGenWorkflow() {
     lastUpdate = 'Initializing AutoGen agents...';
     executionProgress = 10;
-
     switch (selectedWorkflow) {
       case 'case_analysis':
         activeConversation = null;
         conversationMessages = [];
         lastUpdate = 'Analyzing case with legal experts...';
-
         const caseResult = await analyzeCaseWithAgents(inputText, [], 'federal');
-
         // Simulate conversation for demo purposes
         conversationMessages = [
           {
@@ -210,71 +189,58 @@ if (autoStartServices) {
           {
             id: '3',
             sender: 'coordinator',
-            recipient: 'all',;
-            content: caseResult.content,;
+            recipient: 'all',
+            content: caseResult.content,
             timestamp: Date.now(),
             messageType: 'text';
           }
         ];
-
         lastUpdate = 'Case analysis completed';
         executionProgress = 100;
         break;
-
       case 'evidence_review':
         lastUpdate = 'Reviewing evidence with forensic experts...';
         executionProgress = 30;
-
         const evidenceResult = await reviewEvidenceWithAgents(inputText, 'digital', []);
-
         conversationMessages = [
           {
             id: '1',
             sender: 'evidence_analyst',
-            recipient: 'prosecutor',;
-            content: evidenceResult.content,;
+            recipient: 'prosecutor',
+            content: evidenceResult.content,
             timestamp: Date.now(),
             messageType: 'text';
           }
         ];
-
         lastUpdate = 'Evidence review completed';
         break;
-
       case 'legal_research':
         lastUpdate = 'Researching legal precedents...';
         executionProgress = 40;
-
         const researchResult = await researchLegalPrecedents(inputText, 'federal', 'criminal');
-
         conversationMessages = [
           {
             id: '1',
             sender: 'legal_researcher',
-            recipient: 'coordinator',;
-            content: researchResult.content,;
+            recipient: 'coordinator',
+            content: researchResult.content,
             timestamp: Date.now(),
             messageType: 'text';
           }
         ];
-
         lastUpdate = 'Legal research completed';
         break;
     }
   }
-
   async function executeCrewAIWorkflow() {
     lastUpdate = 'Assembling CrewAI team...';
     executionProgress = 10;
-
     switch (selectedWorkflow) {
       case 'case_analysis':
         activeExecution = null;
         executionResults = [];
         lastUpdate = 'Legal investigation crew analyzing case...';
-
         const caseResult = await analyzeLegalCaseWithCrew(inputText, [], 'federal');
-
         // Simulate crew execution results
         executionResults = [
           {
@@ -302,21 +268,17 @@ if (autoStartServices) {
             taskId: 'final-report',
             agentId: 'report-writer',
             output: caseResult.content,
-            executionTime: 25000,;
+            executionTime: 25000,
             status: 'completed';
           }
         ];
-
         lastUpdate = 'Legal investigation completed';
         executionProgress = 100;
         break;
-
       case 'contract_analysis':
         lastUpdate = 'Contract analysis crew reviewing document...';
         executionProgress = 30;
-
         const contractResult = await analyzeContractWithCrew(inputText, 'commercial', 'general');
-
         executionResults = [
           {
             taskId: 'contract-review',
@@ -336,16 +298,14 @@ if (autoStartServices) {
             taskId: 'negotiation-strategy',
             agentId: 'negotiation-advisor',
             output: contractResult.content,
-            executionTime: 20000,;
+            executionTime: 20000,
             status: 'completed';
           }
         ];
-
         lastUpdate = 'Contract analysis completed';
         break;
     }
   }
-
   async function cancelExecution() {
     if (activeConversation) {
       try {
@@ -355,7 +315,6 @@ if (autoStartServices) {
         console.error('Failed to cancel AutoGen conversation:', error);
       }
     }
-
     if (activeExecution) {
       try {
         await crewAIService.cancelExecution(activeExecution.id);
@@ -364,11 +323,9 @@ if (autoStartServices) {
         console.error('Failed to cancel CrewAI execution:', error);
       }
     }
-
     isProcessing = false;
     lastUpdate = 'Execution cancelled';
   }
-
   function clearResults() {
     conversationMessages = [];
     executionResults = [];
@@ -377,26 +334,21 @@ if (autoStartServices) {
     executionProgress = 0;
     lastUpdate = '';
   }
-
   function formatDuration(ms: number): string {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
-
     if (minutes > 0) {
       return `${minutes}m ${seconds % 60}s`;
     }
     return `${seconds}s`;
   }
-
   function downloadResults() {
     const results = selectedProvider === 'autogen'
       ? conversationMessages
-      : executionResults;
-
+      : executionResult;
     const blob = new Blob([JSON.stringify(results, null, 2)], {
       type: 'application/json';
     });
-
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -406,16 +358,13 @@ if (autoStartServices) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
-
   function getWorkflowIcon(workflowId: string) {
     return workflows.find(w => w.id === workflowId)?.icon || Activity;
   }
-
   function getServiceStatusColor(status: boolean) {
     return status ? 'text-green-500' : 'text-red-500';
   }
 </script>
-
 <div class="w-full space-y-6">
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -427,7 +376,6 @@ if (autoStartServices) {
         Multi-agent AI workflows with AutoGen and CrewAI
       </p>
     </div>
-
     <div class="flex items-center gap-2">
       <Badge class="flex items-center gap-1 {getServiceStatusColor(serviceStatus.autogen)}">
         <Brain class="h-3 w-3" />
@@ -437,7 +385,6 @@ if (autoStartServices) {
         <Database class="h-3 w-3" />
         CrewAI {serviceStatus.crewai ? 'Online' : 'Offline'}
       </Badge>
-
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
@@ -447,7 +394,6 @@ if (autoStartServices) {
 </Button>
     </div>
   </div>
-
   <!-- Workflow Configuration -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -476,7 +422,6 @@ if (autoStartServices) {
             </SelectContent>
           </Select>
         </div>
-
         <div>
           <span id="label-provider" class="block text-sm font-medium mb-2">AI Provider</span>
           <Select aria-labelledby="label-provider" bind:value={selectedProvider}>
@@ -501,7 +446,6 @@ if (autoStartServices) {
           </Select>
         </div>
       </div>
-
       {#if selectedWorkflow}
         {@const workflow = workflows.find(w => w.id === selectedWorkflow)}
         {@const SvelteComponent = workflow?.icon || Activity}
@@ -518,7 +462,6 @@ if (autoStartServices) {
           </div>
         </div>
       {/if}
-
       <div>
         <label for="orchestrator-input" class="block text-sm font-medium mb-2">Input</label>
         <Textarea
@@ -529,7 +472,6 @@ if (autoStartServices) {
           class="w-full"
         />
       </div>
-
       <div class="flex gap-2">
         <Button
           onclick={(event: MouseEvent) => executeWorkflow}
@@ -544,13 +486,11 @@ if (autoStartServices) {
             Execute Workflow
           {/if}
 </Button>
-
         {#if isProcessing}
           <Button class="bits-btn" variant="ghost" onclick={(event: MouseEvent) => cancelExecution}>
 <Square class="h-4 w-4" />
 </Button>
         {/if}
-
         {#if conversationMessages.length > 0 || executionResults.length > 0}
           <Button class="bits-btn" variant="ghost" onclick={(event: MouseEvent) => clearResults}>
 Clear
@@ -562,7 +502,6 @@ Clear
       </div>
     </div>
   </div>
-
   <!-- Execution Status -->
   {#if isProcessing || lastUpdate}
     <div class="nes-container">
@@ -578,14 +517,12 @@ Clear
             <span class="text-sm font-medium">Progress</span>
             <span class="text-sm text-gray-500">{executionProgress}%</span>
           </div>
-
           <div class="w-full bg-gray-200 rounded-full h-2">
             <div
               class="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
               style="width: {executionProgress}%"
             ></div>
           </div>
-
           <div class="flex items-center gap-2 text-sm">
             {#if isProcessing}
               <div class="animate-spin h-4 w-4 border border-gray-300 border-t-blue-500 rounded-full"></div>
@@ -598,7 +535,6 @@ Clear
       </div>
     </div>
   {/if}
-
   <!-- Results Display -->
   {#if selectedProvider === 'autogen' && conversationMessages.length > 0}
     <div class="nes-container">
@@ -619,7 +555,6 @@ Clear
                   </span>
                 </div>
               </div>
-
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-1">
                   <span class="font-medium text-sm">{message.sender}</span>
@@ -638,7 +573,6 @@ Clear
       </div>
     </div>
   {/if}
-
   {#if selectedProvider === 'crewai' && executionResults.length > 0}
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -656,7 +590,6 @@ Clear
                   <span class="font-medium text-sm">{(result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).taskId}</span>
                   <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).agentId}</span>
                 </div>
-
                 <div class="flex items-center gap-2">
                   {#if (result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).status === 'completed'}
                     <CheckCircle class="h-4 w-4 text-green-500" />
@@ -670,7 +603,6 @@ Clear
                   </span>
                 </div>
               </div>
-
               <p class="text-sm text-gray-700 dark:text-gray-300">{(result as { taskId?: any; agentId?: any; status?: any; executionTime?: any; output?: any }).output}</p>
             </div>
           {/each}
@@ -678,7 +610,6 @@ Clear
       </div>
     </div>
   {/if}
-
   <!-- Workflow Templates -->
   {#if showAdvancedControls}
     <div class="nes-container">
@@ -705,7 +636,6 @@ Clear
               <p class="text-xs text-gray-500">AutoGen multi-agent analysis</p>
             </div>
 </Button>
-
           <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
@@ -721,7 +651,6 @@ Clear
               <p class="text-xs text-gray-500">CrewAI specialized team</p>
             </div>
 </Button>
-
           <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
@@ -737,7 +666,6 @@ Clear
               <p class="text-xs text-gray-500">Forensic analysis workflow</p>
             </div>
 </Button>
-
           <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
@@ -758,7 +686,6 @@ Clear
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
 </style>

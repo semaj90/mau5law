@@ -3,14 +3,12 @@
  * Handles database synchronization for LangChain document processing
  * Integrates with our decoupled architecture stores
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { db } from '$lib/server/db/index.js'
 import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js'
 import { eq, desc } from 'drizzle-orm'
 import { langExtractService } from '$lib/services/langextract-ollama-service.js'
-
 // Types for API requests/responses
 interface ProcessDocumentRequest {
   text: string
@@ -18,7 +16,6 @@ interface ProcessDocumentRequest {
   practiceArea?: string
   sessionId?: string
 }
-
 interface ProcessDocumentResponse {
   id: string
   summary: string
@@ -29,13 +26,11 @@ interface ProcessDocumentResponse {
   cacheHit: boolean
   sessionId: string
 }
-
 interface DocumentSessionResponse {
   id: string
   documents: Array<any>
   totalProcessed: number
 }
-
 /**
  * GET /api/legal-processing
  * Retrieve recent document processing sessions
@@ -44,7 +39,6 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId')
     const limit = parseInt(url.searchParams.get('limit') || '10')
-
     if (sessionId) {
       // Get specific session with documents
       const documents = await db
@@ -58,16 +52,14 @@ export const GET: RequestHandler = async ({ url }) => {
         .where(eq(legalDocuments.sessionId, sessionId)
         .orderBy(desc(legalDocuments.createdAt)
         .limit(limit)
-
       const response: DocumentSessionResponse = {
-        id: sessionId,
+        id: sessionId
         documents: documents.map(doc => ({
           ...doc,
           createdAt: doc.createdAt?.toISOString() || new Date().toISOString()
         })),
         totalProcessed: documents.length
       }
-
       return json(response)
     } else {
       // Get recent sessions
@@ -80,7 +72,6 @@ export const GET: RequestHandler = async ({ url }) => {
         .from(legalDocuments)
         .orderBy(desc(legalDocuments.createdAt)
         .limit(limit)
-
       return json({ sessions: recentSessions })
     }
   } catch (error) {
@@ -91,7 +82,6 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 /**
  * POST /api/legal-processing
  * Process a legal document and store results in database
@@ -100,19 +90,15 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: ProcessDocumentRequest = await request.json()
     const { text, documentType, practiceArea, sessionId } = body
-
     if (!text?.trim()) {
       return json(
         { error: 'Document text is required' },)
         { status: 400 }
       )
     }
-
     const startTime = Date.now()
-    
     // Generate session ID if not provided
     const finalSessionId = sessionId || crypto.randomUUID()
-
     // Check if Ollama is available
     const isAvailable = await langExtractService.isOllamaAvailable()
     if (!isAvailable) {
@@ -121,41 +107,34 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 503 }
       )
     }
-
     // Process document with LangChain
     const [summaryResult, entitiesResult, contractTermsResult] = await Promise.allSettled([
       langExtractService.generateLegalSummary(text, documentType),
       langExtractService.extractLegalEntities({ text, documentType }),
-      documentType === 'contract' 
+      documentType === 'contract'
         ? langExtractService.extractContractTerms(text)
         : Promise.resolve(null)
     ])
-
     // Extract results safely
-    const summary = summaryResult.status === 'fulfilled' 
+    const summary = summaryResult.status === 'fulfilled'
       ? summaryResult.value?.summary || 'Processing completed'
       : 'Summary generation failed'
-    
     const keyTerms = summaryResult.status === 'fulfilled'
       ? summaryResult.value?.keyTerms || []
       : []
-
     const entities = entitiesResult.status === 'fulfilled'
       ? entitiesResult.value || []
       : []
-
     const contractTerms = contractTermsResult.status === 'fulfilled'
       ? contractTermsResult.value?.terms || []
       : []
-
     const processingTime = Date.now() - startTime
-
     // Store in database
     const [documentRecord] = await db
       .insert(legalDocuments)
       .values({
         id: crypto.randomUUID(),
-        sessionId: finalSessionId,
+        sessionId: finalSessionId
         title: `${documentType} - ${new Date().toLocaleDateString()}`,
         content: text.substring(0, 10000), // Limit content size
         summary,
@@ -166,21 +145,20 @@ export const POST: RequestHandler = async ({ request }) => {
         processingMetadata: {
           processingTime,
           model: 'gemma3-legal',
-          cacheHit: false,
+          cacheHit: false
           timestamp: new Date().toISOString()
         },
         createdAt: new Date(),
         updatedAt: new Date()
       })
       .returning()
-
     // Update or create RAG session
     await db
       .insert(ragSessions)
       .values({
-        id: finalSessionId,
+        id: finalSessionId
         sessionName: `Legal Analysis - ${new Date().toLocaleDateString()}`,
-        isActive: true,
+        isActive: true
         messageCount: 1,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -192,7 +170,6 @@ export const POST: RequestHandler = async ({ request }) => {
           updatedAt: new Date()
         }
       })
-
     const response: ProcessDocumentResponse = {
       id: documentRecord.id,
       summary,
@@ -200,15 +177,13 @@ export const POST: RequestHandler = async ({ request }) => {
       entities,
       contractTerms,
       processingTime,
-      cacheHit: false,
+      cacheHit: false
       sessionId: finalSessionId
     }
-
     return json(response)
-
   } catch (error) {
     console.error('Document processing failed:', error)
-    return json({ 
+    return json({
         error: 'Document processing failed',
         details: error instanceof Error ? error.message: 'Unknown error'
       },)
@@ -216,7 +191,6 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 /**
  * PUT /api/legal-processing/[id]
  * Update document processing results
@@ -227,9 +201,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
     if (!documentId) {
       return json({ error: 'Document ID required' }, { status: 400 })
     }
-
     const updates = await request.json()
-    
     const [updatedDocument] = await db
       .update(legalDocuments)
       .set({
@@ -238,13 +210,10 @@ export const PUT: RequestHandler = async ({ request, params }) => {
       })
       .where(eq(legalDocuments.id, documentId)
       .returning()
-
     if (!updatedDocument) {
       return json({ error: 'Document not found' }, { status: 404 })
     }
-
     return json(updatedDocument)
-
   } catch (error) {
     console.error('Failed to update document:', error)
     return json(
@@ -253,7 +222,6 @@ export const PUT: RequestHandler = async ({ request, params }) => {
     )
   }
 }
-
 /**
  * DELETE /api/legal-processing/[id]
  * Delete document processing results
@@ -264,13 +232,10 @@ export const DELETE: RequestHandler = async ({ params }) => {
     if (!documentId) {
       return json({ error: 'Document ID required' }, { status: 400 })
     }
-
     await db
       .delete(legalDocuments)
       .where(eq(legalDocuments.id, documentId)
-
     return json({ success: true })
-
   } catch (error) {
     console.error('Failed to delete document:', error)
     return json(

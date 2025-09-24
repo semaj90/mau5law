@@ -4,16 +4,12 @@ import { caseActivities, cases, evidence, statutes } from "$lib/server/db/index"
 import { eq, sql, ilike } from "drizzle-orm"
 import { QdrantClient } from "@qdrant/js-client-rest"
 import type { RequestHandler } from './$types.js'
-
-
 // Environment variables fallback
 const env = process.env || {}
-
 const qdrantClient = new QdrantClient({
   url: env.QDRANT_URL || "http://localhost:6333"
 })
 const NLP_SERVICE_URL = env.LLM_SERVICE_URL || "http://localhost:8000"
-
 // Add 'task' type for recommendations
 export interface Recommendation {
   id: string
@@ -26,7 +22,7 @@ export interface Recommendation {
   title: string
   description: string
   confidence: number
-  actionData: Record<string, any>
+  actionData: { [key: string]: any }
 }
 export const GET: RequestHandler = async ({ params, locals }) => {
   if (!locals.user) {
@@ -37,7 +33,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     return json({ error: "Case ID is required" }, { status: 400 })
   }
   const recommendations: Recommendation[] = []
-
   try {
     // 1. Fetch the current case data
     const currentCaseResults = await db
@@ -45,11 +40,9 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       .from(cases)
       .where(eq(cases.id, caseId)
       .limit(1)
-
     if (!currentCaseResults.length) {
       return json({ error: "Case not found" }, { status: 404 })
     }
-
     const currentCase = currentCaseResults[0]
     // 2. Recommendation: Check for missing information
     if (!currentCase.description || currentCase.description.length < 50) {
@@ -107,18 +100,15 @@ export const GET: RequestHandler = async ({ params, locals }) => {
           body: JSON.stringify({ text: textToEmbed })
         }
       )
-
       if (nlpResponse.ok) {
         const nlpData = await nlpResponse.json()
         const caseEmbedding = nlpData.embedding
-
         const searchResult = await qdrantClient.search("prosecutor_cases", {
-          vector: caseEmbedding,
+          vector: caseEmbedding
           limit: 5,
           filter: { must_not: [{ key: "id", match: { value: caseId } }] }, // Exclude self
           with_payload: true
         })
-
         for (const hit of searchResult) {
           recommendations.push({
             id: `rec-case-${hit.id}`,
@@ -163,7 +153,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       })
     }
     return json({
-      success: true,
+      success: true
       recommendations: recommendations
         .sort((a, b) => b.confidence - a.confidence)
         .slice(0, 10)

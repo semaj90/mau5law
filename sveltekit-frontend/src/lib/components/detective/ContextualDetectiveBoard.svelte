@@ -1,25 +1,20 @@
 <!--
   Contextual Detective Board Component
-  
   Integrates XState typing behavior with detective connection mapping for real-time contextual prompting.
   Uses our Gemma embeddings pipeline for enhanced semantic understanding during evidence analysis.
-  
   Features:
   - Real-time typing behavior tracking with XState machine
   - Contextual prompts based on evidence being typed/analyzed
   - Gemma embeddings for semantic similarity matching
   - Detective connection visualization with user behavior analytics
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy,   } from "svelte";
   import { page } from '$app/state';
   import HeadlessTypingListener from '$lib/components/HeadlessTypingListener.svelte';
   import DetectiveWebSocketManager, { type CollaborativeUser } from '$lib/websocket/DetectiveWebSocketManager.js';
   import type { TypingContext, TypingState } from '$lib/machines/userTypingStateMachine.js';
-  
   // Props
   interface Props {
     caseId: string;
@@ -28,7 +23,6 @@
     enableAnalytics?: boolean;
     mcpEndpoint?: string;
   }
-  
   let {
     caseId,
     initialEvidence = [],
@@ -36,10 +30,7 @@
     enableAnalytics = true,
     mcpEndpoint = 'http://localhost:3002'
   }: Props = $props();
-  
   // Event dispatcher
-  
-  
   // State
   let userInput = $state('');
   let connectionMap = $state<any>(null);
@@ -49,21 +40,17 @@
   let contextualPrompts = $state<string[]>([]);
   let detectiveAnalysis = $state<any>(null);
   let evidenceList = $state(initialEvidence);
-  
   // WebSocket collaboration state
   let wsManager: DetectiveWebSocketManager | null = null;
   let isConnectedToCollaboration = $state(false);
   let collaborativeUsers = $state<CollaborativeUser[]>([]);
   let collaborationStats = $state({ connectedUsers: 0, typingUsers: 0, focusDistribution: { evidence: 0, connections: 0, analysis: 0 } });
-  
   // Typing behavior element binding
   let typingElement: HTMLTextAreaElement;
-  
   // Reactive derived values
   const userEngagement = $derived(typingContext?.analytics?.userEngagement || 'medium');
   const isTypingActive = $derived(['typing', 'contextual_processing'].includes(currentTypingState));
   const hasContextualPrompts = $derived(contextualPrompts.length > 0);
-  
   /**
    * Initialize the component
    */
@@ -73,14 +60,11 @@
     if (caseId && !initialEvidence.length) {
       await loadCaseEvidence();
     }
-    
     // Initialize WebSocket collaboration
     await initializeCollaboration();
-    
     console.log('[ContextualDetectiveBoard] Initialized for case:', caseId);
     })();
   });
-  
   /**
    * Cleanup on destroy
    */
@@ -89,7 +73,6 @@
       wsManager.disconnect();
     }
   });
-  
   /**
    * Load case evidence from API
    */
@@ -104,7 +87,6 @@
       console.error('Failed to load case evidence:', error);
     }
   }
-  
   /**
    * Initialize WebSocket collaboration
    */
@@ -113,25 +95,21 @@
       // Create WebSocket manager (mock user ID for now)
       const userId = `user_${Math.random.toString-substr(2, 9)}`;
       wsManager = new DetectiveWebSocketManager(caseId, userId);
-      
       // Set up event handlers
       wsManager.onConnectionStatus((connected) => {
         isConnectedToCollaboration = connected;
         updateCollaborationStats();
       });
-      
       wsManager.onUserJoined((user) => {
         collaborativeUsers = [...collaborativeUsers, user];
         updateCollaborationStats();
         console.log('[Collaboration] User joined:', user.name);
       });
-      
       wsManager.onUserLeft((userId) => {
         collaborativeUsers = collaborativeUsers.filter(u => u.id !== userId);
         updateCollaborationStats();
         console.log('[Collaboration] User left:', userId);
       });
-      
       // Handle real-time updates
       wsManager.onMessage('connection_map_update', (data) => {
         if ((data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).action === 'generated') {
@@ -139,27 +117,23 @@
           console.log('[Collaboration] Connection map updated by remote user');
         }
       });
-      
       wsManager.onMessage('evidence_analysis', (data) => {
         if ((data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).action === 'completed') {
           // Update evidence list with remote analysis
-          evidenceList = evidenceList.map.id === (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).evidenceId 
+          evidenceList = evidenceList.map.id === (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).evidenceId
               ? { ...item, metadata: { ...item.metadata, aiAnalysis: (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).analysis } }
               : item
           );
           console.log('[Collaboration] Evidence analysis updated by remote user');
         }
       });
-      
       // Connect to WebSocket (will fallback gracefully if server not available)
       wsManager.connect();
-      
     } catch (error) {
       console.warn('[Collaboration] WebSocket initialization failed:', error);
       // Continue without collaboration features
     }
   }
-  
   /**
    * Update collaboration statistics
    */
@@ -168,31 +142,26 @@
       collaborationStats = wsManager.getCollaborationStats();
     }
   }
-  
   /**
    * Handle typing state changes from the headless listener
    */
   function handleTypingStateChange(event: CustomEvent) {
-    currentTypingState = event.detail.state;
+    currentTypingState = event.detail.stat;
     typingContext = event.detail.context;
-    
     // Send typing updates to collaborators
     if (wsManager && typingContext) {
       wsManager.sendTypingUpdate(currentTypingState, typingContext);
     }
-    
     // Trigger detective analysis when user stops typing with substantial content
     if (currentTypingState === 'waiting_user' && userInput.length > 100) {
       triggerDetectiveAnalysis();
     }
   }
-  
   /**
    * Handle contextual prompts from typing behavior
    */
   function handleContextualPrompt(event: CustomEvent) {
     contextualPrompts = [...event.detail.prompts];
-    
     // Add detective-specific contextual prompts
     if (userInput.toLowerCase().includes('evidence')) {
       contextualPrompts.push('Analyze evidence connections?');
@@ -203,13 +172,11 @@
     if (userInput.toLowerCase().includes('location') || userInput.toLowerCase().includes('place')) {
       contextualPrompts.push('Generate location timeline?');
     }
-    
     ondispatch?.({
-      prompts: contextualPrompts,;
+      prompts: contextualPrompts
       context: event.detail.context;
     });
   }
-  
   /**
    * Handle analytics updates from typing behavior
    */
@@ -218,30 +185,26 @@
       console.log('[ContextualDetectiveBoard] Analytics update:', event.detail.analytics);
     }
   }
-  
   /**
    * Trigger detective analysis using Gemma embeddings
    */
   async function triggerDetectiveAnalysis() {
     if (!userInput.trim()) return;
-    
     try {
       // Use MCP server for semantic analysis of user input
       const response = await fetch(`${mcpEndpoint}/mcp/detective-analyze`, {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: userInput,
-          caseId,;
-          evidence: evidenceList,
+        body: JSON.stringify({,
+          text: userInput
+          caseId,
+          evidence: evidenceList
           analysisType: 'contextual_detective',
           useGemmaEmbeddings: true;
         })
       });
-      
       if ((response as { ok?: any; json?: any }).ok) {
         detectiveAnalysis = await (response as { ok?: any; json?: any }).json();
-        
         // Generate enhanced contextual prompts based on analysis
         const enhancedPrompts = generateEnhancedPrompts(detectiveAnalysis);
         contextualPrompts = [...contextualPrompts, ...enhancedPrompts];
@@ -250,18 +213,15 @@
       console.error('Detective analysis failed:', error);
     }
   }
-  
   /**
    * Generate detective connection map
    */
   async function generateConnectionMap() {
     if (!caseId) return;
-    
     isGeneratingMap = true;
-    
     try {
       const response = await fetch('/api/v1/detective/connections', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
@@ -269,25 +229,22 @@
           connectionStrength: 0.4,
           maxDepth: 3,
           options: {
-            includeWeakConnections: true,
-            includePredictedConnections: true,
-            clusterSimilar: true,;
+            includeWeakConnections: true
+            includePredictedConnections: true
+            clusterSimilar: true
             layout: 'force';
           }
         })
       });
-      
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
         connectionMap = (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).data.connectionMap;
-        
         // Send to collaborators
         if (wsManager) {
           wsManager.sendConnectionMapUpdate.data.metadata);
         }
-        
         ondispatch?.({
-          map: connectionMap,;
+          map: connectionMap
           metadata: (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).data.metadata
         });
       }
@@ -297,39 +254,31 @@
       isGeneratingMap = false;
     }
   }
-  
   /**
    * Generate enhanced prompts based on detective analysis
    */
   function generateEnhancedPrompts(analysis: any): string[] {
     const prompts = [];
-    
     if (analysis.keyEntities?.length > 0) {
       prompts.push(`Found ${analysis.keyEntities.length} key entities - explore connections?`);
     }
-    
     if (analysis.suggestedConnections?.length > 0) {
       prompts.push('New connection patterns detected - visualize them?');
     }
-    
     if (analysis.anomalies?.length > 0) {
       prompts.push(`${analysis.anomalies.length} anomalies detected - investigate?`);
     }
-    
     if (analysis.timelineGaps?.length > 0) {
       prompts.push('Timeline gaps found - fill missing evidence?');
     }
-    
-    return prompts;
+    return prompt;
   }
-  
   /**
    * Handle contextual prompt selection
    */
   async function selectContextualPrompt(prompt: string) {
     // Clear current prompts
     contextualPrompts = [];
-    
     // Execute the selected prompt action
     if (prompt.includes('connection')) {
       await generateConnectionMap();
@@ -338,11 +287,9 @@
     } else if (prompt.includes('analyze')) {
       await triggerDetectiveAnalysis();
     }
-    
     // Add the prompt as user input for continuity
     userInput += `\n\n[Selected: ${prompt}]`;
   }
-  
   /**
    * Clear user input and reset state
    */
@@ -352,9 +299,8 @@
     detectiveAnalysis = null;
   }
 </script>
-
 <!-- Headless typing listener for behavior tracking -->
-<HeadlessTypingListener 
+<HeadlessTypingListener
   bind:text={userInput}
   bind:element={typingElement}
   {enableContextualPrompts}
@@ -364,7 +310,6 @@
   oncontextualPrompt={handleContextualPrompt}
   onanalyticsUpdate={handleAnalyticsUpdate}
 />
-
 <div class="contextual-detective-board">
   <!-- Header with case info and analytics -->
   <header class="board-header">
@@ -372,7 +317,6 @@
       <h1>Detective Analysis Board</h1>
       <p class="case-id">Case: {caseId}</p>
     </div>
-    
     {#if enableAnalytics && typingContext}
       <div class="analytics-panel">
         <div class="metric">
@@ -387,7 +331,6 @@
           <span class="label">Evidence:</span>
           <span class="value">{evidenceList.length}</span>
         </div>
-        
         <!-- Collaboration status -->
         {#if isConnectedToCollaboration}
           <div class="metric collaboration-active">
@@ -403,7 +346,6 @@
       </div>
     {/if}
   </header>
-
   <!-- Main analysis area -->
   <main class="analysis-area">
     <!-- User input area with typing behavior tracking -->
@@ -414,7 +356,6 @@
           {isTypingActive ? 'Analyzing...' : 'Ready'}
         </div>
       </div>
-      
       <textarea
         bind:this={typingElement}
         bind:value={userInput}
@@ -422,7 +363,6 @@
         class="analysis-input"
         rows="8"
       ></textarea>
-      
       <div class="input-actions">
         <button type="button" onclick={generateConnectionMap} disabled={isGeneratingMap}>
           {isGeneratingMap ? 'Generating...' : 'Generate Connection Map'}
@@ -430,15 +370,14 @@
         <button type="button" onclick={clearInput}>Clear</button>
       </div>
     </section>
-
     <!-- Contextual prompts display -->
     {#if hasContextualPrompts}
       <section class="contextual-prompts">
         <h3>Contextual Suggestions</h3>
         <div class="prompts-list">
           {#each contextualPrompts as prompt}
-            <button 
-              type="button" 
+            <button
+              type="button"
               class="prompt-button"
               onclick={() => selectContextualPrompt(prompt)}
             >
@@ -448,7 +387,6 @@
         </div>
       </section>
     {/if}
-
     <!-- Connection map visualization -->
     {#if connectionMap}
       <section class="connection-map">
@@ -458,7 +396,6 @@
           <span>Edges: {connectionMap.edges?.length || 0}</span>
           <span>Clusters: {connectionMap.clusters?.length || 0}</span>
         </div>
-        
         <div class="map-visualization">
           <!-- Simple visualization - replace with actual graph library -->
           <div class="nodes-preview">
@@ -472,7 +409,6 @@
         </div>
       </section>
     {/if}
-
     <!-- Detective analysis results -->
     {#if detectiveAnalysis}
       <section class="detective-analysis">
@@ -488,7 +424,6 @@
               </ul>
             </div>
           {/if}
-          
           {#if detectiveAnalysis.suggestedConnections}
             <div class="connections">
               <h4>Suggested Connections</h4>
@@ -504,80 +439,68 @@
     {/if}
   </main>
 </div>
-
 <style>
-  .contextual-detective-board {;
+  .contextual-detective-board {
     display: flex;
     flex-direction: column;
     height: 100vh;
     background: #f8fafc;
     font-family: system-ui, -apple-system, sans-serif;
   }
-
   .board-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 1rem 2rem;
     background: white;
     border-bottom: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-
   .case-info h1 {
     margin: 0;
     font-size: 1.5rem;
     color: #1e293b;
   }
-
   .case-id {
     margin: 0.25rem 0 0 0;
     color: #64748b;
     font-size: 0.875rem;
   }
-
   .analytics-panel {
     display: flex;
     gap: 1.5rem;
   }
-
   .metric {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
   }
-
   .metric .label {
     font-size: 0.75rem;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-
   .metric .value {
     font-weight: 600;
     font-size: 0.875rem;
   }
-
   .value.state-typing { color: #059669; }
   .value.state-waiting_user { color: #d97706; }
   .value.state-idle { color: #64748b; }
   .value.engagement-high { color: #dc2626; }
   .value.engagement-medium { color: #d97706; }
   .value.engagement-low { color: #64748b; }
-  
   .metric.collaboration-active .value { color: #059669; }
-  .metric.typing-indicator .value { 
-    color: #059669; 
+  .metric.typing-indicator .value {
+    color: #059669;
     animation: pulse 1.5s ease-in-out infinite;
   }
-  
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   }
-
   .analysis-area {
     flex: 1;
     padding: 2rem;
@@ -586,27 +509,23 @@
     flex-direction: column;
     gap: 2rem;
   }
-
   .input-section {
     background: white;
     border-radius: 0.5rem;
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-
   .input-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .input-header h2 {
     margin: 0;
     font-size: 1.25rem;
     color: #1e293b;
   }
-
   .typing-indicator {
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
@@ -614,14 +533,12 @@
     font-weight: 500;
     color: #64748b;
     background: #f1f5f9;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
   .typing-indicator.active {
     color: #059669;
     background: #dcfce7;
   }
-
   .analysis-input {
     width: 100%;
     padding: 1rem;
@@ -632,70 +549,58 @@
     resize: vertical;
     font-family: inherit;
   }
-
   .analysis-input:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
-
   .input-actions {
     display: flex;
     gap: 1rem;
     margin-top: 1rem;
   }
-
   .input-actions button {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 0.375rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
-  .input-actions button:first-child {;
+  .input-actions button:first-child {
     background: #3b82f6;
     color: white;
   }
-
-  .input-actions button:first-child:hover:not(:disabled) {;
+  .input-actions button:first-child:hover:not(:disabled) {,
     background: #2563eb;
   }
-
-  .input-actions button:first-child:disabled {;
+  .input-actions button:first-child:disabled {
     background: #9ca3af;
     cursor: not-allowed;
   }
-
-  .input-actions button:last-child {;
+  .input-actions button:last-child {
     background: #f3f4f6;
     color: #374151;
   }
-
-  .input-actions button:last-child:hover {;
+  .input-actions button:last-child:hover {
     background: #e5e7eb;
   }
-
   .contextual-prompts {
     background: white;
     border-radius: 0.5rem;
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-
   .contextual-prompts h3 {
     margin: 0 0 1rem 0;
     font-size: 1.125rem;
     color: #1e293b;
   }
-
   .prompts-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-
   .prompt-button {
     padding: 0.5rem 1rem;
     background: #f0f9ff;
@@ -704,27 +609,23 @@
     border-radius: 1rem;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
   .prompt-button:hover {
     background: #0ea5e9;
     color: white;
   }
-
   .connection-map, .detective-analysis {
     background: white;
     border-radius: 0.5rem;
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-
   .connection-map h3, .detective-analysis h3 {
     margin: 0 0 1rem 0;
     font-size: 1.125rem;
     color: #1e293b;
   }
-
   .map-stats {
     display: flex;
     gap: 1rem;
@@ -732,20 +633,17 @@
     font-size: 0.875rem;
     color: #64748b;
   }
-
   .nodes-preview {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 0.75rem;
   }
-
   .node-item {
     padding: 0.75rem;
     border-radius: 0.375rem;
     color: white;
     font-size: 0.875rem;
   }
-
   .node-type {
     display: block;
     font-weight: 600;
@@ -753,29 +651,24 @@
     font-size: 0.75rem;
     opacity: 0.9;
   }
-
   .node-label {
     display: block;
     margin-top: 0.25rem;
   }
-
   .analysis-content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
   }
-
   .entities h4, .connections h4 {
     margin: 0 0 0.5rem 0;
     font-size: 1rem;
     color: #374151;
   }
-
   .entities ul, .connections ul {
     margin: 0;
     padding-left: 1.25rem;
   }
-
   .entities li, .connections li {
     margin-bottom: 0.25rem;
     color: #4b5563;

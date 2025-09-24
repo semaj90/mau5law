@@ -3,7 +3,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <!--
   Citations List Component
-  
   Features:
   - Display citations with filtering and search
   - Integration with rich text editor
@@ -13,22 +12,13 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   const { caseId: string, detectiveMode = false, readonly = false } = $props();
-
   import { onMount,   } from "svelte";
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
   import CitationEditor from './CitationEditor.svelte';
-
   // Props
-  
-  
-  
-
   // Event dispatcher
-  
-
   // State
   let citations = writable<Citation[]>([]);
   let filteredCitations = writable<Citation[]>([]);
@@ -36,19 +26,16 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   let showEditor = $state(false);
   let selectedCitation = $state<Citation | null>(null);
   let editMode = $state<'create' | 'edit'>('create');
-
   // Filters
   let searchQuery = $state('');
   let typeFilter = $state('all');
   let verifiedFilter = $state('all');
   let sortBy = $state<'relevance' | 'date' | 'title'>('relevance');
   let sortOrder = $state<'asc' | 'desc'>('desc');
-
   // Pagination
   let currentPage = $state(1);
   let itemsPerPage = $state(20);
   let totalPages = $state(1);
-
   // Citation types for filtering
   const citationTypes = [
     { value: 'all', label: 'All Types' },
@@ -63,24 +50,20 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     { value: 'academic_paper', label: 'Academic Paper' },
     { value: 'other', label: 'Other' }
   ];
-
   // Load citations
   async function loadCitations() {
     isLoading = true;
     try {
       const params = new URLSearchParams({
         caseId,
-        limit: itemsPerPage.toString(),;
+        limit: itemsPerPage.toString(),
         offset: ((currentPage - 1) * itemsPerPage).toString();
       });
-
       if (typeFilter !== 'all') params.set('type', typeFilter);
       if (verifiedFilter !== 'all') params.set('verified', verifiedFilter);
       if (searchQuery) params.set('search', searchQuery);
-
       const response = await fetch(`/api/citations?${params}`);
       const result = await (response as { json?: any }).json();
-
       if ((result as { success?: any; citations?: any; pagination?: any; error?: any }).success) {
         citations.set(citations));
         totalPages = (result as { success?: any; citations?: any; pagination?: any; error?: any }).pagination?.totalPages || 1;
@@ -94,7 +77,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       isLoading = false;
     }
   }
-
   // Apply client-side sorting
   function applyClientSideSort() {
     citations.update(items => {
@@ -111,15 +93,12 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             comparison = a.title.localeCompare(b.title);
             break;
         }
-
-        return sortOrder === 'asc' ? -comparison : comparison;
+        return sortOrder === 'asc' ? -comparison : compariso;
       });
-
       filteredCitations.set(sorted);
-      return items;
+      return item;
     });
   }
-
   // Handle citation save
   function handleCitationSave(event: CustomEvent<Citation>) {
     const citation = event.detail;
@@ -129,13 +108,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       citations.update.id === citation.id ? citation : item)
       );
     }
-
     applyClientSideSort();
     showEditor = false;
     selectedCitation = null;
-    ondispatch?.();
+    // ondispatch removed;
   }
-
   // Handle citation deletion
   function handleCitationDelete(event: CustomEvent<string>) {
     const citationId = event.detail;
@@ -143,46 +120,39 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     applyClientSideSort();
     showEditor = false;
     selectedCitation = null;
-    ondispatch?.();
+    // ondispatch removed;
   }
-
   // Open editor for new citation
   function createCitation() {
     selectedCitation = null;
     editMode = 'create';
     showEditor = true;
   }
-
   // Open editor for existing citation
   function editCitation(citation: Citation) {
-    selectedCitation = citation;
+    selectedCitation = citatio;
     editMode = 'edit';
     showEditor = true;
   }
-
   // Close editor
   function closeEditor() {
     showEditor = false;
     selectedCitation = null;
   }
-
   // Select citation
   function selectCitation(citation: Citation) {
     ondispatch?.(citation);
   }
-
   // Format citation display
   function formatCitationDisplay(citation: Citation): string {
-    return citation.citation || 
+    return citation.citation ||
            `${citation.title}${citation.author ? ` by ${citation.author}` : ''}`;
   }
-
   // Get citation type label
   function getCitationTypeLabel(type: string): string {
     const found = citationTypes.find(t => t.value === type);
-    return found?.label || type;
+    return found?.label || typ;
   }
-
   // Get relevance color
   function getRelevanceColor(score: number): string {
     if (score >= 8) return 'text-green-600 bg-green-100';
@@ -190,44 +160,37 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     if (score >= 4) return 'text-orange-600 bg-orange-100';
     return 'text-red-600 bg-red-100';
   }
-
   // Handle search
   function handleSearch() {
     currentPage = 1;
     loadCitations();
   }
-
   // Handle filter change
   function handleFilterChange() {
     currentPage = 1;
     loadCitations();
   }
-
   // Handle sort change
   function handleSortChange() {
     applyClientSideSort();
   }
-
   // Handle page change
   function changePage(newPage: number) {
     if (newPage >= 1 && newPage <= totalPages) {
-      currentPage = newPage;
+      currentPage = newPag;
       loadCitations();
     }
   }
-
   // Load citations on mount and when dependencies change
   $effect(() => {
     loadCitations();
   });
-
   $effect(() => {
     if (caseId) {
       loadCitations();
     }
   });
 </script>
-
 {#if showEditor}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
     <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -242,7 +205,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     </div>
   </div>
 {/if}
-
 <div class="citations-list space-y-6">
   <!-- Header -->
   <div class="flex justify-between items-center">
@@ -261,7 +223,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       </button>
     {/if}
   </div>
-
   <!-- Filters and Search -->
   <div class="bg-gray-50 p-4 rounded-lg">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
@@ -275,7 +236,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-
       <!-- Type Filter -->
       <div>
         <label class="block text-xs font-medium text-gray-700 mb-1" for="type">Type</label><select id="type";
@@ -288,7 +248,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           {/each}
         </select>
       </div>
-
       <!-- Verified Filter -->
       <div>
         <label class="block text-xs font-medium text-gray-700 mb-1" for="status">Status</label><select id="status"
@@ -301,7 +260,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           <option value="false">Unverified</option>
         </select>
       </div>
-
       <!-- Sort -->
       <div>
         <label class="block text-xs font-medium text-gray-700 mb-1">Sort by</label>
@@ -325,7 +283,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         </div>
       </div>
     </div>
-
     <!-- Quick Actions -->
     <div class="flex justify-between items-center">
       <button
@@ -342,7 +299,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       </button>
     </div>
   </div>
-
   <!-- Loading State -->
   {#if isLoading}
     <div class="text-center py-8">
@@ -353,7 +309,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     <!-- Citations List -->
     <div class="space-y-4">
       {#each $filteredCitations as citation}
-        <div 
+        <div
           class="bg-white border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
           role="button" tabindex="0"
                 onclick={() => selectCitation(citation)}
@@ -379,13 +335,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                   </span>
                 {/if}
               </div>
-
               <!-- Title and Citation -->
               <h3 class="font-medium text-gray-900 mb-1">{citation.title}</h3>
               {#if citation.citation}
                 <p class="text-sm text-gray-600 mb-2 font-mono">{citation.citation}</p>
               {/if}
-
               <!-- Author and Source -->
               {#if citation.author || citation.source}
                 <p class="text-sm text-gray-500 mb-2">
@@ -397,19 +351,16 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                   {/if}
                 </p>
               {/if}
-
               <!-- Abstract -->
               {#if citation.abstract}
                 <p class="text-sm text-gray-700 mb-2 line-clamp-2">{citation.abstract}</p>
               {/if}
-
               <!-- Relevant Quote -->
               {#if citation.relevantQuote}
                 <blockquote class="border-l-4 border-blue-200 pl-4 py-2 bg-blue-50 text-sm text-gray-700 italic mb-2">
                   "{citation.relevantQuote}"
                 </blockquote>
               {/if}
-
               <!-- Tags -->
               {#if citation.tags && citation.tags.length > 0}
                 <div class="flex flex-wrap gap-1 mb-2">
@@ -420,14 +371,13 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                   {/each}
                 </div>
               {/if}
-
               <!-- Links -->
               {#if citation.url || citation.doi}
                 <div class="flex space-x-4 text-xs">
                   {#if citation.url}
-                    <a 
-                      href={citation.url} 
-                      target="_blank" 
+                    <a
+                      href={citation.url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       class="text-blue-600 hover:text-blue-800"
                       onclick
@@ -436,9 +386,9 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                     </a>
                   {/if}
                   {#if citation.doi}
-                    <a 
-                      href={`https://doi.org/${citation.doi}`} 
-                      target="_blank" 
+                    <a
+                      href={`https://doi.org/${citation.doi}`}
+                      target="_blank"
                       rel="noopener noreferrer"
                       class="text-blue-600 hover:text-blue-800"
                       onclick
@@ -449,7 +399,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                 </div>
               {/if}
             </div>
-
             <!-- Actions -->
             {#if !readonly}
               <div class="flex space-x-2 ml-4">
@@ -465,7 +414,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
               </div>
             {/if}
           </div>
-
           <!-- Metadata -->
           <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
             <span>
@@ -479,7 +427,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           </div>
         </div>
       {/each}
-
       <!-- Empty State -->
       {#if $filteredCitations.length === 0}
         <div class="text-center py-8">
@@ -490,8 +437,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           </div>
           <h3 class="text-lg font-medium text-gray-900 mb-2">No citations found</h3>
           <p class="text-gray-600 mb-4">
-            {searchQuery || typeFilter !== 'all' || verifiedFilter !== 'all' 
-              ? 'No citations match your current filters.' 
+            {searchQuery || typeFilter !== 'all' || verifiedFilter !== 'all'
+              ? 'No citations match your current filters.'
               : 'Start by adding your first citation to this case.'}
           </p>
           {#if !readonly}
@@ -505,7 +452,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         </div>
       {/if}
     </div>
-
     <!-- Pagination -->
     {#if totalPages > 1}
       <div class="flex justify-between items-center mt-6">
@@ -526,8 +472,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
               <button
                 onclick={() => changePage(pageNum)}
                 class={`px-3 py-2 text-sm font-medium rounded ${
-                  pageNum === currentPage 
-                    ? 'text-white bg-blue-600' 
+                  pageNum === currentPage
+                    ? 'text-white bg-blue-600'
                     : 'text-gray-500 hover:text-gray-700';
                 }`}
               >
@@ -546,9 +492,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       </div>
     {/if}
 </div>
-
 <style>
-  .line-clamp-2 {;
+  .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

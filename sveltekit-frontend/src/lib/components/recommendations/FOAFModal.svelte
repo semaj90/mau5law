@@ -1,7 +1,6 @@
 <!-- FOAF Recommendations Modal - SSR compatible with Svelte 5 runes + Melt-UI -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import * as Dialog from 'bits-ui';
   import { fade, fly } from 'svelte/transition';
   import { X, Users, UserCheck, Briefcase, Mail } from 'lucide-svelte';
@@ -14,31 +13,25 @@
     confidence: number;
     relationshipPath: string;
   }
-
   interface Props {
     open?: boolean;
     personId: string;
     onClose?: () => void;
   }
-
   let { open = $bindable(false), personId, onClose  }: Props = $props();
   // Svelte 5 runes for reactive state
   let loading = $state(false);
   let foafData = $state(null);
   let error = $state<string | null>(null);
-
   // Melt-UI dialog builder
   // Melt UI component creation removed - replace with bits-ui declarative components
-
   // Sync with parent open state
   $effect(() => {
     dialogOpen.set(open);
   });
-
   $effect(() => {
-    open = $dialogOpen;
+    open = $dialogOpe;
   });
-
   // Load FOAF data when modal opens
   $effect(() => {
     (async () => {
@@ -57,33 +50,28 @@ if (open && personId && !foafData) {
     }
     })();
   });
-
   function handleClose() {
     open = false;
     onClose?.();
   }
-
   function getConfidenceColor(confidence: number): string {
     if (confidence >= 0.8) return 'text-green-600';
     if (confidence >= 0.6) return 'text-yellow-600';
     return 'text-red-600';
   }
-
   function getRoleIcon(role: string): typeof UserCheck {
     switch (role.toLowerCase()) {
-      case 'attorney': return Briefcase;
+      case 'attorney': return Briefca;
       case 'paralegal': return UserCheck;
-      case 'investigator': return Users;
+      case 'investigator': return User;
       default: return UserCheck;
     }
   }
 </script>
-
 <!-- Melt-UI Dialog Implementation -->
 {#if open}
   <div  class="fixed inset-0 z-50 bg-black/50" transitifade={{ duration: 150 }}>
     <div
-      
       class="fixed left-1/2 top-1/2 z-50 max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-white p-6 shadow-lg"
       /* transition removed */}
     >
@@ -94,14 +82,12 @@ if (open && personId && !foafData) {
           Professional Network
         </h2>
         <button
-          
           class="rounded-sm opacity-70 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
           onclick={handleClose}
         >
           <X class="w-4 h-4" />
         </button>
       </div>
-
       <!-- Content -->
       <div  class="space-y-4">
         {#if loading}
@@ -120,7 +106,6 @@ if (open && personId && !foafData) {
               <p class="text-blue-800 text-sm">{foafData.summary}</p>
             </div>
           {/if}
-
           <!-- Recommendations List -->
           {#if foafData.people.length > 0}
             <div class="space-y-3">
@@ -162,7 +147,6 @@ if (open && personId && !foafData) {
             </div>
           {/if}
       </div>
-
       <!-- Footer -->
       <div class="flex justify-end mt-6 pt-4 border-t border-gray-200">
         <button
@@ -175,13 +159,11 @@ if (open && personId && !foafData) {
     </div>
   </div>
 {/if}
-
 <style>
   /* Additional Tailwind-compatible styles for enhanced UX */
-  .animate-spin {;
+  .animate-spin {
     animation: spin 1s linear infinite;
   }
-  
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }

@@ -1,9 +1,7 @@
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
-
 // GPU Orchestration API Routes for Legal AI Platform
 // Integrates with Go GPU Orchestrator Service (Port 8231)
-
 import type {
 	GPUStatus,
 	GPUMetrics,
@@ -12,14 +10,11 @@ import type {
 	ServiceRegistry,
 	WorkerStatus
 } from '$lib/types/gpu-services'
-
 // GPU Orchestrator Configuration
 const GPU_ORCHESTRATOR_BASE = 'http://localhost:8231/api'
-
 // Helper function for GPU service requests
 async function gpuServiceRequest(endpoint: string, options?: RequestInit): Promise<Response> {
 	const url = `${GPU_ORCHESTRATOR_BASE}${endpoint}`
-
 	try {
 		const response = await fetch(url, {
 			headers: {
@@ -28,22 +23,18 @@ async function gpuServiceRequest(endpoint: string, options?: RequestInit): Promi
 			},
 			...options
 		})
-
 		if (!response.ok) {
 			throw new Error(`GPU service error: ${response.status} ${response.statusText}`)
 		}
-
 		return response
 	} catch (error: any) {
 		console.error('GPU service request failed:', error)
 		throw error
 	}
 }
-
 // GET /api/gpu - Get GPU status and general information
 export const GET: RequestHandler = async ({ url }) => {
 	const action = url.searchParams.get('action')
-
 	try {
 		switch (action) {
 			case 'status':
@@ -75,14 +66,11 @@ export const GET: RequestHandler = async ({ url }) => {
 		)
 	}
 }
-
 // POST /api/gpu - Process GPU tasks
 export const POST: RequestHandler = async ({ request, url }) => {
 	const action = url.searchParams.get('action')
-
 	try {
 		const body = await request.json()
-
 		switch (action) {
 			case 'process':
 				return await processGPUTask(body)
@@ -105,28 +93,23 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		)
 	}
 }
-
 // GPU Status Information
 async function getGPUStatus(): Promise<Response> {
 	const response = await gpuServiceRequest('/gpu/status')
 	const data = await response.json()
-
 	const enrichedData = {
 		...data,
-		frontend_integration: true,
+		frontend_integration: true
 		api_version: '1.0.0',
-		sveltekit_ready: true,
+		sveltekit_ready: true
 		last_check: new Date().toISOString()
 	}
-
 	return json(enrichedData)
 }
-
 // GPU Performance Metrics
 async function getGPUMetrics(): Promise<Response> {
 	const response = await gpuServiceRequest('/gpu/metrics')
 	const data = await response.json()
-
 	return json({
 		...data,
 		frontend_metrics: {
@@ -136,47 +119,38 @@ async function getGPUMetrics(): Promise<Response> {
 		}
 	})
 }
-
 // GPU Health Check
 async function getGPUHealth(): Promise<Response> {
 	const response = await gpuServiceRequest('/gpu/health')
 	const data = await response.json()
-
 	return json({
 		...data,
 		frontend_status: 'healthy',
 		integration_status: 'active'
 	})
 }
-
 // Worker Status
 async function getWorkerStatus(): Promise<Response> {
 	const response = await gpuServiceRequest('/gpu/workers')
 	const data = await response.json()
-
 	return json(data)
 }
-
 // Queue Status
 async function getQueueStatus(): Promise<Response> {
 	const response = await gpuServiceRequest('/gpu/queue')
 	const data = await response.json()
-
 	return json(data)
 }
-
 // Service Registry
 async function getServiceRegistry(): Promise<Response> {
 	const response = await gpuServiceRequest('/services')
 	const data = await response.json()
-
 	return json({
 		...data,
-		frontend_managed: true,
+		frontend_managed: true
 		integration_layer: 'sveltekit'
 	})
 }
-
 // GPU Overview (default GET response)
 async function getGPUOverview(): Promise<Response> {
 	try {
@@ -186,13 +160,11 @@ async function getGPUOverview(): Promise<Response> {
 			gpuServiceRequest('/gpu/metrics'),
 			gpuServiceRequest('/gpu/health')
 		])
-
 		const [status, metrics, health] = await Promise.all([
 			statusRes.json(),
 			metricsRes.json(),
 			healthRes.json()
 		])
-
 		return json({
 			overview: {
 				status,
@@ -221,7 +193,6 @@ async function getGPUOverview(): Promise<Response> {
 		})
 	}
 }
-
 // Cuda-service direct runtime (ring buffer latest)
 async function getCudaRuntime(): Promise<Response> {
 	try {
@@ -232,7 +203,6 @@ async function getCudaRuntime(): Promise<Response> {
 		return json({ error: 'cuda runtime unavailable', detail: e.message }, { status: 502 })
 	}
 }
-
 // Cuda-service series (ring buffer)
 async function getCudaSeries(): Promise<Response> {
 	try {
@@ -243,7 +213,6 @@ async function getCudaSeries(): Promise<Response> {
 		return json({ error: 'cuda series unavailable', detail: e.message }, { status: 502 })
 	}
 }
-
 // Process Single GPU Task
 async function processGPUTask(taskData: any): Promise<Response> {
 	// Validate task data
@@ -253,7 +222,6 @@ async function processGPUTask(taskData: any): Promise<Response> {
 			{ status: 400 }
 		)
 	}
-
 	// Add frontend metadata
 	const enrichedTask = {
 		...taskData,
@@ -261,21 +229,17 @@ async function processGPUTask(taskData: any): Promise<Response> {
 		frontend_timestamp: new Date().toISOString(),
 		priority: taskData.priority || 5 // Default medium priority
 	}
-
 	const response = await gpuServiceRequest('/gpu/process', {
 		method: 'POST',
 		body: JSON.stringify(enrichedTask)
 	})
-
 	const result = await response.json()
-
 	return json({
 		...result,
-		frontend_processed: true,
+		frontend_processed: true
 		api_version: '1.0.0'
 	})
 }
-
 // Process Batch GPU Tasks
 async function processBatchTasks(batchData: any): Promise<Response> {
 	if (!Array.isArray(batchData.tasks)) {
@@ -284,61 +248,50 @@ async function processBatchTasks(batchData: any): Promise<Response> {
 			{ status: 400 }
 		)
 	}
-
 	// Process tasks in parallel (up to a reasonable limit)
 	const maxConcurrent = 10
 	const tasks = batchData.tasks.slice(0, maxConcurrent)
-
 	const results = await Promise.allSettled(
 		tasks.map((task: any) => processGPUTask(task)
 	)
-
 	const successful = results
 		.filter(r => r.status === 'fulfilled')
 		.map(r => r.value)
-
 	const failed = results
 		.filter(r => r.status === 'rejected')
 		.map(r => ({ error: r.reason })
-
 	return json({
 		batch_results: {
 			total: tasks.length,
 			successful: successful.length,
 			failed: failed.length,
-			results: successful,
+			results: successful
 			errors: failed
 		},
 		frontend_batch_processed: true
 	})
 }
-
 // Register Service with GPU Orchestrator
 async function registerService(serviceData: any): Promise<Response> {
 	const response = await gpuServiceRequest('/services/register', {
 		method: 'POST',
 		body: JSON.stringify(serviceData)
 	})
-
 	const result = await response.json()
 	return json(result)
 }
-
 // Route Request through Load Balancer
 async function routeRequest(routeData: any): Promise<Response> {
 	const response = await gpuServiceRequest('/lb/route', {
 		method: 'POST',
 		body: JSON.stringify(routeData)
 	})
-
 	const result = await response.json()
 	return json(result)
 }
-
 // DELETE /api/gpu - Administrative operations (optional)
 export const DELETE: RequestHandler = async ({ url }) => {
 	const action = url.searchParams.get('action')
-
 	try {
 		switch (action) {
 			case 'clear-queue':

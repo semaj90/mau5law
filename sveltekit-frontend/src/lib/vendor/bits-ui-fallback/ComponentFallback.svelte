@@ -3,7 +3,6 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface ComponentFallbackProps {
     class?: string;
     id?: string;
@@ -14,10 +13,9 @@ https://svelte.dev/e/js_parse_error -->
     variant?: string;
     size?: string;
     disabled?: boolean;
-    children?: unknown;
-    [key: string]: unknown;
+    children?: unknownn;
+    [key: string]: unknownn;
   }
-
   let {
     class = '',
     id = undefined,
@@ -31,7 +29,6 @@ https://svelte.dev/e/js_parse_error -->
     children,
     ...restProps
   }: ComponentFallbackProps = $props();
-
   // Generate fallback classes based on common patterns
   // TODO: Convert to $derived: fallbackClasses = [
     class,
@@ -39,9 +36,8 @@ https://svelte.dev/e/js_parse_error -->
     size && `size-${size}`,
     disabled && 'disabled',
     'bits-ui-fallback'
-  ].filter(item => item.join)(' ')
+  ].filter(Boolean).join(' ')
 </script>
-
 <div
   {id}
   class={fallbackClasses}
@@ -56,26 +52,21 @@ https://svelte.dev/e/js_parse_error -->
     {@render children()}
   {/if}
 </div>
-
-<style>/* Enhanced fallback styling for better compatibility */ :global(.bits-ui-fallback) {;
-    display: contents;
+<style>/* Enhanced fallback styling for better compatibility */ :global(.bits-ui-fallback) {
+    display: content;
   }
-
   :global(.bits-ui-fallback.variant-outline) {
     border: 1px solid rgba(0, 0, 0, 0.2);
     background: transparent;
   }
-
   :global(.bits-ui-fallback.variant-ghost) {
     border: none;
     background: transparent;
   }
-
   :global(.bits-ui-fallback.size-sm) {
     font-size: 0.875rem;
     padding: 0.25rem 0.5rem;
   }
-
   :global(.bits-ui-fallback.disabled) {
     opacity: 0.5;
     pointer-events: none;
@@ -86,9 +77,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.375rem;
     transition: all 0.2s ease;
   }
-
-  :global(.bits-ui-fallback[role="button"]:hover:not(.disabled)) {
+  :global(.bits-ui-fallback[role="button"]:hover:not(.disabled)) {,
     opacity: 0.8;
   }
 </style>
-

@@ -2,7 +2,6 @@
  * TypeScript definitions for N64-Inspired Legal AI Integration
  */;
 }
-
 export interface LegalDocument {
   id: string;
   title: string;
@@ -19,7 +18,6 @@ export interface LegalDocument {
   embeddings?: Float32Array;
   processed?: boolean;
 }
-
 export interface ProcessingStage {
   name: string;
   duration: number;
@@ -33,7 +31,6 @@ export interface ProcessingStage {
   componentsGenerated?: number;
   nesStyled?: boolean;
 }
-
 export interface ProcessingPipeline {
   documentId: string;
   stages: ProcessingStage[];
@@ -41,14 +38,12 @@ export interface ProcessingPipeline {
   compressionAchieved: number;
   cacheHits: number;
 }
-
 export interface CacheHierarchy {
   l1: Map<string, any>; // Browser memory cache
   l2: Map<string, any>; // CHR-ROM patterns
   l3: Map<string, any>; // Palace cache
   getTotalHits: () => number;
 }
-
 export interface N64VisualizationState {
   documentId: string;
   lodLevel: 0 | 1 | 2 | 3; // N64-inspired LOD levels
@@ -61,22 +56,19 @@ export interface N64VisualizationState {
     compressionRatio: number;
   };
 }
-
 export interface EnhancedBitsComponent {
   name: string;
   type: 'Button' | 'Card' | 'Dialog' | 'Input' | 'Label' | 'Alert';
   nesStyled: boolean;
   svelte5Compatible: boolean;
-  properties: Record<string, any>;
+  properties: { [key: string]: any };
 }
-
 export interface SimdTileResult {
   tiles: Uint8Array[];
   compressionRatio: number;
   processingTime: number;
   simdOptimized: boolean;
 }
-
 export interface YoRHaMipmapResult {
   textures: GPUTexture[];
   mipmapLevels: number;

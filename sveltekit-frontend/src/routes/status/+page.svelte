@@ -2,10 +2,8 @@
   Comprehensive System Status Page
   Shows integration status of all components: GPU Cache, Gaming, PostgreSQL, APIs, etc.
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import Button from 'bits-ui';
@@ -17,46 +15,36 @@
     CardContent
   } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
-
   // System status state
   let systemHealth = $state<any>(null);
   let integrationTests = $state<any>({});
   let isLoading = $state(true);
   let lastUpdated = $state<string>('');
-
   $effect(() => {
     (async () => {
 if (!browser) return;
     await loadSystemStatus();
-
     // Auto-refresh every 30 seconds
     const interval = setInterval(loadSystemStatus, 30000);
     return () => clearInterval(interval);
     })();
   });
-
   async function loadSystemStatus() {
     try {
       isLoading = true;
-
       // Load health data
       const healthResponse = await fetch('/api/health');
       if (healthResponse.ok) {
         systemHealth = await healthResponse.json();
       }
-
       // Test GPU cache integration
       await testGPUCacheIntegration();
-
       // Test gaming components
       await testGamingComponents();
-
       // Test PostgreSQL integration
       await testPostgreSQLIntegration();
-
       // Test API endpoints
       await testAPIEndpoints();
-
       lastUpdated = new Date().toLocaleTimeString();
     } catch (error) {
       console.error('Failed to load system status:', error);
@@ -64,7 +52,6 @@ if (!browser) return;
       isLoading = false;
     }
   }
-
   async function testGPUCacheIntegration() {
     try {
       // Check CSS custom properties
@@ -75,40 +62,36 @@ if (!browser) return;
         '--nes-prg-rom-color',
         '--gpu-cache-state-idle'
       ];
-
       const loadedVars = gpuVars.filter(item => item.trim)() !== ''
       );
-
       if (loadedVars.length === gpuVars.length) {
         integrationTests['gpu-cache'] = {
-          status: 'success',;
-          message: 'GPU cache CSS integration fully loaded',;
+          status: 'success',
+          message: 'GPU cache CSS integration fully loaded',
           details: { loadedVars: loadedVars.length, totalVars: gpuVars.length }
         };
       } else {
         integrationTests['gpu-cache'] = {
-          status: 'warning',;
-          message: `GPU cache CSS partially loaded: ${loadedVars.length}/${gpuVars.length} variables`,;
+          status: 'warning',
+          message: `GPU cache CSS partially loaded: ${loadedVars.length}/${gpuVars.length} variables`,
           details: { loadedVars, missingVars: gpuVars.filter(v => !loadedVars.includes(v)) }
         };
       }
     } catch (error) {
       integrationTests['gpu-cache'] = {
-        status: 'error',;
+        status: 'error',
         message: `GPU cache integration error: ${error}`
       };
     }
   }
-
   async function testGamingComponents() {
     try {
       // Test gaming constants availability
       const { NES_COLOR_PALETTE, N64_TEXTURE_PRESETS } = await import('$lib/components/ui/gaming/constants/gaming-constants.js');
-
       if (NES_COLOR_PALETTE && N64_TEXTURE_PRESETS) {
         integrationTests['gaming'] = {
-          status: 'success',;
-          message: 'Gaming components and constants loaded successfully',;
+          status: 'success',
+          message: 'Gaming components and constants loaded successfully',
           details: {
             nesColors: Object.keys(errors).length,
             n64Presets: Object.keys(errors).length
@@ -116,51 +99,48 @@ if (!browser) return;
         };
       } else {
         integrationTests['gaming'] = {
-          status: 'error',;
+          status: 'error',
           message: 'Gaming constants not properly loaded';
         };
       }
     } catch (error) {
       integrationTests['gaming'] = {
-        status: 'error',;
+        status: 'error',
         message: `Gaming components error: ${error}`
       };
     }
   }
-
   async function testPostgreSQLIntegration() {
     try {
       const response = await fetch('/api/v1/health');
       if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
-        const pgStatus = (data as { services?: unknown }).services?.databases?.postgres?.status;
-
+        const pgStatus = (data as { services?: unknown }).services?.databases?.postgres?.statu;
         if (pgStatus === 'healthy') {
           integrationTests['postgresql'] = {
-            status: 'success',;
-            message: 'PostgreSQL + pgvector connected and healthy',;
+            status: 'success',
+            message: 'PostgreSQL + pgvector connected and healthy',
             details: { host: (data as { services?: unknown }).services.databases.postgres.host, port: (data as { services?: unknown }).services.databases.postgres.port }
           };
         } else {
           integrationTests['postgresql'] = {
-            status: 'error',;
+            status: 'error',
             message: 'PostgreSQL connection failed or unhealthy';
           };
         }
       } else {
         integrationTests['postgresql'] = {
-          status: 'error',;
+          status: 'error',
           message: 'Unable to check PostgreSQL status';
         };
       }
     } catch (error) {
       integrationTests['postgresql'] = {
-        status: 'error',;
+        status: 'error',
         message: `PostgreSQL test error: ${error}`
       };
     }
   }
-
   async function testAPIEndpoints() {
     try {
       const endpoints = [
@@ -178,20 +158,18 @@ if (!browser) return;
           // Endpoint might not exist yet, that's ok
         }
       }
-
       integrationTests['api-endpoints'] = {
-        status: successCount >= endpoints.length / 2 ? 'success' : 'warning',;
-        message: `API endpoints: ${successCount}/${endpoints.length} accessible`,;
+        status: successCount >= endpoints.length / 2 ? 'success' : 'warning',
+        message: `API endpoints: ${successCount}/${endpoints.length} accessible`,
         details: { endpoints, successCount }
       };
     } catch (error) {
       integrationTests['api-endpoints'] = {
-        status: 'error',;
+        status: 'error',
         message: `API endpoints test error: ${error}`
       };
     }
   }
-
   function getStatusColor(status: string) {
     switch (status) {
       case 'success': return 'text-green-500';
@@ -200,7 +178,6 @@ if (!browser) return;
       default: return 'text-gray-500';
     }
   }
-
   function getStatusIcon(status: string) {
     switch (status) {
       case 'success': return '✅';
@@ -209,7 +186,6 @@ if (!browser) return;
       default: return '❓';
     }
   }
-
   function getBadgeVariant(status: string) {
     switch (status) {
       case 'healthy': return 'success';
@@ -219,12 +195,10 @@ if (!browser) return;
     }
   }
 </script>
-
 <svelte:head>
   <title>System Status - YoRHa Legal AI Platform</title>
   <meta name="description" content="Real-time system status and integration monitoring for the Legal AI platform" />
 </svelte:head>
-
 <div class="status-page min-h-screen bg-gradient-to-br from-gray-900 to-black p-6">
   <!-- Header -->
   <header class="mb-8">
@@ -243,7 +217,6 @@ if (!browser) return;
         </Button.Root>
       </div>
     </div>
-
     {#if systemHealth?.overall}
       <div class="overall-status p-6 bg-gray-800 rounded-lg border border-gray-700 mb-6">
         <div class="flex items-center justify-between">
@@ -265,7 +238,6 @@ if (!browser) return;
       </div>
     {/if}
   </header>
-
   <!-- Integration Tests Results -->
   <section class="mb-12">
     <h2 class="text-2xl font-bold text-white mb-6">Integration Test Results</h2>
@@ -295,12 +267,10 @@ if (!browser) return;
       {/each}
     </div>
   </section>
-
   <!-- System Services Status -->
   {#if systemHealth?.services}
     <section class="mb-12">
       <h2 class="text-2xl font-bold text-white mb-6">System Services</h2>
-
       <!-- Databases -->
       <div class="mb-6 bg-gray-800 border-gray-700 nes-container">
         <div class="yorha-panel-header">
@@ -327,7 +297,6 @@ if (!browser) return;
           </div>
         </div>
       </div>
-
       <!-- AI Services -->
       <div class="mb-6 bg-gray-800 border-gray-700 nes-container">
         <div class="yorha-panel-header">
@@ -354,7 +323,6 @@ if (!browser) return;
           </div>
         </div>
       </div>
-
       <!-- GPU Services -->
       <div class="mb-6 bg-gray-800 border-gray-700 nes-container">
         <div class="yorha-panel-header">
@@ -386,7 +354,6 @@ if (!browser) return;
       </div>
     </section>
   {/if}
-
   <!-- Performance Metrics -->
   {#if systemHealth?.performance}
     <section class="mb-12">
@@ -417,7 +384,6 @@ if (!browser) return;
       </div>
     </section>
   {/if}
-
   <!-- Live Demo Section -->
   <section class="mb-12">
     <h2 class="text-2xl font-bold text-white mb-6">GPU Cache Integration Demo</h2>
@@ -431,7 +397,6 @@ if (!browser) return;
       </div>
     </div>
   </section>
-
   <!-- Architecture Summary -->
   {#if systemHealth?.architecture}
     <section>
@@ -475,38 +440,31 @@ if (!browser) return;
     </section>
   {/if}
 </div>
-
 <style>
-  .status-page {;
+  .status-page {
     font-family: 'Inter', sans-serif;
   }
-
   .service-card {
     transition: all 0.2s ease;
   }
-
   .service-card:hover {
     border-color: rgba(59, 130, 246, 0.5);
     transform: translateY(-1px);
   }
-
   .metric-group {
     padding: 1rem;
     background: rgba(31, 41, 55, 0.5);
     border-radius: 0.5rem;
     border: 1px solid rgba(75, 85, 99, 0.3);
   }
-
   /* Use GPU cache CSS variables */
   :global(.status-page) {
     background: var(--gpu-cache-bg-primary, #000000);
   }
-
   :global(.service-card) {
     background: var(--gpu-cache-bg-secondary, #111827);
     border-color: var(--gpu-cache-border-primary, #374151);
   }
-
   :global(.metric-group) {
     background: var(--gpu-cache-bg-tertiary, #1f2937);
     border-color: var(--gpu-cache-border-secondary, #4b5563);

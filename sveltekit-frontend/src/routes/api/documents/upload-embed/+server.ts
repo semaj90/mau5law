@@ -4,11 +4,8 @@ import { join } from 'path'
 import { existsSync } from 'fs'
 import crypto from 'node:crypto'
 import type { RequestHandler } from './$types.js'
-
-
 // Document Upload + Embedding Pipeline API
 // Integrates with your existing LangChain+Ollama+pgvector infrastructure
-
 const config = {
   ollamaBaseUrl: 'http://localhost:11434',
   embeddingModel: 'nomic-embed-text', // 384 dimensions
@@ -24,29 +21,23 @@ const config = {
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ]
 }
-
 // Text extraction utilities
 async function extractText(file: File): Promise<string> {
   const mimeType = file.type
-  
   if (mimeType === 'text/plain' || mimeType === 'text/markdown') {
     return await file.text()
   }
-  
   if (mimeType === 'application/pdf') {
     // In production, use a PDF library like pdf-parse
     // For now, return placeholder
     return `[PDF Content] ${file.name} - Size: ${file.size} bytes`
   }
-  
   if (mimeType.includes('word')) {
     // In production, use mammoth.js for Word docs
     return `[Word Document] ${file.name} - Size: ${file.size} bytes`
   }
-  
   throw new Error(`Unsupported file type: ${mimeType}`)
 }
-
 // POST handler for document upload and embedding
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -56,45 +47,35 @@ export const POST: RequestHandler = async ({ request }) => {
     const evidenceId = formData.get('evidenceId') as string
     const title = formData.get('title') as string || file.name
     const userId = formData.get('userId') as string
-
     // Validation
     if (!file) {
       throw error(400, 'No file provided')
     }
-
     if (!caseId || !userId) {
       throw error(400, 'Missing required fields: caseId, userId')
     }
-
     if (file.size > config.maxFileSize) {
       throw error(400, `File too large. Max size: ${config.maxFileSize / (1024 * 1024)}MB`)
     }
-
     if (!config.allowedTypes.includes(file.type)) {
       throw error(400, `Unsupported file type: ${file.type}`)
     }
-
     // Create upload directory if it doesn't exist
     if (!existsSync(config.uploadDir)) {
       await mkdir(config.uploadDir, { recursive: true })
     }
-
     // Generate file hash for integrity
     const buffer = await file.arrayBuffer()
     const hash = crypto.createHash('sha256').update(new Uint8Array(buffer)).digest('hex')
-
     // Save file
     const filename = `${Date.now()}-${file.name}`
     const filePath = join(config.uploadDir, filename)
     await writeFile(filePath, new Uint8Array(buffer)
-
     // Extract text content
     const extractedText = await extractText(file)
-
     console.log(`📁 Created document: ${filename}`)
-
     return json({
-      success: true,
+      success: true
       document: {
         filename: file.name,
         filePath,
@@ -105,7 +86,6 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       message: 'Document uploaded successfully'
     })
-
   } catch (err: any) {
     console.error('❌ Upload error:', err)
     if (err instanceof Error) {
@@ -114,7 +94,6 @@ export const POST: RequestHandler = async ({ request }) => {
     throw error(500, 'Unknown upload error')
   }
 }
-
 // GET handler for health check
 export const GET: RequestHandler = async () => {
   try {

@@ -1,20 +1,16 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { telemetryBus } from '../../telemetry/telemetry-bus.js';
   import { gpuVectorProcessor } from '../../gpu/gpu-vector-processor.js';
   import { gpuTelemetryService } from '../../gpu/gpu-telemetry-service.js';
-
   interface TelemetryEvent {
     type: string;
-    meta?: Record<string, any>;
+    meta?: { [key: string]: any };
     ts?: number;
   }
-
   let events: TelemetryEvent[] = [];
   const maxEvents = 150;
-
   // Aggregated metrics
   let backendStats: Record<string, { count: number; success: number; totalDuration: number; lastMs: number }> = {};
   let currentBackend = '';
@@ -23,9 +19,7 @@
   let demotionCooldownRemaining = 0;
   let gpuStatsActive = false;
   let reductionMode: 'auto' | 'gpu' | 'cpu' = (globalThis as any).CLIENT_ENV?.REDUCTION_MODE || 'auto';
-
   let timerHandle: unknown = null;
-
   function classifyColor(type: string): string {
     if (type.includes('error')) return 'var(--gpu-log-error, #ff4d4f)';
     if (type.includes('demotion')) return 'var(--gpu-log-warn, #faad14)';
@@ -34,22 +28,18 @@
     if (type.includes('adapt')) return 'var(--gpu-log-adapt, #52c41a)';
     return 'var(--gpu-log-default, #bbb)';
   }
-
   function updateState() {
     const state = gpuVectorProcessor.dumpState?.();
     embeddingDimension = (gpuVectorProcessor as any).embeddingDimension || state?.embeddingDimension || 0;
     currentBackend = state?.aggregates ? state.aggregates.currentBackend || '' : state?.currentBackend || '';
   }
-
   function recordEvent(ev: TelemetryEvent) {
     ev.ts = Date.now();
     events.unshift(ev);
-    if (events.length > maxEvents) events.length = maxEvents;
+    if (events.length > maxEvents) events.length = maxEvent;
     if (!backendStats[currentBackend]) backendStats[currentBackend] = { count: 0, success: 0, totalDuration: 0, lastMs: 0 };
   }
-
   let unsubscribe: (() => void) | null = null;
-
   $effect(() => {
     unsubscribe = telemetryBus.subscribe((ev: unknown) => {
       if (!ev || !ev.type) return;
@@ -67,18 +57,15 @@
       }
       updateState();
     });
-
     updateState();
     timerHandle = setInterval(() => {
       updateState();
     }, 2000);
   });
-
   onDestroy(() => {
     if (unsubscribe) unsubscribe();
     if (timerHandle) clearInterval(timerHandle);
   });
-
   function formatMs(v: number) { return v.toFixed(1) + 'ms'; }
   function successRate(b: string) {
     const s = backendStats[b];
@@ -90,33 +77,29 @@
     if (!s || s.count === 0) return '—';
     return formatMs(s.totalDuration / s.count);
   }
-
   function triggerTestRun() {
     // Example test invocation (embedding-generation assumed):
     gpuVectorProcessor.run({
-      pipeline: 'embedding-generation',;
+      pipeline: 'embedding-generation',
       input: { data: new Float32Array(1024) },
-      expected: 'compute',;
+      expected: 'compute',
       label: 'dashboard-test';
     } as any);
   }
-
   async function forceDemote() {
     await (gpuVectorProcessor as any).forceDemote?.();
   }
   async function forcePromote(to: string) {
     await (gpuVectorProcessor as any).forcePromote?.(to);
   }
-
   function clearLog() { events = []; }
   function setReductionMode(mode: 'auto' | 'gpu' | 'cpu') {
-    reductionMode = mode;
+    reductionMode = mod;
     telemetryBus.publish({ type: 'gpu.reduction.mode' as any, meta: { mode } });
     // Expose on global for processor (simple approach without import cycles)
-    (globalThis as any).__FORCE_REDUCTION_MODE__ = mode;
+    (globalThis as any).__FORCE_REDUCTION_MODE__ = mod;
   }
 </script>
-
 <style>
   :global(.gpu-dashboard) { font-family: system-ui, sans-serif; font-size: 13px; line-height: 1.3; }
   .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
@@ -132,7 +115,6 @@
   .controls button { background: #2d2f33; border: 1px solid #3a3d42; color: #ddd; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
   .controls button:hover { background: #35383d; }
 </style>
-
 <div class="gpu-dashboard">
   <div class="grid">
     <div class="panel">
@@ -142,7 +124,6 @@
       <div>GPU Stats: {gpuStatsActive ? '✅ active' : '—'}</div>
       <div>Reduction Mode: {reductionMode}</div>
     </div>
-
     <div class="panel metrics">
       <h3>Performance</h3>
       <table>
@@ -162,7 +143,6 @@
         </tbody>
       </table>
     </div>
-
     <div class="panel controls">
       <h3>Controls</h3>
       <button onclick={triggerTestRun}>Test Run</button>
@@ -180,7 +160,6 @@
         <button onclick={() => setReductionMode('cpu')} title="Force CPU reduction path">CPU</button>
       </div>
     </div>
-
     <div class="panel">
       <h3>Recent Events</h3>
       <div class="log">

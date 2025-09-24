@@ -1,37 +1,29 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { page } from '$app/state';
   import { browser } from '$app/environment';
   import type { Snippet } from 'svelte';
-
   // Add any layout-specific state or logic here
   let mounted = $state(false);
-
   if (browser) {
     mounted = true;
   }
-
   interface Props { children: Snippet }
   let { children }: Props = $props();
 </script>
-
 <div class="evidence-canvas-layout" class:mounted>
   {@render children?.()}
   </div>
-
 <style>
-  .evidence-canvas-layout {;
+  .evidence-canvas-layout {
     min-height: 100vh;
     width: 100%;
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
   }
-
   .evidence-canvas-layout.mounted {
     opacity: 1;
   }
-
   :global(body) {
     margin: 0;
     padding: 0;

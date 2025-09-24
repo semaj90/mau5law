@@ -2,10 +2,8 @@
  * 🚀 Multi-Layer Caching System for Legal AI
  * Implements Loki.js (memory), Fuse.js (search), IndexedDB (browser), Redis (server)
  */
-
 import Loki from 'lokijs';
 import Fuse from 'fuse.js';
-
 interface CacheEntry<T = any> {
   key: string;
   value: T;
@@ -15,7 +13,6 @@ interface CacheEntry<T = any> {
   accessCount: number;
   sizeBytes: number;
 }
-
 interface CacheLayer {
   name: string;
   maxSize: number;
@@ -23,29 +20,23 @@ interface CacheLayer {
   hitRate: number;
   missRate: number;
 }
-
 export class MultiLayerCacheSystem {
   // Layer 1: In-memory cache (Loki.js) - Fastest
   private lokiDB: Loki;
   private memoryCollection: Collection<CacheEntry>;
-
   // Layer 2: Search index (Fuse.js) - For fuzzy searching
   private fuseIndex: Fuse<CacheEntry> | null = null;
-
   // Layer 3: Browser storage (IndexedDB) - Persistent client cache
   private indexedDB: IDBDatabase | null = null;
-
   // Layer 4: Server cache (Redis simulation) - Shared cache
   private redisSimulation = new Map<string, CacheEntry>();
-
   // Cache statistics
   private stats = {
     hits: { l1: 0, l2: 0, l3: 0, l4: 0 },
     misses: { l1: 0, l2: 0, l3: 0, l4: 0 },
-    evictions: 0,;
+    evictions: 0,
     writes: 0
   };
-
   // Configuration
   private readonly config = {
     l1MaxSize: 10 * 1024 * 1024,  // 10MB memory cache
@@ -54,26 +45,22 @@ export class MultiLayerCacheSystem {
     defaultTTL: 3600,              // 1 hour default TTL
     evictionPolicy: 'lru' as 'lru' | 'lfu' | 'fifo'
   };
-
   constructor() {
     // Initialize Loki.js in-memory database
     this.lokiDB = new Loki('legal-ai-cache.db', {
-      env: 'BROWSER',;
-      autosave: false,
+      env: 'BROWSER',
+      autosave: false
       persistenceMethod: 'memory'
     });
-
     // Create collection for cache entries
     this.memoryCollection = this.lokiDB.addCollection<CacheEntry>('cache', {
-      indices: ['key', 'timestamp', 'priority'],;
+      indices: ['key', 'timestamp', 'priority'],
       unique: ['key']
     });
-
     // Initialize other layers asynchronously
     this.initializeIndexedDB();
     this.initializeFuseIndex();
   }
-
   /**
    * Initialize IndexedDB for persistent browser storage
    */
@@ -82,24 +69,19 @@ export class MultiLayerCacheSystem {
       console.warn('IndexedDB not available');
       return;
     }
-
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('LegalAICache', 1);
-
       request.onerror = () => {
         console.error('Failed to open IndexedDB');
         reject(request.error);
       };
-
       request.onsuccess = () => {
         this.indexedDB = request.result;
         console.log('✅ IndexedDB initialized');
         resolve();
       };
-
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
-
         if (!db.objectStoreNames.contains('cache')) {
           const store = db.createObjectStore('cache', { keyPath: 'key' });
           store.createIndex('timestamp', 'timestamp', { unique: false });
@@ -108,21 +90,18 @@ export class MultiLayerCacheSystem {
       };
     });
   }
-
   /**
    * Initialize Fuse.js search index
    */
   private initializeFuseIndex(): void {
     const options: Fuse.IFuseOptions<CacheEntry> = {
-      keys: ['key', 'value'],;
+      keys: ['key', 'value'],
       threshold: 0.3,
-      includeScore: true,
+      includeScore: true
       minMatchCharLength: 2
     };
-
     this.fuseIndex = new Fuse([], options);
   }
-
   /**
    * Multi-layer cache GET operation
    */
@@ -136,7 +115,6 @@ export class MultiLayerCacheSystem {
       return memoryEntry.value as T;
     }
     this.stats.misses.l1++;
-
     // Layer 2: Check IndexedDB
     const indexedEntry = await this.getFromIndexedDB(key);
     if (indexedEntry && !this.isExpired(indexedEntry)) {
@@ -146,7 +124,6 @@ export class MultiLayerCacheSystem {
       return indexedEntry.value as T;
     }
     this.stats.misses.l2++;
-
     // Layer 3: Check Redis simulation (would be actual Redis in production)
     const redisEntry = this.redisSimulation.get(key);
     if (redisEntry && !this.isExpired(redisEntry)) {
@@ -157,23 +134,19 @@ export class MultiLayerCacheSystem {
       return redisEntry.value as T;
     }
     this.stats.misses.l4++;
-
     return null;
   }
-
   /**
    * Multi-layer cache SET operation
    */
   async set<T>(
-    key: string,
-    value: T,
-    ttl: number = this.config.defaultTTL,;
+    key: string
+    value: T
+    ttl: number = this.config.defaultTTL,
     priority: number = 100
   ): Promise<void> {
     this.stats.writes++;
-
     const sizeBytes = this.estimateSize(value);
-
     // Write to all layers based on priority
     if (priority >= 150) {
       // High priority: Write to all layers
@@ -188,12 +161,11 @@ export class MultiLayerCacheSystem {
       // Low priority: Redis only
       this.setInRedis(key, value, ttl, priority);
     }
-
     // Update Fuse.js index
     if (this.fuseIndex) {
       const entry: CacheEntry = {
         key,
-        value,;
+        value,
         timestamp: Date.now(),
         ttl,
         priority,
@@ -203,142 +175,121 @@ export class MultiLayerCacheSystem {
       this.fuseIndex.add(entry);
     }
   }
-
   /**
    * Fuzzy search using Fuse.js
    */
   async search<T>(query: string, limit: number = 10): Promise<T[]> {
     if (!this.fuseIndex) return [];
-
     const results = this.fuseIndex.search(query, { limit });
     return results
       .filter(result => !this.isExpired(result.item))
       .map(result => result.item.value as T);
   }
-
   /**
    * Set in Loki.js memory cache with eviction
    */
   private async setInMemory<T>(
-    key: string,
-    value: T,
-    ttl: number,;
+    key: string
+    value: T
+    ttl: number
     priority: number
   ): Promise<void> {
     const sizeBytes = this.estimateSize(value);
-
     // Check if we need to evict
     const currentSize = this.getCurrentMemorySize();
     if (currentSize + sizeBytes > this.config.l1MaxSize) {
       await this.evictFromMemory(sizeBytes);
     }
-
     const entry: CacheEntry<T> = {
       key,
-      value,;
+      value,
       timestamp: Date.now(),
       ttl,
       priority,
       accessCount: 1,
       sizeBytes
     };
-
     // Remove existing entry if present
     const existing = this.memoryCollection.findOne({ key });
     if (existing) {
       this.memoryCollection.remove(existing);
     }
-
     this.memoryCollection.insert(entry);
   }
-
   /**
    * Set in IndexedDB
    */
   private async setInIndexedDB<T>(
-    key: string,
-    value: T,
-    ttl: number,;
+    key: string
+    value: T
+    ttl: number
     priority: number
   ): Promise<void> {
     if (!this.indexedDB) return;
-
     return new Promise((resolve, reject) => {
       const transaction = this.indexedDB!.transaction(['cache'], 'readwrite');
       const store = transaction.objectStore('cache');
-
       const entry: CacheEntry<T> = {
         key,
-        value,;
+        value,
         timestamp: Date.now(),
         ttl,
         priority,
         accessCount: 1,
         sizeBytes: this.estimateSize(value)
       };
-
       const request = store.put(entry);
-
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
     });
   }
-
   /**
    * Set in Redis simulation
    */
   private setInRedis<T>(
-    key: string,
-    value: T,
-    ttl: number,
+    key: string
+    value: T
+    ttl: number
     priority: number
   ): void {
     const entry: CacheEntry<T> = {
       key,
-      value,;
+      value,
       timestamp: Date.now(),
       ttl,
       priority,
       accessCount: 1,
       sizeBytes: this.estimateSize(value)
     };
-
     this.redisSimulation.set(key, entry);
-
     // Simulate Redis TTL
     setTimeout(() => {
       this.redisSimulation.delete(key);
     }, ttl * 1000);
   }
-
   /**
    * Get from IndexedDB
    */
   private async getFromIndexedDB<T>(key: string): Promise<CacheEntry<T> | null> {
     if (!this.indexedDB) return null;
-
     return new Promise((resolve, reject) => {
       const transaction = this.indexedDB!.transaction(['cache'], 'readonly');
       const store = transaction.objectStore('cache');
       const request = store.get(key);
-
       request.onsuccess = () => {
         resolve(request.result as CacheEntry<T> || null);
       };
-
       request.onerror = () => {
         reject(request.error);
       };
     });
   }
-
   /**
    * Evict entries from memory based on policy
    */
   private async evictFromMemory(bytesNeeded: number): Promise<void> {
     let evicted = 0;
     const entries = this.memoryCollection.find();
-
     // Sort based on eviction policy
     let sorted: CacheEntry[];
     switch (this.config.evictionPolicy) {
@@ -354,11 +305,9 @@ export class MultiLayerCacheSystem {
       default:
         sorted = entries;
     }
-
     // Evict until we have enough space
     for (const entry of sorted) {
       if (evicted >= bytesNeeded) break;
-
       // Don't evict high-priority items unless necessary
       if (entry.priority < 200 || evicted < bytesNeeded / 2) {
         this.memoryCollection.remove(entry);
@@ -367,14 +316,12 @@ export class MultiLayerCacheSystem {
       }
     }
   }
-
   /**
    * Check if cache entry is expired
    */
   private isExpired(entry: CacheEntry): boolean {
     return Date.now() - entry.timestamp > entry.ttl * 1000;
   }
-
   /**
    * Estimate size of value in bytes
    */
@@ -382,7 +329,6 @@ export class MultiLayerCacheSystem {
     const str = JSON.stringify(value);
     return new Blob([str]).size;
   }
-
   /**
    * Get current memory cache size
    */
@@ -391,7 +337,6 @@ export class MultiLayerCacheSystem {
       .find()
       .reduce((total, entry) => total + entry.sizeBytes, 0);
   }
-
   /**
    * Clear specific cache layer or all layers
    */
@@ -400,7 +345,6 @@ export class MultiLayerCacheSystem {
       case 'memory':
         this.memoryCollection.clear();
         break;
-
       case 'indexeddb':
         if (this.indexedDB) {
           const transaction = this.indexedDB.transaction(['cache'], 'readwrite');
@@ -408,11 +352,9 @@ export class MultiLayerCacheSystem {
           await store.clear();
         }
         break;
-
       case 'redis':
         this.redisSimulation.clear();
         break;
-
       case 'all':
       default:
         this.memoryCollection.clear();
@@ -424,13 +366,11 @@ export class MultiLayerCacheSystem {
         this.redisSimulation.clear();
         break;
     }
-
     // Reset Fuse.js index
     if (this.fuseIndex) {
       this.fuseIndex.remove(() => true);
     }
   }
-
   /**
    * Get cache statistics
    */
@@ -444,7 +384,6 @@ export class MultiLayerCacheSystem {
   } {
     const totalHits = Object.values(this.stats.hits).reduce((a, b) => a + b, 0);
     const totalMisses = Object.values(this.stats.misses).reduce((a, b) => a + b, 0);
-
     return {
       layers: [
         {
@@ -473,11 +412,10 @@ export class MultiLayerCacheSystem {
       totalHits,
       totalMisses,
       hitRate: totalHits / (totalHits + totalMisses) || 0,
-      evictions: this.stats.evictions,;
+      evictions: this.stats.evictions,
       writes: this.stats.writes
     };
   }
 }
-
 // Export singleton instance
 export const multiLayerCache = new MultiLayerCacheSystem();

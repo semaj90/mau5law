@@ -1,5 +1,5 @@
 
-// User types consolidated;
+// User types consolidated
 export interface User {
   id: string;
   email: string;
@@ -13,15 +13,13 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
 }
-
 export interface UserSession {
   id: string;
   userId: string;
   expiresAt: Date;
   user?: User; // Optional complete user object
 }
-
 export interface UserProfile extends User {
-  preferences?: Record<string, any>;
-  settings?: Record<string, any>;
+  preferences?: { [key: string]: any };
+  settings?: { [key: string]: any };
 }

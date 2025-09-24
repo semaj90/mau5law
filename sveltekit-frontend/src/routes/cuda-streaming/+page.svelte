@@ -1,18 +1,17 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { PageData, ActionData } from './$types.js';
   import { onMount, onDestroy } from 'svelte';
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
   // Enhanced-Bits orchestrated components
-  import { 
-    Button, 
-    Card, 
+  import {
+    Button,
+    Card,
     Input,
     Badge
   } from '$lib/components/ui/enhanced-bits';
-  import { 
+  import {
     OrchestratedCard,
     OrchestratedButton,
     type LegalEvidenceItem,
@@ -20,12 +19,11 @@
     formatAnalysisDate
   } from '$lib/components/ui/orchestrated';
   // Icons for CUDA streaming
-  import { 
+  import {
     Cpu, Zap, Play, Square, Settings, TrendingUp, Activity,
     Database, Clock, BarChart3, Thermometer, Power, Memory,
     CheckCircle, AlertCircle, Eye, Download, Upload, Layers
   } from 'lucide-svelte';
-
   let { data, form }: { data: PageData; form: ActionData } = $props();
   // Svelte 5 runes for CUDA streaming state
   let selectedOperation = $state<string>('document_vectorization');
@@ -38,11 +36,9 @@
   let processingProgress = $state(0);
   let liveMetrics = $state((data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).sessionStats);
   let selectedTab = $state<'streaming' | 'monitoring' | 'results' | 'config'>('streaming');
-
   // Real-time metrics update
   let metricsInterval: NodeJS.Timeout | null = null;
   let streamingSocket: EventSource | null = null;
-
   // Derived states
   let gpuStatus = $derived((data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.gpuAvailable ? 'available' : 'unavailable');
   let canStream = $derived(!isStreaming && inputText.trim.length > 0);
@@ -50,22 +46,19 @@
     (data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.utilization?.gpu > 80 ? 'text-red-600' :
     (data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.utilization?.gpu > 50 ? 'text-yellow-600' : 'text-green-600'
   );
-
   // CUDA streaming functions
   async function startCudaStream() {
     if (!canStream) return;
     isStreaming = true;
     processingProgress = 0;
     streamResults = [];
-
     const formData = new FormData();
     formData.append('operationType', selectedOperation);
     formData.append('inputData', inputText);
     formData.append('batchSize', batchSize.toString());
-
     try {
       const response = await fetch('?/startStream', {
-        method: 'POST',;
+        method: 'POST',
         body: formData;
       });
       const result = await (response as { json?: unknown }).json();
@@ -79,15 +72,13 @@
       isStreaming = false;
     }
   }
-
   async function stopCudaStream() {
     if (!currentSession) return;
     const formData = new FormData();
     formData.append('sessionId', currentSession);
-
     try {
       await fetch('?/stopStream', {
-        method: 'POST',;
+        method: 'POST',
         body: formData;
       });
       stopStreamingUpdates();
@@ -95,7 +86,6 @@
       console.error('Failed to stop CUDA stream:', error);
     }
   }
-
   function startStreamingUpdates(sessionId: string) {
     // Simulate real-time streaming updates
     const updateInterval = setInterval(() => {
@@ -105,14 +95,14 @@
         // Add final result
         streamResults = [...streamResults, {
           id: Date.now(),
-          operation: selectedOperation,
+          operation: selectedOperation
           input: inputText.slice(0, 100) + '...',
           status: 'completed',
           processingTime: Math.floor(Math.random() * 2000) + 500,
-          gpuAccelerated: useGpu,;
+          gpuAccelerated: useGpu
           results: {
             vectorsGenerated: Math.floor(Math.random() * 500) + 100,
-            entitiesExtracted: Math.floor(Math.random() * 20) + 5,;
+            entitiesExtracted: Math.floor(Math.random() * 20) + 5,
             confidence: 0.85 + Math.random() * 0.1;
           }
         }];
@@ -120,18 +110,16 @@
       } else {
         // Add intermediate result
         streamResults = [...streamResults, {
-          id: Date.now(),;
+          id: Date.now(),
           operation: `${selectedOperation}_chunk_${streamResults.length + 1}`,
-          status: 'processing',;
-          progress: processingProgress;
+          status: 'processing',
+          progress: processingProgres;
         }];
       }
     }, 800);
-
     // Store interval for cleanup
     metricsInterval = updateInterval;
   }
-
   function stopStreamingUpdates() {
     isStreaming = false;
     currentSession = null;
@@ -141,7 +129,6 @@
       metricsInterval = null;
     }
   }
-
   async function processSingleDocument() {
     if (!inputText.trim()) return;
     const startTime = Date.now();
@@ -149,18 +136,17 @@
     formData.append('documentData', inputText);
     formData.append('processingType', selectedOperation);
     formData.append('useGpu', useGpu.toString());
-
     try {
       const response = await fetch('?/processDocument', {
-        method: 'POST',;
+        method: 'POST',
         body: formData;
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).success) {
         streamResults = [...streamResults, {
-          id: Date.now(),;
+          id: Date.now(),
           operation: `single_${selectedOperation}`,
-          input: inputText.slice(0, 100) + '...',;
+          input: inputText.slice(0, 100) + '...',
           status: 'completed',
           processingTime: (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).processingTime,
           gpuAccelerated: (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).gpuAccelerated,
@@ -172,30 +158,25 @@
       console.error('Single document processing failed:', error);
     }
   }
-
   // Performance metrics formatting
   function formatMemory(gb: number): string {
     return `${gb.toFixed(1)}GB`;
   }
-
   function formatUtilization(percent: number): string {
     return `${percent}%`;
   }
-
   function formatThroughput(docsPerSec: number): string {
     return docsPerSec >= 1000 ? `${(docsPerSec / 1000).toFixed(1)}K/s` : `${docsPerSec}/s`;
   }
-
   function getOperationIcon(operation: string) {
     switch (operation) {
-      case 'document_vectorization': return Database;
+      case 'document_vectorization': return Databa;
       case 'similarity_search': return BarChart3;
-      case 'text_embedding': return Layers;
-      case 'legal_entity_extraction': return Eye;
+      case 'text_embedding': return Layer;
+      case 'legal_entity_extraction': return Ey;
       default: return Cpu;
     }
   }
-
   // Cleanup on destroy
   onDestroy(() => {
     stopStreamingUpdates();
@@ -203,7 +184,6 @@
       streamingSocket.close();
     }
   });
-
   // Auto-refresh metrics
   $effect(() => {
     const refreshInterval = setInterval(() => {
@@ -218,11 +198,9 @@
     return () => clearInterval(refreshInterval);
   });
 </script>
-
 <svelte:head>
   <title>CUDA Streaming - GPU-Accelerated Legal AI Processing</title>
 </svelte:head>
-
 <div class="container mx-auto p-6 space-y-8">
   <!-- Header -->
   <div class="text-center mb-8">
@@ -234,7 +212,7 @@
       GPU-accelerated real-time legal document processing with NVIDIA CUDA and streaming analytics
     </p>
     <div class="flex justify-center gap-2 mt-6">
-      <Badge 
+      <Badge
         variant={(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.gpuAvailable ? 'default' : 'destructive'}
         class="gap-1"
       >
@@ -255,7 +233,6 @@
       </Badge>
     </div>
   </div>
-
   <!-- Tab Navigation -->
   <div class="flex justify-center mb-8">
     <div class="flex space-x-1 bg-muted p-1 rounded-lg">
@@ -276,7 +253,6 @@
       {/each}
     </div>
   </div>
-
   <!-- Real-Time Streaming Tab -->
   {#if selectedTab === 'streaming'}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -307,7 +283,6 @@
               {/each}
             </select>
           </div>
-
           <!-- Input Data -->
           <div class="space-y-3">
             <label class="text-sm font-medium" for="input-data">Input Data</label>
@@ -318,7 +293,6 @@
               disabled={isStreaming}
             ></textarea>
           </div>
-
           <!-- Configuration Options -->
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
@@ -343,7 +317,6 @@
               </label>
             </div>
           </div>
-
           <!-- Control Buttons -->
           <div class="flex gap-3">
             <OrchestratedButton.ProcessDocument
@@ -359,7 +332,6 @@
                 Start Stream
               {/if}
             </OrchestratedButton.ProcessDocument>
-
             {#if isStreaming}
               <button class="nes-btn is-error gap-2"
               >
@@ -367,18 +339,16 @@
                 Stop
               </button>
             {:else}
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 onclick={processSingleDocument}
                 disabled={!inputText.trim()}
                 class="gap-2"
               >
 <Zap class="w-4 h-4" />
                 Single Process
-
             {/if}
           </div>
-
           <!-- Processing Progress -->
           {#if isStreaming}
             <div class="space-y-2">
@@ -387,7 +357,7 @@
                 <span>{processingProgress.toFixed(1)}%</span>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   class="bg-primary h-2 rounded-full transition-all duration-300"
                   style="width: {processingProgress}%"
                 ></div>
@@ -401,7 +371,6 @@
           {/if}
         </div.Content>
       </OrchestratedCard.Analysis>
-
       <!-- Live Stream Results -->
       <OrchestratedCard.Evidence>
         <div.Header class="nes-container">
@@ -428,18 +397,16 @@
                       {@render getOperationIcon((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).operation)({ class: "w-4 h-4" })}
                       <span class="font-medium text-sm">{(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).operation.replace('_', ' ')}</span>
                     </div>
-                    <Badge 
+                    <Badge
                       variant={(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).status === 'completed' ? 'default' : 'secondary'}
                       class="text-xs"
                     >
                       {(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).status}
                     </Badge>
                   </div>
-                  
                   {#if (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).input}
                     <p class="text-xs nes-text is-disabled mb-2">{(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).input}</p>
                   {/if}
-                  
                   {#if (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).processingTime}
                     <div class="flex items-center gap-4 text-xs nes-text is-disabled">
                       <span>{(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).processingTime}ms</span>
@@ -451,10 +418,9 @@
                       {/if}
                     </div>
                   {/if}
-                  
                   {#if (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).progress !== undefined}
                     <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
-                      <div 
+                      <div
                         class="bg-primary h-1 rounded-full"
                         style="width: {(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).progress}%"
                       ></div>
@@ -468,7 +434,6 @@
       </OrchestratedCard.Evidence>
     </div>
   {/if}
-
   <!-- GPU Monitoring Tab -->
   {#if selectedTab === 'monitoring'}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -486,7 +451,6 @@
           <p class="text-xs nes-text is-disabled">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.computeCapability}</p>
         </div.Content>
       </OrchestratedCard.Analysis>
-
       <!-- Memory Usage -->
       <OrchestratedCard.Analysis>
         <div.Content class="p-6 nes-container">
@@ -499,7 +463,6 @@
           <p class="text-xs nes-text is-disabled">of {(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.totalMemory}</p>
         </div.Content>
       </OrchestratedCard.Analysis>
-
       <!-- Temperature -->
       <OrchestratedCard.Analysis>
         <div.Content class="p-6 nes-container">
@@ -512,7 +475,6 @@
           <p class="text-xs nes-text is-disabled">Normal operating range</p>
         </div.Content>
       </OrchestratedCard.Analysis>
-
       <!-- Power Draw -->
       <OrchestratedCard.Analysis>
         <div.Content class="p-6 nes-container">
@@ -526,7 +488,6 @@
         </div.Content>
       </OrchestratedCard.Analysis>
     </div>
-
     <!-- Performance Metrics -->
     <OrchestratedCard.Analysis>
       <div.Header class="nes-container">
@@ -553,7 +514,6 @@
       </div.Content>
     </OrchestratedCard.Analysis>
   {/if}
-
   <!-- Recent Processing Results -->
   <OrchestratedCard.Analysis>
     <div.Header class="nes-container">
@@ -572,13 +532,13 @@
             <div class="flex-1">
               <div class="flex items-center gap-2 mb-1">
                 <Badge variant="ghost" class="text-xs">{session.operation.replace('_', ' ')}</Badge>
-                <Badge 
+                <Badge
                   variant={session.gpuAccelerated ? 'default' : 'secondary'}
                   class="text-xs"
                 >
                   {session.gpuAccelerated ? 'GPU' : 'CPU'}
                 </Badge>
-                <Badge 
+                <Badge
                   variant={session.status === 'completed' ? 'default' : 'destructive'}
                   class="text-xs"
                 >
@@ -586,8 +546,8 @@
                 </Badge>
               </div>
               <div class="text-sm nes-text is-disabled">
-                {session.documentsProcessed} documents • 
-                {session.processingTime}ms • 
+                {session.documentsProcessed} documents •
+                {session.processingTime}ms •
                 {formatThroughput(session.throughput)} throughput
               </div>
               <div class="text-xs nes-text is-disabled">
@@ -596,7 +556,6 @@
             </div>
             <button class="nes-btn" variant="ghost" size="sm">
               <Eye class="w-3 h-3" />
-
           </div>
         {/each}
       </div>

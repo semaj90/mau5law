@@ -1,14 +1,13 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
+https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { dndzone } from 'svelte-dnd-action';
   import Masonry from 'masonry-layout';
-
   interface Props {
     items: unknown[];
     columnWidth?: number;
@@ -41,11 +40,9 @@ https://svelte.dev/e/js_parse_error -->
     dropTargetStyle = undefined,
     dropFromOthersDisabled = false
   }: Props = $props();
-
   let container: HTMLElement;
   let masonry: any;
   let isInitialized = $state(false);
-
   // Masonry configuration
   let masonryOptions = $derived({
     itemSelector,
@@ -58,7 +55,6 @@ https://svelte.dev/e/js_parse_error -->
     initLayout,
     transitionDuration
   });
-
   // Initialize Masonry
   $effect(() => {
     if (container) {
@@ -69,7 +65,6 @@ https://svelte.dev/e/js_parse_error -->
       return () => clearTimeout(id);
     }
   });
-
   // Update layout when items change
   $effect(() => {
     if (masonry && isInitialized) {
@@ -80,35 +75,29 @@ https://svelte.dev/e/js_parse_error -->
       return () => clearTimeout(id);
     }
   });
-
   onDestroy(() => {
     masonry?.destroy();
   });
-
   // Handle drag and drop
   const handleDndConsider = (e: CustomEvent) => {
-    items = e.detail.items;
+    items = e.detail.item;
   };
-
   const handleDndFinalize = (e: CustomEvent) => {
-    items = e.detail.items;
+    items = e.detail.item;
     // Trigger layout update after reordering
     setTimeout(() => {
       masonry?.layout();
     }, 100);
   };
-
   // Auto-resize functionality
   let resizeTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
   const handleResize = () => {
     if (!resize || !masonry) return;
-
     if (resizeTimeout) clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       masonry?.layout();
     }, 150);
   };
-
   $effect(() => {
     if (resize) {
       window.addEventListener('resize', handleResize);
@@ -119,7 +108,6 @@ https://svelte.dev/e/js_parse_error -->
     };
   });
 </script>
-
 <div
 <div
   bind:this={container}
@@ -148,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
 >
   {#each items as item, index (item?.id ?? index)}
     <div class="masonry-item space-y-4">
-      <slot {item} {index} />
+      {#snippet children({item} {index} /)}
     </div>
   {/each}
 </div>
@@ -173,10 +161,10 @@ https://svelte.dev/e/js_parse_error -->
   :global(.masonry-item.drag-disabled) {
     cursor: default;
   }
-  :global(.masonry-item:not(.drag-disabled)) {
+  :global(.masonry-item:not(.drag-disabled)) {,
     cursor: grab;
 }
-  :global(.masonry-item:not(.drag-disabled):active) {
+  :global(.masonry-item:not(.drag-disabled):active) {,
     cursor: grabbing;
 }
   :global(.masonry-item.drag-shadow) {
@@ -210,14 +198,13 @@ https://svelte.dev/e/js_parse_error -->
       opacity: 1;
 }}
   /* Hover effects */
-  :global(.masonry-item:hover) {
+  :global($1) {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
   /* Focus styles for accessibility */
-  :global(.masonry-item:focus-within) {
+  :global($1) {
     outline: 2px solid var(--pico-primary, #3b82f6);
     outline-offset: 2px;
 }
 </style>
-

@@ -1,4 +1,4 @@
-// Lightweight helper to wrap structured payloads into an Error acceptable by SvelteKit `error()` overloads.;
+// Lightweight helper to wrap structured payloads into an Error acceptable by SvelteKit `error()` overloads.
 export function makeHttpErrorPayload(payload: unknown): Error {
   try {
     return new Error(typeof payload === 'string' ? payload : JSON.stringify(payload));
@@ -6,5 +6,4 @@ export function makeHttpErrorPayload(payload: unknown): Error {
     return new Error(String(payload));
   }
 }
-
 export default makeHttpErrorPayload;

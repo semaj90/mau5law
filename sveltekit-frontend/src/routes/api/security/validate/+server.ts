@@ -1,6 +1,5 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 interface SecurityValidationRequest {
   email: string
   password: string
@@ -9,7 +8,6 @@ interface SecurityValidationRequest {
   organizationName?: string
   validationType: 'registration' | 'login' | 'password_reset'
 }
-
 interface SecurityValidationResponse {
   success: boolean
   validationId: string
@@ -18,23 +16,20 @@ interface SecurityValidationResponse {
     percentage: number
     message: string
   }
-  riskLevel: 'low' | 'medium' | 'high' | 'critical'
+  riskLevel: 'low' | 'medium' | 'high' | 'critical',
   warnings: string[]
   recommendations: string[]
   wsEndpoint?: string
 }
-
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const body: SecurityValidationRequest = await request.json()
     const { email, password, validationType } = body
-
     // Generate unique validation ID
     const validationId = `val_${Date.now()}_${Math.random().toString(36).substring(7)}`
-    
     // Initialize validation response
     const response: SecurityValidationResponse = {
-      success: true,
+      success: true
       validationId,
       progress: {
         stage: 'initializing',
@@ -46,7 +41,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
       recommendations: [],
       wsEndpoint: `ws://localhost:5173/api/security/validate/ws/${validationId}`
     }
-
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
@@ -55,7 +49,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
       response.warnings.push('Invalid email format')
       return json(response, { status: 400 })
     }
-
     // Password strength validation
     const passwordChecks = {
       minLength: password.length >= 8,
@@ -64,9 +57,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       hasNumbers: /\d/.test(password),
       hasSpecialChars: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
     }
-
     const passwordStrength = Object.values(passwordChecks).filter(item => item.length)
-    
     if (passwordStrength < 3) {
       response.riskLevel = 'high'
       response.warnings.push('Password does not meet security requirements')
@@ -75,14 +66,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
       response.riskLevel = 'medium'
       response.warnings.push('Password could be stronger')
     }
-
     // Simulate AI-powered security analysis
     response.progress = {
       stage: 'ai_analysis',
       percentage: 25,
       message: 'Running AI-powered security analysis...'
     }
-
     // Check against Enhanced RAG service for threat intelligence
     try {
       const ragResponse = await fetch('http://localhost:8094/api/security/check', {
@@ -95,7 +84,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
         }),
         signal: AbortSignal.timeout(5000)
       })
-
       if (ragResponse.ok) {
         const ragData = await ragResponse.json()
         if (ragData.riskLevel === 'high') {
@@ -106,22 +94,18 @@ export const POST: RequestHandler = async ({ request, url }) => {
     } catch (error) {
       console.log('Enhanced RAG service unavailable, using fallback validation')
     }
-
     // Simulate comprehensive validation stages
     await new Promise(resolve => setTimeout(resolve, 100); // Simulate processing time
-
     response.progress = {
       stage: 'completed',
       percentage: 100,
       message: 'Security validation completed successfully'
     }
-
     // Add context-specific recommendations
     if (validationType === 'registration') {
       response.recommendations.push('Enable two-factor authentication after registration')
       response.recommendations.push('Review privacy settings upon first login')
     }
-
     return json(response, {
       status: 200,
       headers: {
@@ -129,12 +113,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         'X-Validation-Id': validationId
       }
     })
-
   } catch (error: any) {
     console.error('Security validation error:', error)
-    
     return json({
-      success: false,
+      success: false
       validationId: 'error',
       progress: {
         stage: 'error',

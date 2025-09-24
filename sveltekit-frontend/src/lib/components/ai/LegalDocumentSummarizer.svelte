@@ -3,13 +3,10 @@
 Uses Gemma3 summarization service for converting 200-page legal documents into concise summaries
 Enhanced-bits UI integration with real-time progress and quality metrics
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label, Alert } from '$lib/components/ui/enhanced-bits';
-
   interface SummarizationRequest {
     document_id: string;
     title: string;
@@ -18,9 +15,8 @@ Enhanced-bits UI integration with real-time progress and quality metrics
     summary_type: 'executive' | 'detailed' | 'bullet_points' | 'legal_analysis';
     max_length: number;
     focus: string[];
-    metadata: Record<string, any>;
+    metadata: { [key: string]: any };
   }
-
   interface SummarizationResponse {
     document_id: string;
     original_length_words: number;
@@ -41,22 +37,19 @@ Enhanced-bits UI integration with real-time progress and quality metrics
       clarity_score: number;
       overall_rating: string;
     };
-    metadata: Record<string, any>;
+    metadata: { [key: string]: any };
   }
-
   // Component props
   interface Props {
     defaultContent?: string;
     onSummaryGenerated?: (summary: SummarizationResponse) => void;
     serviceUrl?: string;
   }
-
   let {
     defaultContent = '',
     onSummaryGenerated,
     serviceUrl = '/api/gemma3-summarization'
   }: Props = $props();
-
   // State management using Svelte 5 runes
   let documentTitle = $state('');
   let documentContent = $state(defaultContent);
@@ -69,7 +62,6 @@ Enhanced-bits UI integration with real-time progress and quality metrics
   let currentSummary = $state<SummarizationResponse | null>(null);
   let errorMessage = $state('');
   let serviceHealth = $state<'healthy' | 'degraded' | 'unavailable'>('healthy');
-
   // Available focus areas
   const availableFocusAreas = [
     'key_findings',
@@ -81,7 +73,6 @@ Enhanced-bits UI integration with real-time progress and quality metrics
     'parties_involved',
     'jurisdictional_issues'
   ];
-
   // Document type options
   const documentTypes = [
     { value: 'contract', label: '📄 Contract', description: 'Agreements, terms, obligations' },
@@ -89,7 +80,6 @@ Enhanced-bits UI integration with real-time progress and quality metrics
     { value: 'brief', label: '📝 Legal Brief', description: 'Arguments, case analysis' },
     { value: 'statute', label: '📖 Statute/Law', description: 'Legal codes, regulations' }
   ];
-
   // Summary type options
   const summaryTypes = [
     { value: 'executive', label: '🎯 Executive Summary', description: 'High-level overview for decision makers' },
@@ -97,14 +87,12 @@ Enhanced-bits UI integration with real-time progress and quality metrics
     { value: 'bullet_points', label: '📌 Key Points', description: 'Structured bullet-point format' },
     { value: 'legal_analysis', label: '⚖️ Legal Analysis', description: 'Legal implications and precedents' }
   ];
-
   // Check service health on mount
   $effect(() => {
     (async () => {
 await checkServiceHealth();
     })();
   });
-
   // Check if summarization service is available
   async function checkServiceHealth(): Promise<void> {
     try {
@@ -120,24 +108,20 @@ await checkServiceHealth();
       serviceHealth = 'unavailable';
     }
   }
-
   // Generate document summary
   async function generateSummary(): Promise<void> {
     if (!documentContent.trim()) {
       errorMessage = 'Please provide document content to summarize';
       return;
     }
-
     if (!documentTitle.trim()) {
       errorMessage = 'Please provide a document title';
       return;
     }
-
     isProcessing = true;
     processingProgress = 0;
     errorMessage = '';
     currentSummary = null;
-
     try {
       // Simulate progress updates
       const progressInterval = setInterval(() => {
@@ -145,46 +129,39 @@ await checkServiceHealth();
           processingProgress += Math.random() * 15;
         }
       }, 500);
-
       const request: SummarizationRequest = {
         document_id: `doc_${Date.now()}`,
-        title: documentTitle,
-        content: documentContent,
-        document_type: documentType,
-        summary_type: summaryType,
-        max_length: maxLength,;
-        focus:focusAreas,;
+        title: documentTitle
+        content: documentContent
+        document_type: documentType
+        summary_type: summaryType
+        max_length: maxLength
+        focus: focusAreas
         metadata: {
           generated_at: new Date().toISOString(),
           user_agent: navigator.userAgent,
           content_length: documentContent.length
         }
       };
-
       const response = await fetch(`${serviceUrl}/summarize`, {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },;
+        },
         body: JSON.stringify(request);
       });
-
       clearInterval(progressInterval);
       processingProgress = 100;
-
       if (!response.ok) {
         const errorData = await response.json.catch(() => ( ));
         throw new Error(errorData.error || `Summarization failed: ${response.status}`);
       }
-
-      const summaryResult = await response.json() as SummarizationResponse;
+      const summaryResult = await response.json() as SummarizationRespon;
       currentSummary = summaryResult;
-
       // Notify parent component
       if (onSummaryGenerated) {
         onSummaryGenerated(summaryResult);
       }
-
     } catch (error) {
       console.error('Summarization error:', error);
       errorMessage = error instanceof Error ? error.message: 'Summarization failed';
@@ -193,7 +170,6 @@ await checkServiceHealth();
       isProcessing = false;
     }
   }
-
   // Handle focus area toggle
   function toggleFocusArea(area: string): void {
     if (focusAreas.includes(area)) {
@@ -202,24 +178,20 @@ await checkServiceHealth();
       focusAreas = [...focusAreas, area];
     }
   }
-
   // Format processing time
   function formatProcessingTime(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(1)}s`;
   }
-
   // Get quality color based on score
   function getQualityColor(score: number): string {
     if (score >= 0.8) return 'text-green-600';
     if (score >= 0.6) return 'text-yellow-600';
     return 'text-red-600';
   }
-
   // Copy summary to clipboard
   async function copySummary(): Promise<void> {
     if (!currentSummary) return;
-
     try {
       await navigator.clipboard.writeText(currentSummary.summary.full_summary);
       // You could add a toast notification here
@@ -228,7 +200,6 @@ await checkServiceHealth();
     }
   }
 </script>
-
 <div class="legal-summarizer container mx-auto p-6 max-w-6xl">
   <!-- Service Status -->
   <div class="mb-4">
@@ -255,7 +226,6 @@ await checkServiceHealth();
       </Alert>
     {/if}
   </div>
-
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Input Section -->
     <Card>
@@ -276,7 +246,6 @@ await checkServiceHealth();
             placeholder="e.g., Software License Agreement - ABC Corp"
           />
         </div>
-
         <!-- Document Type -->
         <div class="space-y-2">
           <Label for="doc-type">Document Type</Label>
@@ -293,7 +262,6 @@ await checkServiceHealth();
             {documentTypes.find(t => t.value === documentType)?.description}
           </p>
         </div>
-
         <!-- Summary Configuration -->
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-2">
@@ -308,7 +276,6 @@ await checkServiceHealth();
               {/each}
             </select>
           </div>
-
           <div class="space-y-2">
             <Label for="max-length">Target Length (words)</Label>
             <Input
@@ -321,7 +288,6 @@ await checkServiceHealth();
             />
           </div>
         </div>
-
         <!-- Focus Areas -->
         <div class="space-y-2">
           <Label>Focus Areas</Label>
@@ -339,7 +305,6 @@ await checkServiceHealth();
             {/each}
           </div>
         </div>
-
         <!-- Document Content -->
         <div class="space-y-2">
           <Label for="doc-content">Document Content</Label>
@@ -354,7 +319,6 @@ await checkServiceHealth();
             {documentContent.length.toLocaleString()} characters, ~{Math.ceil.length)} words
           </p>
         </div>
-
         <!-- Generate Button -->
         <Button
           onclick={generateSummary}
@@ -367,7 +331,6 @@ await checkServiceHealth();
             🤖 Generate AI Summary
           {/if}
         </Button>
-
         <!-- Processing Progress -->
         {#if isProcessing}
           <div class="space-y-2">
@@ -383,7 +346,6 @@ await checkServiceHealth();
             </div>
           </div>
         {/if}
-
         <!-- Error Message -->
         {#if errorMessage}
           <Alert variant="error">
@@ -395,7 +357,6 @@ await checkServiceHealth();
         {/if}
       </CardContent>
     </Card>
-
     <!-- Results Section -->
     <Card>
       <CardHeader>
@@ -449,7 +410,6 @@ await checkServiceHealth();
               </div>
             </CardContent>
           </Card>
-
           <!-- Compression Stats -->
           <div class="grid grid-cols-3 gap-4 text-center">
             <div class="bg-blue-50 p-3 rounded-lg border">
@@ -471,7 +431,6 @@ await checkServiceHealth();
               <div class="text-xs text-purple-600">Compression</div>
             </div>
           </div>
-
           <!-- Executive Summary -->
           {#if currentSummary.summary.executive_summary}
             <div class="space-y-2">
@@ -483,7 +442,6 @@ await checkServiceHealth();
               </div>
             </div>
           {/if}
-
           <!-- Key Points -->
           {#if currentSummary.summary.key_points?.length}
             <div class="space-y-2">
@@ -498,7 +456,6 @@ await checkServiceHealth();
               </ul>
             </div>
           {/if}
-
           <!-- Legal Implications -->
           {#if currentSummary.summary.legal_implications?.length}
             <div class="space-y-2">
@@ -513,7 +470,6 @@ await checkServiceHealth();
               </ul>
             </div>
           {/if}
-
           <!-- Full Summary -->
           <div class="space-y-2">
             <h4 class="font-medium">📋 Full Summary</h4>
@@ -523,7 +479,6 @@ await checkServiceHealth();
               </p>
             </div>
           </div>
-
           <!-- Model Info -->
           <div class="text-xs text-muted-foreground pt-2 border-t border-border">
             Generated by {currentSummary.model} • Document ID: {currentSummary.document_id}
@@ -541,9 +496,8 @@ await checkServiceHealth();
     </Card>
   </div>
 </div>
-
 <style>
-  .legal-summarizer {;
+  .legal-summarizer {
     font-family: system-ui, -apple-system, sans-serif;
   }
 </style>

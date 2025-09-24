@@ -1,7 +1,6 @@
 <!--
   N64 Switch/Toggle Component
   Advanced 3D toggle switch with mechanical animation, texture filtering, and spatial feedback
-
   Features:
   - True 3D perspective with mechanical movement
   - Advanced texture filtering and material types
@@ -12,11 +11,9 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from "svelte";
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
-
   interface Props extends GamingComponentProps {
     // Switch specific props
     checked?: boolean;
@@ -27,7 +24,6 @@
     readonly?: boolean;
     label?: string;
     description?: string;
-
     // N64-specific styling
     meshComplexity?: 'low' | 'medium' | 'high' | 'ultra';
     materialType?: 'basic' | 'phong' | 'pbr';
@@ -37,29 +33,24 @@
     enableLighting?: boolean;
     enableReflections?: boolean;
     enableMechanicalAnimation?: boolean;
-
     // 3D transformations
     depth?: number;
     perspective?: number;
     switchWidth?: number;
     switchHeight?: number;
-
     // Advanced effects
     enableParticles?: boolean;
-
     // Event handler
     ondispatch?: (event: { checked: boolean; value?: string }) => void;
     glowIntensity?: number;
     enableSpatialAudio?: boolean;
     enableToggleGlow?: boolean;
     enableSpringPhysics?: boolean;
-
     // Animation settings
     animationDuration?: number;
     springTension?: number;
     class?: string;
   }
-
   let {
     era = 'n64',
     variant = 'primary',
@@ -68,7 +59,6 @@
     loading = false,
     animationStyle = 'smooth',
     renderOptions,
-
     checked = $bindable(false),
     name,
     id,
@@ -77,7 +67,6 @@
     readonly = false,
     label,
     description,
-
     meshComplexity = 'medium',
     materialType = 'phong',
     enableTextureFiltering = true,
@@ -86,28 +75,20 @@
     enableLighting = true,
     enableReflections = false,
     enableMechanicalAnimation = true,
-
     depth = 6,
     perspective = 1000,
     switchWidth = 56,
     switchHeight = 32,
-
     enableParticles = false,
     glowIntensity = 0.4,
     enableSpatialAudio = true,
     enableToggleGlow = true,
     enableSpringPhysics = true,
-
     animationDuration = 300,
     springTension = 0.8,
-
     ondispatch,
-
     class: className = '';
   }: Props = $props();
-
-
-
   let isFocused = $state(false);
   let isHovered = $state(false);
   let isPressed = $state(false);
@@ -115,7 +96,6 @@
   let switchElement = $state<HTMLElement | null>(null);
   let audioContext = $state<AudioContext | null>(null);
   let animationFrameId = $state<number | null>(null);
-
   // Default to balanced N64 rendering options
   const effectiveRenderOptions: N64RenderingOptions = {
     ...N64_TEXTURE_PRESETS.balanced,
@@ -124,47 +104,39 @@
     enableFog,
     ...renderOptions
   };
-
   // Create spatial audio for switch actions
   const playSwitchSound = async (isOn: boolean) => {
     if (!enableSpatialAudio) return;
-
     try {
       if (!audioContext) {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       }
-
       const oscillator1 = audioContext.createOscillator();
       const oscillator2 = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
       const pannerNode = audioContext.createPanner();
       const reverbNode = audioContext.createConvolver();
       const filterNode = audioContext.createBiquadFilter();
-
       // Configure 3D spatial audio
       pannerNode.panningModel = 'HRTF';
       pannerNode.positionX.setValueAtTime(isOn ? 0.3 : -0.3, audioContext.currentTime);
       pannerNode.positionY.setValueAtTime(0, audioContext.currentTime);
       pannerNode.positionZ.setValueAtTime(-depth / 100, audioContext.currentTime);
-
       // Create mechanical click reverb
       const impulseLength = audioContext.sampleRate * 0.1;
       const impulse = audioContext.createBuffer(2, impulseLength, audioContext.sampleRate);
       const impulseL = impulse.getChannelData(0);
       const impulseR = impulse.getChannelData(1);
-
       for (let i = 0; i < impulseLength; i++) {
         const decay = Math.pow(1 - i / impulseLength, 3);
         impulseL[i] = (Math.random() * 2 - 1) * decay * 0.2;
         impulseR[i] = (Math.random() * 2 - 1) * decay * 0.2;
       }
-      reverbNode.buffer = impulse;
-
+      reverbNode.buffer = impul;
       // Configure filter for mechanical sound
       filterNode.type = 'highpass';
       filterNode.frequency.setValueAtTime(isOn ? 800 : 600, audioContext.currentTime);
       filterNode.Q.setValueAtTime(2, audioContext.currentTime);
-
       // Connect audio chain
       oscillator1.connect(filterNode);
       oscillator2.connect(filterNode);
@@ -172,7 +144,6 @@
       pannerNode.connect(reverbNode);
       reverbNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
-
       // Configure dual-tone mechanical sound
       if (isOn) {
         // ON sound: ascending click
@@ -191,74 +162,58 @@
         oscillator2.frequency.setValueAtTime(880, audioContext.currentTime);
         oscillator2.frequency.exponentialRampToValueAtTime(550, audioContext.currentTime + 0.08);
       }
-
       gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.12);
-
       oscillator1.start();
       oscillator2.start();
       oscillator1.stop(audioContext.currentTime + 0.12);
       oscillator2.stop(audioContext.currentTime + 0.12);
-
     } catch (error) {
       console.warn('Could not play switch sound:', error);
     }
   };
-
   const handleToggle = async () => {
     if (disabled || readonly || loading) return;
-
     isPressed = true;
     isAnimating = true;
     const newValue = !checked;
-    checked = newValue;
+    checked = newValu;
     await playSwitchSound(newValue);
-
     // Create particle effect
     if (enableParticles) {
       createSwitchParticles();
     }
-
     setTimeout(() => {
       isPressed = false;
       isAnimating = false;
     }, animationDuration);
-
     ondispatch?.({ checked: newValue, value });
   };
-
   const handleFocus = () => {
     if (disabled) return;
     isFocused = true;
   };
-
   const handleBlur = () => {
     isFocused = false;
   };
-
   const handleHover = () => {
     if (disabled) return;
     isHovered = true;
   };
-
   const handleUnhover = () => {
     isHovered = false;
   };
-
   const handleKeyDown = (event: KeyboardEvent) => {
     if (disabled || readonly) return;
-
     if (event.key === ' ' || event.key === 'Enter') {
       event.preventDefault();
       handleToggle();
     }
   };
-
   const createSwitchParticles = () => {
     const particles = 6;
     const container = switchElement?.parentElement;
     if (!container) return;
-
     for (let i = 0; i < particles; i++) {
       const particle = document.createElement('div');
       particle.className = 'n64-switch-particle';
@@ -269,7 +224,7 @@
         background: ${checked ? '#4a90e2' : '#6c757d'};
         border-radius: 50%;
         pointer-events: none;
-        animation: switchParticleExplosion 0.6s ease-out forwards;
+        animation: switchParticleExplosion 0.6s ease-out forward;
         --angle: ${(360 / particles) * i}deg;
         --distance: ${20 + Math.random() * 15}px;
         top: 50%;
@@ -277,15 +232,12 @@
         transform: translate(-50%, -50%);
         z-index: 1000;
       `;
-
       container.appendChild(particle);
-
       setTimeout(() => {
         particle.remove();
       }, 600);
     }
   };
-
   // Get material styles based on state and variant
   const getMaterialStyles = (variant: string, material: string, isOn: boolean) => {
     const baseColors = {
@@ -310,14 +262,12 @@
         on: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }
       },
       info: {
-        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },;
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
         on: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
       }
     };
-
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
     const stateColors = isOn ? colors.on: colors.off;
-
     const materialMap = {
       basic: {
         trackBackground: isOn ? stateColors.base: '#2d3748',
@@ -333,7 +283,7 @@
           inset 0 -2px 0 rgba(0,0,0,0.4),
           0 4px 8px rgba(0,0,0,0.4)
         `
-      },;
+      },
       pbr: {
         trackBackground: `
           linear-gradient(145deg, ${isOn ? stateColors.highlight : '#2d3748'} 0%, ${isOn ? stateColors.base : '#1a202c'} 50%, ${isOn ? stateColors.shadow : '#0d1117'} 100%),
@@ -352,36 +302,29 @@
         `
       }
     };
-
     return materialMap[material as keyof typeof materialMap] || materialMap.phong;
   };
-
   const getSizeStyles = (size: string) => {
     const sizeMap = {
       small: { width: 44, height: 24, knobSize: 18, fontSize: '12px' },
       medium: { width: 56, height: 32, knobSize: 24, fontSize: '14px' },
-      large: { width: 68, height: 40, knobSize: 30, fontSize: '16px' },;
+      large: { width: 68, height: 40, knobSize: 30, fontSize: '16px' },
       xl: { width: 80, height: 48, knobSize: 36, fontSize: '18px' }
     };
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
   };
-
   // Generate texture filtering CSS classes
   const getTextureFilteringClasses = (): string => {
     const classes: string[] = [];
-
     if (effectiveRenderOptions.textureQuality === 'ultra') {
       classes.push('texture-ultra');
     }
-
     if (effectiveRenderOptions.enableBilinearFiltering) {
       classes.push('filtering-bilinear');
     }
-
     if (effectiveRenderOptions.enableTrilinearFiltering) {
       classes.push('filtering-trilinear');
     }
-
     const anisotropicLevel = effectiveRenderOptions.anisotropicLevel || 1;
     if (anisotropicLevel >= 16) {
       classes.push('anisotropic-16x');
@@ -390,27 +333,22 @@
     } else if (anisotropicLevel >= 4) {
       classes.push('anisotropic-4x');
     }
-
     return classes.join(' ');
   };
-
   let sizeStyles = $derived(getSizeStyles(size));
   let materialStyles = $derived(getMaterialStyles(variant, materialType, checked));
   let knobTranslateX = $derived(checked ? sizeStyles.width - sizeStyles.knobSize - 4 : 2);
   let dynamicScale = $derived(isPressed ? 0.95 : isHovered ? 1.02 : 1);
   let knobScale = $derived(isPressed ? 0.9 : isAnimating ? (checked ? 1.1 : 0.95) : 1);
-
   let transform3D = $derived(`
     perspective(${perspective}px)
     scale(${dynamicScale})
   `);
-
   let knobTransform = $derived(`
     translateX(${knobTranslateX}px)
     scale(${knobScale})
     ${enableSpringPhysics && isAnimating ? `rotateZ(${checked ? 5 : -5}deg)` : ''}
   `);
-
   $effect(() => {
     // Add particle explosion keyframe
     const style = document.createElement('style');
@@ -426,26 +364,24 @@
       }
     `;
     document.head.appendChild(style);
-
     return () => {
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
       style.remove();
     };
   });
 </script>
-
 <div class="n64-switch-container {className}">
   <div
     bind:this={switchElement}
     class="n64-switch {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
-    class:checked;
+    class: checked;
     class:focused={isFocused}
     class:hovered={isHovered}
     class:pressed={isPressed}
     class:animating={isAnimating}
-    class:disabled;
+    class: disabled;
     class:readonly
-    style=";
+    style="
       --track-bg: {materialStyles.trackBackground};
       --knob-bg: {materialStyles.knobBackground};
       --knob-shadow: {materialStyles.knobShadow};
@@ -457,7 +393,7 @@
       --knob-transform: {knobTransform};
       --fog-color: {effectiveRenderOptions.fogColor};
       --glow-intensity: {glowIntensity};
-      --animation-duration: {animationDuration}ms;
+      --animation-duration: {animationDuration}m;
       --spring-tension: {springTension};
     "
     role="switch"
@@ -480,27 +416,22 @@
         {#if enableLighting}
           <div class="knob-lighting"></div>
         {/if}
-
         {#if enableReflections}
           <div class="knob-reflection"></div>
         {/if}
-
         {#if loading}
           <div class="knob-loading">
             <div class="n64-spinner"></div>
           </div>
         {/if}
       </div>
-
       {#if enableFog}
         <div class="track-fog"></div>
       {/if}
-
       {#if enableToggleGlow && checked}
         <div class="toggle-glow"></div>
       {/if}
     </div>
-
     <!-- Hidden input for form handling -->
     <input
       type="checkbox"
@@ -511,10 +442,10 @@
       {readonly}
       {disabled}
       bind:checked
-      style="position: absolute; opacity: 0; pointer-events: none;"
+      style="position: absolute;
+e; opacity: 0; pointer-events: none;"
     />
   </div>
-
   {#if label || description}
     <div class="switch-content">
       {#if label}
@@ -526,7 +457,6 @@
           {label}
         </label>
       {/if}
-
       {#if description}
         <div
           id="switch-description"
@@ -538,7 +468,6 @@
     </div>
   {/if}
 </div>
-
 <style>
   .n64-switch-container {
     font-family: 'Rajdhani', 'Arial', sans-serif;
@@ -546,36 +475,29 @@
     align-items: flex-start;
     gap: 12px;
   }
-
   .n64-switch {
     /* Base N64 switch styling */
     position: relative;
     width: var(--switch-width);
     height: var(--switch-height);
     cursor: pointer;
-
     /* 3D transformations */
     transform: var(--transform-3d);
     transform-origin: center center;
     transform-style: preserve-3d;
-
     /* Enhanced rendering */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-
     transition: all var(--animation-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
-
     /* Remove default styles */
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     outline: none;
-
     /* Performance optimization */
     will-change: transform;
   }
-
   .switch-track {
     position: relative;
     width: 100%;
@@ -583,16 +505,13 @@
     background: var(--track-bg);
     border-radius: calc(var(--switch-height) / 2);
     overflow: hidden;
-
     /* 3D track styling */
     box-shadow:
       inset 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
       inset 0 2px 0 rgba(0, 0, 0, 0.6),
       0 2px 4px rgba(0, 0, 0, 0.3);
-
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-
   .switch-knob {
     position: absolute;
     top: 2px;
@@ -600,20 +519,16 @@
     height: var(--knob-size);
     background: var(--knob-bg);
     border-radius: 50%;
-
     /* 3D knob styling */
     box-shadow: var(--knob-shadow);
     border: 1px solid rgba(255, 255, 255, 0.2);
-
     /* Smooth mechanical animation */
     transform: var(--knob-transform);
     transition: transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
-
     /* Performance optimization */
     will-change: transform;
     transform-style: preserve-3d;
   }
-
   /* Knob lighting overlay */
   .knob-lighting {
     position: absolute;
@@ -630,7 +545,6 @@
     border-radius: 50%;
     pointer-events: none;
   }
-
   /* Knob reflection */
   .knob-reflection {
     position: absolute;
@@ -648,7 +562,6 @@
     pointer-events: none;
     opacity: 0.7;
   }
-
   /* Knob loading indicator */
   .knob-loading {
     position: absolute;
@@ -657,7 +570,6 @@
     transform: translate(-50%, -50%);
     z-index: 10;
   }
-
   .n64-spinner {
     width: calc(var(--knob-size) * 0.5);
     height: calc(var(--knob-size) * 0.5);
@@ -666,11 +578,9 @@
     border-radius: 50%;
     animation: switchSpin 1s linear infinite;
   }
-
   @keyframes switchSpin {
     to { transform: rotate(360deg); }
   }
-
   /* Track fog effect */
   .track-fog {
     position: absolute;
@@ -687,7 +597,6 @@
     pointer-events: none;
     border-radius: calc(var(--switch-height) / 2);
   }
-
   /* Toggle glow effect */
   .toggle-glow {
     position: absolute;
@@ -706,7 +615,6 @@
     z-index: -1;
     animation: toggleGlowPulse 2s ease-in-out infinite;
   }
-
   @keyframes toggleGlowPulse {
     0%, 100% {
       opacity: var(--glow-intensity);
@@ -717,7 +625,6 @@
       transform: scale(1.1);
     }
   }
-
   /* Switch content styling */
   .switch-content {
     display: flex;
@@ -725,7 +632,6 @@
     gap: 4px;
     flex: 1;
   }
-
   .switch-label {
     color: #ffffff;
     font-weight: 600;
@@ -735,19 +641,16 @@
     cursor: pointer;
     user-select: none;
   }
-
   .switch-description {
     color: rgba(255, 255, 255, 0.7);
     font-size: calc(var(--switch-font-size) * 0.85);
     line-height: 1.4;
   }
-
   /* State variations */
   .n64-switch.focused {
     outline: 3px solid rgba(74, 144, 226, 0.6);
     outline-offset: 2px;
   }
-
   .n64-switch.hovered:not(.disabled) .switch-track {
     box-shadow:
       inset 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
@@ -755,55 +658,43 @@
       0 2px 4px rgba(0, 0, 0, 0.3),
       0 0 12px rgba(255, 255, 255, 0.2);
   }
-
   .n64-switch.checked .switch-track {
     background: var(--track-bg);
   }
-
   .n64-switch.disabled {
     opacity: 0.5;
     cursor: not-allowed;
     filter: grayscale(0.8);
   }
-
   .n64-switch.disabled .switch-knob {
     background: linear-gradient(145deg, #6c757d 0%, #495057 50%, #343a40 100%);
   }
-
   .n64-switch.readonly {
     cursor: default;
   }
-
   .n64-switch.readonly .switch-label {
     cursor: default;
   }
-
   /* Material type variations */
   .n64-switch.pbr .switch-track {
     background-blend-mode: overlay, normal;
   }
-
   .n64-switch.pbr .switch-knob {
     background-blend-mode: overlay, normal;
   }
-
   /* Mesh complexity variations */
   .n64-switch.mesh-ultra .switch-track {
     border-radius: calc(var(--switch-height) / 2 + 2px);
   }
-
   .n64-switch.mesh-ultra .switch-knob {
     border-radius: 60%;
   }
-
   .n64-switch.mesh-low {
     transform-style: flat;
   }
-
   .n64-switch.mesh-low .switch-track {
     border-radius: calc(var(--switch-height) / 4);
   }
-
   /* Enhanced texture filtering */
   .n64-switch.texture-ultra {
     filter:
@@ -811,30 +702,24 @@
       brightness(1.01)
       saturate(1.05);
   }
-
   .n64-switch.filtering-bilinear {
     filter: blur(0.25px) contrast(1.1);
   }
-
   .n64-switch.filtering-trilinear {
     filter: blur(0.15px) contrast(1.05);
   }
-
   .n64-switch.anisotropic-16x {
     filter: contrast(1.08) brightness(1.02);
   }
-
   /* Spring physics animation for enabled switches */
   .n64-switch:not(.disabled).animating .switch-knob {
     transition: transform var(--animation-duration) cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
-
   /* Mobile optimizations */
   @media (max-width: 480px) {
     .n64-switch {
       transform: scale(var(--dynamic-scale, 1));
     }
-
     .knob-lighting,
     .knob-reflection,
     .track-fog,
@@ -842,43 +727,35 @@
       display: none;
     }
   }
-
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     .n64-switch {
       transform: none !important;
       transition: opacity 150ms ease;
     }
-
     .switch-knob {
       transition: transform 150ms ease;
     }
-
     .toggle-glow {
       animation: none;
     }
-
     .n64-spinner {
       animation: none;
       border: 2px solid rgba(255, 255, 255, 0.8);
       border-right-color: transparent;
     }
   }
-
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .n64-switch {
       border: 2px solid currentColor;
     }
-
     .switch-track {
       border: 2px solid currentColor;
     }
-
     .switch-knob {
       border: 2px solid currentColor;
     }
-
     .knob-lighting,
     .knob-reflection,
     .track-fog,
@@ -886,21 +763,17 @@
       display: none;
     }
   }
-
   /* Performance optimization for low-end devices */
   @media (max-device-memory: 2GB) {
     .n64-switch {
       transform: none;
     }
-
     .switch-track {
       box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.4);
     }
-
     .switch-knob {
       box-shadow: 0 3px 0 rgba(0, 0, 0, 0.4);
     }
-
     .knob-lighting,
     .knob-reflection,
     .track-fog,
@@ -908,7 +781,6 @@
       display: none;
     }
   }
-
   /* Dark mode variations */
   @media (prefers-color-scheme: dark) {
     .n64-switch {

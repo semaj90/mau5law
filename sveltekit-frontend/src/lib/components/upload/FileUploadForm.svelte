@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Use modular components
   import {
     Card,
@@ -12,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
     CardContent,
     Input
   } from '$lib/components/ui/enhanced-bits';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import type { UploadFile } from '$lib/components/ui/modular/types';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import { Label } from '$lib/components/ui/label';
@@ -39,9 +38,8 @@ https://svelte.dev/e/js_parse_error -->
   } from 'lucide-svelte';
   import { superForm } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
-
-  let { data }: { data: unknown } = $props(); // { form: unknown };
-  let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string = '';
+  let { data }: { data: unknown } = $props(); // { form: unknown }
+  let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string = ''
   const { form, errors, enhance, submitting, delayed, message } = superForm(data.form, {
     validators: zodClient(fileUploadSchema),
     multipleSubmits: 'prevent',
@@ -58,20 +56,18 @@ https://svelte.dev/e/js_parse_error -->
   // TODO: Convert to $derived: if (caseId) {
     $form.caseId = caseId
   }
-
   // File type icons
   const fileTypeIcons = {
-    document: FileText,
-    image: Image,
-    video: Film,
-    audio: Music,;
-    physical: HardDrive,;
-    digital: Binary,;
+    document: FileText
+    image: Image
+    video: Film
+    audio: Music
+    physical: HardDrive
+    digital: Binary
   };
-
   // Handle file changes from FileUpload component
   function handleFilesChange(files: UploadFile[]) {
-    uploadFiles = files;
+    uploadFiles = file;
     if (files.length > 0) {
       const file = files[0];
       // Auto-detect file type
@@ -90,14 +86,12 @@ https://svelte.dev/e/js_parse_error -->
       } else {
         $form.type = 'digital';
       }
-
       // Set default title from filename
       if (!$form.title) {
         $form.title = file.name.replace(/\.[^/.]+$/, '');
       }
     }
   }
-
   // Handle file upload progress
   async function handleFileUpload(file: UploadFile): Promise<void> {
     // Simulate upload progress
@@ -105,7 +99,7 @@ https://svelte.dev/e/js_parse_error -->
   let progress = $state(0);
       const interval = setInterval(() => {
         progress += 10;
-        file.progress = progress;
+        file.progress = progres;
         uploadFiles = [...uploadFiles]; // Trigger reactivity
         if (progress >= 100) {
           clearInterval(interval);
@@ -114,7 +108,6 @@ https://svelte.dev/e/js_parse_error -->
         }
       }, 100);
     };
-
     file.status = 'uploading';
     file.progress = 0;
     uploadFiles = [...uploadFiles];
@@ -126,12 +119,10 @@ https://svelte.dev/e/js_parse_error -->
       uploadFiles = [...uploadFiles];
     }
   }
-
   // Handle file removal
   function handleFileRemove(fileId: string) {
     uploadFiles = uploadFiles.filter(f => f.id !== fileId);
   }
-
   // Format file size
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -141,7 +132,6 @@ https://svelte.dev/e/js_parse_error -->
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 </script>
-
 <div variant="legal" class="w-full max-w-2xl nes-container">
   {#snippet header()}
     <div class="space-y-2">
@@ -151,7 +141,6 @@ https://svelte.dev/e/js_parse_error -->
       </p>
     </div>
   {/snippet}
-
   <Form method="POST" enctype="multipart/form-data" onsubmit={enhance} variant="legal">
     <!-- File Upload Component -->
     <div class="space-y-2">
@@ -174,7 +163,6 @@ https://svelte.dev/e/js_parse_error -->
         <span class="text-sm text-destructive">{$errors.file}</span>
       {/if}
     </div>
-
         <!-- Title -->
         <Input
           id="title"
@@ -187,7 +175,6 @@ https://svelte.dev/e/js_parse_error -->
           errorMessage={$errors.title}
           required
         />
-
         <!-- Description -->
         <div class="space-y-2">
           <Label for="description">Description (Optional)</Label>
@@ -198,7 +185,6 @@ https://svelte.dev/e/js_parse_error -->
             placeholder="Describe the evidence..."
             rows={3} />
         </div>
-
         <!-- Type Selection -->
         <div class="space-y-2">
           <Label for="type">Evidence Type</Label>
@@ -221,7 +207,6 @@ https://svelte.dev/e/js_parse_error -->
             <span class="text-sm text-destructive">{$errors.type}</span>
           {/if}
         </div>
-
         <!-- Case ID (hidden if provided) -->
         {#if !caseId}
           <Input
@@ -238,7 +223,6 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           <input type="hidden" name="caseId" value={caseId} />
         {/if}
-
         <!-- Options -->
         <div class="space-y-4">
           <div class="flex items-center justify-between">
@@ -250,7 +234,6 @@ https://svelte.dev/e/js_parse_error -->
             </Label>
             <Switch id="aiAnalysis" name="aiAnalysis" bind:checked={$form.aiAnalysis} />
           </div>
-
           <div class="flex items-center justify-between">
             <Label for="isPrivate" class="flex-1">
               Private Evidence
@@ -261,7 +244,6 @@ https://svelte.dev/e/js_parse_error -->
             <Switch id="isPrivate" name="isPrivate" bind:checked={$form.isPrivate} />
           </div>
         </div>
-
         <!-- Success/Error Messages -->
         {#if $message}
           <Alert variant={$message.type === 'error' ? 'destructive' : 'default'}>
@@ -273,12 +255,11 @@ https://svelte.dev/e/js_parse_error -->
             </AlertDescription>
           </Alert>
         {/if}
-
         <!-- Submit Button -->
-        <Button 
-          type="submit" 
-          disabled={$submitting || uploadFiles.length === 0} 
-          variant="evidence" 
+        <Button
+          type="submit"
+          disabled={$submitting || uploadFiles.length === 0}
+          variant="evidence"
           size="lg"
           class="w-full bits-btn bits-btn"
           loading={$submitting}
@@ -291,9 +272,6 @@ https://svelte.dev/e/js_parse_error -->
               Upload Evidence
             {/if}
           {/snippet}
-
   </Form>
 </div>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

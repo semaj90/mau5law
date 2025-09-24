@@ -2,7 +2,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import {
     Input
   } from '$lib/components/ui/enhanced-bits';
@@ -15,31 +15,26 @@
   import { Badge } from '$lib/components/ui/badge';
   import { Separator } from '$lib/components/ui/separator';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
-
   // Svelte 5 runes for state management
   let messages = $state<any[]>([]);
-
   let inputMessage = $state('');
   let isLoading = $state(false);
   let connectionStatus = $state<'connected' | 'disconnected' | 'testing'>('testing');
   let lastResponse = $state<any>(null);
-
   // Test connection to CUDA service on mount
   $effect(() => {
     testConnection();
   });
-
   async function testConnection() {
     connectionStatus = 'testing';
     try {
       const response = await fetch('/api/chat-test', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({;
+        body: JSON.stringify({,
           messages: [{ role: 'user', content: 'Connection test' }]
         })
       });
-
       if (response.ok) {
         connectionStatus = 'connected';
         console.log('✅ CUDA AI service connected');
@@ -52,54 +47,45 @@
       console.error('❌ Connection failed:', error);
     }
   }
-
   async function sendMessage() {
     if (!inputMessage.trim() || isLoading) return;
-
     const userMessage = {
-      role: 'user' as const,;
-      content: inputMessage,;
+      role: 'user' as const,
+      content: inputMessage
       timestamp: new Date().toLocaleTimeString();
     };
-
     // Add user message immediately
     messages = [...messages, userMessage];
-    const currentInput = inputMessage;
+    const currentInput = inputMessag;
     inputMessage = '';
     isLoading = true;
-
     try {
       console.log('🚀 Sending to CUDA AI:', currentInput);
-      
       const response = await fetch('/api/chat-test', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({;
+        body: JSON.stringify({,
           messages: [{ role: 'user', content: currentInput }]
         })
       });
-
       const data = await response.json();
       lastResponse = data;
-
       console.log('🤖 CUDA AI response:', data);
-
       if (response.ok && data.message) {
         const assistantMessage = {
           role: 'assistant' as const,
-          content: data.message,;
-          timestamp: new Date().toLocaleTimeString(),;
+          content: data.message,
+          timestamp: new Date().toLocaleTimeString(),
           confidence: data.confidence,
           tokensPerSecond: data.tokensPerSecond,
           taskId: data.taskId;
         };
-
         messages = [...messages, assistantMessage];
       } else {
         // Error response
         const errorMessage = {
-          role: 'assistant' as const,;
-          content: `Error: ${data.error || 'Unknown error'}`,;
+          role: 'assistant' as const,
+          content: `Error: ${data.error || 'Unknown error'}`,
           timestamp: new Date().toLocaleTimeString();
         };
         messages = [...messages, errorMessage];
@@ -107,8 +93,8 @@
     } catch (error) {
       console.error('❌ Chat error:', error);
       const errorMessage = {
-        role: 'assistant' as const,;
-        content: `Network error: ${error.message}`,;
+        role: 'assistant' as const,
+        content: `Network error: ${error.message}`,
         timestamp: new Date().toLocaleTimeString();
       };
       messages = [...messages, errorMessage];
@@ -116,18 +102,15 @@
       isLoading = false;
     }
   }
-
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
-
   function clearMessages() {
     messages = [];
   }
-
   function getStatusColor() {
     switch (connectionStatus) {
       case 'connected': return 'bg-green-500';
@@ -136,7 +119,6 @@
       default: return 'bg-gray-500';
     }
   }
-
   function getStatusText() {
     switch (connectionStatus) {
       case 'connected': return 'CUDA AI Connected';
@@ -146,7 +128,6 @@
     }
   }
 </script>
-
 <div class="w-full max-w-4xl mx-auto h-[600px] flex flex-col nes-container">
   <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
@@ -162,7 +143,6 @@
       </Button>
     </div>
   </div>
-  
   <div class="yorha-panel-content flex-1 flex flex-col gap-4 overflow-hidden">
     <!-- Messages Area -->
     <ScrollArea class="flex-1 p-4 border rounded-lg bg-muted/20">
@@ -170,8 +150,8 @@
         {#each messages as message}
           <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
             <div class="max-w-[70%] p-3 rounded-lg {
-              message.role === 'user' 
-                ? 'bg-primary text-primary-foreground ml-auto' 
+              message.role === 'user'
+                ? 'bg-primary text-primary-foreground ml-auto'
                 : 'bg-muted text-muted-foreground'
             }">
               <div class="text-sm font-medium mb-1">
@@ -179,7 +159,6 @@
                 <span class="text-xs opacity-70 ml-2">{message.timestamp}</span>
               </div>
               <div class="whitespace-pre-wrap">{message.content}</div>
-              
               {#if message.role === 'assistant' && message.confidence}
                 <div class="flex gap-2 mt-2 text-xs opacity-70">
                   <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Confidence: {Math.round(message.confidence * 100)}%</span>
@@ -194,7 +173,6 @@
             </div>
           </div>
         {/each}
-        
         {#if isLoading}
           <div class="flex justify-start">
             <div class="max-w-[70%] p-3 rounded-lg bg-muted nes-text is-disabled">
@@ -212,9 +190,7 @@
         {/if}
       </div>
     </ScrollArea>
-
     <Separator />
-
     <!-- Input Area -->
     <div class="flex gap-2">
       <Input
@@ -231,7 +207,6 @@
         {isLoading ? '⏳' : '📤'} Send
       </Button>
     </div>
-
     <!-- Status Info -->
     <div class="text-xs nes-text is-disabled flex justify-between items-center">
       <span>
@@ -243,7 +218,6 @@
     </div>
   </div>
 </div>
-
 <!-- Debug Panel (Development Only) -->
 {#if lastResponse && process.env.NODE_ENV === 'development'}
   <details class="mt-4 p-4 bg-muted rounded-lg text-xs">
@@ -251,12 +225,10 @@
     <pre class="mt-2 overflow-auto">{JSON.stringify(lastResponse, null, 2)}</pre>
   </details>
 {/if}
-
 <style>
-  .animate-bounce {;
+  .animate-bounce {
     animation: bounce 1s infinite;
   }
-
   @keyframes bounce {
     0%, 100% {
       transform: translateY(-25%);

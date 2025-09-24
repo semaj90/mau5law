@@ -1,7 +1,6 @@
 <!-- YoRHa Interface Layout -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   let { children  }: { children : unknown } = $props();
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
@@ -21,80 +20,75 @@
     ChevronRight,
     ChevronLeft
   } from 'lucide-svelte';
-
   // System status and navigation
   let systemStatus = $state({
-    connected: false,;
-    services: 0,;
+    connected: false
+    services: 0,
     errors: 0;
   });
-
   let sidebarOpen = $state(false);
   let currentPath = $state('');
-
   // Navigation structure
   const navItems = [
     {
       path: '/yorha',
       label: 'Command Center',
-      icon: Terminal,
+      icon: Terminal
       description: 'Main YoRHa interface hub';
     },
     {
       path: '/yorha/dashboard',
       label: 'System Dashboard',
-      icon: Monitor,
+      icon: Monitor
       description: 'Live system monitoring';
     },
     {
       path: '/yorha/components',
       label: 'UI Components',
-      icon: Bot,
+      icon: Bot
       description: '3D UI component gallery';
     },
     {
       path: '/yorha/api-test',
       label: 'API Testing',
-      icon: Cpu,
+      icon: Cpu
       description: 'Live API integration tests';
     },
     {
       path: '/yorha/terminal',
       label: 'Terminal',
-      icon: Terminal,
+      icon: Terminal
       description: 'YoRHa command terminal';
     },
     {
       path: '/yorha/data-grid',
       label: 'Data Grid',
-      icon: Database,
+      icon: Database
       description: 'Advanced data visualization';
     },
     {
       path: '/yorha/search',
       label: 'Vector Search',
-      icon: Search,
+      icon: Search
       description: 'Semantic search interface';
     },
     {
       path: '/yorha/chat',
-      label: 'AI Chat',;
-      icon: Bot,;
+      label: 'AI Chat',
+      icon: Bot
       description: 'Enhanced AI conversation';
     }
   ];
-
   // System status monitoring
   $effect(() => {
-    currentPath = $page.url.pathname;
-
+    currentPath = $page.url.pathnam;
     // Initialize YoRHa API and check system status
     (async () => {
       try {
         const status = await yorhaAPI.getSystemStatus();
         systemStatus = {
-          connected: true,;
-          services: Object.keys(errors).length,;
+          connected: true
+          services: Object.keys(errors).length,
           errors: 0;
         };
       } catch (error) {
@@ -102,34 +96,27 @@
         systemStatus.connected = false;
       }
     })();
-
     // Subscribe to route changes
     const unsubscribe = page.subscribe(($page) => {
-      currentPath = $page.url.pathname;
+      currentPath = $page.url.pathnam;
     });
-
-    return unsubscribe;
+    return unsubscrib;
   });
-
   onDestroy(() => {
     yorhaAPI.dispose();
   });
-
   function navigateTo(path: string) {
     goto(path);
     sidebarOpen = false;
   }
-
   function isActivePath(path: string): boolean {
     return currentPath === path || (path !== '/yorha' && currentPath.startsWith(path));
   }
 </script>
-
 <svelte:head>
   <title>YoRHa Interface - Legal AI System</title>
   <meta name="description" content="YoRHa-themed interface for Legal AI system access and control." />
 </svelte:head>
-
 <div class="yorha-layout">
   <!-- Top Navigation Bar -->
   <header class="yorha-header">
@@ -143,32 +130,27 @@
         >
           <Terminal size={20} />
         </button>
-
         <h1 class="yorha-brand-title">
           <span class="yorha-brand-icon">⬢</span>
           YoRHa SYSTEM
         </h1>
       </div>
-
       <!-- System Status -->
       <div class="yorha-status-bar">
         <div class="yorha-status-item" class:yorha-status-connected={systemStatus.connected}>
           <Activity size={16} />
           <span>{systemStatus.connected ? 'CONNECTED' : 'OFFLINE'}</span>
         </div>
-
         <div class="yorha-status-item">
           <Monitor size={16} />
           <span>{systemStatus.services} SERVICES</span>
         </div>
-
         {#if systemStatus.errors > 0}
           <div class="yorha-status-item yorha-status-error">
             <span>⚠ {systemStatus.errors} ERRORS</span>
           </div>
         {/if}
       </div>
-
       <!-- Quick Actions -->
       <div class="yorha-quick-actions">
         <button class="yorha-quick-btn" onclick={() => goto('/')}>
@@ -182,7 +164,6 @@
       </div>
     </div>
   </header>
-
   <!-- Sidebar Navigation -->
   <aside class="yorha-sidebar" class:yorha-sidebar-open={sidebarOpen}>
     <nav class="yorha-nav">
@@ -195,7 +176,6 @@
           <ChevronLeft size={20} />
         </button>
       </div>
-
       <ul class="yorha-nav-list">
         {#each navItems as item}
           {@const Icon = (item as { icon?: unknown; path?: unknown; label?: unknown; description?: unknown }).icon}
@@ -217,12 +197,10 @@
       </ul>
     </nav>
   </aside>
-
   <!-- Main Content Area -->
   <main class="yorha-main" class:yorha-main-sidebar-open={sidebarOpen}>
     {@render children()}
   </main>
-
   <!-- Sidebar Overlay -->
   {#if sidebarOpen}
     <div
@@ -235,10 +213,9 @@
     ></div>
   {/if}
 </div>
-
 <style>
   .yorha-layout {
-    @apply min-h-screen bg-black text-amber-400 font-mono;
+    @apply min-h-screen bg-black text-amber-400 font-monone;
     font-family: 'Courier New', monospace;
     background-image:
       radial-gradient(circle at 20% 50%, rgba(255, 191, 0, 0.03) 0%, transparent 50%),
@@ -250,48 +227,37 @@
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.05) 100%);
     backdrop-filter: blur(8px);
   }
-
   .yorha-header-content {
     @apply flex items-center justify-between px-6 py-4;
   }
-
   .yorha-brand {
     @apply flex items-center gap-4;
   }
-
   .yorha-menu-toggle {
-    @apply p-2 text-amber-400 hover:text-amber-300 transition-colors;
+    @apply p-2 text-amber-400 hover:text-amber-300 transition-color;
     @apply border border-amber-400 border-opacity-30 hover:border-opacity-60;
   }
-
   .yorha-brand-title {
     @apply text-xl font-bold tracking-wider flex items-center gap-2;
   }
-
   .yorha-brand-icon {
     @apply text-amber-400 text-2xl;
   }
-
   .yorha-status-bar {
     @apply flex items-center gap-6;
   }
-
   .yorha-status-item {
     @apply flex items-center gap-2 text-xs text-amber-400 opacity-60;
   }
-
   .yorha-status-connected {
     @apply text-green-400 opacity-100;
   }
-
   .yorha-status-error {
     @apply text-red-400 opacity-100;
   }
-
   .yorha-quick-actions {
     @apply flex items-center gap-2;
   }
-
   .yorha-quick-btn {
     @apply px-3 py-2 bg-amber-400 text-black text-xs font-mono tracking-wider;
     @apply hover:bg-amber-300 transition-colors flex items-center gap-2;
@@ -302,61 +268,47 @@
     @apply transform -translate-x-full transition-transform duration-300 z-30;
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.05) 100%);
   }
-
   .yorha-sidebar-open {
     @apply translate-x-0;
   }
-
   .yorha-nav {
     @apply h-full flex flex-col;
   }
-
   .yorha-nav-header {
     @apply flex items-center justify-between p-6 border-b border-amber-400 border-opacity-30;
   }
-
   .yorha-nav-header h2 {
     @apply text-lg font-bold text-amber-400 tracking-wider;
   }
-
   .yorha-sidebar-close {
-    @apply p-2 text-amber-400 hover:text-amber-300 transition-colors;
+    @apply p-2 text-amber-400 hover:text-amber-300 transition-color;
   }
-
   .yorha-nav-list {
     @apply flex-1 py-4;
   }
-
   .yorha-nav-item {
     @apply border-b border-amber-400 border-opacity-10;
   }
-
   .yorha-nav-link {
     @apply w-full p-4 text-left flex items-center gap-4;
-    @apply hover:bg-amber-400 hover:bg-opacity-10 transition-colors;
+    @apply hover:bg-amber-400 hover:bg-opacity-10 transition-color;
     @apply text-amber-300 hover:text-amber-400;
   }
-
   .yorha-nav-active {
     @apply bg-amber-400 bg-opacity-20 text-amber-400 border-r-2 border-amber-400;
   }
-
   .yorha-nav-content {
     @apply flex-1 min-w-0;
   }
-
   .yorha-nav-label {
     @apply block font-semibold text-sm;
   }
-
   .yorha-nav-desc {
-    @apply block text-xs opacity-60 truncate;
+    @apply block text-xs opacity-60 truncat;
   }
-
   .yorha-nav-arrow {
     @apply opacity-40 transition-opacity;
   }
-
   .yorha-nav-link:hover .yorha-nav-arrow {
     @apply opacity-100;
   }
@@ -364,7 +316,6 @@
   .yorha-main {
     @apply pt-[73px] min-h-screen transition-all duration-300;
   }
-
   .yorha-main-sidebar-open {
     @apply lg:pl-80;
   }
@@ -378,24 +329,19 @@
       @apply pl-0;
     }
   }
-
   @media (max-width: 768px) {
     .yorha-header-content {
       @apply px-4 py-3;
     }
-
     .yorha-brand-title {
       @apply text-lg;
     }
-
     .yorha-status-bar {
       @apply gap-4;
     }
-
     .yorha-quick-actions {
       @apply hidden;
     }
-
     .yorha-sidebar {
       @apply w-full;
     }

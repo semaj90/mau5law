@@ -1,6 +1,5 @@
 /// <reference types="vite/client" />
 import type { RequestHandler } from './$types.js'
-
 /*
  * Enhanced RAG API Endpoints - Backend Integration
  * Integrates with Enhanced RAG Backend (localhost:8000)
@@ -12,28 +11,23 @@ import type { RequestHandler } from './$types.js'
  * /api/rag/workflow - Multi-agent workflows
  * /api/rag/status - Service health check
  */
-
 import { summarizeWithQueue } from "$lib/server/pgai"
-
 import { error, json } from "@sveltejs/kit"
 import crypto from "crypto"
 import { URL } from "url"
-
 // Enhanced RAG Backend Configuration
 const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || "http://localhost:8000"
 const RAG_TIMEOUT = 30000
-
 /*
  * Forward request to Enhanced RAG Backend with error handling and logging
  */
 async function forwardToRAGBackend(
-  endpoint: string,
+  endpoint: string
   options: RequestInit = {}
 ): Promise<any> {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), RAG_TIMEOUT)
   const startTime = Date.now()
-
   try {
     const response = await fetch(`${RAG_BACKEND_URL}${endpoint}`, {
       ...options,
@@ -43,52 +37,41 @@ async function forwardToRAGBackend(
         ...options.headers
       }
     })
-
     clearTimeout(timeoutId)
     const duration = Date.now() - startTime
-
     if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
       const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text().catch(() => "Unknown error")
-
       // Log failed API call
       console.error(`RAG Backend API call failed [${duration}ms]:`, {
         endpoint,
         status: (response as { ok?: any; text?: any; status?: any; json?: any }).status,
         error: errorText
       })
-
       throw new Error(`RAG Backend Error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}): ${errorText}`)
     }
-
     const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
-
     // Log successful API call
     console.log(`RAG Backend API call succeeded [${duration}ms]:`, {
       endpoint,
       resultKeys: Object.keys(result)
     })
-
     return result
   } catch (err: any) {
     clearTimeout(timeoutId)
     const duration = Date.now() - startTime
-
     // Log error
     console.error(`RAG Backend API call error [${duration}ms]:`, {
       endpoint,
       error: err.message
     })
-
     if (err.name === "AbortError") {
       throw new Error("RAG Backend request timed out")
     }
     throw err
   }
 }
-
 export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get("action") || "search"
-
   try {
     switch (action) {
       case "search":
@@ -101,7 +84,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return await handleStatus()
       case "queue-summarize":
         return await handleQueueSummarize(request)
-
       default:
         return json({ error: "Invalid action" }, { status: 400 })
     }
@@ -117,7 +99,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
     )
   }
 }
-
 /*
  * Handle document upload via Enhanced RAG Backend
  */
@@ -135,12 +116,10 @@ async function handleQueueSummarize(request: Request): Promise<any> {
     throw error(500, `Queue summarize failed: ${err.message}`)
   }
 }
-
 /*
  * Handle web crawling via Enhanced RAG Backend
  */
 // Archived: handleCrawl moved to archived-handlers.ts
-
 /*
  * Handle enhanced search (vector/hybrid/chunk) with local fallback
  */
@@ -159,11 +138,9 @@ async function handleSearch(request: Request): Promise<any> {
       model,
       includeMetadata = true
     } = await request.json()
-
     if (!query) {
       throw error(400, "Query is required")
     }
-
     // Try Enhanced RAG Backend first
     try {
       console.log('Attempting search via Enhanced RAG Backend...')
@@ -184,9 +161,8 @@ async function handleSearch(request: Request): Promise<any> {
           includeMetadata
         })
       })
-
       return json({
-        success: true,
+        success: true
         query,
         searchType,
         results: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).results,
@@ -196,7 +172,6 @@ async function handleSearch(request: Request): Promise<any> {
       })
     } catch (backendError: any) {
       console.warn('RAG Backend search failed, falling back to local search:', backendError.message)
-      
       // Fallback to local search API
       const localSearchResponse = await fetch(new URL('/api/rag/search', request.url), {
         method: 'POST',
@@ -215,22 +190,19 @@ async function handleSearch(request: Request): Promise<any> {
           includeContent
         })
       })
-
       if (!localSearchResponse.ok) {
         throw new Error(`Local search also failed: ${localSearchResponse.status}`)
       }
-
       const localResult = await localSearchResponse.json()
-      
       return json({
-        success: true,
+        success: true
         query,
         searchType,
         results: localResult.results,
         analytics: localResult.analytics,
         total: localResult.analytics?.totalResults || 0,
         source: 'local-search',
-        fallback: true,
+        fallback: true
         warning: 'Used local search due to backend unavailability'
       })
     }
@@ -239,7 +211,6 @@ async function handleSearch(request: Request): Promise<any> {
     throw error(500, `Search failed: ${err.message}`)
   }
 }
-
 /*
  * Handle AI text analysis
  */
@@ -250,11 +221,9 @@ async function handleAnalyze(request: Request): Promise<any> {
       analysisType = "general",
       options = {}
     } = await request.json()
-
     if (!text) {
       throw error(400, "Text is required for analysis")
     }
-
     const result = await forwardToRAGBackend("/api/v1/rag/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -264,9 +233,8 @@ async function handleAnalyze(request: Request): Promise<any> {
         options
       })
     })
-
     return json({
-      success: true,
+      success: true
       analysis: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).analysis,
       metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata
     })
@@ -275,18 +243,15 @@ async function handleAnalyze(request: Request): Promise<any> {
     throw error(500, `Text analysis failed: ${err.message}`)
   }
 }
-
 /*
  * Handle AI text summarization
  */
 async function handleSummarize(request: Request): Promise<any> {
   try {
     const { text, length = "medium", options = {} } = await request.json()
-
     if (!text) {
       throw error(400, "Text is required for summarization")
     }
-
     const result = await forwardToRAGBackend("/api/v1/rag/summarize", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -296,9 +261,8 @@ async function handleSummarize(request: Request): Promise<any> {
         options
       })
     })
-
     return json({
-      success: true,
+      success: true
       summary: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).summary,
       metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata
     })
@@ -307,17 +271,14 @@ async function handleSummarize(request: Request): Promise<any> {
     throw error(500, `Text summarization failed: ${err.message}`)
   }
 }
-
 /*
  * Handle multi-agent workflows
  */
 // Archived: handleWorkflow moved to archived-handlers.ts
-
 /*
  * Handle AI chat
  */
 // Archived: handleChat moved to archived-handlers.ts
-
 /*
  * Handle Enhanced RAG Backend health check
  */
@@ -330,20 +291,17 @@ async function handleStatus(): Promise<any> {
         forwardToRAGBackend("/api/v1/rag/stats")
       ]
     )
-
     const health =
       healthResult.status === "fulfilled" ? healthResult.value: null
     const metrics =
       metricsResult.status === "fulfilled" ? metricsResult.value: null
     const stats = statsResult.status === "fulfilled" ? statsResult.value: null
-
     const isHealthy = health?.status === "healthy"
-
     return json({
-      success: true,
+      success: true
       backend: {
-        url: RAG_BACKEND_URL,
-        healthy: isHealthy,
+        url: RAG_BACKEND_URL
+        healthy: isHealthy
         status: health?.status || "unknown"
       },
       services: metrics?.health?.components || {},
@@ -355,10 +313,10 @@ async function handleStatus(): Promise<any> {
   } catch (err: any) {
     console.error("Status check error:", err)
     return json({
-      success: false,
+      success: false
       backend: {
-        url: RAG_BACKEND_URL,
-        healthy: false,
+        url: RAG_BACKEND_URL
+        healthy: false
         status: "unreachable"
       },
       error: err.message,
@@ -366,44 +324,36 @@ async function handleStatus(): Promise<any> {
     })
   }
 }
-
 /*
  * GET handler for status and stats
  */
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get("action")
   // const endpoint = url.searchParams.get("endpoint"); // unused
-
   try {
     switch (action) {
       case "status":
         return await handleStatus()
-
       case "stats": {
         const stats = await forwardToRAGBackend("/api/v1/rag/stats")
         return json({ success: true, stats: stats.stats })
       }
-
       case "health": {
         const health = await forwardToRAGBackend("/health")
         return json({ success: true, health })
       }
-
       case "metrics": {
         const metrics = await forwardToRAGBackend("/health/detailed")
         return json({ success: true, metrics })
       }
-
       case "search": {
         const query = url.searchParams.get("query")
         const searchType = url.searchParams.get("searchType") || "hybrid"
         const limit = parseInt(url.searchParams.get("limit") || "10")
         const threshold = parseFloat(url.searchParams.get("threshold") || "0.7")
-
         if (!query) {
           throw error(400, "Query parameter is required")
         }
-
         // Try Enhanced RAG Backend first, fallback to local search
         try {
           const searchResult = await forwardToRAGBackend("/api/v1/rag/search", {
@@ -417,9 +367,8 @@ export const GET: RequestHandler = async ({ url }) => {
               includeContent: true
             })
           })
-
           return json({
-            success: true,
+            success: true
             query,
             results: searchResult.results,
             total: searchResult.total,
@@ -427,24 +376,19 @@ export const GET: RequestHandler = async ({ url }) => {
           })
         } catch (backendError: any) {
           console.warn('RAG Backend GET search failed, using local search:', backendError.message)
-          
           // Fallback to local search API
           const localSearchUrl = new URL('/api/rag/search', url.origin)
           localSearchUrl.searchParams.set('action', 'search')
           localSearchUrl.searchParams.set('query', query)
           localSearchUrl.searchParams.set('searchType', searchType)
           localSearchUrl.searchParams.set('limit', limit.toString()
-          
           const localResponse = await fetch(localSearchUrl, { method: 'GET' })
-          
           if (!localResponse.ok) {
             throw new Error(`Local search failed: ${localResponse.status}`)
           }
-          
           const localResult = await localResponse.json()
-          
           return json({
-            success: true,
+            success: true
             query,
             results: localResult.results,
             total: localResult.results?.length || 0,
@@ -453,7 +397,6 @@ export const GET: RequestHandler = async ({ url }) => {
           })
         }
       }
-
       default:
         throw error(400, `Invalid action: ${action || "none"}`)
     }
@@ -465,14 +408,12 @@ export const GET: RequestHandler = async ({ url }) => {
     throw error(500, `GET operation failed: ${err.message}`)
   }
 }
-
 /*
  * PATCH handler for cache operations
  */
 export const PATCH: RequestHandler = async ({ url }) => {
   try {
     const operation = url.searchParams.get("operation") || "refresh"
-
     switch (operation) {
       case "refresh": {
         const refreshResult = await forwardToRAGBackend("/api/v1/rag/cache", {
@@ -482,12 +423,10 @@ export const PATCH: RequestHandler = async ({ url }) => {
         })
         return json({ success: true, result: refreshResult })
       }
-
       case "stats": {
         const cacheStats = await forwardToRAGBackend("/api/v1/rag/stats")
         return json({ success: true, stats: cacheStats.stats })
       }
-
       default:
         throw error(400, `Invalid operation: ${operation}`)
     }
@@ -499,7 +438,6 @@ export const PATCH: RequestHandler = async ({ url }) => {
     throw error(500, `PATCH operation failed: ${err.message}`)
   }
 }
-
 /*
  * DELETE handler for cache clearing
  */
@@ -507,13 +445,11 @@ export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const pattern = url.searchParams.get("pattern")
     const cacheUrl = `/api/v1/rag/cache${pattern ? `?pattern=${encodeURIComponent(pattern)}` : ""}`
-
     const result = await forwardToRAGBackend(cacheUrl, {
       method: "DELETE"
     })
-
     return json({
-      success: true,
+      success: true
       message: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).message || "Cache cleared successfully",
       pattern: pattern || "all"
     })
@@ -525,22 +461,18 @@ export const DELETE: RequestHandler = async ({ url }) => {
     throw error(500, `Cache clear failed: ${err.message}`)
   }
 }
-
 /*
  * Handle pgai document processing using local Gemma3 models
  */
 // Archived: handlePgaiProcess moved to archived-handlers.ts
-
 /*
  * Handle pgai custom analysis
  */
 // Archived: handlePgaiCustomAnalysis moved to archived-handlers.ts
-
 /*
  * Handle pgai document comparison
  */
 // Archived: handlePgaiComparison moved to archived-handlers.ts
-
 /*
  * Handle pgai information extraction
  */

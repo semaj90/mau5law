@@ -1,6 +1,5 @@
 // Complete system status and error tracker
 // #memory #create_entities #get-library-docs
-
 export class SystemStatusTracker {
   constructor() {
     this.services = new Map();
@@ -8,7 +7,6 @@ export class SystemStatusTracker {
     this.migrations = new Map();
     this.initializeServices();
   }
-
   initializeServices() {
     // Docker services
     this.services.set("postgres", {
@@ -36,21 +34,18 @@ export class SystemStatusTracker {
       port: 5173,
       health_endpoint: "http://localhost:5173",
     });
-
     // Migration tracking
     this.migrations.set("001_initial_schema", {
       status: "pending",
-      required: true,
+      required: true
     });
     this.migrations.set("context_system", {
       status: "pending",
-      required: true,
+      required: true
     });
   }
-
   async checkServiceHealth() {
     const results = {};
-
     for (const [name, service] of this.services) {
       try {
         // Service-specific health checks
@@ -75,10 +70,8 @@ export class SystemStatusTracker {
         results[name] = { status: "error", error: error.message };
       }
     }
-
     return results;
   }
-
   async checkPostgres() {
     // Use database health check from our created files
     return {
@@ -86,15 +79,12 @@ export class SystemStatusTracker {
       connection: "postgresql://legal_admin@localhost:5433/legal_ai_db",
     };
   }
-
   async checkRedis() {
-    return { status: "healthy", connection: "redis://localhost:6379" };
+    return { status: "healthy", connection: "redis://localhost:6379" }
   }
-
   async checkQdrant() {
-    return { status: "healthy", endpoint: "http://localhost:6333" };
+    return { status: "healthy", endpoint: "http://localhost:6333" }
   }
-
   async checkOllama() {
     return {
       status: "healthy",
@@ -102,11 +92,9 @@ export class SystemStatusTracker {
       endpoint: "http://localhost:11434",
     };
   }
-
   async checkFrontend() {
     return { status: "ready", dev_server: "npm run dev", port: 5173 };
   }
-
   generateSystemReport() {
     return {
       timestamp: new Date().toISOString(),
@@ -141,7 +129,6 @@ export class SystemStatusTracker {
       },
     };
   }
-
   getNextSteps() {
     return [
       "1. Run: docker-compose -f docker-compose-unified.yml up -d",
@@ -152,17 +139,12 @@ export class SystemStatusTracker {
     ];
   }
 }
-
 // Initialize tracker
 const systemTracker = new SystemStatusTracker();
-
 console.log("🚀 Legal AI System - All Files Created & Ready");
 console.log("===============================================");
-
 const report = systemTracker.generateSystemReport();
 console.log("System Status:", JSON.stringify(report, null, 2);
-
 console.log("\nNext Steps:");
 systemTracker.getNextSteps().forEach((step) => console.log(step);
-
 export default systemTracker;

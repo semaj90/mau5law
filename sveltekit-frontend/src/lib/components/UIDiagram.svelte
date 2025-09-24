@@ -1,7 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from 'svelte';
   let diagram = $state(`graph TD\n    A[src/routes/interactive-canvas/+page.svelte] --> B[+Header.svelte]\n    A --> C[+Sidebar.svelte]\n    A --> D[Main Content Area]\n    D --> E[+FileUploadSection.svelte]\n    D --> F[+AutomateUploadSection.svelte]\n    D --> G[+AddNotesSection.svelte]\n    E --> H[+Dropdown.svelte]\n    E --> I[+Checkbox.svelte]\n    F --> H\n    F --> I\n    G --> H\n    G --> I\n    B --> J[+SearchInput.svelte]`);
   let svg = $state('');
@@ -18,14 +16,12 @@ try {
     } catch (err) {/* JSX syntax converted to Svelte */}
   });
 </script>
-
 <div class="space-y-4" bind:this={container}>
   {@html svg}
 </div>
-
 <style>
   /* @unocss-include */
-.mermaid-diagram-container {;
+.mermaid-diagram-container {
   width: 100%;
   max-width: 900px;
   margin: 2rem auto;
@@ -36,6 +32,3 @@ try {
   overflow-x: auto;
 }
 </style>
-
-
-

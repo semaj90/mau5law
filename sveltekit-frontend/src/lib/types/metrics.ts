@@ -2,7 +2,6 @@
  * Shared metric types for client and server-side observability
  */;
 }
-
 export interface CognitiveMetrics {
   routingEfficiency: number;
   cacheHitRatio: number;
@@ -11,7 +10,6 @@ export interface CognitiveMetrics {
   quantumCoherence: number;
   timestamp: string;
 }
-
 export interface RouteMetrics {
   routeId: string;
   pathname: string;
@@ -28,7 +26,6 @@ export interface RouteMetrics {
   timestamp: number;
   requestId?: string;
 }
-
 export interface TimingMetrics {
   pageLoad: number;
   domContentLoaded: number;
@@ -43,16 +40,14 @@ export interface TimingMetrics {
   url: string;
   userAgent: string;
 }
-
 export interface ClientMetricsPayload {
   metrics: RouteMetrics[];
   timestamp: number;
   userAgent: string;
   url: string;
 }
-
 export interface PerformanceMetrics {
-  overall: {;
+  overall: {
     status: 'excellent' | 'good' | 'fair' | 'poor';
     score: number;
     timestamp: string;
@@ -76,36 +71,34 @@ export interface PerformanceMetrics {
   };
   cognitive: CognitiveMetrics;
 }
-
 export interface SystemMetrics {
   health: PerformanceMetrics;
-  resources: {;
+  resources: {
     memory: {
       heapUsed: number;
       heapTotal: number;
       external: number;
       rss: number;
     };
-    cpu: {;
+    cpu: {
       usage: number;
       loadAverage: number[];
     };
     gpu?: {
       utilization: number;
-      memory: {;
+      memory: {
         used: number;
         total: number;
       };
       temperature: number;
     };
   };
-  services: {;
+  services: {
     databases: Record<string, { status: string; responseTime?: number }>;
     aiServices: Record<string, { status: string; responseTime?: number }>;
     microservices: Record<string, { status: string; responseTime?: number }>;
   };
 }
-
 export interface MetricsAggregation {
   timeWindow: string;
   totalRequests: number;
@@ -121,10 +114,8 @@ export interface MetricsAggregation {
   topRoutes: Array<any>;
   cognitiveMetrics: CognitiveMetrics;
 }
-
-// ---- Cognitive Metrics Builders & Utilities ----;
+// ---- Cognitive Metrics Builders & Utilities ----
 }
-
 export interface PartialCognitiveMetrics {
   routingEfficiency?: number;
   cacheHitRatio?: number;
@@ -133,7 +124,6 @@ export interface PartialCognitiveMetrics {
   quantumCoherence?: number;
   timestamp?: string;
 }
-
 /**
  * Normalize a raw metric (0-100 nominal) into bounded range with optional clamping.
  */;
@@ -141,7 +131,6 @@ export function clampMetric(value: number | undefined, min = 0, max = 100): numb
   if (value == null || Number.isNaN(value)) return 0;
   return Math.min(max, Math.max(min, value);
 }
-
 /**
  * Build a complete CognitiveMetrics object, filling defaults and timestamp.
  */;
@@ -155,7 +144,6 @@ export function buildCognitiveMetrics(partial: PartialCognitiveMetrics): Cogniti
     timestamp: partial.timestamp || new Date().toISOString()
   };
 }
-
 /**
  * Derive synthetic emergent cognitive fields if not supplied by server subsystems.
  * consciousnessLevel: weighted mean of efficiency & cache quality signals.

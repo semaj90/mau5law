@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import {
     Card,
     CardHeader,
@@ -14,36 +13,29 @@
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Search, BookOpen, ExternalLink, Bot, MessageSquare } from 'lucide-svelte';
   import { onMount } from 'svelte';
-
   // In Svelte 5 (runes mode) don't use `export let` for page props — use $props()
   const { data } = $props() as { data: unknown };
 let EnhancedFuseSearch = $state<any >(null);
-
   $effect(() => {
     (async () => {
 EnhancedFuseSearch = (await import('$lib/components/search/EnhancedFuseSearch.svelte')).default;
     })();
   });
-
   // Simple search state
 let searchQuery = $state<string >('');
 let searchResults = $state<any[] >([]);
 let isSearching = $state<boolean >(false);
-
   async function performSearch() {
     if (!searchQuery.trim()) return;
-
     isSearching = true;
     try {
       const params = new URLSearchParams({
-        q: searchQuery,;
-        jurisdiction: 'all',;
-        category: 'all',;
+        q: searchQuery
+        jurisdiction: 'all',
+        category: 'all',
       });
-
       const response = await fetch(`/api/laws/search?${params}`);
       const result = await (response as { json?: unknown }).json();
-
       if ((result as { success?: unknown; laws?: unknown; error?: unknown }).success) {
         searchResults = (result as { success?: unknown; laws?: unknown; error?: unknown }).laws || [];
       } else {
@@ -57,30 +49,25 @@ let isSearching = $state<boolean >(false);
       isSearching = false;
     }
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       performSearch();
     }
   }
-
   // AI toolbar event handlers (typed)
   function handleAISearchResult(result: unknown) {
     console.log('AI Search Result:', result);
     if (result?.laws) {
-      searchResults = (result as { success?: unknown; laws?: unknown; error?: unknown }).laws;
+      searchResults = (result as { success?: unknown; laws?: unknown; error?: unknown }).law;
     }
   }
-
   function handleAIChatResult(result: unknown) {
     console.log('AI Chat Result:', result);
   }
-
   function handleAISummarizeResult(result: unknown) {
     console.log('AI Summarization Result:', result);
   }
 </script>
-
 <svelte:head>
   <title>Legal Resources - Laws & Regulations | YoRHa Legal AI</title>
   <meta
@@ -89,7 +76,6 @@ let isSearching = $state<boolean >(false);
   <!-- NES.css (optional) -->
   <link rel="stylesheet" href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" />
 </svelte:head>
-
 <div class="container mx-auto py-8 space-y-8 nes-container is-rounded">
   <!-- Header -->
   <div class="text-center space-y-4">
@@ -98,7 +84,6 @@ let isSearching = $state<boolean >(false);
       Browse California and state laws with AI-powered search and summaries
     </p>
   </div>
-
   <!-- Enhanced Fuse.js Search (client-only) -->
   {#if EnhancedFuseSearch}
     <EnhancedFuseSearch
@@ -108,7 +93,7 @@ let isSearching = $state<boolean >(false);
       onselect={(e: CustomEvent) => {
         const selected = e.detail;
         if (selected?.title) {
-          searchQuery = selected.title;
+          searchQuery = selected.titl;
         }
       }}
     />
@@ -139,14 +124,12 @@ let isSearching = $state<boolean >(false);
       </div>
     </div>
   </div>
-
   <!-- Quick Links -->
   <div class="space-y-4">
     <h2 class="text-2xl font-semibold flex items-center gap-2">
       <BookOpen class="h-6 w-6" />
       Quick Access
     </h2>
-
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {#each (data as { quickLinks?: unknown }).quickLinks as link}
         <div class="hover:shadow-lg transition-all duration-200 nes-container">
@@ -172,14 +155,12 @@ let isSearching = $state<boolean >(false);
       {/each}
     </div>
   </div>
-
   <!-- Search Results -->
   {#if searchResults.length > 0}
     <div class="space-y-4">
       <h2 class="text-2xl font-semibold">
         Search Results ({searchResults.length})
       </h2>
-
       <div class="space-y-4">
         {#each searchResults as law}
           <div class="nes-container">
@@ -219,4 +200,3 @@ let isSearching = $state<boolean >(false);
     </div>
   {/if}
 </div>
-

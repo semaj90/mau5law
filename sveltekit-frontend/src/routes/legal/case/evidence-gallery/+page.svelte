@@ -1,13 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { page } from '$app/state';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import * as Card from '$lib/components/ui/card';
   import { Select } from '$lib/components/ui/enhanced-bits';
   import { Input } from '$lib/components/ui/enhanced-bits';
-
   // Svelte 5 Runes - Evidence Board State
   let isConnecting = $state(false);
   let selectedItem = $state(null);
@@ -15,13 +13,12 @@
   let connections = $state([]);
   let caseData = $state({
     id: 'CORPORATE ESPIONAGE INV',
-    title: 'Corporate Espionage Investigation', ;
-    status: 'active',;
+    title: 'Corporate Espionage Investigation',
+    status: 'active',
     items: [];
   });
   let isDemoMode = $state(false);
   let isConnected = $state(true);
-
   // Case sidebar data
   let caseDetails = $state([
     { name: 'Corporate Espionage Investigation', status: 'active', color: 'green' },
@@ -29,7 +26,6 @@
     { name: 'Financial Fraud Analysis', status: 'pending', color: 'yellow' },
     { name: 'Security Breach Analysis', status: 'active', color: 'green' }
   ]);
-
   interface EvidenceCard {
     id: string;
     title: string;
@@ -43,11 +39,9 @@
       source?: string;
     };
   }
-
   $effect(() => {
     initializeEvidenceBoard();
   });
-
   function initializeEvidenceBoard() {
     // Initialize with sample evidence cards like in the screenshot
     canvasItems = [
@@ -55,9 +49,9 @@
         id: 'video-001',
         title: 'SECURITY CAMERA',
         type: 'VIDEO',
-        description: 'CCTV footage from the main entrance',;
+        description: 'CCTV footage from the main entrance',
         position: { x: 200, y: 300 },
-        connections: ['doc-001'],;
+        connections: ['doc-001'],
         metadata: {
           timestamp: '2024-03-15 14:32',
           location: 'Main Entrance',
@@ -65,24 +59,22 @@
         }
       },
       {
-        id: 'doc-001', 
+        id: 'doc-001',
         title: 'WITNESS STATEMENT',
         type: 'DOCUMENT',
-        description: 'Detailed written statement from key witness',;
+        description: 'Detailed written statement from key witness',
         position: { x: 500, y: 400 },
-        connections: ['video-001'],;
+        connections: ['video-001'],
         metadata: {
-          timestamp: '2024-03-16 09:15',;
+          timestamp: '2024-03-16 09:15',
           source: 'Detective Interview';
         }
       }
     ];
-
     connections = [
       { from: 'video-001', to: 'doc-001', type: 'correlation' }
     ];
   }
-
   function getTypeIcon(type: string) {
     switch (type) {
       case 'VIDEO': return '🎥';
@@ -92,7 +84,6 @@
       default: return '📋';
     }
   }
-
   function getStatusColor(status: string) {
     switch (status) {
       case 'active': return 'bg-green-500';
@@ -101,19 +92,17 @@
       default: return 'bg-gray-500';
     }
   }
-
   function addEvidence() {
     const newEvidence: EvidenceCard = {
       id: `evidence-${Date.now()}`,
       title: 'NEW EVIDENCE',
       type: 'DOCUMENT',
-      description: 'New evidence item',;
-      position: { x: Math.random() * 400 + 200, y: Math.random() * 300 + 200 },;
+      description: 'New evidence item',
+      position: { x: Math.random() * 400 + 200, y: Math.random() * 300 + 200 },
       connections: [];
     };
     canvasItems = [...canvasItems, newEvidence];
   }
-
   function startConnection(item: EvidenceCard) {
     if (!isConnecting) {
       isConnecting = true;
@@ -121,12 +110,11 @@
     } else if (selectedItem && selectedItem.id !== (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id) {
       // Create connection
       const newConnection = {
-        from: selectedItem.id,;
+        from: selectedItem.id,
         to: (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id,
         type: 'correlation';
       };
       connections = [...connections, newConnection];
-      
       // Update item connections
       canvasItems = canvasItems.map(i => {
         if (i.id === selectedItem.id) {
@@ -137,52 +125,42 @@
         }
         return i;
       });
-      
       isConnecting = false;
       selectedItem = null;
     }
   }
-
   function cancelConnection() {
     isConnecting = false;
     selectedItem = null;
   }
-
   // Drag and drop functionality
   let draggedItem = $state(null);
   let dragOffset = $state({ x: 0, y: 0 });
-
   function handleMouseDown(event: MouseEvent, item: EvidenceCard) {
     draggedItem = item;
     const rect = event.currentTarget.getBoundingClientRect();
     dragOffset = {
-      x: event.clientX - rect.left,;
+      x: event.clientX - rect.left,
       y: event.clientY - rect.top;
     };
   }
-
   function handleMouseMove(event: MouseEvent) {
     if (draggedItem) {
       const canvas = document.getElementById('evidence-canvas');
       const rect = canvas.getBoundingClientRect();
-      
       const newX = event.clientX - rect.left - dragOffset.x;
       const newY = event.clientY - rect.top - dragOffset.y;
-      
-      canvasItems = canvasItems.map.id === draggedItem.id 
+      canvasItems = canvasItems.map.id === draggedItem.id
           ? { ...item, position: { x: Math.max(0, newX), y: Math.max(0, newY) } }
           : item
       );
     }
   }
-
   function handleMouseUp() {
     draggedItem = null;
   }
 </script>
-
 <svelte:window onmousemove={handleMouseMove} onmouseup={handleMouseUp} />
-
 <!-- Main Evidence Board Layout -->
 <div class="flex h-screen bg-gray-100 font-mono">
   <!-- Left Sidebar Navigation -->
@@ -212,7 +190,6 @@
       🔍
     </button>
   </div>
-
   <!-- Main Content Area -->
   <div class="flex-1 flex flex-col">
     <!-- Top Header -->
@@ -224,7 +201,6 @@
           <p class="text-sm text-gray-600">{caseData.title}</p>
         </div>
       </div>
-      
       <div class="flex items-center space-x-3">
         <div class="flex items-center space-x-2">
           <span class="text-sm font-medium text-gray-700">Case:</span>
@@ -232,45 +208,37 @@
         </div>
         <Button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2">
 📚 LIBRARY
-
         <Button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2">
 📊 ANALYSIS
-
       </div>
     </div>
-
     <!-- Main Canvas and Controls -->
     <div class="flex-1 flex">
       <!-- Canvas Area -->
       <div class="flex-1 relative">
         <!-- Canvas Controls -->
         <div class="absolute top-4 left-4 flex items-center space-x-2 z-10">
-          <Button 
+          <Button
             class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
             disabled
           >
 🔒 100%
-
-          <Button 
+          <Button
             class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
             disabled
           >
 📎 CONNECT
-
-          <Button 
+          <Button
             onclick={addEvidence}
             class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm"
           >
 + ADD EVIDENCE
-
-          <Button 
+          <Button
             class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm"
             disabled
           >
 📚 LIBRARY (0)
-
         </div>
-
         <!-- Connection Status -->
         <div class="absolute bottom-4 left-4 z-10">
           <div class="flex items-center space-x-2 text-sm text-gray-600">
@@ -278,9 +246,8 @@
             <span>Demo Mode - Server Not Connected</span>
           </div>
         </div>
-
         <!-- Main Canvas with Grid -->
-        <div 
+        <div
           id="evidence-canvas"
           class="w-full h-full relative overflow-hidden"
           style="background-image: radial-gradient(circle, #d1d5db 1px, transparent 1px); background-size: 20px 20px;"
@@ -304,7 +271,6 @@
               {/if}
             {/each}
           </svg>
-
           <!-- Evidence Cards -->
           {#each canvasItems as item ((item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id)}
             <div
@@ -325,13 +291,10 @@
                   <div class="bg-gray-600 h-16 rounded mb-2 flex items-center justify-center">
                     <span class="text-white text-2xl">{getTypeIcon((item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).type)}</span>
                   </div>
-                  
                   <!-- Title -->
                   <div class="text-sm font-bold text-blue-600 mb-1">{(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).title}</div>
-                  
                   <!-- Description -->
                   <div class="text-xs text-gray-700 mb-2">{(item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).description}</div>
-                  
                   <!-- Metadata -->
                   {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).metadata}
                     <div class="text-xs text-gray-500 space-y-1">
@@ -346,7 +309,6 @@
                       {/if}
                     </div>
                   {/if}
-                  
                   <!-- Connection indicators -->
                   {#if (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).connections.length > 0}
                     <div class="flex items-center mt-2 text-xs text-green-600">
@@ -359,7 +321,6 @@
               </div.Root>
             </div>
           {/each}
-
           <!-- Connection Mode Overlay -->
           {#if isConnecting}
             <div class="absolute inset-0 bg-blue-500 bg-opacity-10 flex items-center justify-center" style="z-index: 10;">
@@ -372,14 +333,12 @@
                   </div>
                   <Button onclick={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
 Cancel Connection
-
                 </div>
               </div>
             </div>
           {/if}
         </div>
       </div>
-
       <!-- Right Sidebar -->
       <div class="w-80 bg-white border-l flex flex-col">
         <!-- Case Info Header -->
@@ -404,7 +363,6 @@ Cancel Connection
             {/each}
           </div>
         </div>
-
         <!-- Evidence Statistics -->
         <div class="p-4 border-b">
           <div class="text-sm font-medium text-gray-700 mb-3">Evidence Summary</div>
@@ -423,7 +381,6 @@ Cancel Connection
             </div>
           </div>
         </div>
-
         <!-- Evidence List -->
         <div class="flex-1 p-4 overflow-y-auto">
           <div class="text-sm font-medium text-gray-700 mb-3">Evidence Items</div>
@@ -444,44 +401,35 @@ Cancel Connection
             {/each}
           </div>
         </div>
-
         <!-- Action Buttons -->
         <div class="p-4 border-t space-y-2">
           <Button onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">
 + Add Evidence
-
           <Button class="w-full bg-green-600 hover:bg-green-700 text-white">
 🔍 Analyze All
-
           <Button class="w-full bg-purple-600 hover:bg-purple-700 text-white">
 📊 Generate Report
-
         </div>
       </div>
     </div>
   </div>
 </div>
-
 <style>
   /* Grid background pattern */
-  #evidence-canvas {;
+  #evidence-canvas {
     background-color: #f9fafb;
   }
-  
   /* Smooth transitions for drag and drop */
   .evidence-card {
     transition: transform 0.1s ease;
   }
-  
   .evidence-card:hover {
     transform: translateY(-2px);
   }
-  
   /* Connection line animations */
   svg line {
     animation: dash 2s linear infinite;
   }
-  
   @keyframes dash {
     to {
       stroke-dashoffset: -10;

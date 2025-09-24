@@ -1,27 +1,23 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: tag
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
-
 import { json } from "@sveltejs/kit"
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
-
-
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const {
@@ -30,15 +26,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       fileType,
       enhanced = false
     } = await request.json()
-
     if (!content || content.trim() === "") {
       return json({ error: "Content is required" }, { status: 400 })
     }
     // Enhanced prompt for better auto-form fill capabilities
     const enhancedPrompt = `You are an advanced legal AI assistant specializing in evidence analysis and metadata extraction. Extract comprehensive structured metadata from the following content for use in a legal case management system.
-
 CRITICAL: Return ONLY a valid JSON object with NO additional text, markdown, or formatting.
-
 Required JSON structure:
 {
   "tags": ["relevant", "case", "tags"],
@@ -81,19 +74,14 @@ Analysis Guidelines:
 6. Suggest follow-up actions
 7. Rate extraction confidence for each category
 8. Identify potential red flags or concerns
-
 File Details:
 - Name: ${fileName || "Unknown"}
 - Type: ${fileType || "Unknown"}
 - Enhanced Analysis: ${enhanced ? "Yes" : "No"}
-
 Content to analyze:
 ${content.slice(0, enhanced ? 5000 : 2000)}
-
 Return ONLY the JSON object. No markdown, no explanations, no additional text.`
-
     const basicPrompt = `Extract structured legal metadata from this content. Return ONLY valid JSON:
-
 {
   "tags": ["tag1", "tag2"],
   "title": "Brief title",
@@ -108,9 +96,7 @@ Return ONLY the JSON object. No markdown, no explanations, no additional text.`
 }
 File: ${fileName || "Unknown"}
 Content: ${content.slice(0, 2000)}`
-
     const prompt = enhanced ? enhancedPrompt : basicPrompt
-
     // Try legal Gemma3 model first, with fallbacks
     const models = [
       "gemma3:legal",
@@ -121,7 +107,6 @@ Content: ${content.slice(0, 2000)}`
     ]
     let result: any = null
     let modelUsed = ""
-
     for (const model of models) {
       try {
         const ollamaResponse = await fetch(
@@ -132,7 +117,7 @@ Content: ${content.slice(0, 2000)}`
             body: JSON.stringify({
               model,
               prompt,
-              stream: false,
+              stream: false
               options: {
                 temperature: enhanced ? 0.2 : 0.3, // Lower temperature for better consistency
                 top_p: 0.9,
@@ -143,7 +128,6 @@ Content: ${content.slice(0, 2000)}`
             })
           },
         )
-
         if (ollamaResponse.ok) {
           result = await ollamaResponse.json()
           modelUsed = model
@@ -164,7 +148,6 @@ Content: ${content.slice(0, 2000)}`
       enhanced,
       modelUsed,
     )
-
     // Add embedding generation for vector search (if enhanced)
     if (enhanced) {
       try {
@@ -185,11 +168,10 @@ Content: ${content.slice(0, 2000)}`
     )
   }
 }
-
 async function parseAndReturnTags(
-  response: string,
-  fileName?: string,
-  fileType?: string,
+  response: string
+  fileName?: string
+  fileType?: string
   enhanced = false,
   modelUsed = "",
 ): Promise<any> {
@@ -205,7 +187,6 @@ async function parseAndReturnTags(
     legalRelevance: "medium",
     summary: "",
     keyFacts: [],
-
     // Enhanced fields for auto-form fill
     ...(enhanced && {
       legalCategories: [],
@@ -232,11 +213,9 @@ async function parseAndReturnTags(
       processingTime: new Date().toISOString()
     })
   }
-
   try {
     // Multiple JSON extraction strategies
     let cleanResponse = (response as { trim?: any }).trim()
-
     // Remove common AI response prefixes/suffixes
     const prefixesToRemove = [
       "Here is the JSON:",
@@ -246,20 +225,17 @@ async function parseAndReturnTags(
       "```json",
       "```"
     ]
-
     const suffixesToRemove = [
       "Please let me know if you need any clarification.",
       "This analysis is based on the provided content.",
       "```",
       "Let me know if you need anything else."
     ]
-
     prefixesToRemove.forEach((prefix) => {
       if (cleanResponse.toLowerCase().startsWith(prefix.toLowerCase())) {
         cleanResponse = cleanResponse.substring(prefix.length).trim()
       }
     })
-
     suffixesToRemove.forEach((suffix) => {
       if (cleanResponse.toLowerCase().endsWith(suffix.toLowerCase())) {
         cleanResponse = cleanResponse
@@ -267,17 +243,13 @@ async function parseAndReturnTags(
           .trim()
       }
     })
-
     // Find JSON boundaries more robustly
     const jsonStart = cleanResponse.indexOf("{")
     const jsonEnd = cleanResponse.lastIndexOf("}")
-
     if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
       const jsonStr = cleanResponse.substring(jsonStart, jsonEnd + 1)
-
       try {
         const parsed = JSON.parse(jsonStr)
-
         // Validate and merge with defaults
         tagsResult = {
           ...tagsResult,
@@ -285,7 +257,6 @@ async function parseAndReturnTags(
         }
       } catch (parseError) {
         console.warn("JSON parsing failed, attempting repair:", parseError)
-
         // Attempt JSON repair
         const repairedJson = attemptJsonRepair(jsonStr)
         if (repairedJson) {
@@ -304,13 +275,11 @@ async function parseAndReturnTags(
   } catch (parseError) {
     console.error("Failed to parse AI response:", parseError)
     console.log("Raw response:", response)
-
     // Advanced fallback parsing using regex and NLP techniques
     tagsResult = {
       ...tagsResult,
       ...extractWithFallbackMethods(response, enhanced)
     }
-
     // Add warning about parsing failure
     if (enhanced) {
       tagsResult.redFlags = [
@@ -332,7 +301,6 @@ async function parseAndReturnTags(
 }
 function validateAndCleanParsedData(parsed: any, enhanced: boolean): unknown {
   const result: any = {}
-
   // Validate arrays
   if (Array.isArray(parsed.tags)
     (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).tags = parsed.tags.filter((t) => typeof t === "string")
@@ -347,13 +315,11 @@ function validateAndCleanParsedData(parsed: any, enhanced: boolean): unknown {
     )
   if (Array.isArray(parsed.keyFacts)
     (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).keyFacts = parsed.keyFacts.filter((f) => typeof f === "string")
-
   // Validate strings
   if (typeof parsed.title === "string")
     (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).title = parsed.title.substring(0, 100)
   if (typeof parsed.summary === "string")
     (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).summary = parsed.summary.substring(0, 300)
-
   // Validate enums
   const validEvidenceTypes = [
     "document",
@@ -367,11 +333,9 @@ function validateAndCleanParsedData(parsed: any, enhanced: boolean): unknown {
   ]
   if (validEvidenceTypes.includes(parsed.evidenceType)
     (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).evidenceType = parsed.evidenceType
-
   const validRelevance = ["critical", "high", "medium", "low"]
   if (validRelevance.includes(parsed.legalRelevance)
     (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).legalRelevance = parsed.legalRelevance
-
   // Enhanced validation
   if (enhanced) {
     if (Array.isArray(parsed.legalCategories)
@@ -404,7 +368,6 @@ function validateAndCleanParsedData(parsed: any, enhanced: boolean): unknown {
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).recommendations = parsed.recommendations.filter(
         (r) => typeof r === "string",
       )
-
     const validConfidentiality = [
       "public",
       "internal",
@@ -413,15 +376,12 @@ function validateAndCleanParsedData(parsed: any, enhanced: boolean): unknown {
     ]
     if (validConfidentiality.includes(parsed.confidentialityLevel)
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).confidentialityLevel = parsed.confidentialityLevel
-
     const validUrgency = ["immediate", "high", "normal", "low"]
     if (validUrgency.includes(parsed.urgencyLevel)
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).urgencyLevel = parsed.urgencyLevel
-
     const validSentiment = ["positive", "negative", "neutral"]
     if (validSentiment.includes(parsed.sentiment)
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).sentiment = parsed.sentiment
-
     if (
       typeof parsed.qualityScore === "number" &&
       parsed.qualityScore >= 0 &&
@@ -438,11 +398,9 @@ function validateAndCleanParsedData(parsed: any, enhanced: boolean): unknown {
 function validateDates(dates: any[]): string[] {
   return dates.filter((date) => {
     if (typeof date !== "string") return false
-
     // Try to parse various date formats
     const parsedDate = new Date(date)
     if (!isNaN(parsedDate.getTime())) return true
-
     // Check for relative dates or time expressions
     const timePatterns = [
       /\d{1,2}:\d{2}/, // Time format
@@ -451,7 +409,6 @@ function validateDates(dates: any[]): string[] {
       /\d{1,2}\/\d{1,2}\/\d{2,4}/, // Date format
       /\d{4}-\d{1,2}-\d{1,2}/, // ISO date format
     ]
-
     return timePatterns.some((pattern) => pattern.test(date)
   })
 }
@@ -459,19 +416,15 @@ function attemptJsonRepair(jsonStr: string): string | null {
   try {
     // Common JSON repair strategies
     let repaired = jsonStr
-
     // Fix missing quotes around keys
     repaired = repaired.replace(
       /([{]\s*) => [a-zA-Z_][a-zA-Z0-9_]*)\s*:/g,
       '$1"$2":',
     )
-
     // Fix trailing commas
     repaired = repaired.replace(/,(\s*[}\]])/g, "$1")
-
     // Fix single quotes to double quotes
     repaired = repaired.replace(/'/g, '"')
-
     // Try to parse the repaired JSON
     JSON.parse(repaired)
     return repaired
@@ -485,7 +438,6 @@ function extractWithFallbackMethods(text: string, enhanced: boolean): unknown {
     summary: text.substring(0, 200) + "...",
     keyFacts: []
   }
-
   // Extract people using regex patterns
   const peoplePatterns = [
     /\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/g, // First Last
@@ -493,28 +445,24 @@ function extractWithFallbackMethods(text: string, enhanced: boolean): unknown {
     /Mrs\.\s+[A-Z][a-z]+/g,
     /Dr\.\s+[A-Z][a-z]+/g
   ]
-
   peoplePatterns.forEach((pattern) => {
     const matches = text.match(pattern)
     if (matches) {
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).people = [...((result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).people || []), ...matches]
     }
   })
-
   // Extract dates using regex
   const datePatterns = [
     /\d{1,2}\/\d{1,2}\/\d{2,4}/g,
     /\d{4}-\d{1,2}-\d{1,2}/g,
     /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}\b/g
   ]
-
   datePatterns.forEach((pattern) => {
     const matches = text.match(pattern)
     if (matches) {
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).dates = [...((result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).dates || []), ...matches]
     }
   })
-
   // Extract monetary amounts
   const moneyPattern = /\$[\d]+(?:\.\d{2})?/g
   const moneyMatches = text.match(moneyPattern)
@@ -538,7 +486,6 @@ function extractWithFallbackMethods(text: string, enhanced: boolean): unknown {
       "violation",
       "damage"
     ]
-
     const lowerText = text.toLowerCase()
     const positiveCount = positiveWords.filter((word) =>
       lowerText.includes(word),
@@ -546,7 +493,6 @@ function extractWithFallbackMethods(text: string, enhanced: boolean): unknown {
     const negativeCount = negativeWords.filter((word) =>
       lowerText.includes(word),
     ).length
-
     if (positiveCount > negativeCount) (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).sentiment = "positive"
     else if (negativeCount > positiveCount) (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).sentiment = "negative"
     else (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).sentiment = "neutral"
@@ -575,7 +521,6 @@ function extractBasicTags(text: string): string[] {
     "was",
     "were"
   ])
-
   const wordFreq = new Map()
   words.forEach((word) => {
     const cleaned = word.replace(/[^\w]/g, "")
@@ -583,7 +528,6 @@ function extractBasicTags(text: string): string[] {
       wordFreq.set(cleaned, (wordFreq.get(cleaned) || 0) + 1)
     }
   })
-
   return Array.from(wordFreq.entries()
     .sort((a, b) => b[1] - a[1])
     .slice(0, 8)
@@ -591,7 +535,6 @@ function extractBasicTags(text: string): string[] {
 }
 function detectEvidenceType(fileType?: string): string {
   if (!fileType) return "other"
-
   if (fileType.includes("image") || fileType.includes("photo")) return "photo"
   if (fileType.includes("video")) return "video"
   if (fileType.includes("audio")) return "audio"
@@ -601,18 +544,16 @@ function detectEvidenceType(fileType?: string): string {
     fileType.includes("text")
   )
     return "document"
-
   return "digital"
 }
 function enhanceWithFileMetadata(
-  result: any,
-  fileName?: string,
-  fileType?: string,
+  result: any
+  fileName?: string
+  fileType?: string
 ): unknown {
   if (fileName) {
     // Extract metadata from filename
     const lowerName = fileName.toLowerCase()
-
     // Detect urgency from filename
     if (lowerName.includes("urgent") || lowerName.includes("emergency")) {
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).urgencyLevel = "immediate"
@@ -646,7 +587,6 @@ function enhanceWithFileMetadata(
     "organizations"
   ].filter((field) => result[field] && result[field].length > 0)
   (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).qualityScore = Math.min(0.9, 0.3 + metadataFields.length * 0.15)
-
   return result
 }
 async function generateEmbedding(parsedResult: any, content: string): Promise<any> {
@@ -659,29 +599,26 @@ async function generateEmbedding(parsedResult: any, content: string): Promise<an
       ...parsedResult.keyFacts,
       content.substring(0, 1000)
     ].join(" ")
-
     const embeddingResponse = await fetch(
       "http://localhost:11434/api/embeddings",)
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           model: "nomic-embed-text",
           prompt: embeddingText
         })
       },
     )
-
     if (embeddingResponse.ok) {
       const embeddingData = await embeddingResponse.json()
-
       // Store embedding in Qdrant (if available)
       await fetch("/api/qdrant/tag", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           embedding: embeddingData.embedding,
-          metadata: parsedResult,
+          metadata: parsedResult
           content: embeddingText
         })
       }).catch((error) => console.log("Qdrant storage failed:", error)
@@ -690,6 +627,4 @@ async function generateEmbedding(parsedResult: any, content: string): Promise<an
     console.log("Embedding generation failed:", error)
   }
 }
-
-
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

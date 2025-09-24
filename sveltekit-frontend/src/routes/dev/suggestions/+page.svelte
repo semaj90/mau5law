@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from "svelte";
   let items: unknown[] = $state([]);
   let count = $state(0);
@@ -10,12 +9,11 @@ try {
       const res = await fetch("/logs/svelte-suggestions.json");
       const data = await res.json();
       count = data.count;
-      items = data.items;
+      items = data.item;
     } catch
     })();
   });
 </script>
-
 <h1>Svelte Suggestions</h1>
 <p>Total parsed: {count}</p>
 <ul>
@@ -32,9 +30,8 @@ try {
     </li>
   {/if}
 </ul>
-
 <style>
-  li {;
+  li {
     margin: 8px 0;
   }
   strong {
@@ -48,4 +45,3 @@ try {
     padding: 0;
   }
 </style>
-

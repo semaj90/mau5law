@@ -4,27 +4,22 @@ TODO: Implement logout functionality, clear session, redirect to login
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
 	import Button from '$lib/components/ui/enhanced-bits';
 	import * as Card from '$lib/components/ui/card';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-
 	let isLoggingOut = $state(false);
-
 	async function handleLogout() {
 		isLoggingOut = true;
 		try {
 			// TODO: Call logout API
-			// await fetch('/api/auth/logout', { method: 'POST' });
-
+			// await fetch('/api/auth/logout', { method: 'POST' })
 			// Clear localStorage
 			if (typeof window !== 'undefined') {
 				localStorage.removeItem('user');
 				localStorage.removeItem('token');
 			}
-
 			// Redirect to login
 			setTimeout(() => {
 				goto('/auth/login');
@@ -34,14 +29,12 @@ TODO: Implement logout functionality, clear session, redirect to login
 			isLoggingOut = false;
 		}
 	}
-
 	$effect(() => {
 		// Auto-logout in 3 seconds if user doesn't cancel
 		const timer = setTimeout(handleLogout, 3000);
 		return () => clearTimeout(timer);
 	});
 </script>
-
 <EssentialRoutePage
 	pageTitle="Logout"
 	description="Signing you out of the Legal AI Platform"
@@ -63,7 +56,6 @@ TODO: Implement logout functionality, clear session, redirect to login
 						{/if}
 					</p>
 				</div>
-
 				{#if !isLoggingOut}
 					<div class="flex justify-center gap-4">
 						<Button

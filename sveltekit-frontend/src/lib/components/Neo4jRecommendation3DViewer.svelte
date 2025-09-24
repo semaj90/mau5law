@@ -1,32 +1,19 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Neo4j 3D Recommendation Viewer with QUIC Streaming & Bit-Encoded Vertex Buffers
   Real-time 3D legal knowledge graph with GPU-accelerated rendering and progress animations
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   let { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha'  }: { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha' : unknown } = $props();
-
   import { onMount, onDestroy,   } from "svelte";
   import { useMachine } from '@xstate/svelte';
   import { idleDetectionMachine } from '$lib/machines/idle-detection-rabbitmq-machine.js';
   import { neo4j3DEngine, type RecommendationGraph, type Neo4jNode } from '$lib/services/neo4j-3d-recommendation-engine.js';
   import { webgpuSOMCache } from '$lib/services/webgpu-som-enhanced-cache.js';
-
   // Props
-  
-  
-  
-  
-  
-  
-  
-  
-
   // Component state
   let canvasRef: HTMLCanvasElement;
   let containerRef: HTMLDivElement;
@@ -34,7 +21,6 @@ https://svelte.dev/e/js_parse_error -->
   let context: GPUCanvasContext | null = null;
   let animationFrame: number | null = null;
   let mounted = false;
-
   // Reactive state
   let currentGraph: RecommendationGraph | null = null;
   let isLoading = $state(false);
@@ -42,57 +28,48 @@ https://svelte.dev/e/js_parse_error -->
   let error = $state<string | null>(null);
   let streamingActive = $state(false);
   let renderStats = $state({
-    fps: 0,;
-    vertices: 0,;
+    fps: 0,
+    vertices: 0,
     relationships: 0,
     streamingChunks: 0;
   });
-
   // XState machine for idle detection and self-prompting
   const { state: idleState, send: sendIdleEvent } = useMachine(idleDetectionMachine);
-
   // Event dispatcher
-  
-
   // Camera and animation state
   let camera = {
-    position: { x: 0, y: 0, z: 50 },
+    position: ;
+{ x: 0, y: 0, z: 50 },
     rotation: { x: 0, y: 0, z: 0 },
-    fov: 45,;
+    fov: 45,
     target: { x: 0, y: 0, z: 0 }
   };
-
   let animation = {
     time: 0,
-    phase: 0,;
-    speed: 1.0,;
+    phase: 0,
+    speed: 1.0,
     enabled: true;
   };
-
   // Progress animation state
   let progressAnimation = {
     value: 0,
-    target: 0,;
-    speed: 0.05,;
+    target: 0,
+    speed: 0.05,
     segments: [] as Array;
   };
-
   /**
    * Initialize WebGPU and canvas context
    */
   async function initializeWebGPU() {
     if (!canvasRef || !mounted) return;
-
     try {
       // Request WebGPU adapter
       const adapter = await navigator.gpu?.requestAdapter({
         powerPreference: 'high-performance'
       });
-
       if (!adapter) {
         throw new Error('WebGPU not supported');
       }
-
       // Request device
       gpuDevice = await adapter.requestDevice({
         requiredFeatures: ['shader-f16'],
@@ -100,35 +77,28 @@ https://svelte.dev/e/js_parse_error -->
           maxStorageBufferBindingSize: 1024 * 1024 * 1024 // 1GB
         }
       });
-
       // Get canvas context
       context = canvasRef.getContext('webgpu');
       if (!context) {
         throw new Error('Failed to get WebGPU context');
       }
-
       // Configure canvas
       const presentationFormat = navigator.gpu.getPreferredCanvasFormat();
       context.configure({
-        device: gpuDevice,;
-        format: presentationFormat,
+        device: gpuDevice
+        format: presentationFormat
         alphaMode: 'premultiplied';
       });
-
       // Initialize progress animation segments
       initializeProgressSegments();
-
       console.log('✅ WebGPU initialized successfully');
-
       // Start idle detection for self-prompting
       sendIdleEvent({ type: 'START_IDLE_DETECTION' });
-
     } catch (err) {
       error = `WebGPU initialization failed: ${err}`;
       console.error(error);
     }
   }
-
   /**
    * Initialize progress bar segments with YoRHa styling
    */
@@ -136,27 +106,23 @@ https://svelte.dev/e/js_parse_error -->
     const numSegments = 12;
     progressAnimation.segments = Array.from({ length: numSegments }, (_, i) => ({
       start: (i / numSegments) * 100,
-      end: ((i + 1) / numSegments) * 100,;
-      active: false,;
+      end: ((i + 1) / numSegments) * 100,
+      active: false
       color: theme === 'yorha' ? '#00ff00' : '#0ea5e9';
     }));
   }
-
   /**
    * Load Neo4j recommendations with progress tracking
    */
   async function loadRecommendations() {
     if (!nodeId || isLoading) return;
-
     isLoading = true;
     progress = 0;
     error = null;
     progressAnimation.target = 0;
-
     try {
       // Animate progress segments
       animateProgressSegments();
-
       // Step 1: Query Neo4j (30% progress)
       progressAnimation.target = 30;
       const graph = await neo4j3DEngine.getRecommendations({
@@ -166,23 +132,20 @@ https://svelte.dev/e/js_parse_error -->
         maxDepth,
         includeEmbeddings: true
       });
-
       // Step 2: Process for GPU (60% progress)
       progressAnimation.target = 60;
       await new Promise(resolve => setTimeout(resolve, 300)); // Simulate processing
-
       // Step 3: Start streaming if enabled (80% progress)
       if (enableStreaming) {
         progressAnimation.target = 80;
         const streamId = await neo4j3DEngine.startQUICStreaming(nodeId, {
           chunkSize: 8192,
-          priority: 'high',;
+          priority: 'high',
           compression: true;
         });
         streamingActive = true;
         ondispatch?.({ streamId });
       }
-
       // Step 4: Complete (100% progress)
       progressAnimation.target = 100;
       currentGraph = graph;
@@ -190,10 +153,8 @@ https://svelte.dev/e/js_parse_error -->
       renderStats.vertices = graph.nodes.length;
       renderStats.relationships = graph.relationships.length;
       ondispatch?.({ graph });
-
       // Cache the graph in WebGPU SOM cache
       await cacheGraphInSOM(graph);
-
     } catch (err) {
       error = `Failed to load recommendations: ${err}`;
       console.error(error);
@@ -204,7 +165,6 @@ https://svelte.dev/e/js_parse_error -->
       }, 1000);
     }
   }
-
   /**
    * Animate progress bar segments
    */
@@ -219,7 +179,6 @@ https://svelte.dev/e/js_parse_error -->
     };
     animateSegment(0);
   }
-
   /**
    * Cache graph in WebGPU SOM cache for enhanced performance
    */
@@ -228,42 +187,36 @@ https://svelte.dev/e/js_parse_error -->
       const cacheEntry = {
         id: `neo4j_3d_${graph.centerNode}_${Date.now()}`,
         category: 'graph' as const,
-        severity: 'medium' as const,;
+        severity: 'medium' as const,
         suggestions: [
           `3D Graph: ${graph.nodes.length} nodes, ${graph.relationships.length} relationships`,
           `Score: ${graph.recommendationScore.toFixed(2)}`,
           `Query time: ${graph.metadata.queryTime}ms`,
           `Streaming: ${streamingActive ? 'active' : 'disabled'}`
         ],
-        webgpuProcessed: true,
-        rtxOptimized: true,
-        timestamp: new Date().toISOString(),;
-        confidence: graph.recommendationScore;
+        webgpuProcessed: true
+        rtxOptimized: true
+        timestamp: new Date().toISOString(),
+        confidence: graph.recommendationScor;
       };
-
       await webgpuSOMCache.store(cacheEntry);
       console.log('📊 Graph cached in WebGPU SOM cache');
     } catch (err) {
       console.warn('Failed to cache graph in SOM:', err);
     }
   }
-
   /**
    * Start render loop
    */
   function startRenderLoop() {
     if (!gpuDevice || !context) return;
-
     let lastTime = 0;
     let frameCount = 0;
     let lastFPSTime = 0;
-
     const render = (currentTime: number) => {
       if (!mounted) return;
-
       const deltaTime = (currentTime - lastTime) / 1000;
-      lastTime = currentTime;
-
+      lastTime = currentTim;
       // Update animation
       if (animation.enabled) {
         animation.time += deltaTime * animation.speed;
@@ -273,82 +226,69 @@ https://svelte.dev/e/js_parse_error -->
         camera.position.x = Math.cos(camera.rotation.y) * 50;
         camera.position.z = Math.sin(camera.rotation.y) * 50;
       }
-
       // Update progress animation
       updateProgressAnimation(deltaTime);
-
       // Update streaming stats
       if (streamingActive) {
         const streamingStats = neo4j3DEngine.getStreamingStats();
-        renderStats.streamingChunks = streamingStats.totalChunks;
+        renderStats.streamingChunks = streamingStats.totalChunk;
       }
-
       // Calculate FPS
       frameCount++;
       if (currentTime - lastFPSTime >= 1000) {
         renderStats.fps = frameCount;
         frameCount = 0;
-        lastFPSTime = currentTime;
+        lastFPSTime = currentTim;
         ondispatch?.({ stats: renderStats });
       }
-
       // Render frame (WebGPU rendering would go here)
       renderFrame();
-
       animationFrame = requestAnimationFrame(render);
     };
-
     animationFrame = requestAnimationFrame(render);
   }
-
   /**
    * Update progress animation
    */
   function updateProgressAnimation(deltaTime: number) {
     // Smooth progress animation
-    const diff = progressAnimation.target - progressAnimation.value;
+    const diff = progressAnimation.target - progressAnimation.valu;
     progressAnimation.value += diff * progressAnimation.speed;
     // Update progress variable for UI
-    progress = progressAnimation.value;
+    progress = progressAnimation.valu;
   }
-
   /**
    * Render WebGPU frame
    */
   function renderFrame() {
     if (!gpuDevice || !context) return;
-
     // Create command encoder
     const commandEncoder = gpuDevice.createCommandEncoder();
     // Get current texture
     const textureView = context.getCurrentTexture.createView();
     // Create render pass
     const renderPass = commandEncoder.beginRenderPass({
-      colorAttachments: [{
-        view: textureView,
+      colorAttachments: [{,
+        view: textureView
         clearValue: { r: 0.1, g: 0.1, b: 0.1, a: 1.0 }, // Dark background
         loadOp: 'clear',
         storeOp: 'store'
       }]
     });
-
     // Render graph nodes and relationships here
     // This would use the render pipeline from neo4j3DEngine
     renderPass.end();
     // Submit commands
     gpuDevice.queue.submit([commandEncoder.finish()]);
   }
-
   /**
    * Handle canvas click for node selection
    */
   function handleCanvasClick(event: MouseEvent) {
     if (!currentGraph || !canvasRef) return;
-
     const rect = canvasRef.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
     // Convert screen coordinates to world coordinates
     // This would involve ray casting through the 3D scene
     const clickedNode = findNodeAtPosition(x, y);
@@ -356,7 +296,6 @@ https://svelte.dev/e/js_parse_error -->
       ondispatch?.({ node: clickedNode });
     }
   }
-
   /**
    * Find node at screen position (simplified)
    */
@@ -369,7 +308,6 @@ https://svelte.dev/e/js_parse_error -->
     // Return first node if click is near center (simplified)
     return distance < 50 ? currentGraph.nodes[0] : null;
   }
-
   /**
    * Handle window resize
    */
@@ -381,7 +319,6 @@ https://svelte.dev/e/js_parse_error -->
     canvasRef.style.width = `${rect.width}px`;
     canvasRef.style.height = `${rect.height}px`;
   }
-
   // Lifecycle
   $effect(() => {
     (async () => {
@@ -399,7 +336,6 @@ mounted = true;
     }
     })();
   });
-
   onDestroy(() => {
     mounted = false;
     // Cleanup
@@ -412,20 +348,17 @@ mounted = true;
     // Cleanup engine
     neo4j3DEngine.cleanup();
   });
-
   // Reactive updates
   // TODO: Convert to $derived: if (nodeId && mounted) {
     loadRecommendations()
   }
-
   // TODO: Convert to $derived: if ($idleState.matches('idle.generating_prompts')) {
     console.log('🤖 Self-prompting activated while viewing 3D graph')
     // Could trigger automatic graph updates or suggestions
   }
 </script>
-
 <!-- Component Template -->
-<div 
+<div
   bind:this={containerRef}
   class="neo4j-3d-viewer"
   class:yorha-theme={theme === 'yorha'}
@@ -440,7 +373,6 @@ mounted = true;
     class="render-canvas"
     aria-label="3D Neo4j Knowledge Graph Visualization"
   />
-  
   <!-- Progress Bar with Bit-Encoded Animation -->
   {#if showProgress && (isLoading || progress > 0)}
     <div class="progress-container">
@@ -451,25 +383,22 @@ mounted = true;
           Processing Complete
         {/if}
       </div>
-      
       <!-- Segmented Progress Bar -->
       <div class="progress-bar">
         {#each progressAnimation.segments as segment}
-          <div 
+          <div
             class="progress-segment"
             class:active={segment.active}
             style:--segment-color={segment.color}
             style:--segment-width="{(segment.end - segment.start)}%"
           />
         {/each}
-        
         <!-- Main Progress Fill -->
-        <div 
+        <div
           class="progress-fill"
           style:width="{progress}%"
         />
       </div>
-      
       <!-- Bit-Encoded Progress Info -->
       <div class="progress-info">
         <span class="progress-percent">{Math.round(progress)}%</span>
@@ -481,13 +410,12 @@ mounted = true;
       </div>
     </div>
   {/if}
-  
   <!-- Error Display -->
   {#if error}
     <div class="error-container">
       <div class="error-title">❌ 3D Graph Error</div>
       <div class="error-message">{error}</div>
-      <button 
+      <button
         class="retry-button"
         onclick={loadRecommendations}
         disabled={isLoading}
@@ -496,7 +424,6 @@ mounted = true;
       </button>
     </div>
   {/if}
-  
   <!-- Graph Stats Overlay -->
   {#if currentGraph && !isLoading}
     <div class="stats-overlay">
@@ -520,27 +447,25 @@ mounted = true;
       {/if}
     </div>
   {/if}
-  
   <!-- Camera Controls -->
   <div class="camera-controls">
-    <button 
+    <button
       class="control-button"
       onclick={() => animation.enabled = !animation.enabled}
       title="Toggle Animation"
     >
       {animation.enabled ? '⏸️' : '▶️'}
     </button>
-    
-    <button 
+    <button
       class="control-button"
-      onclick={() => camera = { ...camera, position: { x: 0, y: 0, z: 50 } }}
+      onclick={() => camera = { ...camera, position: ;
+{ x: 0, y: 0, z: 50 } }}
       title="Reset Camera"
     >
       🎯
     </button>
-    
     {#if streamingActive}
-      <button 
+      <button
         class="control-button streaming"
         title="QUIC Streaming Active"
       >
@@ -549,10 +474,9 @@ mounted = true;
     {/if}
   </div>
 </div>
-
 <!-- Styles -->
 <style>
-  .neo4j-3d-viewer {;
+  .neo4j-3d-viewer {
     position: relative;
     width: 100%;
     height: 100%;
@@ -563,21 +487,17 @@ mounted = true;
     font-family: 'Roboto Mono', monospace;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
-
   .yorha-theme {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%);
     border: 1px solid #00ff00;
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
   }
-
   .dark-theme {
     background: linear-gradient(135deg, #111827 0%, #1f2937 50%, #374151 100%);
   }
-
   .render-canv.loading .render-canvas {
     filter: blur(2px) brightness(0.7);
   }
-
   /* Progress Bar Styles */
   .progress-container {
     position: absolute;
@@ -590,7 +510,6 @@ mounted = true;
     border-radius: 8px;
     backdrop-filter: blur(8px);
   }
-
   .progress-label {
     color: white;
     font-size: 14px;
@@ -598,7 +517,6 @@ mounted = true;
     margin-bottom: 8px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
-
   .progress-bar {
     position: relative;
     width: 100%;
@@ -608,7 +526,6 @@ mounted = true;
     overflow: hidden;
     margin-bottom: 8px;
   }
-
   .progress-segment {
     position: absolute;
     top: 0;
@@ -619,12 +536,10 @@ mounted = true;
     opacity: 0;
     transition: opacity 0.2s ease;
   }
-
   .progress-segment.active {
     opacity: 0.6;
     animation: pulse 0.5s ease-in-out;
   }
-
   .progress-fill {
     position: absolute;
     top: 0;
@@ -634,25 +549,21 @@ mounted = true;
     border-radius: 4px;
     transition: width 0.3s ease-out;
   }
-
   .yorha-theme .progress-fill {
     background: linear-gradient(90deg, #00ff00, #00cc00);
   }
-
   .progress-info {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     color: white;
     font-size: 12px;
   }
-
   .streaming-indicator {
     color: #00ff00;
     font-weight: 600;
     animation: blink 1s infinite;
   }
-
   /* Stats Overlay */
   .stats-overlay {
     position: absolute;
@@ -667,28 +578,23 @@ mounted = true;
     gap: 8px;
     min-width: 200px;
   }
-
   .stat {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     color: white;
     font-size: 12px;
   }
-
   .stat-label {
     opacity: 0.7;
   }
-
   .stat-value {
     font-weight: 600;
     color: #0ea5e9;
   }
-
   .yorha-theme .stat-value {
     color: #00ff00;
   }
-
   /* Camera Controls */
   .camera-controls {
     position: absolute;
@@ -697,7 +603,6 @@ mounted = true;
     display: flex;
     gap: 8px;
   }
-
   .control-button {
     width: 40px;
     height: 40px;
@@ -710,19 +615,16 @@ mounted = true;
     transition: all 0.2s ease;
     backdrop-filter: blur(8px);
   }
-
   .control-button:hover {
     background: rgba(14, 165, 233, 0.2);
     border-color: #0ea5e9;
     transform: translateY(-2px);
   }
-
   .control-button.streaming {
     border-color: #00ff00;
     color: #00ff00;
     animation: pulse 2s infinite;
   }
-
   /* Error Display */
   .error-container {
     position: absolute;
@@ -737,19 +639,16 @@ mounted = true;
     max-width: 400px;
     backdrop-filter: blur(8px);
   }
-
   .error-title {
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 12px;
   }
-
   .error-message {
     font-size: 14px;
     margin-bottom: 16px;
     opacity: 0.9;
   }
-
   .retry-button {
     background: white;
     color: #dc2626;
@@ -760,23 +659,19 @@ mounted = true;
     cursor: pointer;
     transition: opacity 0.2s ease;
   }
-
   .retry-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-
   /* Animations */
   @keyframes pulse {
     0%, 100% { opacity: 0.6; }
     50% { opacity: 1; }
   }
-
   @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0.3; }
   }
-
   /* Responsive */
   @media (max-width: 768px) {
     .progress-container,
@@ -784,12 +679,10 @@ mounted = true;
       left: 10px;
       right: 10px;
     }
-    
     .camera-controls {
       right: 10px;
       bottom: 10px;
     }
-    
     .stats-overlay {
       grid-template-columns: 1fr;
       min-width: auto;

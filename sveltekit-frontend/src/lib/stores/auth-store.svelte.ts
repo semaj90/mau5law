@@ -3,13 +3,11 @@ import { page } from "$app/stores";
  * Global Authentication Store - SvelteKit 2 + Svelte 5 Best Practices
  * Uses modern reactive patterns with $state runes and XState integration
  */
-
 import type { SessionUser } from "$lib/types/auth";
 import { createMachine, assign, fromPromise } from "xstate";
 import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
-
-// Authentication context;
+// Authentication context
 export interface AuthContext {
   user: SessionUser | null;
   isAuthenticated: boolean;
@@ -17,7 +15,6 @@ export interface AuthContext {
   error: string | null;
   redirectPath: string | null;
 }
-
 // Authentication events
 type AuthEvents =
   | { type: 'LOGIN'; email: string; password: string }
@@ -29,7 +26,6 @@ type AuthEvents =
   | { type: 'AUTHENTICATED'; user: SessionUser }
   | { type: 'UNAUTHENTICATED' };
 }
-
 export interface RegisterData {
   email: string;
   password: string;
@@ -37,73 +33,60 @@ export interface RegisterData {
   lastName?: string;
   role?: string;
 }
-
-// API services;
+// API services
 const loginService = fromPromise(async ({ input }: { input: { email: string; password: string } }) => {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },;
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input)
     });
-
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Login failed');
     }
-
     return await response.json();
   }
 );
-
 const registerService = fromPromise(async ({ input }: { input: RegisterData }) => {
   const response = await fetch('/api/auth/register', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },;
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input)
   });
-
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.message || 'Registration failed');
   }
-
   return await response.json();
 });
-
 const logoutService = fromPromise(async () => {
   const response = await fetch('/api/auth/logout', {
     method: 'POST'
   });
-
   if (!response.ok) {
     throw new Error('Logout failed');
   }
-
   return true;
 });
-
 const checkAuthService = fromPromise(async () => {
   const response = await fetch('/api/auth/me');
-
   if (!response.ok) {
     throw new Error('Not authenticated');
   }
-
   return await response.json();
 });
-
-// Authentication state machine;
+// Authentication state machine
 const authMachine = createMachine({
   id: 'auth',
   types: {
-    context: Record<string, any> as AuthContext,
-    events: Record<string, any> as AuthEvents
+    context: { [key: string]: any } as AuthContext,
+    events: { [key: string]: any } as AuthEvents
   },
   context: {
-    user: null,
-    isAuthenticated: false,
-    isLoading: false,
-    error: null,
+    user: null
+    isAuthenticated: false
+    isLoading: false
+    error: null
     redirectPath: null
   },
   initial: 'checking',
@@ -111,30 +94,29 @@ const authMachine = createMachine({
     checking: {
       entry: assign({ isLoading: true }),
       invoke: {
-        src: checkAuthService,
+        src: checkAuthService
         onDone: {
-          target: 'authenticated',;
+          target: 'authenticated',
           actions: [;
             assign({
               user: ({ event }) => event.output.user,
-              isAuthenticated: true,
-              isLoading: false,
+              isAuthenticated: true
+              isLoading: false
               error: null
             })
           ]
         },
         onError: {
           target: 'unauthenticated',
-          actions: assign({
-            user: null,
-            isAuthenticated: false,
-            isLoading: false,
+          actions: assign({,
+            user: null
+            isAuthenticated: false
+            isLoading: false
             error: null
           })
         }
       }
     },
-
     unauthenticated: {
       on: {
         LOGIN: {
@@ -150,29 +132,28 @@ const authMachine = createMachine({
         }
       }
     },
-
     loggingIn: {
       entry: assign({
-        isLoading: true,
+        isLoading: true
         error: null
       }),
-      invoke: {;
-        src: loginService,
+      invoke: {
+        src: loginService
         // fromPromise passes original event as event in invoke meta; route it via event for LOGIN;
         input: ({ event }: { event: any }) => ({
           email: event.email,
           password: event.password
         }),
         onDone: {
-          target: 'authenticated',;
+          target: 'authenticated',
           actions: [;
             assign({
               user: ({ event }) => event.output.user,
-              isAuthenticated: true,
-              isLoading: false,;
+              isAuthenticated: true
+              isLoading: false
               error: null
             }),
-            // Handle redirect after successful login;
+            // Handle redirect after successful login
             ({ context }) => {
               if (browser && context.redirectPath) {
                 goto(context.redirectPath);
@@ -184,32 +165,31 @@ const authMachine = createMachine({
         },
         onError: {
           target: 'unauthenticated',
-          actions: assign({
-            isLoading: false,
+          actions: assign({,
+            isLoading: false
             error: ({ event }: { event: any }) => event.error?.message || 'Login failed'
           })
         }
       }
     },
-
     registering: {
       entry: assign({
-        isLoading: true,
+        isLoading: true
         error: null
       }),
       invoke: {
-        src: registerService,
+        src: registerService
         input: ({ event }: { event: any }) => event.userData,
         onDone: {
-          target: 'authenticated',;
+          target: 'authenticated',
           actions: [;
             assign({
               user: ({ event }) => event.output.user,
-              isAuthenticated: true,
-              isLoading: false,;
+              isAuthenticated: true
+              isLoading: false
               error: null
             }),
-            // Redirect to dashboard after registration;
+            // Redirect to dashboard after registration
             () => {
               if (browser) {
                 goto('/dashboard');
@@ -219,18 +199,17 @@ const authMachine = createMachine({
         },
         onError: {
           target: 'unauthenticated',
-          actions: assign({
-            isLoading: false,
+          actions: assign({,
+            isLoading: false
             error: ({ event }: { event: any }) => event.error?.message || 'Registration failed'
           })
         }
       }
     },
-
     authenticated: {
       entry: assign({
-        isAuthenticated: true,
-        isLoading: false,
+        isAuthenticated: true
+        isLoading: false
         redirectPath: null
       }),
       on: {
@@ -239,28 +218,27 @@ const authMachine = createMachine({
         },
         UNAUTHENTICATED: {
           target: 'unauthenticated',
-          actions: assign({
-            user: null,
+          actions: assign({,
+            user: null
             isAuthenticated: false
           })
         }
       }
     },
-
     loggingOut: {
       entry: assign({ isLoading: true }),
       invoke: {
-        src: logoutService,
+        src: logoutService
         onDone: {
-          target: 'unauthenticated',;
+          target: 'unauthenticated',
           actions: [;
             assign({
-              user: null,
-              isAuthenticated: false,
-              isLoading: false,;
+              user: null
+              isAuthenticated: false
+              isLoading: false
               error: null
             }),
-            // Redirect to home after logout;
+            // Redirect to home after logout
             () => {
               if (browser) {
                 goto('/');
@@ -270,154 +248,127 @@ const authMachine = createMachine({
         },
         onError: {
           target: 'authenticated',
-          actions: assign({
-            isLoading: false,
+          actions: assign({,
+            isLoading: false
             error: 'Logout failed'
           })
         }
       }
     }
   },
-
   on: {
     CLEAR_ERROR: {
       actions: assign({ error: null })
     },
-    CHECK_AUTH: {;
+    CHECK_AUTH: {
       target: '.checking'
     }
   }
 });
-
-// Create global auth store using SvelteKit 2 patterns;
+// Create global auth store using SvelteKit 2 patterns
 class AuthStore {
-  #machineState: any = $state({
+  #machineState: any = $state({,
     context: {
-      user: null,
-      isAuthenticated: false,
-      isLoading: false,
-      error: null,
+      user: null
+      isAuthenticated: false
+      isLoading: false
+      error: null
       redirectPath: null
-    },;
+    },
     value: 'checking'
   });
   #actor: any = $state();
-
   constructor() {
     if (browser) {
-      // Initialize actor only in browser;
+      // Initialize actor only in browser
       import('xstate').then(({ createActor }) => {
         this.#actor = createActor(authMachine);
         this.#actor.start();
-
-        // Subscribe to authentication state changes;
+        // Subscribe to authentication state changes
         this.#actor.subscribe((state: any) => {
-          // Update reactive state;
+          // Update reactive state
           this.#machineState = {
-            context: state.context,;
+            context: state.context,
             value: state.value
           };
         });
-
         // Check initial auth state
         this.#actor.send({ type: 'CHECK_AUTH' });
       });
     }
   }
-
-  // Reactive getters using proper typing;
+  // Reactive getters using proper typing
   get isAuthenticated() {
     return this.#machineState?.context?.isAuthenticated ?? false;
   }
-
   get user() {
     return this.#machineState?.context?.user ?? null;
   }
-
   get isLoading() {
     return this.#machineState?.context?.isLoading ?? false;
   }
-
   get error() {
     return this.#machineState?.context?.error ?? null;
   }
-
   get currentState() {
     return this.#machineState?.value ?? 'checking';
   }
-
-  // User role helpers;
+  // User role helpers
   get isAdmin() {
     return this.user?.role === 'admin';
   }
-
   get isProsecutor() {
     return this.user?.role === 'prosecutor';
   }
-
   get isDetective() {
     return this.user?.role === 'detective';
   }
-
-  // Actions;
+  // Actions
   login = (email: string, password: string) => {
     this.#actor?.send({ type: 'LOGIN', email, password });
   };
-
   register = (userData: RegisterData) => {
     this.#actor?.send({ type: 'REGISTER', userData });
   };
-
   logout = () => {
     this.#actor?.send({ type: 'LOGOUT' });
   };
-
   clearError = () => {
     this.#actor?.send({ type: 'CLEAR_ERROR' });
   };
-
   setRedirect = (path: string) => {
     this.#actor?.send({ type: 'SET_REDIRECT', path });
   };
-
   checkAuth = () => {
     this.#actor?.send({ type: 'CHECK_AUTH' });
   };
-
-  // Permission helpers;
+  // Permission helpers
   hasPermission = (permission: string): boolean => {
     if (!this.user) return false;
-
     const rolePermissions = {
       admin: ['read', 'write', 'delete', 'manage_users', 'manage_cases', 'manage_evidence'],
       prosecutor: ['read', 'write', 'manage_cases', 'manage_evidence'],
-      detective: ['read', 'write', 'manage_evidence'],;
+      detective: ['read', 'write', 'manage_evidence'],
       user: ['read']
     };
-
     return (
       rolePermissions[this.user.role as keyof typeof rolePermissions]?.includes(permission) ?? false
     );
   };
-
   canAccessCase = (caseId: string): boolean => {
     // Implement case-specific access control
     return this.hasPermission('read');
   };
-
   canEditCase = (caseId: string): boolean => {
     return this.hasPermission('write');
   };
-
   canDeleteCase = (caseId: string): boolean => {
     return this.hasPermission('delete');
   };
 }
-
 // Export singleton instance
 export const authStore = new AuthStore();
-;
-// Auth guards for routes;
+// Auth guards for routes
 export function requireAuth() {
   return {
     beforeNavigate: ({ to }: { to: any }) => {
@@ -430,7 +381,6 @@ export function requireAuth() {
     }
   };
 }
-
 export function requireRole(role: string) {
   return {
     beforeNavigate: ({ to }: { to: any }) => {
@@ -439,17 +389,14 @@ export function requireRole(role: string) {
         goto('/auth/login');
         return false;
       }
-
       if (authStore.user?.role !== role && authStore.user?.role !== 'admin') {
         goto('/unauthorized');
         return false;
       }
-
       return true;
     }
   };
 }
-
 export function requirePermission(permission: string) {
   return {
     beforeNavigate: ({ to }: { to: any }) => {
@@ -458,20 +405,15 @@ export function requirePermission(permission: string) {
         goto('/auth/login');
         return false;
       }
-
       if (!authStore.hasPermission(permission)) {
         goto('/unauthorized');
         return false;
       }
-
       return true;
     }
   };
 }
-
 // Utility for components - Use the authStore directly
 // In Svelte 5, components should access authStore properties directly
-// Example: const { user, isAuthenticated } = authStore;
+// Example: const { user, isAuthenticated } = authStore
 export const useAuth = () => authStore;
-
-

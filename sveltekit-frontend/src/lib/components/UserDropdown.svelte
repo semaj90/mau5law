@@ -1,13 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     user: unknown ;
   }
   let {
     user = null
   }: Props = $props();
-
   	import { onMount } from 'svelte';
   	import { avatarStore } from "../stores/avatarStore";
   	import Avatar from './Avatar.svelte';
@@ -23,7 +21,7 @@
   		return () => document.removeEventListener('click', handleClickOutside);
   	});
   	function toggleDropdown() {
-  		dropdownOpen = !dropdownOpen;
+  		dropdownOpen = !dropdownOpe;
   }
   	function handleLogout() {
   		// Reset avatar store
@@ -35,7 +33,6 @@
   			});
   }
 </script>
-
 <div class="user-dropdown" bind:this={dropdownElement}>
 	<button
 		class="user-trigger"
@@ -64,7 +61,6 @@
 			/>
 		</svg>
 	</button>
-
 	{#if dropdownOpen}
 		<div class="dropdown-menu">
 			<div class="dropdown-header">
@@ -75,14 +71,11 @@
 					<div class="user-role">{user?.role || ''}</div>
 				</div>
 			</div>
-
 			<div class="dropdown-section">
 				<h4>Avatar Options</h4>
 				<Avatar size="medium" showUploadButton={true} />
 			</div>
-
 			<div class="dropdown-divider"></div>
-
 			<div class="dropdown-actions">
 				<a href="/profile" class="dropdown-item">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -90,21 +83,18 @@
 					</svg>
 					Profile Settings
 				</a>
-
 				<a href="/dashboard" class="dropdown-item">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M1 3h14v2H1V3ZM1 7h14v2H1V7ZM1 11h14v2H1v-2Z" fill="currentColor"/>
 					</svg>
 					Dashboard
 				</a>
-
 				<a href="/cases" class="dropdown-item">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M3 2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6.414a1 1 0 0 0-.293-.707l-3.414-3.414A1 1 0 0 0 9.586 2H3Z" fill="currentColor"/>
 					</svg>
 					My Cases
 				</a>
-
 				<button type="button" class="dropdown-item logout" onclick={() => handleLogout()}>
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M6 15H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3M13 11l3-3-3-3M8 8h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -115,10 +105,9 @@
 		</div>
 	{/if}
 </div>
-
 <style>
   /* @unocss-include */
-	.user-dropdown {;
+	.user-dropdown {
 		position: relative;
 		display: inline-block;
 }
@@ -142,7 +131,7 @@
 		font-size: 14px;
 		max-width: 120px;
 		overflow: hidden;
-		text-overflow: ellipsis;
+		text-overflow: ellipsi;
 		white-space: nowrap;
 }
 	.dropdown-arrow {
@@ -257,4 +246,3 @@
 			min-width: 260px;
 }}
 </style>
-

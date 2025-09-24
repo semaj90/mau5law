@@ -1,19 +1,13 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  
-
   import { uploadActions, uploadModal } from "$lib/stores/evidence-store";
-
   let isOpen = $derived($uploadModal.isOpen);
-
   function closeModal() {
     uploadActions.closeModal();
   }
 </script>
-
 {#if isOpen}
   <div
     class="space-y-4"
@@ -30,6 +24,3 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
-
-
-

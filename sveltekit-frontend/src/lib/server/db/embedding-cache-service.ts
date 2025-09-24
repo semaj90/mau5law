@@ -11,14 +11,12 @@ async function getDb(): Promise<any> {
   _db = mod.db;
   return _db;
 }
-
 export interface UpsertEmbeddingOptions {
   model: string;
   textHash: string;
   embedding: number[]; // raw float embedding
   packMethod?: 'uint8-linear' | 'int8-symmetric';
 }
-
 export async function upsertEmbedding(opts: UpsertEmbeddingOptions): Promise<any> {
   const { model, textHash, embedding, packMethod = 'int8-symmetric' } = opts;
   const db = await getDb();
@@ -34,7 +32,6 @@ export async function upsertEmbedding(opts: UpsertEmbeddingOptions): Promise<any
     return { created: true, method, scale };
   }
 }
-
 export async function getEmbedding(textHash: string): Promise<any> {
   const db = await getDb();
   const rows = await db.select().from(embeddingCache).where(eq(embeddingCache.textHash, textHash);

@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import './N64Theme.css';
-
   interface Props {
     width?: string;
     height?: string;
@@ -9,19 +8,9 @@
     ariaLabel?: string;
     children?: Snippet;
   }
-
   let { width = '560px', height = '420px', variant = 'info', ariaLabel = 'N64 Screen', children }: Props = $props();
-
   // Dimensions can be strings like "320px" or "100%"
-  
-  
-
   // variant: "info" | "success" | "warning" | "error"
-  
-
-  
-
-
 <div
   class="n64-screen {variant}"
   role="region"
@@ -32,7 +21,6 @@
 	{@render children?.()}
   </div>
 </div>
-
 <style>
   .n64-screen {
 	background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(255,255,255,0.02)), var(--n64-bg-info);
@@ -44,7 +32,6 @@
 	overflow: hidden;
 	box-sizing: border-box;
   }
-
   .n64-screen.success {
 	background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(255,255,255,0.02)), var(--n64-bg-success);
   }
@@ -54,7 +41,6 @@
   .n64-screen.error {
 	background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(255,255,255,0.02)), var(--n64-bg-error);
   }
-
   .n64-screen .screen-content {
 	width: 100%;
 	height: 100%;
@@ -68,9 +54,7 @@
 	font-size: var(--n64-font-size);
 	outline: none;
   }
-
   .n64-screen .screen-content:focus {
 	box-shadow: 0 6px 18px rgba(0,0,0,0.28), 0 0 0 3px rgba(255,212,64,0.06);
   }
 </style>
-

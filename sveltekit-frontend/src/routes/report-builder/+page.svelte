@@ -1,13 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { Evidence } from '$lib/types/api';
   	import { onMount } from 'svelte';
   	import { page } from '$app/state';
   	import ReportEditor from "$lib/components/ReportEditor.svelte";
   	import CanvasEditor from "$lib/components/CanvasEditor.svelte";
   	import type { Report, CanvasState, CitationPoint } from "$lib/data/types";
-
   	let currentReport: Report | null = $state(null);
   	let currentCanvasState: CanvasState | null = $state(null);
   	let evidence: Evidence[] = $state([]);
@@ -15,16 +13,13 @@
   	let activeTab: 'editor' | 'canvas' = $state('editor');
   	let isLoading = $state(false);
   	let error = $state('');
-
   	// Demo case ID - in real app this would come from the route
   	const caseId = page.params.caseId || 'demo-case-123';
-
   	$effect(() => {
     (async () => {
 await loadDemoData();
     })();
   });
-
   	async function loadDemoData() {
   		try {
   			isLoading = true;
@@ -38,28 +33,28 @@ await loadDemoData();
   				{
   					id: '1',
   					caseId,
-  					criminalId: null,
+  					criminalId: null
   					title: 'Security Camera Footage',
   					description: 'CCTV footage from main entrance',
   					evidenceType: 'video',
   					fileType: 'video/mp4',
-  					subType: null,
-  					fileUrl: null,
+  					subType: null
+  					fileUrl: null
   					fileName: 'security_footage.mp4',
-  					fileSize: null,
+  					fileSize: null
   					mimeType: 'video/mp4',
   					hash: 'abc123def456',
   					tags: [],
   					chainOfCustody: [],
-  					collectedAt: null,
-  					collectedBy: null,
-  					location: null,
+  					collectedAt: null
+  					collectedBy: null
+  					location: null
   					labAnalysis: ,
   					aiAnalysis: ,
   					aiTags: [],
-  					aiSummary: null,
-  					summary: null,
-  					isAdmissible: true,
+  					aiSummary: null
+  					summary: null
+  					isAdmissible: true
   					confidentialityLevel: 'standard',
   					canvasPosition: ,
   					uploadedBy: '1',
@@ -69,28 +64,28 @@ await loadDemoData();
   				{
   					id: '2',
   					caseId,
-  					criminalId: null,
+  					criminalId: null
   					title: 'Witness Statement - John Doe',
   					description: 'Eyewitness account of the incident',
   					evidenceType: 'document',
   					fileType: 'application/pdf',
-  					subType: null,
-  					fileUrl: null,
+  					subType: null
+  					fileUrl: null
   					fileName: 'witness_statement.pdf',
-  					fileSize: null,
+  					fileSize: null
   					mimeType: 'application/pdf',
   					hash: 'def456ghi789',
   					tags: [],
   					chainOfCustody: [],
-  					collectedAt: null,
-  					collectedBy: null,
-  					location: null,
+  					collectedAt: null
+  					collectedBy: null
+  					location: null
   					labAnalysis: ,
   					aiAnalysis: ,
   					aiTags: [],
-  					aiSummary: null,
-  					summary: null,
-  					isAdmissible: true,
+  					aiSummary: null
+  					summary: null
+  					isAdmissible: true
   					confidentialityLevel: 'standard',
   					canvasPosition: ,
   					uploadedBy: '1',
@@ -100,28 +95,28 @@ await loadDemoData();
   				{
   					id: '3',
   					caseId,
-  					criminalId: null,
+  					criminalId: null
   					title: 'Physical Evidence - Weapon',
   					description: 'Photograph of recovered weapon',
   					evidenceType: 'photo',
   					fileType: 'image/jpeg',
-  					subType: null,
-  					fileUrl: null,
+  					subType: null
+  					fileUrl: null
   					fileName: 'weapon_photo.jpg',
-  					fileSize: null,
+  					fileSize: null
   					mimeType: 'image/jpeg',
   					hash: 'ghi789jkl012',
   					tags: [],
   					chainOfCustody: [],
-  					collectedAt: null,
-  					collectedBy: null,;
-  					location: null,
+  					collectedAt: null
+  					collectedBy: null
+  					location: null
   					labAnalysis: ,
   					aiAnalysis: ,
   					aiTags: [],
-  					aiSummary: null,;
-  					summary: null,
-  					isAdmissible: true,
+  					aiSummary: null
+  					summary: null
+  					isAdmissible: true
   					confidentialityLevel: 'standard',
   					canvasPosition: ,
   					uploadedBy: '1',
@@ -129,7 +124,6 @@ await loadDemoData();
   					updatedAt: new Date();
   }
   			];
-
   		} catch (err) {
   			console.error('Failed to load demo data:', err);
   			error = 'Failed to load demo data';
@@ -146,7 +140,7 @@ await loadDemoData();
   }}
   	async function handleCanvasSave(canvasState: CanvasState) {
   		try {
-  			currentCanvasState = canvasState;
+  			currentCanvasState = canvasStat;
   			console.log('Canvas saved:', canvasState);
   		} catch (err) {
   			console.error('Failed to save canvas:', err);
@@ -161,19 +155,16 @@ await loadDemoData();
   		activeTab = 'canvas';
   }
 </script>
-
 <svelte:head>
 	<title>Report Builder - Prosecutor's Case Management</title>
 	<meta name="description" content="AI-powered report builder for legal case analysis" />
 </svelte:head>
-
 <div class="space-y-4">
 	<!-- Header -->
 	<header class="space-y-4">
 		<div class="space-y-4">
 			<h1>📝 Report Builder</h1>
 			<p class="space-y-4">AI-powered case analysis and report generation</p>
-			
 			<div class="space-y-4">
 				<button class="space-y-4" onclick={() => createNewReport()}>
 					📄 New Report
@@ -184,7 +175,6 @@ await loadDemoData();
 			</div>
 		</div>
 	</header>
-
 	<!-- Error Message -->
 	{#if error}
 		<div class="space-y-4">
@@ -192,7 +182,6 @@ await loadDemoData();
 			<button onclick={() => error = ''} class="space-y-4">×</button>
 		</div>
 	{/if}
-
 	<!-- Loading State -->
 	{#if isLoading}
 		<div class="space-y-4">
@@ -202,14 +191,14 @@ await loadDemoData();
 	{:else}
 		<!-- Tab Navigation -->
 		<div class="space-y-4">
-			<button 
+			<button
 				class="space-y-4"
 			 class:active={activeTab === 'editor'}
 				onclick={() => activeTab = 'editor'}
 			>
 				📝 Report Editor
 			</button>
-			<button 
+			<button
 				class="space-y-4";
 			 class:active={activeTab === 'canvas'}
 				onclick={() => activeTab = 'canvas'}
@@ -217,7 +206,6 @@ await loadDemoData();
 				🎨 Interactive Canvas
 			</button>
 		</div>
-
 		<!-- Main Content -->
 		<main class="space-y-4">
 			{#if activeTab === 'editor'}
@@ -227,7 +215,6 @@ await loadDemoData();
 						<h2>Prosecutor's Report</h2>
 						<p>Write, edit, and analyze case reports with AI assistance</p>
 					</div>
-					
 					<ReportEditor
 						report={currentReport}
 						{caseId}
@@ -242,7 +229,6 @@ await loadDemoData();
 						<h2>Interactive Evidence Canvas</h2>
 						<p>Visualize evidence, create diagrams, and annotate with AI insights</p>
 					</div>
-					
 					<CanvasEditor
 						canvasState={currentCanvasState}
 						reportId={currentReport?.id || 'temp-report-id'}
@@ -253,7 +239,6 @@ await loadDemoData();
 				</div>
 			{/if}
 		</main>
-
 		<!-- Sidebar with Features Overview -->
 		<aside class="space-y-4">
 			<div class="space-y-4">
@@ -265,7 +250,6 @@ await loadDemoData();
 					<li>📝 Content summarization</li>
 				</ul>
 			</div>
-
 			<div class="space-y-4">
 				<h3>📚 Citation Library</h3>
 				<p class="space-y-4">{citationPoints.length} citations available</p>
@@ -278,7 +262,6 @@ await loadDemoData();
 					{/each}
 				</div>
 			</div>
-
 			<div class="space-y-4">
 				<h3>📋 Evidence Repository</h3>
 				<p class="space-y-4">{evidence.length} pieces of evidence</p>
@@ -291,7 +274,6 @@ await loadDemoData();
 					{/each}
 				</div>
 			</div>
-
 			<div class="space-y-4">
 				<h3>⚡ Quick Actions</h3>
 				<div class="space-y-4">
@@ -303,7 +285,6 @@ await loadDemoData();
 		</aside>
 	{/if}
 </div>
-
 <style>
   /* @unocss-include */
   .container {
@@ -313,4 +294,3 @@ await loadDemoData();
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 </style>
-

@@ -1,14 +1,12 @@
 <!-- Modular Data-Driven Dialog Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Dialog } from 'bits-ui';
   import { X, Loader2, AlertCircle, RefreshCw } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { reactiveApiClient } from '$lib/services/api-client';
   import type { ApiResponse, DialogDataProvider } from '$lib/types/api';
-
   interface Props {
     // Dialog configuration
     open?: boolean;
@@ -35,7 +33,6 @@
     loading?: unknown;
     error?: unknown;
   }
-
   let { open = $bindable(false),
     title = '',
     description = '',
@@ -57,23 +54,18 @@
     loading,
     error;
    }: Props = $props();
-
-  
-
   // Reactive data state
   let data: unknown = $state(dataProvider?.data || null);
   let isLoading = $state(dataProvider?.loading || false);
   let errorMessage = $state(dataProvider?.error || null);
   let lastFetch = $state<number | null>(null);
-
   const sizeClasses = {
     sm: 'max-w-sm',
     md: 'max-w-md',
-    lg: 'max-w-lg',;
-    xl: 'max-w-xl',;
+    lg: 'max-w-lg',
+    xl: 'max-w-xl',
     full: 'max-w-[95vw] max-h-[95vh]';
   };
-
   // Load data when dialog opens or component mounts
   async function loadData(force = false) {
     if (!entityType || !entityId) return;
@@ -81,13 +73,10 @@
     if (!force && cacheData && data && lastFetch && Date.now() - lastFetch < 60000) {
       return;
     }
-
     isLoading = true;
     errorMessage = null;
-
     try {
   let result = $state<any >(null);
-
       switch (entityType) {
         case 'case':
           result = await reactiveApiClient.fetchCase(entityId, cacheData);
@@ -99,7 +88,6 @@
           // Implement document fetching
           break;
       }
-
       if (result) {
         data = (result as { data?: unknown }).data || result;
         lastFetch = Date.now();
@@ -115,21 +103,18 @@
       isLoading = false;
     }
   }
-
   // Refresh data
   async function refresh() {
     await loadData(true);
   }
-
   // Handle open/close
   function handleOpenChange(newOpen: boolean) {
-    open = newOpen;
+    open = newOpe;
     onOpenChange?.(newOpen);
     if (newOpen && autoLoad && entityType && entityId) {
       loadData();
     }
   }
-
   // Auto-refresh interval
   let refreshTimer = $state<number | null >(null);
   $effect(() => {
@@ -147,14 +132,12 @@
       }
     };
   });
-
   // Initial load
   $effect(() => {
     if (autoLoad && entityType && entityId) {
       loadData();
     }
   });
-
   // Subscribe to reactive data changes
   let unsubscribe = $state<(() =>(null) void) | null>(null);
   $effect(() => {
@@ -173,13 +156,11 @@
     };
   });
 </script>
-
 <Dialog.Root bind:open onOpenChange={handleOpenChange}>
   <Dialog.Portal>
-    <Dialog.Overlay 
+    <Dialog.Overlay
       class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
     />
-    
     <Dialog.Content
       className={cn(
         'fixed left-1/2 top-1/2 z-50 grid w-full translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg',
@@ -204,14 +185,12 @@
                 {/if}
               </Dialog.Title>
             {/if}
-            
             {#if description}
               <Dialog.Description class="text-sm nes-text is-disabled font-mono mt-1">
                 {description}
               </Dialog.Description>
             {/if}
           </div>
-          
           <!-- Refresh button -->
           {#if entityType && entityId}
             <button
@@ -225,7 +204,6 @@
           {/if}
         </div>
       </div>
-
       <!-- Close Button -->
       {#if showClose}
         <Dialog.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
@@ -233,7 +211,6 @@
           <span class="sr-only">Close</span>
         </Dialog.Close>
       {/if}
-
       <!-- Content -->
       <div class="modular-dialog-content min-h-[200px] flex flex-col">
         {#if isLoading}
@@ -273,7 +250,6 @@
           </div>
         {/if}
       </div>
-
       <!-- Footer -->
       {#if footer}
         <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 modular-dialog-footer border-t pt-4">
@@ -283,16 +259,13 @@
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
   :global(.modular-dialog) {
     @apply bg-yorha-bg-secondary border-yorha-border;
   }
-
   :global(.modular-dialog-content) {
     @apply text-yorha-text-primary;
   }
-
   :global(.modular-dialog-footer) {
     @apply border-yorha-border;
   }

@@ -1,7 +1,6 @@
 import { writable, derived, get } from 'svelte/store';
 import { createMachine, assign, createActor, fromPromise } from 'xstate';
 import type { StateFrom } from 'xstate';
-
 // POI Types and Interfaces
 export interface PersonOfInterest {
   id: string;
@@ -9,12 +8,11 @@ export interface PersonOfInterest {
   aliases: string[];
   role: 'plaintiff' | 'defendant' | 'witness' | 'attorney' | 'judge' | 'expert' | 'suspect' | 'fugitive' | 'informant' | 'victim' | 'accomplice' | 'other';
   entityType: 'individual' | 'corporation' | 'government' | 'organization' | 'trust' | 'criminal_organization' | 'gang';
-
   // Contact Information
-  contact: {;
+  contact: {
     emails: string[];
     phones: string[];
-    addresses: Array<{;
+    addresses: Array<{
       type: 'home' | 'work' | 'legal' | 'other';
       address: string;
       city: string;
@@ -24,7 +22,6 @@ export interface PersonOfInterest {
       verified: boolean;
     }>;
   };
-
   // Legal Information
   legal: {
     barNumber?: string;
@@ -46,11 +43,10 @@ export interface PersonOfInterest {
       status: 'pending' | 'convicted' | 'acquitted' | 'dismissed';
     }>;
   };
-
   // Criminal Profile (for suspects/fugitives)
   criminalProfile?: {
     aliases: string[];
-    mugshots: Array<{;
+    mugshots: Array<{
       url: string;
       date: string;
       source: string;
@@ -65,7 +61,7 @@ export interface PersonOfInterest {
       lastUpdated: string;
       profileComplete: boolean;
     };
-    warrants: Array<{;
+    warrants: Array<{,
       id: string;
       type: 'arrest' | 'search' | 'bench';
       jurisdiction: string;
@@ -74,13 +70,13 @@ export interface PersonOfInterest {
       bail?: number;
       status: 'active' | 'served' | 'recalled';
     }>;
-    watchLists: Array<{
+    watchLists: Array<{,
       list: 'fbi_most_wanted' | 'interpol' | 'local_wanted' | 'terrorism' | 'gang_member' | 'sex_offender';
       addedDate: string;
       reason: string;
       priority: 'low' | 'medium' | 'high' | 'critical';
     }>;
-    knownAssociates: Array<{
+    knownAssociates: Array<{,
       poiId: string;
       relationship: 'family' | 'criminal_associate' | 'gang_member' | 'accomplice' | 'rival';
       strength: number;
@@ -104,9 +100,8 @@ export interface PersonOfInterest {
       reliability: number;
     };
   };
-
   // Case Relationships
-  relationships: Array<{
+  relationships: Array<{,
     caseId: string;
     caseName: string;
     role: string;
@@ -116,7 +111,6 @@ export interface PersonOfInterest {
     active: boolean;
     notes: string;
   }>;
-
   // AI-Enhanced Metadata
   metadata: {
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
@@ -125,12 +119,11 @@ export interface PersonOfInterest {
     credibilityScore: number; // 0-100
     influenceLevel: 'minimal' | 'moderate' | 'significant' | 'major';
     communicationStyle: string[];
-    strategicImportance: number; // 0-100
+    strategicImportance: number; // 0-100,
     lastInteraction: string;
     interactionCount: number;
-
     // AI Analysis
-    personality: {;
+    personality: {
       traits: string[];
       communication: string[];
       predictedBehavior: string[];
@@ -143,22 +136,20 @@ export interface PersonOfInterest {
         cooperationLikelihood: number;
       };
     };
-
     // Document References
-    documentReferences: Array<{
+    documentReferences: Array<{,
       documentId: string;
       mentions: number;
       context: string[];
       sentiment: 'positive' | 'negative' | 'neutral';
       importance: number;
     }>;
-
     // Network Analysis
-    network: {;
+    network: {
       connections: Array<{
         poiId: string;
         relationship: string;
-        strength: number; // 0-1
+        strength: number; // 0-1,
         type: 'professional' | 'personal' | 'adversarial' | 'business';
         verified: boolean;
       }>;
@@ -166,9 +157,8 @@ export interface PersonOfInterest {
       clusterMembership: string[];
     };
   };
-
   // Timeline and Activity
-  timeline: Array<{;
+  timeline: Array<{,
     id: string;
     date: string;
     event: string;
@@ -180,14 +170,12 @@ export interface PersonOfInterest {
     verified: boolean;
     source: string;
   }>;
-
   // System Fields
   createdAt: string;
   updatedAt: string;
   createdBy: string;
   tags: string[];
   status: 'active' | 'inactive' | 'archived' | 'flagged' | 'wanted' | 'in_custody' | 'deceased';
-
   // AI Enhancement Status
   aiProcessing: {
     lastAnalyzed: string;
@@ -202,7 +190,6 @@ export interface PersonOfInterest {
     watchListsChecked: boolean;
   };
 }
-
 // Search and Filter Types
 export interface POIFilters {
   roles: string[];
@@ -216,7 +203,6 @@ export interface POIFilters {
   tags: string[];
   jurisdictions: string[];
 }
-
 export interface POISearchQuery {
   query: string;
   filters: Partial<POIFilters>;
@@ -225,35 +211,30 @@ export interface POISearchQuery {
   limit: number;
   offset: number;
 }
-
 // Analytics and Insights
 export interface POIAnalytics {
   totalPOIs: number;
   riskDistribution: Record<string, number>;
   roleDistribution: Record<string, number>;
   entityTypeDistribution: Record<string, number>;
-
   networkInsights: {
     totalConnections: number;
     averageConnections: number;
     topInfluencers: Array<{ poiId: string; name: string; score: number }>;
     clusters: Array<{ id: string; size: number; description: string }>;
   };
-
   activityMetrics: {
     recentInteractions: number;
     activeRelationships: number;
     pendingAnalysis: number;
     flaggedProfiles: number;
   };
-
   trends: {
     newPOIs: Array<{ date: string; count: number }>;
     riskChanges: Array<{ date: string; increased: number; decreased: number }>;
     networkGrowth: Array<{ date: string; connections: number }>;
   };
 }
-
 // XState Machine Context
 interface POIContext {
   currentPOI?: PersonOfInterest;
@@ -262,15 +243,13 @@ interface POIContext {
   analytics: POIAnalytics | null;
   loading: boolean;
   error: string | null;
-
   // AI Enhancement Queue
-  enhancementQueue: Array<{
+  enhancementQueue: Array<{,
     poiId: string;
     type: 'profile_analysis' | 'network_mapping' | 'risk_assessment' | 'document_scan' | 'background_check';
     priority: number;
     status: 'pending' | 'processing' | 'completed' | 'failed';
   }>;
-
   // Bulk Operations
   selectedPOIs: string[];
   bulkOperation: {
@@ -279,7 +258,6 @@ interface POIContext {
     total: number;
   };
 }
-
 type POIEvent =
   | { type: 'LOAD_POI'; poiId: string }
   | { type: 'SEARCH_POIS'; query: POISearchQuery }
@@ -293,12 +271,11 @@ type POIEvent =
   | { type: 'RESET' }
   | { type: 'ERROR'; error: string }
   | { type: 'SUCCESS'; data: any };
-
 // POI Management State Machine
 export const poiMachine = createMachine(
   {
     id: 'poiManagement',
-    types: {} as {;
+    types: {} as {
       context: POIContext;
       events: POIEvent;
     },
@@ -306,13 +283,13 @@ export const poiMachine = createMachine(
     context: {
       searchResults: [],
       filters: {},
-      analytics: null,
-      loading: false,
-      error: null,
+      analytics: null
+      loading: false
+      error: null
       enhancementQueue: [],
       selectedPOIs: [],
       bulkOperation: {
-        type: null,
+        type: null
         progress: 0,
         total: 0
       }
@@ -327,7 +304,6 @@ export const poiMachine = createMachine(
           BULK_OPERATION: { target: 'bulk_processing' }
         }
       },
-
       loading_poi: {
         invoke: {
           id: 'loadPOI',
@@ -335,20 +311,19 @@ export const poiMachine = createMachine(
           input: ({ event }) => ({ poiId: (event as any).poiId }),
           onDone: {
             target: 'idle',
-            actions: assign({
+            actions: assign({,
               currentPOI: ({ event }) => event.output,
               error: null
             })
           },
           onError: {
             target: 'idle',
-            actions: assign({
+            actions: assign({,
               error: ({ event }) => (event.error as Error).message
             })
           }
         }
       },
-
       searching: {
         invoke: {
           id: 'searchPOIs',
@@ -356,7 +331,7 @@ export const poiMachine = createMachine(
           input: ({ event }) => ({ query: (event as any).query }),
           onDone: {
             target: 'idle',
-            actions: assign({
+            actions: assign({,
               searchResults: ({ event }) => event.output.results,
               filters: ({ event }) => event.output.appliedFilters,
               error: null
@@ -364,13 +339,12 @@ export const poiMachine = createMachine(
           },
           onError: {
             target: 'idle',
-            actions: assign({
+            actions: assign({,
               error: ({ event }) => (event.error as Error).message
             })
           }
         }
       },
-
       creating: {
         invoke: {
           id: 'createPOI',
@@ -378,7 +352,7 @@ export const poiMachine = createMachine(
           input: ({ event }) => ({ poi: (event as any).poi }),
           onDone: {
             target: 'enhancing',
-            actions: assign({
+            actions: assign({,
               currentPOI: ({ event }) => event.output,
               enhancementQueue: ({ context, event }) => [
                 ...context.enhancementQueue,
@@ -393,13 +367,12 @@ export const poiMachine = createMachine(
           },
           onError: {
             target: 'idle',
-            actions: assign({
+            actions: assign({,
               error: ({ event }) => (event.error as Error).message
             })
           }
         }
       },
-
       enhancing: {
         invoke: {
           id: 'enhancePOI',
@@ -410,41 +383,39 @@ export const poiMachine = createMachine(
           }),
           onDone: {
             target: 'idle',
-            actions: assign({
+            actions: assign({,
               currentPOI: ({ event }) => event.output,
               enhancementQueue: ({ context }) => context.enhancementQueue.slice(1)
             })
           },
           onError: {
             target: 'idle',
-            actions: assign({
+            actions: assign({,
               error: ({ event }) => (event.error as Error).message,
               enhancementQueue: ({ context }) => context.enhancementQueue.slice(1)
             })
           }
         }
       },
-
       loading_analytics: {
         invoke: {
           id: 'loadAnalytics',
           src: 'loadPOIAnalytics',
           onDone: {
             target: 'idle',
-            actions: assign({
+            actions: assign({,
               analytics: ({ event }) => event.output,
               error: null
             })
           },
           onError: {
             target: 'idle',
-            actions: assign({
+            actions: assign({,
               error: ({ event }) => (event.error as Error).message
             })
           }
         }
       },
-
       bulk_processing: {
         invoke: {
           id: 'bulkProcess',
@@ -455,10 +426,10 @@ export const poiMachine = createMachine(
           }),
           onDone: {
             target: 'idle',
-            actions: assign({
+            actions: assign({,
               selectedPOIs: [],
               bulkOperation: {
-                type: null,
+                type: null
                 progress: 0,
                 total: 0
               },
@@ -467,10 +438,10 @@ export const poiMachine = createMachine(
           },
           onError: {
             target: 'idle',
-            actions: assign({
+            actions: assign({,
               error: ({ event }) => (event.error as Error).message,
               bulkOperation: {
-                type: null,
+                type: null
                 progress: 0,
                 total: 0
               }
@@ -485,112 +456,94 @@ export const poiMachine = createMachine(
       // Load single POI with full details
       loadPersonOfInterest: fromPromise(
         async ({ input }: { input: { poiId: string } }) => {
-          const response = await fetch(`/api/poi/${input.poiId}`, {;
+          const response = await fetch(`/api/poi/${input.poiId}`, {
             headers: { 'Content-Type': 'application/json' }
           });
-
           if (!response.ok) {
             throw new Error(`Failed to load POI: ${response.statusText}`);
           }
-
           return await response.json();
         }
       ),
-
       // Search POIs with advanced filtering
       searchPersonsOfInterest: fromPromise(
         async ({ input }: { input: { query: POISearchQuery } }) => {
           const response = await fetch('/api/poi/search', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },;
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(input.query)
           });
-
           if (!response.ok) {
             throw new Error(`Search failed: ${response.statusText}`);
           }
-
           return await response.json();
         }
       ),
-
       // Create new POI with AI enhancement
       createPersonOfInterest: fromPromise(
         async ({ input }: { input: { poi: Omit<PersonOfInterest, 'id' | 'createdAt' | 'updatedAt'> } }) => {
           const response = await fetch('/api/poi', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },;
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(input.poi)
           });
-
           if (!response.ok) {
             throw new Error(`Failed to create POI: ${response.statusText}`);
           }
-
           return await response.json();
         }
       ),
-
       // AI Enhancement of POI profiles
       enhancePersonOfInterest: fromPromise(
         async ({ input }: { input: { poiId: string; enhancementType: string } }) => {
           const response = await fetch(`/api/poi/${input.poiId}/enhance`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },;
-            body: JSON.stringify({
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({,
               enhancementType: input.enhancementType,
-              includeNetworkAnalysis: true,
-              includeBehaviorPrediction: true,
+              includeNetworkAnalysis: true
+              includeBehaviorPrediction: true
               includeRiskAssessment: true
             })
           });
-
           if (!response.ok) {
             throw new Error(`Enhancement failed: ${response.statusText}`);
           }
-
           return await response.json();
         }
       ),
-
       // Load analytics dashboard data
       loadPOIAnalytics: fromPromise(
         async () => {
           const response = await fetch('/api/poi/analytics', {
             headers: { 'Content-Type': 'application/json' }
           });
-
           if (!response.ok) {
             throw new Error(`Failed to load analytics: ${response.statusText}`);
           }
-
           return await response.json();
         }
       ),
-
       // Bulk operations on multiple POIs
       processBulkOperation: fromPromise(
         async ({ input }: { input: { operation: string; poiIds: string[] } }) => {
           const response = await fetch('/api/poi/bulk', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({;
+            body: JSON.stringify({,
               operation: input.operation,
               poiIds: input.poiIds
             })
           });
-
           if (!response.ok) {
             throw new Error(`Bulk operation failed: ${response.statusText}`);
           }
-
           return await response.json();
         }
       )
     }
   }
 );
-
 // Store Implementation
 function createPOIStore() {
   const actor = createActor(poiMachine);
@@ -599,12 +552,10 @@ function createPOIStore() {
     actor.start();
     return () => actor.stop();
   });
-
   return {
     subscribe,
     send: actor.send.bind(actor),
     getSnapshot: actor.getSnapshot.bind(actor),
-
     // Convenience methods
     loadPOI: (poiId: string) => actor.send({ type: 'LOAD_POI', poiId }),
     searchPOIs: (query: POISearchQuery) => actor.send({ type: 'SEARCH_POIS', query }),
@@ -619,9 +570,7 @@ function createPOIStore() {
       actor.send({ type: 'BULK_OPERATION', operation, poiIds })
   };
 }
-
 export const poiStore = createPOIStore();
-
 // Network Analysis Store
 export const networkAnalysisStore = writable<{
   nodes: Array<{ id: string; name: string; role: string; risk: string; connections: number }>;
@@ -630,68 +579,55 @@ export const networkAnalysisStore = writable<{
   centralityScores: Record<string, number>;
 }>({
   nodes: [],
-  edges: [],;
+  edges: [],
   clusters: [],
   centralityScores: {}
 });
-
 // POI Quick Actions
 export async function quickEnhancePOI(poiId: string): Promise<PersonOfInterest> {
   const response = await fetch(`/api/poi/${poiId}/quick-enhance`, {
-    method: 'POST',;
+    method: 'POST',
     headers: { 'Content-Type': 'application/json' }
   });
-
   if (!response.ok) {
     throw new Error(`Quick enhancement failed: ${response.statusText}`);
   }
-
   return await response.json();
 }
-
 export async function generatePOIReport(poiId: string, format: 'pdf' | 'docx' | 'html'): Promise<Blob> {
   const response = await fetch(`/api/poi/${poiId}/report`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },;
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ format })
   });
-
   if (!response.ok) {
     throw new Error(`Report generation failed: ${response.statusText}`);
   }
-
   return await response.blob();
 }
-
 export async function exportPOINetwork(poiIds: string[], format: 'graphml' | 'json' | 'csv'): Promise<Blob> {
   const response = await fetch('/api/poi/network/export', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },;
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ poiIds, format })
   });
-
   if (!response.ok) {
     throw new Error(`Network export failed: ${response.statusText}`);
   }
-
   return await response.blob();
 }
-
 // Intelligence Gathering Utilities
 export async function gatherIntelligence(poiId: string, sources: string[]): Promise<any> {
   const response = await fetch(`/api/poi/${poiId}/intelligence`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },;
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sources })
   });
-
   if (!response.ok) {
     throw new Error(`Intelligence gathering failed: ${response.statusText}`);
   }
-
   return await response.json();
 }
-
 // Risk Assessment and Monitoring
 export const riskMonitoringStore = writable<{
   highRiskPOIs: PersonOfInterest[];
@@ -702,7 +638,7 @@ export const riskMonitoringStore = writable<{
     message: string;
     timestamp: string;
   }>;
-  monitoringRules: Array<{
+  monitoringRules: Array<{,
     id: string;
     name: string;
     conditions: any;
@@ -714,7 +650,6 @@ export const riskMonitoringStore = writable<{
   riskAlerts: [],
   monitoringRules: []
 });
-
 // Advanced Search and Filtering
 export const savedSearchesStore = writable<Array<{
   id: string;
@@ -724,9 +659,8 @@ export const savedSearchesStore = writable<Array<{
   lastRun: string;
   resultCount: number;
 }>>([]);
-
 // Criminal Investigation Functions
-export async function createWantedPoster(poiId: string, options: {;
+export async function createWantedPoster(poiId: string, options: {
   priority: 'low' | 'medium' | 'high' | 'critical';
   reward?: number;
   charges: string[];
@@ -734,21 +668,18 @@ export async function createWantedPoster(poiId: string, options: {;
 }): Promise<Blob> {
   const response = await fetch(`/api/poi/${poiId}/wanted-poster`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },;
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(options)
   });
-
   if (!response.ok) {
     throw new Error(`Wanted poster creation failed: ${response.statusText}`);
   }
-
   return await response.blob();
 }
-
 export async function addToWatchList(poiId: string, listType: string, reason: string, priority: string): Promise<void> {
   const response = await fetch(`/api/poi/${poiId}/watchlist`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },;
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       listType,
       reason,
@@ -756,13 +687,11 @@ export async function addToWatchList(poiId: string, listType: string, reason: st
       addedDate: new Date().toISOString()
     })
   });
-
   if (!response.ok) {
     throw new Error(`Watch list addition failed: ${response.statusText}`);
   }
 }
-
-export async function recordSighting(poiId: string, sighting: {;
+export async function recordSighting(poiId: string, sighting: {
   location: string;
   date: string;
   description: string;
@@ -772,16 +701,14 @@ export async function recordSighting(poiId: string, sighting: {;
 }): Promise<void> {
   const response = await fetch(`/api/poi/${poiId}/sighting`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },;
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(sighting)
   });
-
   if (!response.ok) {
     throw new Error(`Sighting recording failed: ${response.statusText}`);
   }
 }
-
-export async function issueWarrant(poiId: string, warrant: {;
+export async function issueWarrant(poiId: string, warrant: {
   type: 'arrest' | 'search' | 'bench';
   charges: string[];
   jurisdiction: string;
@@ -793,20 +720,17 @@ export async function issueWarrant(poiId: string, warrant: {;
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       ...warrant,
-      issuedDate: new Date().toISOString(),;
+      issuedDate: new Date().toISOString(),
       status: 'active'
     })
   });
-
   if (!response.ok) {
     throw new Error(`Warrant issuance failed: ${response.statusText}`);
   }
-
   const result = await response.json();
   return result.warrantId;
 }
-
-export async function analyzeAssociates(poiId: string): Promise<{
+export async function analyzeAssociates(poiId: string): Promise<{,
   directAssociates: PersonOfInterest[];
   criminalNetwork: {
     nodes: Array<{ id: string; name: string; role: string; crimeTypes: string[] }>;
@@ -819,22 +743,19 @@ export async function analyzeAssociates(poiId: string): Promise<{
   };
 }> {
   const response = await fetch(`/api/poi/${poiId}/associates`, {
-    method: 'POST',;
+    method: 'POST',
     headers: { 'Content-Type': 'application/json' }
   });
-
   if (!response.ok) {
     throw new Error(`Associate analysis failed: ${response.statusText}`);
   }
-
   return await response.json();
 }
-
-export async function predictBehavior(poiId: string): Promise<{
+export async function predictBehavior(poiId: string): Promise<{,
   flightRisk: number;
   violenceRisk: number;
   cooperationLikelihood: number;
-  hideoutProbability: Array<{
+  hideoutProbability: Array<{,
     location: string;
     probability: number;
     reasoning: string;
@@ -846,17 +767,14 @@ export async function predictBehavior(poiId: string): Promise<{
   };
 }> {
   const response = await fetch(`/api/poi/${poiId}/behavior-prediction`, {
-    method: 'POST',;
+    method: 'POST',
     headers: { 'Content-Type': 'application/json' }
   });
-
   if (!response.ok) {
     throw new Error(`Behavior prediction failed: ${response.statusText}`);
   }
-
   return await response.json();
 }
-
 // Most Wanted Store for high-priority suspects
 export const mostWantedStore = writable<{
   federalWanted: PersonOfInterest[];
@@ -871,10 +789,9 @@ export const mostWantedStore = writable<{
   recentEscapes: [],
   highValueTargets: []
 });
-
 // Surveillance and Monitoring
 export const surveillanceStore = writable<{
-  activeSurveillance: Array<{
+  activeSurveillance: Array<{,
     poiId: string;
     type: 'physical' | 'digital' | 'financial' | 'communication';
     startDate: string;
@@ -882,7 +799,7 @@ export const surveillanceStore = writable<{
     priority: string;
     assignedUnits: string[];
   }>;
-  alerts: Array<{;
+  alerts: Array<{,
     id: string;
     poiId: string;
     alertType: 'movement' | 'communication' | 'financial' | 'associate_contact';
@@ -895,5 +812,4 @@ export const surveillanceStore = writable<{
   activeSurveillance: [],
   alerts: []
 });
-
 export type POIState = StateFrom<typeof poiMachine>;

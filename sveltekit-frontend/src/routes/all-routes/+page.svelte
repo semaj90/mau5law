@@ -4,7 +4,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
@@ -17,13 +16,10 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	import DialogTitle from '$lib/components/ui/enhanced-bits/DialogTitle.svelte';
 	import DialogDescription from '$lib/components/ui/enhanced-bits/DialogDescription.svelte';
 	import DialogClose from '$lib/components/ui/enhanced-bits/DialogClose.svelte';
-
 	interface Props {
 		data: PageData;
 	}
-
 	let { data }: Props = $props();
-
 	let selectedRoute = $state<any>(null);
 	let showModal = $state(false);
 	let searchTerm = $state('');
@@ -34,26 +30,22 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	let showSSRTest = $state(false);
 	let layoutMode = $state<'grid' | 'flexbox'>('grid');
 	let showClustered = $state(false);
-
 	// K-means clustering logic for API endpoints
 	function clusterAPIEndpoints(routes: any[]) {
 		const apiRoutes = routes.filter(route => route.path.startsWith('/api/'));
 		const clusters: { [key: string]: any[] } = {};
-
 		apiRoutes.filter(Boolean).forEach(route => {
 			const pathParts = route.path.split('/');
 			let serviceName = 'other';
-
 			if (pathParts.length >= 3) {
 				// /api/v1/service or /api/service
 				const potentialService = pathParts[2];
-				serviceName = potentialService;
+				serviceName = potentialServic;
 			} else if (pathParts.length >= 2) {
 				// /api/service (unversioned)
 				const potentialService = pathParts[1];
-				serviceName = potentialService;
+				serviceName = potentialServic;
 			}
-
 			// Further clustering by semantic similarity
 			if (route.path.includes('auth') || route.path.includes('login') || route.path.includes('user')) {
 				serviceName = 'authentication';
@@ -74,21 +66,17 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 			} else if (route.path.includes('gpu') || route.path.includes('cuda') || route.path.includes('webgpu')) {
 				serviceName = 'gpu-services';
 			}
-
 			if (!clusters[serviceName]) {
 				clusters[serviceName] = [];
 			}
 			clusters[serviceName].push(route);
 		});
-
-		return clusters;
+		return cluster;
 	}
-
 	// Clustered API routes
 	let clusteredAPIs = $derived(() => {
 		return clusterAPIEndpoints(allRoutes);
 	});
-
 	// Enhanced route categorization with separation of core vs demo vs API testing
 	const routeCategories = {
 		'core-user': { name: 'Core User Routes', icon: '👤', color: 'blue', priority: 'production' },
@@ -103,23 +91,19 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 		'infrastructure': { name: 'Infrastructure', icon: '🏗️', color: 'gray', priority: 'production' },
 		'other': { name: 'Other', icon: '📄', color: 'slate', priority: 'other' }
 	};
-
 	function categorizeRoute(path: string): string {
 		// Core User Routes - Main user-facing functionality
 		if (path === '/' || path.includes('/dashboard') || path.includes('/profile') || path.includes('/settings') || path.includes('/search') || path.includes('/upload')) {
 			return 'core-user';
 		}
-
 		// Legal Core Routes - Production legal functionality
 		if (path.includes('/legal/') || path.includes('/cases/') || path.includes('/evidence/') || path.includes('/contracts/')) {
 			return 'core-legal';
 		}
-
 		// Administration Routes - Admin panels and management
 		if (path.includes('/admin/') || path.includes('/users/') || path.includes('/cluster/') || path.includes('/system/')) {
 			return 'core-admin';
 		}
-
 		// Production APIs - Stable, versioned APIs
 		if (path.includes('/api/v1/') || path.includes('/api/v2/')) {
 			// Check if these are testing endpoints
@@ -128,7 +112,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 			}
 			return 'api-production';
 		}
-
 		// APIs that need testing - Unversioned or test APIs
 		if (path.includes('/api/') && (
 			path.includes('/test') ||
@@ -141,39 +124,31 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 		)) {
 			return 'api-testing';
 		}
-
 		// APIs that need versioning - Unversioned production APIs
 		if (path.includes('/api/') && !path.includes('/api/v') && !path.includes('/test')) {
 			return 'api-unversioned';
 		}
-
 		// Game Demos - Gaming and entertainment demos
 		if (path.includes('/game/') || path.includes('/n64/') || path.includes('/nes/') || path.includes('/tetris/') || path.includes('/mario/')) {
 			return 'demo-games';
 		}
-
 		// Development Demos - Technical demos and experiments
 		if (path.includes('/demo/') || path.includes('/test/') || path.includes('/experiment/') || path.includes('/prototype/')) {
 			return 'demo-development';
 		}
-
 		// Feature Showcase - AI, WebGPU, and advanced features
 		if (path.includes('/ai-demo') || path.includes('/webgpu') || path.includes('/cuda') || path.includes('/embedding') || path.includes('/gpu-demo')) {
 			return 'demo-showcase';
 		}
-
 		// Infrastructure routes
 		if (path.includes('/health/') || path.includes('/cache/') || path.includes('/redis/') || path.includes('/database/') || path.includes('/metrics/')) {
 			return 'infrastructure';
 		}
-
 		return 'other';
 	}
-
 	// Enhanced route processing with categorization
 	let allRoutes = $derived(() => {
 		const routes = [];
-
 		// Add configured routes
 		if (data.availableRoutes) {
 			data.availableRoutes.forEach(route => {
@@ -181,30 +156,27 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 					path: route.path,
 					name: route.path.replace(/\//g, ' → '),
 					type: 'configured',
-					icon: route.icon || '📄',;
-					description: route.description,;
-					category: categorizeRoute(route.path);
+					icon: route.icon || '📄',
+					description: route.description,
+					category: categorizeRoute(route.path)
 				});
 			});
 		}
-
 		// Add file-based routes from inventory
 		if (data.routeInventory?.fileRoutesSample) {
 			data.routeInventory.fileRoutesSample.forEach(route => {
 				routes.push({
-					path: route,
+					path: route
 					name: route.replace(/\//g, ' → '),
 					type: 'file-based',
-					icon: '🔗',;
-					description: `Auto-discovered route`,;
-					category: categorizeRoute(route);
+					icon: '🔗',
+					description: `Auto-discovered route`,
+					category: categorizeRoute(route)
 				});
 			});
 		}
-
 		return routes.sort((a, b) => a.path.localeCompare(b.path));
 	});
-
 	// Enhanced route statistics with section separation
 	let routeStats = $derived(() => {
 		const stats = {
@@ -216,31 +188,26 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				testing: 0,
 				consolidation: 0,
 				demo: 0,
-				other: 0;
+				other: 0
 			},
 			sections: {
 				core: 0,
 				api: 0,
-				demo: 0,;
-				infrastructure: 0,;
-				other: 0;
+				demo: 0,
+				infrastructure: 0,
+				other: 0
 			}
 		};
-
 		allRoutes.forEach(route => {
 			const categoryInfo = routeCategories[route.category];
-
 			// Category stats
 			stats.byCategory[route.category] = (stats.byCategory[route.category] || 0) + 1;
-
 			// Type stats
 			stats.byType[route.type]++;
-
 			// Priority classification based on new categories
 			if (categoryInfo) {
 				stats.byPriority[categoryInfo.priority] = (stats.byPriority[categoryInfo.priority] || 0) + 1;
 			}
-
 			// Section classification
 			if (route.category.startsWith('core-')) {
 				stats.sections.core++;
@@ -254,14 +221,11 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				stats.sections.other++;
 			}
 		});
-
-		return stats;
+		return stat;
 	});
-
 	// Enhanced filtering with section and category support
 	let filteredRoutes = $derived(() => {
-		let routes = allRoutes;
-
+		let routes = allRoute;
 		// Filter by section
 		if (selectedSection !== 'all') {
 			routes = routes.filter(route => {
@@ -273,12 +237,10 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				return true;
 			});
 		}
-
 		// Filter by category
 		if (selectedCategory !== 'all') {
 			routes = routes.filter(route => route.category === selectedCategory);
 		}
-
 		// Filter by search term
 		if (searchTerm) {
 			routes = routes.filter(route =>
@@ -286,30 +248,24 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				route.description?.toLowerCase().includes(searchTerm.toLowerCase())
 			);
 		}
-
-		return routes;
+		return route;
 	});
-
 	function openRouteModal(route: unknown) {
-		selectedRoute = route;
+		selectedRoute = rout;
 		showModal = true;
 	}
-
 	function closeModal() {
 		showModal = false;
 		selectedRoute = null;
 	}
-
 	function visitRoute(path: string) {
 		window.open(path, '_blank');
 	}
-
 	$effect(() => {
 		isLoaded = true;
 		console.log('All routes page loaded with', allRoutes.length, 'routes');
 	});
 </script>
-
 <div class="container mx-auto p-6 max-w-7xl">
 	<header class="text-center mb-8">
 		<h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -317,7 +273,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 		</h1>
 		<p class="text-gray-600 text-lg">Comprehensive routing analysis for the Gemma Embeddings Vector Architecture</p>
 	</header>
-
 	{#if isLoaded}
 		<!-- Enhanced Statistics Dashboard -->
 		{#if showStats}
@@ -331,7 +286,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						{showStats ? 'Hide' : 'Show'} Stats
 					</button>
 				</div>
-
 				<!-- Section Overview -->
 				<div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
 					<Card class="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300">
@@ -345,7 +299,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 							</CardContent>
 						{/snippet}
 					</Card>
-
 					<Card class="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300">
 						{#snippet children()}
 							<CardContent class="p-4">
@@ -357,7 +310,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 							</CardContent>
 						{/snippet}
 					</Card>
-
 					<Card class="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-300">
 						{#snippet children()}
 							<CardContent class="p-4">
@@ -369,7 +321,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 							</CardContent>
 						{/snippet}
 					</Card>
-
 					<Card class="bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-300">
 						{#snippet children()}
 							<CardContent class="p-4">
@@ -381,7 +332,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 							</CardContent>
 						{/snippet}
 					</Card>
-
 					<Card class="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300">
 						{#snippet children()}
 							<CardContent class="p-4">
@@ -394,7 +344,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						{/snippet}
 					</Card>
 				</div>
-
 				<!-- Priority Breakdown -->
 				<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
 					<div class="bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-300 rounded-lg p-4">
@@ -404,7 +353,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						<p class="text-3xl font-bold text-emerald-900">{routeStats.byPriority.production}</p>
 						<p class="text-sm text-emerald-600">Core + APIs</p>
 					</div>
-
 					<div class="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-300 rounded-lg p-4">
 						<h3 class="font-bold text-lg text-orange-800 flex items-center gap-2">
 							⚠️ Need Versioning
@@ -412,7 +360,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						<p class="text-3xl font-bold text-orange-900">{routeStats.byPriority.consolidation}</p>
 						<p class="text-sm text-orange-600">Unversioned APIs</p>
 					</div>
-
 					<div class="bg-gradient-to-br from-pink-50 to-pink-100 border-2 border-pink-300 rounded-lg p-4">
 						<h3 class="font-bold text-lg text-pink-800 flex items-center gap-2">
 							✨ Demo Showcase
@@ -420,7 +367,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						<p class="text-3xl font-bold text-pink-900">{routeStats.byPriority.demo}</p>
 						<p class="text-sm text-pink-600">Development demos</p>
 					</div>
-
 					<div class="bg-gradient-to-br from-indigo-50 to-indigo-100 border-2 border-indigo-300 rounded-lg p-4">
 						<h3 class="font-bold text-lg text-indigo-800 flex items-center gap-2">
 							🏗️ Infrastructure
@@ -429,7 +375,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						<p class="text-sm text-indigo-600">System monitoring</p>
 					</div>
 				</div>
-
 				<!-- Category Breakdown -->
 				<div class="bg-white rounded-lg border-2 border-gray-200 p-6">
 					<h3 class="text-xl font-bold mb-4">🎯 Route Categories</h3>
@@ -446,7 +391,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				</div>
 			</div>
 		{/if}
-
 		<!-- Enhanced Search and Filters -->
 		<div class="bg-white rounded-lg border-2 border-gray-200 p-6 mb-6">
 			<div class="flex flex-col lg:flex-row gap-4">
@@ -460,7 +404,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
 					/>
 				</div>
-
 				<!-- Section Filter -->
 				<div class="lg:w-48">
 					<label class="block text-sm font-medium text-gray-700 mb-2">📂 Section</label>
@@ -476,7 +419,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						<option value="infrastructure">🏗️ Infrastructure ({routeStats.sections.infrastructure})</option>
 					</select>
 				</div>
-
 				<!-- Category Filter -->
 				<div class="lg:w-64">
 					<label class="block text-sm font-medium text-gray-700 mb-2">🎯 Category</label>
@@ -494,7 +436,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 					</select>
 				</div>
 			</div>
-
 			<!-- Quick Filter Buttons -->
 			<div class="mt-4">
 				<label class="block text-sm font-medium text-gray-700 mb-2">⚡ Quick Filters</label>
@@ -525,7 +466,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 					</button>
 				</div>
 			</div>
-
 			<!-- Active Filters -->
 			{#if selectedCategory !== 'all' || selectedSection !== 'all' || searchTerm}
 				<div class="mt-4 flex flex-wrap gap-2">
@@ -557,7 +497,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				</div>
 			{/if}
 		</div>
-
 		<!-- Enhanced Routes Grid -->
 		<div class="mb-4 flex justify-between items-center">
 			<h2 class="text-2xl font-bold">🚀 Routes ({filteredRoutes.length})</h2>
@@ -569,7 +508,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				>
 					🧪 {showSSRTest ? 'Hide' : 'Show'} SSR Test
 				</button>
-
 				<!-- View Mode Toggles -->
 				<div class="flex gap-2">
 					<button
@@ -591,13 +529,11 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						🔗 API Clusters
 					</button>
 				</div>
-
 				<div class="text-sm text-gray-600">
 					Showing {filteredRoutes.length} of {routeStats.total} routes
 				</div>
 			</div>
 		</div>
-
 		<!-- SSR Testing Info Panel -->
 		{#if showSSRTest}
 			<Card class="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200">
@@ -634,7 +570,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				{/snippet}
 			</Card>
 		{/if}
-
 		<!-- Clustered API Services View -->
 		{#if showClustered}
 			<div class="mb-8">
@@ -642,7 +577,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 					🔗 API Service Clusters
 					<span class="text-sm font-normal text-gray-600">({Object.keys(errors).length} services, {Object.values.flat().length} endpoints)</span>
 				</h3>
-
 				<!-- Enhanced SSR-optimized API service cluster grid -->
 				<div class="api-service-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 					{#each Object.entries(clusteredAPIs) as [serviceName, endpoints], clusterIndex}
@@ -655,7 +589,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 							serviceName === 'testing' ? '🧪' :
 							serviceName === 'infrastructure' ? '🏗️' :
 							serviceName === 'gpu-services' ? '🖥️' : '🔌'}
-
 						<Card class="service-cluster border-2 border-gray-300 hover:border-blue-400">
 							{#snippet children()}
 								<CardHeader>
@@ -669,7 +602,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 										</div>
 									</CardTitle>
 								</CardHeader>
-
 								<CardContent class="card-content">
 									<!-- Service Endpoints Preview with enhanced styling -->
 									<div class="endpoint-list">
@@ -693,7 +625,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 											</div>
 										{/if}
 									</div>
-
 									<!-- Service Actions with improved layout -->
 									<div class="action-buttons">
 										<Dialog bind:open={false}>
@@ -702,13 +633,11 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 													📋 View All ({endpoints.length})
 												</button>
 											{/snippet}
-
 											{#snippet content()}
 												<div class="p-6 max-w-4xl max-h-[80vh] overflow-y-auto">
 													<h3 class="text-xl font-bold mb-4 flex items-center gap-2">
 														{serviceIcon} {serviceName.replace('-', ' ')} Service
 													</h3>
-
 													<div class="grid gap-3">
 														{#each endpoints as endpoint}
 															<div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -800,21 +729,18 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 										</div>
 									</div>
 								</div>
-
 								<!-- Route Path -->
 								<div class="mb-3">
 									<code class="text-sm bg-gray-100 px-2 py-1 rounded font-mono text-gray-700 break-all">
 										{route.path}
 									</code>
 								</div>
-
 								<!-- Route Description -->
 								{#if route.description}
 									<p class="text-sm text-gray-600 mb-3 line-clamp-2">
 										{route.description}
 									</p>
 								{/if}
-
 								<!-- Route Tags -->
 								<div class="flex flex-wrap gap-2 mb-3">
 									<span class="px-2 py-1 rounded-full text-xs bg-{categoryInfo.color}-100 text-{categoryInfo.color}-800 border border-{categoryInfo.color}-200">
@@ -824,7 +750,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 										{route.type}
 									</span>
 								</div>
-
 								<!-- Route Actions -->
 								<div class="flex gap-2">
 									<button
@@ -845,7 +770,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				</div>
 			{/if}
 		{/if}
-
 		{#if filteredRoutes.length === 0}
 			<div class="text-center py-12 bg-white rounded-lg border-2 border-gray-200">
 				<div class="text-6xl mb-4">🔍</div>
@@ -865,7 +789,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				</button>
 			</div>
 		{/if}
-
 		<!-- Gemma Architecture Integration Info -->
 		<div class="mt-12 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg p-6">
 			<h3 class="text-xl font-bold mb-4 flex items-center gap-2">
@@ -882,7 +805,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						<span class="text-sm text-purple-600 ml-1">routes</span>
 					</div>
 				</div>
-
 				<div class="bg-white/50 rounded-lg p-4">
 					<h4 class="font-bold text-cyan-800 mb-2">🔍 Vector Search</h4>
 					<p class="text-sm text-gray-700">
@@ -893,7 +815,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						<span class="text-sm text-cyan-600 ml-1">routes</span>
 					</div>
 				</div>
-
 				<div class="bg-white/50 rounded-lg p-4">
 					<h4 class="font-bold text-pink-800 mb-2">🔬 Embedding Operations</h4>
 					<p class="text-sm text-gray-700">
@@ -905,7 +826,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 					</div>
 				</div>
 			</div>
-
 			<div class="mt-4 text-sm text-gray-600">
 				<p>
 					<strong>Architecture Integration:</strong> This routing system implements the 5-layer Gemma embeddings vector architecture
@@ -913,7 +833,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				</p>
 			</div>
 		</div>
-
 		<!-- System Recommendations -->
 		<div class="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-6">
 			<h3 class="text-xl font-bold mb-4 flex items-center gap-2">
@@ -929,7 +848,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 					</p>
 					<p class="text-xs text-gray-600">42% of routes are non-production demos that can be moved to /archive/</p>
 				</div>
-
 				<div>
 					<h4 class="font-bold text-yellow-800 mb-2 flex items-center gap-2">
 						🔄 Priority: API Versioning
@@ -949,7 +867,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 		</div>
 	{/if}
 </div>
-
 <!-- Route Modal -->
 {#if showModal && selectedRoute}
 	<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onclick={closeModal}>
@@ -958,27 +875,23 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 				<h2 class="text-xl font-bold">{selectedRoute.icon} {selectedRoute.name}</h2>
 				<button onclick={closeModal} class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
 			</div>
-
 			<div class="space-y-4">
 				<div>
 					<label class="font-semibold text-gray-700">URL:</label>
 					<code class="block mt-1 p-2 bg-gray-100 rounded text-sm">{selectedRoute.path}</code>
 				</div>
-
 				<div>
 					<label class="font-semibold text-gray-700">Type:</label>
 					<span class="ml-2 px-2 py-1 rounded text-xs {selectedRoute.type === 'configured' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}">
 						{selectedRoute.type}
 					</span>
 				</div>
-
 				{#if selectedRoute.description}
 					<div>
 						<label class="font-semibold text-gray-700">Description:</label>
 						<p class="mt-1 text-gray-600">{selectedRoute.description}</p>
 					</div>
 				{/if}
-
 				<div class="flex gap-3 pt-4">
 					<button
 						onclick={() => visitRoute(selectedRoute.path)}
@@ -995,7 +908,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 		</div>
 	</div>
 {/if}
-
 <style>
 /* Enhanced SSR-optimized 3-Column Flexbox Layout */
 .ssr-flexbox-container {
@@ -1004,23 +916,19 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	width: 100%;
 	box-sizing: border-box;
 }
-
 /* Dynamic flex-basis proportions for better visual balance */
 .flex-basis-31 {
 	flex: 0 0 calc(31% - 1rem);
 	max-width: calc(31% - 1rem);
 }
-
 .flex-basis-33 {
 	flex: 0 0 calc(33% - 1rem);
 	max-width: calc(33% - 1rem);
 }
-
 .flex-basis-35 {
 	flex: 0 0 calc(35% - 1rem);
 	max-width: calc(35% - 1rem);
 }
-
 /* SSR Card optimizations for consistent rendering */
 .ssr-card {
 	/* Ensure consistent card heights in flexbox layout */
@@ -1029,17 +937,14 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	min-height: 280px;
 	max-height: 400px;
 	overflow: hidden;
-
 	/* Enhanced border and shadow for better visual hierarchy */
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	transition: all 0.3s ease;
 }
-
 .ssr-card:hover {
 	transform: translateY(-2px);
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
-
 /* Responsive adjustments for smaller screens */
 @media (max-width: 1024px) {
 	.flex-basis-31,
@@ -1049,7 +954,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 		max-width: calc(48% - 1rem);
 	}
 }
-
 @media (max-width: 768px) {
 	.flex-basis-31,
 	.flex-basis-33,
@@ -1058,68 +962,57 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 		max-width: 100%;
 		min-width: unset;
 	}
-
 	.ssr-flexbox-container {
 		gap: 1rem;
 	}
 }
-
 /* API Service Grid optimizations */
 .api-service-grid {
 	/* Ensure consistent grid layout across different viewport sizes */
 	display: grid;
 	gap: 1.5rem;
 	align-items: start;
-
 	/* Responsive grid template with proper proportions */
 	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
-
 @media (min-width: 768px) and (max-width: 1023px) {
 	.api-service-grid {
 		grid-template-columns: repeat(2, 1fr);
 		gap: 1.25rem;
 	}
 }
-
 @media (min-width: 1024px) {
 	.api-service-grid {
 		grid-template-columns: repeat(3, 1fr);
 		gap: 1.5rem;
 	}
 }
-
 /* Service cluster enhancements for API display */
 .service-cluster {
 	transition: all 0.3s ease;
 	min-height: 340px;
 	max-height: 500px;
-
 	/* Improved visual hierarchy and spacing */
 	display: flex;
 	flex-direction: column;
 	background: white;
 	border-radius: 0.75rem;
-
 	/* Enhanced shadow and hover effects */
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	position: relative;
 	overflow: hidden;
 }
-
 .service-cluster:hover {
 	transform: translateY(-4px);
 	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 	z-index: 10;
 }
-
 /* Service cluster header proportions */
 .service-cluster .card-header {
 	flex-shrink: 0;
 	padding: 1.25rem 1.25rem 0.75rem;
 	border-bottom: 1px solid #f3f4f6;
 }
-
 /* Service cluster content area */
 .service-cluster .card-content {
 	flex: 1;
@@ -1128,7 +1021,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	padding: 0.75rem 1.25rem 1.25rem;
 	overflow: hidden;
 }
-
 /* Endpoint list styling for better readability */
 .service-cluster .endpoint-list {
 	flex: 1;
@@ -1136,11 +1028,10 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	overflow-y: auto;
 	margin-bottom: 1rem;
 }
-
 .service-cluster .endpoint-item {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: space-betwee;
 	padding: 0.5rem 0.75rem;
 	margin-bottom: 0.5rem;
 	background: #f9fafb;
@@ -1149,12 +1040,10 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	border: 1px solid #e5e7eb;
 	transition: all 0.2s ease;
 }
-
 .service-cluster .endpoint-item:hover {
 	background: #f3f4f6;
 	border-color: #d1d5db;
 }
-
 .service-cluster .endpoint-code {
 	flex: 1;
 	font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
@@ -1163,7 +1052,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	margin-right: 0.5rem;
 	line-height: 1.3;
 }
-
 /* Service action buttons */
 .service-cluster .action-buttons {
 	flex-shrink: 0;
@@ -1171,7 +1059,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	gap: 0.5rem;
 	margin-top: auto;
 }
-
 /* Endpoint count badge */
 .endpoint-count-badge {
 	background: linear-gradient(135deg, #3b82f6, #1d4ed8);
@@ -1181,30 +1068,25 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	font-size: 0.75rem;
 	font-weight: 600;
 }
-
 /* Improved typography and spacing for SSR */
 .ssr-card h3 {
 	line-height: 1.3;
 	margin-bottom: 0.5rem;
 }
-
 .ssr-card code {
 	word-break: break-all;
 	font-size: 0.85rem;
 }
-
 /* Enhanced focus states for accessibility */
 .ssr-card:focus-within {
 	outline: 2px solid #3b82f6;
 	outline-offset: 2px;
 }
-
 /* Loading state optimizations */
 .ssr-flexbox-container.loading {
 	opacity: 0.7;
 	pointer-events: none;
 }
-
 /* Grid fallback for non-flexbox browsers */
 @supports not (display: flex) {
 	.ssr-flexbox-container {
@@ -1212,7 +1094,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 		gap: 1.5rem;
 	}
-
 	.flex-basis-31,
 	.flex-basis-33,
 	.flex-basis-35 {

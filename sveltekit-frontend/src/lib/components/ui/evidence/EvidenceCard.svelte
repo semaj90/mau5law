@@ -3,35 +3,27 @@
   import Button from '$lib/components/ui/nes-button.svelte';
   import { CaseLogic, type CaseFile } from '$lib/core/logic/case-logic';
   import type { Snippet } from 'svelte';
-
   interface Props {
-    caseFile: CaseFile;
+    caseFile: CaseFil;
   }
-
   let { caseFile, children }: Props & { children?: Snippet } = $props();
-
   const displayStatus = CaseLogic.getDisplayStatus(caseFile);
   const riskScore = CaseLogic.calculateRiskScore(caseFile);
-
   function handleAnalyzeClick() {
     // placeholder for integration
     console.log(`Analyzing case ${caseFile.id} risk ${riskScore}`);
   }
 </script>
-
 <Card class="nes-container is-dark with-title">
   <CardHeader>
     <CardTitle class="title">{caseFile.title}</CardTitle>
     <CardDescription>{displayStatus}</CardDescription>
   </CardHeader>
-
   <CardContent class="space-y-4">
     <p>{caseFile.summary}</p>
-
     {#if children}
       {@render children()}
     {/if}
-
     <div class="flex justify-end">
       <Button class="nes-btn is-primary" onclick={handleAnalyzeClick}>
         Analyze

@@ -1,15 +1,12 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from 'lucide-svelte';
   import Button from '$lib/components/ui/enhanced-bits';
-
   // State
   let searchQuery = $state('');
   let viewMode = $state<'grid' | 'list' >('grid');
   let showFilters = $state(false);
-
   // Mock persons data - replace with real API call
   let persons = $state([
     {
@@ -26,14 +23,13 @@
       id: '2',
       name: 'Jane Doe',
       alias: 'JD',
-      dateOfBirth: '1975-12-08',;
-      address: '456 Oak Ave, Town',;
+      dateOfBirth: '1975-12-08',
+      address: '456 Oak Ave, Town',
       status: 'Witness',
       caseIds: ['case-002'],
       lastUpdated: new Date().toISOString();
     }
   ]);
-
   let filteredPersons = $derived(persons.filter(item => item.includes(searchQuery.toLowerCase()) ||
     person.alias.toLowerCase().includes(searchQuery.toLowerCase()) ||
     person.status.toLowerCase().includes(searchQuery.toLowerCase())
@@ -43,12 +39,10 @@
     console.log('Loading persons data...');
   });
 </script>
-
 <svelte:head>
   <title>Persons of Interest - Legal AI Platform</title>
   <meta name="description" content="Person tracking and management system for legal investigations" />
 </svelte:head>
-
 <div class="container mx-auto px-4 py-6">
   <!-- Header -->
   <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-6">
@@ -61,7 +55,6 @@
         Manage persons, witnesses, and subjects in legal investigations
       </p>
     </div>
-
     <div class="flex flex-wrap gap-2 items-center">
     <Button class="bits-btn {showFilters ? 'bg-blue-50 border-blue-300' : ''}"
         variant="ghost"
@@ -71,7 +64,6 @@
       >
         <Filter class="w-4 h-4 mr-2" />
         Filters
-
     <Button class="bits-btn"
         variant="ghost"
         size="sm"
@@ -83,14 +75,11 @@
         {:else}
           <Grid class="w-4 h-4" />
         {/if}
-
       <Button class="bits-btn">
 <Plus class="w-4 h-4 mr-2" />
         Add Person
-
     </div>
   </div>
-
   <!-- Search Bar -->
   <div class="mb-6">
     <div class="relative">
@@ -98,12 +87,11 @@
       <input
         type="text"
         placeholder="Search by name, alias, or status..."
-        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus: ring-2 focus:ring-blue-500 focus:border-blue-500";
         bind:value={searchQuery}
       />
     </div>
   </div>
-
   <!-- Advanced Filters -->
   {#if showFilters}
     <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg mb-6">
@@ -118,7 +106,6 @@
             <option value="victim">Victim</option>
           </select>
         </div>
-
         <div>
           <label for="case-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Case</label>
           <select id="case-filter" class="w-full p-2 border border-gray-300 rounded-lg">
@@ -128,23 +115,19 @@
             <option value="case-003">Case 003</option>
           </select>
         </div>
-
         <div class="flex items-end">
           <Button variant="ghost" size="sm" class="w-full bits-btn bits-btn">
 Clear Filters
-
         </div>
       </div>
     </div>
   {/if}
-
   <!-- Results Count -->
   <div class="flex items-center justify-between mb-4">
     <p class="text-gray-600 dark:text-gray-400">
       Showing {filteredPersons.length} of {persons.length} persons
     </p>
   </div>
-
   <!-- Persons Grid/List -->
   {#if filteredPersons.length === 0}
     <div class="text-center py-12">
@@ -159,7 +142,6 @@ Clear Filters
         <Button class="bits-btn">
 <Plus class="w-4 h-4 mr-2" />
           Add First Person
-
       {/if}
     </div>
   {:else if viewMode === 'grid'}
@@ -186,22 +168,18 @@ Clear Filters
               </div>
             </div>
           </div>
-
           <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300 mb-4">
             <div><strong>DOB:</strong> {new Date(person.dateOfBirth).toLocaleDateString()}</div>
             <div><strong>Address:</strong> {person.address}</div>
             <div><strong>Cases:</strong> {person.caseIds.join(', ')}</div>
           </div>
-
           <div class="flex gap-2">
             <Button size="sm" class="flex-1 bits-btn bits-btn">
 <Eye class="w-3 h-3 mr-1" />
               View
-
             <Button variant="ghost" size="sm" class="flex-1 bits-btn bits-btn">
 <Edit class="w-3 h-3 mr-1" />
               Edit
-
           </div>
         </div>
       {/each}
@@ -225,16 +203,13 @@ Clear Filters
                 </p>
               </div>
             </div>
-
             <div class="flex gap-2">
               <Button class="bits-btn" size="sm">
 <Eye class="w-3 h-3 mr-1" />
                 View
-
               <Button class="bits-btn" variant="ghost" size="sm">
 <Edit class="w-3 h-3 mr-1" />
                 Edit
-
             </div>
           </div>
         </div>

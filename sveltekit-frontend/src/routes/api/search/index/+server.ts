@@ -2,13 +2,11 @@
  * Unified Search Index API
  * Orchestrates: PostgreSQL + Drizzle + pgvector + Qdrant + MinIO + Loki.js
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { db } from '$lib/server/db/connection'
 import { legalDocuments, documentChunks } from '$lib/server/db/schema'
 import { sql, desc, and, or, like, gte, lte } from 'drizzle-orm'
-
 // Mock Qdrant client
 interface QdrantPoint {
   id: string
@@ -16,10 +14,9 @@ interface QdrantPoint {
   payload: {
     document_id: string
     content: string
-    metadata: Record<string, any>
+    metadata: { [key: string]: any }
   }
 }
-
 // Mock MinIO metadata
 interface MinIOMetadata {
   bucket: string
@@ -29,19 +26,16 @@ interface MinIOMetadata {
   size: number
   metadata: Record<string, string>
 }
-
 // Mock Loki.js log entries
 interface LokiEntry {
   timestamp: string
   level: string
   message: string
   labels: Record<string, string>
-  metadata?: Record<string, any>
+  metadata?: { [key: string]: any }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   console.log('🔍 Building unified search index...')
-
   try {
     // Multi-source index building
     const [
@@ -55,42 +49,32 @@ export const GET: RequestHandler = async ({ url }) => {
       buildMinIOIndex(),
       buildLokiIndex()
     ])
-
     // Combine all successful results
     const combinedIndex: any[] = []
-
     if (postgresqlIndex.status === 'fulfilled') {
       combinedIndex.push(...postgresqlIndex.value)
     }
-
     if (vectorIndex.status === 'fulfilled') {
       combinedIndex.push(...vectorIndex.value)
     }
-
     if (minioIndex.status === 'fulfilled') {
       combinedIndex.push(...minioIndex.value)
     }
-
     if (lokiIndex.status === 'fulfilled') {
       combinedIndex.push(...lokiIndex.value)
     }
-
     console.log(`✅ Built unified index with ${combinedIndex.length} items`)
-
     return json(combinedIndex)
-
   } catch (error) {
     console.error('❌ Index building failed:', error)
     return json({ error: 'Failed to build search index' }, { status: 500 })
   }
 }
-
 /*
  * Build PostgreSQL + Drizzle index with pgvector
  */
 async function buildPostgreSQLIndex() {
   console.log('📊 Building PostgreSQL + pgvector index...')
-
   try {
     // Query documents with embeddings using Drizzle ORM
     const documents = await db
@@ -109,7 +93,6 @@ async function buildPostgreSQLIndex() {
       .from(legalDocuments)
       .orderBy(desc(legalDocuments.createdAt)
       .limit(1000)
-
     return documents.map(doc => ({
       id: doc.id,
       title: doc.title || 'Untitled Document',
@@ -125,10 +108,8 @@ async function buildPostgreSQLIndex() {
         ...parseJsonMetadata(doc.metadata)
       }
     })
-
   } catch (error) {
     console.error('PostgreSQL index failed:', error)
-
     // Fallback mock data
     return [
       {
@@ -148,22 +129,19 @@ async function buildPostgreSQLIndex() {
     ]
   }
 }
-
 /*
  * Build Qdrant vector index
  */
 async function buildVectorIndex() {
   console.log('🧠 Building Qdrant vector index...')
-
   try {
     // In production: Query Qdrant collection
     // const response = await qdrantClient.scroll({
     //   collection_name: 'legal_documents',
     //   limit: 1000,
-    //   with_payload: true,
+    //   with_payload: true
     //   with_vector: false
     // })
-
     // Mock Qdrant data
     const mockQdrantPoints: QdrantPoint[] = [
       {
@@ -195,7 +173,6 @@ async function buildVectorIndex() {
         }
       }
     ]
-
     return mockQdrantPoints.map(point => ({
       id: point.payload.document_id,
       title: `Vector Document - ${point.payload.document_id}`,
@@ -205,27 +182,23 @@ async function buildVectorIndex() {
         ...point.payload.metadata,
         source: 'qdrant',
         vectorId: point.id,
-        hasVector: true,
+        hasVector: true
         vectorDimensions: point.vector.length
       }
     })
-
   } catch (error) {
     console.error('Qdrant index failed:', error)
     return []
   }
 }
-
 /*
  * Build MinIO object storage index
  */
 async function buildMinIOIndex() {
   console.log('🗄️ Building MinIO storage index...')
-
   try {
     // In production: List MinIO objects
     // const objects = await minioClient.listObjectsV2('legal-documents', '', true)
-
     // Mock MinIO metadata
     const mockMinioObjects: MinIOMetadata[] = [
       {
@@ -255,11 +228,9 @@ async function buildMinIOIndex() {
         }
       }
     ]
-
     return mockMinioObjects.map(obj => {
       const fileName = obj.key.split('/').pop() || obj.key
       const fileType = obj.contentType.split('/')[0]
-
       return {
         id: `minio_${obj.key.replace(/[^a-zA-Z0-9]/g, '_')}`,
         title: fileName.replace(/\.[^/.]+$/, '').replace(/_/g, ' '),
@@ -267,7 +238,7 @@ async function buildMinIOIndex() {
         entities: [fileType, obj.metadata['x-amz-meta-practice-area'] || 'Legal'],
         metadata: {
           practiceArea: obj.metadata['x-amz-meta-practice-area'],
-          documentType: fileType,
+          documentType: fileType
           caseId: obj.metadata['x-amz-meta-case-id'],
           uploadDate: obj.lastModified.toISOString(),
           source: 'minio',
@@ -280,24 +251,20 @@ async function buildMinIOIndex() {
         }
       }
     })
-
   } catch (error) {
     console.error('MinIO index failed:', error)
     return []
   }
 }
-
 /*
  * Build Loki.js log index
  */
 async function buildLokiIndex() {
   console.log('📊 Building Loki.js log index...')
-
   try {
     // In production: Query Loki for relevant log entries
     // const query = `{job="legal-platform"} |= "evidence" | json`
     // const response = await lokiClient.queryRange(query, start, end, limit)
-
     // Mock Loki log entries
     const mockLokiEntries: LokiEntry[] = [
       {
@@ -332,7 +299,6 @@ async function buildLokiIndex() {
         }
       }
     ]
-
     return mockLokiEntries.map((entry, index) => ({
       id: `loki_${index}`,
       title: `System Log: ${entry.message}`,
@@ -350,33 +316,27 @@ async function buildLokiIndex() {
         ...entry.metadata
       }
     })
-
   } catch (error) {
     console.error('Loki index failed:', error)
     return []
   }
 }
-
 // Utility functions
 function extractEntitiesFromContent(content: string): string[] {
   if (!content) return []
-
   // Simple entity extraction - in production use NLP
   const legalTerms = [
     'contract', 'agreement', 'liability', 'breach', 'remedy', 'damages',
     'evidence', 'testimony', 'witness', 'plaintiff', 'defendant', 'court',
     'jurisdiction', 'precedent', 'statute', 'regulation', 'compliance'
   ]
-
   const words = content.toLowerCase().split(/\W+/)
   const entities = legalTerms.filter(term =>
     words.some(word => word.includes(term) || term.includes(word)
   )
-
   return Array.from(new Set(entities)
 }
-
-function parseJsonMetadata(metadata: any): Record<string, any> {
+function parseJsonMetadata(metadata: any): { [key: string]: any } {
   if (typeof metadata === 'string') {
     try {
       return JSON.parse(metadata)
@@ -386,7 +346,6 @@ function parseJsonMetadata(metadata: any): Record<string, any> {
   }
   return metadata || {}
 }
-
 function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 B'
   const k = 1024

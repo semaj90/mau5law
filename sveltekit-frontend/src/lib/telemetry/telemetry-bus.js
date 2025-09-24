@@ -1,7 +1,6 @@
 /**
  * Telemetry Bus - Event System for GPU Processing Telemetry
  */
-
 /**
  * @typedef {Object} TelemetryEvent
  * @property {string} type
@@ -10,12 +9,10 @@
  * @property {string} [source]
  * @property {'info' | 'warn' | 'error' | 'debug'} [level]
  */
-
 /**
  * @callback TelemetrySubscriber
  * @param {TelemetryEvent} event
  */
-
 class TelemetryBus {
   /**
    * @constructor
@@ -26,7 +23,6 @@ class TelemetryBus {
     /** @type {Set<TelemetrySubscriber>} */
     this.globalSubscribers = new Set();
   }
-
   /**
    * Subscribe to specific event types
    * @param {string} eventType
@@ -38,7 +34,6 @@ class TelemetryBus {
       this.subscribers.set(eventType, new Set();
     }
     this.subscribers.get(eventType).add(callback);
-
     return () => {
       const typeSubscribers = this.subscribers.get(eventType);
       if (typeSubscribers) {
@@ -49,7 +44,6 @@ class TelemetryBus {
       }
     };
   }
-
   /**
    * Subscribe to all events
    * @param {TelemetrySubscriber} callback
@@ -61,7 +55,6 @@ class TelemetryBus {
       this.globalSubscribers.delete(callback);
     };
   }
-
   /**
    * Emit an event
    * @param {string} type
@@ -78,7 +71,6 @@ class TelemetryBus {
       source,
       level
     };
-
     const typeSubscribers = this.subscribers.get(type);
     if (typeSubscribers) {
       typeSubscribers.forEach(callback => {
@@ -89,7 +81,6 @@ class TelemetryBus {
         }
       });
     }
-
     this.globalSubscribers.forEach(callback => {
       try {
         callback(event);
@@ -98,7 +89,6 @@ class TelemetryBus {
       }
     });
   }
-
   /**
    * Clear all subscribers
    */
@@ -106,7 +96,6 @@ class TelemetryBus {
     this.subscribers.clear();
     this.globalSubscribers.clear();
   }
-
   /**
    * Get current subscriber counts
    * @returns {{ typeSubscribers: number; globalSubscribers: number; eventTypes: string[] }}
@@ -119,10 +108,8 @@ class TelemetryBus {
     };
   }
 }
-
 // Create singleton instance
 export const telemetryBus = new TelemetryBus();
-
 /**
  * Emit GPU event
  * @param {string} type
@@ -131,7 +118,6 @@ export const telemetryBus = new TelemetryBus();
 export function emitGpuEvent(type, data) {
   telemetryBus.emit(type, data, 'gpu');
 }
-
 /**
  * Emit performance event
  * @param {string} type
@@ -140,7 +126,6 @@ export function emitGpuEvent(type, data) {
 export function emitPerformanceEvent(type, data) {
   telemetryBus.emit(type, data, 'performance', 'info');
 }
-
 /**
  * Emit error event
  * @param {string} type
@@ -149,5 +134,4 @@ export function emitPerformanceEvent(type, data) {
 export function emitErrorEvent(type, error) {
   telemetryBus.emit(type, error, 'error', 'error');
 }
-
 export default telemetryBus;

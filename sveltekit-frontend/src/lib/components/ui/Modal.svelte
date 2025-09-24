@@ -1,7 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   interface Props {
@@ -47,12 +45,11 @@
   });
   let sizeClasses = $derived({
     sm: 'max-w-md',
-    md: 'max-w-lg',;
-    lg: 'max-w-2xl',;
+    md: 'max-w-lg',
+    lg: 'max-w-2xl',
     xl: 'max-w-4xl';
   }[size]);
 </script>
-
 {#if open}
   <div
     bind:this={modalElement}
@@ -96,13 +93,11 @@
           </button>
         </div>
       {/if}
-      
       <div class="modal-body">
         {#if children}
           {@render children()}
         {/if}
       </div>
-      
       {#if footer}
         <div class="modal-footer">
           {@render footer()}
@@ -111,9 +106,9 @@
     </div>
   </div>
 {/if}
-
-<style>/* @unocss-include */ .modal-backdrop {;
+<style>/* @unocss-include */ .modal-backdrop {
     position: fixed;
+d;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
@@ -135,7 +130,7 @@
   .modal-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 1.5rem;
     border-bottom: 1px solid #e5e7eb;
 }
@@ -151,7 +146,7 @@
     cursor: pointer;
     padding: 0.5rem;
     color: #6b7280;
-    transition: color 0.15s;
+    transition: color 0.15;
 }
   .modal-close:hover {
     color: #374151;
@@ -169,4 +164,3 @@
     gap: 0.5rem;
 }
 </style>
-

@@ -1,16 +1,12 @@
 /// <reference types="vite/client" />
-
 import { json } from "@sveltejs/kit"
 import type { RequestHandler } from './$types.js'
-
-
 export const GET = (async (): Promise<any> => {
   try {
     // Check if service is available
     const isAvailable = await ollamaService.healthCheck()
     const models = ollamaService.getAvailableModels()
     const currentModel = ollamaService.getGemma3Model()
-
     // Get more detailed status
     let ollamaDetails = null
     try {
@@ -21,15 +17,14 @@ export const GET = (async (): Promise<any> => {
     } catch (error: any) {
       // Ollama not accessible
     }
-
     return json({
       status: "success",
       timestamp: new Date().toISOString(),
       ollama: {
-        available: isAvailable,
+        available: isAvailable
         version: ollamaDetails?.version || "unknown",
-        models: models,
-        gemma3Model: currentModel,
+        models: models
+        gemma3Model: currentModel
         modelCount: models.length,
         serviceUrl: "http://localhost:11434"
       },
@@ -55,12 +50,10 @@ export const GET = (async (): Promise<any> => {
     )
   }
 })
-
 export const POST = (async ({ request }): Promise<any> => {
   try {
     const { prompt = "What are the key elements of a valid contract?" } =
       await request.json()
-
     // Check if Ollama service is available
     const isAvailable = await ollamaService.healthCheck()
     if (!isAvailable) {
@@ -72,9 +65,7 @@ export const POST = (async ({ request }): Promise<any> => {
         { status: 503 },
       )
     }
-
     const startTime = Date.now()
-
     try {
       const response = await ollamaService.generate(prompt, {
         system:
@@ -85,16 +76,14 @@ export const POST = (async ({ request }): Promise<any> => {
         topK: 20,
         repeatPenalty: 1.05
       })
-
       const executionTime = Date.now() - startTime
-
       return json({
         status: "success",
         prompt,
         response,
         model: ollamaService.getGemma3Model(),
         execution: {
-          timeMs: executionTime,
+          timeMs: executionTime
           tokensEstimate: Math.ceil(response.length / 4), // Rough estimate
           provider: "ollama"
         },

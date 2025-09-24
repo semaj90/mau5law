@@ -1,33 +1,24 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * GPU Orchestration API - Advanced Task Dispatch & Automation
  * Handles legal document analysis, autosolve, and GPU task routing
  */
-
 import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js'
 import { GEMMA3_LEGAL_CONFIG } from '$lib/config/gemma3-legal-config.js'
-
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const { action, data, config } = await request.json()
-
     switch (action) {
       case 'legal_analysis':
         return handleLegalAnalysis(data, config)
-
       case 'document_processing':
         return handleDocumentProcessing(data, config)
-
       case 'autosolve':
         return handleAutosolve(data, config)
-
       case 'gpu_task':
         return handleGPUTask(data, config)
-
       case 'cluster_status':
         return handleClusterStatus()
-
       default:
         return json({ error: 'Invalid action' }, { status: 400 })
     }
@@ -41,19 +32,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
     )
   }
 }
-
 async function handleLegalAnalysis(data: any, config: any): Promise<any> {
   const { document, context, options } = data
-
   // Enhanced legal analysis with Gemma3 configuration
   const analysisConfig = {
     ...GEMMA3_LEGAL_CONFIG.generation,
     ...config,
-    useGPU: true,
+    useGPU: true
     useRAG: options?.includeRAG !== false,
     model: 'gemma3-legal'
   }
-
   const result = await mcpGPUOrchestrator.processLegalDocument(document, {
     caseId: context?.caseId,
     userId: context?.userId,
@@ -61,16 +49,13 @@ async function handleLegalAnalysis(data: any, config: any): Promise<any> {
     includeGraph: options?.includeGraph,
     generateSummary: options?.generateSummary
   })
-
   // Add legal-specific post-processing
   if (result.success && options?.extractEntities) {
     result.result.entities = extractLegalEntities(document)
   }
-
   if (result.success && options?.riskAssessment) {
     result.result.riskAssessment = await performRiskAssessment(result.result)
   }
-
   return json({
     success: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success,
     analysis: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).result,
@@ -79,12 +64,9 @@ async function handleLegalAnalysis(data: any, config: any): Promise<any> {
     timestamp: new Date().toISOString()
   })
 }
-
 async function handleDocumentProcessing(data: any, config: any): Promise<any> {
   const { files, context, options } = data
-
   const results = []
-
   for (const file of files) {
     const result = await mcpGPUOrchestrator.dispatchGPUTask({
       id: `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -97,37 +79,31 @@ async function handleDocumentProcessing(data: any, config: any): Promise<any> {
         documentId: context?.documentId
       },
       config: {
-        useGPU: true,
+        useGPU: true
         useRAG: options?.enableRAG !== false,
         protocol: 'http'
       }
     })
-
     results.push(result)
   }
-
   return json({
-    success: true,
+    success: true
     results,
     processed: results.length,
     failed: results.filter((r) => !r.success).length,
     timestamp: new Date().toISOString()
   })
 }
-
 async function handleAutosolve(data: any, config: any): Promise<any> {
   const { threshold, forceRun, includeClusterMetrics } = data
-
   // Trigger autosolve maintenance cycle
   const result = await mcpGPUOrchestrator.triggerAutosolve({
-    threshold: threshold || 5,
+    threshold: threshold || 5
     includeClusterMetrics: includeClusterMetrics !== false,
     forceRun: forceRun === true
   })
-
   // Get current cluster status for context
   const clusterStatus = await mcpGPUOrchestrator.getClusterStatus()
-
   return json({
     success: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success,
     autosolve: {
@@ -135,26 +111,23 @@ async function handleAutosolve(data: any, config: any): Promise<any> {
       metrics: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).metrics,
       recommendations: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).recommendations
     },
-    cluster: clusterStatus,
+    cluster: clusterStatus
     timestamp: new Date().toISOString()
   })
 }
-
 async function handleGPUTask(data: any, config: any): Promise<any> {
   const { taskType, taskData, priority, context } = data
-
   const result = await mcpGPUOrchestrator.dispatchGPUTask({
     id: `gpu_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    type: taskType,
+    type: taskType
     priority: priority || 'medium',
-    data: taskData,
+    data: taskData
     context,
     config: {
-      useGPU: true,
+      useGPU: true
       ...config
     }
   })
-
   return json({
     success: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).success,
     taskId: (result as { success?: any; result?: any; metrics?: any; recommendations?: any; taskId?: any; error?: any }).taskId,
@@ -165,16 +138,13 @@ async function handleGPUTask(data: any, config: any): Promise<any> {
     timestamp: new Date().toISOString()
   })
 }
-
 async function handleClusterStatus(): Promise<any> {
   const clusterStatus = await mcpGPUOrchestrator.getClusterStatus()
-
   return json({
-    cluster: clusterStatus,
+    cluster: clusterStatus
     timestamp: new Date().toISOString()
   })
 }
-
 // Helper functions for legal processing
 function extractLegalEntities(document: string) {
   const entities = {
@@ -184,7 +154,6 @@ function extractLegalEntities(document: string) {
     amounts: [],
     clauses: []
   }
-
   // Import patterns from config
   const patterns = {
     parties: [
@@ -206,7 +175,6 @@ function extractLegalEntities(document: string) {
       /\b(indemnification|limitation of liability|force majeure|termination|confidentiality)\b/gi
     ]
   }
-
   // Extract entities using patterns
   for (const [category, categoryPatterns] of Object.entries(patterns) as [
     keyof typeof patterns,
@@ -217,10 +185,8 @@ function extractLegalEntities(document: string) {
       (entities[category as keyof typeof entities] as string[]).push(...matches)
     }
   }
-
   return entities
 }
-
 async function performRiskAssessment(analysisResult: any): Promise<any> {
   // Simplified risk assessment based on analysis
   const risks = {
@@ -230,9 +196,7 @@ async function performRiskAssessment(analysisResult: any): Promise<any> {
     reputational: 0,
     overall: 0
   }
-
   const text = analysisResult.text || analysisResult.summary || ''
-
   // Risk indicators
   const riskKeywords = {
     financial: ['liability', 'damages', 'penalty', 'fine', 'cost', 'expense'],
@@ -240,69 +204,56 @@ async function performRiskAssessment(analysisResult: any): Promise<any> {
     operational: ['disruption', 'delay', 'failure', 'inability', 'restriction'],
     reputational: ['public', 'media', 'reputation', 'image', 'scandal']
   }
-
   // Calculate risk scores based on keyword frequency
   for (const [category, keywords] of Object.entries(riskKeywords)) {
     const score = keywords.reduce((sum, keyword) => {
       const matches = (text.toLowerCase().match(new RegExp(keyword, 'g')) || []).length
       return sum + matches
     }, 0)
-
     risks[category as keyof typeof risks] = Math.min(10, score); // Cap at 10
   }
-
   // Calculate overall risk
   risks.overall = Math.round(
     (risks.financial + risks.legal + risks.operational + risks.reputational) / 4
   )
-
   return {
-    scores: risks,
+    scores: risks
     level: risks.overall >= 7 ? 'high' : risks.overall >= 4 ? 'medium' : 'low',
     recommendations: generateRiskRecommendations(risks)
   }
 }
-
 function generateRiskRecommendations(risks: any): string[] {
   const recommendations = []
-
   if (risks.financial >= 7) {
     recommendations.push('Obtain financial insurance or bonding')
     recommendations.push('Establish escrow or security deposits')
   }
-
   if (risks.legal >= 7) {
     recommendations.push('Consult specialized legal counsel')
     recommendations.push('Review compliance requirements')
   }
-
   if (risks.operational >= 7) {
     recommendations.push('Develop contingency plans')
     recommendations.push('Implement monitoring systems')
   }
-
   if (risks.reputational >= 7) {
     recommendations.push('Prepare crisis communication plan')
     recommendations.push('Implement stakeholder engagement strategy')
   }
-
   if (risks.overall >= 7) {
     recommendations.push('Consider risk transfer mechanisms')
     recommendations.push('Establish risk monitoring dashboard')
   }
-
   return recommendations
 }
-
 // Health check endpoint
 export const GET: RequestHandler = async () => {
   try {
     const clusterStatus = await mcpGPUOrchestrator.getClusterStatus()
-
     return json({
       status: 'healthy',
       service: 'gpu-orchestrator',
-      cluster: clusterStatus,
+      cluster: clusterStatus
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {

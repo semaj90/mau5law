@@ -3,13 +3,10 @@ import { json, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { lucia } from '$lib/auth/lucia'
 import Redis from 'ioredis'
-
 // Redis client for coordination with MCP server
 const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379')
-
 // MCP server endpoint
 const MCP_ENDPOINT = process.env.MCP_ENDPOINT || 'http://localhost:3000'
-
 interface LegalJobRequest {
   case_id: string
   messages: Array<any>
@@ -29,28 +26,23 @@ interface LegalJobRequest {
     workflow_type?: 'autogen' | 'crewai' | 'sequential'
     agents?: Array<any>
 }
-
 // POST /api/legal - Submit legal AI job
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     // Authentication check
     const sessionId = cookies.get('lucia_session')
     let user = null
-
     if (sessionId) {
       const { session } = await lucia.validateSession(sessionId)
       if (session) {
         user = session.user
       }
     }
-
     const requestData: LegalJobRequest = await request.json()
-
     // Validate required fields
     if (!requestData.case_id || !requestData.messages || requestData.messages.length === 0) {
       throw error(400, 'Missing required fields: case_id and messages')
     }
-
     // Create legal job payload
     const jobPayload = {
       case_id: requestData.case_id,
@@ -66,7 +58,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         max_tokens: requestData.model_config?.max_tokens || 1024,
         use_rl_optimization: requestData.model_config?.use_rl_optimization ?? true,
         enable_cache: requestData.model_config?.enable_cache ?? true,
-        enable_kv_reuse: true,
+        enable_kv_reuse: true
         compression_type: 'float16'
       },
       legal_context: {
@@ -78,10 +70,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         confidence_score: 0.8
       },
       workflow_config: requestData.workflow_config || null,
-      store_embeddings: true,
+      store_embeddings: true
       cache_strategy: 'rl_optimized'
     }
-
     // Submit job to MCP server
     const mcpResponse = await fetch(`${MCP_ENDPOINT}/api/legal/job`, {
       method: 'POST',
@@ -90,13 +81,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       },
       body: JSON.stringify(jobPayload)
     })
-
     if (!mcpResponse.ok) {
       throw error(500, 'Failed to submit job to processing server')
     }
-
     const mcpResult = await mcpResponse.json()
-
     // Store job metadata for tracking
     await redis.setex(
       `job_tracking:${mcpResult.job_id}`,
@@ -110,47 +98,39 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         estimated_completion: mcpResult.estimated_completion
       })
     )
-
     return json({
-      success: true,
+      success: true
       job_id: mcpResult.job_id,
       status: 'submitted',
       estimated_completion_ms: mcpResult.estimated_completion - Date.now(),
       polling_url: `/api/legal/status/${mcpResult.job_id}`,
       result_url: `/api/legal/result/${mcpResult.job_id}`
     })
-
   } catch (err) {
     console.error('Legal API error:', err)
-
     if (err.status) {
       throw err; // Re-throw SvelteKit errors
     }
-
     throw error(500, 'Internal server error')
   }
 }
-
 // GET /api/legal - Get job status or results
 export const GET: RequestHandler = async ({ url }) => {
   const jobId = url.searchParams.get('job_id')
   const caseId = url.searchParams.get('case_id')
-
   if (jobId) {
     // Get specific job status
     const jobTracking = await redis.get(`job_tracking:${jobId}`)
     if (!jobTracking) {
       throw error(404, 'Job not found')
     }
-
     const jobData = JSON.parse(jobTracking)
-
     // Check if result is available
     const result = await redis.getBuffer(`legal:result:${jobId}`)
     if (result) {
       // Parse protobuf result (simplified - would use actual protobuf parser)
       return json({
-        job_id: jobId,
+        job_id: jobId
         status: 'completed',
         result: {
           // This would be parsed from protobuf
@@ -162,7 +142,7 @@ export const GET: RequestHandler = async ({ url }) => {
       })
     } else {
       return json({
-        job_id: jobId,
+        job_id: jobId
         status: 'processing',
         submitted_at: jobData.submitted_at,
         estimated_completion: jobData.estimated_completion
@@ -172,7 +152,6 @@ export const GET: RequestHandler = async ({ url }) => {
     // Get all jobs for a case
     const caseKeys = await redis.keys(`job_tracking:*`)
     const caseJobs = []
-
     for (const key of caseKeys) {
       const jobData = await redis.get(key)
       if (jobData) {
@@ -182,16 +161,14 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       }
     }
-
     return json({
-      case_id: caseId,
+      case_id: caseId
       jobs: caseJobs.sort((a, b) => b.submitted_at - a.submitted_at)
     })
   } else {
     throw error(400, 'Must provide job_id or case_id parameter')
   }
 }
-
 function generateMessageId(): string {
   return `msg_${Date.now()}_${Math.random().toString(36).substring(7)}`
 }

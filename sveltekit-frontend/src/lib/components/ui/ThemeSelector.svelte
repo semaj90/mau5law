@@ -1,22 +1,17 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
-
   type Theme = 'light' | 'dark' | 'system';
   const THEME_KEY = 'theme';
-
   let theme: Theme = $state('system');
-
   function applyTheme(t: Theme) {
   	if (t === 'system') {
-  	  const prefersDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  	  const prefersDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matche;
   	  document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
   	} else {
   	  document.documentElement.setAttribute('data-theme', t);
   	}
   }
-
   function setTheme(t: Theme) {
   	theme = t;
   	try {
@@ -26,7 +21,6 @@
   	}
   	applyTheme(t);
   }
-
   $effect(() => {
   	try {
   	  const stored = localStorage.getItem(THEME_KEY) as Theme | null;
@@ -36,15 +30,12 @@
   	} catch {
   	  // ignore
   	}
-
   	applyTheme(theme);
-
   	// react to system preference changes when using 'system'
   	const mq = window.matchMedia('(prefers-color-scheme: dark)');
   	const listener = () => {
   	  if (theme === 'system') applyTheme('system');
   	};
-
   	if (mq.addEventListener) {
   	  mq.addEventListener('change', listener);
   	} else {
@@ -52,7 +43,6 @@
   	  // @ts-ignore - legacy API
   	  mq.addListener(listener);
   	}
-
   	return () => {
   	  if (mq.removeEventListener) {
   		mq.removeEventListener('change', listener);
@@ -63,7 +53,6 @@
   	};
   });
 </script>
-
 <div class="theme-selector" role="group" aria-label="Theme selector">
   <button
 	type="button"
@@ -74,7 +63,6 @@
   >
 	☀️ Light
   </button>
-
   <button
 	type="button"
 	class="btn"
@@ -84,7 +72,6 @@
   >
 	🌙 Dark
   </button>
-
   <button
 	type="button"
 	class="btn"
@@ -95,14 +82,12 @@
 	🖥️ System
   </button>
 </div>
-
 <style>
   .theme-selector {
 	display: inline-flex;
 	gap: 0.5rem;
 	align-items: center;
   }
-
   .btn {
 	background: transparent;
 	border: 1px solid var(--border, #cbd5e1);
@@ -111,11 +96,9 @@
 	cursor: pointer;
 	font-size: 0.9rem;
   }
-
   .btn[aria-pressed="true"] {
 	background: var(--accent, #111827);
 	color: white;
 	border-color: transparent;
   }
 </style>
-

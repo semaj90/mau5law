@@ -1,12 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import '$lib/styles/tooltip-global.css';
   import * as TooltipPrimitive from "bits-ui/tooltip";
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   import { fade, scale } from 'svelte/transition';
-
   interface Props {
     content: string;
     side?: 'top' | 'right' | 'bottom' | 'left';
@@ -20,7 +18,6 @@
     docCategory?: string;
     showDocumentation?: boolean;
   }
-
   let {
     content,
     side = 'top',
@@ -33,23 +30,19 @@
     docCategory,
     showDocumentation = false;
   }: Props = $props();
-
   let tooltipClasses = $derived(cn(
     "legal-ai-tooltip z-50 px-3 py-2 text-sm font-medium text-slate-900 bg-amber-400 rounded-lg shadow-lg shadow-amber-500/25 max-w-xs",
     showDocumentation && "max-w-md bg-slate-800 text-amber-400 border border-amber-500/20",
     className
   ));
-
   // Context7 documentation integration
   let documentationContent = $state<string>('');
   let isLoadingDocs = $state(false);
-
   async function fetchDocumentation() {
     if (!docKey || !docCategory || !showDocumentation) return;
-
     isLoadingDocs = true;
     try {
-      const response = await fetch(`http://localhost:4000/docs/${docCategory}/${docKey}`);
+      const response = await fetch(`http://localhost:4000/docs/${docCategory}/${docKey}`)
       if (response.ok) {
         const data = await response.json();
         documentationContent = data.content || '';
@@ -61,26 +54,22 @@
       isLoadingDocs = false;
     }
   }
-
   // Auto-fetch documentation when docKey changes
   $effect(() => {
     if (showDocumentation && docKey && docCategory) {
       fetchDocumentation();
     }
   });
-
   let displayContent = $derived(
     showDocumentation && documentationContent ? documentationContent : content
   );
 </script>
-
 <TooltipPrimitive.Root {delayDuration}>
   <TooltipPrimitive.Trigger class="legal-ai-tooltip-trigger">
     {#if children}
       {@render children()}
     {/if}
   </TooltipPrimitive.Trigger>
-
   <TooltipPrimitive.Content
     class={tooltipClasses}
     {side}

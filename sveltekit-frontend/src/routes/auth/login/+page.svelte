@@ -4,54 +4,43 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { enhance } from '$app/forms';
-  
   interface Props {
     data?: unknown;
     form?: unknown;
   }
-  
   let { data, form }: Props = $props();
-  
   let isLoading = $state(false);
   let showPassword = $state(false);
-  
   // Auto-fill demo credentials
   function fillDemoCredentials() {
     const emailInput = document.getElementById('email') as HTMLInputElement;
     const passwordInput = document.getElementById('password') as HTMLInputElement;
-    
     if (emailInput && passwordInput) {
       emailInput.value = 'admin@legal-ai.local';
       passwordInput.value = 'admin123';
     }
   }
 </script>
-
 <svelte:head>
   <title>Login - Legal AI Platform</title>
 </svelte:head>
-
 <div class="min-h-screen flex items-center justify-center bg-gray-900 px-4 py-8">
   <div class="w-full max-w-md">
     <div class="bg-gray-800 p-8 rounded-lg border border-gray-700 max-h-none overflow-visible">
       <h1 class="text-3xl font-bold text-center text-yellow-400 mb-8">
         Legal AI Platform
       </h1>
-      
       <h2 class="text-xl text-center text-white mb-6">
         Sign In
       </h2>
-      
       {#if form?.error}
         <div class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4">
           {form.error}
         </div>
       {/if}
-
-      <form 
-        method="POST" 
+      <form
+        method="POST"
         action="?/login"
         use:enhance={({ formData, cancel }) => {
           isLoading = true;
@@ -79,7 +68,6 @@
             placeholder="admin@legal-ai.local"
           />
         </div>
-
         <!-- Password -->
         <div>
           <label for="password" class="block text-sm font-medium text-gray-300 mb-1">
@@ -95,7 +83,6 @@
             placeholder="Enter your password"
           />
         </div>
-
         <!-- Options -->
         <div class="flex items-center justify-between">
           <div class="flex items-center">
@@ -110,7 +97,6 @@
               Show password
             </label>
           </div>
-          
           <div class="flex items-center">
             <input
               type="checkbox"
@@ -124,7 +110,6 @@
             </label>
           </div>
         </div>
-
         <!-- Demo Button -->
         <button
           type="button"
@@ -134,7 +119,6 @@
         >
           Fill Demo Credentials
         </button>
-
         <!-- Submit Button -->
         <button
           type="submit"
@@ -148,12 +132,10 @@
           {/if}
         </button>
       </form>
-
       <!-- Alternative Login Methods -->
       <div class="mt-6 text-center">
         <p class="text-sm text-gray-400">Demo mode enabled</p>
       </div>
-
       <!-- Register Link -->
       <div class="mt-6 text-center">
         <p class="text-gray-400 text-sm">
@@ -161,7 +143,6 @@
           <a href="/auth/register" class="text-yellow-400 hover:underline">Create one here</a>
         </p>
       </div>
-      
       <!-- Quick Access -->
       <div class="mt-4 text-center">
         <p class="text-gray-500 text-xs">
@@ -171,4 +152,3 @@
     </div>
   </div>
 </div>
-

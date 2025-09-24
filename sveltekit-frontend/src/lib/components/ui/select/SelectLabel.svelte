@@ -10,15 +10,12 @@ https://svelte.dev/e/expected_token -->
     class_ = '',
     children
   }: Props & { children?: unknown } = $props();
-
   </script>
-
 <span class="space-y-4">
   {#if children}
     {@render children()}
   {/if}
 </span>
-
 <style>/* @unocss-include */ .select-label {
     font-size: 12px;
     font-weight: 500;
@@ -27,4 +24,3 @@ https://svelte.dev/e/expected_token -->
     display: block;
 }
 </style>
-

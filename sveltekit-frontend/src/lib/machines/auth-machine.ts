@@ -1,5 +1,4 @@
 import { setup, assign, createActor, fromPromise } from 'xstate';
-
 // Authentication context interface
 export interface AuthContext {
   user: {
@@ -35,7 +34,6 @@ export interface AuthContext {
   twoFactorRequired: boolean;
   registrationData?: unknown;
 }
-
 // Authentication events
 export type AuthEvent =
   | { type: 'START_LOGIN'; data: LoginData }
@@ -59,7 +57,6 @@ export type AuthEvent =
   | { type: 'PROFILE_UPDATED' }
   | { type: 'RETRY' };
 }
-
 export interface LoginData {
   email: string;
   password: string;
@@ -67,7 +64,6 @@ export interface LoginData {
   twoFactorCode?: string;
   deviceInfo?: unknown;
 }
-
 export interface RegistrationData {
   email: string;
   firstName: string;
@@ -80,32 +76,28 @@ export interface RegistrationData {
   enableTwoFactor?: boolean;
   deviceInfo?: unknown;
 }
-
 const initialContext: AuthContext = {
-  user: null,
-  session: null,;
-  error: undefined,
-  isLoading: false,
-  deviceInfo: undefined,
+  user: null
+  session: null
+  error: undefined
+  isLoading: false
+  deviceInfo: undefined
   loginAttempts: 0,
   maxLoginAttempts: 5,
-  lastLoginAttempt: undefined,
-  lockoutUntil: undefined,
-  twoFactorRequired: false,
+  lastLoginAttempt: undefined
+  lockoutUntil: undefined
+  twoFactorRequired: false
   registrationData: undefined
 };
-
-// Helper functions for inline guards;
+// Helper functions for inline guards
 const isMaxAttemptsReached = ({ context }: { context: AuthContext }) => {
   return context.loginAttempts >= context.maxLoginAttempts;
 };
-
 const isAccountLocked = ({ context }: { context: AuthContext }) => {
   return context.lockoutUntil ? new Date() < context.lockoutUntil: false;
 };
-
 export const authMachine = setup({
-  types: Record<string, any> as {;
+  types: { [key: string]: any } as {
     context: AuthContext;
     events: AuthEvent;
   },
@@ -114,53 +106,53 @@ export const authMachine = setup({
       isLoading: () => true,
       error: () => undefined
     }),
-    clearLoading: assign({
+    clearLoading: assign({,
       isLoading: () => false
     }),
-    setError: assign({
+    setError: assign({,
       error: ({ event }) => (event as any).data?.error || 'An error occurred',
       isLoading: () => false
     }),
-    setUser: assign({
+    setUser: assign({,
       user: ({ event }) => (event as any).data?.user || null,
       session: ({ event }) => (event as any).data?.session || null,
       isLoading: () => false,
       error: () => undefined,
       loginAttempts: () => 0
     }),
-    clearUser: assign({
+    clearUser: assign({,
       user: () => null,
       session: () => null,
       error: () => undefined
     }),
-    incrementLoginAttempts: assign({
+    incrementLoginAttempts: assign({,
       loginAttempts: ({ context }) => context.loginAttempts + 1,
       lastLoginAttempt: () => new Date()
     }),
-    resetLoginAttempts: assign({
+    resetLoginAttempts: assign({,
       loginAttempts: () => 0,
       lastLoginAttempt: () => undefined
     }),
-    setLockout: assign({
+    setLockout: assign({,
       lockoutUntil: () => new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
       loginAttempts: () => 0
     }),
-    clearLockout: assign({
+    clearLockout: assign({,
       lockoutUntil: () => undefined
     }),
-    setTwoFactorRequired: assign({
+    setTwoFactorRequired: assign({,
       twoFactorRequired: () => true
     }),
-    clearTwoFactor: assign({
+    clearTwoFactor: assign({,
       twoFactorRequired: () => false
     }),
-    setRegistrationData: assign({
+    setRegistrationData: assign({,
       registrationData: ({ event }) => (event as any).data
     }),
-    clearRegistrationData: assign({
+    clearRegistrationData: assign({,
       registrationData: () => undefined
     })
-  },;
+  },
   guards: {
     isMaxAttemptsReached: ({ context }) => {
       return context.loginAttempts >= context.maxLoginAttempts;
@@ -169,16 +161,14 @@ export const authMachine = setup({
       return context.lockoutUntil ? new Date() < context.lockoutUntil: false;
     }
   },
-  actors: {;
+  actors: {
     authenticate: fromPromise(async ({ input }: { input: LoginData }) => {
       // Mock authentication - replace with actual service call
       await new Promise(resolve => setTimeout(resolve, 1500);
-      
-      // Simulate occasional failures for testing;
+      // Simulate occasional failures for testing
       if (input.email === 'fail@test.com') {
         throw new Error('Invalid credentials');
       }
-      
       return {
         user: {
           id: '1',
@@ -190,7 +180,7 @@ export const authMachine = setup({
         },
         session: {
           id: 'session_123',
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours;
+          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
           fresh: true
         }
       };
@@ -198,7 +188,6 @@ export const authMachine = setup({
     register: fromPromise(async ({ input }: { input: RegistrationData }) => {
       // Mock registration
       await new Promise(resolve => setTimeout(resolve, 2000);
-      
       return {
         user: {
           id: '2',
@@ -206,7 +195,7 @@ export const authMachine = setup({
           firstName: input.firstName,
           lastName: input.lastName,
           role: input.role,
-          department: input.department,;
+          department: input.department,
           permissions: []
         }
       };
@@ -225,7 +214,7 @@ export const authMachine = setup({
 }).createMachine({
   id: 'auth',
   initial: 'idle',
-  context: initialContext,
+  context: initialContext
   states: {
     idle: {
       on: {
@@ -240,7 +229,7 @@ export const authMachine = setup({
     authenticating: {
       entry: 'setLoading',
       invoke: {
-        src: 'authenticate',;
+        src: 'authenticate',
         input: ({ event }) => (event as any).data,
         onDone: [;
           {
@@ -249,7 +238,7 @@ export const authMachine = setup({
             actions: ['setTwoFactorRequired', 'clearLoading']
           },
           {
-            target: 'authenticated',;
+            target: 'authenticated',
             actions: ['setUser', 'resetLoginAttempts']
           }
         ],
@@ -372,16 +361,14 @@ export const authMachine = setup({
       entry: 'setLoading',
       after: {
         1500: {
-          target: 'authenticated',;
+          target: 'authenticated',
           actions: 'clearLoading'
         }
       }
     }
   }
 });
-
 // Create the actor
 export const authActor = createActor(authMachine);
-;
 // Export for use in components
 export default authActor;

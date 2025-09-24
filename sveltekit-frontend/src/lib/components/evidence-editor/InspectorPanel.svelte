@@ -1,15 +1,12 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
-  import {  , onMount  } from "svelte";
+  import { onMount  } from "svelte";
   import { writable } from 'svelte/store';
-  
-  let { selectedNode = $bindable()  }: { selectedNode = $bindable() : unknown } = $props(); // any = null;
-  let { readOnly = $bindable()  }: { readOnly = $bindable() : unknown } = $props(); // false;
+  let { selectedNode = $bindable()  }: { selectedNode = $bindable() : unknown } = $props(); // any = null
+  let { readOnly = $bindable()  }: { readOnly = $bindable() : unknown } = $props(); // false
   // Enhanced form fields with auto-population
   let formData = writable({
     // Basic fields
@@ -33,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
     potentialWitnesses: [] as string[],
     relatedCases: [] as string[],
     statutes: [] as string[],
-    monetaryAmounts: [] as string[],;
+    monetaryAmounts: [] as string[],
     actions: [] as string[],
     // Quality metrics
     qualityScore: 0,
@@ -44,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
       organizations: 0;
     } as Record<string, number>,
     // Warnings and recommendations
-    redFlags: [] as string[],;
+    redFlags: [] as string[],
     recommendations: [] as string[];
   });
   // Form state
@@ -128,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
         potentialWitnesses: [],
         relatedCases: [],
         statutes: [],
-        monetaryAmounts: [],;
+        monetaryAmounts: [],
         actions: [],
         qualityScore: 0,
         extractionConfidence: {
@@ -137,7 +134,7 @@ https://svelte.dev/e/js_parse_error -->
           dates: 0,
           organizations: 0;
         },
-        redFlags: [],;
+        redFlags: [],
         recommendations: [];
       };
       // If AI tags exist, populate from them
@@ -159,11 +156,11 @@ https://svelte.dev/e/js_parse_error -->
           potentialWitnesses: [...(node.aiTags.potentialWitnesses || [])],
           relatedCases: [...(node.aiTags.relatedCases || [])],
           statutes: [...(node.aiTags.statutes || [])],
-          monetaryAmounts: [...(node.aiTags.monetaryAmounts || [])],;
+          monetaryAmounts: [...(node.aiTags.monetaryAmounts || [])],
           actions: [...(node.aiTags.actions || [])],
           qualityScore: node.aiTags.qualityScore || 0,
           extractionConfidence: { ...newFormData.extractionConfidence, ...(node.aiTags.extractionConfidence || ) },
-          redFlags: [...(node.aiTags.redFlags || [])],;
+          redFlags: [...(node.aiTags.redFlags || [])],
           recommendations: [...(node.aiTags.recommendations || [])];
         });
       } else {
@@ -185,19 +182,19 @@ https://svelte.dev/e/js_parse_error -->
   async function triggerEnhancedAIAnalysis(node: unknown, formData: unknown) {
     try {
       const response = await fetch('/api/ai/tag', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           content: node.content,
           fileName: node.name,
-          fileType: node.type,;
-          enhanced: true // Request enhanced analysis;
+          fileType: node.type,
+          enhanced: true // Request enhanced analysi
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const aiTags = await (response as { ok?: unknown; json?: unknown }).json();
         // Update the node with AI tags
-        node.aiTags = aiTags;
+        node.aiTags = aiTag;
         // Auto-populate form with enhanced data
         Object.assign(formData, {
           title: aiTags.title || node.name,
@@ -216,11 +213,11 @@ https://svelte.dev/e/js_parse_error -->
           potentialWitnesses: [...(aiTags.potentialWitnesses || [])],
           relatedCases: [...(aiTags.relatedCases || [])],
           statutes: [...(aiTags.statutes || [])],
-          monetaryAmounts: [...(aiTags.monetaryAmounts || [])],;
+          monetaryAmounts: [...(aiTags.monetaryAmounts || [])],
           actions: [...(aiTags.actions || [])],
           qualityScore: aiTags.qualityScore || 0,
           extractionConfidence: { ...formData.extractionConfidence, ...(aiTags.extractionConfidence || ) },
-          redFlags: [...(aiTags.redFlags || [])],;
+          redFlags: [...(aiTags.redFlags || [])],
           recommendations: [...(aiTags.recommendations || [])];
         });
         // Notify parent components
@@ -318,27 +315,27 @@ https://svelte.dev/e/js_parse_error -->
       const updatedNode = {
         ...selectedNode,
         name: $formData.title,
-        title: $formData.title,;
+        title: $formData.title,
         description: $formData.description,
         customTags: $formData.customTags,
         aiTags: {
           ...selectedNode.aiTags,
-          ...Object.fromEntries.filter(([key]) => 
+          ...Object.fromEntries.filter(([key]) =>
               !['customTags'].includes(key)
             )
           )
-        },;
+        },
         metadata: {
           ...selectedNode.metadata,
           lastModified: new Date().toISOString()
   }
       };
       const response = await fetch('/api/evidence/save-node', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'auto_save',;
-          data: updatedNode;
+        body: JSON.stringify({,
+          action: 'auto_save',
+          data: updatedNod;
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -357,27 +354,27 @@ https://svelte.dev/e/js_parse_error -->
       const updatedNode = {
         ...selectedNode,
         name: $formData.title,
-        title: $formData.title,;
+        title: $formData.title,
         description: $formData.description,
         customTags: $formData.customTags,
         aiTags: {
           ...selectedNode.aiTags,
-          ...Object.fromEntries.filter(([key]) => 
+          ...Object.fromEntries.filter(([key]) =>
               !['customTags'].includes(key)
             )
           )
-        },;
+        },
         metadata: {
           ...selectedNode.metadata,
           lastModified: new Date().toISOString()
   }
       };
       const response = await fetch('/api/evidence/save-node', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'save_node',;
-          data: updatedNode;
+        body: JSON.stringify({,
+          action: 'save_node',
+          data: updatedNod;
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -386,7 +383,7 @@ https://svelte.dev/e/js_parse_error -->
         lastSavedAt = new Date());
         ondispatch?.((result as { evidence?: unknown }).evidence);
         ondispatch?.({
-          type: 'success',;
+          type: 'success',
           message: 'Evidence saved successfully';
         });
       } else {
@@ -395,7 +392,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('Save failed:', error);
       ondispatch?.({
-        type: 'error',;
+        type: 'error',
         message: 'Failed to save evidence';
       });
     } finally {
@@ -411,13 +408,13 @@ https://svelte.dev/e/js_parse_error -->
       // Trigger fresh AI analysis
       await triggerEnhancedAIAnalysis(selectedNode, $formData);
       ondispatch?.({
-        type: 'success',;
+        type: 'success',
         message: 'AI re-analysis completed';
       });
     } catch (error) {
       console.error('Re-analysis failed:', error);
       ondispatch?.({
-        type: 'error',;
+        type: 'error',
         message: 'AI re-analysis failed';
       });
     } finally {
@@ -437,13 +434,11 @@ https://svelte.dev/e/js_parse_error -->
     return 'text-red-600';
   }
 </script>
-
 <div class="container mx-auto px-4">
   {#if selectedNode}
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <h2 class="container mx-auto px-4">Evidence Inspector</h2>
-        
         <!-- Action buttons -->
         <div class="container mx-auto px-4">
           {#if hasUnsavedChanges}
@@ -452,14 +447,12 @@ https://svelte.dev/e/js_parse_error -->
               Unsaved changes
             </span>
           {/if}
-          
           {#if lastSavedAt}
             <span class="container mx-auto px-4">
               Saved {new Date(lastSavedAt).toLocaleTimeString()}
             </span>
           {/if}
-          
-          <button 
+          <button
             onclick={reanalyzeWithAI}
             disabled={isLoading}
             class="container mx-auto px-4"
@@ -473,7 +466,6 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         </div>
       </div>
-      
       <!-- File info header -->
       <div class="container mx-auto px-4">
         <div class="container mx-auto px-4">
@@ -483,12 +475,11 @@ https://svelte.dev/e/js_parse_error -->
             <div class="container mx-auto px-4">{selectedNode.type}</div>
           </div>
         </div>
-        
         {#if $formData.qualityScore > 0}
           <div class="container mx-auto px-4">
             <span class="container mx-auto px-4">Quality Score:</span>
             <div class="container mx-auto px-4">
-              <div 
+              <div
                 class="container mx-auto px-4"
                 style="width: {$formData.qualityScore * 100}%"
               ></div>
@@ -497,7 +488,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </div>
-      
       <!-- Loading state -->
       {#if isLoading}
         <div class="container mx-auto px-4">
@@ -509,7 +499,6 @@ https://svelte.dev/e/js_parse_error -->
       {:else}
         <!-- Form sections -->
         <div class="container mx-auto px-4">
-          
           <!-- Basic Information -->
           <section>
             <h3 class="container mx-auto px-4">Basic Information</h3>
@@ -522,7 +511,6 @@ https://svelte.dev/e/js_parse_error -->
                   class="container mx-auto px-4"
                 />
               </div>
-              
               <div>
                 <label class="container mx-auto px-4" for="description">Description</label><textarea id="description"
                   bind:value={$formData.description}
@@ -532,10 +520,9 @@ https://svelte.dev/e/js_parse_error -->
                   class="container mx-auto px-4"
                 ></textarea>
               </div>
-              
               <div class="container mx-auto px-4">
                 <div>
-                  <label class="container mx-auto px-4" for="evidence-type">Evidence Type</label><select id="evidence-type" 
+                  <label class="container mx-auto px-4" for="evidence-type">Evidence Type</label><select id="evidence-type"
                     bind:value={$formData.evidenceType}
                     disabled={readOnly}
                     class="container mx-auto px-4"
@@ -545,9 +532,8 @@ https://svelte.dev/e/js_parse_error -->
                     {/each}
                   </select>
                 </div>
-                
                 <div>
-                  <label class="container mx-auto px-4" for="legal-relevance">Legal Relevance</label><select id="legal-relevance" 
+                  <label class="container mx-auto px-4" for="legal-relevance">Legal Relevance</label><select id="legal-relevance"
                     bind:value={$formData.legalRelevance}
                     disabled={readOnly}
                     class="container mx-auto px-4"
@@ -558,10 +544,9 @@ https://svelte.dev/e/js_parse_error -->
                   </select>
                 </div>
               </div>
-              
               <div class="container mx-auto px-4">
                 <div>
-                  <label class="container mx-auto px-4" for="confidentiality">Confidentiality</label><select id="confidentiality" 
+                  <label class="container mx-auto px-4" for="confidentiality">Confidentiality</label><select id="confidentiality"
                     bind:value={$formData.confidentialityLevel}
                     disabled={readOnly}
                     class="container mx-auto px-4"
@@ -571,9 +556,8 @@ https://svelte.dev/e/js_parse_error -->
                     {/each}
                   </select>
                 </div>
-                
                 <div>
-                  <label class="container mx-auto px-4" for="urgency">Urgency</label><select id="urgency" 
+                  <label class="container mx-auto px-4" for="urgency">Urgency</label><select id="urgency"
                     bind:value={$formData.urgencyLevel}
                     disabled={readOnly}
                     class="container mx-auto px-4"
@@ -586,7 +570,6 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             </div>
           </section>
-          
           <!-- Tags Section -->
           <section>
             <h3 class="container mx-auto px-4">Tags</h3>
@@ -602,7 +585,6 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </div>
               {/if}
-              
               <!-- Custom tags -->
               <div>
                 <label class="container mx-auto px-4">Custom Tags</label>
@@ -611,7 +593,7 @@ https://svelte.dev/e/js_parse_error -->
                     <span class="container mx-auto px-4">
                       {tag}
                       {#if !readOnly}
-                        <button 
+                        <button
                           onclick={() => removeCustomTag(tag)}
                           class="container mx-auto px-4"
                         >×</button>
@@ -619,7 +601,6 @@ https://svelte.dev/e/js_parse_error -->
                     </span>
                   {/each}
                 </div>
-                
                 {#if !readOnly}
                   <div class="container mx-auto px-4">
                     <input
@@ -628,8 +609,8 @@ https://svelte.dev/e/js_parse_error -->
                       keydown={(e) => e.key === 'Enter' && addCustomTag()}
                       class="container mx-auto px-4"
                     />
-                    <button 
-                      onclick={addCustomTag} 
+                    <button
+                      onclick={addCustomTag}
                       class="container mx-auto px-4"
                     >Add</button>
                   </div>
@@ -637,12 +618,10 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             </div>
           </section>
-          
           <!-- Entities Section -->
           <section>
             <h3 class="container mx-auto px-4">Extracted Entities</h3>
             <div class="container mx-auto px-4">
-              
               <!-- People -->
               {#if $formData.people.length > 0 || !readOnly}
                 <div>
@@ -654,13 +633,12 @@ https://svelte.dev/e/js_parse_error -->
                       </span>
                     {/if}
                   </div>
-                  
                   <div class="container mx-auto px-4">
                     {#each $formData.people as person}
                       <span class="container mx-auto px-4">
                         👤 {person}
                         {#if !readOnly}
-                          <button 
+                          <button
                             onclick={() => removePerson(person)}
                             class="container mx-auto px-4"
                           >×</button>
@@ -668,7 +646,6 @@ https://svelte.dev/e/js_parse_error -->
                       </span>
                     {/each}
                   </div>
-                  
                   {#if !readOnly}
                     <div class="container mx-auto px-4">
                       <input
@@ -677,15 +654,14 @@ https://svelte.dev/e/js_parse_error -->
                         keydown={(e) => e.key === 'Enter' && addCustomPerson()}
                         class="container mx-auto px-4"
                       />
-                      <button 
-                        onclick={addCustomPerson} 
+                      <button
+                        onclick={addCustomPerson}
                         class="container mx-auto px-4"
                       >Add</button>
                     </div>
                   {/if}
                 </div>
               {/if}
-              
               <!-- Locations -->
               {#if $formData.locations.length > 0 || !readOnly}
                 <div>
@@ -697,13 +673,12 @@ https://svelte.dev/e/js_parse_error -->
                       </span>
                     {/if}
                   </div>
-                  
                   <div class="container mx-auto px-4">
                     {#each $formData.locations as location}
                       <span class="container mx-auto px-4">
                         📍 {location}
                         {#if !readOnly}
-                          <button 
+                          <button
                             onclick={() => removeLocation(location)}
                             class="container mx-auto px-4"
                           >×</button>
@@ -711,7 +686,6 @@ https://svelte.dev/e/js_parse_error -->
                       </span>
                     {/each}
                   </div>
-                  
                   {#if !readOnly}
                     <div class="container mx-auto px-4">
                       <input
@@ -720,15 +694,14 @@ https://svelte.dev/e/js_parse_error -->
                         keydown={(e) => e.key === 'Enter' && addCustomLocation()}
                         class="container mx-auto px-4"
                       />
-                      <button 
-                        onclick={addCustomLocation} 
+                      <button
+                        onclick={addCustomLocation}
                         class="container mx-auto px-4"
                       >Add</button>
                     </div>
                   {/if}
                 </div>
               {/if}
-              
               <!-- Organizations -->
               {#if $formData.organizations.length > 0 || !readOnly}
                 <div>
@@ -740,13 +713,12 @@ https://svelte.dev/e/js_parse_error -->
                       </span>
                     {/if}
                   </div>
-                  
                   <div class="container mx-auto px-4">
                     {#each $formData.organizations as org}
                       <span class="container mx-auto px-4">
                         🏢 {org}
                         {#if !readOnly}
-                          <button 
+                          <button
                             onclick={() => removeOrganization(org)}
                             class="container mx-auto px-4"
                           >×</button>
@@ -754,7 +726,6 @@ https://svelte.dev/e/js_parse_error -->
                       </span>
                     {/each}
                   </div>
-                  
                   {#if !readOnly}
                     <div class="container mx-auto px-4">
                       <input
@@ -763,15 +734,14 @@ https://svelte.dev/e/js_parse_error -->
                         keydown={(e) => e.key === 'Enter' && addCustomOrganization()}
                         class="container mx-auto px-4"
                       />
-                      <button 
-                        onclick={addCustomOrganization} 
+                      <button
+                        onclick={addCustomOrganization}
                         class="container mx-auto px-4"
                       >Add</button>
                     </div>
                   {/if}
                 </div>
               {/if}
-              
               <!-- Dates -->
               {#if $formData.dates.length > 0}
                 <div>
@@ -783,7 +753,6 @@ https://svelte.dev/e/js_parse_error -->
                       </span>
                     {/if}
                   </div>
-                  
                   <div class="container mx-auto px-4">
                     {#each $formData.dates as date}
                       <span class="container mx-auto px-4">
@@ -795,7 +764,6 @@ https://svelte.dev/e/js_parse_error -->
               {/if}
             </div>
           </section>
-          
           <!-- Key Facts -->
           {#if $formData.keyFacts.length > 0}
             <section>
@@ -810,13 +778,11 @@ https://svelte.dev/e/js_parse_error -->
               </ul>
             </section>
           {/if}
-          
           <!-- Actions & Recommendations -->
           {#if $formData.actions.length > 0 || $formData.recommendations.length > 0 || !readOnly}
             <section>
               <h3 class="container mx-auto px-4">Actions & Recommendations</h3>
               <div class="container mx-auto px-4">
-                
                 <!-- Action Items -->
                 <div>
                   <label class="container mx-auto px-4">Action Items</label>
@@ -825,7 +791,7 @@ https://svelte.dev/e/js_parse_error -->
                       <span class="container mx-auto px-4">
                         ⚡ {action}
                         {#if !readOnly}
-                          <button 
+                          <button
                             onclick={() => removeAction(action)}
                             class="container mx-auto px-4"
                           >×</button>
@@ -833,7 +799,6 @@ https://svelte.dev/e/js_parse_error -->
                       </span>
                     {/each}
                   </div>
-                  
                   {#if !readOnly}
                     <div class="container mx-auto px-4">
                       <input
@@ -842,14 +807,13 @@ https://svelte.dev/e/js_parse_error -->
                         keydown={(e) => e.key === 'Enter' && addCustomAction()}
                         class="container mx-auto px-4"
                       />
-                      <button 
-                        onclick={addCustomAction} 
+                      <button
+                        onclick={addCustomAction}
                         class="container mx-auto px-4"
                       >Add</button>
                     </div>
                   {/if}
                 </div>
-                
                 <!-- AI Recommendations -->
                 {#if $formData.recommendations.length > 0}
                   <div>
@@ -867,7 +831,6 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             </section>
           {/if}
-          
           <!-- Red Flags -->
           {#if $formData.redFlags.length > 0}
             <section>
@@ -884,13 +847,11 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             </section>
           {/if}
-          
           <!-- Additional Legal Information -->
           {#if $formData.statutes.length > 0 || $formData.monetaryAmounts.length > 0 || $formData.potentialWitnesses.length > 0 || $formData.relatedCases.length > 0}
             <section>
               <h3 class="container mx-auto px-4">Legal Information</h3>
               <div class="container mx-auto px-4">
-                
                 {#if $formData.statutes.length > 0}
                   <div>
                     <label class="container mx-auto px-4">Relevant Statutes</label>
@@ -901,7 +862,6 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
                   </div>
                 {/if}
-                
                 {#if $formData.monetaryAmounts.length > 0}
                   <div>
                     <label class="container mx-auto px-4">Monetary Amounts</label>
@@ -912,7 +872,6 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
                   </div>
                 {/if}
-                
                 {#if $formData.potentialWitnesses.length > 0}
                   <div>
                     <label class="container mx-auto px-4">Potential Witnesses</label>
@@ -923,7 +882,6 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
                   </div>
                 {/if}
-                
                 {#if $formData.relatedCases.length > 0}
                   <div>
                     <label class="container mx-auto px-4">Related Cases</label>
@@ -938,11 +896,10 @@ https://svelte.dev/e/js_parse_error -->
             </section>
           {/if}
         </div>
-        
         <!-- Save button -->
         {#if !readOnly}
           <div class="container mx-auto px-4">
-            <button 
+            <button
               onclick={handleSave}
               disabled={isSaving || !hasUnsavedChanges}
               class="container mx-auto px-4"
@@ -967,15 +924,12 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
-  .enhanced-inspector-panel {;
+  .enhanced-inspector-panel {
     min-height: 100%;
     max-height: 100vh;
     overflow-y: auto;
 }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

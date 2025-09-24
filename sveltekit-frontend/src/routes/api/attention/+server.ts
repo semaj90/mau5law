@@ -1,14 +1,11 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * Kernel Splicing Attention API
  * Advanced CUDA attention mechanism with kernel splicing
  * Optimized for RTX 3060 Ti with <1ms processing
  */
-
 import { productionServiceClient } from '$lib/services/productionServiceClient'
 import { dimensionalCache } from '$lib/ai/dimensional-cache-engine'
-
 interface AttentionRequest {
   jobId: string
   text: string
@@ -23,7 +20,6 @@ interface AttentionRequest {
     batch_size?: number
   }
 }
-
 interface AttentionResponse {
   jobId: string
   status: 'success' | 'error'
@@ -41,26 +37,21 @@ interface AttentionResponse {
     flashAttention?: boolean
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: AttentionRequest = await request.json()
     const { jobId, text, type = 'attention', useCache = true, userId, context, options = {} } = body
-
     if (!jobId || !text) {
       return json({
-        success: false,
+        success: false
         error: 'jobId and text are required'
       }, { status: 400 })
     }
-
     const startTime = performance.now()
-
     // Check cache first if enabled
     let cacheKey = `attention:${type}:${Buffer.from(text).toString('base64').slice(0, 32)}`
     let cached = false
     let result: any = null
-
     if (useCache) {
       try {
         result = await dimensionalCache.get(cacheKey)
@@ -69,7 +60,6 @@ export const POST: RequestHandler = async ({ request }) => {
         console.warn('Cache lookup failed:', err)
       }
     }
-
     if (!cached) {
       // Process with advanced CUDA attention
       try {
@@ -86,7 +76,6 @@ export const POST: RequestHandler = async ({ request }) => {
           default:
             result = await processBasicAttention(text, options)
         }
-
         // Cache the result
         if (useCache && result) {
           try {
@@ -107,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       } catch (error: any) {
         return json({
-          success: false,
+          success: false
           jobId,
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
@@ -116,9 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }, { status: 500 })
       }
     }
-
     const totalTime = performance.now() - startTime
-
     const response: AttentionResponse = {
       jobId,
       status: 'success',
@@ -136,27 +123,23 @@ export const POST: RequestHandler = async ({ request }) => {
         flashAttention: type === 'flash-attention'
       }
     }
-
     return json({
-      success: true,
+      success: true
       ...response,
       timestamp: Date.now()
     })
-
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })
   }
 }
-
 export const GET: RequestHandler = async () => {
   try {
     // Get service status
     const stats = await dimensionalCache.getStats()
-
     return json({
       service: 'attention-processing',
       status: 'operational',
@@ -192,27 +175,24 @@ export const GET: RequestHandler = async () => {
       },
       supportedTypes: [
         'attention',
-        'multi-head', 
+        'multi-head',
         'flash-attention',
         'kernel-splicing'
       ],
       timestamp: Date.now()
     })
-
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 })
   }
 }
-
 // Helper functions for different attention types
 async function processKernelSplicingAttention(text: string, options: any) {
   // Simulate kernel splicing attention with <1ms processing
   const processTime = Math.random() * 0.001
-  
   return {
     output: new Array(768).fill(0).map(() => Math.random() * 2 - 1),
     attention: new Array(64).fill(0).map(() => Math.random()),
@@ -222,11 +202,9 @@ async function processKernelSplicingAttention(text: string, options: any) {
     kernelSplicing: true
   }
 }
-
 async function processFlashAttention(text: string, options: any) {
   // Simulate flash attention processing
   const processTime = Math.random() * 0.005
-  
   return {
     output: new Array(768).fill(0).map(() => Math.random() * 2 - 1),
     attention: new Array(64).fill(0).map(() => Math.random()),
@@ -236,27 +214,23 @@ async function processFlashAttention(text: string, options: any) {
     flashAttention: true
   }
 }
-
 async function processMultiHeadAttention(text: string, options: any) {
   // Simulate multi-head attention processing
   const processTime = Math.random() * 0.010
   const heads = options.heads || 8
-  
   return {
     output: new Array(768).fill(0).map(() => Math.random() * 2 - 1),
     attention: new Array(heads * 8).fill(0).map(() => Math.random()),
     processTime,
     memoryUsage: '2.4GB',
     confidence: 0.94,
-    multiHead: true,
+    multiHead: true
     heads
   }
 }
-
 async function processBasicAttention(text: string, options: any) {
   // Simulate basic attention processing
   const processTime = Math.random() * 0.015
-  
   return {
     output: new Array(768).fill(0).map(() => Math.random() * 2 - 1),
     attention: new Array(64).fill(0).map(() => Math.random()),

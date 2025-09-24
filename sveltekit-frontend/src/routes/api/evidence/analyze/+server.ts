@@ -2,11 +2,9 @@ import { json, error } from "@sveltejs/kit"
 import type { RequestHandler } from './$types'
 import { AIEvidenceAnalyzer, type EvidenceItem } from '$lib/services/ai-evidence-analyzer'
 }
-
 export interface AnalyzeRequest extends EvidenceItem {
   // Extends EvidenceItem with any additional fields if needed
 }
-
 export interface AnalysisResult {
   sessionId: string
   status: "processing" | "completed" | "failed"
@@ -14,25 +12,19 @@ export interface AnalysisResult {
   analysis?: any
   error?: string
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const evidence: AnalyzeRequest = await request.json()
-
     // Validate evidence data
     if (!evidence.id || !evidence.title || !evidence.description) {
       throw error(400, 'Missing required evidence fields: id, title, description')
     }
-
     // Generate session ID
     const sessionId = `analysis_${evidence.id}_${Date.now()}`
-
     // Initialize analyzer
     const analyzer = new AIEvidenceAnalyzer()
-
     // Perform analysis
     const analysis = await analyzer.analyzeEvidence(evidence)
-
     return json({
       sessionId,
       status: "completed",
@@ -44,15 +36,12 @@ export const POST: RequestHandler = async ({ request }) => {
     throw error(500, `Analysis failed: ${err.message}`)
   }
 }
-
 // GET endpoint to retrieve analysis by evidence ID
 export const GET: RequestHandler = async ({ url }) => {
   const evidenceId = url.searchParams.get('evidenceId')
-
   if (!evidenceId) {
     throw error(400, 'Missing evidenceId parameter')
   }
-
   try {
     // TODO: Fetch analysis from database
     // For now, return a sample response indicating the analysis should be requested via POST

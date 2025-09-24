@@ -1,11 +1,10 @@
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
-https://svelte.dev/e/attribute_duplicate -->
+https: //svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'aiEvent' has already been declared;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     open?: boolean;
     evidence?: unknown;
@@ -18,7 +17,6 @@ https://svelte.dev/e/js_parse_error -->
     aiEvent = null,
     onvalidated
   }: Props = $props();
-
   import Button from '$lib/components/ui/enhanced-bits';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import {
@@ -33,31 +31,28 @@ https://svelte.dev/e/js_parse_error -->
   let validationChoice = $state<"approve" | "reject" | null >(null);
   let feedback = $state<string >("");
   let corrections = $state({
-    summary: "",;
+    summary: "",
     tags: [] as string[],
-    evidenceType: "",;
-    analysis: "",;
+    evidenceType: "",
+    analysis: "",
   });
   let isSubmitting = $state(false);
   let showCorrections = $state(false);
-
   // Initialize corrections with current AI analysis
-  $effect(() => { 
+  $effect(() => {
     if (evidence && open) {
       corrections = {
-        summary: evidence.aiSummary || "",;
+        summary: evidence.aiSummary || "",
         tags: evidence.aiTags || [],
-        evidenceType: evidence.evidenceType || "",;
-        analysis: evidence.aiAnalysis?.analysis || "",;
+        evidenceType: evidence.evidenceType || "",
+        analysis: evidence.aiAnalysis?.analysis || "",
       };
     }
   });
-
   function handleValidationChoice(choice: "approve" | "reject") {
-    validationChoice = choice;
+    validationChoice = choic;
     showCorrections = choice === "reject";
   }
-
   function addTag() {
     const tagInput = document.getElementById("new-tag") as HTMLInputElement;
     const newTag = tagInput?.value.trim();
@@ -66,35 +61,28 @@ https://svelte.dev/e/js_parse_error -->
       tagInput.value = "";
     }
   }
-
   function removeTag(tagToRemove: string) {
     corrections.tags = corrections.tags.filter((tag) => tag !== tagToRemove);
   }
   async function submitValidation() {
     if (!evidence || !validationChoice) return;
-
     isSubmitting = true;
-
     try {
       const payload = {
         evidenceId: evidence.id,
         eventId: aiEvent?.id || null,
-        valid: validationChoice === "approve",;
-        feedback: feedback.trim() || null,;
-        corrections: validationChoice === "reject" ? corrections : null,;
+        valid: validationChoice === "approve",
+        feedback: feedback.trim() || null,
+        corrections: validationChoice === "reject" ? corrections : null
       };
-
       const response = await fetch("/api/evidence/validate", {
-        method: "POST",;
-        headers: { "Content-Type": "application/json" },;
-        body: JSON.stringify(payload),;
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-
       const result = await (response as { json?: unknown }).json();
-
       if ((result as { success?: unknown; error?: unknown }).success) {
         onvalidated?.();
-
         // Reset form
         validationChoice = null;
         feedback = "";
@@ -120,7 +108,6 @@ https://svelte.dev/e/js_parse_error -->
     open = false;
   }
 </script>
-
 <Dialog.RootPrimitive.Root bind:open>
   <Dialog.RootPrimitive.Content
     class="space-y-4"
@@ -148,7 +135,6 @@ closeModal()}
 </Button>
         </DialogPrimitive.Close>
       </div>
-
       {#if evidence}
         <div class="space-y-4">
           <!-- Evidence Info -->
@@ -158,21 +144,18 @@ closeModal()}
               {evidence.description || "No description"}
             </p>
           </div>
-
           <!-- AI Analysis to Validate -->
           <div class="space-y-4">
             <h4 class="space-y-4">
               <AlertTriangle class="space-y-4" />
               AI Analysis
             </h4>
-
             {#if evidence.aiSummary}
               <div class="space-y-4">
                 <p class="space-y-4">Summary:</p>
                 <p class="space-y-4">{evidence.aiSummary}</p>
               </div>
             {/if}
-
             {#if evidence.aiTags && evidence.aiTags.length > 0}
               <div class="space-y-4">
                 <p class="space-y-4">Suggested Tags:</p>
@@ -187,12 +170,10 @@ closeModal()}
                 </div>
               </div>
             {/if}
-
             <div>
               <p class="space-y-4">Evidence Type:</p>
               <p class="space-y-4">{evidence.evidenceType}</p>
             </div>
-
             {#if aiEvent}
               <div class="space-y-4">
                 <p class="space-y-4">Specific Event:</p>
@@ -207,11 +188,9 @@ closeModal()}
               </div>
             {/if}
           </div>
-
           <!-- Validation Question -->
           <div class="space-y-4">
             <h4 class="space-y-4">Is this AI analysis accurate?</h4>
-
             <div class="space-y-4">
               <Button
                 variant={validationChoice === "approve" ? "default" : "outline"}
@@ -222,7 +201,6 @@ handleValidationChoice("approve")}
                 <CheckCircle class="space-y-4" />
                 Yes, it's accurate
 </Button>
-
               <Button
                 variant={validationChoice === "reject" ? "danger" : "outline"}
                 class="space-y-4 bits-btn bits-btn"
@@ -234,7 +212,6 @@ handleValidationChoice("reject")}
 </Button>
             </div>
           </div>
-
           <!-- Feedback Section -->
           {#if validationChoice}
             <div class="space-y-4">
@@ -252,7 +229,6 @@ handleValidationChoice("reject")}
               </div>
             </div>
           {/if}
-
           <!-- Corrections Section -->
           {#if showCorrections}
             <div
@@ -262,7 +238,6 @@ handleValidationChoice("reject")}
                 <Edit3 class="space-y-4" />
                 Provide Corrections
               </h4>
-
               <!-- Summary Correction -->
               <div>
                 <label
@@ -279,7 +254,6 @@ handleValidationChoice("reject")}
                   rows="3"
                 ></textarea>
               </div>
-
               <!-- Evidence Type Correction -->
               <div>
                 <label
@@ -301,13 +275,11 @@ handleValidationChoice("reject")}
                   <option value="other">Other</option>
                 </select>
               </div>
-
               <!-- Tags Correction -->
               <div>
                 <label for="new-tag" class="space-y-4"
                   >Corrected Tags</label
                 >
-
                 <!-- Current tags -->
                 {#if corrections.tags.length > 0}
                   <div class="space-y-4">
@@ -327,7 +299,6 @@ handleValidationChoice("reject")}
                     {/each}
                   </div>
                 {/if}
-
                 <!-- Add new tag -->
                 <div class="space-y-4">
                   <input
@@ -352,7 +323,6 @@ addTag()}
             </div>
           {/if}
         </div>
-
         <!-- Footer -->
         <div class="space-y-4">
           <Button class="bits-btn"
@@ -363,8 +333,7 @@ closeModal()}
           >
             Cancel
 </Button>
-
-          <Button 
+          <Button
             class="bits-btn"
             onclick={() =>
 submitValidation()}
@@ -385,4 +354,3 @@ submitValidation()}
     </div>
   </DialogPrimitive.Content>
 </DialogPrimitive.Root>
-

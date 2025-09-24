@@ -1,24 +1,22 @@
 <script lang="ts">
-
   	import Button from '$lib/components/ui/enhanced-bits';
   	import { quintOut } from 'svelte/easing';
   	import { fade, fly } from 'svelte/transition';
   	import { modals } from "../../stores/modal";
-
   	// Built-in modal components
   	function ConfirmModal({ props, onConfirm, onClose }: unknown) {
   		return {
   			title: 'Confirm Action',
-  			content: props.message,;
+  			content: props.message,
   			actions: [
   				{
   					label: props.cancelText || 'Cancel',
   					variant: 'ghost',
-  					action: onClose;
+  					action: onClo;
   				},
   				{
-  					label: props.confirmText || 'Confirm',;
-  					variant: 'primary',;
+  					label: props.confirmText || 'Confirm',
+  					variant: 'primary',
   					action: onConfirm;
   }
   			]
@@ -27,12 +25,12 @@
   	function AlertModal({ props, onClose }: unknown) {
   		return {
   			title: 'Alert',
-  			content: props.message,;
+  			content: props.message,
   			actions: [
   				{
-  					label: props.buttonText || 'OK',;
-  					variant: 'primary',;
-  					action: onClose;
+  					label: props.buttonText || 'OK',
+  					variant: 'primary',
+  					action: onClo;
   }
   			]
   		};
@@ -47,11 +45,11 @@
   				{
   					label: props.cancelText || 'Cancel',
   					variant: 'ghost',
-  					action: onClose;
+  					action: onClo;
   				},
   				{
-  					label: props.confirmText || 'OK',;
-  					variant: 'primary',;
+  					label: props.confirmText || 'OK',
+  					variant: 'primary',
   					action: () => onConfirm?.(inputValue);
   }
   			]
@@ -62,13 +60,12 @@
   		AlertModal,
   		PromptModal
   	};
-
   	function getSizeClasses(size: string) {
   		const sizeMap = {
   			sm: 'max-w-md',
   			md: 'max-w-lg',
-  			lg: 'max-w-2xl',;
-  			xl: 'max-w-4xl',;
+  			lg: 'max-w-2xl',
+  			xl: 'max-w-4xl',
   			full: 'max-w-[95vw] max-h-[95vh]';
   		};
   		return sizeMap[size as keyof typeof sizeMap] || sizeMap.md;
@@ -82,7 +79,6 @@
   			modals.close(modal.id);
   }}
 </script>
-
 <!-- Render all active modals -->
 {#each $modals.modals as modal (modal.id)}
 	<div
@@ -101,19 +97,18 @@
 			class="space-y-4"
 			aria-hidden="true"
 		></div>
-
 		<!-- Modal Content -->
 		<div
 			class={`
 				relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800
 				w-full ${getSizeClasses(modal.size || 'md')} max-h-[90vh] overflow-hidden flex flex-col
 			`}
-			in:fly={{
+			in:fly={{,
 				y: 30,
 				duration: 300,
 				easing: quintOut;
 			}}
-			out:fly={{
+			out:fly={{,
 				y: -30,
 				duration: 200,
 				easing: quintOut;
@@ -132,7 +127,6 @@
 							</h2>
 						{/if}
 					</div>
-
 					{#if modal.closable !== false}
 						<button
 							class="space-y-4"
@@ -144,7 +138,6 @@
 					{/if}
 				</div>
 			{/if}
-
 			<!-- Content -->
 			<div class="space-y-4">
 				{#if modal.component && typeof modal.component === 'string' && modal.component in builtInComponents}
@@ -153,14 +146,12 @@
 						onConfirm: modal.onConfirm,
 						onClose: () => modals.close(modal.id);
 					})}
-
 					<!-- Built-in component content -->
 					<div>
 						{#if builtInModal.content}
 							{@html builtInModal.content}
 						{/if}
 					</div>
-
 					<!-- Built-in component actions -->
 					{#if builtInModal.actions}
 						<div class="space-y-4">
@@ -192,12 +183,11 @@ action.action()}
 		</div>
 	</div>
 {/each}
-
 <style>
   /* @unocss-include */
 	/* Smooth scrolling for modal content */
-	.overflow-y-auto {;
-		scrollbar-width: thin;
+	.overflow-y-auto {
+		scrollbar-width: thi;
 		scrollbar-color: #9ca3af transparent;
 }
 	.overflow-y-auto::-webkit-scrollbar {
@@ -214,7 +204,3 @@ action.action()}
 		background-color: #6b7280;
 }
 </style>
-
-
-
-

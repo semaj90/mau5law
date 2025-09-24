@@ -1,12 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Svelte 5 runes are built-in, no import needed
   // Web Speech API type declarations
-  interface SpeechRecognition extends EventTarget {;
+  interface SpeechRecognition extends EventTarget {
     continuous: boolean;
     interimResults: boolean;
     lang: string;
@@ -17,40 +16,32 @@ https://svelte.dev/e/js_parse_error -->
     onerror: (event: SpeechRecognitionErrorEvent) => void;
     onend: () => void;
   }
-
   interface SpeechRecognitionEvent extends Event {
     results: SpeechRecognitionResultList;
   }
-
   interface SpeechRecognitionResultList {
     [index: number]: SpeechRecognitionResult;
     length: number;
   }
-
   interface SpeechRecognitionResult {
-    [index: number]: SpeechRecognitionAlternative;
+    [index: number]: SpeechRecognitionAlternativ;
     isFinal: boolean;
   }
-
   interface SpeechRecognitionAlternative {
     transcript: string;
     confidence: number;
   }
-
   interface SpeechRecognitionErrorEvent extends Event {
     error: string;
   }
-
   // Global Web Speech types are provided by src/types/web-speech.d.ts
-
   import { onMount, tick } from 'svelte';
   import { writable } from 'svelte/store';
   import { createMachine, interpret } from 'xstate';
   // Updated to use melt-ui components
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
-
   // TODO: Replace with melt-ui equivalent when available
-  // import { Tabs } from 'bits-ui';
+  // import { Tabs } from 'bits-ui'
   import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
@@ -63,7 +54,6 @@ https://svelte.dev/e/js_parse_error -->
     Input
   } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea/index.js';
-
   // Real-time search integration
   import RealTimeLegalSearch from '$lib/components/search/RealTimeLegalSearch.svelte';
   import { useRealTimeSearch } from '$lib/services/real-time-search.ts';
@@ -86,39 +76,34 @@ https://svelte.dev/e/js_parse_error -->
     Save,
     Download,
   } from 'lucide-svelte';
-
   // Type definitions for panel layout
   interface PanelConfig {
     width: number;
     collapsed: boolean;
   }
-
   interface PanelLayout {
     reports: PanelConfig;
     summaries: PanelConfig;
     citations: PanelConfig;
     chat: PanelConfig;
   }
-
   // 4-Panel Layout State
   let panelLayout = $state<PanelLayout>({
     reports: { width: 25, collapsed: false },
     summaries: { width: 25, collapsed: false },
-    citations: { width: 25, collapsed: false },;
+    citations: { width: 25, collapsed: false },
     chat: { width: 25, collapsed: false },
   });
-
   // AI Assistant State
   let chatMessages = $state<ChatMessage[]>([]);
   let currentMessage = $state('');
   let isProcessing = $state(false);
   let voiceEnabled = $state(false);
   let isListening = $state(false);
-
   // XState Machine for AI Assistant
   const aiAssistantMachine = createMachine({
     id: 'aiAssistant',
-    initial: 'idle',;
+    initial: 'idle',
     states: {
       idle: {
         on: {
@@ -151,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
           ERROR: 'error',
         },
       },
-      error: {;
+      error: {
         on: {
           RETRY: 'idle',
           RESET: 'idle',
@@ -159,9 +144,7 @@ https://svelte.dev/e/js_parse_error -->
       },
     },
   });
-
   let aiService = interpret(aiAssistantMachine);
-
   interface ChatMessage {
     id: string;
     type: 'user' | 'assistant' | 'system';
@@ -171,7 +154,6 @@ https://svelte.dev/e/js_parse_error -->
     suggestions?: string[];
     metadata?: unknown;
   }
-
   interface Report {
     id: string;
     title: string;
@@ -180,7 +162,6 @@ https://svelte.dev/e/js_parse_error -->
     summary: string;
     status: 'draft' | 'completed' | 'archived';
   }
-
   interface Citation {
     id: string;
     title: string;
@@ -189,30 +170,24 @@ https://svelte.dev/e/js_parse_error -->
     relevance: number;
     tags: string[];
   }
-
   // Data stores
   let reports = $state<Report[]>([]);
   let summaries = $state<unknown[]>([]);
   let citations = $state<Citation[]>([]);
   let chatHistory = $state<unknown[]>([]);
-
   // AI Suggestions
   let aiSuggestions = $state<string[]>([]);
   let contextualSuggestions = $state<string[]>([]);
-
   // Real-time search integration
   const { state: searchState, search: performSearch } = useRealTimeSearch();
-
   // Enhanced AI suggestions from real-time search
   let searchSuggestions = $state<string[]>([]);
-
   $effect(() => {
     aiService.start();
     loadInitialData();
     initializeWebSpeech();
     startRealTimeUpdates();
   });
-
   async function loadInitialData() {
     try {
       // Load reports
@@ -220,19 +195,16 @@ https://svelte.dev/e/js_parse_error -->
       if (reportsResponse.ok) {
         reports = await reportsResponse.json();
       }
-
       // Load summaries
       const summariesResponse = await fetch('/api/summaries');
       if (summariesResponse.ok) {
         summaries = await summariesResponse.json();
       }
-
       // Load citations
       const citationsResponse = await fetch('/api/citations');
       if (citationsResponse.ok) {
         citations = await citationsResponse.json();
       }
-
       // Load chat history
       const historyResponse = await fetch('/api/chat/history');
       if (historyResponse.ok) {
@@ -242,48 +214,40 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Failed to load initial data:', error);
     }
   }
-
   function initializeWebSpeech() {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       voiceEnabled = true;
     }
   }
-
   async function sendMessage() {
     if (!currentMessage.trim()) return;
-
     const userMessage: ChatMessage = {
       id: `msg_${Date.now()}`,
-      type: 'user',;
-      content: currentMessage,;
-      timestamp: new Date(),;
+      type: 'user',
+      content: currentMessage
+      timestamp: new Date(),
     };
-
     chatMessages = [...chatMessages, userMessage];
-    const messageToSend = currentMessage;
+    const messageToSend = currentMessag;
     currentMessage = '';
-
     isProcessing = true;
     aiService.send('START_CHAT');
-
     try {
       // Enhance context with real-time search results
       let enhancedContext = getRelevantContext();
-
       // Perform real-time search to enrich context
       if ($searchState.isConnected) {
         try {
           const searchResults = await performSearch(messageToSend, {
             categories: ['cases', 'evidence', 'precedents'],
-            vectorSearch: true,
-            includeAI: true;
+            vectorSearch: true
+            includeAI: true
           });
-
           enhancedContext = {
             ...enhancedContext,
             searchResults: searchResults.slice(0, 5), // Top 5 relevant results
             searchMetadata: {
-              query: messageToSend,;
+              query: messageToSend
               timestamp: new Date(),
               resultCount: searchResults.length;
             }
@@ -292,53 +256,45 @@ https://svelte.dev/e/js_parse_error -->
           console.warn('Search enhancement failed:', searchError);
         }
       }
-
       const response = await fetch('/api/ai/chat', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: messageToSend,;
-          context: enhancedContext,
-          chatHistory: chatMessages.slice(-10),;
+        body: JSON.stringify({,
+          message: messageToSend
+          context: enhancedContext
+          chatHistory: chatMessages.slice(-10),
         }),
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
-
         const assistantMessage: ChatMessage = {
           id: `msg_${Date.now()}_ai`,
-          type: 'assistant',;
+          type: 'assistant',
           content: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).response,
-          timestamp: new Date(),;
+          timestamp: new Date(),
           suggestions: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).suggestions || [],
           metadata: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).metadata,
         };
-
         chatMessages = [...chatMessages, assistantMessage];
         aiSuggestions = (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).suggestions || [];
-
         aiService.send('RESPONSE_COMPLETE');
       } else {
         throw new Error('Chat request failed');
       }
     } catch (error) {
       console.error('Chat error:', error);
-
       const errorMessage: ChatMessage = {
         id: `msg_${Date.now()}_error`,
-        type: 'system',;
-        content: 'Sorry, I encountered an error. Please try again.',;
-        timestamp: new Date(),;
+        type: 'system',
+        content: 'Sorry, I encountered an error. Please try again.',
+        timestamp: new Date(),
       };
-
       chatMessages = [...chatMessages, errorMessage];
       aiService.send('ERROR');
     } finally {
       isProcessing = false;
     }
   }
-
   function getRelevantContext() {
     return {
       recentReports: reports.slice(0, 3),
@@ -346,25 +302,20 @@ https://svelte.dev/e/js_parse_error -->
       topCitations: citations.sort((a, b) => b.relevance - a.relevance).slice(0, 5),
     };
   }
-
   async function startVoiceInput() {
     if (!voiceEnabled) return;
-
     try {
       const SpeechRecognitionAPI =
-        (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        (window as any).SpeechRecognition || (window as any).webkitSpeechRecognitio;
       if (!SpeechRecognitionAPI) {
         throw new Error('Speech recognition not supported');
       }
       const recognition = new SpeechRecognitionAPI();
-
       recognition.continuous = false;
       recognition.interimResults = false;
       recognition.lang = 'en-US';
-
       isListening = true;
       aiService.send('VOICE_INPUT');
-
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         currentMessage = transcript;
@@ -372,26 +323,22 @@ https://svelte.dev/e/js_parse_error -->
         aiService.send('VOICE_COMPLETE');
         sendMessage();
       };
-
       recognition.onerror = () => {
         isListening = false;
         aiService.send('VOICE_CANCEL');
       };
-
       recognition.start();
     } catch (error) {
       console.error('Voice input error:', error);
       isListening = false;
     }
   }
-
   function startRealTimeUpdates() {
     // Generate contextual suggestions based on current context
     setInterval(() => {
       generateContextualSuggestions();
     }, 5000);
   }
-
   function generateContextualSuggestions() {
     const suggestions = [
       'Summarize the latest evidence',
@@ -400,21 +347,16 @@ https://svelte.dev/e/js_parse_error -->
       'Analyze contract vulnerabilities',
       'Compare case precedents',
     ];
-
     contextualSuggestions = suggestions.slice(0, 3);
   }
-
   async function switchContext(contextId: string) {
     aiService.send('CONTEXT_SWITCH');
-
     try {
       const response = await fetch(`/api/context/${contextId}`);
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const contextData = await (response as { ok?: unknown; json?: unknown }).json();
-
         // Update relevant panels with new context
         // This would load specific reports, summaries, etc.
-
         aiService.send('CONTEXT_LOADED');
       }
     } catch (error) {
@@ -422,16 +364,13 @@ https://svelte.dev/e/js_parse_error -->
       aiService.send('ERROR');
     }
   }
-
   function togglePanel(panelName: keyof PanelLayout) {
     panelLayout[panelName].collapsed = !panelLayout[panelName].collapsed;
   }
-
   function adjustPanelWidth(panelName: keyof PanelLayout, delta: number) {
     const current = panelLayout[panelName].width;
     const newWidth = Math.max(15, Math.min(50, current + delta));
     panelLayout[panelName].width = newWidth;
-
     // Redistribute remaining width
     const remaining = 100 - newWidth;
     const otherPanels = Object.keys.filter((p) => p !== panelName);
@@ -439,14 +378,12 @@ https://svelte.dev/e/js_parse_error -->
       panelLayout[panel].width = remaining / otherPanels.length;
     });
   }
-
   async function exportChatHistory() {
     const data = {
-      messages: chatMessages,;
-      timestamp: new Date(),;
-      context: getRelevantContext(),;
+      messages: chatMessages
+      timestamp: new Date(),
+      context: getRelevantContext(),
     };
-
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -455,17 +392,14 @@ https://svelte.dev/e/js_parse_error -->
     a.click();
     URL.revokeObjectURL(url);
   }
-
   function useSuggestion(suggestion: string) {
-    currentMessage = suggestion;
+    currentMessage = suggestio;
     sendMessage();
   }
 </script>
-
 <svelte:head>
   <title>AI Assistant</title>
 </svelte:head>
-
 <div class="h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
   <!-- Header -->
   <header class="bg-white border-b border-slate-200 p-4">
@@ -474,7 +408,6 @@ https://svelte.dev/e/js_parse_error -->
         <h1 class="text-2xl font-bold text-slate-900">🤖 AI Assistant</h1>
         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Context7 Active</span>
       </div>
-
       <div class="flex items-center space-x-2">
   <Button class="bits-btn" variant="ghost" size="sm" onclick={exportChatHistory}>
 <Download class="h-4 w-4 mr-1" />
@@ -486,7 +419,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   </header>
-
   <!-- 4-Panel Layout -->
   <div class="flex-1 flex">
     <!-- Reports Panel -->
@@ -509,7 +441,6 @@ togglePanel('reports')}>
 </Button>
             </div>
           </div>
-
           <div class="flex-1 overflow-y-auto p-4">
             {#if reports.length === 0}
               <div class="text-center py-8">
@@ -539,7 +470,6 @@ togglePanel('reports')}>
         </div>
       {/if}
     </div>
-
     <!-- Summaries Panel -->
     <div
       class="border-r border-slate-200 bg-white transition-all duration-300"
@@ -554,7 +484,6 @@ togglePanel('summaries')}>
               <Minimize class="h-3 w-3" />
 </Button>
           </div>
-
           <div class="flex-1 overflow-y-auto p-4">
             <div class="space-y-3">
               {#each summaries as summary}
@@ -568,7 +497,6 @@ togglePanel('summaries')}>
         </div>
       {/if}
     </div>
-
     <!-- Citations Panel -->
     <div
       class="border-r border-slate-200 bg-white transition-all duration-300"
@@ -583,7 +511,6 @@ togglePanel('citations')}>
               <Minimize class="h-3 w-3" />
 </Button>
           </div>
-
           <div class="flex-1 overflow-y-auto p-4">
             <div class="space-y-3">
               {#each citations as citation}
@@ -602,7 +529,6 @@ togglePanel('citations')}>
         </div>
       {/if}
     </div>
-
     <!-- AI Chat Panel -->
     <div
       class="bg-white transition-all duration-300 flex flex-col";
@@ -629,7 +555,6 @@ togglePanel('chat')}>
             <Expand class="h-3 w-3" />
 </Button>
         </div>
-
         <!-- AI Suggestions Bar -->
         {#if contextualSuggestions.length > 0}
           <div class="p-3 bg-blue-50 border-b border-blue-200">
@@ -645,7 +570,6 @@ togglePanel('chat')}>
             </div>
           </div>
         {/if}
-
         <!-- Chat Messages -->
         <div class="flex-1 overflow-y-auto p-4 space-y-4">
           {#if chatMessages.length === 0}
@@ -669,7 +593,6 @@ togglePanel('chat')}>
                   <p class="text-xs opacity-75 mt-1">
                     {new Date(message.timestamp).toLocaleTimeString()}
                   </p>
-
                   {#if message.suggestions && message.suggestions.length > 0}
                     <div class="mt-2 space-y-1">
                       {#each message.suggestions as suggestion}
@@ -685,7 +608,6 @@ togglePanel('chat')}>
               </div>
             {/each}
           {/if}
-
           {#if isProcessing}
             <div class="flex justify-start">
               <div class="bg-slate-100 rounded-lg p-3">
@@ -705,7 +627,6 @@ togglePanel('chat')}>
             </div>
           {/if}
         </div>
-
         <!-- Real-time Search Integration -->
         <div class="p-4 border-t border-slate-200">
           <div class="mb-4">
@@ -720,7 +641,6 @@ togglePanel('chat')}>
               }}
             />
           </div>
-
           <!-- Chat Input -->
           <div class="flex space-x-2">
             <div class="flex-1">
@@ -730,7 +650,6 @@ togglePanel('chat')}>
                 keydown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
                 disabled={isProcessing} />
             </div>
-
             {#if voiceEnabled}
               <Button
                 variant="ghost"
@@ -745,7 +664,6 @@ togglePanel('chat')}>
                 {/if}
 </Button>
             {/if}
-
             <Button class="bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing}>
 <Send class="h-4 w-4" />
 </Button>
@@ -755,9 +673,8 @@ togglePanel('chat')}>
     </div>
   </div>
 </div>
-
 <style>
-  .line-clamp-2 {;
+  .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -765,4 +682,3 @@ togglePanel('chat')}>
     overflow: hidden;
   }
 </style>
-

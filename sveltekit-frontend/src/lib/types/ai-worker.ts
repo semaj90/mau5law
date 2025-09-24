@@ -3,7 +3,6 @@
  * TypeScript types for AI Service Worker system
  */;
 }
-
 export interface LLMModel {
   id: string;
   name: string;
@@ -20,7 +19,6 @@ export interface LLMModel {
   capabilities: string[];
   endpoint: string;
 }
-
 export interface AITask {
   taskId: string;
   type: "generate" | "analyze" | "embed" | "chat" | "agent_workflow" | "legal_analysis";
@@ -28,28 +26,24 @@ export interface AITask {
   model: string;
   prompt: string;
   systemPrompt?: string;
-  context?: Record<string, any>;
+  context?: { [key: string]: any };
   timestamp: number;
   priority: "low" | "medium" | "high" | "critical";
-
   // Generation parameters
   temperature?: number;
   topP?: number;
   topK?: number;
   maxTokens?: number;
   repeatPenalty?: number;
-
   // Agent-specific parameters
   agents?: string[];
   maxRounds?: number;
   crewId?: string;
-
   // Metadata
   userId?: string;
   caseId?: string;
   sessionId?: string;
 }
-
 export interface AIResponse {
   id: string;
   content: string;
@@ -57,14 +51,13 @@ export interface AIResponse {
   model: string;
   tokensUsed: number;
   responseTime: number;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   error?: {
     name: string;
     message: string;
     code?: string;
   };
 }
-
 export interface WorkerMessage {
   type:
     | "PROCESS_AI_TASK"
@@ -81,7 +74,6 @@ export interface WorkerMessage {
   taskId: string;
   payload: any;
 }
-
 export interface WorkerStatus {
   activeRequests: number;
   queueLength: number;
@@ -91,7 +83,6 @@ export interface WorkerStatus {
   totalProcessed: number;
   errors: number;
 }
-
 export interface AIProviderConfig {
   id: string;
   type: "ollama" | "llamacpp" | "autogen" | "crewai";
@@ -102,7 +93,6 @@ export interface AIProviderConfig {
   healthCheckUrl?: string;
   maxConcurrentRequests?: number;
 }
-
 export interface AgentWorkflow {
   id: string;
   name: string;
@@ -111,7 +101,6 @@ export interface AgentWorkflow {
   steps: WorkflowStep[];
   timeout: number;
 }
-
 export interface AgentDefinition {
   id: string;
   name: string;
@@ -122,7 +111,6 @@ export interface AgentDefinition {
   maxTokens: number;
   temperature: number;
 }
-
 export interface WorkflowStep {
   id: string;
   agentId: string;
@@ -131,7 +119,6 @@ export interface WorkflowStep {
   condition?: string;
   timeout?: number;
 }
-
 export interface LegalAnalysisTask extends AITask {
   type: "legal_analysis";
   documentId?: string;
@@ -144,7 +131,6 @@ export interface LegalAnalysisTask extends AITask {
   jurisdiction?: string;
   lawAreas?: string[];
 }
-
 export interface EmbeddingTask extends AITask {
   type: "embed";
   texts: string[];
@@ -152,29 +138,25 @@ export interface EmbeddingTask extends AITask {
   dimensions: number;
   normalize?: boolean;
 }
-
 export interface ChatTask extends AITask {
   type: "chat";
   conversationId: string;
   history: ChatMessage[];
   streamResponse?: boolean;
 }
-
 export interface ChatMessage {
   role: "user" | "assistant" | "system";
   content: string;
   timestamp: number;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface AgentWorkflowTask extends AITask {
   type: "agent_workflow";
   workflowId: string;
-  inputs: Record<string, any>;
+  inputs: { [key: string]: any };
   agents: string[];
   coordination: "sequential" | "parallel" | "hierarchical";
 }
-
 export interface MultiLLMOrchestrationConfig {
   coordinatorModel: string;
   specialistModels: {
@@ -184,7 +166,6 @@ export interface MultiLLMOrchestrationConfig {
   maxIterations: number;
   votingStrategy: "majority" | "weighted" | "expert";
 }
-
 export interface ProcessingMetrics {
   taskId: string;
   startTime: number;
@@ -199,7 +180,6 @@ export interface ProcessingMetrics {
   success: boolean;
   error?: string;
 }
-
 export interface WorkerPool {
   workers: Worker[];
   taskDistribution: "round-robin" | "least-loaded" | "priority-based";
@@ -209,20 +189,17 @@ export interface WorkerPool {
   completedTasks: number;
   failedTasks: number;
 }
-
 export interface AIServiceWorkerManager {
   initialize(): Promise<void>;
   submitTask(task: AITask): Promise<string>;
   cancelTask(taskId: string): Promise<void>;
   getStatus(): Promise<WorkerStatus>;
   shutdown(): Promise<void>;
-
   // Event handlers
   onTaskComplete?: (taskId: string, response: AIResponse) => void;
   onTaskError?: (taskId: string, error: Error) => void;
   onStatusUpdate?: (status: WorkerStatus) => void;
 }
-
 export type AITaskType =
   | "generate"
   | "analyze"
@@ -233,7 +210,6 @@ export type AITaskType =
   | "document_summary"
   | "evidence_analysis"
   | "case_research";
-
 export type AIProviderType =
   | "ollama"
   | "autogen"
@@ -241,9 +217,7 @@ export type AIProviderType =
   | "langchain"
   | "openai"
   | "anthropic";
-
 export type TaskPriority = "low" | "medium" | "high" | "critical";
-
 export type TaskStatus =
   | "pending"
   | "queued"
@@ -253,7 +227,6 @@ export type TaskStatus =
   | "cancelled"
   | "timeout";
 }
-
 export interface TaskResult {
   taskId: string;
   status: TaskStatus;
@@ -261,7 +234,6 @@ export interface TaskResult {
   error?: Error;
   metrics: ProcessingMetrics;
 }
-
 export interface WorkerConfiguration {
   maxConcurrentTasks: number;
   defaultTimeout: number;

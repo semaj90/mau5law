@@ -1,10 +1,8 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types.js';
-
 export const load: PageServerLoad = async () => {
   try {
     const user = { id: 'mock-user-id', firstName: 'Detective', lastName: 'Smith', role: 'detective' };
-
     const recentCases = [
       {
         id: 'case-1',
@@ -17,11 +15,10 @@ export const load: PageServerLoad = async () => {
         id: 'case-2',
         title: 'Missing Person: Dr. Sarah Chen',
         status: 'active',
-        createdAt: new Date('2024-01-16T14:20:00'),;
+        createdAt: new Date('2024-01-16T14:20:00'),
         priority: 'medium',
       },
     ];
-
     const recentEvidence = [
       {
         id: 'evidence-1',
@@ -31,14 +28,13 @@ export const load: PageServerLoad = async () => {
         caseTitle: 'Corporate Espionage Investigation',
       },
       {
-        id: 'evidence-2',;
+        id: 'evidence-2',
         title: 'Witness Statement - John Doe',
         evidenceType: 'document',
         createdAt: new Date('2024-01-16T14:20:00'),
         caseTitle: 'Missing Person: Dr. Sarah Chen',
       },
     ];
-
     const systemData = {
       activeCases: 12,
       evidenceItems: 247,
@@ -49,7 +45,6 @@ export const load: PageServerLoad = async () => {
       memoryUsage: 42,
       networkLatency: 23,
     };
-
     return { user, recentCases, recentEvidence, systemData };
   } catch (err: unknown) {
     console.error('Error loading detective dashboard:', err);

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -7,10 +7,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 </script>
   import { Upload, File, X } from 'lucide-svelte';
-
   interface Props {
     accept?: string;
     multiple?: boolean;
@@ -19,7 +17,6 @@ https://svelte.dev/e/js_parse_error -->
     onFilesSelected?: (files: File[]) => void;
     onError?: (error: string) => void;
   }
-
   let {
     accept = '*/*',
     multiple = true,
@@ -28,32 +25,25 @@ https://svelte.dev/e/js_parse_error -->
     onFilesSelected,
     onError
   }: Props = $props();
-
   // Svelte 5 runes
   let isDragOver = $state(false);
   let isProcessing = $state(false);
   let selectedFiles = $state<File[]>([]);
   let fileInput: HTMLInputElement;
-
   // Drag and drop event handlers
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    
     if (disabled || isProcessing) return;
-    
     // Set drag effect for visual feedback
     if (event.dataTransfer) {
       event.dataTransfer.dropEffect = 'copy';
     }
-    
     isDragOver = true;
   }
-
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    
     // Only hide drag state if leaving the drop zone completely
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const isOutside = (
@@ -62,87 +52,66 @@ https://svelte.dev/e/js_parse_error -->
       event.clientY < rect.top ||
       event.clientY > rect.bottom
     );
-    
     if (isOutside) {
       isDragOver = false;
     }
   }
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    
     isDragOver = false;
-    
     if (disabled || isProcessing) return;
-    
     const files = Array.from(event.dataTransfer?.files || []);
     processFiles(files);
   }
-
   // File input handler
   function handleFileInput(event: Event) {
     const target = event.target as HTMLInputElement;
     if (!target.files) return;
-    
     const files = Array.from(target.files);
     processFiles(files);
-    
     // Clear input to allow re-selecting same files
     target.value = '';
   }
-
   // File processing and validation
   function processFiles(files: File[]) {
     if (files.length === 0) return;
-    
     isProcessing = true;
-    
     // Validate files
     const validFiles: File[] = [];
     const errors: string[] = [];
-    
     for (const file of files) {
       // Size validation
       if (file.size > maxSize) {
         errors.push(`${file.name} exceeds ${formatFileSize(maxSize)} limit`);
-        continue;
+        continu;
       }
-      
       // Type validation (if specified)
       if (accept !== '*/*' && !isFileTypeAccepted(file)) {
         errors.push(`${file.name} is not an accepted file type`);
-        continue;
+        continu;
       }
-      
       validFiles.push(file);
     }
-    
     // Handle errors
     if (errors.length > 0) {
       onError?.(errors.join(', '));
     }
-    
     // Update state
     if (multiple) {
       selectedFiles = [...selectedFiles, ...validFiles];
     } else {
       selectedFiles = validFiles.slice(0, 1);
     }
-    
     // Notify parent
     if (validFiles.length > 0) {
       onFilesSelected?.(validFiles);
     }
-    
     isProcessing = false;
   }
-
   function isFileTypeAccepted(file: File): boolean {
     if (accept === '*/*') return true;
-    
     const acceptedTypes = accept.split.map(type => type.trim());
-    
     return acceptedTypes.some(type => {
       if (type.startsWith('.')) {
         // Extension match
@@ -153,11 +122,10 @@ https://svelte.dev/e/js_parse_error -->
         return new RegExp(pattern).test(file.type);
       } else {
         // Exact MIME type match
-        return file.type === type;
+        return file.type === typ;
       }
     });
   }
-
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 B';
     const k = 1024;
@@ -165,17 +133,14 @@ https://svelte.dev/e/js_parse_error -->
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   }
-
   function removeFile(index: number) {
     selectedFiles = selectedFiles.filter((_, i) => i !== index);
   }
-
   function openFileDialog() {
     if (disabled || isProcessing) return;
     fileInput?.click();
   }
 </script>
-
 <!-- Hidden file input -->
 <input
   bind:this={fileInput}
@@ -187,7 +152,6 @@ https://svelte.dev/e/js_parse_error -->
   style="display: none;"
   aria-label="File input"
 />
-
 <!-- Drop Zone -->
 <div
   class="drag-drop-zone retro-border"
@@ -213,7 +177,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
   {/if}
-
   <!-- Default Content -->
   <div class="drop-content">
     {#if isProcessing}
@@ -236,7 +199,6 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 </div>
-
 <!-- File List -->
 {#if selectedFiles.length > 0}
   <div class="file-list">
@@ -259,9 +221,8 @@ https://svelte.dev/e/js_parse_error -->
     {/each}
   </div>
 {/if}
-
 <style>
-  .drag-drop-zone {;
+  .drag-drop-zone {
     position: relative;
     min-height: 200px;
     border: 3px dashed var(--nes-blue, #3cbcfc);
@@ -271,61 +232,52 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.3s ease;
     overflow: hidden;
   }
-
   .drag-drop-zone:hover:not(.disabled) {
     border-color: var(--nes-green, #92cc41);
     background: var(--yorha-bg-tertiary, #2a2a2a);
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgba(0, 255, 65, 0.2);
   }
-
   .drag-drop-zone.drag-over {
     border-color: var(--nes-yellow, #f7d51d);
     background: var(--yorha-bg-tertiary, #2a2a2a);
     animation: pulse-glow 1s ease-in-out infinite alternate;
   }
-
   .drag-drop-zone.disabled {
     opacity: 0.5;
     cursor: not-allowed;
     filter: grayscale(100%);
   }
-
   .drag-drop-zone.processing {
     cursor: wait;
   }
-
   /* Drag Overlay */
   .drag-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, 
-      rgba(255, 215, 0, 0.1) 0%, 
+    background: linear-gradient(135deg,
+      rgba(255, 215, 0, 0.1) 0%,
       rgba(0, 255, 65, 0.1) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 2;
   }
-
   .drag-content {
     text-align: center;
     animation: float-glow 2s ease-in-out infinite alternate;
   }
-
   .drag-icon {
     color: var(--nes-yellow, #f7d51d);
     margin-bottom: 8px;
     filter: drop-shadow(0 0 10px currentColor);
   }
-
   .drag-text {
     font-size: 18px;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 2px;
   }
-
   /* Default Content */
   .drop-content {
     display: flex;
@@ -336,13 +288,11 @@ https://svelte.dev/e/js_parse_error -->
     text-align: center;
     height: 100%;
   }
-
   .upload-icon {
     color: var(--nes-blue, #3cbcfc);
     margin-bottom: 16px;
     transition: color 0.3s ease;
   }
-
   .upload-title {
     font-size: 20px;
     font-weight: bold;
@@ -351,27 +301,23 @@ https://svelte.dev/e/js_parse_error -->
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-
   .upload-description {
     color: var(--yorha-text-muted, #b0b0b0);
     margin-bottom: 16px;
     font-size: 14px;
   }
-
   .upload-specs {
     display: flex;
     gap: 12px;
     font-size: 12px;
     color: var(--yorha-text-muted, #808080);
   }
-
   .spec {
     background: var(--yorha-bg-tertiary, #2a2a2a);
     padding: 4px 8px;
     border-radius: 4px;
     border: 1px solid var(--yorha-border, #606060);
   }
-
   /* Processing State */
   .processing-state {
     display: flex;
@@ -379,7 +325,6 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     gap: 16px;
   }
-
   .loading-spinner {
     width: 40px;
     height: 40px;
@@ -388,14 +333,12 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   .processing-text {
     color: var(--nes-blue, #3cbcfc);
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-
   /* File List */
   .file-list {
     margin-top: 16px;
@@ -403,7 +346,6 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 8px;
     padding: 16px;
   }
-
   .file-list-title {
     font-size: 14px;
     font-weight: bold;
@@ -412,7 +354,6 @@ https://svelte.dev/e/js_parse_error -->
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-
   .file-item {
     display: flex;
     align-items: center;
@@ -423,35 +364,29 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 8px;
     transition: all 0.2s ease;
   }
-
   .file-item:hover {
     background: var(--yorha-bg-primary, #0a0a0a);
     transform: translateX(4px);
   }
-
   .file-icon {
     color: var(--nes-green, #92cc41);
     flex-shrink: 0;
   }
-
   .file-info {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 2px;
   }
-
   .file-name {
     font-size: 14px;
     color: var(--yorha-text-primary, #e0e0e0);
     font-weight: 500;
   }
-
   .file-size {
     font-size: 12px;
     color: var(--yorha-text-muted, #b0b0b0);
   }
-
   .remove-file {
     background: none;
     border: none;
@@ -461,12 +396,10 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 4px;
     transition: all 0.2s ease;
   }
-
   .remove-file:hover {
     background: rgba(248, 56, 0, 0.1);
     transform: scale(1.1);
   }
-
   /* Animations */
   @keyframes pulse-glow {
     from {
@@ -476,7 +409,6 @@ https://svelte.dev/e/js_parse_error -->
       box-shadow: 0 0 40px rgba(247, 209, 29, 0.6);
     }
   }
-
   @keyframes float-glow {
     from {
       transform: translateY(0px);
@@ -487,7 +419,6 @@ https://svelte.dev/e/js_parse_error -->
       filter: drop-shadow(0 0 20px currentColor);
     }
   }
-
   @keyframes spin {
     from {
       transform: rotate(0deg);
@@ -496,23 +427,19 @@ https://svelte.dev/e/js_parse_error -->
       transform: rotate(360deg);
     }
   }
-
   /* Accessibility */
   .drag-drop-zone:focus {
     outline: 2px solid var(--nes-blue, #3cbcfc);
     outline-offset: 2px;
   }
-
   /* Responsive */
   @media (max-width: 768px) {
     .drag-drop-zone {
       min-height: 150px;
     }
-    
     .drop-content {
       padding: 24px 16px;
     }
-    
     .upload-specs {
       flex-direction: column;
       gap: 8px;

@@ -2,14 +2,12 @@ import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill'
 }
-
 export interface VectorSimilarityRequest {
   vector1: number[]
   vector2: number[]
   mode?: 'webgpu' | 'webgl' | 'cpu' | 'auto'
   returnDiagnostics?: boolean
 }
-
 export interface VectorSimilarityResponse {
   similarity: number
   mode: 'webgpu' | 'webgl' | 'cpu'
@@ -22,7 +20,6 @@ export interface VectorSimilarityResponse {
   }
   error?: string
 }
-
 // GET endpoint for WebGPU capabilities info
 export const GET: RequestHandler = async () => {
   try {
@@ -50,59 +47,48 @@ export const GET: RequestHandler = async () => {
         'Returns cosine similarity: 1 = identical, 0 = perpendicular, -1 = opposite'
       ]
     }
-
     return json(capabilities)
   } catch (error: any) {
     return json({ error: 'Failed to get capabilities' }, { status: 500 })
   }
 }
-
 // POST endpoint for vector similarity computation
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now()
-  
   try {
     const body: VectorSimilarityRequest = await request.json()
-    
     // Validate input
     if (!Array.isArray(body.vector1) || !Array.isArray(body.vector2)) {
       return json({
         error: 'Both vector1 and vector2 must be arrays of numbers'
       } as VectorSimilarityResponse, { status: 400 })
     }
-
     if (body.vector1.length !== body.vector2.length) {
       return json({
         error: `Vector length mismatch: vector1 has ${body.vector1.length} dimensions, vector2 has ${body.vector2.length} dimensions`
       } as VectorSimilarityResponse, { status: 400 })
     }
-
     if (body.vector1.length === 0) {
       return json({
         error: 'Vectors cannot be empty'
       } as VectorSimilarityResponse, { status: 400 })
     }
-
     // Validate that all elements are numbers
     const isValidVector = (vec: any[]): vec is number[] => {
       return vec.every(v => typeof v === 'number' && !isNaN(v) && isFinite(v)
     }
-
     if (!isValidVector(body.vector1) || !isValidVector(body.vector2)) {
       return json({
         error: 'All vector elements must be finite numbers'
       } as VectorSimilarityResponse, { status: 400 })
     }
-
     const mode = body.mode || 'auto'
     let similarity: number
     let actualMode: 'webgpu' | 'webgl' | 'cpu'
     let initResult = false
-
     try {
       // Initialize WebGPU polyfill if not already done
       initResult = await webgpuPolyfill.initialize()
-      
       if (mode === 'webgpu' || mode === 'auto') {
         // Try WebGPU first
         try {
@@ -130,22 +116,18 @@ export const POST: RequestHandler = async ({ request }) => {
         similarity = (webgpuPolyfill as any).computeSimilarityCPU(body.vector1, body.vector2)
         actualMode = 'cpu'
       }
-
     } catch (error: any) {
       // Ultimate fallback to CPU
       console.warn('Vector similarity computation failed, falling back to CPU:', error)
       similarity = (webgpuPolyfill as any).computeSimilarityCPU(body.vector1, body.vector2)
       actualMode = 'cpu'
     }
-
     const executionTime = performance.now() - startTime
-
     const response: VectorSimilarityResponse = {
       similarity,
-      mode: actualMode,
+      mode: actualMode
       executionTimeMs: executionTime
     }
-
     // Add diagnostics if requested
     if (body.returnDiagnostics) {
       const stats = webgpuPolyfill.getPerformanceStats()
@@ -161,16 +143,13 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       }
     }
-
     return json(response)
-
   } catch (error: any) {
     const executionTime = performance.now() - startTime
-    
     return json({
       similarity: 0,
       mode: 'cpu' as const,
-      executionTimeMs: executionTime,
+      executionTimeMs: executionTime
       error: `Vector similarity computation failed: ${error.message || error}`
     } as VectorSimilarityResponse, { status: 500 })
   }

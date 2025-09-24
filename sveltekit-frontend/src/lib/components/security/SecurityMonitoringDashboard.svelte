@@ -4,7 +4,6 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from '$lib/components/ui/enhanced-bits';
   import { notifications } from "$lib/stores/notification";
   import { getSecurityEvents, type SecurityEvent } from "$lib/utils/security";
@@ -38,7 +37,6 @@
   let showDetails = new Set<number>();
   let refreshInterval = $state<number | null >(null);
   let loading = $state(false);
-
   // Security metrics
   // runtime helpers like $derived are provided by the runes compiler; don't import them.
   const criticalEvents = $derived(() => securityEvents.filter((e) => e.severity === 'critical').length);
@@ -46,26 +44,22 @@
   const recentEvents = $derived(() => securityEvents.filter((e) => Date.now() - e.timestamp < 24 * 60 * 60 * 1000).length);
   const loginAttempts = $derived(() => securityEvents.filter((e) => e.type === 'login').length);
   const accessDeniedEvents = $derived(() => securityEvents.filter((e) => e.type === 'access_denied').length);
-
   // System status
   const systemHealth = writable({
-    database: "healthy",;
+    database: "healthy",
     authentication: "healthy",
-    fileSystem: "healthy",;
-    network: "healthy",;
+    fileSystem: "healthy",
+    network: "healthy",
   });
-
   $effect(() => {
     loadSecurityEvents();
     startAutoRefresh();
   });
-
   onDestroy(() => {
     if (refreshInterval) {
       clearInterval(refreshInterval);
   }
   });
-
   function loadSecurityEvents() {
     loading = true;
     try {
@@ -74,16 +68,15 @@
     } catch (error) {
       console.error("Failed to load security events:", error);
       notifications.add({
-        type: "error",;
-        title: "Failed to Load Security Events",;
-        message: "Unable to retrieve security monitoring data.",;
+        type: "error",
+        title: "Failed to Load Security Events",
+        message: "Unable to retrieve security monitoring data.",
       });
     } finally {
       loading = false;
   }}
   function filterEvents() {
   let filtered = $state([...securityEvents]);
-
     if (selectedSeverity) {
       filtered = filtered.filter((e) => e.severity === selectedSeverity);
   }
@@ -92,7 +85,6 @@
   }
     // Sort by timestamp (most recent first)
     filtered.sort((a, b) => b.timestamp - a.timestamp);
-
     filteredEvents = filtered;
   }
   function startAutoRefresh() {
@@ -106,7 +98,7 @@
     } else {
       showDetails.add(index);
   }
-    showDetails = showDetails;
+    showDetails = showDetail;
   }
   function clearAllEvents() {
     if (
@@ -118,9 +110,9 @@
       securityEvents = [];
       filteredEvents = [];
       notifications.add({
-        type: "success",;
-        title: "Security Events Cleared",;
-        message: "All security events have been cleared.",;
+        type: "success",
+        title: "Security Events Cleared",
+        message: "All security events have been cleared.",
       });
   }}
   function exportEvents() {
@@ -136,13 +128,13 @@
   function getSeverityIcon(severity: string) {
     switch (severity) {
       case "critical":
-        return AlertTriangle;
+        return AlertTriangl;
       case "high":
-        return AlertCircle;
+        return AlertCircl;
       case "medium":
         return Info;
       case "low":
-        return CheckCircle;
+        return CheckCircl;
       default:
         return Info;
   }}
@@ -162,15 +154,15 @@
   function getTypeIcon(type: string) {
     switch (type) {
       case "login":
-        return Users;
+        return User;
       case "logout":
         return Unlock;
       case "access_denied":
         return Lock;
       case "suspicious_activity":
-        return AlertTriangle;
+        return AlertTriangl;
       case "file_upload":
-        return Database;
+        return Databa;
       case "data_export":
         return Download;
       default:
@@ -182,11 +174,11 @@
   function getSystemHealthIcon(status: string) {
     switch (status) {
       case "healthy":
-        return CheckCircle;
+        return CheckCircl;
       case "warning":
-        return AlertCircle;
+        return AlertCircl;
       case "error":
-        return XCircle;
+        return XCircl;
       default:
         return Info;
   }}
@@ -208,7 +200,6 @@
     }
   });
 </script>
-
 <div class="container mx-auto px-4">
   <!-- Header -->
   <div
@@ -223,7 +214,6 @@
         Monitor system security events and health status
       </p>
     </div>
-
     <div class="container mx-auto px-4">
       <Button class="bits-btn"
         variant="ghost"
@@ -240,7 +230,7 @@ exportEvents()}>
         <Download class="h-4 w-4" />
         Export
 </Button>
-      <Button 
+      <Button
         class="bits-btn container mx-auto px-4"
         variant="ghost"
         size="sm"
@@ -252,7 +242,6 @@ clearAllEvents()}
 </Button>
     </div>
   </div>
-
   <!-- Security Metrics -->
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
@@ -263,7 +252,6 @@ clearAllEvents()}
       <div class="container mx-auto px-4">{criticalEvents}</div>
       <div class="container mx-auto px-4">Requiring immediate attention</div>
     </div>
-
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <AlertCircle class="container mx-auto px-4" />
@@ -272,7 +260,6 @@ clearAllEvents()}
       <div class="container mx-auto px-4">{highEvents}</div>
       <div class="container mx-auto px-4">Need investigation</div>
     </div>
-
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <Activity class="container mx-auto px-4" />
@@ -281,7 +268,6 @@ clearAllEvents()}
       <div class="container mx-auto px-4">{recentEvents}</div>
       <div class="container mx-auto px-4">Last 24 hours</div>
     </div>
-
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <Users class="container mx-auto px-4" />
@@ -291,14 +277,12 @@ clearAllEvents()}
       <div class="container mx-auto px-4">{accessDeniedEvents} denied</div>
     </div>
   </div>
-
   <!-- System Health -->
   <div class="container mx-auto px-4">
     <h3 class="container mx-auto px-4">
       <Monitor class="container mx-auto px-4" />
       System Health
     </h3>
-
     <div class="container mx-auto px-4">
       <div class="container mx-auto px-4">
         <Database class="container mx-auto px-4" />
@@ -308,7 +292,6 @@ clearAllEvents()}
         </div>
         {#if $systemHealth.database === 'healthy'}<CheckCircle class="container mx-auto px-4" />{:else if $systemHealth.database === 'warning'}<AlertCircle class="container mx-auto px-4" />{:else if $systemHealth.database === 'error'}<XCircle class="container mx-auto px-4" />{:else}<Info class="container mx-auto px-4" />{/if}
       </div>
-
       <div class="container mx-auto px-4">
         <Key class="container mx-auto px-4" />
         <div class="container mx-auto px-4">
@@ -317,7 +300,6 @@ clearAllEvents()}
         </div>
         {#if $systemHealth.authentication === 'healthy'}<CheckCircle class="container mx-auto px-4" />{:else if $systemHealth.authentication === 'warning'}<AlertCircle class="container mx-auto px-4" />{:else if $systemHealth.authentication === 'error'}<XCircle class="container mx-auto px-4" />{:else}<Info class="container mx-auto px-4" />{/if}
       </div>
-
       <div class="container mx-auto px-4">
         <Server class="container mx-auto px-4" />
         <div class="container mx-auto px-4">
@@ -326,7 +308,6 @@ clearAllEvents()}
         </div>
         {#if $systemHealth.fileSystem === 'healthy'}<CheckCircle class="container mx-auto px-4" />{:else if $systemHealth.fileSystem === 'warning'}<AlertCircle class="container mx-auto px-4" />{:else if $systemHealth.fileSystem === 'error'}<XCircle class="container mx-auto px-4" />{:else}<Info class="container mx-auto px-4" />{/if}
       </div>
-
       <div class="container mx-auto px-4">
         <Activity class="container mx-auto px-4" />
         <div class="container mx-auto px-4">
@@ -337,7 +318,6 @@ clearAllEvents()}
       </div>
     </div>
   </div>
-
   <!-- Security Events -->
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
@@ -345,7 +325,6 @@ clearAllEvents()}
         class="container mx-auto px-4"
       >
         <h3 class="container mx-auto px-4">Security Events</h3>
-
         <!-- Filters -->
         <div class="container mx-auto px-4">
           <select
@@ -358,7 +337,6 @@ clearAllEvents()}
             <option value="medium">Medium</option>
             <option value="low">Low</option>
           </select>
-
           <select
             class="container mx-auto px-4"
             bind:value={selectedType}
@@ -374,7 +352,6 @@ clearAllEvents()}
         </div>
       </div>
     </div>
-
     <div class="container mx-auto px-4">
       {#if loading}
         <div class="container mx-auto px-4">
@@ -410,7 +387,6 @@ clearAllEvents()}
                       >
                       <div class="container mx-auto px-4">{event.severity}</div>
                     </div>
-
                     <div class="container mx-auto px-4">
                       <Clock class="container mx-auto px-4" />
                       {formatTimestamp(event.timestamp)}
@@ -418,7 +394,6 @@ clearAllEvents()}
                         • User: {event.userId}
                       {/if}
                     </div>
-
                     {#if showDetails.has(index)}
                       <div
                         class="container mx-auto px-4"
@@ -450,8 +425,7 @@ clearAllEvents()}
                     {/if}
                   </div>
                 </div>
-
-                <Button 
+                <Button
                   class="bits-btn"
                   variant="ghost"
                   size="sm"
@@ -468,6 +442,3 @@ toggleEventDetails(index)}
     </div>
   </div>
 </div>
-
-
-

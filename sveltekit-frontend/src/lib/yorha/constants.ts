@@ -2,7 +2,6 @@
 export type YoRHaColumn = { key: string; title: string; sortable?: boolean; filterable?: boolean; width?: number; type?: 'text' | 'number' | 'date' | 'action'; };
 export interface YoRHaFormFieldBase { id: string; label: string; required?: boolean; }
 export type YoRHaFormField = (YoRHaFormFieldBase & { type: 'text' | 'textarea' | 'date' }) | (YoRHaFormFieldBase & { type: 'select'; options: Array<{ value: string; label: string }> });
-
 export const documentsColumns: YoRHaColumn[] = [
   { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 },
   { key: 'title', title: 'DOCUMENT TITLE', sortable: true, filterable: true, width: 300 },
@@ -13,7 +12,6 @@ export const documentsColumns: YoRHaColumn[] = [
   { key: 'yorha_timestamp', title: 'PROCESSED', sortable: true, width: 140, type: 'date' },
   { key: 'actions', title: 'ACTIONS', width: 150, type: 'action' }
 ];
-
 export const casesColumns: YoRHaColumn[] = [
   { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 },
   { key: 'title', title: 'CASE TITLE', sortable: true, filterable: true, width: 300 },
@@ -24,7 +22,6 @@ export const casesColumns: YoRHaColumn[] = [
   { key: 'yorha_timestamp', title: 'CREATED', sortable: true, width: 140, type: 'date' },
   { key: 'actions', title: 'ACTIONS', width: 150, type: 'action' }
 ];
-
 export const evidenceColumns: YoRHaColumn[] = [
   { key: 'yorha_id', title: 'YORHA ID', sortable: true, width: 140 },
   { key: 'title', title: 'EVIDENCE TITLE', sortable: true, filterable: true, width: 250 },
@@ -35,7 +32,6 @@ export const evidenceColumns: YoRHaColumn[] = [
   { key: 'yorha_timestamp', title: 'COLLECTED', sortable: true, width: 140, type: 'date' },
   { key: 'actions', title: 'ACTIONS', width: 150, type: 'action' }
 ];
-
 export const documentFormFields: YoRHaFormField[] = [
   { id: 'title', label: 'Document Title', type: 'text', required: true },
   { id: 'content', label: 'Content', type: 'textarea', required: true },
@@ -50,7 +46,6 @@ export const documentFormFields: YoRHaFormField[] = [
   { id: 'court', label: 'Court', type: 'text' },
   { id: 'citation', label: 'Citation', type: 'text' }
 ];
-
 export const caseFormFields: YoRHaFormField[] = [
   { id: 'title', label: 'Case Title', type: 'text', required: true },
   { id: 'description', label: 'Description', type: 'textarea', required: true },
@@ -69,7 +64,6 @@ export const caseFormFields: YoRHaFormField[] = [
     { value: 'archived', label: 'Archived' }
   ]}
 ];
-
 export const evidenceFormFields: YoRHaFormField[] = [
   { id: 'title', label: 'Evidence Title', type: 'text', required: true },
   { id: 'description', label: 'Description', type: 'textarea', required: true },
@@ -85,11 +79,8 @@ export const evidenceFormFields: YoRHaFormField[] = [
   { id: 'collectedBy', label: 'Collected By', type: 'text', required: true },
   { id: 'collectedAt', label: 'Collection Date', type: 'date' }
 ];
-
 export const YO_RHA_FETCH_TIMEOUT_MS = 12000;
-
 type AbortLike = { signal?: any; abort?: () => void };
-
 /**
  * withAbort - Accepts a function that receives an optional signal (for environments
  * that have AbortController) and returns an object with the promise and an abort function.
@@ -99,13 +90,11 @@ export function withAbort<T>(fn: (signal?: any) => Promise<T>): { promise: Promi
   const controller = (typeof AbortController !== 'undefined')
     ? (new AbortController() as AbortLike)
     : ({ signal: undefined, abort: () => { } } as AbortLike);
-
   return {
-    promise: fn(controller.signal),;
+    promise: fn(controller.signal),
     abort: () => controller.abort && controller.abort()
   };
 }
-
 /**
  * debounce - Simple debounce helper that returns a debounced version of the provided function.
  */;

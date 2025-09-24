@@ -1,6 +1,5 @@
 import { writable } from 'svelte/store';
 }
-
 export interface AIMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
@@ -14,7 +13,6 @@ export interface AIMessage {
     suggestions?: string[];
   };
 }
-
 export interface AIResponse {
   text: string;
   timestamp: number;
@@ -26,7 +24,6 @@ export interface AIResponse {
   }>;
   confidence?: number;
 }
-
 export interface CaseAIContext {
   caseId: string;
   title?: string;
@@ -43,7 +40,7 @@ export interface CaseAIContext {
     lastActivity: number;
     activeEvidenceId?: string;
   };
-  insights: Array<{;
+  insights: Array<{,
     id: string;
     type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
     description: string;
@@ -52,13 +49,12 @@ export interface CaseAIContext {
     timestamp: number;
   }>;
 }
-
 export interface AIAssistantState {
   cases: Record<string, CaseAIContext>;
   currentCaseId?: string;
   isLoading: boolean;
   error?: string;
-  globalInsights: Array<{
+  globalInsights: Array<{,
     id: string;
     type: 'trend' | 'pattern' | 'recommendation';
     description: string;
@@ -66,22 +62,18 @@ export interface AIAssistantState {
     timestamp: number;
   }>;
 }
-
 const initialState: AIAssistantState = {
   cases: {},
-  isLoading: false,
+  isLoading: false
   globalInsights: []
 };
-
 function createAIAssistantStore() {
   const { subscribe, set, update } = writable<AIAssistantState>(initialState);
-
   return {
     subscribe,
     set,
     update,
-
-    // Initialize a new case context;
+    // Initialize a new case context
     initializeCase: (caseId: string, title?: string) => {
       update(state => {
         if (!state.cases[caseId]) {
@@ -91,17 +83,16 @@ function createAIAssistantStore() {
             messages: [],
             evidenceMap: {},
             currentSession: {
-              isActive: false,
+              isActive: false
               lastActivity: Date.now()
-            },;
+            },
             insights: []
           };
         }
         return state;
       });
     },
-
-    // Set the current active case;
+    // Set the current active case
     setCurrentCase: (caseId: string) => {
       update(state => {
         state.currentCaseId = caseId;
@@ -112,39 +103,34 @@ function createAIAssistantStore() {
         return state;
       });
     },
-
-    // Add a message to a case;
+    // Add a message to a case
     addMessage: (caseId: string, message: Omit<AIMessage, 'id' | 'timestamp'>) => {
       update(state => {
         if (!state.cases[caseId]) {
-          // Auto-initialize case if it doesn't exist;
+          // Auto-initialize case if it doesn't exist
           state.cases[caseId] = {
             caseId,
             messages: [],
             evidenceMap: {},
             currentSession: {
-              isActive: true,
+              isActive: true
               lastActivity: Date.now()
-            },;
+            },
             insights: []
           };
         }
-
         const newMessage: AIMessage = {
           ...message,
-          id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,;
+          id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           timestamp: Date.now()
         };
-
         state.cases[caseId].messages.push(newMessage);
         state.cases[caseId].currentSession.lastActivity = Date.now();
-
         return state;
       });
     },
-
-    // Add evidence to case context;
-    addEvidence: (caseId: string, evidence: {;
+    // Add evidence to case context
+    addEvidence: (caseId: string, evidence: {
       id: string;
       title: string;
       annotations?: string[];
@@ -153,51 +139,42 @@ function createAIAssistantStore() {
     }) => {
       update(state => {
         if (!state.cases[caseId]) return state;
-
         state.cases[caseId].evidenceMap[evidence.id] = {
           ...evidence,
-          annotations: evidence.annotations || [],;
+          annotations: evidence.annotations || [],
           connections: evidence.connections || []
         };
-
         return state;
       });
     },
-
-    // Add AI insight to a case;
+    // Add AI insight to a case
     addInsight: (caseId: string, insight: Omit<CaseAIContext['insights'][0], 'id' | 'timestamp'>) => {
       update(state => {
         if (!state.cases[caseId]) return state;
-
         const newInsight = {
           ...insight,
-          id: `insight-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,;
+          id: `insight-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           timestamp: Date.now()
         };
-
         state.cases[caseId].insights.push(newInsight);
-
         return state;
       });
     },
-
-    // Set loading state;
+    // Set loading state
     setLoading: (loading: boolean) => {
       update(state => {
         state.isLoading = loading;
         return state;
       });
     },
-
-    // Set error state;
+    // Set error state
     setError: (error?: string) => {
       update(state => {
         state.error = error;
         return state;
       });
     },
-
-    // Clear case data;
+    // Clear case data
     clearCase: (caseId: string) => {
       update(state => {
         delete state.cases[caseId];
@@ -207,21 +184,17 @@ function createAIAssistantStore() {
         return state;
       });
     },
-
-    // Get case context (helper function);
+    // Get case context (helper function)
     getCaseContext: (caseId: string, state: AIAssistantState): CaseAIContext | undefined => {
       return state.cases[caseId];
     }
   };
 }
-
 export const aiAssistant = createAIAssistantStore();
-
 // Derived stores for easier access
 export const currentCase = writable<CaseAIContext | undefined>(undefined);
 export const currentCaseMessages = writable<AIMessage[]>([]);
-
-// Subscribe to changes and update derived stores;
+// Subscribe to changes and update derived stores
 aiAssistant.subscribe(state => {
   const current = state.currentCaseId ? state.cases[state.currentCaseId] : undefined;
   currentCase.set(current);

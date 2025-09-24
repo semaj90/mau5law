@@ -1,6 +1,5 @@
 // Typed Ollama client for SvelteKit (Node/browser)
 // Primary usage: call local Ollama (llama.cpp) as a fallback when TensorRT-LLM is unavailable.
-
 export type OllamaOptions = {
   temperature?: number;
   top_p?: number;
@@ -12,49 +11,41 @@ export type OllamaOptions = {
   // Add more options as needed per Ollama spec
   [key: string]: unknown;
 };
-
 export interface OllamaGenerateRequest {
   model: string;
   prompt: string;
   stream?: boolean;
   options?: OllamaOptions;
 }
-
 export interface OllamaGenerateResponse {
   model: string;
   created_at: string;
   response: string;
   done: boolean;
 }
-
 export interface OllamaChatMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
 }
-
 export interface OllamaChatRequest {
   model: string;
   messages: OllamaChatMessage[];
   stream?: boolean;
   options?: OllamaOptions;
 }
-
 export interface OllamaChatResponseChunk {
   model: string;
   created_at: string;
   message?: OllamaChatMessage;
   done: boolean;
 }
-
 export interface OllamaEmbeddingsRequest {
   model: string;
   prompt: string;
 }
-
 export interface OllamaEmbeddingsResponse {
   embedding: number[];
 }
-
 function getDefaultHost(): string {
   // Prefer Vite env (SSG/SSR-safe), then window.ollamaHost, then localhost
   const envHost = (import.meta as ImportMeta).env?.VITE_OLLAMA_HOST;
@@ -62,14 +53,13 @@ function getDefaultHost(): string {
   if (typeof window !== 'undefined' && window.ollamaHost) {
     return window.ollamaHost;
   }
-  return 'http://localhost:11434';
+  return 'http://localhost:11434'
 }
-
 async function jsonFetch<T>(path: string, body: unknown): Promise<T> {
   const host = getDefaultHost();
   const res = await fetch(`${host}${path}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },;
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
   if (!res.ok) {
@@ -78,19 +68,17 @@ async function jsonFetch<T>(path: string, body: unknown): Promise<T> {
   }
   return res.json() as Promise<T>;
 }
-
 export async function generate(req: OllamaGenerateRequest): Promise<OllamaGenerateResponse> {
   const body = { model: req.model, prompt: req.prompt, stream: false, options: req.options };
   return jsonFetch<OllamaGenerateResponse>('/api/generate', body);
 }
-
 export async function* generateStream(
   req: Omit<OllamaGenerateRequest, 'stream'>
 ): AsyncGenerator<OllamaGenerateResponse, void, unknown> {
   const host = getDefaultHost();
   const res = await fetch(`${host}/api/generate`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },;
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: req.model, prompt: req.prompt, stream: true, options: req.options }),
   });
   if (!res.ok || !res.body) {
@@ -129,19 +117,17 @@ export async function* generateStream(
     reader.releaseLock();
   }
 }
-
 export async function chat(req: OllamaChatRequest): Promise<OllamaChatResponseChunk> {
   const body = { model: req.model, messages: req.messages, stream: false, options: req.options };
   return jsonFetch<OllamaChatResponseChunk>('/api/chat', body);
 }
-
 export async function* chatStream(
   req: Omit<OllamaChatRequest, 'stream'>
 ): AsyncGenerator<OllamaChatResponseChunk, void, unknown> {
   const host = getDefaultHost();
   const res = await fetch(`${host}/api/chat`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },;
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: req.model, messages: req.messages, stream: true, options: req.options }),
   });
   if (!res.ok || !res.body) {
@@ -180,19 +166,16 @@ export async function* chatStream(
     reader.releaseLock();
   }
 }
-
 export async function embeddings(req: OllamaEmbeddingsRequest): Promise<OllamaEmbeddingsResponse> {
   const body = { model: req.model, prompt: req.prompt };
   return jsonFetch<OllamaEmbeddingsResponse>('/api/embeddings', body);
 }
-
 export async function listModels(): Promise<{ models: Array<{ name: string }> }> {
   const host = getDefaultHost();
   const res = await fetch(`${host}/api/tags`);
   if (!res.ok) throw new Error(`Failed to list models: ${res.status}`);
   return res.json();
 }
-
 export const Ollama = {
   generate,
   generateStream,

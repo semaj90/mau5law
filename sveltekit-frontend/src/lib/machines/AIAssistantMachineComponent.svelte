@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { useMachine } from '@xstate/svelte';
   import { aiAssistantMachine, type AIAssistantContext } from './aiAssistantMachine.js';
   import DidYouMeanSuggestions from '$lib/components/recommendations/DidYouMeanSuggestions.svelte';
@@ -21,7 +20,6 @@
     userId = 'anonymous',
     enableAIEnhancements = true
   }: Props = $props();
-
   // Create machine instance with initial context
   const machineWithContext = aiAssistantMachine.provide({
     context: {
@@ -30,17 +28,17 @@
       response: '',
       conversationHistory: [],
       sessionId: `session-${Date.now()}`,
-      isProcessing: false,
-      model: 'gemma3-legal',;
+      isProcessing: false
+      model: 'gemma3-legal',
       temperature: 0.7,
       maxTokens: 2048,
       availableModels: [
         { name: 'gemma3-legal', displayName: 'Gemma 3 Legal', capabilities: ['text', 'legal'] },
         { name: 'nomic-embed-text', displayName: 'Nomic Embeddings', capabilities: ['embeddings'] }
       ],
-      modelLoadBalancing: false,
-      databaseConnected: true,
-      vectorSearchEnabled: true,
+      modelLoadBalancing: false
+      databaseConnected: true
+      vectorSearchEnabled: true
       databasePerformance: {
         queryLatency: 45,
         connectionPool: 8,
@@ -51,12 +49,12 @@
         indexHealth: 'excellent',
         lastUpdated: new Date().toISOString()
       },
-      context7Available: true,
+      context7Available: true
       context7Cache: new Map(),
       currentDocuments: [],
       currentImages: [],
       processingQueue: [],
-      gpuProcessingEnabled: true,
+      gpuProcessingEnabled: true
       serviceHealth: {
         overallHealth: 'excellent',
         services: {
@@ -66,20 +64,19 @@
         }
       },
       preferredProtocol,
-      activeProtocol: preferredProtocol,
-      serviceLoadBalancer: {;
+      activeProtocol: preferredProtocol
+      serviceLoadBalancer: {
         strategy: 'round_robin',
         currentIndex: 0;
       },
       circuitBreakers: new Map(),
-      natsConnected: true,
-      activeStreaming: enableStreamingMode,
+      natsConnected: true
+      activeStreaming: enableStreamingMode
       streamBuffer: '',
       collaborationUsers: [],
       ...initialContext
     }
   });
-
   const { state, send } = useMachine(machineWithContext);
   // AI Enhancement Services
   const modelSwitcher = enableAIEnhancements ? new IntelligentModelSwitcher() : null;
@@ -89,7 +86,6 @@
   let currentModel = $state('gemma3-legal');
   let modelSwitchReason = $state<string | null>(null);
   let userLearningInsights = $state<any>(null);
-
   // Helper functions for interaction
   async function submitQuery() {
     if (queryInput.trim()) {
@@ -100,7 +96,7 @@
           const recommendation = await modelSwitcher.recommendModel(query, userId);
           if (recommendation.model !== currentModel) {
             currentModel = recommendation.model;
-            modelSwitchReason = recommendation.reason;
+            modelSwitchReason = recommendation.reaso;
             console.log(`Model switched to ${currentModel}: ${recommendation.reason}`);
           }
         } catch (error) {
@@ -112,29 +108,24 @@
       showSuggestions = false;
     }
   }
-
   function clearConversation() {
     send({ type: 'CLEAR_HISTORY' });
   }
-
   function toggleStreaming() {
     send({ type: 'TOGGLE_STREAMING' });
   }
-
   // Handle suggestion selection
   function handleSuggestionSelect(event: CustomEvent) {
     const { suggestion } = event.detail;
     queryInput = suggestion.term || suggestion.suggestion || suggestion.text || '';
     showSuggestions = false;
   }
-
   // Handle task selection
   function handleTaskSelect(event: CustomEvent) {
     const { task } = event.detail;
     queryInput = task.task;
     showSuggestions = false;
   }
-
   // Load user insights
   async function loadUserInsights() {
     if (intentPredictionSystem && enableAIEnhancements) {
@@ -145,12 +136,10 @@
       }
     }
   }
-
   // Load user insights on component mount
   $effect(() => {
     loadUserInsights();
   });
-
   // Auto-show suggestions when typing
   $effect(() => {
     if (queryInput.length >= 2) {
@@ -159,7 +148,6 @@
       showSuggestions = false;
     }
   });
-
   // Get status indicators
   let isIdle = $derived(state.value === 'idle');
   let isProcessing = $derived(state.value === 'processing');
@@ -167,7 +155,6 @@
   let currentState = $derived(state.value as string);
   let context = $derived(state.context);
 </script>
-
 <div class="ai-assistant-machine-demo max-w-4xl mx-auto p-6 space-y-6">
   <!-- Machine Status Header -->
   <div class="bg-gray-900 text-white p-4 rounded-lg">
@@ -192,7 +179,6 @@
         {/if}
       </div>
     </div>
-
     <!-- AI Enhancement Status -->
     {#if enableAIEnhancements}
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -208,7 +194,6 @@
             {/if}
           </div>
         </div>
-        
         {#if userLearningInsights}
           <div class="bg-gray-800 p-3 rounded">
             <div class="font-semibold mb-2 flex items-center gap-2">
@@ -223,7 +208,6 @@
         {/if}
       </div>
     {/if}
-    
     <!-- Service Health Indicators -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
       <div class="bg-gray-800 p-3 rounded">
@@ -236,7 +220,6 @@
           Latency: {context.databasePerformance?.queryLatency || 0}ms
         </div>
       </div>
-      
       <div class="bg-gray-800 p-3 rounded">
         <div class="font-semibold mb-2">Vector Search</div>
         <div class="flex items-center gap-2">
@@ -247,7 +230,6 @@
           Vectors: {context.vectorIndexStatus?.totalVectors?.toLocaleString() || 0}
         </div>
       </div>
-      
       <div class="bg-gray-800 p-3 rounded">
         <div class="font-semibold mb-2">NATS Messaging</div>
         <div class="flex items-center gap-2">
@@ -260,7 +242,6 @@
       </div>
     </div>
   </div>
-
   <!-- Enhanced Query Interface -->
   <div class="bg-white border rounded-lg p-6">
     <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -270,7 +251,6 @@
         <span class="text-sm text-purple-600 bg-purple-100 px-2 py-1 rounded-full">Enhanced</span>
       {/if}
     </h2>
-    
     <div class="space-y-4">
       <div class="relative">
         <div class="flex gap-2">
@@ -284,7 +264,6 @@
               onkeydown={(e) => e.key === 'Enter' && submitQuery()}
               oninput={() => showSuggestions = queryInput.length >= 2}
             />
-            
             <!-- AI Suggestions Dropdown -->
             {#if showSuggestions && enableAIEnhancements && queryInput.length >= 2}
               <div class="absolute top-full left-0 right-0 z-50 mt-1">
@@ -317,7 +296,6 @@
             {/if}
           </button>
         </div>
-        
         {#if enableAIEnhancements && currentModel && modelSwitchReason}
           <div class="mt-2 text-sm text-gray-600">
             <span class="flex items-center gap-1">
@@ -327,16 +305,15 @@
           </div>
         {/if}
       </div>
-      
       <div class="flex gap-2">
         <button
-          ononclick={toggleStreaming}
+          onclick={toggleStreaming}
           class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
         >
           {isStreaming ? 'Disable' : 'Enable'} Streaming
         </button>
         <button
-          ononclick={clearConversation}
+          onclick={clearConversation}
           class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
         >
           Clear History
@@ -344,7 +321,6 @@
       </div>
     </div>
   </div>
-
   <!-- Current Processing -->
   {#if context.processingQueue && context.processingQueue.length > 0}
     <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
@@ -356,7 +332,7 @@
             <span class="text-sm text-gray-500">{Math.round((job.progress || 0) * 100)}%</span>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2">
-            <div 
+            <div
               class="bg-blue-600 h-2 rounded-full transition-all duration-300"
               style="width: {(job.progress || 0) * 100}%"
             ></div>
@@ -365,7 +341,6 @@
       {/each}
     </div>
   {/if}
-
   <!-- Conversation History -->
   {#if context.conversationHistory && context.conversationHistory.length > 0}
     <div class="bg-white border rounded-lg p-6">
@@ -388,7 +363,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Current Response -->
   {#if context.response}
     <div class="bg-green-50 border rounded-lg p-6">
@@ -404,7 +378,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Document Processing -->
   {#if context.currentDocuments && context.currentDocuments.length > 0}
     <div class="bg-white border rounded-lg p-6">
@@ -441,7 +414,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Collaboration Users -->
   {#if context.collaborationUsers && context.collaborationUsers.length > 0}
     <div class="bg-white border rounded-lg p-6">
@@ -465,7 +437,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Context7 Analysis -->
   {#if context.context7Analysis}
     <div class="bg-blue-50 border rounded-lg p-6">
@@ -491,7 +462,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Debug Information -->
   <details class="bg-gray-50 border rounded-lg p-4">
     <summary class="cursor-pointer font-medium">Debug Information</summary>
@@ -501,16 +471,13 @@
     </div>
   </details>
 </div>
-
 <style>
-  .ai-assistant-machine-demo {;
+  .ai-assistant-machine-demo {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
-  
   .prose {
     max-width: none;
   }
-  
   .prose pre {
     background: #f5f5f5;
     padding: 1rem;

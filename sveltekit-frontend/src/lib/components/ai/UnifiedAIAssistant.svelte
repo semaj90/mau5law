@@ -2,7 +2,6 @@
 <!-- Integrates Ollama, LLaMA.cpp WebASM, WebGPU acceleration, and Go microservices -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import { onMount, onDestroy, tick } from 'svelte';
   	import {
     Card,
@@ -10,19 +9,18 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  	import Button from '$lib/components/ui/button/Button.svelte';
+  	import Button from '$lib/components/ui/Button.svelte';
   	// Badge replaced with span - not available in enhanced-bits
   	import {
     Input
   } from '$lib/components/ui/enhanced-bits';
-  	import { 
+  	import {
   		Bot, Send, Cpu, Zap, Database, MessageSquare,
   		Settings, Mic, MicOff, Upload, Download,
   		Layers, Activity, AlertCircle, CheckCircle2,
   		Pause, Play, Square, RotateCw, Brain
   	} from 'lucide-svelte';
   	import goMicroserviceClient from '$lib/services/go-microservice-client';
-
   	// Svelte 5 state management
   	let messages = $state<any[]>([]);
   	let currentMessage = $state('');
@@ -32,11 +30,10 @@
   	let aiBackends = $state({
   		vllm: { available: false, status: 'unknown', endpoint: 'http://localhost:8000' },
   		ollama: { available: false, status: 'unknown', endpoint: 'http://localhost:11434' },
-  		webasm: { available: false, status: 'unknown', loaded: false },;
+  		webasm: { available: false, status: 'unknown', loaded: false },
   		webgpu: { available: false, status: 'unknown', initialized: false },
   		goMicroservice: { available: false, status: 'unknown', endpoint: 'http://localhost:8080' }
   	});
-
   	let performanceMetrics = $state({
   		responseTime: 0,
   		tokensPerSecond: 0,
@@ -44,32 +41,27 @@
   		memoryUsage: 0,
   		gpuUtilization: 0
   	});
-
   	let assistantConfig = $state({
-  		model: 'gemma3-legal',;
+  		model: 'gemma3-legal',
   		temperature: 0.7,
   		maxTokens: 1000,
-  		streamResponse: true,
-  		useGPUAcceleration: true,
+  		streamResponse: true
+  		useGPUAcceleration: true
   		preferredBackend: 'auto', // 'vllm' | 'ollama' | 'webasm' | 'auto'
   		legalContext: true;
   	});
-
   	let voiceRecording = $state({
-  		isRecording: false,
-  		mediaRecorder: null as MediaRecorder | null,
+  		isRecording: false
+  		mediaRecorder: null as MediaRecorder | null
   		audioChunks: [] as Blob[]
   	});
-
   	let webgpuBridge: Worker | null = null;
-
   	// Component props
-  	let { 
+  	let {
   		caseId = '',
   		evidenceContext = [] as any[],
   		readonly = false
   	} = $props();
-
   	// Initialize AI systems
   	$effect(() => {
     (async () => {
@@ -81,14 +73,12 @@ console.log('🤖 Initializing Unified AI Assistant');
   		addSystemMessage('Legal AI Assistant initialized. How can I help you analyze your case today?');
     })();
   });
-
   	async function initializeBackends() {
   		console.log('🔌 Checking backend availability...');
-
   		// Check vLLM
   		try {
-  			const vllmResponse = await fetch(`${aiBackends.vllm.endpoint}/v1/models`, { 
-  				method: 'GET',;
+  			const vllmResponse = await fetch(`${aiBackends.vllm.endpoint}/v1/models`, {
+  				method: 'GET',
   				signal: AbortSignal.timeout(5000);
   			});
   			aiBackends.vllm.available = vllmResponse.ok;
@@ -97,11 +87,10 @@ console.log('🤖 Initializing Unified AI Assistant');
   			aiBackends.vllm.available = false;
   			aiBackends.vllm.status = 'unavailable';
   		}
-
   		// Check Ollama
   		try {
   			const ollamaResponse = await fetch(`${aiBackends.ollama.endpoint}/api/version`, {
-  				method: 'GET',;
+  				method: 'GET',
   				signal: AbortSignal.timeout(5000);
   			});
   			aiBackends.ollama.available = ollamaResponse.ok;
@@ -110,7 +99,6 @@ console.log('🤖 Initializing Unified AI Assistant');
   			aiBackends.ollama.available = false;
   			aiBackends.ollama.status = 'unavailable';
   		}
-
   		// Check WebASM LLaMA.cpp support
   		try {
   			if (typeof SharedArrayBuffer !== 'undefined' && 'gpu' in navigator) {
@@ -121,7 +109,6 @@ console.log('🤖 Initializing Unified AI Assistant');
   			aiBackends.webasm.available = false;
   			aiBackends.webasm.status = 'unsupported';
   		}
-
   		// Check WebGPU support
   		if ('gpu' in navigator) {
   			try {
@@ -133,7 +120,6 @@ console.log('🤖 Initializing Unified AI Assistant');
   				aiBackends.webgpu.status = 'error';
   			}
   		}
-
   		// Initialize Go microservice client
   		try {
   			const initialized = await goMicroserviceClient.initialize();
@@ -143,10 +129,8 @@ console.log('🤖 Initializing Unified AI Assistant');
   			aiBackends.goMicroservice.available = false;
   			aiBackends.goMicroservice.status = 'unavailable';
   		}
-
   		console.log('📊 Backend Status:', aiBackends);
   	}
-
   	async function setupWebGPUWorker() {
   		if (aiBackends.webgpu.available) {
   			try {
@@ -155,7 +139,7 @@ console.log('🤖 Initializing Unified AI Assistant');
   					const { type, data } = event.data;
   					switch (type) {
   						case 'init-complete':
-  							aiBackends.webgpu.initialized = (data as { success?: any; error?: any; gpuUtilization?: any }).success;
+  							aiBackends.webgpu.initialized = (data as { success?: any; error?: any; gpuUtilization?: any }).succes;
   							aiBackends.webgpu.status = (data as { success?: any; error?: any; gpuUtilization?: any }).success ? 'ready' : 'error';
   							break;
   						case 'task-complete':
@@ -166,7 +150,6 @@ console.log('🤖 Initializing Unified AI Assistant');
   							break;
   					}
   				};
-
   				// Initialize the bridge
   				webgpuBridge.postMessage({
   					type: 'init',
@@ -177,13 +160,11 @@ console.log('🤖 Initializing Unified AI Assistant');
   			}
   		}
   	}
-
   	function handleWebGPUTaskComplete(data: any) {
   		console.log('✅ WebGPU task completed:', data);
   		// Update performance metrics
   		performanceMetrics.gpuUtilization = (data as { success?: any; error?: any; gpuUtilization?: any }).gpuUtilization || 0;
   	}
-
   	async function loadConversationHistory() {
   		if (caseId) {
   			try {
@@ -198,69 +179,57 @@ console.log('🤖 Initializing Unified AI Assistant');
   			}
   		}
   	}
-
   	async function sendMessage() {
   		if (!currentMessage.trim() || isProcessing) return;
-
   		const userMessage = {
   			id: `msg-${Date.now()}-user`,
-  			role: 'user',;
-  			content: currentMessage.trim(),;
+  			role: 'user',
+  			content: currentMessage.trim(),
   			timestamp: new Date().toISOString(),
   			caseId;
   		};
-
   		messages = [...messages, userMessage];
   		const messageToSend = currentMessage.trim();
   		currentMessage = '';
   		isProcessing = true;
-
   		await scrollToBottom();
-
   		try {
   			const startTime = Date.now();
   			const response = await processAIRequest(messageToSend);
   			const processingTime = Date.now() - startTime;
-
   			const aiMessage = {
   				id: `msg-${Date.now()}-assistant`,
-  				role: 'assistant',;
+  				role: 'assistant',
   				content: (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).content,
   				timestamp: new Date().toISOString(),
-  				processingTime,;
+  				processingTime,
   				backend: (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).backend,
   				tokensPerSecond: (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).tokensPerSecond || 0,
   				caseId
   			};
-
   			messages = [...messages, aiMessage];
-
   			// Update performance metrics
-  			performanceMetrics.responseTime = processingTime;
+  			performanceMetrics.responseTime = processingTim;
   			performanceMetrics.tokensPerSecond = (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).tokensPerSecond || 0;
   			performanceMetrics.contextLength = messages.length;
-
   			await scrollToBottom();
   			await saveConversation();
-
   		} catch (error) {
   			console.error('❌ AI request failed:', error);
   			const errorMessage = {
   				id: `msg-${Date.now()}-error`,
-  				role: 'assistant',;
-  				content: `Sorry, I encountered an error processing your request: ${error instanceof Error ? error.message: String(error)}`,;
+  				role: 'assistant',
+  				content: `Sorry, I encountered an error processing your request: ${error instanceof Error ? error.message: String(error)}`,
   				timestamp: new Date().toISOString(),
-  				isError: true,
+  				isError: true
   				caseId;
   			};
-
   			messages = [...messages, errorMessage];
   			await scrollToBottom();
   		} finally {
   			isProcessing = false;
   		}
   	}
-
   	async function processAIRequest(message: string): Promise<any> {
   		const context = buildContextPrompt(message);
   		// Try backends in order of preference and availability
@@ -270,34 +239,26 @@ console.log('🤖 Initializing Unified AI Assistant');
   			return await useSpecificBackend(context, assistantConfig.preferredBackend);
   		}
   	}
-
   	function buildContextPrompt(message: string): string {
   		let contextPrompt = '';
-
   		if (assistantConfig.legalContext) {
   			contextPrompt += 'You are a legal AI assistant specializing in evidence analysis, case management, and legal research. ';
   		}
-
   		if (caseId) {
   			contextPrompt += `You are working on caseItem: ${caseId}. `;
   		}
-
   		if (evidenceContext.length > 0) {
   			contextPrompt += `Available evidence context: ${evidenceContext.map.join(', ')}. `;
   		}
-
   		// Add recent conversation context
   		const recentMessages = messages.slice(-5);
   		if (recentMessages.length > 0) {
   			contextPrompt += 'Recent conversation: ';
   			contextPrompt += recentMessages.map.join(' | ') + ' | ';
   		}
-
   		contextPrompt += `User question: ${message}`;
-
   		return contextPrompt;
   	}
-
   	async function tryBackendsInOrder(context: string): Promise<any> {
   		const backendOrder = ['goMicroservice', 'vllm', 'ollama', 'webasm'];
   		for (const backendName of backendOrder) {
@@ -307,14 +268,12 @@ console.log('🤖 Initializing Unified AI Assistant');
   					return result;
   				} catch (error) {
   					console.warn(`⚠️ Backend ${backendName} failed, trying next:`, error);
-  					continue;
+  					continu;
   				}
   			}
   		}
-
   		throw new Error('All AI backends are unavailable');
   	}
-
   	async function useSpecificBackend(context: string, backend: string): Promise<any> {
   		switch (backend) {
   			case 'vllm':
@@ -329,51 +288,45 @@ console.log('🤖 Initializing Unified AI Assistant');
   				throw new Error(`Unknown backend: ${backend}`);
   		}
   	}
-
   	async function processWithVLLM(context: string): Promise<any> {
   		const response = await fetch(`${aiBackends.vllm.endpoint}/v1/chat/completions`, {
-  			method: 'POST',;
+  			method: 'POST',
   			headers: { 'Content-Type': 'application/json' },
-  			body: JSON.stringify({
-  				model: 'mistralai/Mistral-7B-Instruct-v0.3',;
+  			body: JSON.stringify({,
+  				model: 'mistralai/Mistral-7B-Instruct-v0.3',
   				messages: [{ role: 'user', content: context }],
   				temperature: assistantConfig.temperature,
-  				max_tokens: assistantConfig.maxTokens,;
+  				max_tokens: assistantConfig.maxTokens,
   				stream: false;
   			})
   		});
-
   		if (!(response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).ok) {
   			throw new Error(`vLLM API error: ${(response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).status}`);
   		}
-
   		const result = await (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).json();
   		return {
   			content: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).choices?.[0]?.message?.content || 'No response',
   			backend: 'vLLM',
-  			tokensPerSecond: 0 // vLLM doesn't provide this directly;
+  			tokensPerSecond: 0 // vLLM doesn't provide this directly
   		};
   	}
-
   	async function processWithOllama(context: string): Promise<any> {
   		const response = await fetch(`${aiBackends.ollama.endpoint}/api/chat`, {
-  			method: 'POST',;
+  			method: 'POST',
   			headers: { 'Content-Type': 'application/json' },
-  			body: JSON.stringify({
-  				model: assistantConfig.model,;
+  			body: JSON.stringify({,
+  				model: assistantConfig.model,
   				messages: [{ role: 'user', content: context }],
-  				stream: false,;
-  				options: {;
+  				stream: false
+  				options: {
   					temperature: assistantConfig.temperature,
-  					num_predict: assistantConfig.maxTokens;
+  					num_predict: assistantConfig.maxToken;
   				}
   			})
   		});
-
   		if (!(response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).ok) {
   			throw new Error(`Ollama API error: ${(response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).status}`);
   		}
-
   		const result = await (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).json();
   		return {
   			content: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).message?.content || 'No response',
@@ -381,49 +334,44 @@ console.log('🤖 Initializing Unified AI Assistant');
   			tokensPerSecond: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).eval_duration ? ((result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).eval_count || 0) / ((result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).eval_duration / 1000000000) : 0
   		};
   	}
-
   	async function processWithWebASM(context: string): Promise<any> {
   		// WebASM LLaMA.cpp processing (placeholder implementation)
   		// In a real implementation, this would load and run a WebAssembly version of LLaMA.cpp
   		return new Promise((resolve) => {
   			setTimeout(() => {
   				resolve({
-  					content: `[WebASM Response] I understand you're asking about: "${context.slice(-100)}...". This is a placeholder response from the WebAssembly LLaMA.cpp implementation.`,;
+  					content: `[WebASM Response] I understand you're asking about: "${context.slice(-100)}...". This is a placeholder response from the WebAssembly LLaMA.cpp implementation.`,
   					backend: 'WebASM LLaMA.cpp',
   					tokensPerSecond: 15;
   				});
   			}, 2000);
   		});
   	}
-
   	async function processWithGoMicroservice(context: string): Promise<any> {
   		const result = await goMicroserviceClient.processChat({
   			messages: [{ role: 'user', content: context }],
-  			model: assistantConfig.model,;
-  			temperature: assistantConfig.temperature,;
+  			model: assistantConfig.model,
+  			temperature: assistantConfig.temperature,
   			stream: false;
   		});
-
   		if (!(result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).success) {
   			throw new Error((result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).error || 'Go microservice error');
   		}
-
   		return {
   			content: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).data?.content || (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).data?.response || 'No response',
   			backend: 'Go Microservice',
   			tokensPerSecond: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).metadata?.tokensPerSecond || 0
   		};
   	}
-
   	async function saveConversation() {
   		if (caseId) {
   			try {
   				await fetch('/api/legal/conversations', {
-  					method: 'POST',;
+  					method: 'POST',
   					headers: { 'Content-Type': 'application/json' },
   					body: JSON.stringify({
   						caseId,
-  						messages: messages.slice(-20), // Save last 20 messages;
+  						messages: messages.slice(-20), // Save last 20 message
   						timestamp: new Date().toISOString();
   					})
   				});
@@ -432,82 +380,70 @@ console.log('🤖 Initializing Unified AI Assistant');
   			}
   		}
   	}
-
   	function addSystemMessage(content: string) {
   		const systemMessage = {
   			id: `msg-${Date.now()}-system`,
   			role: 'system',
-  			content,;
+  			content,
   			timestamp: new Date().toISOString(),
   			isSystem: true;
   		};
   		messages = [...messages, systemMessage];
   	}
-
   	async function scrollToBottom() {
   		await tick();
   		if (chatContainer) {
   			chatContainer.scrollTop = chatContainer.scrollHeight;
   		}
   	}
-
   	function handleKeyPress(event: KeyboardEvent) {
   		if (event.key === 'Enter' && !event.shiftKey) {
   			event.preventDefault();
   			sendMessage();
   		}
   	}
-
   	async function startVoiceRecording() {
   		try {
   			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   			voiceRecording.mediaRecorder = new MediaRecorder(stream);
   			voiceRecording.audioChunks = [];
   			voiceRecording.isRecording = true;
-
   			voiceRecording.mediaRecorder.ondataavailable = (event) => {
   				voiceRecording.audioChunks.push(event.data);
   			};
-
   			voiceRecording.mediaRecorder.onstop = async () => {
   				const audioBlob = new Blob(voiceRecording.audioChunks, { type: 'audio/wav' });
   				await processVoiceInput(audioBlob);
   			};
-
   			voiceRecording.mediaRecorder.start();
   		} catch (error) {
   			console.error('❌ Voice recording failed:', error);
   		}
   	}
-
   	function stopVoiceRecording() {
   		if (voiceRecording.mediaRecorder && voiceRecording.isRecording) {
   			voiceRecording.mediaRecorder.stop();
   			voiceRecording.isRecording = false;
   		}
   	}
-
   	async function processVoiceInput(audioBlob: Blob) {
   		// Voice-to-text processing (placeholder)
   		// In a real implementation, this would use a speech-to-text service
   		currentMessage = '[Voice input detected - speech-to-text processing would occur here]';
   	}
-
   	function clearConversation() {
   		if (confirm('Are you sure you want to clear the conversation?')) {
   			messages = [];
   			addSystemMessage('Conversation cleared. How can I help you?');
   		}
   	}
-
   	function exportConversation() {
   		const exportData = {
   			caseId,
   			messages,
   			timestamp: new Date().toISOString(),
-  			performanceMetrics;
+  			performanceMetric;
   		};
-
   		const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
   		const url = URL.createObjectURL(blob);
   		const a = document.createElement('a');
@@ -516,7 +452,6 @@ console.log('🤖 Initializing Unified AI Assistant');
   		a.click();
   		URL.revokeObjectURL(url);
   	}
-
   	onDestroy(() => {
   		if (webgpuBridge) {
   			webgpuBridge.terminate();
@@ -524,7 +459,6 @@ console.log('🤖 Initializing Unified AI Assistant');
   		goMicroserviceClient.cleanup();
   	});
 </script>
-
 <!-- Unified AI Assistant Interface -->
 <div class="h-full flex flex-col bg-background">
 	<!-- Header -->
@@ -540,7 +474,6 @@ console.log('🤖 Initializing Unified AI Assistant');
 						<p class="text-sm nes-text is-disabled">Powered by multiple AI backends with GPU acceleration</p>
 					</div>
 				</div>
-				
 				<div class="flex items-center gap-2">
 					<!-- Backend Status -->
 					<div class="flex gap-1">
@@ -557,7 +490,6 @@ console.log('🤖 Initializing Unified AI Assistant');
 							Go µS
 						</Badge>
 					</div>
-					
 					<Button class="bits-btn" variant="ghost" size="sm" onclick={exportConversation}>
 <Download class="w-4 h-4 mr-1" />
 						Export
@@ -570,7 +502,6 @@ console.log('🤖 Initializing Unified AI Assistant');
 			</div>
 		</div>
 	</div>
-
 	<!-- Performance Metrics -->
 	<div class="mb-4 nes-container">
 		<div class="yorha-panel-content py-3">
@@ -593,23 +524,21 @@ console.log('🤖 Initializing Unified AI Assistant');
 						GPU: {performanceMetrics.gpuUtilization.toFixed(1)}%
 					</span>
 				</div>
-				
 				<div class="text-xs nes-text is-disabled">
 					Model: {assistantConfig.model} | Temp: {assistantConfig.temperature}
 				</div>
 			</div>
 		</div>
 	</div>
-
 	<!-- Chat Messages -->
 	<div class="flex-1 mb-4 nes-container">
 		<div class="yorha-panel-content p-0 h-full">
-			<div 
+			<div
 				bind:this={chatContainer}
 				class="h-full overflow-y-auto p-4 space-y-4"
 			>
 				{#each messages as message}
-					<div 
+					<div
 						class="flex items-start gap-3"
 						class:flex-row-reverse={message.role === 'user'}
 					>
@@ -626,8 +555,7 @@ console.log('🤖 Initializing Unified AI Assistant');
 								🤖
 							{/if}
 						</div>
-						
-						<div 
+						<div
 							class="max-w-[70%] p-3 rounded-lg"
 							class:bg-primary={message.role === 'user'}
 							class:text-primary-foreground={message.role === 'user'}
@@ -638,12 +566,10 @@ console.log('🤖 Initializing Unified AI Assistant');
 							<div class="prose prose-sm max-w-none">
 								{message.content}
 							</div>
-							
 							<div class="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
 								<div class="text-xs opacity-70">
 									{new Date(message.timestamp).toLocaleTimeString()}
 								</div>
-								
 								{#if message.backend}
 									<div class="flex items-center gap-1 text-xs">
 										<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{message.backend}</span>
@@ -659,7 +585,6 @@ console.log('🤖 Initializing Unified AI Assistant');
 						</div>
 					</div>
 				{/each}
-				
 				{#if isProcessing}
 					<div class="flex items-start gap-3">
 						<div class="w-8 h-8 rounded-full flex items-center justify-center bg-muted">
@@ -676,7 +601,6 @@ console.log('🤖 Initializing Unified AI Assistant');
 			</div>
 		</div>
 	</div>
-
 	<!-- Input Area -->
 	<div class="nes-container">
 		<div class="yorha-panel-content p-4">
@@ -690,7 +614,6 @@ console.log('🤖 Initializing Unified AI Assistant');
 						disabled={readonly || isProcessing}
 						class="pr-12"
 					/>
-					
 					{#if 'mediaDevices' in navigator}
 						<Button
 							variant="ghost"
@@ -707,8 +630,7 @@ console.log('🤖 Initializing Unified AI Assistant');
 </Button>
 					{/if}
 				</div>
-				
-				<Button class="bits-btn" 
+				<Button class="bits-btn"
 					onclick={sendMessage}
 					disabled={!currentMessage.trim() || isProcessing || readonly}
 				>
@@ -716,7 +638,6 @@ console.log('🤖 Initializing Unified AI Assistant');
 					Send
 </Button>
 			</div>
-			
 			<!-- Quick Actions -->
 			<div class="flex gap-2 mt-3 flex-wrap">
 				<Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
@@ -739,32 +660,26 @@ currentMessage = 'Find relevant precedents'}>
 		</div>
 	</div>
 </div>
-
 <style>
 	/* Custom scrollbar for chat container */
-	.overflow-y-auto {;
-		scrollbar-width: thin;
+	.overflow-y-auto {
+		scrollbar-width: thi;
 		scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
 	}
-	
 	.overflow-y-auto::-webkit-scrollbar {
 		width: 6px;
 	}
-	
 	.overflow-y-auto::-webkit-scrollbar-track {
 		background: hsl(var(--muted));
 	}
-	
 	.overflow-y-auto::-webkit-scrollbar-thumb {
 		background: hsl(var(--muted-foreground));
 		border-radius: 3px;
 	}
-
 	/* Message animation */
 	.flex.items-start {
 		animation: slideIn 0.3s ease-out;
 	}
-	
 	@keyframes slideIn {
 		from {
 			opacity: 0;
@@ -775,12 +690,10 @@ currentMessage = 'Find relevant precedents'}>
 			transform: translateY(0);
 		}
 	}
-
 	/* Processing indicator animation */
 	.animate-spin {
 		animation: spin 1s linear infinite;
 	}
-	
 	@keyframes spin {
 		from { transform: rotate(0deg); }
 		to { transform: rotate(360deg); }

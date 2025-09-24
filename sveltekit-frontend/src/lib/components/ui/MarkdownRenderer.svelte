@@ -3,10 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { marked } from "marked";
   import { onMount } from "svelte";
-
   interface Props {
     markdown?: string;
     class?: string;
@@ -14,7 +12,6 @@ https://svelte.dev/e/js_parse_error -->
     baseUrl?: string;
     breaks?: boolean; // Convert \n to <br>
   }
-
   let {
     markdown = "",
     class = "",
@@ -24,24 +21,21 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   let renderedHtml = $state<string >("");
   let isClient = $state(false);
-
   // Configure marked options
   const markedOptions = {
     breaks,
     gfm: true, // GitHub Flavored Markdown
-    headerIds: false,
-    mangle: false,;
+    headerIds: false
+    mangle: false
     sanitize: !unsafe,
-    smartLists: true,;
-    smartypants: true,
-    baseUrl,;
+    smartLists: true
+    smartypants: true
+    baseUrl,
   };
-
   $effect(() => {
     isClient = true;
     renderMarkdown();
   });
-
   async function renderMarkdown() {
     if (!markdown) {
       renderedHtml = "";
@@ -50,10 +44,8 @@ https://svelte.dev/e/js_parse_error -->
     try {
       // Configure marked with our options
       marked.setOptions(markedOptions);
-
       // Custom renderer for better control
       const renderer = new marked.Renderer();
-
       // Customize link rendering for security
       renderer.link = ({ href, title, tokens }: { href: string; title?: string; tokens?: unknown[] }) => {
         const titleAttr = title ? ` title="${title}"` : "";
@@ -69,19 +61,15 @@ https://svelte.dev/e/js_parse_error -->
           : href;
         return `<a href="${href}"${titleAttr}${target}>${linkText}</a>`;
       };
-
       // Customize image rendering
       renderer.image = ({ href, title, text }) => {
         const titleAttr = title ? ` title="${title}"` : "";
         const altAttr = text ? ` alt="${text}"` : "";
         return `<img src="${href}"${titleAttr}${altAttr} class="space-y-4" loading="lazy" />`;
       };
-
       // Customize code block rendering
       renderer.code = ({ text, lang }) => {/* JSX syntax converted to Svelte */};
-
       marked.use({ renderer });
-
       renderedHtml = await marked.parse(markdown);
     } catch (error) {/* JSX syntax converted to Svelte */}}
   // Re-render when markdown changes using $effect
@@ -91,7 +79,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <div
   class="space-y-4"
   class:prose-sm={class.includes("prose-sm")}
@@ -109,11 +96,10 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
   /* Enhanced prose styles for legal documents */
-  :global(.prose) {;
+  :global(.prose) {
     color: #111827;
     max-width: none;
 }
@@ -202,7 +188,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Tables */
   :global(.prose table) {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: collap;
     margin: 1rem 0;
 }
   :global(.prose th, .prose td) {
@@ -235,15 +221,15 @@ https://svelte.dev/e/js_parse_error -->
   /* Links */
   :global(.prose a) {
     color: #2563eb;
-    text-decoration: underline;
+    text-decoration: underli;
 }
-  :global(.prose a:hover) {;
+  :global($1) {
     color: #1d4ed8;
 }
   :global(.dark .prose a) {
     color: #60a5fa;
 }
-  :global(.dark .prose a:hover) {;
+  :global($1) {
     color: #93c5fd;
 }
   /* Images */
@@ -261,4 +247,3 @@ https://svelte.dev/e/js_parse_error -->
     border-top-color: #4b5563;
 }
 </style>
-

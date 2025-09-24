@@ -1,20 +1,17 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
+https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: Unterminated template;
+<!-- @migration-task Error while migrating Svelte code: Unterminated templat;
 https://svelte.dev/e/js_parse_error -->
 <!--
   Copilot Index Optimizer - Development Interface
   Real-time optimization testing and monitoring for GitHub Copilot context enhancement
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
-
   // Component state
   let optimizationStatus = $state('idle');
   let optimizationResults = $state(null);
@@ -25,40 +22,34 @@ https://svelte.dev/e/js_parse_error -->
   let selectedTab = $state('optimization');
   let errorMessage = $state('');
   let isLoading = $state(false);
-
   // Configuration state
   let optimizationConfig = $state({
-    enableContext7Boost: true,
-    enableSemanticClustering: true,
-    enablePatternRecognition: true,
-    enablePerformanceOptimization: true,
+    enableContext7Boost: true
+    enableSemanticClustering: true
+    enablePatternRecognition: true
+    enablePerformanceOptimization: true
     minRelevanceThreshold: 0.7,
     compressionRatio: 0.8,
   });
-
   // Real-time metrics
   let realTimeMetrics = $state({
     totalOptimizations: 0,
     avgOptimizationTime: 0,
     cacheHitRate: 0,
-    lastUpdated: null,
+    lastUpdated: null
   });
-
   // Load initial data
   $effect(() => {
     (async () => {
 await loadCopilotContent();
     await loadSystemStatus();
-
     // Start real-time metrics polling
     const metricsInterval = setInterval(loadMetrics, 5000);
-
     return () => {
       clearInterval(metricsInterval);
     };
     })();
   });
-
   /**
    * Load copilot.md content
    */
@@ -66,21 +57,17 @@ await loadCopilotContent();
     try {
       isLoading = true;
       const response = await fetch('/api/copilot/optimize?action=load_copilot');
-
       if (!(response as { ok?: unknown; status?: unknown; json?: unknown }).ok) {
         throw new Error(`Failed to load: ${(response as { ok?: unknown; status?: unknown; json?: unknown }).status}`);
       }
-
       const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
       copilotContent = (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).content;
-
     } catch (error) {
       errorMessage = `Failed to load copilot content: ${error.message}`;
     } finally {
       isLoading = false;
     }
   }
-
   /**
    * Optimize the copilot index
    */
@@ -89,73 +76,61 @@ await loadCopilotContent();
       isLoading = true;
       optimizationStatus = 'optimizing';
       errorMessage = '';
-
       const response = await fetch('/api/copilot/optimize', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'optimize_index',;
-          content: copilotContent,;
-          options: optimizationConfig,;
+        body: JSON.stringify({,
+          action: 'optimize_index',
+          content: copilotContent
+          options: optimizationConfig
         }),
       });
-
       if (!(response as { ok?: unknown; status?: unknown; json?: unknown }).ok) {
         throw new Error(`Optimization failed: ${(response as { ok?: unknown; status?: unknown; json?: unknown }).status}`);
       }
-
       const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
       optimizationResults = data;
       optimizationStatus = 'completed';
-
       // Update metrics
       await loadMetrics();
-
     } catch (error) {
       optimizationStatus = 'error';
-      errorMessage = error.message;
+      errorMessage = error.messag;
     } finally {
       isLoading = false;
     }
   }
-
   /**
    * Perform semantic search
    */
   async function performSearch() {
     if (!searchQuery.trim()) return;
-
     try {
       isLoading = true;
-
       const response = await fetch('/api/copilot/optimize', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           action: 'semantic_search',
-          content: searchQuery,;
-          options: {;
+          content: searchQuery
+          options: {
             limit: 10,
-            includePatterns: true,
-            boostContext7: true,;
+            includePatterns: true
+            boostContext7: true
           },
         }),
       });
-
       if (!(response as { ok?: unknown; status?: unknown; json?: unknown }).ok) {
         throw new Error(`Search failed: ${(response as { ok?: unknown; status?: unknown; json?: unknown }).status}`);
       }
-
       const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
-      searchResults = (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).results;
-
+      searchResults = (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).result;
     } catch (error) {
       errorMessage = `Search failed: ${error.message}`;
     } finally {
       isLoading = false;
     }
   }
-
   /**
    * Load system status and metrics
    */
@@ -163,14 +138,11 @@ await loadCopilotContent();
     try {
       const response = await fetch('/api/copilot/optimize?action=status');
       const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
-
       realTimeMetrics.lastUpdated = new Date().toLocaleTimeString();
-
     } catch (error) {
       console.error('Failed to load status:', error);
     }
   }
-
   /**
    * Load performance metrics
    */
@@ -178,7 +150,6 @@ await loadCopilotContent();
     try {
       const response = await fetch('/api/copilot/optimize?action=metrics');
       const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
-
       performanceMetrics = data;
       realTimeMetrics = {
         totalOptimizations: (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).optimizer.totalOptimizations || 0,
@@ -186,12 +157,10 @@ await loadCopilotContent();
         cacheHitRate: (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).cache.hitRate || 0,
         lastUpdated: new Date().toLocaleTimeString(),
       };
-
     } catch (error) {
       console.error('Failed to load metrics:', error);
     }
   }
-
   /**
    * Generate test suggestions
    */
@@ -200,38 +169,33 @@ await loadCopilotContent();
   <script lang="ts">
   let { data = []  }: { data = [] : unknown } = $props();
   let count = $state(0);
-
   // Need suggestions here
   <\/script>`.trim();
-
     try {
       isLoading = true;
-
       const response = await fetch('/api/copilot/optimize', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'generate_suggestions',;
+        body: JSON.stringify({,
+          action: 'generate_suggestions',
           content: {
-            currentCode: testCode,
-            cursor: { line: 5, character: 25 },;
-            language: 'svelte',;
+            currentCode: testCode
+            cursor: { line: 5, character: 25 },
+            language: 'svelte',
           },
         }),
       });
-
       if (!(response as { ok?: unknown; status?: unknown; json?: unknown }).ok) {
         throw new Error(`Suggestion generation failed: ${(response as { ok?: unknown; status?: unknown; json?: unknown }).status}`);
       }
-
       const data = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json();
       searchResults = (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).suggestions.map((suggestion, index) => ({
         id: `suggestion_${index}`,
         document: {
           title: `Suggestion: ${suggestion.category}`,
-          content: suggestion.text,;
+          content: suggestion.text,
         },
-        score: suggestion.confidence,;
+        score: suggestion.confidence,
         explanation: `${suggestion.category} suggestion (Priority: ${suggestion.priority})`,
         context7Pattern: suggestion.context7Pattern,
       });
@@ -241,22 +205,18 @@ await loadCopilotContent();
       isLoading = false;
     }
   }
-
   /**
    * Export optimization results
    */
   function exportResults() {
     if (!optimizationResults) return;
-
     const dataStr = JSON.stringify(optimizationResults, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
-
     const link = document.createElement('a');
     link.href = URL.createObjectURL(dataBlob);
     link.download = `copilot-optimization-${Date.now()}.json`;
     link.click();
   }
-
   /**
    * Reset optimization
    */
@@ -266,7 +226,6 @@ await loadCopilotContent();
     searchResults = [];
     errorMessage = '';
   }
-
   /**
    * Format file size
    */
@@ -275,7 +234,6 @@ await loadCopilotContent();
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   }
-
   /**
    * Format time duration
    */
@@ -284,11 +242,9 @@ await loadCopilotContent();
     return `${(ms / 1000).toFixed(2)} s`;
   }
 </script>
-
 <svelte:head>
   <title>Copilot Index Optimizer - Dev Tools</title>
 </svelte:head>
-
 <div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
   <!-- Header -->
   <header class="border-b border-purple-500/20 bg-black/20 backdrop-blur-md">
@@ -298,7 +254,6 @@ await loadCopilotContent();
           <h1 class="text-2xl font-bold text-purple-100">Copilot Index Optimizer</h1>
           <p class="text-purple-300 text-sm">SIMD JSON Processing + Vector Embeddings</p>
         </div>
-
         <!-- Real-time metrics -->
         <div class="flex gap-4 text-sm">
           <div class="text-center">
@@ -327,7 +282,6 @@ await loadCopilotContent();
       </div>
     </div>
   </header>
-
   <!-- Main content -->
   <main class="max-w-7xl mx-auto px-4 py-6">
     <!-- Error display -->
@@ -342,7 +296,6 @@ await loadCopilotContent();
         </button>
       </div>
     {/if}
-
     <!-- Tab navigation -->
     <div class="mb-6">
       <nav class="flex space-x-1 bg-black/20 p-1 rounded-lg">
@@ -366,7 +319,6 @@ await loadCopilotContent();
         {/each}
       </nav>
     </div>
-
     <!-- Tab content -->
     {#if selectedTab === 'optimization'}
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -383,14 +335,12 @@ await loadCopilotContent();
               {isLoading ? 'Loading...' : 'Reload'}
             </button>
           </div>
-
           <textarea
             bind:value={copilotContent}
             placeholder="Paste your copilot.md content here..."
             class="w-full h-96 p-4 bg-black/30 border border-purple-500/30 rounded-lg
                    text-purple-100 placeholder:text-purple-400 resize-none"
           ></textarea>
-
           <div class="flex gap-2">
             <button
               onclick={optimizeIndex}
@@ -401,7 +351,6 @@ await loadCopilotContent();
             >
               {optimizationStatus === 'optimizing' ? 'Optimizing...' : 'Optimize Index'}
             </button>
-
             {#if optimizationResults}
               <button
                 onclick={exportResults}
@@ -409,7 +358,6 @@ await loadCopilotContent();
               >
                 Export
               </button>
-
               <button
                 onclick={resetOptimization}
                 class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
@@ -419,25 +367,21 @@ await loadCopilotContent();
             {/if}
           </div>
         </div>
-
         <!-- Optimization results -->
         <div class="space-y-4">
           <h2 class="text-xl font-semibold text-purple-100">Optimization Results</h2>
-
           {#if optimizationStatus === 'idle'}
             <div class="p-8 text-center text-purple-400 bg-black/20 rounded-lg border border-purple-500/20">
               <div class="text-4xl mb-2">⚡</div>
               <p>Ready to optimize your copilot index</p>
               <p class="text-sm mt-1">Load content and click "Optimize Index" to begin</p>
             </div>
-
           {:else if optimizationStatus === 'optimizing'}
             <div class="p-8 text-center text-purple-300 bg-black/20 rounded-lg border border-purple-500/20">
               <div class="animate-spin text-4xl mb-2">⚙️</div>
               <p>Processing with SIMD JSON parser...</p>
               <p class="text-sm mt-1">Generating vector embeddings and semantic clusters</p>
             </div>
-
           {:else if optimizationStatus === 'completed' && optimizationResults}
             <div class="space-y-4">
               <!-- Summary stats -->
@@ -448,21 +392,18 @@ await loadCopilotContent();
                   </div>
                   <div class="text-purple-400 text-sm">Index Entries</div>
                 </div>
-
                 <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
                   <div class="text-2xl font-bold text-purple-100">
                     {optimizationResults.summary.indexSize}
                   </div>
                   <div class="text-purple-400 text-sm">Total Size</div>
                 </div>
-
                 <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
                   <div class="text-2xl font-bold text-purple-100">
                     {optimizationResults.summary.semanticClusters}
                   </div>
                   <div class="text-purple-400 text-sm">SOM Clusters</div>
                 </div>
-
                 <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
                   <div class="text-2xl font-bold text-purple-100">
                     {formatTime(optimizationResults.summary.optimizationTime)}
@@ -470,7 +411,6 @@ await loadCopilotContent();
                   <div class="text-purple-400 text-sm">Process Time</div>
                 </div>
               </div>
-
               <!-- Detailed results -->
               <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
                 <h3 class="text-lg font-semibold text-purple-100 mb-3">Optimization Details</h3>
@@ -492,7 +432,6 @@ await loadCopilotContent();
                 </div>
               </div>
             </div>
-
           {:else if optimizationStatus === 'error'}
             <div class="p-8 text-center text-red-300 bg-red-900/20 rounded-lg border border-red-500/30">
               <div class="text-4xl mb-2">❌</div>
@@ -502,13 +441,11 @@ await loadCopilotContent();
           {/if}
         </div>
       </div>
-
     {:else if selectedTab === 'search'}
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Search interface -->
         <div class="space-y-4">
           <h2 class="text-xl font-semibold text-purple-100">Semantic Search</h2>
-
           <div class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-purple-300 mb-2">
@@ -533,7 +470,6 @@ await loadCopilotContent();
                 </button>
               </div>
             </div>
-
             <!-- Quick search examples -->
             <div class="grid grid-cols-2 gap-2">
               {#each [
@@ -554,11 +490,9 @@ await loadCopilotContent();
             </div>
           </div>
         </div>
-
         <!-- Search results -->
         <div class="space-y-4">
           <h2 class="text-xl font-semibold text-purple-100">Search Results</h2>
-
           {#if searchResults.length === 0}
             <div class="p-8 text-center text-purple-400 bg-black/20 rounded-lg border border-purple-500/20">
               <div class="text-4xl mb-2">🔍</div>
@@ -577,11 +511,9 @@ await loadCopilotContent();
                       {((result as { document?: unknown; score?: unknown; text?: unknown; explanation?: unknown; context7Pattern?: unknown }).score * 100).toFixed(1)}%
                     </div>
                   </div>
-
                   <p class="text-purple-300 text-sm mb-2 line-clamp-3">
                     {(result as { document?: unknown; score?: unknown; text?: unknown; explanation?: unknown; context7Pattern?: unknown }).document?.content || (result as { document?: unknown; score?: unknown; text?: unknown; explanation?: unknown; context7Pattern?: unknown }).text || 'No content'}
                   </p>
-
                   <div class="flex items-center justify-between text-xs">
                     <span class="text-purple-400">
                       {(result as { document?: unknown; score?: unknown; text?: unknown; explanation?: unknown; context7Pattern?: unknown }).explanation || 'Semantic match'}
@@ -598,7 +530,6 @@ await loadCopilotContent();
           {/if}
         </div>
       </div>
-
     {:else if selectedTab === 'suggestions'}
       <div class="space-y-6">
         <div class="flex items-center justify-between">
@@ -612,28 +543,23 @@ await loadCopilotContent();
             {isLoading ? 'Generating...' : 'Generate Test Suggestions'}
           </button>
         </div>
-
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Test code context -->
           <div class="space-y-4">
             <h3 class="text-lg font-semibold text-purple-100">Test Context</h3>
             <pre class="p-4 bg-black/40 rounded-lg border border-purple-500/30 text-purple-100 text-sm overflow-x-auto"><code>{/* JSX syntax converted to Svelte */} = $props();
   let count = $state(0);
-
   // Cursor position - suggestions generated here
 </script>
 `}</code></pre>
-
             <div class="text-sm text-purple-400">
               The system analyzes this context and generates Context7-aware suggestions
               based on Svelte 5 patterns, legal AI domain knowledge, and semantic clustering.
             </div>
           </div>
-
           <!-- Generated suggestions -->
           <div class="space-y-4">
             <h3 class="text-lg font-semibold text-purple-100">Generated Suggestions</h3>
-
             {#if searchResults.length === 0}
               <div class="p-8 text-center text-purple-400 bg-black/20 rounded-lg border border-purple-500/20">
                 <div class="text-4xl mb-2">💡</div>
@@ -659,9 +585,7 @@ await loadCopilotContent();
                         {/if}
                       </div>
                     </div>
-
                     <pre class="text-purple-300 text-sm bg-black/20 p-2 rounded border overflow-x-auto"><code>{suggestion.document?.content}</code></pre>
-
                     <div class="mt-2 text-xs text-purple-400">
                       {suggestion.explanation}
                     </div>
@@ -672,13 +596,11 @@ await loadCopilotContent();
           </div>
         </div>
       </div>
-
     {:else if selectedTab === 'metrics'}
       <!-- Performance metrics -->
       {#if performanceMetrics}
         <div class="space-y-6">
           <h2 class="text-xl font-semibold text-purple-100">Performance Metrics</h2>
-
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <!-- Optimizer metrics -->
             <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
@@ -706,7 +628,6 @@ await loadCopilotContent();
                 </div>
               </div>
             </div>
-
             <!-- SIMD processor metrics -->
             <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
               <h3 class="text-lg font-semibold text-purple-100 mb-3">SIMD Processor</h3>
@@ -733,7 +654,6 @@ await loadCopilotContent();
                 </div>
               </div>
             </div>
-
             <!-- System metrics -->
             <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
               <h3 class="text-lg font-semibold text-purple-100 mb-3">System</h3>
@@ -766,12 +686,10 @@ await loadCopilotContent();
           <p>Loading performance metrics...</p>
         </div>
       {/if}
-
     {:else if selectedTab === 'config'}
       <!-- Configuration -->
       <div class="max-w-2xl space-y-6">
         <h2 class="text-xl font-semibold text-purple-100">Optimization Configuration</h2>
-
         <div class="space-y-4">
           <!-- Boolean options -->
           {#each [
@@ -795,7 +713,6 @@ await loadCopilotContent();
               </label>
             </div>
           {/each}
-
           <!-- Numeric options -->
           <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
             <label class="block">
@@ -814,7 +731,6 @@ await loadCopilotContent();
               </div>
             </label>
           </div>
-
           <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
             <label class="block">
               <div class="font-medium text-purple-100 mb-1">Compression Ratio</div>
@@ -834,7 +750,6 @@ await loadCopilotContent();
             </label>
           </div>
         </div>
-
         <!-- Save configuration -->
         <div class="flex gap-2">
           <button
@@ -846,7 +761,6 @@ await loadCopilotContent();
           >
             Save Configuration
           </button>
-
           <button
             onclick={() => {
               const saved = localStorage.getItem('copilot-optimization-config');
@@ -859,14 +773,13 @@ await loadCopilotContent();
           >
             Load Saved
           </button>
-
           <button
             onclick={() => {
               optimizationConfig = {
-                enableContext7Boost: true,
-                enableSemanticClustering: true,
-                enablePatternRecognition: true,
-                enablePerformanceOptimization: true,
+                enableContext7Boost: true
+                enableSemanticClustering: true
+                enablePatternRecognition: true
+                enablePerformanceOptimization: true
                 minRelevanceThreshold: 0.7,
                 compressionRatio: 0.8,
               };
@@ -880,15 +793,13 @@ await loadCopilotContent();
     {/if}
   </main>
 </div>
-
 <style>
-  .line-clamp-3 {;
+  .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-
   .slider::-webkit-slider-thumb {
     appearance: none;
     height: 20px;
@@ -898,7 +809,6 @@ await loadCopilotContent();
     cursor: pointer;
     border: 2px solid #a855f7;
   }
-
   .slider::-webkit-slider-thumb:hover {
     background: #8b5cf6;
   }

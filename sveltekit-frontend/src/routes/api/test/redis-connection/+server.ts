@@ -2,13 +2,10 @@
  * Redis Connection Test Endpoint
  * Simple endpoint to test and debug Redis connectivity
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
 export const GET: RequestHandler = async () => {
   let redis: any = null
-
   try {
     // Test basic Redis connection
     const { createRedisInstance } = await import('$lib/server/redis')
@@ -25,19 +22,16 @@ export const GET: RequestHandler = async () => {
         lazyConnect: false
       })
     }
-
     // Wait for connection to be ready
     await new Promise((resolve, reject) => {
       redis.on('ready', resolve)
       redis.on('error', reject)
       setTimeout(() => reject(new Error('Connection timeout')), 5000)
     })
-
     // Test basic operations
     await redis.set('test:connection', 'working')
     const testValue = await redis.get('test:connection')
     await redis.del('test:connection')
-
     // Test Redis Stack JSON operations
     let jsonSupported = false
     try {
@@ -48,16 +42,13 @@ export const GET: RequestHandler = async () => {
     } catch (error) {
       console.warn('Redis JSON module not available:', error)
     }
-
     // Get Redis info
     const info = await redis.info('server')
-
     if (redis) {
       await redis.quit()
     }
-
     return json({
-      success: true,
+      success: true
       message: 'Redis connection successful',
       testValue,
       redisInfo: {
@@ -76,7 +67,7 @@ export const GET: RequestHandler = async () => {
     }
     return json()
       {
-        success: false,
+        success: false
         error: error.message,
         details: {
           code: error.code,

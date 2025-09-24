@@ -3,8 +3,6 @@ import { json } from "@sveltejs/kit"
 import { db } from "$lib/server/db/index"
 import { eq } from "drizzle-orm"
 import type { RequestHandler } from './$types.js'
-
-
 // Import with fallback for different schema files
 let legalDocuments: any
 try {
@@ -18,27 +16,24 @@ try {
     console.warn("No legal documents schema available")
   }
 }
-
 // POST /api/documents/[id]/auto-save - Auto-save document content
 export async function POST({ params, request }: RequestEvent): Promise<any> {
   try {
     const documentId = params.id
     const body = await request.json()
-
     if (!documentId) {
       return json({
-          success: false,
+          success: false
           error: "Document ID is required"
         },)
         { status: 400 },
       )
     }
     const { content, title, citations, wordCount, isDirty = true } = body
-
     // Validate required fields
     if (!content && !title) {
       return json({
-          success: false,
+          success: false
           error: "Content or title is required for auto-save"
         },)
         { status: 400 },
@@ -51,14 +46,12 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
         lastSavedAt: new Date(),
         isDirty: false, // Mark as saved
       }
-
       if (content !== undefined) {
         updates.content = content
         updates.wordCount = wordCount || content.split(/\s+/).length
       }
       if (title !== undefined) updates.title = title
       if (citations !== undefined) updates.citations = citations
-
       // Store auto-save data
       updates.autoSaveData = {
         content,
@@ -66,23 +59,21 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
         citations,
         autoSavedAt: new Date().toISOString()
       }
-
       const updatedDocument = await db
         .update(legalDocuments)
         .set(updates)
         .where(eq(legalDocuments.id, documentId)
         .returning()
-
       if (updatedDocument.length === 0) {
         return json({
-            success: false,
+            success: false
             error: "Document not found"
           },)
           { status: 404 },
         )
       }
       return json({
-        success: true,
+        success: true
         message: "Document auto-saved successfully",
         document: {
           id: updatedDocument[0].id,
@@ -96,12 +87,11 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
         "Database auto-save failed, returning mock response:",
         dbError,
       )
-
       return json({
-        success: true,
+        success: true
         message: "Document auto-saved successfully (mock)",
         document: {
-          id: documentId,
+          id: documentId
           lastSavedAt: new Date().toISOString(),
           wordCount: wordCount || (content ? content.split(/\s+/).length: 0),
           isDirty: false
@@ -111,7 +101,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
   } catch (error: any) {
     console.error("Error auto-saving document:", error)
     return json({
-        success: false,
+        success: false
         error: "Failed to auto-save document"
       },)
       { status: 500 },
@@ -122,10 +112,9 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
 export async function GET({ params }: RequestEvent): Promise<any> {
   try {
     const documentId = params.id
-
     if (!documentId) {
       return json({
-          success: false,
+          success: false
           error: "Document ID is required"
         },)
         { status: 400 },
@@ -143,17 +132,16 @@ export async function GET({ params }: RequestEvent): Promise<any> {
         .from(legalDocuments)
         .where(eq(legalDocuments.id, documentId)
         .limit(1)
-
       if (document.length === 0) {
         return json({
-            success: false,
+            success: false
             error: "Document not found"
           },)
           { status: 404 },
         )
       }
       return json({
-        success: true,
+        success: true
         autoSaveStatus: {
           isDirty: !!(document[0].autoSaveData as any)?.isDirty,
           lastSavedAt: document[0].lastSavedAt,
@@ -163,13 +151,12 @@ export async function GET({ params }: RequestEvent): Promise<any> {
       })
     } catch (dbError) {
       console.warn("Database query failed, returning mock response:", dbError)
-
       return json({
-        success: true,
+        success: true
         autoSaveStatus: {
-          isDirty: false,
+          isDirty: false
           lastSavedAt: new Date().toISOString(),
-          hasAutoSaveData: false,
+          hasAutoSaveData: false
           autoSaveData: null
         }
       })
@@ -177,7 +164,7 @@ export async function GET({ params }: RequestEvent): Promise<any> {
   } catch (error: any) {
     console.error("Error fetching auto-save status:", error)
     return json({
-        success: false,
+        success: false
         error: "Failed to fetch auto-save status"
       },)
       { status: 500 },

@@ -3,17 +3,14 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { getContext, onDestroy, onMount , Snippet} from 'svelte';
   import type {     Writable     } from 'svelte/store';
-  <slots>
-  let { class = $bindable()  }: { class = $bindable() : unknown } = $props(); // string = '';
-
+  {#snippet children(s)}
+  let { class = $bindable()  }: { class = $bindable() : unknown } = $props(); // string = ''
   const { isOpen, position, close } = getContext;
     close: () => void;
   }>('context-menu');
   let menuElement = $state<HTMLDivElement | null >(null);
-
   function handleClickOutside(event: MouseEvent) {
     if (menuElement && !menuElement.contains(event.target as Node)) {
       close();
@@ -24,18 +21,15 @@ https://svelte.dev/e/js_parse_error -->
       close();
     }
   }
-
   $effect(() => {
     document.addEventListener('click', handleClickOutside);
     document.addEventListener('keydown', handleEscape);
   });
-
   onDestroy(() => {
     document.removeEventListener('click', handleClickOutside);
     document.removeEventListener('keydown', handleEscape);
   });
 </script>
-
 {#if $isOpen}
   <div
     bind:this={menuElement}
@@ -47,9 +41,9 @@ https://svelte.dev/e/js_parse_error -->
     {@render children}
   </div>
 {/if}
-
 <style>/* @unocss-include */ .context-menu-content {
     position: fixed;
+d;
     z-index: 1000;
     min-width: 12rem;
     background-color: white;
@@ -59,4 +53,3 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.25rem;
   }
 </style>
-

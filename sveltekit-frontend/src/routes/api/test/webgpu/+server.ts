@@ -1,21 +1,16 @@
 import type { RequestHandler } from './$types.js'
-
 // WebGPU/WebGL Integration Test API
 // Tests WebGPU polyfill and WebGL shader cache
-
 import { json } from '@sveltejs/kit'
 }
-
 export interface TestResult {
   test: string
   status: 'success' | 'error' | 'warning'
   data?: any
   error?: string
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const results: TestResult[] = []
-
   try {
     // Test 1: WebGPU Availability
     results.push({
@@ -23,14 +18,12 @@ export const GET: RequestHandler = async ({ url }) => {
       status: 'warning',
       data: { available: false, reason: 'WebGPU only available in browser context' }
     })
-
     // Test 2: WebGL Context
     results.push({
       test: 'webgl_context',
       status: 'warning',
       data: { available: false, reason: 'WebGL only available in browser context' }
     })
-
     // Test 3: WebGPU Polyfill Import
     try {
       const { webgpuPolyfill } = await import('$lib/webgpu/webgpu-polyfill')
@@ -46,7 +39,6 @@ export const GET: RequestHandler = async ({ url }) => {
         error: error instanceof Error ? error.message: String(error)
       })
     }
-
     // Test 4: WebGL Shader Cache Import
     try {
       const { createWebGLShaderCache, LEGAL_AI_SHADERS } = await import('$lib/utils/webgl-shader-cache')
@@ -54,8 +46,8 @@ export const GET: RequestHandler = async ({ url }) => {
       results.push({
         test: 'webgl_shader_cache_import',
         status: 'success',
-        data: { 
-          imported: true, 
+        data: {
+          imported: true
           shaderCount,
           shaders: Object.keys(LEGAL_AI_SHADERS)
         }
@@ -67,7 +59,6 @@ export const GET: RequestHandler = async ({ url }) => {
         error: error instanceof Error ? error.message: String(error)
       })
     }
-
     // Test 5: NES Memory Architecture Import
     try {
       const { nesMemory } = await import('$lib/memory/nes-memory-architecture')
@@ -75,8 +66,8 @@ export const GET: RequestHandler = async ({ url }) => {
       results.push({
         test: 'nes_memory_import',
         status: 'success',
-        data: { 
-          imported: true,
+        data: {
+          imported: true
           stats: {
             documentCount: memoryStats.documentCount,
             totalRAM: memoryStats.totalRAM,
@@ -92,23 +83,21 @@ export const GET: RequestHandler = async ({ url }) => {
         error: error instanceof Error ? error.message: String(error)
       })
     }
-
     // Test 6: GPU Memory Test (Simulated)
     results.push({
       test: 'gpu_memory_simulation',
       status: 'success',
       data: {
-        simulated: true,
+        simulated: true
         gpuInfo: 'NVIDIA GeForce RTX 3060 Ti',
         memoryAvailable: '8GB VRAM',
         webgpuSupport: 'Requires browser context'
       }
     })
-
     return json({
-      success: true,
+      success: true
       timestamp: new Date().toISOString(),
-      tests: results,
+      tests: results
       summary: {
         total: results.length,
         passed: results.filter(item => item.length),
@@ -117,10 +106,9 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       note: "WebGPU and WebGL tests require browser context. Server-side tests validate imports and architecture."
     })
-
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 })

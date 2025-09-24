@@ -2,7 +2,6 @@
   import { createEventDispatcher } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import { quintOut, elasticOut } from 'svelte/easing';
-
   interface SearchSuggestion {
     id: string;
     text: string;
@@ -11,7 +10,6 @@
     description?: string;
     category?: string;
   }
-
   interface YoRHaSearchBarProps {
     placeholder?: string;
     value?: string;
@@ -24,7 +22,6 @@
     autofocus?: boolean;
     theme?: 'yorha' | 'gaming' | 'legal' | 'default';
   }
-
   let {
     placeholder = 'NEURAL_SEARCH_QUERY: Enter legal analysis request...',
     value = $bindable(''),
@@ -37,16 +34,13 @@
     autofocus = false,
     theme = 'yorha'
   }: YoRHaSearchBarProps = $props();
-
   const dispatch = createEventDispatcher();
-
   let inputElement: HTMLInputElement;
   let isVisible = $state(true);
   let isFocused = $state(false);
   let showSuggestions = $state(false);
   let selectedIndex = $state(-1);
   let searchTerms = $state<string[]>([]);
-
   // Sample legal AI suggestions
   const defaultSuggestions: SearchSuggestion[] = [
     {
@@ -109,28 +103,23 @@
       id: '8',
       text: 'intellectual property dispute analysis',
       type: 'recent',
-      icon: '📝',;
-      description: 'Recent search',;
+      icon: '📝',
+      description: 'Recent search',
       category: 'Recent Queries';
     }
   ];
-
   // Combine default and provided suggestions
   const allSuggestions = $derived(() => {
     const combined = [...defaultSuggestions, ...suggestions];
-
     if (!value.trim()) {
       return combined.slice(0, maxSuggestions);
     }
-
     const filtered = combined.filter(suggestion =>
       suggestion.text.toLowerCase().includes(value.toLowerCase()) ||
       suggestion.description?.toLowerCase().includes(value.toLowerCase())
     );
-
     return filtered.slice(0, maxSuggestions);
   });
-
   // Theme configurations
   const themeConfig = {
     yorha: {
@@ -165,22 +154,18 @@
       input: 'bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400',
       suggestion: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-100',
       activeSuggestion: 'bg-blue-100 dark:bg-blue-900/30 text-blue-900 dark:text-blue-300',
-      icon: 'text-gray-600 dark:text-gray-400',;
-      loading: 'text-blue-600 dark:text-blue-400',;
+      icon: 'text-gray-600 dark:text-gray-400',
+      loading: 'text-blue-600 dark:text-blue-400',
       glow: 'shadow-lg';
     }
   };
-
   const styles = $derived(themeConfig[theme]);
-
   function handleInput(event: Event) {
     const target = event.target as HTMLInputElement;
-    value = target.value;
+    value = target.valu;
     showSuggestions = value.length > 0 || isFocused;
     selectedIndex = -1;
-
     dispatch('input', { value });
-
     // Add search terms animation
     if (value.length > 2) {
       searchTerms = value.split(' ').filter(term => term.length > 2);
@@ -188,13 +173,11 @@
       searchTerms = [];
     }
   }
-
   function handleFocus() {
     isFocused = true;
     showSuggestions = true;
     dispatch('focus');
   }
-
   function handleBlur() {
     // Delay hiding suggestions to allow for clicks
     setTimeout(() => {
@@ -204,10 +187,8 @@
     }, 200);
     dispatch('blur');
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (!showSuggestions) return;
-
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault();
@@ -238,7 +219,6 @@
         break;
     }
   }
-
   function selectSuggestion(suggestion: SearchSuggestion) {
     value = suggestion.text;
     showSuggestions = false;
@@ -246,23 +226,19 @@
     dispatch('suggestionSelect', { suggestion });
     handleSearch();
   }
-
   function handleSearch() {
     if (!value.trim()) return;
-
     dispatch('search', {
-      query: value,;
-      terms: searchTerms,;
+      query: value
+      terms: searchTerms
       timestamp: new Date().toISOString();
     });
-
     // Add to recent searches if not a command
     if (!value.startsWith('/')) {
       // This would typically be saved to localStorage or state
       console.log('Adding to recent searches:', value);
     }
   }
-
   function clearSearch() {
     value = '';
     searchTerms = [];
@@ -271,19 +247,16 @@
     inputElement.focus();
     dispatch('clear');
   }
-
   // Auto-focus on mount
   $effect(() => {
     if (autofocus && inputElement) {
       inputElement.focus();
     }
   });
-
   // Simulated typing animation for placeholder
   let placeholderIndex = $state(0);
   let showingPlaceholder = $state(true);
   const fullPlaceholder = placeholder;
-
   $effect(() => {
     if (!isFocused && value === '') {
       const interval = setInterval(() => {
@@ -296,16 +269,13 @@
           }, 3000);
         }
       }, 50);
-
       return () => clearInterval(interval);
     }
   });
-
   const animatedPlaceholder = $derived(
     !isFocused && value === '' ? fullPlaceholder.slice(0, placeholderIndex) + '▊' : placeholder
   );
 </script>
-
 <div class="relative w-full max-w-2xl mx-auto">
   <!-- Main Search Container -->
   <div
@@ -329,7 +299,6 @@
         </div>
       {/if}
     </div>
-
     <!-- Search Input -->
     <input
       bind:this={inputElement}
@@ -348,7 +317,6 @@
       autocomplete="off"
       spellcheck="false"
     />
-
     <!-- Clear Button -->
     {#if value}
       <button
@@ -363,7 +331,6 @@
         ✕
       </button>
     {/if}
-
     <!-- Search Terms Visualization -->
     {#if searchTerms.length > 0 && theme === 'yorha'}
       <div class="absolute right-16 top-1/2 transform -translate-y-1/2 flex space-x-1">
@@ -378,7 +345,6 @@
       </div>
     {/if}
   </div>
-
   <!-- Suggestions Dropdown -->
   {#if showSuggestions && allSuggestions().length > 0}
     <div
@@ -403,7 +369,6 @@
           <div class={`mr-3 text-lg ${styles.icon}`}>
             {suggestion.icon || (suggestion.type === 'command' ? '>' : '🔍')}
           </div>
-
           <!-- Suggestion Content -->
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
@@ -435,7 +400,6 @@
               </div>
             {/if}
           </div>
-
           <!-- Selection Indicator -->
           {#if index === selectedIndex}
             <div class={`ml-2 ${styles.icon}`}>
@@ -444,7 +408,6 @@
           {/if}
         </button>
       {/each}
-
       <!-- Footer with shortcuts -->
       {#if theme === 'yorha'}
         <div class="px-4 py-2 border-t border-green-400/20 text-xs text-green-400/50">
@@ -458,32 +421,26 @@
     </div>
   {/if}
 </div>
-
 <style>
   /* Custom scrollbar for suggestions */
-  .overflow-y-auto {;
-    scrollbar-width: thin;
+  .overflow-y-auto {
+    scrollbar-width: thi;
     scrollbar-color: rgba(0, 255, 65, 0.3) transparent;
   }
-
   .overflow-y-auto::-webkit-scrollbar {
     width: 6px;
   }
-
   .overflow-y-auto::-webkit-scrollbar-track {
     background: transparent;
   }
-
   .overflow-y-auto::-webkit-scrollbar-thumb {
     background: rgba(0, 255, 65, 0.3);
     border-radius: 3px;
   }
-
   /* YoRHa theme enhanced animations */
   :global(.yorha-search) {
     animation: yorha-search-pulse 3s ease-in-out infinite alternate;
   }
-
   @keyframes yorha-search-pulse {
     from {
       box-shadow: 0 0 40px rgba(0, 255, 65, 0.4);
@@ -492,19 +449,16 @@
       box-shadow: 0 0 60px rgba(0, 255, 65, 0.6), 0 0 100px rgba(0, 255, 65, 0.2);
     }
   }
-
   /* Typing cursor animation */
   @keyframes cursor-blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
   }
-
-  input::placeholder {;
+  input::placeholder {
     animation: cursor-blink 1s infinite;
   }
-
   /* Smooth focus transitions */
-  input:focus {;
+  input:focus {
     transform: scale(1.01);
   }
 </style>

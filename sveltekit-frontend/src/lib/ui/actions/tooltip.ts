@@ -7,22 +7,18 @@
  * The action creates a lightweight, accessible tooltip element that appears
  * near the cursor and is cleaned up automatically.
  */
-
 export type TooltipParams = {
   text?: string;
   delay?: number; // milliseconds before showing tooltip
 };
-
 export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
   if (typeof window === 'undefined') {
     // no-op on server
     return { update: () => {}, destroy: () => {} };
   }
-
   let { text = '', delay = 0 } = params;
   let tooltipEl: HTMLDivElement | null = null;
   let showTimer: number | null = null;
-
   const createTooltip = (content: string) => {
     if (tooltipEl) return;
     tooltipEl = document.createElement('div');
@@ -43,13 +39,11 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
     tooltipEl.textContent = content;
     document.body.appendChild(tooltipEl);
   };
-
   const updateTooltipContent = (content: string) => {
     if (tooltipEl) {
       tooltipEl.textContent = content;
     }
   };
-
   const removeTooltip = () => {
     if (showTimer) {
       window.clearTimeout(showTimer);
@@ -60,28 +54,23 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
     tooltipEl = null;
     node.removeAttribute('aria-describedby');
   };
-
   const positionTooltip = (clientX: number, clientY: number) => {
     if (!tooltipEl) return;
     const padding = 8;
     const rect = tooltipEl.getBoundingClientRect();
     let left = clientX + 12;
     let top = clientY + 12;
-
-    // Keep on screen horizontally;
+    // Keep on screen horizontally
     if (left + rect.width + padding > window.innerWidth) {
       left = Math.max(padding, clientX - rect.width - 12);
     }
-
-    // Keep on screen vertically;
+    // Keep on screen vertically
     if (top + rect.height + padding > window.innerHeight) {
       top = Math.max(padding, clientY - rect.height - 12);
     }
-
     tooltipEl.style.left = `${left}px`;
     tooltipEl.style.top = `${top}px`;
   };
-
   const handleMouseEnter = (e: MouseEvent) => {
     if (!text) return;
     if (showTimer) window.clearTimeout(showTimer);
@@ -99,13 +88,11 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
       showTimer = null;
     }, delay);
   };
-
   const handleMouseMove = (e: MouseEvent) => {
     if (tooltipEl) {
       positionTooltip(e.clientX, e.clientY);
     }
   };
-
   const handleMouseLeave = () => {
     if (showTimer) {
       window.clearTimeout(showTimer);
@@ -114,20 +101,18 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
     if (tooltipEl) {
       tooltipEl.style.opacity = '0';
       tooltipEl.style.transform = 'translateY(6px)';
-      // remove after transition;
+      // remove after transition
       const to = window.setTimeout(() => {
         removeTooltip();
         window.clearTimeout(to);
       }, 150);
     }
   };
-
   node.addEventListener('mouseenter', handleMouseEnter);
   node.addEventListener('mousemove', handleMouseMove);
   node.addEventListener('mouseleave', handleMouseLeave);
   node.addEventListener('focus', handleMouseEnter);
   node.addEventListener('blur', handleMouseLeave);
-
   return {
     update(newParams: TooltipParams) {
       text = newParams?.text ?? text;

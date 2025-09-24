@@ -1,9 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Svelte 5 runes are used directly without imports
   import { enhance } from '$app/forms';
-  // import { Dialog } from 'bits-ui';
+  // import { Dialog } from 'bits-ui'
   import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
@@ -17,16 +16,14 @@
     onOpenChange?: (open: boolean) => void;
     onSuccess?: (user: any) => void;
   }
-
   let { mode = $bindable('login'),
     open = $bindable(false),
     onOpenChange,
     onSuccess
    }: Props = $props();
-
   // Svelte 5 runes for reactive state
   let formData = $state({
-    email: '',;
+    email: '',
     password: '',
     confirmPassword: '',
     firstName: '',
@@ -35,11 +32,9 @@
   let loading = $state(false);
   let error = $state('');
   let success = $state('');
-
   // Focus management for accessibility
   let emailInput: HTMLInputElement = $state(undefined as any);
   let passwordInput: HTMLInputElement = $state(undefined as any);
-
   // Derived state for form validation
   let isValid = $derived(() => {
     const hasEmail = formData.email.includes('@');
@@ -47,11 +42,10 @@
     if (mode === 'register') {
       const hasConfirmPassword = formData.confirmPassword === formData.password;
       const hasName = formData.firstName.trim() && formData.lastName.trim();
-      return hasEmail && hasPassword && hasConfirmPassword && hasName;
+      return hasEmail && hasPassword && hasConfirmPassword && hasNam;
     }
     return hasEmail && hasPassword;
   });
-
   // Form submission with AI-powered analytics
   async function handleSubmit(event: Event) {
     const form = event.target as HTMLFormElement;
@@ -59,50 +53,44 @@
     loading = true;
     error = '';
     success = '';
-
     try {
       // Use GPU orchestrator to log authentication events for security analysis
       const authContext = {
         mode,
-        email: formData.email,;
+        email: formData.email,
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent;
       };
-
       // Trigger AI analysis for suspicious login patterns
       const securityAnalysis = await mcpGPUOrchestrator.routeAPIRequest(
         '/api/security/analyze-login',
         authContext,
         { userId: null, securityLevel: 'authentication' }
       );
-
       const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
       const response = await fetch(endpoint, {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        },;
+        },
         body: JSON.stringify(formData);
       });
-
       const result = await (response as { json?: any; ok?: any }).json();
-
       if ((response as { json?: any; ok?: any }).ok) {
         success = (result as { message?: any; user?: any; error?: any }).message || `${mode === 'login' ? 'Login' : 'Registration'} successful!`;
         // Log successful authentication with AI context
         await mcpGPUOrchestrator.processLegalDocument(
           `Authentication success: ${mode} for ${formData.email}`,
           {
-            includeRAG: false,
-            includeGraph: true,
+            includeRAG: false
+            includeGraph: true
             generateSummary: false
           }
         );
-
         // Reset form and close dialog
         setTimeout(() => {
           formData = {
-            email: '',;
+            email: '',
             password: '',
             confirmPassword: '',
             firstName: '',
@@ -125,7 +113,6 @@
       loading = false;
     }
   }
-
   // Toggle between login and register modes
   function toggleMode() {
     mode = mode === 'login' ? 'register' : 'login';
@@ -135,14 +122,12 @@
     formData.firstName = '';
     formData.lastName = '';
   }
-
   // Effect for focus management when dialog opens
   $effect(() => {
     if (open && emailInput) {
       setTimeout(() => emailInput?.focus(), 100);
     }
   });
-
   // Effect for handling open state changes
   $effect(() => {
     if (onOpenChange) {
@@ -150,21 +135,18 @@
     }
   });
 </script>
-
 {#if open}
   <div class="fixed inset-0 z-50 bg-black/80 animate-in fade-in-0"></div>
   <div class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 animate-in fade-in-0 zoom-in-95 slide-in-from-left-1/2 slide-in-from-top-[48%] sm:rounded-lg">
     <h2 class="text-lg font-semibold leading-none tracking-tight">
       {mode === 'login' ? 'Login to Legal AI' : 'Create Legal AI Account'}
     </h2>
-    
     <p class="text-sm nes-text is-disabled">
-        {mode === 'login' 
+        {mode === 'login'
           ? 'Access your legal case management system with AI-powered analysis'
           : 'Join the next generation of legal professionals with AI assistance'
         }
     </p>
-
       <form onsubmit={handleSubmit} class="space-y-4">
         <!-- Success Message -->
         {#if success}
@@ -177,7 +159,6 @@
             </div>
           </Alert>
         {/if}
-
         <!-- Error Message -->
         {#if error}
           <Alert variant="error">
@@ -189,13 +170,12 @@
             </div>
           </Alert>
         {/if}
-
         <!-- Name Fields (Register Only) -->
         {#if mode === 'register'}
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label for="firstName">First Name</Label>
-              <Input 
+              <Input
                 id="firstName"
                 name="firstName"
                 type="text"
@@ -208,7 +188,7 @@
             </div>
             <div class="space-y-2">
               <Label for="lastName">Last Name</Label>
-              <Input 
+              <Input
                 id="lastName"
                 name="lastName"
                 type="text"
@@ -221,11 +201,10 @@
             </div>
           </div>
         {/if}
-
         <!-- Email Field -->
         <div class="space-y-2">
           <Label for="email">Email</Label>
-          <Input 
+          <Input
             bind:this={emailInput}
             id="email"
             name="email"
@@ -237,11 +216,10 @@
             required
           />
         </div>
-
         <!-- Password Field -->
         <div class="space-y-2">
           <Label for="password">Password</Label>
-          <Input 
+          <Input
             bind:this={passwordInput}
             id="password"
             name="password"
@@ -256,12 +234,11 @@
             <p class="text-xs nes-text is-disabled">Must be at least 6 characters</p>
           {/if}
         </div>
-
         <!-- Confirm Password (Register Only) -->
         {#if mode === 'register'}
           <div class="space-y-2">
             <Label for="confirmPassword">Confirm Password</Label>
-            <Input 
+            <Input
               id="confirmPassword"
               name="confirmPassword"
               type="password"
@@ -276,10 +253,9 @@
             {/if}
           </div>
         {/if}
-
         <!-- Submit Button -->
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           class="w-full bits-btn bits-btn"
           disabled={loading || !isValid}
         >
@@ -291,23 +267,20 @@
           {:else}
             {mode === 'login' ? 'Sign In' : 'Create Account'}
           {/if}
-
         <!-- Mode Toggle -->
         <div class="text-center">
-          <button 
+          <button
             type="button"
             onclick={toggleMode}
             class="text-sm text-primary hover:underline"
             disabled={loading}
           >
-            {mode === 'login' 
-              ? "Don't have an account? Sign up" 
+            {mode === 'login'
+              ? "Don't have an account? Sign up"
               : "Already have an account? Sign in"
             }
-
         </div>
       </form>
-
       <!-- Demo Accounts Notice -->
       {#if mode === 'login'}
         <div class="border-t pt-4">
@@ -316,8 +289,7 @@
           </p>
         </div>
       {/if}
-
-    <button 
+    <button
       type="button"
       onclick={() => open = false}
       class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
@@ -329,16 +301,14 @@
     </button>
   </div>
 {/if}
-
 <style>
   /* Additional component-specific styles if needed */
-  :global(.animate-in) {;
-    animation-duration: 200ms;
+  :global(.animate-in) {
+    animation-duration: 200m;
     animation-fill-mode: both;
   }
-  
   :global(.animate-out) {
-    animation-duration: 150ms;
+    animation-duration: 150m;
     animation-fill-mode: both;
   }
 </style>

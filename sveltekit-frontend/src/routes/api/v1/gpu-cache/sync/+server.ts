@@ -2,23 +2,18 @@ import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 import { gpuCacheOrchestrator } from '$lib/services/gpu-cache-orchestrator'
 import { dev } from '$app/environment'
-
 type SyncResult = { status: 'pending' | 'completed' | 'failed'; entries: number; errors: string[] }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     await gpuCacheOrchestrator.initialize()
-
     const body = await request.json()
     const { databases = ['postgresql', 'qdrant', 'neo4j', 'indexeddb'] } = body as { databases?: string[] }
-
     const syncResults: Record<'postgresql' | 'qdrant' | 'neo4j' | 'indexeddb', SyncResult> = {
       postgresql: { status: 'pending', entries: 0, errors: [] },
       qdrant: { status: 'pending', entries: 0, errors: [] },
       neo4j: { status: 'pending', entries: 0, errors: [] },
       indexeddb: { status: 'pending', entries: 0, errors: [] }
     }
-
     for (const db of databases) {
       try {
         switch (db) {
@@ -47,7 +42,6 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       }
     }
-
     return json({ success: true, synchronization: syncResults, timestamp: Date.now() })
   } catch (error: any) {
     return json()
@@ -59,19 +53,15 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 async function simulatePostgreSQLSync(): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, 200)
 }
-
 async function simulateQdrantSync(): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, 150)
 }
-
 async function simulateNeo4jSync(): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, 120)
 }
-
 async function simulateIndexedDBSync(): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, 80)
 }

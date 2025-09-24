@@ -1,7 +1,6 @@
 <script lang="ts">
   import CRUDDashboard from "$lib/components/CRUDDashboard.svelte";
 </script>
-
 <div class="space-y-4">
   <div class="space-y-4">
     <h1>Complete CRUD Dashboard</h1>
@@ -11,9 +10,7 @@
     </p>
   </div>
 </div>
-
 <CRUDDashboard />
-
 <style>
   /* @unocss-include */
   .page-header {
@@ -47,4 +44,3 @@
 }
 }
 </style>
-

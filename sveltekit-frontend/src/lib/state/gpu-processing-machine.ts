@@ -2,10 +2,8 @@
  * GPU Processing Machine - XState v5 powered document processing orchestration
  * Manages batch processing, concurrent execution, and error recovery for legal documents
  */
-
 import { createActor, setup } from 'xstate';
-
-// Types;
+// Types
 export interface DocumentInput {
   documentId: string;
   content: string;
@@ -18,28 +16,25 @@ export interface DocumentInput {
     batchSize: number;
   };
 }
-
 export interface ProcessingResult {
   documentId: string;
   status: 'completed' | 'failed' | 'processing';
   result?: {
     extractedText?: string;
     embeddings?: number[];
-    analysis?: Record<string, any>;
-    metadata?: Record<string, any>;
+    analysis?: { [key: string]: any };
+    metadata?: { [key: string]: any };
   };
   error?: string;
   processingTime?: number;
   timestamp: Date;
 }
-
 export interface ServiceHealth {
   gpu: 'healthy' | 'degraded' | 'offline';
   webgpu: 'healthy' | 'degraded' | 'offline';
   vectorDb: 'healthy' | 'degraded' | 'offline';
   lastCheck: Date;
 }
-
 export interface ProcessingMetrics {
   totalProcessed: number;
   successRate: number;
@@ -48,8 +43,7 @@ export interface ProcessingMetrics {
   queueLength: number;
   gpuUtilization: number;
 }
-
-// Machine Context;
+// Machine Context
 interface GPUProcessingContext {
   processingQueue: DocumentInput[];
   activeProcessing: Map<string, DocumentInput>;
@@ -60,9 +54,8 @@ interface GPUProcessingContext {
   maxConcurrent: number;
   retryCount: Map<string, number>;
 }
-
 // Events
-type GPUProcessingEvent = 
+type GPUProcessingEvent =
   | { type: 'PROCESS_DOCUMENT' } & DocumentInput
   | { type: 'BATCH_PROCESS'; documents: DocumentInput[] }
   | { type: 'DOCUMENT_COMPLETED'; documentId: string; result: ProcessingResult }
@@ -73,49 +66,41 @@ type GPUProcessingEvent =
   | { type: 'RETRY_FAILED' }
   | { type: 'SERVICE_HEALTH_CHECK' }
   | { type: 'UPDATE_METRICS' };
-
-// Guards;
+// Guards
 const canProcessMore = ({ context }: { context: GPUProcessingContext }) => {
   return context.activeProcessing.size < context.maxConcurrent && context.processingQueue.length > 0;
 };
-
 const hasQueuedDocuments = ({ context }: { context: GPUProcessingContext }) => {
   return context.processingQueue.length > 0;
 };
-
 const canRetry = ({ context, event }: { context: GPUProcessingContext; event: any }) => {
   const documentId = event.documentId;
   const retryCount = context.retryCount.get(documentId) || 0;
   return retryCount < 3; // Max 3 retries
 };
-
-// Actions;
+// Actions
 const addToQueue = ({ context, event }: { context: GPUProcessingContext; event: any }) => {
   if (event.type === 'PROCESS_DOCUMENT') {
     context.processingQueue.push({
       documentId: event.documentId,
       content: event.content,
-      title: event.title,;
+      title: event.title,
       options: event.options
     });
   } else if (event.type === 'BATCH_PROCESS') {
     context.processingQueue.push(...event.documents);
   }
-  
   // Update metrics
   context.metrics.queueLength = context.processingQueue.length;
 };
-
 const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
   while (context.activeProcessing.size < context.maxConcurrent && context.processingQueue.length > 0) {
     const document = context.processingQueue.shift()!;
     context.activeProcessing.set(document.documentId, document);
-    
-    // Simulate async processing;
+    // Simulate async processing
     setTimeout(() => {
       // Simulate processing completion or failure
       const success = Math.random() > 0.1; // 90% success rate
-      
       if (success) {
         const result: ProcessingResult = {
           documentId: document.documentId,
@@ -126,10 +111,9 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
             analysis: { sentiment: Math.random(), complexity: Math.random() * 10 },
             metadata: { processedAt: new Date().toISOString(), type: document.options?.processType }
           },
-          processingTime: Math.random() * 5000 + 1000, // 1-6 seconds;
+          processingTime: Math.random() * 5000 + 1000, // 1-6 seconds
           timestamp: new Date()
         };
-        
         // Dispatch completion event (this would be handled by the actor)
         context.activeProcessing.delete(document.documentId);
         context.completedDocuments.push(result);
@@ -139,15 +123,13 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
         const result: ProcessingResult = {
           documentId: document.documentId,
           status: 'failed',
-          error,;
+          error,
           timestamp: new Date()
         };
-        
         context.activeProcessing.delete(document.documentId);
         context.errorDocuments.push(result);
         context.retryCount.set(document.documentId, (context.retryCount.get(document.documentId) || 0) + 1);
       }
-      
       // Update metrics
       context.metrics.concurrentJobs = context.activeProcessing.size;
       context.metrics.queueLength = context.processingQueue.length;
@@ -156,50 +138,42 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
     }, Math.random() * 3000 + 1000); // 1-4 second processing time
   }
 };
-
 const pauseProcessing = ({ context }: { context: GPUProcessingContext }) => {
   // In a real implementation, this would pause ongoing GPU jobs
   console.log('Pausing GPU processing...');
 };
-
 const clearQueue = ({ context }: { context: GPUProcessingContext }) => {
   context.processingQueue = [];
   context.metrics.queueLength = 0;
 };
-
 const checkServiceHealth = ({ context }: { context: GPUProcessingContext }) => {
   // Simulate health checks
   const gpuHealthy = Math.random() > 0.1; // 90% uptime
   const webgpuHealthy = Math.random() > 0.05; // 95% uptime
   const vectorDbHealthy = Math.random() > 0.02; // 98% uptime
-  
   context.serviceHealth = {
-    gpu: gpuHealthy ? 'healthy' : 'degraded',;
+    gpu: gpuHealthy ? 'healthy' : 'degraded',
     webgpu: webgpuHealthy ? 'healthy' : 'degraded',
     vectorDb: vectorDbHealthy ? 'healthy' : 'degraded',
     lastCheck: new Date()
   };
 };
-
 const updateMetrics = ({ context }: { context: GPUProcessingContext }) => {
   // Simulate GPU utilization
   context.metrics.gpuUtilization = Math.random() * 100;
-  
-  // Calculate average processing time;
+  // Calculate average processing time
   if (context.completedDocuments.length > 0) {
     const totalTime = context.completedDocuments.reduce((sum, doc) => sum + (doc.processingTime || 0), 0);
     context.metrics.averageTime = totalTime / context.completedDocuments.length;
   }
-  
   context.metrics.concurrentJobs = context.activeProcessing.size;
   context.metrics.queueLength = context.processingQueue.length;
 };
-
-// Machine Definition;
+// Machine Definition
 export const gpuProcessingMachine = setup({
   types: {
-    context: Record<string, any> as GPUProcessingContext,
-    events: Record<string, any> as GPUProcessingEvent
+    context: { [key: string]: any } as GPUProcessingContext,
+    events: { [key: string]: any } as GPUProcessingEvent
   },
   actions: {
     addToQueue,
@@ -283,7 +257,7 @@ export const gpuProcessingMachine = setup({
         SERVICE_HEALTH_CHECK: {
           actions: ['checkServiceHealth']
         }
-      },;
+      },
       always: [;
         {
           target: 'idle',
@@ -301,15 +275,14 @@ export const gpuProcessingMachine = setup({
           target: 'idle',
           actions: ['clearQueue']
         },
-        SERVICE_HEALTH_CHECK: {;
+        SERVICE_HEALTH_CHECK: {
           actions: ['checkServiceHealth']
         }
       }
     }
   }
 });
-
-// Actor Factory;
+// Actor Factory
 export const createGPUProcessingActor = () => {
   return createActor(gpuProcessingMachine);
 };

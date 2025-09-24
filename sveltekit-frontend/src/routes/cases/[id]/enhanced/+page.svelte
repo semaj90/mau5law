@@ -1,18 +1,14 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import { page } from '$app/state';
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import { OrchestrationCenter, FlowExplorer, ActivityStream, PerformancePulse } from '$lib/components/ui/enhanced-bits';
-	
 	let { data }: { data: PageData } = $props();
-	
 	let activeTab = $state('overview');
 	let selectedAnalysisType = $state(data.analysisType);
 	let isAnalyzing = $state(false);
 	let analysisProgress = $state(0);
-	
 	let tabs = $derived([
 		{ id: 'overview', label: 'Case Overview', count: 1 },
 		{ id: 'analysis', label: 'AI Analysis', count: data.analysisResults.comprehensive.key_issues.length },
@@ -21,21 +17,17 @@
 		{ id: 'insights', label: 'AI Insights', count: data.aiInsights.strategy_recommendations.length },
 		{ id: 'activity', label: 'Recent Activity', count: data.recentActivity.length }
 	]);
-
 	let winProbabilityColor = $derived(
 		data.analysisResults.comprehensive.win_probability > 0.75 ? 'text-green-600' :
 		data.analysisResults.comprehensive.win_probability > 0.5 ? 'text-yellow-600' : 'text-red-600'
 	);
-
 	let riskAssessmentColor = $derived(
 		data.analysisResults.comprehensive.risk_assessment === 'low' ? 'text-green-600' :
 		data.analysisResults.comprehensive.risk_assessment === 'medium' ? 'text-yellow-600' : 'text-red-600'
 	);
-
 	function startNewAnalysis() {
 		isAnalyzing = true;
 		analysisProgress = 0;
-		
 		const interval = setInterval(() => {
 			analysisProgress += Math.random() * 15;
 			if (analysisProgress >= 100) {
@@ -45,31 +37,25 @@
 			}
 		}, 200);
 	}
-
 	function formatCurrency(amount: number): string {
 		return new Intl.NumberFormat.format(amount);
 	}
-
 	function formatPercentage(value: number): string {
 		return `${Math.round(value * 100)}%`;
 	}
-
 	function getConfidenceColor(confidence: number): string {
-		return confidence > 0.8 ? 'text-green-600' : 
+		return confidence > 0.8 ? 'text-green-600' :
 			   confidence > 0.6 ? 'text-yellow-600' : 'text-red-600';
 	}
-
 	function getRiskLevelColor(level: string): string {
 		return level === 'low' ? 'text-green-600' :
 			   level === 'medium' ? 'text-yellow-600' : 'text-red-600';
 	}
-
 	function getPriorityColor(priority: string): string {
 		return priority === 'high' ? 'text-red-600' :
 			   priority === 'medium' ? 'text-yellow-600' : 'text-green-600';
 	}
 </script>
-
 <div class="container mx-auto p-6 space-y-6">
 	<div class="flex justify-between items-start">
 		<div>
@@ -87,7 +73,6 @@
 				</span>
 			</div>
 		</div>
-		
 		<div class="text-right">
 			<div class="text-sm text-gray-500">AI Confidence</div>
 			<div class="text-2xl font-bold {getConfidenceColor(data.caseDetails.confidence_score)}">
@@ -95,7 +80,6 @@
 			</div>
 		</div>
 	</div>
-
 	<OrchestrationCenter>
 		<FlowExplorer {tabs} bind:activeTab>
 			{#snippet tabContent()}
@@ -112,7 +96,6 @@
 								<div><span class="font-medium">Last Modified:</span> {data.caseDetails.lastModified}</div>
 							</div>
 						</div>
-
 						<div class="bg-white p-6 rounded-lg border border-gray-200">
 							<h3 class="text-lg font-semibold text-gray-900 mb-4">Legal Team</h3>
 							<div class="space-y-3">
@@ -126,24 +109,23 @@
 								{/each}
 							</div>
 						</div>
-
 						<div class="bg-white p-6 rounded-lg border border-gray-200">
 							<h3 class="text-lg font-semibold text-gray-900 mb-4">Key Metrics</h3>
 							<div class="space-y-3">
 								<div>
-									<span class="font-medium">Win Probability:</span> 
+									<span class="font-medium">Win Probability:</span>
 									<span class="font-bold {winProbabilityColor}">
 										{formatPercentage(data.analysisResults.comprehensive.win_probability)}
 									</span>
 								</div>
 								<div>
-									<span class="font-medium">Risk Assessment:</span> 
+									<span class="font-medium">Risk Assessment:</span>
 									<span class="font-bold {riskAssessmentColor} capitalize">
 										{data.analysisResults.comprehensive.risk_assessment}
 									</span>
 								</div>
 								<div>
-									<span class="font-medium">Legal Strength:</span> 
+									<span class="font-medium">Legal Strength:</span>
 									<span class="font-bold text-blue-600">
 										{formatPercentage(data.analysisResults.comprehensive.legal_strength)}
 									</span>
@@ -155,7 +137,7 @@
 					<div class="space-y-6">
 						<div class="flex justify-between items-center">
 							<h3 class="text-xl font-semibold text-gray-900">AI Analysis Results</h3>
-							<button 
+							<button
 								class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
 								onclick={startNewAnalysis}
 								disabled={isAnalyzing}
@@ -163,7 +145,6 @@
 								{isAnalyzing ? 'Analyzing...' : 'Rerun Analysis'}
 							</button>
 						</div>
-
 						{#if isAnalyzing}
 							<div class="bg-blue-50 p-4 rounded-lg">
 								<div class="flex items-center justify-between mb-2">
@@ -175,7 +156,6 @@
 								</div>
 							</div>
 						{/if}
-
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<div class="bg-white p-6 rounded-lg border border-gray-200">
 								<h4 class="text-lg font-semibold text-gray-900 mb-4">Key Issues Identified</h4>
@@ -190,7 +170,6 @@
 									{/each}
 								</div>
 							</div>
-
 							<div class="bg-white p-6 rounded-lg border border-gray-200">
 								<h4 class="text-lg font-semibold text-gray-900 mb-4">Timeline Predictions</h4>
 								<div class="space-y-3">
@@ -203,7 +182,6 @@
 								</div>
 							</div>
 						</div>
-
 						<div class="bg-white p-6 rounded-lg border border-gray-200">
 							<h4 class="text-lg font-semibold text-gray-900 mb-4">Similar Cases</h4>
 							<div class="overflow-x-auto">
@@ -260,7 +238,6 @@
 								<div class="text-gray-600">Completion Rate</div>
 							</div>
 						</div>
-
 						<div class="bg-white p-6 rounded-lg border border-gray-200">
 							<h4 class="text-lg font-semibold text-gray-900 mb-4">Key Documents</h4>
 							<div class="overflow-x-auto">
@@ -292,7 +269,6 @@
 								</table>
 							</div>
 						</div>
-
 						<div class="bg-white p-6 rounded-lg border border-gray-200">
 							<h4 class="text-lg font-semibold text-gray-900 mb-4">Extraction Metrics</h4>
 							<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -325,7 +301,6 @@
 									</div>
 								</div>
 							</div>
-
 							<div class="bg-white p-6 rounded-lg border border-gray-200">
 								<h4 class="text-lg font-semibold text-gray-900 mb-4">Settlement Range</h4>
 								<div class="space-y-3">
@@ -343,7 +318,6 @@
 									</div>
 								</div>
 							</div>
-
 							<div class="bg-white p-6 rounded-lg border border-gray-200">
 								<h4 class="text-lg font-semibold text-gray-900 mb-4">ROI Analysis</h4>
 								<div class="space-y-3">
@@ -356,11 +330,10 @@
 								</div>
 							</div>
 						</div>
-
 						<div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
 							<h4 class="text-lg font-semibold text-blue-900 mb-2">Recommended Strategy</h4>
 							<p class="text-blue-800">
-								Based on ROI analysis, <strong>early mediation</strong> provides the highest return at 85% ROI. 
+								Based on ROI analysis, <strong>early mediation</strong> provides the highest return at 85% ROI.
 								This approach minimizes litigation costs while maximizing potential settlement value.
 							</p>
 						</div>
@@ -386,7 +359,6 @@
 								{/each}
 							</div>
 						</div>
-
 						<div class="bg-white p-6 rounded-lg border border-gray-200">
 							<h4 class="text-lg font-semibold text-gray-900 mb-4">Risk Factors</h4>
 							<div class="space-y-4">
@@ -435,7 +407,6 @@
 				{/if}
 			{/snippet}
 		</FlowExplorer>
-
 		<PerformancePulse>
 			{#snippet metrics()}
 				<div class="grid grid-cols-2 md:grid-cols-4 gap-4">

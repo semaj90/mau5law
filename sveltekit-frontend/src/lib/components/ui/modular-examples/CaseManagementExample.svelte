@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: `<svelte:window>` does not support non-event attributes or spread attributes;
+<!-- @migration-task Error while migrating Svelte code: `<svelte:window>` does not support non-event attributes or spread attribute;
 https://svelte.dev/e/illegal_element_attribute -->
 <!-- Example: Modular Case Management with API Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { ModularDialog } from '../modular-dialog';
   import { ModularCommand } from '../modular-command';
   import Button from 'bits-ui';
@@ -16,7 +15,6 @@ https://svelte.dev/e/illegal_element_attribute -->
   let selectedCaseId = $state<string>('');
   let selectedCase = $state<Case | null>(null);
   let caseEvidence = $state<Evidence[]>([]);
-
   // Search and data management
   function handleCaseSelect(item: Case, type: string) {
     if (type === 'cases') {
@@ -25,7 +23,6 @@ https://svelte.dev/e/illegal_element_attribute -->
       showCaseDialog = true;
     }
   }
-
   function handleCommandSearch(item: unknown, type: string) {
     console.log(`Selected ${type}:`, item);
     switch (type) {
@@ -43,7 +40,6 @@ https://svelte.dev/e/illegal_element_attribute -->
         break;
     }
   }
-
   // Keyboard shortcuts
   function handleKeydown(event: KeyboardEvent) {
     if (event.metaKey || event.ctrlKey) {
@@ -53,25 +49,22 @@ https://svelte.dev/e/illegal_element_attribute -->
       }
     }
   }
-
   // Data refresh handlers
   async function refreshCaseData() {
     if (selectedCaseId) {
       const updatedCase = await reactiveApiClient.fetchCase(selectedCaseId, false);
       if (updatedCase) {
-        selectedCase = updatedCase;
+        selectedCase = updatedCa;
       }
       const updatedEvidence = await reactiveApiClient.fetchEvidence(selectedCaseId, false);
       caseEvidence = updatedEvidence;
     }
   }
-
   // Form submission handlers
   async function createNewCase() {
     // Show create case dialog or form
     console.log('Create new case');
   }
-
   async function updateCase(caseData: Partial<Case>) {
     if (!selectedCase) return;
     try {
@@ -85,9 +78,7 @@ https://svelte.dev/e/illegal_element_attribute -->
     }
   }
 </script>
-
 <svelte:window keydown={handleKeydown} />
-
 <div class="p-6 max-w-6xl mx-auto">
   <!-- Header -->
   <div class="flex items-center justify-between mb-8">
@@ -97,7 +88,6 @@ https://svelte.dev/e/illegal_element_attribute -->
         Search and manage legal cases with AI-powered tools
       </p>
     </div>
-    
     <div class="flex items-center gap-3">
       <!-- Global Search Button -->
       <button
@@ -108,7 +98,6 @@ https://svelte.dev/e/illegal_element_attribute -->
         <span>Search</span>
         <kbd class="px-2 py-1 text-xs bg-yorha-bg-primary border border-yorha-border rounded">⌘K</kbd>
       </button>
-      
       <!-- Create Case Button -->
       <button
         onclick={createNewCase}
@@ -119,7 +108,6 @@ https://svelte.dev/e/illegal_element_attribute -->
       </button>
     </div>
   </div>
-
   <!-- Quick Actions -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
     <button
@@ -130,7 +118,6 @@ https://svelte.dev/e/illegal_element_attribute -->
       <h3 class="font-mono font-semibold text-yorha-text-primary">Global Search</h3>
       <p class="text-sm text-yorha-text-secondary font-mono">Find cases, evidence, documents</p>
     </button>
-    
     <button
       onclick={createNewCase}
       class="p-4 bg-yorha-bg-secondary border border-yorha-border rounded-md hover:bg-yorha-bg-hover transition-colors text-left"
@@ -139,24 +126,20 @@ https://svelte.dev/e/illegal_element_attribute -->
       <h3 class="font-mono font-semibold text-yorha-text-primary">New Case</h3>
       <p class="text-sm text-yorha-text-secondary font-mono">Create a new legal case</p>
     </button>
-    
     <div class="p-4 bg-yorha-bg-secondary border border-yorha-border rounded-md">
       <FileText class="h-6 w-6 text-yorha-accent mb-2" />
       <h3 class="font-mono font-semibold text-yorha-text-primary">Evidence</h3>
       <p class="text-sm text-yorha-text-secondary font-mono">Manage case evidence</p>
     </div>
-    
     <div class="p-4 bg-yorha-bg-secondary border border-yorha-border rounded-md">
       <Calendar class="h-6 w-6 text-yorha-accent mb-2" />
       <h3 class="font-mono font-semibold text-yorha-text-primary">Timeline</h3>
       <p class="text-sm text-yorha-text-secondary font-mono">Case timeline view</p>
     </div>
   </div>
-
   <!-- Demo Instructions -->
   <div class="bg-yorha-bg-secondary border border-yorha-border rounded-md p-6 font-mono">
     <h2 class="text-lg font-semibold text-yorha-text-primary mb-4">Modular Components Demo</h2>
-    
     <div class="space-y-4 text-sm text-yorha-text-secondary">
       <div>
         <h3 class="font-semibold text-yorha-text-primary mb-2">Command Palette (Global Search)</h3>
@@ -167,7 +150,6 @@ https://svelte.dev/e/illegal_element_attribute -->
           <li>Vector similarity search for semantic matching</li>
         </ul>
       </div>
-      
       <div>
         <h3 class="font-semibold text-yorha-text-primary mb-2">Modular Dialog System</h3>
         <ul class="list-disc list-inside space-y-1 ml-4">
@@ -177,7 +159,6 @@ https://svelte.dev/e/illegal_element_attribute -->
           <li>Customizable loading and error states</li>
         </ul>
       </div>
-      
       <div>
         <h3 class="font-semibold text-yorha-text-primary mb-2">API Integration Features</h3>
         <ul class="list-disc list-inside space-y-1 ml-4">
@@ -191,7 +172,6 @@ https://svelte.dev/e/illegal_element_attribute -->
     </div>
   </div>
 </div>
-
 <!-- Modular Command Palette -->
 <ModularCommand;
   bind:open={showCommandPalette}
@@ -203,7 +183,6 @@ https://svelte.dev/e/illegal_element_attribute -->
   onSelect={handleCommandSearch}
   class="max-w-2xl mx-auto mt-4"
 />
-
 <!-- Modular Case Details Dialog -->
 <ModularDialog
   bind:open={showCaseDialog}
@@ -233,7 +212,6 @@ https://svelte.dev/e/illegal_element_attribute -->
             </div>
           </div>
         </div>
-
         <!-- Case Description -->
         {#if caseData.description}
           <div>
@@ -243,7 +221,6 @@ https://svelte.dev/e/illegal_element_attribute -->
             </div>
           </div>
         {/if}
-
         <!-- Quick Actions -->
         <div class="flex flex-wrap gap-2">
           <button
@@ -266,7 +243,6 @@ https://svelte.dev/e/illegal_element_attribute -->
       </div>
     {/if}
   {/snippet}
-
   {#snippet footer({ close })}
     <div class="flex justify-end gap-2">
       <button

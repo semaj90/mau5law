@@ -1,11 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, setContext } from 'svelte';
-
   import AiAssistant from '$lib/components/ai/AiAssistant.svelte';
   import EvidenceManager from '$lib/components/evidence/EvidenceManager.svelte';
   import {
@@ -15,20 +13,17 @@ https://svelte.dev/e/js_parse_error -->
     CardContent
   } from '$lib/components/ui/enhanced-bits';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
-
   let caseId = $state('');
   let contextItems = $state([]);
   let evidenceText = $state('');
   let activeTab = $state('assistant');
   // Mock user context
-
   const mockUser = {
-    id: 'user-123',;
-    name: 'Legal Assistant User',;
+    id: 'user-123',
+    name: 'Legal Assistant User',
     email: 'assistant@legal.ai';
   };
   setContext('user', () => mockUser);
-
   $effect(() => {
     // Load recent evidence files as context
     (async () => {
@@ -36,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
         const response = await fetch('/api/evidence-files?limit=10');
         const data = await (response as { json?: unknown }).json();
         if ((data as { success?: unknown; items?: unknown; mimeType?: unknown; fileSize?: unknown }).success) {
-          contextItems = (data as { success?: unknown; items?: unknown; mimeType?: unknown; fileSize?: unknown }).items.map(item => ({ id: item.id.toString(),;
+          contextItems = (data as { success?: unknown; items?: unknown; mimeType?: unknown; fileSize?: unknown }).items.map(item => ({ id: item.id.toString(),
             title: (item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).title,
             content: `${(item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).evidence_type} - ${(item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).mime_type}`,
             uploadedAt: (item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).uploaded_at
@@ -47,13 +42,12 @@ https://svelte.dev/e/js_parse_error -->
       }
     })();
   });
-
   function onEvidenceUploaded(event) {
     const newEvidence = event.detail;
     contextItems = [
       {
-        id: newEvidence.record.id.toString(),;
-        title: newEvidence.record.title || 'Uploaded Evidence',;
+        id: newEvidence.record.id.toString(),
+        title: newEvidence.record.title || 'Uploaded Evidence',
         content: `${newEvidence.upload.metadata.mimeType} - ${newEvidence.upload.metadata.fileSize} bytes`,
         uploadedAt: new Date().toISOString()
       },
@@ -62,12 +56,11 @@ https://svelte.dev/e/js_parse_error -->
     // Switch to assistant tab after upload
     activeTab = 'assistant';
   }
-
   function onSemanticSearchResults(event) {
-    const results = event.detail.results;
+    const results = event.detail.result;
     if (results && results.length > 0) {
       // Update context with search results
-      contextItems = results.map(item => ({ id: item.id.toString(),;
+      contextItems = results.map(item => ({ id: item.id.toString(),
         title: (result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).title,
         content: `${(result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).evidenceType} - Similarity: ${((result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).similarity * 100).toFixed(1)}%`,
         similarity: (result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).similarity
@@ -77,24 +70,20 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <svelte:head>
   <title>AI Legal Assistant - Evidence Analysis & Chat</title>
   <meta name="description" content="Intelligent legal assistant with evidence analysis and semantic search capabilities" />
 </svelte:head>
-
 <div class="container mx-auto p-6 max-w-7xl">
   <div class="mb-6">
     <h1 class="text-4xl font-bold text-gray-900 mb-2">AI Legal Assistant</h1>
     <p class="text-gray-600">Intelligent evidence analysis and legal research assistant with real-time chat capabilities</p>
   </div>
-
   <Tabs value={activeTab} onValueChange={(value) => activeTab = value}>
     <TabsList class="grid w-full grid-cols-2">
       <TabsTrigger value="assistant">🤖 AI Chat Assistant</TabsTrigger>
       <TabsTrigger value="evidence">📁 Evidence Manager</TabsTrigger>
     </TabsList>
-
     <TabsContent value="assistant" class="mt-6">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Main Chat Interface -->
@@ -115,7 +104,6 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         </div>
-
         <!-- Context & Information Panel -->
         <div class="space-y-6">
           <!-- Case Configuration -->
@@ -126,15 +114,14 @@ https://svelte.dev/e/js_parse_error -->
             <div class="yorha-panel-content">
               <div class="space-y-4">
                 <div>
-                  <label class="block text-sm font-medium mb-2" for="case-id">Case ID:</label><input id="case-id"
+                  <label class="block text-sm font-medium mb-2" for="case-id">Case ID:</label><input id="case-id",
                     bind:value={caseId}
                     class="w-full p-2 border rounded-md"
                     placeholder="Enter case identifier"
                   />
                 </div>
-
                 <div>
-                  <label class="block text-sm font-medium mb-2" for="additional-context">Additional Context:</label><textarea id="additional-context";
+                  <label class="block text-sm font-medium mb-2" for="additional-context">Additional Context: </label><textarea id="additional-context";
                     bind:value={evidenceText}
                     class="w-full p-2 border rounded-md h-24 text-sm"
                     placeholder="Add any additional context for the AI assistant..."
@@ -143,7 +130,6 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             </div>
           </div>
-
           <!-- Context Items -->
           <div class="nes-container">
             <div class="yorha-panel-header">
@@ -176,7 +162,6 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             </div>
           </div>
-
           <!-- Quick Actions -->
           <div class="nes-container">
             <div class="yorha-panel-header">
@@ -190,13 +175,12 @@ https://svelte.dev/e/js_parse_error -->
                 >
                   📁 Manage Evidence Files
                 </button>
-
                 <button
                   onclick={async () => {
                     try {
                       const response = await fetch('/api/evidence-embeddings', {
-                        method: 'POST',;
-                        headers: { 'Content-Type': 'application/json' },;
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ action: 'backfill' })
                       });
                       const result = await (response as { json?: unknown }).json();
@@ -217,7 +201,6 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </TabsContent>
-
     <TabsContent value="evidence" class="mt-6">
       <EvidenceManager
         onevidenceUploaded={onEvidenceUploaded}
@@ -226,9 +209,8 @@ https://svelte.dev/e/js_parse_error -->
     </TabsContent>
   </Tabs>
 </div>
-
 <style>
-  .container {;
+  .container {
     min-height: 100vh;
   }
 </style>

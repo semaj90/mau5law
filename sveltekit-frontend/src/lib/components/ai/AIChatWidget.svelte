@@ -3,8 +3,6 @@
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from 'svelte';
   import * as Dialog from '$lib/components/ui/dialog/index.js';
   // Card components removed - using native HTML elements
@@ -25,7 +23,6 @@
     ThumbsUp,
     ThumbsDown,
   } from 'lucide-svelte';
-
   let { open = $bindable(false),
     context = null,
     title = 'AI Legal Assistant',
@@ -39,13 +36,11 @@
     caseId = null,
     documentId = null,
   : any } = $props();
-
   let messages = $state([]);
   let currentMessage = $state('');
   let isLoading = $state(false);
   let chatContainer = $state(null);
   let inputElement = $state(null);
-
   // Auto-scroll to bottom when messages change
   $effect(() => {
     if (messages.length > 0 && chatContainer) {
@@ -54,81 +49,69 @@
       }, 100);
     }
   });
-
   // Focus input when dialog opens
   $effect(() => {
     try {
-      
           if (open && inputElement) {
             setTimeout(() => inputElement.focus(), 100);
           }
-        
     } catch (error) {
       console.error('Effect error:', error);
       // Handle error gracefully
     }
   });
-
   // Initialize with context message if provided
   $effect(() => {
     try {
-      
           if (open && context && messages.length === 0) {
             addSystemMessage();
           }
-        
     } catch (error) {
       console.error('Effect error:', error);
       // Handle error gracefully
     }
   });
-
   function addSystemMessage() {
     if (context) {
       messages = [
         {
           id: Date.now(),
-          role: 'system',;
+          role: 'system',
           content: `I have context about: ${context.title || 'Legal Document'}. How can I help you understand or analyze this?`,
-          timestamp: new Date().toISOString(),;
-          type: 'context',;
+          timestamp: new Date().toISOString(),
+          type: 'context',
         },
       ];
     }
   }
-
   async function sendMessage() {
     if (!currentMessage.trim() || isLoading) return;
-
     const userMessage = {
       id: Date.now(),
-      role: 'user',;
-      content: currentMessage.trim(),;
-      timestamp: new Date().toISOString(),;
+      role: 'user',
+      content: currentMessage.trim(),
+      timestamp: new Date().toISOString(),
     };
-
     messages = [...messages, userMessage];
     const messageToSend = currentMessage.trim();
     currentMessage = '';
     isLoading = true;
-
     try {
       // Prepare context for AI
   let contextText = $state('');
       if (context) {
         contextText = `Context: ${context.title}\n${context.description || ''}\n${context.fullText || ''}`;
       }
-
       try {
     const response = await fetch('/api/ai/chat', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: messageToSend,;
-          context: contextText ? [contextText] : undefined,
+        body: JSON.stringify({,
+          message: messageToSend
+          context: contextText ? [contextText] : undefined
           caseId,
-          documentId,;
-          temperature: 0.7,;
+          documentId,
+          temperature: 0.7,
         }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -138,11 +121,9 @@
     throw error;
   },
       });
-
       if (!response.ok) {
         throw new Error('Failed to get AI response');
       }
-
       const data = awaitawait (async () => {
       try {
         return await  response.json());
@@ -151,48 +132,41 @@
         throw new Error('Invalid JSON response');
       }
     })();
-
       const aiMessage = {
         id: Date.now() + 1,
         role: 'assistant',
         content: data.response || 'I apologize, but I could not generate a response.',
-        timestamp: new Date().toISOString(),;
-        metadata: data.performance || ,;
-        suggestions: data.suggestions || [],;
+        timestamp: new Date().toISOString(),
+        metadata: data.performance ||
+        suggestions: data.suggestions || [],
       };
-
       messages = [...messages, aiMessage];
     } catch (error) {
       console.error('AI chat error:', error);
-
       const errorMessage = {
         id: Date.now() + 1,
         role: 'assistant',
-        content: 'I apologize, but I encountered an error. Please try again.',;
-        timestamp: new Date().toISOString(),;
-        error: true,;
+        content: 'I apologize, but I encountered an error. Please try again.',
+        timestamp: new Date().toISOString(),
+        error: true
       };
-
       messages = [...messages, errorMessage];
     } finally {
       isLoading = false;
     }
   }
-
   function handleKeydown(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
-
   function clearChat() {
     messages = [];
     if (context) {
       addSystemMessage();
     }
   }
-
   async function copyToClipboard(text) {
     try {
       await navigator.clipboard.writeText(text);
@@ -201,24 +175,21 @@
       console.error('Failed to copy to clipboard:', error);
     }
   }
-
   function formatTimestamp(timestamp) {
     return new Date(timestamp).toLocaleTimeString([], {
-      hour: '2-digit',;
-      minute: '2-digit',;
+      hour: '2-digit',
+      minute: '2-digit',
     });
   }
-
   function handleSuggestionClick(suggestion) {
-    currentMessage = suggestion;
+    currentMessage = suggestio;
     sendMessage();
   }
-
   async function provideFeedback(messageId, feedback) {
     try {
       await fetch('/api/ai/feedback', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messageId,
           feedback,
@@ -231,7 +202,6 @@
     }
   }
 </script>
-
 <Dialog.Root bind:open>
   <Dialog.Content class="max-w-4xl max-h-[80vh] flex flex-col">
     <Dialog.Header class="flex-shrink-0">
@@ -246,7 +216,6 @@
         {/if}
       </Dialog.Description>
     </Dialog.Header>
-
     <!-- Chat Messages -->
     <div class="flex-1 overflow-hidden">
       <ScrollArea bind:element={chatContainer} class="h-[400px] w-full pr-4">
@@ -269,7 +238,6 @@
                   {/if}
                 </div>
               {/if}
-
               <div class="flex-1 max-w-[80%] {message.role === 'user' ? 'order-first' : ''}">
                 <div.Root
                   class="{message.role === 'user'
@@ -282,7 +250,6 @@
                         : ''}">
                       <p class="whitespace-pre-wrap">{message.content}</p>
                     </div>
-
                     <div
                       class="flex items-center justify-between mt-3 pt-2 border-t border-border/50">
                       <div class="flex items-center gap-2">
@@ -293,7 +260,6 @@
                           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round(message.metadata.tokensPerSecond)} tok/s</span>
                         {/if}
                       </div>
-
                       {#if message.role === 'assistant' && !message.error}
                         <div class="flex items-center gap-1">
                           <Button class="bits-btn"
@@ -322,7 +288,6 @@ provideFeedback(message.id, 'negative'}>
                     </div>
                   </CardContent>
                 </Card>
-
                 <!-- AI Suggestions -->
                 {#if message.suggestions && message.suggestions.length > 0}
                   <div class="mt-2 space-y-1">
@@ -339,7 +304,6 @@ handleSuggestionClick(suggestion}>
                   </div>
                 {/if}
               </div>
-
               {#if message.role === 'user'}
                 <div class="flex-shrink-0">
                   <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
@@ -349,7 +313,6 @@ handleSuggestionClick(suggestion}>
               {/if}
             </div>
           {/each}
-
           {#if isLoading}
             <div class="flex gap-3 justify-start">
               <div class="flex-shrink-0">
@@ -373,7 +336,6 @@ handleSuggestionClick(suggestion}>
         </div>
       </ScrollArea>
     </div>
-
     <!-- Input Area -->
     <div class="flex-shrink-0 border-t pt-4">
       <div class="flex gap-2">
@@ -395,7 +357,6 @@ handleSuggestionClick(suggestion}>
 <X class="h-4 w-4" />
 </Button>
       </div>
-
       {#if messages.length === 0 && context}
         <div class="mt-3 text-sm nes-text is-disabled">
           <p>You can ask questions like:</p>
@@ -410,11 +371,8 @@ handleSuggestionClick(suggestion}>
     </div>
   </Dialog.Content>
 </Dialog.Root>
-
 <style>
   :global(.prose p) {
     @apply text-sm leading-relaxed mb-2 last:mb-0;
   }
 </style>
-
-

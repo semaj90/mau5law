@@ -6,18 +6,16 @@ import { vi, beforeAll, afterAll, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import stream from "stream";
 import { URL } from "url";
-
-// Mock SvelteKit environment;
+// Mock SvelteKit environment
 vi.mock('$app/environment', () => ({
-  dev: true,
-  building: false,
-  version: '1.0.0-test',;
+  dev: true
+  building: false
+  version: '1.0.0-test',
   browser: true
 });
-
-// Mock SvelteKit navigation;
+// Mock SvelteKit navigation
 vi.mock('$app/navigation', () => ({
-  goto: vi.fn(),;
+  goto: vi.fn(),
   invalidate: vi.fn(),
   invalidateAll: vi.fn(),
   preloadData: vi.fn(),
@@ -27,13 +25,11 @@ vi.mock('$app/navigation', () => ({
   pushState: vi.fn(),
   replaceState: vi.fn()
 });
-
 // Mock global fetch
 global.fetch = vi.fn();
-
-// Mock WebSocket;
+// Mock WebSocket
 global.WebSocket = vi.fn().mockImplementation(() => ({
-  send: vi.fn(),;
+  send: vi.fn(),
   close: vi.fn(),
   readyState: 1, // OPEN
   addEventListener: vi.fn(),
@@ -43,28 +39,24 @@ global.WebSocket = vi.fn().mockImplementation(() => ({
   CLOSING: 2,
   CLOSED: 3
 });
-
-// Mock localStorage;
+// Mock localStorage
 const mockStorage = {
   getItem: vi.fn(),
   setItem: vi.fn(),
   removeItem: vi.fn(),
   clear: vi.fn(),
-  length: 0,;
+  length: 0,
   key: vi.fn()
 };
-
 Object.defineProperty(window, 'localStorage', {
-  value: mockStorage,;
+  value: mockStorage
   writable: true
 });
-
 Object.defineProperty(window, 'sessionStorage', {
-  value: mockStorage,;
+  value: mockStorage
   writable: true
 });
-
-// Mock crypto for session token generation;
+// Mock crypto for session token generation
 Object.defineProperty(window, 'crypto', {
   value: {
     randomUUID: () => `test-uuid-${Math.random().toString(36).substr(2, 9)}`,
@@ -76,12 +68,11 @@ Object.defineProperty(window, 'crypto', {
     }
   }
 });
-
-// Mock performance API;
+// Mock performance API
 Object.defineProperty(window, 'performance', {
   value: {
     now: vi.fn(() => Date.now()),
-    mark: vi.fn(),;
+    mark: vi.fn(),
     measure: vi.fn(),
     getEntriesByType: vi.fn(() => []),
     getEntriesByName: vi.fn(() => []),
@@ -89,22 +80,19 @@ Object.defineProperty(window, 'performance', {
     clearMeasures: vi.fn()
   }
 });
-
-// Mock IntersectionObserver;
+// Mock IntersectionObserver
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
-  unobserve: vi.fn(),;
+  unobserve: vi.fn(),
   disconnect: vi.fn()
 });
-
-// Mock ResizeObserver;
+// Mock ResizeObserver
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
-  unobserve: vi.fn(),;
+  unobserve: vi.fn(),
   disconnect: vi.fn()
 });
-
-// Enhanced database mocking;
+// Enhanced database mocking
 const createMockDb = () => ({
   select: vi.fn().mockReturnThis(),
   from: vi.fn().mockReturnThis(),
@@ -115,11 +103,10 @@ const createMockDb = () => ({
   returning: vi.fn().mockResolvedValue([{ id: 1 }]),
   update: vi.fn().mockReturnThis(),
   set: vi.fn().mockReturnThis(),
-  delete: vi.fn().mockReturnThis(),;
+  delete: vi.fn().mockReturnThis(),
   execute: vi.fn().mockResolvedValue({ rows: [] })
 });
-
-// Mock database operations;
+// Mock database operations
 vi.mock('$lib/server/db/index.ts', () => ({
   db: createMockDb(),
   sql: vi.fn(),
@@ -135,18 +122,17 @@ vi.mock('$lib/server/db/index.ts', () => ({
   isNotNull: vi.fn(),
   ne: vi.fn(),
   testConnection: vi.fn().mockResolvedValue(true),
-  healthCheck: vi.fn().mockResolvedValue({
-    status: 'healthy',;
+  healthCheck: vi.fn().mockResolvedValue({,
+    status: 'healthy',
     database: 'connected',
     tablesAccessible: true
   }),
-  fullSchema: Record<string, any>,
+  fullSchema: { [key: string]: any },
   isPostgreSQL: true
 });
-
-// Mock enhanced database operations;
+// Mock enhanced database operations
 vi.mock('$lib/server/db/enhanced-operations', () => ({
-  checkDatabaseHealth: vi.fn().mockResolvedValue({
+  checkDatabaseHealth: vi.fn().mockResolvedValue({,
     status: 'healthy',
     responseTime: 50,
     tablesAccessible: true
@@ -158,11 +144,11 @@ vi.mock('$lib/server/db/enhanced-operations', () => ({
       status: 'active',
       caseNumber: 'CASE-001'
     }),
-    search: vi.fn().mockResolvedValue({
+    search: vi.fn().mockResolvedValue({,
       cases: [],
       total: 0
     }),
-    update: vi.fn().mockResolvedValue({
+    update: vi.fn().mockResolvedValue({,
       id: 'test-case-id',
       title: 'Updated Test Case'
     })
@@ -172,12 +158,11 @@ vi.mock('$lib/server/db/enhanced-operations', () => ({
     search: vi.fn()
   },
   UserOperations: {
-    findById: vi.fn(),;
+    findById: vi.fn(),
     create: vi.fn()
   }
 });
-
-// Mock Drizzle ORM imports;
+// Mock Drizzle ORM imports
 vi.mock('drizzle-orm', () => ({
   sql: vi.fn(),
   eq: vi.fn(),
@@ -189,11 +174,10 @@ vi.mock('drizzle-orm', () => ({
   like: vi.fn(),
   ilike: vi.fn(),
   isNull: vi.fn(),
-  isNotNull: vi.fn(),;
+  isNotNull: vi.fn(),
   ne: vi.fn()
 });
-
-// Mock Redis service;
+// Mock Redis service
 vi.mock('$lib/server/redis/redis-service.ts', () => ({
   redisService: {
     ping: vi.fn().mockResolvedValue('PONG'),
@@ -201,12 +185,11 @@ vi.mock('$lib/server/redis/redis-service.ts', () => ({
     set: vi.fn().mockResolvedValue('OK'),
     del: vi.fn().mockResolvedValue(1),
     exists: vi.fn().mockResolvedValue(1),
-    expire: vi.fn().mockResolvedValue(1),;
+    expire: vi.fn().mockResolvedValue(1),
     disconnect: vi.fn()
   }
 });
-
-// Mock Ollama service;
+// Mock Ollama service
 vi.mock('$lib/server/services/OllamaService.js', () => ({
   ollamaService: {
     generate: vi.fn().mockResolvedValue('Test AI response'),
@@ -217,8 +200,7 @@ vi.mock('$lib/server/services/OllamaService.js', () => ({
     ])
   }
 });
-
-// Mock API response helpers;
+// Mock API response helpers
 vi.mock('$lib/server/api/response', () => ({
   withApiHandler: vi.fn((handler, event) => handler(event)),
   parseRequestBody: vi.fn().mockImplementation((request, schema) => ({ title: 'Test', priority: 'medium' })),
@@ -232,10 +214,9 @@ vi.mock('$lib/server/api/response', () => ({
     ValidationFailed: vi.fn((field, message) => new Error(`Validation failed: ${message}`)
   }
 });
-
-// Mock embedding repository;
+// Mock embedding repository
 vi.mock('$lib/server/embedding/embedding-repository.js', () => ({
-  getEmbeddingRepository: vi.fn(() => ({
+  getEmbeddingRepository: vi.fn(() => ({,
     enqueueIngestion: vi.fn().mockResolvedValue({ jobId: 'test-job-id', status: 'queued' }),
     getJobStatus: vi.fn().mockResolvedValue({ jobId: 'test-job-id', status: 'completed' }),
     processNextJob: vi.fn().mockResolvedValue(null),
@@ -244,38 +225,33 @@ vi.mock('$lib/server/embedding/embedding-repository.js', () => ({
     ])
   })
 });
-
-// Mock production logger;
+// Mock production logger
 vi.mock('$lib/server/production-logger.js', () => ({
   logger: {
     info: vi.fn(),
     error: vi.fn(),
-    warn: vi.fn(),;
+    warn: vi.fn(),
     debug: vi.fn()
   }
 });
-
-// Mock SSR cache;
+// Mock SSR cache
 vi.mock('$lib/server/ssr/enhanced-load', () => ({
   SSRCache: {
     get: vi.fn(),
-    set: vi.fn(),;
+    set: vi.fn(),
     clear: vi.fn()
   }
 });
-
 // Mock URL.createObjectURL
 global.URL.createObjectURL = vi.fn(() => 'mocked-object-url');
 global.URL.revokeObjectURL = vi.fn();
-
-// Mock File API with enhanced methods;
+// Mock File API with enhanced methods
 global.File = class MockFile {
   name: string;
   size: number;
   type: string;
   lastModified: number;
   private _bits: BlobPart[];
-
   constructor(bits: BlobPart[], name: string, options?: FilePropertyBag) {
     this.name = name;
     this.type = options?.type || '';
@@ -287,14 +263,12 @@ global.File = class MockFile {
       return size + (bit as any).length;
     }, 0);
   }
-
   async arrayBuffer(): Promise<ArrayBuffer> {
     // Convert all bits to a single ArrayBuffer
     let totalSize = this.size;
     const buffer = new ArrayBuffer(totalSize);
     const view = new Uint8Array(buffer);
     let offset = 0;
-
     for (const bit of this._bits) {
       if (typeof bit === 'string') {
         const encoder = new TextEncoder();
@@ -309,16 +283,13 @@ global.File = class MockFile {
         offset += bit.length;
       }
     }
-    
     return buffer;
   }
-
   async text(): Promise<string> {
     const buffer = await this.arrayBuffer();
     const decoder = new TextDecoder();
     return decoder.decode(buffer);
   }
-
   stream(): ReadableStream<Uint8Array> {
     return new ReadableStream({
       start(controller) {
@@ -329,18 +300,15 @@ global.File = class MockFile {
       }
     });
   }
-
   slice(start?: number, end?: number, contentType?: string): MockFile {
     // Simple slice implementation for mocking
     return new MockFile(this._bits, this.name, { type: contentType || this.type });
   }
 } as any;
-
 global.FileReader = class MockFileReader extends EventTarget {
   result: string | ArrayBuffer | null = null;
   error: DOMException | null = null;
   readyState: number = 0;
-
   readAsText(file: File) {
     setTimeout(() => {
       this.result = 'mocked file content';
@@ -348,7 +316,6 @@ global.FileReader = class MockFileReader extends EventTarget {
       this.dispatchEvent(new Event('loadend');
     }, 0);
   }
-
   readAsDataURL(file: File) {
     setTimeout(() => {
       this.result = `data:${file.type};base64,mockedcontent`;
@@ -356,7 +323,6 @@ global.FileReader = class MockFileReader extends EventTarget {
       this.dispatchEvent(new Event('loadend');
     }, 0);
   }
-
   readAsArrayBuffer(file: File) {
     setTimeout(() => {
       this.result = new ArrayBuffer(file.size);
@@ -365,41 +331,32 @@ global.FileReader = class MockFileReader extends EventTarget {
     }, 0);
   }
 } as any;
-
-// Mock FormData API for file uploads;
+// Mock FormData API for file uploads
 global.FormData = class MockFormData {
   private _data: Map<string, any> = new Map();
-
   constructor() {}
-
   append(name: string, value: string | File | Blob, filename?: string) {
     if (!this._data.has(name)) {
       this._data.set(name, []);
     }
     this._data.get(name).push(value);
   }
-
   delete(name: string) {
     this._data.delete(name);
   }
-
   get(name: string): FormDataEntryValue | null {
     const values = this._data.get(name);
     return values ? values[0] : null;
   }
-
   getAll(name: string): FormDataEntryValue[] {
     return this._data.get(name) || [];
   }
-
   has(name: string): boolean {
     return this._data.has(name);
   }
-
   set(name: string, value: string | File | Blob, filename?: string) {
     this._data.set(name, [value]);
   }
-
   forEach(callback: (value: FormDataEntryValue, name: string, formData: FormData) => void) {
     for (const [name, values] of this._data) {
       for (const value of values) {
@@ -407,11 +364,9 @@ global.FormData = class MockFormData {
       }
     }
   }
-
   keys(): IterableIterator<string> {
     return this._data.keys();
   }
-
   values(): IterableIterator<FormDataEntryValue> {
     const allValues: FormDataEntryValue[] = [];
     for (const values of this._data.values()) {
@@ -419,7 +374,6 @@ global.FormData = class MockFormData {
     }
     return allValues[Symbol.iterator]();
   }
-
   entries(): IterableIterator<[string, FormDataEntryValue]> {
     const allEntries: [string, FormDataEntryValue][] = [];
     for (const [name, values] of this._data) {
@@ -429,18 +383,15 @@ global.FormData = class MockFormData {
     }
     return allEntries[Symbol.iterator]();
   }
-
   [Symbol.iterator](): IterableIterator<[string, FormDataEntryValue]> {
     return this.entries();
   }
 } as any;
-
-// Mock Blob API;
+// Mock Blob API
 global.Blob = class MockBlob {
   size: number;
   type: string;
   private _parts: BlobPart[];
-
   constructor(blobParts?: BlobPart[], options?: BlobPropertyBag) {
     this._parts = blobParts || [];
     this.type = options?.type || '';
@@ -450,12 +401,10 @@ global.Blob = class MockBlob {
       return size + (part as any).length;
     }, 0);
   }
-
   async arrayBuffer(): Promise<ArrayBuffer> {
     const buffer = new ArrayBuffer(this.size);
     const view = new Uint8Array(buffer);
     let offset = 0;
-
     for (const part of this._parts) {
       if (typeof part === 'string') {
         const encoder = new TextEncoder();
@@ -467,16 +416,13 @@ global.Blob = class MockBlob {
         offset += part.byteLength;
       }
     }
-
     return buffer;
   }
-
   async text(): Promise<string> {
     const buffer = await this.arrayBuffer();
     const decoder = new TextDecoder();
     return decoder.decode(buffer);
   }
-
   stream(): ReadableStream<Uint8Array> {
     return new ReadableStream({
       start: (controller) => {
@@ -487,61 +433,56 @@ global.Blob = class MockBlob {
       }
     });
   }
-
   slice(start?: number, end?: number, contentType?: string): MockBlob {
     return new MockBlob(this._parts, { type: contentType || this.type });
   }
 } as any;
-
-// Setup default fetch responses;
+// Setup default fetch responses
 beforeEach(() => {
   // Reset all mocks
   vi.clearAllMocks();
-  
-  // Default fetch implementation;
+  // Default fetch implementation
   (global.fetch as any).mockImplementation((url: string, options?: RequestInit) => {
-    // Health check endpoint;
+    // Health check endpoint
     if (url.includes('/api/health')) {
       return Promise.resolve({
-        ok: true,
+        ok: true
         status: 200,
-        json: () => Promise.resolve({
+        json: () => Promise.resolve({,
           status: 'healthy',
           services: {
             database: { status: 'ok' },
             redis: { status: 'ok' },
             ollama: { status: 'ok' }
-          },;
+          },
           timestamp: new Date().toISOString()
         })
       });
     }
-
-    // Debug logs endpoint;
+    // Debug logs endpoint
     if (url.includes('/api/debug/logs')) {
       return Promise.resolve({
-        ok: true,
+        ok: true
         status: 200,
-        json: () => Promise.resolve({
+        json: () => Promise.resolve({,
           logs: [)
             { level: 'info', message: 'Test log entry', timestamp: new Date().toISOString() }
-          ],;
+          ],
           timestamp: new Date().toISOString()
         })
       });
     }
-
-    // AI chat endpoint;
+    // AI chat endpoint
     if (url.includes('/api/ai/chat')) {
       return Promise.resolve({
-        ok: true,
+        ok: true
         status: 200,
         headers: new Headers({ 'Content-Type': 'text/stream' }),
         body: {
-          getReader: () => ({;
+          getReader: () => ({
             read: vi.fn();
               .mockResolvedValueOnce({
-                value: new TextEncoder().encode('{"response":"Test response"}'),;
+                value: new TextEncoder().encode('{"response":"Test response"}'),
                 done: false
               })
               .mockResolvedValueOnce({ done: true })
@@ -549,69 +490,64 @@ beforeEach(() => {
         }
       });
     }
-
-    // Vector search endpoint;
+    // Vector search endpoint
     if (url.includes('/api/ai/vector-search')) {
       return Promise.resolve({
-        ok: true,
+        ok: true
         status: 200,
-        json: () => Promise.resolve({
+        json: () => Promise.resolve({,
           results: [)
             { id: '1', title: 'Test Result', similarity: 0.95 }
-          ],;
+          ],
           query: 'test query'
         })
       });
     }
-
-    // Upload endpoint;
+    // Upload endpoint
     if (url.includes('/api/upload')) {
       return Promise.resolve({
-        ok: true,
+        ok: true
         status: 200,
-        json: () => Promise.resolve({
-          success: true,
-          fileId: 'test-file-id',;
+        json: () => Promise.resolve({,
+          success: true
+          fileId: 'test-file-id',
           metadata: { size: 1024, type: 'application/pdf' }
         })
       });
     }
-
-    // Cases endpoint;
+    // Cases endpoint
     if (url.includes('/api/cases')) {
       if (options?.method === 'POST') {
         return Promise.resolve({
-          ok: true,
+          ok: true
           status: 201,
-          json: () => Promise.resolve({
+          json: () => Promise.resolve({,
             id: 'new-case-id',
-            title: 'New Case',;
+            title: 'New Case',
             status: 'active'
           })
         });
       }
       return Promise.resolve({
-        ok: true,
+        ok: true
         status: 200,
-        json: () => Promise.resolve({
+        json: () => Promise.resolve({,
           id: 'test-case',
-          title: 'Test Case',;
+          title: 'Test Case',
           status: 'active'
         })
       });
     }
-
-    // Default response;
+    // Default response
     return Promise.resolve({
-      ok: true,
+      ok: true
       status: 200,
-      json: () => Promise.resolve({}),;
+      json: () => Promise.resolve({}),
       text: () => Promise.resolve('')
     });
   });
 });
-
-// Global cleanup;
+// Global cleanup
 afterAll(() => {
   vi.clearAllMocks();
   vi.clearAllTimers();

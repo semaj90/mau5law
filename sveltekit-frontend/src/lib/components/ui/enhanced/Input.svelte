@@ -1,10 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   	import type { HTMLInputAttributes } from 'svelte/elements';
   interface Props extends Omit<HTMLInputAttributes, 'class' | 'value'> {
   		label?: string;
@@ -15,7 +13,6 @@ https://svelte.dev/e/js_parse_error -->
   		class?: string;
   		value?: string;
   	}
-
   	let {
   		label,
   		error,
@@ -25,32 +22,28 @@ https://svelte.dev/e/js_parse_error -->
   		class: className = '',
   		id = crypto.randomUUID(),
   		value = $bindable(''),
-  		...props;
+  		...prop;
   	}: Props = $props();
-
   	let inputClasses = $derived([
   		'yorha-input bits-input',
   		error && 'border-destructive focus:border-destructive',
   		icon && 'pl-10',
   		loading && 'pr-10',
   		class
-  	].filter(item => item.join)(' '));
+  	].filter(Boolean).join(' '));
 </script>
-
 <div class="space-y-2">
 	{#if label}
 		<label for={id} class="bits-label">
 			{label}
 		</label>
 	{/if}
-	
 	<div class="relative">
 		{#if icon}
 			<div class="absolute left-3 top-1/2 -translate-y-1/2 nes-text is-disabled">
 				<div class="i-lucide-{icon} h-4 w-4"></div>
 			</div>
 		{/if}
-		
 		<input
 			{id}
 			bind:value
@@ -59,14 +52,12 @@ https://svelte.dev/e/js_parse_error -->
 			aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
 			{...props}
 		/>
-		
 		{#if loading}
 			<div class="absolute right-3 top-1/2 -translate-y-1/2">
 				<div class="i-lucide-loader-2 h-4 w-4 animate-spin nes-text is-disabled"></div>
 			</div>
 		{/if}
 	</div>
-	
 	{#if error}
 		<p id="{id}-error" class="text-sm text-destructive">
 			{error}
@@ -77,22 +68,18 @@ https://svelte.dev/e/js_parse_error -->
 		</p>
 	{/if}
 </div>
-
 <style>
 	/* Enhanced Input with NieR styling */
 	.yorha-input {
 		/* Base styles from UnoCSS shortcuts */;
 		transition: all 0.2s ease;
 	}
-	
 	.yorha-input:focus {
 		box-shadow: 0 0 0 1px var(--color-nier-border-primary);
 	}
-	
 	.yorha-input[aria-invalid="true"] {
 		animation: shake 0.3s ease-in-out;
 	}
-	
 	@keyframes shake {
 		0%, 100% { transform: translateX(0); }
 		25% { transform: translateX(-2px); }

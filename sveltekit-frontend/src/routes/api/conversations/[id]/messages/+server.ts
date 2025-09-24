@@ -1,16 +1,13 @@
 /*
  * Conversation Messages API - POST new messages to conversation
  */
-
 import type { RequestHandler } from './$types.js'
 import { conversationService } from '$lib/server/services/conversation-service'
 import { getRequestId, apiSuccess, apiError, withErrorHandling } from '$lib/server/api/standard-response'
-
 // POST /api/conversations/[id]/messages - Add message to conversation
 export const POST: RequestHandler = withErrorHandling(async (event) => {
   const requestId = getRequestId(event)
   const conversationId = event.params.id
-
   if (!conversationId) {
     return apiError(
       'Conversation ID is required',
@@ -20,20 +17,18 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
       requestId
     )
   }
-
   try {
     const body = await event.request.json()
-    const { 
-      role, 
-      content, 
-      model, 
-      tokenCount, 
-      processingTime, 
-      confidence, 
+    const {
+      role,
+      content,
+      model,
+      tokenCount,
+      processingTime,
+      confidence,
       vectorSearchResults,
-      metadata 
+      metadata
     } = body
-
     if (!role || !content) {
       return apiError(
         'Missing required fields: role, content',
@@ -43,7 +38,6 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
         requestId
       )
     }
-
     if (role !== 'user' && role !== 'assistant') {
       return apiError(
         'Role must be either "user" or "assistant"',
@@ -53,7 +47,6 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
         requestId
       )
     }
-
     const message = await conversationService.addMessage({
       conversationId,
       role,
@@ -65,7 +58,6 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
       vectorSearchResults,
       metadata
     })
-
     return apiSuccess(
       { message },
       'Message added successfully',

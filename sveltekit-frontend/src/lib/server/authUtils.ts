@@ -1,19 +1,15 @@
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
 import * as crypto from "crypto";
-
-// JWT Payload type definition;
+// JWT Payload type definition
 export interface JWTPayload {
   userId: string;
   exp: number;
   iat?: number;
   [key: string]: any;
 }
-
-
 const JWT_SECRET = import.meta.env.JWT_SECRET || "fallback-secret-key";
 const JWT_EXPIRATION = import.meta.env.JWT_EXPIRATION || "86400"; // 24 hours
-
 /**
  * Hashes a plain-text password using Bcrypt.
  * @param password The plain-text password.
@@ -30,8 +26,8 @@ export async function hashPassword(password: string): Promise<string> {
  * @returns A promise that resolves to true if the password is valid, otherwise false.
  */
 export async function verifyPassword(
-  password: string,;
-  hashed: string,
+  password: string
+  hashed: string
 ): Promise<boolean> {
   return bcrypt.compare(password, hashed);
 }

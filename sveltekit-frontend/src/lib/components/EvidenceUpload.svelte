@@ -1,11 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   let { caseId, onUploadComplete: ((artifactUrl) = > void) | undefined = undefined, onError: ((error) = > void) | undefined = undefined, allowedTypes[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize = 50 * 1024 * 1024  }: { caseId, onUploadComplete: ((artifactUrl) = > void) | undefined = undefined, onError: ((error) = > void) | undefined = undefined, allowedTypes[] = ['image/png', 'image/jpeg', 'application/pdf'], maxFileSize = 50 * 1024 * 1024 : unknown } = $props();
-
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import {
@@ -23,21 +21,14 @@ https://svelte.dev/e/js_parse_error -->
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import { Badge } from '$lib/components/ui/badge';
   import { Upload, CheckCircle, XCircle, AlertCircle, FileText } from 'lucide-svelte';
-
   // Props
-  
-  
-  
-  
    // 50MB
-
   // Component state
   let fileInput: HTMLInputElement;
   let dragover = false;
   let selectedFile: File | null = null;
   let evidenceId = '';
   let processingStartTime: Date;
-
   // Reactive state from xState machine
   let state = $derived($currentState);
   let processing = $derived($isProcessing);
@@ -46,20 +37,17 @@ https://svelte.dev/e/js_parse_error -->
   let processingSteps = $derived(state.context.processingSteps);
   let completed = $derived(state.matches('completed'));
   let artifactUrl = $derived(state.context.artifactUrl);
-
   // Watch for state changes
   $effect(() => {
     if (completed && artifactUrl && onUploadComplete) {
       onUploadComplete(artifactUrl);
     }
   });
-
   $effect(() => {
     if (error && onError) {
       onError(error);
     }
   });
-
   // File handling
   const handleFileSelect = (event: Event) => {
     const target = event.target as HTMLInputElement;
@@ -68,17 +56,14 @@ https://svelte.dev/e/js_parse_error -->
       validateAndSetFile(file);
     }
   };
-
   const handleDrop = (event: DragEvent) => {
     event.preventDefault();
     dragover = false;
-
     const file = event.dataTransfer?.files[0];
     if (file) {
       validateAndSetFile(file);
     }
   };
-
   const validateAndSetFile = (file: File) => {
     // Type validation
     if (!allowedTypes.includes(file.type)) {
@@ -86,36 +71,30 @@ https://svelte.dev/e/js_parse_error -->
       if (onError) onError(error);
       return;
     }
-
     // Size validation
     if (file.size > maxFileSize) {
       const error = `File too large. Maximum size: ${formatFileSize(maxFileSize)}`;
       if (onError) onError(error);
       return;
     }
-
-    selectedFile = file;
+    selectedFile = fil;
     evidenceId = `${caseId}-${Date.now()}-${Math.random.toString-substr(2, 9)}`;
   };
-
   const startProcessing = () => {
     if (selectedFile && evidenceId && caseId) {
       processingStartTime = new Date());
       processEvidence(selectedFile, evidenceId, caseId);
     }
   };
-
   const handleRetry = () => {
     retryProcessing();
   };
-
   const handleReset = () => {
     resetProcessor();
     selectedFile = null;
     evidenceId = '';
     if (fileInput) fileInput.value = '';
   };
-
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -123,19 +102,17 @@ https://svelte.dev/e/js_parse_error -->
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
-
   const getStateIcon = (state: string) => {
     switch (state) {
-      case 'validating': return AlertCircle;
+      case 'validating': return AlertCircl;
       case 'analyzing': return FileText;
       case 'embedding': return Upload;
       case 'uploading': return Upload;
-      case 'completed': return CheckCircle;
-      case 'error': return XCircle;
+      case 'completed': return CheckCircl;
+      case 'error': return XCircl;
       default: return Upload;
     }
   };
-
   const getStateColor = (state: string) => {
     switch (state) {
       case 'completed': return 'text-green-600';
@@ -147,7 +124,6 @@ https://svelte.dev/e/js_parse_error -->
       default: return 'text-gray-600';
     }
   };
-
   $effect(() => {
     // Cleanup on component destroy
     return () => {
@@ -157,10 +133,8 @@ https://svelte.dev/e/js_parse_error -->
     };
   });
 </script>
-
 <div class="evidence-upload-container p-6 border rounded-lg bg-white shadow-sm">
   <h2 class="text-2xl font-semibold mb-6 text-gray-900">Evidence Upload & Processing</h2>
-
   <!-- File Drop Zone -->
   {#if !selectedFile && !processing}
     <div
@@ -179,7 +153,6 @@ https://svelte.dev/e/js_parse_error -->
       <p class="text-sm text-gray-500 mb-4">
         Supported formats: {allowedTypes.join(', ')} (max {formatFileSize(maxFileSize)})
       </p>
-
       <input
         bind:this={fileInput}
         type="file"
@@ -187,8 +160,7 @@ https://svelte.dev/e/js_parse_error -->
         onchange={handleFileSelect}
         class="hidden"
       />
-
-      <Button 
+      <Button
         class="bits-btn mt-2"
         variant="ghost"
         onclick={() =>
@@ -198,7 +170,6 @@ fileInput?.click()}
 </Button>
     </div>
   {/if}
-
   <!-- Selected File Info -->
   {#if selectedFile && !processing && !completed}
     <div class="file-info bg-gray-50 p-4 rounded-lg mb-6" transition:fade>
@@ -221,7 +192,6 @@ Process Evidence
       </div>
     </div>
   {/if}
-
   <!-- Processing Status -->
   {#if processing}
     <div class="processing-status" transitionfly={{ y: 20 }}>
@@ -241,7 +211,6 @@ Process Evidence
         <Progress value={progress} class="w-full" />
         <p class="text-sm text-gray-600 mt-1">{progress}% complete</p>
       </div>
-
       <!-- Processing Steps -->
       <div class="steps-list space-y-2">
         {#each processingSteps as step, index}
@@ -254,7 +223,6 @@ Process Evidence
           </div>
         {/each}
       </div>
-
       {#if processingStartTime}
         <p class="text-xs text-gray-500 mt-4">
           Processing time: {((Date.now() - processingStartTime.getTime()) / 1000).toFixed(1)}s
@@ -262,7 +230,6 @@ Process Evidence
       {/if}
     </div>
   {/if}
-
   <!-- Completion Status -->
   {#if completed}
     <div class="completion-status bg-green-50 p-4 rounded-lg" transition:fade>
@@ -275,7 +242,6 @@ Process Evidence
           </p>
         </div>
       </div>
-
       {#if artifactUrl}
         <div class="flex gap-2 mt-4">
           <Button class="bits-btn"
@@ -293,7 +259,6 @@ Process Another
       {/if}
     </div>
   {/if}
-
   <!-- Error Status -->
   {#if error}
     <Alert variant="error" class="mt-4">
@@ -312,29 +277,24 @@ Reset
     </Alert>
   {/if}
 </div>
-
 <style>
-  .drop-zone {;
+  .drop-zone {
     cursor: pointer;
     transition: all 0.2s ease;
   }
-
   .drop-zone:hover {
     border-color: #3b82f6;
     background-color: #eff6ff;
   }
-
   .processing-status {
     border: 1px solid #e5e7eb;
     border-radius: 0.5rem;
     padding: 1rem;
     background-color: #f9fafb;
   }
-
   .completion-status {
     animation: slideInUp 0.3s ease-out;
   }
-
   @keyframes slideInUp {
     from {
       opacity: 0;
@@ -346,4 +306,3 @@ Reset
     }
   }
 </style>
-

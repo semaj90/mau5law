@@ -3,10 +3,9 @@ import { createMachine, assign } from "xstate";
 import { goServiceClient, type RAGResponse, type UploadResponse } from '../services/goServiceClient.js';
 import { productionServiceClient, services } from '../services/productionServiceClient.js';
 import { mcpTools, type MCPToolResponse } from '../../mcp/index.js';
-import type { Evidence, User } from "$lib/types/index.js"; 
+import type { Evidence, User } from "$lib/types/index.js";
 import type { Case } from "$lib/types/case";
-
-// Enhanced context with MCP tool integration;
+// Enhanced context with MCP tool integration
 export interface AgentShellContext {
   input: string;
   response: string;
@@ -34,7 +33,6 @@ export interface AgentShellContext {
   };
   error?: string;
 }
-
 // Enhanced event types with MCP operations
 type AgentShellEvent =
   | { type: "PROMPT"; input: string; userId?: string; caseId?: string }
@@ -53,22 +51,21 @@ type AgentShellEvent =
   | { type: "MCP_FIND_SIMILAR_CASES"; embedding: number[]; caseId?: string }
   | { type: "MCP_FIND_SIMILAR_EVIDENCE"; embedding: number[]; caseId?: string }
   | { type: "MCP_GET_ANALYTICS"; userId?: string; caseId?: string };
-
 export const agentShellMachineMCP = createMachine({
   id: "agentShellMCP",
   initial: "idle",
   context: {
     input: "",
     response: "",
-    mcpResults: Record<string, any>,
+    mcpResults: { [key: string]: any },
     serviceHealth: {
-      enhancedRAG: false,
-      uploadService: false,
-      kratosServer: false,
+      enhancedRAG: false
+      uploadService: false
+      kratosServer: false
       mcpDatabase: false
     }
   },
-  types: Record<string, any> as {;
+  types: { [key: string]: any } as {
     context: AgentShellContext;
     events: AgentShellEvent;
   },
@@ -77,7 +74,7 @@ export const agentShellMachineMCP = createMachine({
       on: {
         PROMPT: {
           target: "processing",
-          actions: assign({
+          actions: assign({,
             input: ({ event }) => (event as any).input || "",
             userId: ({ event }) => (event as any).userId,
             caseId: ({ event }) => (event as any).caseId
@@ -85,7 +82,7 @@ export const agentShellMachineMCP = createMachine({
         },
         SEMANTIC_SEARCH: {
           target: "searching",
-          actions: assign({
+          actions: assign({,
             searchQuery: ({ event }) => (event as any).query,
             userId: ({ event }) => (event as any).userId,
             caseId: ({ event }) => (event as any).caseId
@@ -93,60 +90,60 @@ export const agentShellMachineMCP = createMachine({
         },
         FILE_UPLOAD: {
           target: "uploading",
-          actions: assign({
+          actions: assign({,
             userId: ({ event }) => (event as any).userId,
             caseId: ({ event }) => (event as any).caseId
           })
         },
-        CHECK_HEALTH: {;
+        CHECK_HEALTH: {
           target: "checkingHealth"
         },
-        // MCP operations;
+        // MCP operations
         MCP_LOAD_CASE: {
           target: "mcpLoadingCase",
-          actions: assign({
+          actions: assign({,
             caseId: ({ event }) => (event as any).caseId
           })
         },
         MCP_LOAD_CASES: {
           target: "mcpLoadingCases",
-          actions: assign({
+          actions: assign({,
             userId: ({ event }) => (event as any).userId
           })
         },
         MCP_CREATE_CASE: {
           target: "mcpCreatingCase",
-          actions: assign({
+          actions: assign({,
             userId: ({ event }) => (event as any).userId
           })
         },
         MCP_LOAD_EVIDENCE: {
           target: "mcpLoadingEvidence",
-          actions: assign({
+          actions: assign({,
             caseId: ({ event }) => (event as any).caseId
           })
         },
         MCP_CREATE_EVIDENCE: {
           target: "mcpCreatingEvidence",
-          actions: assign({
+          actions: assign({,
             caseId: ({ event }) => (event as any).caseId
           })
         },
         MCP_FIND_SIMILAR_CASES: {
           target: "mcpFindingSimilarCases",
-          actions: assign({
+          actions: assign({,
             caseId: ({ event }) => (event as any).caseId
           })
         },
         MCP_FIND_SIMILAR_EVIDENCE: {
           target: "mcpFindingSimilarEvidence",
-          actions: assign({
+          actions: assign({,
             caseId: ({ event }) => (event as any).caseId
           })
         },
         MCP_GET_ANALYTICS: {
           target: "mcpGettingAnalytics",
-          actions: assign({
+          actions: assign({,
             userId: ({ event }) => (event as any).userId,
             caseId: ({ event }) => (event as any).caseId
           })
@@ -163,13 +160,13 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             response: (_, e) => (e && "data" in e ? (e as any).data: "")
           })
         },
         onError: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Processing error" : "Unknown error")
           })
         }
@@ -193,13 +190,13 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             searchResults: (_, e) => (e && "data" in e ? (e as any).data : null)
           })
         },
         onError: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Search error" : "Unknown error")
           })
         }
@@ -215,13 +212,13 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             uploadResults: (_, e) => (e && "data" in e ? (e as any).data : null)
           })
         },
         onError: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Upload error" : "Unknown error")
           })
         }
@@ -232,26 +229,26 @@ export const agentShellMachineMCP = createMachine({
         src: "checkServiceHealthWithMCP",
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             serviceHealth: (_, e) => (e && "data" in e ? (e as any).data : null)
           })
         },
         onError: {
           target: "idle",
-          actions: assign({;
+          actions: assign({,
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Health check error" : "Unknown error")
           })
         }
       }
     },
-    // MCP states;
+    // MCP states
     mcpLoadingCase: {
       invoke: {
         src: "mcpLoadCase",
         input: ({ context }) => ({ caseId: context.caseId }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             currentCase: (_, e) => (e && "data" in e ? (e as any).data : null),
             mcpResults: ({ context, event }) => ({
               ...(context.mcpResults || {}),
@@ -261,7 +258,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP case load error" : "Unknown error")
           })
         }
@@ -273,7 +270,7 @@ export const agentShellMachineMCP = createMachine({
         input: ({ context }) => ({ userId: context.userId }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             mcpResults: ({ context, event }) => ({
               ...(context.mcpResults || {}),
               cases: event && "data" in event ? (event as any).data : null
@@ -282,7 +279,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP cases load error" : "Unknown error")
           })
         }
@@ -297,7 +294,7 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             currentCase: (_, e) => (e && "data" in e ? (e as any).data : null),
             mcpResults: ({ context, event }) => ({
               ...(context.mcpResults || {}),
@@ -307,7 +304,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP case creation error" : "Unknown error")
           })
         }
@@ -319,7 +316,7 @@ export const agentShellMachineMCP = createMachine({
         input: ({ context }) => ({ caseId: context.caseId }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             currentEvidence: (_, e) => (e && "data" in e ? (e as any).data : []),
             mcpResults: ({ context }, e) => ({
               ...context.mcpResults,
@@ -329,7 +326,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP evidence load error" : "Unknown error")
           })
         }
@@ -344,7 +341,7 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             mcpResults: ({ context }, e) => ({
               ...context.mcpResults,
               evidence: e && "data" in e ? (e as any).data : null
@@ -353,7 +350,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP evidence creation error" : "Unknown error")
           })
         }
@@ -368,7 +365,7 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             mcpResults: ({ context, event }) => ({
               ...(context.mcpResults || {}),
               cases: event && "data" in event ? (event as any).data : null
@@ -377,7 +374,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP similar cases error" : "Unknown error")
           })
         }
@@ -392,7 +389,7 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             mcpResults: ({ context }, e) => ({
               ...context.mcpResults,
               evidence: e && "data" in e ? (e as any).data : null
@@ -401,7 +398,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP similar evidence error" : "Unknown error")
           })
         }
@@ -416,7 +413,7 @@ export const agentShellMachineMCP = createMachine({
         }),
         onDone: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             mcpResults: ({ context }, e) => ({
               ...context.mcpResults,
               analytics: e && "data" in e ? (e as any).data : null
@@ -425,7 +422,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({;
+          actions: assign({,
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP analytics error" : "Unknown error")
           })
         }
@@ -433,28 +430,24 @@ export const agentShellMachineMCP = createMachine({
     }
   }
 });
-
-// Enhanced service implementations with MCP integration;
+// Enhanced service implementations with MCP integration
 export const agentShellServicesMCP = {
-  // Enhanced agent call with MCP context;
+  // Enhanced agent call with MCP context
   callAgentWithMCP: async ({ input, userId, caseId }: { input: string; userId?: string; caseId?: string }) => {
     try {
       // First, gather relevant context using MCP tools
       let contextData = {};
-
       if (caseId) {
         // Load case data and related evidence
         const caseResult = await mcpTools.cases.loadCases({ userId, limit: 1, offset: 0 });
         if (caseResult.success && caseResult.data) {
           contextData = { ...contextData, currentCase: caseResult.data[0] };
         }
-
         const evidenceResult = await mcpTools.evidence.loadEvidence({ caseId, limit: 10 });
         if (evidenceResult.success && evidenceResult.data) {
           contextData = { ...contextData, evidence: evidenceResult.data };
         }
       }
-
       if (userId) {
         // Load user profile
         const userResult = await mcpTools.users.getUserById(userId);
@@ -462,10 +455,8 @@ export const agentShellServicesMCP = {
           contextData = { ...contextData, userProfile: userResult.data };
         }
       }
-
       // Enhance prompt with MCP context
       const enhancedInput = `${input}\n\nContext: ${JSON.stringify(contextData)}`;
-
       // Use production service client with enhanced context
       const response = await services.queryRAG(enhancedInput, { userId, caseId });
       return response.response || response.data?.response || 'No response';
@@ -474,37 +465,32 @@ export const agentShellServicesMCP = {
       throw error;
     }
   },
-
-  // Enhanced semantic search with MCP integration;
+  // Enhanced semantic search with MCP integration
   performSemanticSearchWithMCP: async ({ query, userId, caseId }: { query: string; userId: string; caseId?: string }) => {
     try {
       // Use MCP tools for vector similarity search
       const promises = [];
-
       if (caseId) {
-        // Search for similar evidence in current case;
+        // Search for similar evidence in current case
         promises.push(mcpTools.evidence.loadEvidence({
           caseId,
           query,
           limit: 5
         });
       } else {
-        // Search across all user cases;
+        // Search across all user cases
         promises.push(mcpTools.cases.loadCases({
           userId,
           query,
           limit: 5
         });
       }
-
       const [searchResults] = await Promise.all(promises);
-
       // Combine with traditional RAG search
       const ragResponse = await services.queryRAG(`semantic_search: ${query}`, { userId, caseId });
-
       return {
         ...ragResponse,
-        mcpResults: searchResults,
+        mcpResults: searchResults
         enhancedContext: true
       };
     } catch (error: any) {
@@ -512,38 +498,33 @@ export const agentShellServicesMCP = {
       throw error;
     }
   },
-
-  // Enhanced file upload with MCP integration;
+  // Enhanced file upload with MCP integration
   performFileUploadWithMCP: async ({ file, userId, caseId }: { file: File; userId: string; caseId?: string }) => {
     try {
       // Upload file using production service
       const uploadResponse = await services.uploadFile(file, { userId, caseId });
-
-      // If successful and we have a case ID, create evidence record;
+      // If successful and we have a case ID, create evidence record
       if (uploadResponse.success && caseId) {
         const evidenceResult = await mcpTools.evidence.createEvidence({
           caseId,
           title: file.name,
           description: `Uploaded file: ${file.name}`,
-          evidenceType: 'document',;
+          evidenceType: 'document',
           tags: ['uploaded']
         });
-
         return {
           ...uploadResponse,
           evidenceCreated: evidenceResult.success,
           evidenceId: evidenceResult.data?.id
         };
       }
-
       return uploadResponse;
     } catch (error: any) {
       console.error("Enhanced file upload failed:", error);
       throw error;
     }
   },
-
-  // Enhanced health check with MCP integration;
+  // Enhanced health check with MCP integration
   checkServiceHealthWithMCP: async () => {
     try {
       const healthChecks = await Promise.allSettled([
@@ -552,10 +533,9 @@ export const agentShellServicesMCP = {
         // Test MCP database connectivity
         mcpTools.users.getUserAnalytics()
       ]);
-
       return {
-        production: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value: null,;
-        legacy: healthChecks[1].status === 'fulfilled' ? healthChecks[1].value : null,
+        production: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value: null
+        legacy: healthChecks[1].status === 'fulfilled' ? healthChecks[1].value : null
         mcpDatabase: healthChecks[2].status === 'fulfilled' ? true : false
       };
     } catch (error: any) {
@@ -563,18 +543,15 @@ export const agentShellServicesMCP = {
       throw error;
     }
   },
-
-  // MCP service implementations;
+  // MCP service implementations
   mcpLoadCase: async ({ caseId }: { caseId: string }) => {
     const result = await mcpTools.cases.loadCases({ limit: 1, offset: 0 });
     return result;
   },
-
   mcpLoadCases: async ({ userId }: { userId: string }) => {
     const result = await mcpTools.cases.loadCases({ userId, limit: 20 });
     return result;
   },
-
   mcpCreateCase: async ({ caseData, userId }: { caseData: any; userId: string }) => {
     const result = await mcpTools.cases.createCase({
       ...caseData,
@@ -582,12 +559,10 @@ export const agentShellServicesMCP = {
     });
     return result;
   },
-
   mcpLoadEvidence: async ({ caseId }: { caseId: string }) => {
     const result = await mcpTools.evidence.loadEvidence({ caseId, limit: 50 });
     return result;
   },
-
   mcpCreateEvidence: async ({ evidenceData, caseId }: { evidenceData: any; caseId: string }) => {
     const result = await mcpTools.evidence.createEvidence({
       ...evidenceData,
@@ -595,43 +570,36 @@ export const agentShellServicesMCP = {
     });
     return result;
   },
-
   mcpFindSimilarCases: async ({ embedding, caseId }: { embedding: number[]; caseId?: string }) => {
     const result = await mcpTools.cases.findSimilarCases(embedding, 10);
     return result;
   },
-
   mcpFindSimilarEvidence: async ({ embedding, caseId }: { embedding: number[]; caseId?: string }) => {
     const result = await mcpTools.evidence.findSimilarEvidence({
       embedding,
       caseId,
-      limit: 10,;
+      limit: 10,
       threshold: 0.7
     });
     return result;
   },
-
   mcpGetAnalytics: async ({ userId, caseId }: { userId?: string; caseId?: string }) => {
     const promises = [
       mcpTools.cases.getCaseAnalytics(userId),
       mcpTools.evidence.getEvidenceAnalytics(caseId),
       mcpTools.users.getUserAnalytics()
     ];
-
     const [caseAnalytics, evidenceAnalytics, userAnalytics] = await Promise.allSettled(promises);
-
     return {
-      cases: caseAnalytics.status === 'fulfilled' ? caseAnalytics.value: null,
-      evidence: evidenceAnalytics.status === 'fulfilled' ? evidenceAnalytics.value : null,;
+      cases: caseAnalytics.status === 'fulfilled' ? caseAnalytics.value: null
+      evidence: evidenceAnalytics.status === 'fulfilled' ? evidenceAnalytics.value : null
       users: userAnalytics.status === 'fulfilled' ? userAnalytics.value : null
     };
   },
-
-  // Legacy action implementations;
+  // Legacy action implementations
   acceptPatchAction: ({ context, event }: { context: AgentShellContext; event: any }) => {
     console.log("Accepting patch:", event.patchContent, "for job:", event.jobId);
   },
-
   rateSuggestionAction: ({ context, event }: { context: AgentShellContext; event: any }) => {
     console.log("Rating suggestion:", event.rating, "for job:", event.jobId, "feedback:", event.feedback);
   }

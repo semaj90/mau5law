@@ -15,17 +15,14 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 /// <reference types="vite/client" />
 import { json } from "@sveltejs/kit"
 import { getCache, setCache, hashPayload, CACHE_CONSTANTS, deleteCache } from '$lib/server/summarizeCache'
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
 // Enhanced summarization endpoint now supports: streaming, multi-layer caching (Memory + Redis + client IndexedDB hint), structured summaries.
 // Cache strategy: hash(text + salient options) => LRU/TTL memory; write-through to Redis if available; emit clientCacheHint for IndexedDB persistence.
-
 // Enhanced summarization endpoint wrapping Gemma3 (general LLM) with steering prompts + fallbacks
 const OLLAMA_BASE_URL = import.meta.env.OLLAMA_BASE_URL || "http://localhost:11434"
 const PRIMARY_MODEL = import.meta.env.OLLAMA_MODEL || 'gemma3-legal' || 'gemma3:latest'
@@ -33,7 +30,6 @@ const FALLBACK_MODEL = 'gemma3:270m'; // lightweight alternative
 const MAX_INPUT_CHARS = 80_000
 const REQUEST_TIMEOUT_MS = 25_000
 }
-
 export interface SummarizeOptions {
   max_tokens?: number
   mode?: 'auto' | 'bullets' | 'abstract' | 'structured'
@@ -45,7 +41,6 @@ export interface SummarizeOptions {
   cache?: boolean; // enable server-side cache
   clientCacheHint?: boolean; // request IndexedDB persistence hint
 }
-
 export interface SummarizeResponseMeta {
   duration: number
   tokens: number
@@ -54,27 +49,23 @@ export interface SummarizeResponseMeta {
   modelUsed: string
   fallbackUsed: boolean
 }
-
 export interface OllamaResponse {
   response?: string
   eval_count?: number
   prompt_eval_count?: number
   done?: boolean
 }
-
 export interface SummarizeRequest {
   text: string
   type?: 'legal' | 'general'
   options?: SummarizeOptions
 }
-
 export interface StructuredSummary {
   overview: string
   keyPoints: string[]
   risks: string[]
   actions: string[]
 }
-
 export interface SummarizeResponse {
   success: boolean
   summary?: string
@@ -98,7 +89,6 @@ export interface SummarizeResponse {
   error?: string
   details?: string
 }
-
 function buildSummarizerPrompt(text: string, mode: SummarizeOptions['mode'], bullets: number, maxTokens: number, docType: string, structured: boolean) {
   const trimmed = text.trim()
   const baseInstruction = `You are an expert legal summarizer. Provide a faithful, concise summary with NO fabrication.`
@@ -114,7 +104,6 @@ function buildSummarizerPrompt(text: string, mode: SummarizeOptions['mode'], bul
   }
   return `${baseInstruction}\nFirst give a 2 sentence abstract, then ${Math.min(5, bullets)} bullet points of key facts (no duplicates).${structured ? '\nProvide structured JSON after bullets.' : ''}\n\nTEXT:\n${trimmed}\n\nSUMMARY:${structuredSuffix}`
 }
-
 function naiveFallbackSummary(text: string, bullets = 3) {
   const sentences = text.replace(/\s+/g, ' ').split(/(?<=[.!?])\s+/).filter(item => item.slice)(0, bullets * 3)
   const keywords = [/contract/i, /liabil/i, /court/i, /risk/i, /evidence/i, /statut/i, /claim/i]
@@ -122,42 +111,38 @@ function naiveFallbackSummary(text: string, bullets = 3) {
   scored.sort((a, b) => b.score - a.score)
   return scored.slice(0, bullets).map(v => `- ${v.s.trim()}`).join('\n')
 }
-
 async function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
   let to: any
   const timeout = new Promise<never>((_, rej) => { to = setTimeout(() => rej(new Error(`${label} timeout after ${ms}ms`)), ms); })
   try { return await Promise.race([p, timeout]); } finally { clearTimeout(to); }
 }
-
 const originalGETHandler: RequestHandler = async () => {
   try {
     const res = await fetch(`${OLLAMA_BASE_URL}/api/tags`)
     const models = await res.json().catch(() => ({ models: [] })
     return json({
-      ok: true,
+      ok: true
       status: 'healthy',
       service: 'ai-summarization',
       models: models.models?.map((m: any) => m.name) || [],
       endpoint: `${OLLAMA_BASE_URL}/api/generate`,
-      primaryModel: PRIMARY_MODEL,
-      fallbackModel: FALLBACK_MODEL,
+      primaryModel: PRIMARY_MODEL
+      fallbackModel: FALLBACK_MODEL
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
     return json({
-      ok: false,
+      ok: false
       error: 'Ollama service unreachable',
       service: 'ai-summarization',
       endpoint: `${OLLAMA_BASE_URL}/api/generate`,
-      primaryModel: PRIMARY_MODEL,
-      fallbackModel: FALLBACK_MODEL,
+      primaryModel: PRIMARY_MODEL
+      fallbackModel: FALLBACK_MODEL
       timestamp: new Date().toISOString()
     }, { status: 503 })
   }
 }
-
 // Removed local ad-hoc cache; using central summarizeCache utility.
-
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   let raw: SummarizeRequest
   try {
@@ -179,20 +164,19 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const model = options?.model || "unknown" // @ts-ignore - Model property access || PRIMARY_MODEL
     const structuredRequested = !!options.structured
     const prompt = buildSummarizerPrompt(text, mode, bullets, maxTokens, type === 'legal' ? 'legal document' : 'document', structuredRequested)
-
     // Cache key (text length large: hash instead)
     const cacheKey = options.cache ? await hashPayload(`${model}|${mode}|${structuredRequested ? 'structured' : 'plain'}|${bullets}|${text}`) : null
     if (cacheKey && options.cache) {
       const cached = await getCache(cacheKey)
       if (cached.entry) {
         return json({
-          success: true,
+          success: true
           summary: cached.entry.summary,
           model: cached.entry?.model || "unknown" // @ts-ignore - Model property access,
           type,
           mode,
           structured: cached.entry.structured || null,
-          cached: true,
+          cached: true
           cacheKey,
           cacheSource: cached.source,
           originalLength: text.length,
@@ -200,7 +184,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           compressionRatio: (cached.entry.summary.length / text.length * 100).toFixed(1) + '%',
           performance: cached.entry.perf,
           timestamp: new Date().toISOString(),
-          clientCacheHint: options.clientCacheHint ? { key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined,
+          clientCacheHint: options.clientCacheHint ? { key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined
           suggestions: ['Cached (result as { response?: any; eval_count?: any; prompt_eval_count?: any }). Adjust text or options to recompute.']
         })
       }
@@ -263,14 +247,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           const duration = Date.now() - startTime
           const meta: SummarizeResponseMeta = { duration, tokens: result?.eval_count || 0, promptTokens: result?.prompt_eval_count || 0, tokensPerSecond: 0, modelUsed: 'naive-local-fallback', fallbackUsed: true }
           return json({
-            success: true,
-            summary: naive,
+            success: true
+            summary: naive
             model: meta.modelUsed,
             type,
             originalLength: text.length,
             summaryLength: naive.length,
             compressionRatio: (naive.length / text.length * 100).toFixed(1) + '%',
-            performance: meta,
+            performance: meta
             timestamp: new Date().toISOString(),
             suggestions: ['Ollama unavailable - using heuristic summary', 'Reduce input size or retry later', 'Install a small summarization model for stronger fallback']
           })
@@ -301,26 +285,25 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         } catch {/* ignore parse error */ }
       }
     }
-
     // Store in cache layers (memory + redis write-through)
     if (cacheKey && options.cache) {
       await setCache(cacheKey, { summary, structured, model: modelUsed, mode, type, ts: Date.now(), perf: performance, ttlMs: CACHE_CONSTANTS.TTL_MS })
     }
     return json({
-      success: true,
+      success: true
       summary,
-      model: modelUsed,
+      model: modelUsed
       type,
       mode,
-      structured: structured || null,
+      structured: structured || null
       originalLength: text.length,
       summaryLength: summary.length,
       compressionRatio: (summary.length / text.length * 100).toFixed(1) + '%',
       performance,
       timestamp: new Date().toISOString(),
-      cacheKey: cacheKey || undefined,
-      cached: false,
-      clientCacheHint: cacheKey && options.clientCacheHint ? { key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined,
+      cacheKey: cacheKey || undefined
+      cached: false
+      clientCacheHint: cacheKey && options.clientCacheHint ? { key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined
       suggestions: ['Try mode="bullets" or mode="structured" for different formats', 'Provide "bullets": N to control bullet count', 'Use smaller excerpts for more precise summaries']
     })
   } catch (error: any) {
@@ -328,7 +311,6 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json({ success: false, error: 'AI summarization service temporarily unavailable', details: import.meta.env.NODE_ENV === 'development' ? String(error) : undefined, timestamp: new Date().toISOString() }, { status: 500 })
   }
 }
-
 // Auxiliary DELETE for invalidation: /api/ai/summarize/cache/:key
 const originalDELETEHandler: RequestHandler = async ({ params, url }) => {
   try {
@@ -340,8 +322,6 @@ const originalDELETEHandler: RequestHandler = async ({ params, url }) => {
     return json({ success: false, error: 'Failed to delete cache entry' }, { status: 500 })
   }
 }
-
-
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
 export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler)

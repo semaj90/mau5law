@@ -1,13 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Progress Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
-
   // Svelte 5 props pattern
   interface Props {
     value?: number;
@@ -19,7 +17,6 @@ https://svelte.dev/e/js_parse_error -->
     label?: string;
     class?: string;
   }
-
   let {
     value = 0,
     max = 100,
@@ -29,13 +26,11 @@ https://svelte.dev/e/js_parse_error -->
     showPercentage = false,
     label,
     class: className = '',
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
   // Calculate percentage
   let percentage = $derived(Math.min((value / max) * 100, 100));
   let displayPercentage = $derived(Math.round(percentage));
-
   // UnoCSS-based progress variants
   const progressVariants = cva(
     // Base classes
@@ -58,12 +53,11 @@ https://svelte.dev/e/js_parse_error -->
         }
       },
       defaultVariants: {
-        variant: 'default',;
+        variant: 'default',
         size: 'default';
       }
     }
   );
-
   const fillVariants = cva(
     // Base classes
     'h-full transition-all duration-300 ease-in-out',
@@ -74,26 +68,23 @@ https://svelte.dev/e/js_parse_error -->
           success: 'bg-green-600',
           warning: 'bg-yellow-500',
           error: 'bg-red-600',
-          info: 'bg-blue-600',;
-          yorha: 'bg-gradient-to-r from-yellow-400/80 to-yellow-400 shadow-lg shadow-yellow-400/20',;
+          info: 'bg-blue-600',
+          yorha: 'bg-gradient-to-r from-yellow-400/80 to-yellow-400 shadow-lg shadow-yellow-400/20',
           legal: 'bg-blue-600';
         }
       }
     }
   );
-
   // Computed class names
   let progressClass = $derived(cn(progressVariants({ variant, size }), class));
   let fillClass = $derived(fillVariants({ variant }));
-
   // Indeterminate animation style
   let indeterminateStyle = $derived(
-    indeterminate 
-      ? 'animation: indeterminate 2s infinite linear;' 
+    indeterminate
+      ? 'animation: indeterminate 2s infinite linear;'
       : `width: ${percentage}%;`
   );
 </script>
-
 <div class="progress-wrapper space-y-2">
   <!-- Label and Percentage -->
   {#if label || showPercentage}
@@ -106,19 +97,17 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   {/if}
-
   <!-- Progress Bar -->
   <div class={progressClass} role="progressbar" aria-valuenow={indeterminate ? undefined : value} aria-valuemax={max} {...restProps}>
-    <div 
+    <div
       class={fillClass}
       style={indeterminateStyle}
     ></div>
   </div>
 </div>
-
 <style>
   @keyframes indeterminate {
-    0% {;
+    0% {
       transform: translateX(-100%);
       width: 100%;
     }
@@ -131,13 +120,11 @@ https://svelte.dev/e/js_parse_error -->
       width: 100%;
     }
   }
-
   /* YoRHa specific animations */
   :global(.yorha-progress) {
     position: relative;
   }
-
-  :global(.yorha-progress::after) {
+  :global($1) {
     content: '';
     position: absolute;
     top: 0;
@@ -152,7 +139,6 @@ https://svelte.dev/e/js_parse_error -->
     );
     animation: yorha-scan 2s infinite linear;
   }
-
   @keyframes yorha-scan {
     0% {
       transform: translateX(-100%);

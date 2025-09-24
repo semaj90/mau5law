@@ -1,11 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`
+<!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>`, `<svelte:boundary` or `<Component>`,
 https://svelte.dev/e/const_tag_invalid_placement -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from '$lib/components/ui/enhanced-bits';
   import {
     AlertTriangle,
@@ -24,7 +23,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     Video,
   } from "lucide-svelte";
   import { onMount } from "svelte";
-
   interface HelpArticle {
     id: string;
     title: string;
@@ -42,47 +40,45 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   let activeCategory = $state("getting-started");
   let searchQuery = $state("");
   let filteredArticles = $state<HelpArticle[] >([]);
-
   // Help categories
   const categories = [
     {
       id: "getting-started",
       title: "Getting Started",
-      icon: Star,
-      description: "New to the system? Start here",;
+      icon: Star
+      description: "New to the system? Start here",
     },
     {
       id: "cases",
       title: "Case Management",
-      icon: Book,
-      description: "Managing and organizing cases",;
+      icon: Book
+      description: "Managing and organizing cases",
     },
     {
       id: "evidence",
       title: "Evidence Handling",
-      icon: Search,
-      description: "Evidence collection and analysis",;
+      icon: Search
+      description: "Evidence collection and analysis",
     },
     {
       id: "ai-assistant",
       title: "AI Assistant",
-      icon: MessageSquare,
-      description: "Using AI features effectively",;
+      icon: MessageSquare
+      description: "Using AI features effectively",
     },
     {
       id: "advanced",
       title: "Advanced Features",
-      icon: UserIcon,
-      description: "Power user features and tips",;
+      icon: UserIcon
+      description: "Power user features and tips",
     },
     {
       id: "troubleshooting",
-      title: "Troubleshooting",;
-      icon: AlertTriangle,;
-      description: "Common issues and solutions",;
+      title: "Troubleshooting",
+      icon: AlertTriangle
+      description: "Common issues and solutions",
     },
   ];
-
   // Help articles
   const articles = [
     // Getting Started
@@ -98,38 +94,32 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       lastUpdated: "2024-01-15",
       content: `
   # Quick Start Guide
-
   Welcome to the Legal Case Management System! This guide will help you get started quickly.
-
   ## Step 1: Set Up Your Profile
   1. Navigate to Settings > Profile
   2. Fill in your basic information
   3. Upload a profile picture (optional)
   4. Set your role and department
-
   ## Step 2: Create Your First Case
   1. Go to Cases > New Case
   2. Enter case title and description
   3. Set priority and status
   4. Save the case
-
   ## Step 3: Add Evidence
   1. Open your case
   2. Click "Add Evidence"
   3. Upload files or enter evidence descriptions
   4. Tag and categorize evidence
-
   ## Step 4: Use AI Assistant
   1. Navigate to AI Assistant
   2. Ask questions about your cases
   3. Get analysis and recommendations
   4. Export AI responses for documentation
-
   ## Next Steps
   - Explore the analytics dashboard
   - Set up notifications
   - Learn about advanced search features
-  			`,;
+  			`,
     },
     {
       id: "navigation-tour",
@@ -143,7 +133,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       lastUpdated: "2024-01-15",
       content: `
   # System Navigation Tour
-
   ## Main Navigation
   The top navigation bar contains links to all major sections:
   - **Dashboard**: Overview of your work
@@ -153,20 +142,18 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   - **Evidence**: Handle evidence items
   - **Export/Import**: Data management
   - **AI Assistant**: Get AI help
-
   ## Keyboard Shortcuts
   Press \`Ctrl + H\` to see all keyboard shortcuts, including:
   - \`Ctrl + K\`: Quick search
   - \`Ctrl + N\`: New evidence
   - \`Ctrl + S\`: Save current work
   - \`F11\`: Toggle fullscreen
-
   ## User Menu
   Click your profile picture (top right) to access:
   - User settings
   - Preferences
   - Logout
-  			`,;
+  			`,
     },
     {
       id: "first-case",
@@ -175,43 +162,35 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       description: "Step-by-step case creation walkthrough",
       type: "video",
       duration: "8 min",
-      popularity: 5,;
+      popularity: 5,
       tags: [],
-      lastUpdated: "2024-01-15",;
+      lastUpdated: "2024-01-15",
       content: `
   # Creating Your First Case
-
   ## Video Tutorial
   import type { Case } from '$lib/types';
-
   [Play Video: CaseCreation Walkthrough] (8 minutes)
-
   ## Written Steps
   1. **Navigate to Cases**
    - Click "Cases" in the main navigation
    - Click "New Case" button
-
   2. **Fill Case Details**
    - Enter a descriptive title
    - Add detailed description
    - Set appropriate priority level
    - Choose initial status
-
   3. **Add Participants**
    - Click "Add Participant"
    - Enter names and roles
    - Add contact information
-
   4. **Organize with Tags**
    - Add relevant tags for categorization
    - Use consistent tagging for easy search
-
   5. **Save and Continue**
    - Save your case
    - Begin adding evidence immediately
   			`,
     },
-
     // Case Management
     {
       id: "case-organization",
@@ -224,14 +203,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       tags: [],
       content: `
   # Case Organization Best Practices
-
   ## Naming Conventions
   Use consistent naming patterns:
   - Include case number/ID
   - Add date in YYYY-MM-DD format
   - Use descriptive keywords
   - Example: "2024-01-15_FraudInvestigation_SmithCorp"
-
   ## Status Management
   Maintain clear status progression:
   - **New**: Recently created cases
@@ -239,22 +216,19 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   - **Pending**: Waiting for information/action
   - **Closed**: Investigation complete
   - **Suspended**: Temporarily halted
-
   ## Priority Levels
   Set appropriate priorities:
   - **Urgent**: Immediate attention required
   - **High**: Important, handle soon
   - **Medium**: Standard priority
   - **Low**: Handle when time permits
-
   ## Documentation Standards
   - Keep detailed case notes
   - Document all actions taken
   - Include timestamps on updates
   - Use consistent terminology
-  			`,;
+  			`,
     },
-
     // Evidence
     {
       id: "evidence-best-practices",
@@ -267,36 +241,31 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       tags: [],
       content: `
   # Evidence Handling Best Practices
-
   ## Chain of Custody
   Maintain proper documentation:
   1. Record who collected evidence
   2. Document when and where collected
   3. Note any transfers of custody
   4. Keep detailed handling logs
-
   ## File Organization
   Structure your evidence files:
   - Use descriptive filenames
   - Include dates and evidence numbers
   - Organize by evidence type
   - Maintain backup copies
-
   ## Metadata Management
   Record important details:
   - Source information
   - Collection method
   - File integrity hashes
   - Analysis results
-
   ## Security Considerations
   - Encrypt sensitive files
   - Control access permissions
   - Regular backup procedures
   - Audit trail maintenance
-  			`,;
+  			`,
     },
-
     // AI Assistant
     {
       id: "ai-prompting",
@@ -309,33 +278,28 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       tags: [],
       content: `
   # Effective AI Prompting Techniques
-
   ## Clear and Specific Queries
   Be specific about what you need:
   - ❌ "Help with case"
   - ✅ "Analyze evidence patterns in fraud case #2024-001"
-
   ## Provide Context
   Include relevant background:
   - Case type and details
   - Specific evidence items
   - Timeline information
   - Relevant legal precedents
-
   ## Ask Follow-up Questions
   Build on previous responses:
   - "Can you elaborate on point 3?"
   - "What additional evidence would strengthen this?"
   - "How does this compare to similar cases?"
-
   ## Use the Right Question Types
   - **Analysis**: "What patterns do you see in this evidence?"
   - **Recommendations**: "What should I investigate next?"
   - **Explanations**: "Explain the legal implications of..."
   - **Summaries**: "Summarize the key findings in this case"
-  			`,;
+  			`,
     },
-
     // Troubleshooting
     {
       id: "common-issues",
@@ -344,11 +308,10 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       description: "Solutions to frequently encountered problems",
       type: "article",
       duration: "6 min read",
-      popularity: 3,;
-      tags: [],;
+      popularity: 3,
+      tags: [],
       content: `
   # Common Issues and Solutions
-
   ## Login Problems
   **Issue**: Cannot log in to the system
   **Solutions**:
@@ -356,7 +319,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   2. Clear browser cache and cookies
   3. Try incognito/private browsing mode
   4. Contact system administrator
-
   ## File Upload Issues
   **Issue**: Cannot upload evidence files
   **Solutions**:
@@ -364,7 +326,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   2. Verify file format is supported
   3. Ensure stable internet connection
   4. Try different browser
-
   ## Performance Issues
   **Issue**: System running slowly
   **Solutions**:
@@ -372,7 +333,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   2. Clear browser cache
   3. Check internet connection speed
   4. Update to latest browser version
-
   ## Search Not Working
   **Issue**: Search returns no results
   **Solutions**:
@@ -380,46 +340,42 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   2. Remove filters and try again
   3. Use broader search terms
   4. Try advanced search options
-  			`,;
+  			`,
     },
   ];
-
   // FAQ items
   const faqs = [
     {
       question: "How do I reset my password?",
       answer:
-        "Go to Settings > Security > Change Password. Enter your current password and new password twice.",;
+        "Go to Settings > Security > Change Password. Enter your current password and new password twice.",
     },
     {
       question: "Can I export my case data?",
       answer:
-        "Yes! Go to Export > Select data types > Choose format (JSON, CSV, XML) > Download.",;
+        "Yes! Go to Export > Select data types > Choose format (JSON, CSV, XML) > Download.",
     },
     {
       question: "How do I use keyboard shortcuts?",
       answer:
-        "Press Ctrl+H to see all available shortcuts. Common ones include Ctrl+K for search and Ctrl+N for new evidence.",;
+        "Press Ctrl+H to see all available shortcuts. Common ones include Ctrl+K for search and Ctrl+N for new evidence.",
     },
     {
       question: "What file types are supported for evidence?",
       answer:
-        "Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.",;
+        "Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.",
     },
     {
-      question: "How do I collaborate with team members?",;
+      question: "How do I collaborate with team members?",
       answer:
-        "Add participants to cases, use shared notes, and enable notifications to keep everyone informed.",;
+        "Add participants to cases, use shared notes, and enable notifications to keep everyone informed.",
     },
   ];
-
   $effect(() => {
     filterArticles();
   });
-
   function filterArticles() {
-    let results = articles;
-
+    let results = article;
     // Filter by category
     if (activeCategory !== "all") {
       results = results.filter(
@@ -438,8 +394,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     }
     // Sort by popularity
     results = results.sort((a, b) => b.popularity - a.popularity);
-
-    filteredArticles = results;
+    filteredArticles = result;
   }
   function getTypeIcon(type: string) {
     switch (type) {
@@ -465,7 +420,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     filterArticles()
   }
 </script>
-
 <svelte:head>
   <title>Help & Support - Legal Case Management</title>
   <meta
@@ -473,7 +427,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     content="Help documentation, tutorials, and support resources"
   />
 </svelte:head>
-
 <div class="container mx-auto p-6 max-w-7xl">
   <!-- Header -->
   <div
@@ -487,7 +440,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       Documentation, tutorials, and support resources to help you succeed
     </p>
   </div>
-
   <!-- Search -->
   <div class="bg-white rounded-lg shadow-md p-6 mb-6">
     <div class="relative max-w-2xl mx-auto">
@@ -502,7 +454,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       />
     </div>
   </div>
-
   <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
     <!-- Categories Sidebar -->
     <div class="lg:col-span-1">
@@ -525,7 +476,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               </div>
             </div>
           </button>
-
           {#each categories as category}
             <button
               type="button"
@@ -545,7 +495,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           {/each}
         </nav>
       </div>
-
       <!-- Quick Actions -->
       <div class="bg-white rounded-lg shadow-md p-6 mt-6">
         <h3 class="text-lg font-semibold mb-4">Need More Help?</h3>
@@ -565,7 +514,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         </div>
       </div>
     </div>
-
     <!-- Main Content -->
     <div class="lg:col-span-3 space-y-6">
       <!-- Articles -->
@@ -582,7 +530,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               : ""} found
           </p>
         </div>
-
         {#if filteredArticles.length > 0}
           <div class="divide-y divide-gray-200">
             {#each filteredArticles as article}
@@ -592,7 +539,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                     {@const Icon = getTypeIcon(article.type)}
                     <Icon class={`h-6 w-6 ${getTypeColor(article.type)}`} />
                   </div>
-
                   <div class="flex-1 min-w-0">
                     <h3 class="text-lg font-medium text-gray-900 mb-2">
                       {article.title}
@@ -600,7 +546,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                     <p class="text-gray-600 text-sm mb-3">
                       {article.description}
                     </p>
-
                     <div
                       class="flex items-center gap-4 text-sm text-gray-500 mb-4"
                     >
@@ -616,14 +561,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                         {article.type}
                       </div>
                     </div>
-
                     <!-- Article preview -->
                     <div class="prose prose-sm max-w-none text-gray-700 mb-4">
                       {@html article.content
                         .split.slice(0, 3)
                         .join.substring(0, 200)}...
                     </div>
-
                     <Button class="bits-btn" variant="ghost" size="sm">
 <Book class="h-4 w-4 mr-2" />
                       Read Full Article
@@ -646,14 +589,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           </div>
         {/if}
       </div>
-
       <!-- FAQ Section -->
       <div class="bg-white rounded-lg shadow-md p-6">
         <h2 class="text-lg font-semibold mb-6 flex items-center gap-2">
           <MessageSquare class="h-6 w-6" />
           Frequently Asked Questions
         </h2>
-
         <div class="space-y-4">
           {#each faqs as faq}
             <details class="group">
@@ -672,7 +613,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           {/each}
         </div>
       </div>
-
       <!-- Contact Support -->
       <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
         <div class="flex items-start gap-4">
@@ -699,7 +639,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .prose {
@@ -728,4 +667,3 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     margin-bottom: 0.5rem;
   }
 </style>
-

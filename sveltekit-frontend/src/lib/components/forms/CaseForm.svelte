@@ -1,14 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { caseFormSchema, type CaseForm } from "$lib/schemas/forms";
   import { getAuthContext } from "$lib/stores/auth";
   import { superForm, type SuperValidated } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
-  import {   } from "svelte";
-
-
-
   interface Props {
     initialData?: SuperValidated<CaseForm> | Partial<CaseForm>;
     isEditing?: boolean;
@@ -16,7 +11,6 @@
     onsuccess?: (data: unknown) => void;
     onerror?: (error: unknown) => void;
   }
-
   let {
     initialData = ,
     isEditing = false,
@@ -24,21 +18,18 @@
     onsuccess,
     onerror
   }: Props = $props();
-
   const auth = getAuthContext();
-
   // Available users for assignment (would come from API)
   let availableUsers = $state([
     { id: '1', name: 'John Smith', role: 'prosecutor' },
     { id: '2', name: 'Jane Doe', role: 'investigator' },
     { id: '3', name: 'Mike Johnson', role: 'legal_assistant' }
   ]);
-
   // Initialize superForm
   const { form, errors, constraints, enhance, submitting, delayed, message } = superForm(initialData, {
     validators: zodClient(caseFormSchema),
-    resetForm: false,
-    invalidateAll: false,
+    resetForm: false
+    invalidateAll: false
     onSubmit: ({ cancel }) => {
       // You can add custom validation here
       console.log('Form submitted with data:', $form);
@@ -51,7 +42,6 @@
       }
     }
   });
-
   // Update formApi when form changes using $effect
   $effect(() => {
     if (formApi !== undefined) {
@@ -66,10 +56,8 @@
       };
     }
   });
-
   // Tag management
   let tagInput = $state('');
-
   function addTag() {
     if (tagInput.trim() && (!$form.tags || !$form.tags.includes(tagInput.trim()))) {
       $form.tags = [...($form.tags || []), tagInput.trim()];
@@ -90,7 +78,6 @@
     $form.caseNumber = `CAS-${year}-${random}`;
   }
 </script>
-
 <div class="space-y-4">
   <div class="space-y-4">
     <div class="space-y-4">
@@ -102,7 +89,6 @@
           {isEditing ? 'Update case information and settings' : 'Enter case details to begin investigation'}
         </p>
       </div>
-
       {#if !isEditing}
         <button
           type="button"
@@ -113,7 +99,6 @@
         </button>
       {/if}
     </div>
-
     <form method="POST" use:enhance>
       <!-- Case Number and Title -->
       <div class="space-y-4">
@@ -134,7 +119,6 @@
             <p class="space-y-4">{$errors.caseNumber}</p>
           {/if}
         </div>
-
         <div>
           <label for="priority" class="space-y-4">
             Priority *
@@ -156,7 +140,6 @@
           {/if}
         </div>
       </div>
-
       <!-- Title -->
       <div class="space-y-4">
         <label for="title" class="space-y-4">
@@ -175,7 +158,6 @@
           <p class="space-y-4">{$errors.title}</p>
         {/if}
       </div>
-
       <!-- Description -->
       <div class="space-y-4">
         <label for="description" class="space-y-4">
@@ -194,7 +176,6 @@
           <p class="space-y-4">{$errors.description}</p>
         {/if}
       </div>
-
       <!-- Status and Assignment -->
       <div class="space-y-4">
         <div>
@@ -214,7 +195,6 @@
             <option value="closed">Closed</option>
           </select>
         </div>
-
         <div>
           <label for="assignedTo" class="space-y-4">
             Assigned To
@@ -233,7 +213,6 @@
           </select>
         </div>
       </div>
-
       <!-- Due Date -->
       <div class="space-y-4">
         <label for="dueDate" class="space-y-4">
@@ -251,7 +230,6 @@
           <p class="space-y-4">{$errors.dueDate}</p>
         {/if}
       </div>
-
       <!-- Tags -->
       <div class="space-y-4">
         <label for="tagInput" class="space-y-4">
@@ -293,7 +271,6 @@
           <p class="space-y-4">{$errors.tags}</p>
         {/if}
       </div>
-
       <!-- Checkboxes -->
       <div class="space-y-4">
         <label class="space-y-4">
@@ -304,7 +281,6 @@
           />
           <span class="space-y-4">Mark as confidential</span>
         </label>
-
         <label class="space-y-4">
           <input
             type="checkbox"
@@ -314,18 +290,16 @@
           <span class="space-y-4">Notify assignee via email</span>
         </label>
       </div>
-
       <!-- Submit Buttons -->
       <div class="space-y-4">
         <button
           type="button"
-          onclick={() => ondispatch?.()}
+          onclick={() => // ondispatch removed}
           class="space-y-4"
           disabled={$submitting}
         >
           Cancel
         </button>
-
         <button
           type="submit"
           class="space-y-4"
@@ -341,14 +315,12 @@
           {/if}
         </button>
       </div>
-
       <!-- Server Messages -->
       {#if $message}
         <div class="space-y-4">
           {$message.text}
         </div>
       {/if}
-
       <!-- Loading Indicator -->
       {#if $delayed}
         <div class="space-y-4">
@@ -358,7 +330,6 @@
     </form>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   /* Custom validation styles */
@@ -369,4 +340,3 @@
     border-color: #10b981;
 }
 </style>
-

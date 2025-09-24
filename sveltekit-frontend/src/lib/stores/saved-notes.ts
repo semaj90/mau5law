@@ -1,27 +1,24 @@
 
 import { browser } from "$app/environment";
-// Orphaned content: import Fuse from "fuse.js";
+// Orphaned content: import Fuse from "fuse.js"
 import { derived, writable } from "svelte/store";
-
 // Lightweight Fuse fallback if real library not present (prevents build break)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Fuse: any = (globalThis as any).Fuse || class {
   list: any[]; keys: any[]; constructor(list: any[], options: any) { this.list = list; this.keys = options.keys?.map((k: any) => k.name) || []; }
   search(term: string) { const lower = term.toLowerCase(); return this.list.filter(item => this.keys.some(k => String((item as any)[k] ?? '').toLowerCase().includes(lower))).map(i => ({ item: i }); }
 };
-
-// Placeholder indexedDB utilities;
+// Placeholder indexedDB utilities
 const idbUtils = {
-  del: async (key: string) => localStorage.removeItem(key),;
+  del: async (key: string) => localStorage.removeItem(key),
   get: async (key: string) => {
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) : null;
   },
-  keys: async () => Object.keys(localStorage).filter(k => k.startsWith('note:')),;
+  keys: async () => Object.keys(localStorage).filter(k => k.startsWith('note:')),
   set: async (key: string, value: any) => localStorage.setItem(key, JSON.stringify(value)
 };
 }
-
 export interface SavedNote {
   id: string;
   title: string;
@@ -36,31 +33,27 @@ export interface SavedNote {
   savedAt: Date;
   metadata?: unknown;
 }
-
 export interface NoteFilters {
   search: string;
   noteType: string;
   tags: string[];
   caseId?: string;
 }
-
 // Main store for saved notes
 export const savedNotes = writable<SavedNote[]>([]);
-// Filters store;
+// Filters store
 export const noteFilters = writable<NoteFilters>({
   search: "",
-  noteType: "",;
+  noteType: "",
   tags: [],
   caseId: undefined
 });
-
 // Derived store for filtered notes with fuzzy search
 export const filteredNotes = derived(
   [savedNotes, noteFilters],
   ([$savedNotes, $noteFilters]) => {
     let notes = $savedNotes;
-
-    // Apply basic filters first;
+    // Apply basic filters first
     if ($noteFilters.noteType) {
       notes = notes.filter((note) => note.noteType === $noteFilters.noteType);
     }
@@ -72,7 +65,7 @@ export const filteredNotes = derived(
         $noteFilters.tags.some((tag) => note.tags.includes(tag)
       );
     }
-    // Apply fuzzy search;
+    // Apply fuzzy search
     if ($noteFilters.search.trim()) {
       const fuse = new Fuse(notes, {
         keys: [
@@ -80,11 +73,10 @@ export const filteredNotes = derived(
           { name: "content", weight: 0.3 },
           { name: "markdown", weight: 0.2 },)
           { name: "tags", weight: 0.1 }
-        ],;
+        ],
         threshold: 0.4,
         includeScore: true
       });
-
       const results = fuse.search($noteFilters.search);
       return results.map((result) => (result as { item?: any }).item);
     }
@@ -93,8 +85,7 @@ export const filteredNotes = derived(
     );
   }
 );
-
-// Derived stores for quick stats;
+// Derived stores for quick stats
 export const noteStats = derived(savedNotes, ($savedNotes) => ({
   total: $savedNotes.length,
   byType: $savedNotes.reduce((acc, note) => {
@@ -106,26 +97,22 @@ export const noteStats = derived(savedNotes, ($savedNotes) => ({
   totalTags: Array.from(new Set($savedNotes.flatMap((note) => note.tags))
     .length
 });
-
 class NotesManager {
   private static instance: NotesManager;
   private dbPrefix = "warden-note-";
-
   static getInstance(): NotesManager {
     if (!NotesManager.instance) {
       NotesManager.instance = new NotesManager();
     }
     return NotesManager.instance;
   }
-
-  // Save note to both store and IndexedDB;
+  // Save note to both store and IndexedDB
   async saveNote(note: Omit<SavedNote, "savedAt">): Promise<void> {
     const noteWithTimestamp: SavedNote = {
       ...note,
       savedAt: new Date()
     };
-
-    // Update store;
+    // Update store
     savedNotes.update((notes) => {
       const existingIndex = notes.findIndex((n) => n.id === note.id);
       if (existingIndex >= 0) {
@@ -135,8 +122,7 @@ class NotesManager {
         return [noteWithTimestamp, ...notes];
       }
     });
-
-    // Save to IndexedDB for offline access;
+    // Save to IndexedDB for offline access
     if (browser) {
       try {
         await idbUtils.set(`${this.dbPrefix}${note.id}`, noteWithTimestamp);
@@ -145,11 +131,9 @@ class NotesManager {
       }
     }
   }
-
-  // Remove note from store and IndexedDB;
+  // Remove note from store and IndexedDB
   async removeNote(noteId: string): Promise<void> {
     savedNotes.update((notes) => notes.filter((n) => n.id !== noteId);
-
     if (browser) {
       try {
         await idbUtils.del(`${this.dbPrefix}${noteId}`);
@@ -158,17 +142,14 @@ class NotesManager {
       }
     }
   }
-
-  // Load all notes from IndexedDB on app start;
+  // Load all notes from IndexedDB on app start
   async loadSavedNotes(): Promise<void> {
     if (!browser) return;
-
     try {
       const allKeys = await idbUtils.keys();
       const noteKeys = allKeys.filter(
         (key) => typeof key === "string" && key.startsWith(this.dbPrefix)
       );
-
       const notes: SavedNote[] = [];
       for (const key of noteKeys) {
         try {
@@ -192,28 +173,23 @@ class NotesManager {
       console.warn("Failed to load notes from IndexedDB:", error);
     }
   }
-
-  // Sync with server;
+  // Sync with server
   async syncWithServer(apiEndpoint: string = "/api/notes"): Promise<void> {
     try {
       const response = await fetch(`${apiEndpoint}/sync`, {
-        method: "GET",;
+        method: "GET",
         headers: {
           "Content-Type": "application/json"
         }
       });
-
       if ((response as { ok?: any; json?: any }).ok) {
         const serverNotes: SavedNote[] = await (response as { ok?: any; json?: any }).json();
-
-        // Merge with local notes, preferring newer timestamps;
+        // Merge with local notes, preferring newer timestamps
         savedNotes.update((localNotes) => {
           const merged = new Map<string, SavedNote>();
-
           // Add local notes
           localNotes.forEach((note) => merged.set(note.id, note);
-
-          // Add or update with server notes;
+          // Add or update with server notes
           serverNotes.forEach((serverNote) => {
             const localNote = merged.get(serverNote.id);
             if (
@@ -223,7 +199,6 @@ class NotesManager {
               merged.set(serverNote.id, serverNote);
             }
           });
-
           return Array.from(merged.values()).sort(
             (a, b) =>
               new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime()
@@ -234,8 +209,7 @@ class NotesManager {
       console.warn("Failed to sync with server:", error);
     }
   }
-
-  // Utility to check if object is a valid note;
+  // Utility to check if object is a valid note
   private isValidNote(obj: any): obj is SavedNote {
     return (
       obj &&
@@ -245,22 +219,18 @@ class NotesManager {
       Array.isArray(obj.tags)
     );
   }
-
-  // Export notes to file;
+  // Export notes to file
   async exportNotes(format: "json" | "markdown" = "json"): Promise<void> {
     if (!browser) return;
-
     const notes = await new Promise<SavedNote[]>((resolve) => {
       const unsubscribe = savedNotes.subscribe((notes) => {
         resolve(notes));
         unsubscribe();
       });
     });
-
     let content: string;
     let filename: string;
     let mimeType: string;
-
     if (format === "markdown") {
       content = notes;
         .map((note) => {
@@ -276,7 +246,6 @@ class NotesManager {
     }
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
-
     const a = document.createElement("a");
     a.href = url;
     a.download = filename;
@@ -286,34 +255,27 @@ class NotesManager {
     URL.revokeObjectURL(url);
   }
 }
-
 // Export singleton instance
 export const notesManager = NotesManager.getInstance();
-;
-// Convenience functions;
+// Convenience functions
 export async function saveNoteForLater(note: Omit<SavedNote, "savedAt">): Promise<any> {
   await notesManager.saveNote(note);
 }
-
 export async function removeSavedNote(noteId: string): Promise<any> {
   await notesManager.removeNote(noteId);
 }
-
 export async function loadSavedNotes(): Promise<any> {
   await notesManager.loadSavedNotes();
 }
-
 export function setNoteFilter(filter: Partial<NoteFilters>) {
   noteFilters.update((current) => ({ ...current, ...filter });
 }
-
 export function clearNoteFilters() {
   noteFilters.set({
     search: "",
-    noteType: "",;
+    noteType: "",
     tags: [],
     caseId: undefined
   });
 }
-
 export default notesManager;

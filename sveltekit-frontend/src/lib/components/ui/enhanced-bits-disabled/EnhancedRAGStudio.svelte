@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be uniqu;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- EnhancedRAG:Studio UI - Complete RAG Management Dashboard -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
   interface Props { class?: string; children?: import('svelte').Snippet }
   import { onMount } from 'svelte';
@@ -14,14 +13,12 @@ https://svelte.dev/e/attribute_duplicate -->
   import { Textarea } from '$lib/components/ui/textarea';
   import { Badge } from '$lib/components/ui/badge';
   import { Upload, Globe, Search, Database, Activity, FileText, Brain, TrendingUp, Settings, Play, Pause, RefreshCw } from 'lucide-svelte';
-
   // State management types
   interface SearchResultMeta { title?: string; type?: string }
   interface SearchResult { id: string; score: number; content: string; metadata: SearchResultMeta }
   interface LogEntry { action: string; metadata: unknown; timestamp: string }
   interface ServiceStatus { services?: Record<string, boolean>; indexStats?: { num_docs?: number } }
   interface RLMetrics { positive?: number; negative?: number; avgScore?: number }
-
   // State management
   let activeTab = $state<'upload' | 'crawl' | 'search' | 'logs' | 'settings'>('search');
   let isLoading = $state(false);
@@ -31,17 +28,14 @@ https://svelte.dev/e/attribute_duplicate -->
   let embeddings = $state<any[]>([]);
   let patches = $state<any[]>([]);
   let rlMetrics = $state<RLMetrics>( );
-
   // Form states
   let searchQuery = $state('');
   let uploadFile = $state<File | null>(null);
   let crawlUrl = $state('');
   let feedbackScore = $state(0);
-
   // Real-time updates intervals
   let statusInterval = $state<ReturnType<typeof setInterval> | null>(null);
   let logsInterval = $state<ReturnType<typeof setInterval> | null>(null);
-
   $effect(() => {
     (async () => {
       await loadServiceStatus();
@@ -49,25 +43,21 @@ https://svelte.dev/e/attribute_duplicate -->
       await loadEmbeddings();
       startRealTimeUpdates();
     })();
-
     return () => {
       if (statusInterval) clearInterval(statusInterval as any);
       if (logsInterval) clearInterval(logsInterval as any);
     };
   });
-
   function startRealTimeUpdates() {
     // Update service status every 30 seconds
     statusInterval = setInterval(async () => {
       await loadServiceStatus();
     }, 30000);
-
     // Update logs every 10 seconds
     logsInterval = setInterval(async () => {
       await loadRecentLogs();
     }, 10000);
   }
-
   async function loadServiceStatus() {
     try {
       const response = await fetch('/api/rag?action=status');
@@ -77,7 +67,6 @@ https://svelte.dev/e/attribute_duplicate -->
       console.error('Failed to load service status:', error);
     }
   }
-
   async function loadRecentLogs() {
     try {
       const response = await fetch('/api/logs');
@@ -87,7 +76,6 @@ https://svelte.dev/e/attribute_duplicate -->
       console.error('Failed to load logs:', error);
     }
   }
-
   async function loadEmbeddings() {
     try {
       const response = await fetch('/api/embeddings');
@@ -97,116 +85,96 @@ https://svelte.dev/e/attribute_duplicate -->
       console.error('Failed to load embeddings:', error);
     }
   }
-
   async function handleSearch() {
     if (!searchQuery.trim()) return;
-
     isLoading = true;
     try {
       const response = await fetch('/api/rag?action=search', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: searchQuery,;
+        body: JSON.stringify({,
+          query: searchQuery
           options: { topK: 10, threshold: 0.7 }
         })
       });
-
       const data = await (response as { json?: unknown }).json();
       searchResults = ((data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).results || []) as SearchResult[];
-
       // Log search activity
       await logActivity('search', { query: searchQuery, results: (data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).results?.length || 0 });
-
     } catch (error) {
       console.error('Search failed:', error);
     } finally {
       isLoading = false;
     }
   }
-
   async function handleUpload() {
     if (!uploadFile) return;
-
     isLoading = true;
     try {
       const formData = new FormData();
       formData.append('file', uploadFile);
-
       const response = await fetch('/api/rag?action=upload', {
-        method: 'POST',;
+        method: 'POST',
         body: formData;
       });
-
       const data = await (response as { json?: unknown }).json();
-
       if ((data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).success) {
         await logActivity('upload', { filename: uploadFile.name, chunks: (data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).document.chunks });
         uploadFile = null;
         await loadEmbeddings();
       }
-
     } catch (error) {
       console.error('Upload failed:', error);
     } finally {
       isLoading = false;
     }
   }
-
   async function handleCrawl() {
     if (!crawlUrl.trim()) return;
-
     isLoading = true;
     try {
       const response = await fetch('/api/rag?action=crawl', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          url: crawlUrl,;
+        body: JSON.stringify({,
+          url: crawlUrl
           options: { maxPages: 1 }
         })
       });
-
       const data = await (response as { json?: unknown }).json();
-
       if ((data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).success) {
         await logActivity('crawl', { url: crawlUrl, chunks: (data as { logs?: unknown; embeddings?: unknown; results?: unknown; success?: unknown; document?: unknown }).document.chunks });
         crawlUrl = '';
         await loadEmbeddings();
       }
-
     } catch (error) {
       console.error('Crawl failed:', error);
     } finally {
       isLoading = false;
     }
   }
-
   async function submitFeedback(resultId: string, score: number) {
     try {
       await fetch('/api/rl-feedback', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           resultId,
           score,
-          query: searchQuery,;
+          query: searchQuery
           timestamp: Date.now();
         })
       });
-
       await logActivity('feedback', { resultId, score });
-
     } catch (error) {
       console.error('Feedback submission failed:', error);
     }
   }
-
   async function logActivity(action: string, metadata: unknown) {
     try {
       await fetch('/api/logs', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(toISOString)();
         })
       });
@@ -214,23 +182,19 @@ https://svelte.dev/e/attribute_duplicate -->
       console.error('Failed to log activity:', error);
     }
   }
-
   function formatTimestamp(timestamp: string) {
     return new Date(timestamp).toLocaleString();
   }
-
   function getStatusColor(healthy: boolean) {
     return healthy ? 'bg-green-500' : 'bg-red-500';
   }
 </script>
-
 <div class="w-full min-h-screen bg-gray-50 p-6">
   <!-- Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-2">EnhancedRAG:Studio</h1>
     <p class="text-gray-600">Complete RAG management and monitoring dashboard</p>
   </div>
-
   <!-- Service Status Bar -->
   <div class="mb-6 nes-container">
     <div class="yorha-panel-header">
@@ -261,7 +225,6 @@ https://svelte.dev/e/attribute_duplicate -->
       </div>
     </div>
   </div>
-
   <!-- Navigation Tabs -->
   <div class="flex gap-2 mb-6">
     <Button
@@ -272,7 +235,6 @@ activeTab = 'search'}
     >
       <Search class="w-4 h-4" />
       Search
-
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'upload' ? 'default' : 'outline'}
@@ -281,7 +243,6 @@ activeTab = 'upload'}
     >
       <Upload class="w-4 h-4" />
       Upload
-
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'crawl' ? 'default' : 'outline'}
@@ -290,7 +251,6 @@ activeTab = 'crawl'}
     >
       <Globe class="w-4 h-4" />
       Crawl
-
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'logs' ? 'default' : 'outline'}
@@ -299,7 +259,6 @@ activeTab = 'logs'}
     >
       <FileText class="w-4 h-4" />
       Logs
-
     <Button
       class="bits-btn flex items-center gap-2"
       variant={activeTab === 'settings' ? 'default' : 'outline'}
@@ -308,9 +267,7 @@ activeTab = 'settings'}
     >
       <Settings class="w-4 h-4" />
       Settings
-
   </div>
-
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Main Content Area -->
     <div class="lg:col-span-2">
@@ -337,9 +294,7 @@ activeTab = 'settings'}
                   <Search class="w-4 h-4" />
                 {/if}
                 Search
-
             </div>
-
             <!-- Search Results -->
             {#if searchResults.length > 0}
               <div class="space-y-3">
@@ -363,7 +318,6 @@ activeTab = 'settings'}
 submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unknown; id?: unknown }).id, 1)}
                         >
                           👍
-
                         <Button class="bits-btn"
                           size="sm"
                           variant="ghost"
@@ -371,7 +325,6 @@ submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unkno
 submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unknown; id?: unknown }).id, -1)}
                         >
                           👎
-
                       </div>
                     </div>
                   </div>
@@ -380,7 +333,6 @@ submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unkno
             {/if}
           </div>
         </div>
-
       {:else if activeTab === 'upload'}
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -407,10 +359,8 @@ submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unkno
                 <Upload class="w-4 h-4 mr-2" />
               {/if}
               Upload & Process
-
           </div>
         </div>
-
       {:else if activeTab === 'crawl'}
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -436,10 +386,8 @@ submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unkno
                 <Globe class="w-4 h-4 mr-2" />
               {/if}
               Crawl & Process
-
           </div>
         </div>
-
       {:else if activeTab === 'logs'}
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -466,7 +414,6 @@ submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unkno
             </div>
           </div>
         </div>
-
       {:else if activeTab === 'settings'}
         <div class="nes-container">
           <div class="yorha-panel-header">
@@ -490,12 +437,10 @@ submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unkno
             </div>
             <Button class="bits-btn">
 Save Settings
-
           </div>
         </div>
       {/if}
     </div>
-
     <!-- Sidebar - Metrics & Monitoring -->
     <div class="space-y-6">
       <!-- Embeddings Overview -->
@@ -523,7 +468,6 @@ Save Settings
           </div>
         </div>
       </div>
-
       <!-- RL Metrics -->
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -549,7 +493,6 @@ Save Settings
           </div>
         </div>
       </div>
-
       <!-- Performance Metrics -->
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -578,25 +521,20 @@ Save Settings
     </div>
   </div>
 </div>
-
 <style>
   /* Custom scrollbar for logs */
-  .overflow-y-auto::-webkit-scrollbar {;
+  .overflow-y-auto::-webkit-scrollbar {
     width: 6px;
   }
-
   .overflow-y-auto::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 3px;
   }
-
   .overflow-y-auto::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
   }
-
   .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
 </style>
-

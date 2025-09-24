@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { gpuPerformanceOptimizer, type GPUPerformanceMetrics, type PerformanceAlert } from '$lib/services/gpu-performance-optimizer';
   // Reactive state from performance optimizer
@@ -54,11 +53,11 @@
   $effect(() => {
     // Subscribe to metrics and alerts
     const unsubscribeMetrics = gpuPerformanceOptimizer.metricsStore.subscribe(value => {
-      metrics = value;
+      metrics = valu;
       updateChartData();
     });
     const unsubscribeAlerts = gpuPerformanceOptimizer.alertsStore.subscribe(value => {
-      alerts = value;
+      alerts = valu;
     });
     // Load available profiles
     availableProfiles = gpuPerformanceOptimizer.getAvailableProfiles();
@@ -129,7 +128,7 @@
   }
   function handleProfileChange(profileName: string) {
     gpuPerformanceOptimizer.setOptimizationProfile(profileName);
-    currentProfile = profileName;
+    currentProfile = profileNam;
   }
   function handleToggleMonitoring() {
     if (isMonitoring) {
@@ -149,7 +148,6 @@
     }
   }
 </script>
-
 <div class="space-y-6 p-6 bg-slate-800 text-white rounded-xl">
   <!-- Header with Performance Grade -->
   <div class="flex items-center justify-between">
@@ -168,7 +166,6 @@
         </div>
       </div>
     </div>
-    
     <!-- Monitoring Controls -->
     <div class="flex items-center gap-3">
       <button
@@ -177,9 +174,8 @@
       >
         {isMonitoring ? '⏹️ Stop' : '▶️ Start'} Monitoring
       </button>
-      
       <!-- Profile Selector -->
-      <select 
+      <select
         class="px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
         bind:value={currentProfile}
         onchange={(e) => handleProfileChange(e.target.value)}
@@ -192,7 +188,6 @@
       </select>
     </div>
   </div>
-
   {#if metrics}
     <!-- Main Metrics Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -207,25 +202,22 @@
             {Math.round(metrics.gpu.utilization)}%
           </span>
         </div>
-        
         {#if gpuUtilizationHistory.length > 1}
           <svg class="w-full h-10" viewBox="0 0 120 40">
-            <path 
-              d={generateMiniChart(gpuUtilizationHistory)} 
-              stroke="currentColor" 
-              stroke-width="2" 
+            <path
+              d={generateMiniChart(gpuUtilizationHistory)}
+              stroke="currentColor"
+              stroke-width="2"
               fill="none"
               class={getStatusColor(metrics.gpu.utilization, { warning: 75, critical: 90 })}
             />
           </svg>
         {/if}
-        
         <div class="flex justify-between text-xs text-slate-400 mt-2">
           <span>Cores: {metrics.gpu.coreCount}</span>
           <span>{Math.round(metrics.gpu.clockSpeed)}MHz</span>
         </div>
       </div>
-
       <!-- GPU Memory -->
       <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
         <div class="flex items-center justify-between mb-3">
@@ -237,25 +229,22 @@
             {Math.round((metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100)}%
           </span>
         </div>
-        
         {#if memoryUsageHistory.length > 1}
           <svg class="w-full h-10" viewBox="0 0 120 40">
-            <path 
-              d={generateMiniChart(memoryUsageHistory)} 
-              stroke="currentColor" 
-              stroke-width="2" 
+            <path
+              d={generateMiniChart(memoryUsageHistory)}
+              stroke="currentColor"
+              stroke-width="2"
               fill="none"
               class={getStatusColor((metrics.gpu.memoryUsed / metrics.gpu.memoryTotal) * 100, { warning: 75, critical: 90 })}
             />
           </svg>
         {/if}
-        
         <div class="flex justify-between text-xs text-slate-400 mt-2">
           <span>{Math.round(metrics.gpu.memoryUsed / (1024*1024*1024))}GB</span>
           <span>/ {Math.round(metrics.gpu.memoryTotal / (1024*1024*1024))}GB</span>
         </div>
       </div>
-
       <!-- Temperature -->
       <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
         <div class="flex items-center justify-between mb-3">
@@ -267,25 +256,22 @@
             {Math.round(metrics.gpu.temperature)}°C
           </span>
         </div>
-        
         {#if temperatureHistory.length > 1}
           <svg class="w-full h-10" viewBox="0 0 120 40">
-            <path 
-              d={generateMiniChart(temperatureHistory, 100)} 
-              stroke="currentColor" 
-              stroke-width="2" 
+            <path
+              d={generateMiniChart(temperatureHistory, 100)}
+              stroke="currentColor"
+              stroke-width="2"
               fill="none"
               class={getStatusColor(metrics.gpu.temperature, { warning: 75, critical: 85 })}
             />
           </svg>
         {/if}
-        
         <div class="flex justify-between text-xs text-slate-400 mt-2">
           <span>Min: {Math.min(...temperatureHistory) || 0}°C</span>
           <span>Max: {Math.max(...temperatureHistory) || 0}°C</span>
         </div>
       </div>
-
       <!-- Tensor Performance -->
       <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
         <div class="flex items-center justify-between mb-3">
@@ -297,7 +283,6 @@
             {Math.round(metrics.tensor.operationsPerSecond)}
           </span>
         </div>
-        
         <div class="space-y-2">
           <div class="flex justify-between text-sm">
             <span class="text-slate-300">Latency:</span>
@@ -314,41 +299,36 @@
         </div>
       </div>
     </div>
-
     <!-- Performance Timeline -->
     {#if gpuUtilizationHistory.length > 5}
       <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
         <h3 class="text-lg font-medium text-white mb-4">📈 Performance Timeline</h3>
-        
         <div class="relative">
           <svg class="w-full h-32" viewBox="0 0 400 100">
             <!-- GPU Utilization -->
-            <path 
+            <path
               d={generateMiniChart(gpuUtilizationHistory.slice(-30), 100).replace.replace(/40/g, '100')}
-              stroke="#10b981" 
-              stroke-width="2" 
+              stroke="#10b981"
+              stroke-width="2"
               fill="none"
             />
-            
             <!-- Memory Usage -->
-            <path 
+            <path
               d={generateMiniChart(memoryUsageHistory.slice(-30), 100).replace.replace(/40/g, '100')}
-              stroke="#3b82f6" 
-              stroke-width="2" 
+              stroke="#3b82f6"
+              stroke-width="2"
               fill="none"
               transform="translate(0, 10)"
             />
-            
             <!-- Temperature -->
-            <path 
+            <path
               d={generateMiniChart(temperatureHistory.slice(-30), 100).replace.replace(/40/g, '100')}
-              stroke="#f59e0b" 
-              stroke-width="2" 
+              stroke="#f59e0b"
+              stroke-width="2"
               fill="none"
               transform="translate(0, 20)"
             />
           </svg>
-          
           <!-- Legend -->
           <div class="flex gap-6 mt-3 text-sm">
             <div class="flex items-center gap-2">
@@ -367,29 +347,25 @@
         </div>
       </div>
     {/if}
-
     <!-- Quick Actions -->
     <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
       <h3 class="text-lg font-medium text-white mb-4">🚀 Quick Optimization Actions</h3>
-      
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <button 
+        <button
           class="flex items-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
           onclick={handleOptimizeMemory}
         >
           <span>🧹</span>
           <span>Optimize Memory</span>
         </button>
-        
-        <button 
+        <button
           class="flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
           onclick={handleOptimizeTensors}
         >
           <span>⚡</span>
           <span>Optimize Tensors</span>
         </button>
-        
-        <button 
+        <button
           class="flex items-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
           onclick={handleBalanceWorkload}
         >
@@ -398,12 +374,10 @@
         </button>
       </div>
     </div>
-
     <!-- Performance Alerts -->
     {#if alerts.length > 0}
       <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
         <h3 class="text-lg font-medium text-white mb-4">⚠️ Performance Alerts</h3>
-        
         <div class="space-y-3">
           {#each alerts.slice(-5) as alert}
             <div class="flex items-start gap-3 p-3 rounded-lg border {getSeverityColor(alert.severity)}">
@@ -432,11 +406,9 @@
         </div>
       </div>
     {/if}
-
     <!-- Detailed Metrics Table -->
     <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
       <h3 class="text-lg font-medium text-white mb-4">📊 Detailed Performance Metrics</h3>
-      
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
@@ -502,23 +474,19 @@
     </div>
   {/if}
 </div>
-
 <style>
   /* Custom scrollbar styling */
-  .overflow-x-auto::-webkit-scrollbar {;
+  .overflow-x-auto::-webkit-scrollbar {
     height: 4px;
   }
-  
   .overflow-x-auto::-webkit-scrollbar-track {
     background: #475569;
     border-radius: 2px;
   }
-  
   .overflow-x-auto::-webkit-scrollbar-thumb {
     background: #64748b;
     border-radius: 2px;
   }
-  
   .overflow-x-auto::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }

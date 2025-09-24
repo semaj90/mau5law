@@ -3,20 +3,16 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { browser } from "$app/environment";
   import Button from '$lib/components/ui/enhanced-bits';
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { Accessibility, Keyboard, Maximize2, Minimize2 } from "lucide-svelte";
   import { onMount } from "svelte";
   import AccessibilityPanel from "./AccessibilityPanel.svelte";
-
   // Keyboard shortcuts state
   let showShortcuts = $state(false);
   let showAccessibilityPanel = $state(false);
   let isFullscreen = $state(false);
-
   // Keyboard shortcuts map
   const shortcuts = [
     { key: "Ctrl + K", description: "Quick search", action: "search" },
@@ -26,20 +22,18 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     { key: "Ctrl + F", description: "Toggle filters", action: "filter" },
     { key: "Ctrl + H", description: "Show/hide shortcuts", action: "help" },
     {
-      key: "Ctrl + Alt + A",;
-      description: "Accessibility panel",;
-      action: "accessibility",;
+      key: "Ctrl + Alt + A",
+      description: "Accessibility panel",
+      action: "accessibility",
     },
     { key: "F11", description: "Toggle fullscreen", action: "fullscreen" },
     { key: "Escape", description: "Close modals/exit", action: "escape" },
   ];
-
   $effect(() => {
     if (browser) {
       // Add keyboard event listeners
       document.addEventListener("keydown", handleKeyboardShortcut);
       document.addEventListener("fullscreenchange", handleFullscreenChange);
-
       return () => {
         document.removeEventListener("keydown", handleKeyboardShortcut);
         document.removeEventListener(
@@ -49,7 +43,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       };
     }
   });
-
   function handleKeyboardShortcut(event: KeyboardEvent) {
     // Ignore if user is typing in an input/textarea
     if (
@@ -59,10 +52,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     ) {
       return;
     }
-
     const { ctrlKey, metaKey, altKey, key } = event;
     const cmdOrCtrl = ctrlKey || metaKey;
-
     switch (true) {
       case cmdOrCtrl && key.toLowerCase() === "k":
         event.preventDefault();
@@ -86,7 +77,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         break;
       case cmdOrCtrl && key.toLowerCase() === "h":
         event.preventDefault();
-        showShortcuts = !showShortcuts;
+        showShortcuts = !showShortcut;
         break;
       case cmdOrCtrl && altKey && key.toLowerCase() === "a":
         event.preventDefault();
@@ -101,11 +92,9 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         break;
     }
   }
-
   function handleFullscreenChange() {
     isFullscreen = !!document.fullscreenElement;
   }
-
   function triggerSearch() {
     // Focus search input if it exists
     const searchInput = document.querySelector(
@@ -117,32 +106,27 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     }
     console.log("🔍 Search triggered");
   }
-
   function triggerNewEvidence() {
     // Trigger new evidence creation
     console.log("➕ New evidence triggered");
     // You would dispatch an event or call a function here
     window.dispatchEvent(new CustomEvent("new-evidence"));
   }
-
   function triggerSave() {
     // Save current work
     console.log("💾 Save triggered");
     window.dispatchEvent(new CustomEvent("save-work"));
   }
-
   function triggerExport() {
     // Navigate to export or trigger export
     console.log("📤 Export triggered");
     window.location.href = "/export";
   }
-
   function triggerFilter() {
     // Toggle filter panel
     console.log("🔧 Filter toggle triggered");
     window.dispatchEvent(new CustomEvent("toggle-filters"));
   }
-
   function toggleFullscreen() {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();
@@ -150,7 +134,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       document.exitFullscreen();
     }
   }
-
   function handleEscape() {
     // Close modals, exit fullscreen, etc.
     if (showShortcuts) {
@@ -162,10 +145,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     }
     console.log("⚡ Escape triggered");
   }
-
   export { showShortcuts, toggleFullscreen, isFullscreen };
 </script>
-
 <!-- Keyboard Shortcuts Modal -->
 {#if showShortcuts}
   <div
@@ -200,7 +181,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           </svg>
         </button>
       </div>
-
       <div class="mx-auto px-4 max-w-7xl">
         {#each shortcuts as shortcut}
           <div
@@ -215,7 +195,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           </div>
         {/each}
       </div>
-
       <div class="mx-auto px-4 max-w-7xl">
         <p class="mx-auto px-4 max-w-7xl">
           💡 Pro tip: These shortcuts work throughout the application to boost
@@ -225,7 +204,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     </div>
   </div>
 {/if}
-
 <!-- Floating Action Buttons -->
 <div class="mx-auto px-4 max-w-7xl">
   <!-- Accessibility Panel Toggle -->
@@ -241,7 +219,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <Accessibility class="mx-auto px-4 max-w-7xl" />
 </Button>
   </Tooltip>
-
   <!-- Keyboard Shortcuts Toggle -->
   <Tooltip content="Keyboard shortcuts (Ctrl+H)" placement="left">
     <Button
@@ -255,7 +232,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <Keyboard class="mx-auto px-4 max-w-7xl" />
 </Button>
   </Tooltip>
-
   <!-- Fullscreen Toggle -->
   <Tooltip
     content="{isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'} (F11)"
@@ -277,25 +253,18 @@ toggleFullscreen()}
 </Button>
   </Tooltip>
 </div>
-
 <!-- Accessibility Panel -->
 <AccessibilityPanel bind:showPanel={showAccessibilityPanel} />
-
 <style>
-  :global(.floating-actions) {;
+  :global(.floating-actions) {
     transition: all 0.3s ease;
   }
-
-  :global(.floating-actions:hover) {
+  :global($1) {
     transform: scale(1.05);
   }
-
   kbd {
     box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.12),
       0 1px 2px rgba(0, 0, 0, 0.24);
   }
 </style>
-
-
-

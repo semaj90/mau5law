@@ -1,15 +1,12 @@
 // Prime computation worker (ESM)
 // Receives { start: number, end: number, mode: 'list' | 'count' }
 import { parentPort, workerData } from 'node:worker_threads';
-
 interface WorkerInput {
   start: number;
   end: number;
   mode?: 'list' | 'count';
 }
-
 const { start, end, mode = 'count' } = (workerData || {}) as WorkerInput;
-
 function isPrime(n: number): boolean {
   if (n < 2) return false;
   if (n === 2) return true;
@@ -20,15 +17,12 @@ function isPrime(n: number): boolean {
   }
   return true;
 }
-
 let primes: number[] = [];
 let count = 0;
-
 for (let n = start; n < end; n++) {
   if (isPrime(n)) {
     if (mode === 'list') primes.push(n);
     count++;
   }
 }
-
 parentPort?.postMessage(mode === 'list' ? { primes, count } : { count });

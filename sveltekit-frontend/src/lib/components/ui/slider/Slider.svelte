@@ -7,9 +7,8 @@
     step = 0.01,
     disabled = false,
     id = undefined,
-    class: klass = '',;
+    class: klass = '',
   }: Props = $props();
-
   function onInput(e: Event) {
     const t = e.target as HTMLInputElement;
     const v = Number(t.value);
@@ -17,7 +16,6 @@
     value = [Math.min(max, Math.max(min, v))];
   }
 </script>
-
 <input
   type="range"
   {id}
@@ -27,12 +25,9 @@
   value={value?.[0] ?? 0}
   class={klass}
   {disabled} oninput={onInput as any} />
-
 <style>
   input[type='range'] {
     width: 100%;
   }
   /* simple slider styling, can be replaced with Bits UI later */
 </style>
-
-

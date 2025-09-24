@@ -2,11 +2,9 @@
  * Enhanced File Upload System with GPU Acceleration and RAG Pipeline Integration
  * Comprehensive type definitions for legal document processing with XState orchestration
  */
-
 // XState service type (fallback if package not available)
 export type XStateService = any;
-
-// Core file upload state types;
+// Core file upload state types
 export interface FileUploadState {
   status:
     | 'idle'
@@ -27,7 +25,6 @@ export interface FileUploadState {
   metadata?: FileMetadata;
   analysis?: UploadAnalysisResult;
 }
-
 export interface ProcessingStage {
   current:
     | 'upload'
@@ -41,8 +38,7 @@ export interface ProcessingStage {
   completed: number;
   details?: string;
 }
-
-// GPU acceleration configuration;
+// GPU acceleration configuration
 export interface GPUUploadConfig {
   enabled: boolean;
   deviceId?: number;
@@ -53,8 +49,7 @@ export interface GPUUploadConfig {
   webgpuEnabled?: boolean;
   cudaSupport?: boolean;
 }
-
-// RAG Pipeline Integration;
+// RAG Pipeline Integration
 export interface RAGPipelineConfig {
   enabled: boolean;
   extractText: boolean;
@@ -66,8 +61,7 @@ export interface RAGPipelineConfig {
   embeddingModel?: 'legal-bert' | 'sentence-transformers' | 'nomic-embed-text';
   vectorStorage?: 'qdrant' | 'pgvector' | 'neo4j';
 }
-
-// OCR and Content Extraction;
+// OCR and Content Extraction
 export interface OCRConfig {
   enabled: boolean;
   engines: ('tesseract' | 'langextract' | 'google-vision' | 'azure-ocr')[];
@@ -77,8 +71,7 @@ export interface OCRConfig {
   enhanceContrast?: boolean;
   deskew?: boolean;
 }
-
-// YOLO Object Detection Configuration;
+// YOLO Object Detection Configuration
 export interface YOLOConfig {
   enabled: boolean;
   model?: 'yolov8' | 'yolov9' | 'yolo-legal-docs';
@@ -88,8 +81,7 @@ export interface YOLOConfig {
   detectSeals?: boolean;
   detectTextRegions?: boolean;
 }
-
-// Enhanced processing pipeline;
+// Enhanced processing pipeline
 export interface ProcessingPipeline {
   gpu: GPUUploadConfig;
   rag: RAGPipelineConfig;
@@ -97,7 +89,6 @@ export interface ProcessingPipeline {
   yolo: YOLOConfig;
   customSteps?: ProcessingStep[];
 }
-
 export interface ProcessingStep {
   id: string;
   name: string;
@@ -105,10 +96,9 @@ export interface ProcessingStep {
   enabled: boolean;
   order: number;
   dependencies?: string[];
-  config?: Record<string, any>;
+  config?: { [key: string]: any };
 }
-
-// File metadata and analysis results;
+// File metadata and analysis results
 export interface FileMetadata {
   mimeType: string;
   encoding?: string;
@@ -118,7 +108,6 @@ export interface FileMetadata {
   documentType?: 'contract' | 'deed' | 'evidence' | 'report' | 'correspondence' | 'unknown';
   classification?: DocumentClassification;
 }
-
 export interface DocumentClassification {
   type: string;
   confidence: number;
@@ -126,7 +115,6 @@ export interface DocumentClassification {
   legalEntities?: string[];
   keyTerms?: string[];
 }
-
 export interface UploadProcessingResult {
   contentExtracted: boolean;
   textLength: number;
@@ -137,7 +125,6 @@ export interface UploadProcessingResult {
   processingTime: number;
   processingSteps: CompletedStep[];
 }
-
 export interface DetectedObject {
   type: 'table' | 'signature' | 'seal' | 'text-block' | 'image' | 'diagram';
   confidence: number;
@@ -145,7 +132,6 @@ export interface DetectedObject {
   page?: number;
   extractedText?: string;
 }
-
 export interface OCRResult {
   engine: string;
   page: number;
@@ -154,13 +140,11 @@ export interface OCRResult {
   words: OCRWord[];
   processingTime: number;
 }
-
 export interface OCRWord {
   text: string;
   confidence: number;
   boundingBox: { x: number; y: number; width: number; height: number };
 }
-
 export interface UploadAnalysisResult {
   documentType: string;
   parties: string[];
@@ -170,13 +154,11 @@ export interface UploadAnalysisResult {
   compliance: ComplianceCheck[];
   summary: string;
 }
-
 export interface ComplianceCheck {
   rule: string;
   status: 'compliant' | 'non-compliant' | 'unclear';
   details: string;
 }
-
 export interface CompletedStep {
   stepId: string;
   status: 'success' | 'failed' | 'skipped';
@@ -184,15 +166,13 @@ export interface CompletedStep {
   error?: string;
   result?: unknown;
 }
-
-// XState Machine Integration for Complex Upload Workflows;
+// XState Machine Integration for Complex Upload Workflows
 export interface XStateUploadMachine {
   currentState: string;
   context: UploadMachineContext;
   events: UploadMachineEvent[];
   services?: Record<string, XStateService>;
 }
-
 export interface UploadMachineContext {
   files: FileUploadState[];
   pipeline: ProcessingPipeline;
@@ -205,7 +185,6 @@ export interface UploadMachineContext {
   userId?: string;
   caseId?: string;
 }
-
 export type UploadMachineEvent =
   | { type: 'UPLOAD_START'; files: File[] }
   | { type: 'UPLOAD_PROGRESS'; fileId: string; progress: number }
@@ -217,8 +196,7 @@ export type UploadMachineEvent =
   | { type: 'RETRY'; fileId: string }
   | { type: 'CANCEL'; fileId?: string }
   | { type: 'RESET' };
-
-// Cache Strategy for Upload Components;
+// Cache Strategy for Upload Components
 export interface UploadCacheConfig {
   strategy: 'lru' | 'redis' | 'memory' | 'hybrid';
   maxSize?: number;
@@ -226,8 +204,7 @@ export interface UploadCacheConfig {
   persistentStorage?: boolean;
   compression?: boolean;
 }
-
-// Component Props Interface;
+// Component Props Interface
 export interface EnhancedFileUploadProps {
   caseId?: string;
   multiple?: boolean;
@@ -247,18 +224,15 @@ export interface EnhancedFileUploadProps {
   showPreview?: boolean;
   showAnalysis?: boolean;
 }
-
 // Utility types for component state management
 export type UploadStatus = FileUploadState['status'];
 export type ProcessingStageType = ProcessingStage['current'];
-
-// Event emitter types for upload events;
+// Event emitter types for upload events
 export interface UploadEventDetail<T = any> {
   fileId?: string;
   data: T;
   timestamp: Date;
 }
-
 export type UploadEventMap = {
   'upload:start': UploadEventDetail;
   'upload:progress': UploadEventDetail;

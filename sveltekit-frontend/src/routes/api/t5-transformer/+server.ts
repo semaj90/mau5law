@@ -1,14 +1,11 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * T5 Transformer API
  * Sequence-to-sequence processing for legal document transformation
  * Integrates with t5-transformer Go service on port 8122
  */
-
 import { productionServiceClient } from '$lib/services/productionServiceClient'
 import { URL } from 'url'
-
 interface T5TransformRequest {
   input: string
   task: 'summarize' | 'translate' | 'paraphrase' | 'generate' | 'analyze' | 'extract'
@@ -26,7 +23,6 @@ interface T5TransformRequest {
   domain?: 'legal' | 'contract' | 'litigation' | 'compliance' | 'general'
   outputFormat?: 'text' | 'json' | 'structured'
 }
-
 interface T5TransformResponse {
   success: boolean
   task: string
@@ -47,15 +43,13 @@ interface T5TransformResponse {
     recommendations?: string[]
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: T5TransformRequest = await request.json()
     const { input, task, parameters = {}, context, domain = 'legal', outputFormat = 'text' } = body
-
     if (!input || !task) {
       return json({
-          success: false,
+          success: false
           error: 'Input text and task type are required',
           supportedTasks: [
             'summarize',
@@ -69,9 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       )
     }
-
     const startTime = performance.now()
-
     // Route request to T5 transformer Go service
     try {
       const result = await productionServiceClient.execute('t5-transformer.process', {
@@ -92,13 +84,10 @@ export const POST: RequestHandler = async ({ request }) => {
         domain,
         outputFormat
       })
-
       const processingTime = performance.now() - startTime
-
       // Process different task types
       let structuredOutput: any = {}
       let confidence = 0.85
-
       switch (task) {
         case 'summarize':
           structuredOutput = {
@@ -115,7 +104,6 @@ export const POST: RequestHandler = async ({ request }) => {
           }
           confidence = 0.9
           break
-
         case 'analyze':
           structuredOutput = {
             analysis: (result as { output?: any; modelVersion?: any; tokensGenerated?: any })
@@ -134,7 +122,6 @@ export const POST: RequestHandler = async ({ request }) => {
           }
           confidence = 0.88
           break
-
         case 'extract':
           structuredOutput = {
             extracted: (result as { output?: any; modelVersion?: any; tokensGenerated?: any })
@@ -153,7 +140,6 @@ export const POST: RequestHandler = async ({ request }) => {
           }
           confidence = structuredOutput.confidence || 0.82
           break
-
         case 'generate':
           structuredOutput = {
             generated: (result as { output?: any; modelVersion?: any; tokensGenerated?: any })
@@ -169,16 +155,14 @@ export const POST: RequestHandler = async ({ request }) => {
           }
           confidence = 0.85
           break
-
         default:
           structuredOutput = {
             transformed: (result as { output?: any; modelVersion?: any; tokensGenerated?: any })
               .output
           }
       }
-
       const response: T5TransformResponse = {
-        success: true,
+        success: true
         task,
         input: input.substring(0, 200) + (input.length > 200 ? '...' : ''),
         output: (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output,
@@ -205,20 +189,17 @@ export const POST: RequestHandler = async ({ request }) => {
         },
         structured: structuredOutput
       }
-
       return json(response)
     } catch (serviceError: any) {
       console.error('T5 Transformer service error:', serviceError)
-
       // Fallback to mock processing for development
       const mockResult = await generateMockT5Response(input, task, domain)
-
       return json({
-        success: true,
+        success: true
         ...mockResult,
         metadata: {
           ...mockResult.metadata,
-          fallbackMode: true,
+          fallbackMode: true
           serviceError: serviceError.message
         }
       })
@@ -227,7 +208,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('T5 Transformer API error:', error)
     return json()
       {
-        success: false,
+        success: false
         error: error instanceof Error ? error.message: String(error),
         timestamp: Date.now()
       },
@@ -235,17 +216,15 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const task = url.searchParams.get('task')
-
     if (task) {
       // Return task-specific information
       const taskInfo = getTaskInformation(task)
       if (!taskInfo) {
         return json({
-            success: false,
+            success: false
             error: `Unknown task: ${task}`,
             supportedTasks: [
               'summarize',
@@ -259,14 +238,12 @@ export const GET: RequestHandler = async ({ url }) => {
           { status: 400 }
         )
       }
-
       return json({
-        success: true,
-        task: taskInfo,
+        success: true
+        task: taskInfo
         timestamp: Date.now()
       })
     }
-
     // Service overview
     return json({
       service: 't5-transformer',
@@ -322,7 +299,7 @@ export const GET: RequestHandler = async ({ url }) => {
       performance: {
         averageLatency: '2.1s',
         throughput: '15 requests/minute',
-        gpuAcceleration: true,
+        gpuAcceleration: true
         batchProcessing: true
       },
       endpoints: {
@@ -335,7 +312,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json()
       {
-        success: false,
+        success: false
         error: error instanceof Error ? error.message: String(error),
         timestamp: Date.now()
       },
@@ -343,14 +320,12 @@ export const GET: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 // Helper functions
 function extractKeyPoints(text: string): string[] {
   // Simple extraction - in production, this would use advanced NLP
   const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 20)
   return sentences.slice(0, 5).map((s) => s.trim()
 }
-
 function extractLegalEntities(text: string): Array<any> {
   // Mock entity extraction - would use NER model in production
   const entities = []
@@ -360,47 +335,38 @@ function extractLegalEntities(text: string): Array<any> {
     DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\w+ \d{1,2}, \d{4}\b/g,
     MONEY: /\$[\d]+/g
   }
-
   for (const [type, pattern] of Object.entries(patterns)) {
     const matches = text.match(pattern) || []
     matches.forEach((match) => {
       entities.push({
-        text: match,
+        text: match
         type,
         confidence: 0.85 + Math.random() * 0.1
       })
     })
   }
-
   return entities.slice(0, 10)
 }
-
 function analyzeSentiment(text: string): { label: string; score: number } {
   // Simple sentiment analysis
   const positiveWords = ['agree', 'benefit', 'good', 'positive', 'favorable']
   const negativeWords = ['dispute', 'breach', 'violation', 'penalty', 'damages']
-
   const words = text.toLowerCase().split(/\W+/)
   const positiveCount = words.filter((w) => positiveWords.includes(w)).length
   const negativeCount = words.filter((w) => negativeWords.includes(w)).length
-
   const score = (positiveCount - negativeCount) / words.length
-
   return {
     label: score > 0.1 ? 'positive' : score < -0.1 ? 'negative' : 'neutral',
     score: Math.round((score + 1) * 50) / 100
   }
 }
-
 function assessComplexity(text: string): { level: string; score: number; factors: string[] } {
   const avgWordLength =
     text.split(/\s+/).reduce((sum, word) => sum + word.length, 0) / text.split(/\s+/).length
   const sentenceCount = text.split(/[.!?]+/).length
   const avgSentenceLength = text.split(/\s+/).length / sentenceCount
-
   const factors = []
   let score = 0
-
   if (avgWordLength > 6) {
     factors.push('long words')
     score += 20
@@ -417,15 +383,11 @@ function assessComplexity(text: string): { level: string; score: number; factors
     factors.push('complex punctuation')
     score += 10
   }
-
   const level = score > 50 ? 'high' : score > 25 ? 'medium' : 'low'
-
   return { level, score: Math.min(100, score), factors }
 }
-
 function generateRecommendations(output: string, domain: string): string[] {
   const recommendations = []
-
   if (domain === 'contract') {
     recommendations.push('Consider adding specific termination clauses')
     recommendations.push('Review indemnification provisions')
@@ -439,14 +401,12 @@ function generateRecommendations(output: string, domain: string): string[] {
     recommendations.push('Consider legal precedents')
     recommendations.push('Ensure regulatory compliance')
   }
-
   return recommendations.slice(0, 3)
 }
-
 function parseStructuredData(text: string, domain: string): any {
   // Mock structured data parsing
   return {
-    type: domain,
+    type: domain
     confidence: 0.8,
     fields: {
       title: text.split('\n')[0] || 'Untitled',
@@ -455,23 +415,19 @@ function parseStructuredData(text: string, domain: string): any {
     }
   }
 }
-
 function calculateExtractionConfidence(input: string, output: string): number {
   // Simple confidence calculation
   const inputLength = input.length
   const outputLength = output.length
   const ratio = outputLength / inputLength
-
   return Math.min(0.95, 0.7 + (ratio > 0.1 ? 0.2 : 0) + (ratio < 0.8 ? 0.1 : 0)
 }
-
 function assessCoherence(text: string): number {
   // Mock coherence assessment
   const sentences = text.split(/[.!?]+/).filter((s) => s.trim()
   const avgLength = sentences.reduce((sum, s) => sum + s.length, 0) / sentences.length
   return Math.min(0.95, 0.6 + (avgLength > 50 ? 0.2 : 0) + (sentences.length > 3 ? 0.15 : 0)
 }
-
 function assessRelevance(input: string, output: string): number {
   // Mock relevance assessment
   const inputWords = new Set(input.toLowerCase().split(/\W+/)
@@ -479,9 +435,8 @@ function assessRelevance(input: string, output: string): number {
   const commonWords = [...inputWords].filter((w) => outputWords.has(w)
   return Math.min(0.95, commonWords.length / Math.max(inputWords.size, 10) + 0.3)
 }
-
 function getTaskInformation(task: string): any {
-  const taskMap: Record<string, any> = {
+  const taskMap: { [key: string]: any } = {
     summarize: {
       name: 'Document Summarization',
       description: 'Generate concise, accurate summaries of legal documents',
@@ -511,21 +466,17 @@ function getTaskInformation(task: string): any {
       outputStructure: ['generated', 'creativity', 'coherence', 'relevance']
     }
   }
-
   return taskMap[task] || null
 }
-
 async function generateMockT5Response(
-  input: string,
-  task: string,
+  input: string
+  task: string
   domain: string
 ): Promise<Partial<T5TransformResponse> {
   // Fallback mock responses for development
   const processingTime = 1500 + Math.random() * 1000
-
   let output = ''
   let confidence = 0.85
-
   switch (task) {
     case 'summarize':
       output = `This document ${domain === 'contract' ? 'establishes contractual obligations' : 'contains legal provisions'} that require careful consideration of the parties' rights and responsibilities.`
@@ -542,9 +493,8 @@ async function generateMockT5Response(
     default:
       output = `Processed ${task} request for ${domain} domain. Mock response generated for development.`
   }
-
   return {
-    success: true,
+    success: true
     task,
     input: input.substring(0, 200) + (input.length > 200 ? '...' : ''),
     output,
@@ -553,7 +503,7 @@ async function generateMockT5Response(
       modelVersion: 'T5-Legal-v2.1-Mock',
       processingTime: Math.round(processingTime),
       tokensGenerated: Math.ceil(output.split(' ').length * 1.3),
-      beamSearch: true,
+      beamSearch: true
       parameters: { domain, mockMode: true }
     }
   }

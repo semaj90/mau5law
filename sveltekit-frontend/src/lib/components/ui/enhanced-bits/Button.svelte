@@ -1,10 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { HTMLButtonAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
   import { getContext } from 'svelte';
-
   interface ButtonProps extends HTMLButtonAttributes {
     children?: Snippet;
     variant?: 'default' | 'primary' | 'success' | 'warning' | 'error' | 'nes' | 'legal' | 'ghost' | 'yorha' | 'yorha-primary' | 'nier';
@@ -14,7 +12,6 @@
     nesStyle?: boolean; // Enable NES.css retro styling
     nierStyle?: boolean; // Enable NieR: Automata styling
   }
-
   let {
     variant = 'default',
     size = 'md',
@@ -27,17 +24,14 @@
     class: className = '',
     children,
     onclick,
-    ...restProps;
+    ...restProp;
   }: ButtonProps = $props();
-
   // Get theme context
   const themeContext = getContext<any>('theme');
   const currentTheme = themeContext?.resolvedTheme?.() || 'light';
-
   // Reactive class computation using $derived
   let buttonClasses = $derived.by(() => {
     const classes = [];
-
     if (nesStyle) {
       // NES.css styled button
       const nesVariants = {
@@ -62,7 +56,6 @@
       } else {
         classes.push('yorha-button');
       }
-
       // Add nier-specific variants
       if (variant === 'nier') {
         classes.push('bg-nier-bg-secondary border-nier-border-primary text-nier-text-primary');
@@ -73,7 +66,6 @@
       classes.push('inline-flex items-center justify-center font-medium transition-all duration-200');
       classes.push('focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2');
       classes.push('disabled:opacity-50 disabled:cursor-not-allowed');
-
       // Size classes (UnoCSS)
       const sizeClasses = {
         sm: 'h-8 px-3 text-xs rounded',
@@ -82,7 +74,6 @@
         icon: 'h-10 w-10 rounded-md'
       };
       classes.push(sizeClasses[size]);
-
       // Variant classes (UnoCSS)
       const variantClasses = {
         default: 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700',
@@ -99,20 +90,15 @@
       };
       classes.push(variantClasses[variant] || variantClasses.default);
     }
-
     // Full width
     if (fullWidth) classes.push('w-full');
-
     // Loading state
     if (loading) classes.push('animate-pulse cursor-wait');
-
     // Custom className
     if (className) classes.push(className);
-
     return classes.join(' ');
   });
 </script>
-
 <button
   class={buttonClasses}
   {type}
@@ -128,17 +114,14 @@
     {@render children()}
   {/if}
 </button>
-
 <style>
   /* Import NES.css for retro styling option */
-
   /* Custom NieR enhancements using UnoCSS theme colors */
   button {
     @apply relative overflow-hidden;
   }
-
   /* NieR-style shimmer effect */
-  .yorha-button::before,
+  .yorha-button:: before
   .yorha-button-primary::before {
     content: '';
     @apply absolute top-0 left-[-100%] w-full h-full;
@@ -149,21 +132,18 @@
     );
     transition: left 0.5s ease;
   }
-
-  .yorha-button:hover::before,
+  .yorha-button:hover:: before
   .yorha-button-primary:hover::before {
     left: 100%;
   }
-
   /* Legal variant glow effect */
   .bg-justice-600:hover {
     box-shadow: 0 0 20px theme('colors.justice.600') / 30%;
   }
-
   /* Gaming variant pixelated effect */
   .font-nes {
     image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edge;
+    image-rendering: crisp-edge;
   }
 </style>

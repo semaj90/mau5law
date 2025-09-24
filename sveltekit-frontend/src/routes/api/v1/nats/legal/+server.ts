@@ -1,19 +1,15 @@
 import type { RequestHandler } from './$types.js'
-
 // Legal AI Specific NATS Endpoints
 // High-level API for legal AI event publishing and management
-
 import { EnhancedNATSMessagingService } from '$lib/services/enhanced-nats-messaging'
-import type { 
+import type {
 	CaseEventData,
-	DocumentEventData, 
+	DocumentEventData,
 	AIAnalysisEventData,
 	ChatEventData,
-	SearchEventData 
+	SearchEventData
 } from '$lib/types/nats-messaging'
-
 let natsService: EnhancedNATSMessagingService | null = null
-
 function getNATSService(): EnhancedNATSMessagingService {
 	if (!natsService) {
 		natsService = new EnhancedNATSMessagingService()
@@ -21,13 +17,11 @@ function getNATSService(): EnhancedNATSMessagingService {
 	}
 	return natsService
 }
-
 /* POST /api/v1/nats/legal - Publish legal AI events */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json()
 		const nats = getNATSService()
-
 		switch (body.event_type) {
 			case 'case':
 				return await handleCaseEvent(nats, body)
@@ -42,21 +36,20 @@ export const POST: RequestHandler = async ({ request }) => {
 			case 'system':
 				return await handleSystemEvent(nats, body)
 			default:
-				return json({ 
-					success: false,
-					error: `Unsupported event type: ${body.event_type}` 
+				return json({ ,
+					success: false
+					error: `Unsupported event type: ${body.event_type}`
 				}, { status: 400 })
 		}
 	} catch (error: any) {
 		console.error('Legal NATS API Error:', error)
 		return json({
-			success: false,
+			success: false
 			error: 'Legal AI event processing failed',
 			details: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 })
 	}
 }
-
 /* GET /api/v1/nats/legal - Get legal AI event schemas and capabilities */
 export const GET: RequestHandler = async () => {
 	return json({
@@ -147,22 +140,16 @@ export const GET: RequestHandler = async () => {
 		timestamp: new Date().toISOString()
 	})
 }
-
 // Event Handlers
-
 async function handleCaseEvent(nats: EnhancedNATSMessagingService, body: any): Promise<any> {
 	const { action, data } = body
-	
 	if (!['created', 'updated', 'closed'].includes(action)) {
 		throw new Error(`Invalid case action: ${action}`)
 	}
-	
 	validateCaseData(data)
-	
 	await nats.publishCaseEvent(action, data)
-	
 	return json({
-		success: true,
+		success: true
 		event_type: 'case',
 		action,
 		case_id: data.case_id,
@@ -171,20 +158,15 @@ async function handleCaseEvent(nats: EnhancedNATSMessagingService, body: any): P
 		timestamp: new Date().toISOString()
 	})
 }
-
 async function handleDocumentEvent(nats: EnhancedNATSMessagingService, body: any): Promise<any> {
 	const { action, data } = body
-	
 	if (!['uploaded', 'processed', 'analyzed', 'indexed'].includes(action)) {
 		throw new Error(`Invalid document action: ${action}`)
 	}
-	
 	validateDocumentData(data)
-	
 	await nats.publishDocumentEvent(action, data)
-	
 	return json({
-		success: true,
+		success: true
 		event_type: 'document',
 		action,
 		document_id: data.document_id,
@@ -193,20 +175,15 @@ async function handleDocumentEvent(nats: EnhancedNATSMessagingService, body: any
 		timestamp: new Date().toISOString()
 	})
 }
-
 async function handleAIAnalysisEvent(nats: EnhancedNATSMessagingService, body: any): Promise<any> {
 	const { action, data } = body
-	
 	if (!['started', 'completed', 'failed'].includes(action)) {
 		throw new Error(`Invalid AI analysis action: ${action}`)
 	}
-	
 	validateAIAnalysisData(data)
-	
 	await nats.publishAIAnalysisEvent(action, data)
-	
 	return json({
-		success: true,
+		success: true
 		event_type: 'ai_analysis',
 		action,
 		analysis_id: data.analysis_id,
@@ -215,21 +192,16 @@ async function handleAIAnalysisEvent(nats: EnhancedNATSMessagingService, body: a
 		timestamp: new Date().toISOString()
 	})
 }
-
 async function handleChatEvent(nats: EnhancedNATSMessagingService, body: any): Promise<any> {
 	const { action, data } = body
-	
 	if (!['message', 'response', 'streaming'].includes(action)) {
 		throw new Error(`Invalid chat action: ${action}`)
 	}
-	
 	validateChatData(data)
-	
 	const isStreaming = action === 'streaming'
 	await nats.publishChatMessage(data, isStreaming)
-	
 	return json({
-		success: true,
+		success: true
 		event_type: 'chat',
 		action,
 		message_id: data.message_id,
@@ -238,25 +210,20 @@ async function handleChatEvent(nats: EnhancedNATSMessagingService, body: any): P
 		timestamp: new Date().toISOString()
 	})
 }
-
 async function handleSearchEvent(nats: EnhancedNATSMessagingService, body: any): Promise<any> {
 	const { action, data } = body
-	
 	if (!['query', 'results'].includes(action)) {
 		throw new Error(`Invalid search action: ${action}`)
 	}
-	
 	validateSearchData(data)
-	
 	if (action === 'query') {
 		await nats.publishSearchQuery(data)
 	} else {
 		// For search results, use generic publish
 		await nats.publish('legal.search.results', data)
 	}
-	
 	return json({
-		success: true,
+		success: true
 		event_type: 'search',
 		action,
 		query_id: data.query_id,
@@ -264,24 +231,19 @@ async function handleSearchEvent(nats: EnhancedNATSMessagingService, body: any):
 		timestamp: new Date().toISOString()
 	})
 }
-
 async function handleSystemEvent(nats: EnhancedNATSMessagingService, body: any): Promise<any> {
 	const { action, data } = body
-	
 	if (!['health', 'metrics'].includes(action)) {
 		throw new Error(`Invalid system action: ${action}`)
 	}
-	
 	validateSystemData(data)
-	
 	if (action === 'health') {
 		await nats.publishSystemHealth(data)
 	} else {
 		await nats.publish('system.metrics', data)
 	}
-	
 	return json({
-		success: true,
+		success: true
 		event_type: 'system',
 		action,
 		component: data.component,
@@ -289,9 +251,7 @@ async function handleSystemEvent(nats: EnhancedNATSMessagingService, body: any):
 		timestamp: new Date().toISOString()
 	})
 }
-
 // Validation Functions
-
 function validateCaseData(data: any): void {
 	const required = ['case_id', 'case_number', 'title', 'status']
 	for (const field of required) {
@@ -299,13 +259,11 @@ function validateCaseData(data: any): void {
 			throw new Error(`Missing required field: ${field}`)
 		}
 	}
-	
 	const validStatuses = ['open', 'in_progress', 'closed', 'archived']
 	if (!validStatuses.includes(data.status)) {
 		throw new Error(`Invalid status: ${data.status}. Must be one of: ${validStatuses.join(', ')}`)
 	}
 }
-
 function validateDocumentData(data: any): void {
 	const required = ['document_id', 'filename', 'file_type', 'processing_status']
 	for (const field of required) {
@@ -313,13 +271,11 @@ function validateDocumentData(data: any): void {
 			throw new Error(`Missing required field: ${field}`)
 		}
 	}
-	
 	const validStatuses = ['uploaded', 'processing', 'processed', 'indexed', 'failed']
 	if (!validStatuses.includes(data.processing_status)) {
 		throw new Error(`Invalid processing_status: ${data.processing_status}`)
 	}
 }
-
 function validateAIAnalysisData(data: any): void {
 	const required = ['analysis_id', 'analysis_type', 'model_used']
 	for (const field of required) {
@@ -327,13 +283,11 @@ function validateAIAnalysisData(data: any): void {
 			throw new Error(`Missing required field: ${field}`)
 		}
 	}
-	
 	const validTypes = ['summary', 'classification', 'entity_extraction', 'sentiment', 'risk_assessment']
 	if (!validTypes.includes(data.analysis_type)) {
 		throw new Error(`Invalid analysis_type: ${data.analysis_type}`)
 	}
 }
-
 function validateChatData(data: any): void {
 	const required = ['message_id', 'session_id', 'user_id', 'content']
 	for (const field of required) {
@@ -341,7 +295,6 @@ function validateChatData(data: any): void {
 			throw new Error(`Missing required field: ${field}`)
 		}
 	}
-	
 	if (data.message_type) {
 		const validTypes = ['user', 'assistant', 'system']
 		if (!validTypes.includes(data.message_type)) {
@@ -349,7 +302,6 @@ function validateChatData(data: any): void {
 		}
 	}
 }
-
 function validateSearchData(data: any): void {
 	const required = ['query_id', 'user_id', 'query_text', 'search_type']
 	for (const field of required) {
@@ -357,13 +309,11 @@ function validateSearchData(data: any): void {
 			throw new Error(`Missing required field: ${field}`)
 		}
 	}
-	
 	const validTypes = ['cases', 'documents', 'legal_precedents', 'full_text', 'semantic']
 	if (!validTypes.includes(data.search_type)) {
 		throw new Error(`Invalid search_type: ${data.search_type}`)
 	}
 }
-
 function validateSystemData(data: any): void {
 	const required = ['component', 'status']
 	for (const field of required) {
@@ -371,15 +321,12 @@ function validateSystemData(data: any): void {
 			throw new Error(`Missing required field: ${field}`)
 		}
 	}
-	
 	const validStatuses = ['healthy', 'degraded', 'critical']
 	if (!validStatuses.includes(data.status)) {
 		throw new Error(`Invalid status: ${data.status}`)
 	}
 }
-
 // Schema Functions
-
 function getCaseEventSchema() {
 	return {
 		type: 'object',
@@ -396,7 +343,6 @@ function getCaseEventSchema() {
 		required: ['case_id', 'case_number', 'title', 'status']
 	}
 }
-
 function getDocumentEventSchema() {
 	return {
 		type: 'object',
@@ -413,7 +359,6 @@ function getDocumentEventSchema() {
 		required: ['document_id', 'filename', 'file_type', 'processing_status']
 	}
 }
-
 function getAIAnalysisEventSchema() {
 	return {
 		type: 'object',
@@ -428,7 +373,6 @@ function getAIAnalysisEventSchema() {
 		required: ['analysis_id', 'analysis_type', 'model_used']
 	}
 }
-
 function getChatEventSchema() {
 	return {
 		type: 'object',
@@ -443,7 +387,6 @@ function getChatEventSchema() {
 		required: ['message_id', 'session_id', 'user_id', 'content']
 	}
 }
-
 function getSearchEventSchema() {
 	return {
 		type: 'object',
@@ -458,7 +401,6 @@ function getSearchEventSchema() {
 		required: ['query_id', 'user_id', 'query_text', 'search_type']
 	}
 }
-
 function getSystemEventSchema() {
 	return {
 		type: 'object',

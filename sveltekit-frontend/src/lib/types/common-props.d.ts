@@ -14,6 +14,5 @@ export interface CommonProps {
   [attr: `data-${string}`]: unknown;
   [attr: `aria-${string}`]: unknown;
 }
-
 // Utility to merge class + className while preserving optional chaining.
 export function mergeClass(base?: string, extra?: string): string | undefined;

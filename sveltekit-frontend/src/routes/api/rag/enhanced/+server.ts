@@ -4,7 +4,6 @@ import { db, legalDocuments } from "$lib/server/db"
 import { eq } from "drizzle-orm"
 import { getVectorStore } from "$lib/ai/langchain-rag"
 import type { RequestHandler } from './$types.js'
-
 interface EnhancedSearchRequest {
   query: string
   k?: number
@@ -22,7 +21,6 @@ interface EnhancedSearchRequest {
     }
   }
 }
-
 interface EnhancedSearchResult {
   chunk: string
   score?: number
@@ -33,7 +31,6 @@ interface EnhancedSearchResult {
   metadata?: any
   source: 'langchain' | 'pgvector' | 'hybrid'
 }
-
 interface EnhancedSearchResponse {
   success: boolean
   query: string
@@ -50,10 +47,8 @@ interface EnhancedSearchResponse {
     average_relevance: number
   }
 }
-
 export const POST: RequestHandler = async ({ request, fetch }) => {
   const startTime = Date.now()
-
   try {
     const body: EnhancedSearchRequest = await request.json()
     const {
@@ -65,25 +60,19 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       includePgVector = false,
       filters
     } = body
-
     if (!query) {
       return json({ error: 'Query is required' }, { status: 400 })
     }
-
     const results: EnhancedSearchResult[] = []
     let embeddingTime = 0
     let searchTime = 0
-
     // Option 1: Use LangChain vector store (original functionality)
     if (!useGemmaEmbeddings && !includePgVector) {
       const searchStart = Date.now()
-
       // Retrieve from LangChain vector store
       const store = getVectorStore()
       const langchainResults = await store.similaritySearch(query, k)
-
       searchTime = Date.now() - searchStart
-
       // Hydrate documents from DB for richer metadata
       for (const r of langchainResults) {
         const id = r.metadata?.id
@@ -93,12 +82,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             .from(legalDocuments)
             .where(eq(legalDocuments.id, id)
             .limit(1)
-
           if (docs[0]) {
             results.push({
               chunk: r.pageContent,
               score: r.score,
-              semantic_score: r.score ? 1 - r.score: undefined,
+              semantic_score: r.score ? 1 - r.score: undefined
               relevance_level: r.score
                 ? r.score < 0.3
                   ? 'high'
@@ -106,7 +94,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
                     ? 'medium'
                     : 'low'
                 : 'medium',
-              doc: docs[0],
+              doc: docs[0]
               source: 'langchain'
             })
           }
@@ -114,7 +102,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           results.push({
             chunk: r.pageContent,
             score: r.score,
-            semantic_score: r.score ? 1 - r.score: undefined,
+            semantic_score: r.score ? 1 - r.score: undefined
             relevance_level: r.score
               ? r.score < 0.3
                 ? 'high'
@@ -127,7 +115,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         }
       }
     }
-
     // Option 2: Use Gemma embeddings + pgvector (enhanced functionality)
     if (useGemmaEmbeddings || includePgVector) {
       try {
@@ -138,19 +125,16 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           },
           body: JSON.stringify({
             query,
-            limit: limit || k,
+            limit: limit || k
             threshold: threshold || 1.0,
             filters
           })
         })
-
         if (semanticResponse.ok) {
           const semanticData = await semanticResponse.json()
-
           if (semanticData.success) {
             embeddingTime = semanticData.embedding_time
             searchTime += semanticData.search_time
-
             // Add pgvector results
             for (const result of semanticData.results) {
               const resultData = result as any
@@ -159,7 +143,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
                 distance: resultData.distance,
                 semantic_score: resultData.semantic_score,
                 relevance_level: resultData.relevance_level,
-                doc: result,
+                doc: result
                 metadata: resultData.metadata,
                 source: includePgVector && !useGemmaEmbeddings ? 'pgvector' : 'hybrid'
               })
@@ -172,7 +156,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         if (results.length === 0) {
           const store = getVectorStore()
           const fallbackResults = await store.similaritySearch(query, k)
-
           for (const r of fallbackResults) {
             results.push({
               chunk: r.pageContent,
@@ -183,11 +166,9 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         }
       }
     }
-
     // Calculate semantic scores if available
     const distances = results.filter((r) => r.distance !== undefined).map((r) => r.distance!)
     const scores = results.filter((r) => r.score !== undefined).map((r) => r.score!)
-
     let semanticScores
     if (distances.length > 0) {
       semanticScores = {
@@ -202,9 +183,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         average_relevance: scores.reduce((a, b) => a + b, 0) / scores.length
       }
     }
-
     const response: EnhancedSearchResponse = {
-      success: true,
+      success: true
       query,
       results,
       langchain_results: results.filter((r) => r.source === 'langchain').length,
@@ -216,13 +196,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       ...(searchTime && { search_time: searchTime }),
       ...(semanticScores && { semantic_scores: semanticScores })
     }
-
     return json(response)
   } catch (e: any) {
     console.error('Enhanced RAG API error:', e)
     return json()
       {
-        success: false,
+        success: false
         error: e.message,
         processing_time: Date.now() - startTime
       },
@@ -230,4 +209,3 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     )
   }
 }
-

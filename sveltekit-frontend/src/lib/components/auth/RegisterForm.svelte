@@ -4,7 +4,6 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // runtime helpers ($props, $state, $derived, $effect) are available in runes mode — do not import them
   import { enhance } from '$app/forms';
   import { page } from '$app/state';
@@ -22,7 +21,6 @@
   // Replaced legacy GPU orchestrator with new security orchestrator client
   import { validateSecurity } from '$lib/clients/securityOrchestrator';
   import { z } from 'zod';
-
   // Enhanced registration schema for legal professionals
   const registerSchema = z.object.email('Please enter a valid email address'),
     firstName: z.string.min(2, 'First name must be at least 2 characters'),
@@ -31,32 +29,29 @@
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
         'Password must include uppercase, lowercase, number, and special character'),
     confirmPassword: z.string(),
-    role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),;
-    department: z.string.min(2, 'Department is required'),;
+    role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),
+    department: z.string.min(2, 'Department is required'),
     jurisdiction: z.string.min(2, 'Jurisdiction is required'),
     badgeNumber: z.string().optional(),
     agreeToTerms: z.boolean.refine(val => val === true, 'You must agree to the terms'),
     agreeToPrivacy: z.boolean.refine(val => val === true, 'You must agree to privacy policy'),
     enableTwoFactor: z.boolean.default(false);
   }).refine((data) => (data as { password?: any; confirmPassword?: any }).password === (data as { password?: any; confirmPassword?: any }).confirmPassword, {
-    message: "Passwords don't match",;
-    path: ["confirmPassword"],;
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
   });
-
   interface Props {
     data: any;
     redirectTo?: string;
     showLogin?: boolean;
     enableGPUValidation?: boolean;
   }
-
   let {
     data,
     redirectTo = '/dashboard',
     showLogin = true,
     enableGPUValidation = true
   }: Props = $props();
-
   // Form state
   let showPassword = $state(false);
   let showConfirmPassword = $state(false);
@@ -65,7 +60,6 @@
   let successMessage = $state('');
   let gpuValidationStatus = $state<'idle' | 'processing' | 'success' | 'warning' | 'error'>('idle');
   let securityScore = $state(0);
-
   // Legal role options
   const roleOptions = [
     { value: 'prosecutor', label: 'Prosecutor', icon: Scale },
@@ -73,56 +67,49 @@
     { value: 'analyst', label: 'Legal Analyst', icon: Building },
     { value: 'admin', label: 'Administrator', icon: Shield }
   ];
-
   // XState auth machine
   const authActor = createActor(authMachine);
   authActor.start();
-
   // Superform setup
-  const { form, errors, enhance: formEnhance, submitting, message } = superForm(data, {;
+  const { form, errors, enhance: formEnhance, submitting, message } = superForm(data, {
     validators: zod(registerSchema),
-    resetForm: false,
+    resetForm: false
     delayMs: 300,
     timeoutMs: 15000,
     onSubmit: async ({ formData, cancel }) => {
       isLoading = true;
       errorMessage = '';
       successMessage = '';
-
       // Security orchestration validation (replaces legacy GPU orchestrator)
       if (enableGPUValidation) {
         try {
           gpuValidationStatus = 'processing';
-
           // Build fingerprint & user metadata
           const fingerprint = await generateRegistrationFingerprint();
           const userEmail = formData.get('email') as string;
           const firstName = formData.get('firstName') as string;
           const lastName = formData.get('lastName') as string;
           const role = formData.get('role') as string;
-
           const validationResponse = await validateSecurity({
             task: 'security_validation',
-            fingerprint: fingerprint.raw, // send structured raw fingerprint object;
+            fingerprint: fingerprint.raw, // send structured raw fingerprint object
             user: {
-              email: userEmail,;
+              email: userEmail
               username: `${firstName}.${lastName}`.toLowerCase(),
-              requestedRole: role,
+              requestedRole: role
               department: formData.get('department'),
               jurisdiction: formData.get('jurisdiction'),
               badgeNumber: formData.get('badgeNumber');
             },
-            context: {;
+            context: {
               action: 'registration_attempt',
-              enhancedValidation: true,
-              legalProfessionalCheck: true,
+              enhancedValidation: true
+              legalProfessionalCheck: true
               clientTimestamp: new Date().toISOString(),
               userAgent: navigator.userAgent;
             }
           });
-
           securityScore = validationResponse.securityScore || 0;
-
           if (validationResponse.status === 'deny' || validationResponse.riskScore > 0.9) {
             gpuValidationStatus = 'error';
             errorMessage = 'Registration blocked by security policy. Please contact support.';
@@ -133,42 +120,38 @@
           } else {
             gpuValidationStatus = 'success';
           }
-
         } catch (err) {
           console.warn('Security orchestrator validation failed, proceeding baseline path:', err);
           gpuValidationStatus = 'idle';
         }
       }
-
       // Send to XState machine
       authActor.send({
-        type: 'START_REGISTRATION',;
+        type: 'START_REGISTRATION',
         data: {
           email: formData.get('email') as string,
           firstName: formData.get('firstName') as string,
           lastName: formData.get('lastName') as string,
           password: formData.get('password') as string,
           role: formData.get('role') as string,
-          department: formData.get('department') as string,;
+          department: formData.get('department') as string,
           jurisdiction: formData.get('jurisdiction') as string,
           badgeNumber: formData.get('badgeNumber') as string,
           enableTwoFactor: formData.get('enableTwoFactor') === 'on',
           deviceInfo: {
             userAgent: navigator.userAgent,
-            platform: navigator.platform,;
-            language: navigator.language,;
+            platform: navigator.platform,
+            language: navigator.language,
             timezone: Intl.DateTimeFormat.resolvedOptions().timeZone,
-            securityScore;
+            securityScor;
           }
         }
       });
     },
     onResult: ({ result }) => {
       isLoading = false;
-
       if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
         const data = (result as { type?: any; data?: any; error?: any }).data as any;
-
         if (data?.requiresVerification) {
           successMessage = 'Registration successful! Please check your email to verify your account.';
         } else if (data?.success) {
@@ -182,15 +165,12 @@
       }
     }
   });
-
   // Removed obsolete XState subscription block (direct state.matches usage) per refactor directive.
-
   // Helper to safely read the first validation error for a field
   function getErr(name: string): string {
     const record = errors as unknown as Record<string, string[] | undefined>;
     return record?.[name]?.[0] || '';
   }
-
   // Enhanced device fingerprinting for registration
   // Updated to return structured raw data plus encoded string for future auditing
   async function generateRegistrationFingerprint(): Promise {
@@ -204,11 +184,11 @@
     const raw = {
       userAgent: navigator.userAgent,
       language: navigator.language,
-      languages: navigator.languages,;
+      languages: navigator.languages,
       platform: navigator.platform,
       screenResolution: `${screen.width}x${screen.height}`,
       colorDepth: screen.colorDepth,
-      timezone: Intl.DateTimeFormat.resolvedOptions().timeZone,;
+      timezone: Intl.DateTimeFormat.resolvedOptions().timeZone,
       canvas: canvas.toDataURL(),
       cookieEnabled: navigator.cookieEnabled,
       onlineStatus: navigator.onLine,
@@ -217,19 +197,15 @@
     };
     return { raw, encoded: btoa(JSON.stringify(raw)) };
   }
-
   // Password visibility toggles
   function togglePasswordVisibility() {
     showPassword = !showPassword;
   }
-
   function toggleConfirmPasswordVisibility() {
     showConfirmPassword = !showConfirmPassword;
   }
-
   // Real-time password strength checker
   let passwordStrength = $derived(calculatePasswordStrength($form.password || ''));
-
   function calculatePasswordStrength(password: string): { score: number; feedback: string; color: string } {
     if (!password) return { score: 0, feedback: 'Enter a password', color: 'text-gray-400' };
     let score = 0;
@@ -240,14 +216,12 @@
     if (/\d/.test(password)) score += 1;
     if (/[@$!%*?&]/.test(password)) score += 1;
     if (password.length >= 20) score += 1;
-
     if (score < 3) return { score, feedback: 'Weak', color: 'text-red-500' };
     if (score < 5) return { score, feedback: 'Fair', color: 'text-yellow-500' };
     if (score < 7) return { score, feedback: 'Good', color: 'text-blue-500' };
     return { score, feedback: 'Excellent', color: 'text-green-500' };
   }
 </script>
-
 <div class="w-full max-w-2xl mx-auto nes-legal-register-form nier-bits-card-shell">
   <header class="text-center nier-bits-yorha-panel-header">
     <div class="flex items-center justify-center mb-4">
@@ -283,7 +257,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Error Message -->
     {#if errorMessage}
       <div class="mb-4 alert alert-error" role="alert">
@@ -294,7 +267,6 @@
         <p class="mt-1 text-sm">{errorMessage}</p>
       </div>
     {/if}
-
     <!-- Success Message -->
     {#if successMessage}
       <div class="mb-4 alert alert-success" role="status" aria-live="polite">
@@ -343,7 +315,6 @@
         {/if}
       </div>
     </div>
-
     <style>
       :global(.nes-retro-panel) {
         font-family: 'Courier New', monospace;
@@ -385,7 +356,7 @@
         line-height: 1.1rem;
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis;
+        text-overflow: ellipsi;
       }
       :global(.nes-retro-panel .line.status) { color: #2563eb; }
       :global(.nes-retro-panel .line.error) { color: #b91c1c; }
@@ -393,7 +364,6 @@
     </style>
   <form method="POST" action="?/register" use:formEnhance class="space-y-4" novalidate>
       <input type="hidden" name="redirectTo" value={redirectTo} />
-
       <!-- Personal Information -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="field">
@@ -407,14 +377,12 @@
           {#if getErr('lastName')}<p class="error-text">{getErr('lastName')}</p>{/if}
         </div>
       </div>
-
       <!-- Email -->
       <div class="field">
         <label for="email" class="label">Official Email Address</label>
   <input id="email" name="email" type="email" placeholder="john.smith@prosecutor.gov" bind:value={$form.email} disabled={isLoading} class="input" />
   {#if getErr('email')}<p class="error-text">{getErr('email')}</p>{/if}
       </div>
-
       <!-- Professional Information -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="field">
@@ -433,7 +401,6 @@
           {#if getErr('badgeNumber')}<p class="error-text">{getErr('badgeNumber')}</p>{/if}
         </div>
       </div>
-
       <!-- Department & Jurisdiction -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="field">
@@ -447,7 +414,6 @@
           {#if getErr('jurisdiction')}<p class="error-text">{getErr('jurisdiction')}</p>{/if}
         </div>
       </div>
-
       <!-- Password Fields -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="field">
@@ -487,7 +453,6 @@
           {#if getErr('confirmPassword')}<p class="error-text">{getErr('confirmPassword')}</p>{/if}
         </div>
       </div>
-
       <!-- Security Options -->
       <div class="space-y-3">
         <label class="flex items-center space-x-2 text-sm">
@@ -495,7 +460,6 @@
           <span>Enable two-factor authentication (recommended for legal professionals)</span>
         </label>
       </div>
-
       <!-- Terms and Privacy -->
       <div class="space-y-3">
         <label class="flex items-center space-x-2 text-sm">
@@ -507,11 +471,10 @@
           <span>I agree to the <a href="/legal/privacy" class="text-primary hover:underline">Privacy Policy</a></span>
         </label>
       </div>
-
       <!-- Submit Button - Enhanced with enhanced-bits-ui, NES styling, and a11y -->
-      <button 
-        type="submit" 
-        class="w-full enhanced-bits-btn nes-legal-submit n64-enhanced lod-optimized retro-legal-btn" 
+      <button
+        type="submit"
+        class="w-full enhanced-bits-btn nes-legal-submit n64-enhanced lod-optimized retro-legal-btn"
         disabled={isLoading || $submitting}
         aria-label={isLoading || $submitting ? 'Creating your legal professional account, please wait' : 'Create legal professional account'}
         aria-describedby="submit-button-help"
@@ -522,13 +485,13 @@
         data-enhanced-bits="true"
       >
         {#if isLoading || $submitting}
-          <span 
-            class="inline-flex items-center gap-2" 
-            aria-live="polite" 
+          <span
+            class="inline-flex items-center gap-2"
+            aria-live="polite"
             aria-atomic="true"
           >
-            <Loader2 
-              class="h-4 w-4 animate-spin" 
+            <Loader2
+              class="h-4 w-4 animate-spin"
               aria-hidden="true"
               role="img"
               aria-label="Loading spinner"
@@ -537,12 +500,12 @@
             Creating Account...
           </span>
         {:else}
-          <span 
+          <span
             class="inline-flex items-center gap-2"
             aria-hidden="false"
           >
-            <UserPlus 
-              class="h-4 w-4" 
+            <UserPlus
+              class="h-4 w-4"
               aria-hidden="true"
               role="img"
               aria-label="User creation icon"
@@ -555,7 +518,6 @@
         This button will create your legal professional account with GPU-accelerated AI features
       </div>
     </form>
-
     <!-- Login Link -->
     {#if showLogin}
       <div class="mt-6 text-center">
@@ -573,16 +535,14 @@
     {/if}
   </section>
 </div>
-
 <style>
   /* NES.css Legal Registration Form Styling */
-  :global(.nes-legal-register-form) {;
+  :global(.nes-legal-register-form) {
     font-family: 'Courier New', monospace;
     border: 3px solid #000;
     background: #f8f8f8;
     box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.2);
   }
-
   /* NES-style form inputs */
   :global(.nes-legal-register-form input) {
     border: 2px solid #000;
@@ -590,12 +550,10 @@
     font-family: 'Courier New', monospace;
     padding: 8px;
   }
-
-  :global(.nes-legal-register-form input:focus) {;
+  :global($1) {
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 100, 200, 0.3);
   }
-
   /* NES-style buttons */
   :global(.nes-legal-register-form .nes-btn) {
     border: 2px solid #000;
@@ -607,22 +565,18 @@
     transition: all 0.1s ease;
     text-transform: uppercase;
   }
-
-  :global(.nes-legal-register-form .nes-btn:hover:not(:disabled)) {
+  :global(.nes-legal-register-form .nes-btn:hover:not(:disabled)) {,
     transform: translate(2px, 2px);
     box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
   }
-
-  :global(.nes-legal-register-form .nes-btn:active:not(:disabled)) {
+  :global(.nes-legal-register-form .nes-btn:active:not(:disabled)) {,
     transform: translate(4px, 4px);
     box-shadow: none;
   }
-
-  :global(.nes-legal-register-form .nes-btn:disabled) {
+  :global($1) {
     opacity: 0.6;
     cursor: not-allowed;
   }
-
   /* Legal priority styling for submit button */
   :global(.nes-legal-register-form .nes-legal-priority-medium) {
     background: #3b82f6;
@@ -630,32 +584,27 @@
     border-color: #1e40af;
     box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
   }
-
-  :global(.nes-legal-register-form .nes-legal-priority-medium:hover:not(:disabled)) {
+  :global(.nes-legal-register-form .nes-legal-priority-medium:hover:not(:disabled)) {,
     background: #2563eb;
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
   }
-
   /* Password strength indicator NES styling */
   :global(.nes-legal-register-form .password-strength) {
     border: 1px solid #000;
     background: #fff;
     height: 8px;
   }
-
   /* Alert styling with NES borders */
   :global(.nes-legal-register-form .alert-destructive) {
     border: 2px solid #dc2626;
     background: #fef2f2;
     color: #991b1b;
   }
-
   :global(.nes-legal-register-form .alert-success) {
     border: 2px solid #16a34a;
     background: #f0fdf4;
     color: #15803d;
   }
-
   /* Legal professional role icons */
   :global(.nes-legal-register-form .role-option) {
     display: flex;
@@ -665,12 +614,10 @@
     border: 1px solid transparent;
     font-family: 'Courier New', monospace;
   }
-
-  :global(.nes-legal-register-form .role-option:hover) {
+  :global($1) {
     background: #f3f4f6;
     border-color: #000;
   }
-
   /* GPU validation status styling */
   :global(.nes-legal-register-form .gpu-validation) {
     border: 2px solid #6366f1;
@@ -678,16 +625,13 @@
     padding: 12px;
     font-family: 'Courier New', monospace;
   }
-
   :global(.nes-legal-register-form .gpu-validation.processing) {
     animation: pulse 2s infinite;
   }
-
   :global(.nes-legal-register-form .gpu-validation.success) {
     border-color: #16a34a;
     background: linear-gradient(45deg, #f0fdf4, #dcfce7);
   }
-
   :global(.nes-legal-register-form .gpu-validation.error) {
     border-color: #dc2626;
     background: linear-gradient(45deg, #fef2f2, #fee2e2);

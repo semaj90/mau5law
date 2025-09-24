@@ -1,11 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YorhaAI Assistant - Advanced Chat Interface with SvelteKit 5 + Bits UI + Melt UI -->
 <!-- Integrates with go-llama, MCP orchestrator, and tensor transport services -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, tick } from 'svelte';
   	import { browser } from '$app/environment';
   	import * as Dialog from 'bits-ui';
@@ -19,7 +18,6 @@ https://svelte.dev/e/js_parse_error -->
   	import type { Interpreter } from 'xstate';
   	import { writable, derived } from 'svelte/store';
   	import { cn } from '$lib/utils';
-
   	// Props and bindings
   	interface YorhaAIAssistantProps {
   		userID?: string;
@@ -29,7 +27,6 @@ https://svelte.dev/e/js_parse_error -->
   		enableGPUAcceleration?: boolean;
   		enableMCPIntegration?: boolean;
   	}
-
   	let {
   		userID = 'user_' + Date.now(),
   		caseID = '',
@@ -38,7 +35,6 @@ https://svelte.dev/e/js_parse_error -->
   		enableGPUAcceleration = true,
   		enableMCPIntegration = true
   	}: YorhaAIAssistantProps = $props();
-
   	// State management with Svelte 5 runes
   	let isOpen = $state(initialOpen);
   	let currentMessage = $state('');
@@ -46,28 +42,26 @@ https://svelte.dev/e/js_parse_error -->
   	let isConnected = $state(false);
   	let streamingResponse = $state(false);
   	let userActivity = $state<UserActivity>({
-  		isTyping: false,
+  		isTyping: false
   		lastActivity: Date.now(),
   		attentionLevel: 'medium',
   		currentPage: browser ? window.location.pathname: ''
   	});
-
   	// Chat session state
   	let chatSession = $state<ChatSession>({
   		id: 'session_' + Date.now(),
   		userID,
-  		messages: [],;
+  		messages: [],
   		context: {
   			caseID,
   			userIntent: 'general',
   			confidence: 0.8,
-  			recentActions: [],;
+  			recentActions: [],
   			preferences: },
   		createdAt: new Date(),
   		updatedAt: new Date(),
   		isActive: true
   	});
-
   	// Performance metrics
   	let metrics = $state<PerformanceMetrics>({
   		totalMessages: 0,
@@ -76,14 +70,11 @@ https://svelte.dev/e/js_parse_error -->
   		cacheHitRate: 0,
   		connectionLatency: 0
   	});
-
   	// WebSocket connections
   	let chatSocket: WebSocket | null = $state(null);
   	let activitySocket: WebSocket | null = $state(null);
-
   	// XState machine for chat flow
   	// Melt UI component creation removed - replace with bits-ui declarative components
-
   	// Reactive derived values
   	let connectionStatus = $derived(
   		isConnected
@@ -94,19 +85,16 @@ https://svelte.dev/e/js_parse_error -->
   				? 'connecting'
   				: 'disconnected'
   	);
-
   	let canSendMessage = $derived(
   		isConnected &&
   		currentState === 'idle' &&
   		currentMessage.trim() !== '' &&
   		!streamingResponse
   	);
-
   	let hasMessages = $derived(chatSession.messages.length > 0);
   	let lastAssistantMessage = $derived(
   		chatSession.messages.filter(item => item.pop)()
   	);
-
   	// Lifecycle
   	$effect(() => {
   		if (browser) {
@@ -117,30 +105,24 @@ https://svelte.dev/e/js_parse_error -->
   				isOpen = true;
   			}
   		}
-
   		return () => {
   			cleanup();
   		};
   	});
-
   	// Initialize AI services
   	async function initializeAI() {
   		try {
   			// Start XState service
   			chatService = interpret(chatMachine);
   			chatService.start();
-
   			// Connect to chat service
   			await connectToChatService();
-
   			// Connect to activity tracking
   			if (enableMCPIntegration) {
   				await connectToActivityService();
   			}
-
   			// Load existing session if available
   			await loadChatSession();
-
   			isConnected = true;
   			chatService?.send('CONNECTED');
   		} catch (error) {
@@ -148,18 +130,14 @@ https://svelte.dev/e/js_parse_error -->
   			chatService?.send('ERROR', { error });
   		}
   	}
-
   	// Connect to go-llama chat service
   	async function connectToChatService() {
-  		const wsUrl = `ws://localhost:8099/ws/chat?user_id=${userID}&session_id=${chatSession.id}`;
-
+  		const wsUrl = `ws://localhost:8099/ws/chat?user_id=${userID}&session_id=${chatSession.id}`
   		chatSocket = new WebSocket(wsUrl);
-
   		chatSocket.onopen=() => {
   			console.log('= Connected to YorhaAI chat service');
   			isConnected = true;
   		};
-
   		chatSocket.onmessage = (event) => {
   			try {
   				const data = JSON.parse(event.data);
@@ -168,29 +146,23 @@ https://svelte.dev/e/js_parse_error -->
   				console.error('Chat message parse error:', error);
   			}
   		};
-
   		chatSocket.onclose=() => {
   			console.log('L Chat service disconnected');
   			isConnected = false;
   			chatService?.send('DISCONNECT');
   		};
-
   		chatSocket.onerror = (error) => {
   			console.error('Chat service error:', error);
   			chatService?.send('ERROR', { error });
   		};
   	}
-
   	// Connect to user activity service
   	async function connectToActivityService() {
-  		const wsUrl = `ws://localhost:8099/ws/activity?user_id=${userID}`;
-
+  		const wsUrl = `ws://localhost:8099/ws/activity?user_id=${userID}`
   		activitySocket = new WebSocket(wsUrl);
-
   		activitySocket.onopen=() => {
   			console.log('=� Connected to activity service');
   		};
-
   		activitySocket.onmessage = (event) => {
   			try {
   				const data = JSON.parse(event.data);
@@ -200,57 +172,47 @@ https://svelte.dev/e/js_parse_error -->
   			}
   		};
   	}
-
   	// Send message to AI
   	async function sendMessage() {
   		if (!canSendMessage) return;
-
   		const message = currentMessage.trim();
   		const timestamp = new Date());
-
   		// Add user message to chat
   		const userMessage: ChatMessage = {
   			id: 'msg_' + Date.now(),
-  			role: 'user',;
-  			content: message,
-  			timestamp,;
+  			role: 'user',
+  			content: message
+  			timestamp,
   			metadata: {
   				userIntent: analyzeUserIntent(message),
   				caseID: chatSession.context.caseID
   			}
   		};
-
   		chatSession.messages = [...chatSession.messages, userMessage];
   		currentMessage = '';
-
   		// Update activity
   		updateUserActivity({ action: 'send_message', content_length: message.length });
-
   		// Send to chat service
   		try {
   			chatService?.send('SEND_MESSAGE');
-
   			const chatRequest = {
   				message,
-  				user_id: userID,
+  				user_id: userID
   				session_id: chatSession.id,
-  				case_id: caseID,
-  				context: chatSession.context,;
-  				stream: true,;
+  				case_id: caseID
+  				context: chatSession.context,
+  				stream: true
   				temperature: 0.7,
   				max_tokens: 2000;
   			};
-
   			chatSocket?.send(JSON.stringify(chatRequest));
   			metrics.totalMessages++;
-
   			chatService?.send('MESSAGE_SENT');
   		} catch (error) {
   			console.error('Send message error:', error);
   			chatService?.send('ERROR', { error });
   		}
   	}
-
   	// Handle chat service responses
   	function handleChatResponse(data: any) {
   		if (data.streaming) {
@@ -259,20 +221,18 @@ https://svelte.dev/e/js_parse_error -->
   			handleStandardResponse(data);
   		}
   	}
-
   	// Handle streaming response
   	function handleStreamingResponse(data: any) {
   		if (data.token && !data.done) {
   			// Update streaming message
   			let streamingMessage = chatSession.messages.find(m => m.streaming);
-
   			if (!streamingMessage) {
   				streamingMessage = {
   					id: 'streaming_' + Date.now(),
   					role: 'assistant',
   					content: data.token,
-  					timestamp: new Date(),;
-  					streaming: true,;
+  					timestamp: new Date(),
+  					streaming: true
   					metadata: {
   						session_id: data.session_id,
   						gpu_accelerated: enableGPUAcceleration
@@ -280,17 +240,14 @@ https://svelte.dev/e/js_parse_error -->
   				};
   				chatSession.messages = [...chatSession.messages, streamingMessage];
   			} else {
-  				streamingMessage.content += data.token;
+  				streamingMessage.content += data.toke;
   				// Trigger reactivity
   				chatSession.messages = [...chatSession.messages];
   			}
-
   			streamingResponse = true;
   			chatService?.send('STREAM_TOKEN');
-
   			// Auto-scroll to bottom
   			tick().then(() => scrollToBottom());
-
   		} else if (data.done) {
   			// Finalize streaming message
   			const streamingMessage = chatSession.messages.find(m => m.streaming);
@@ -304,58 +261,48 @@ https://svelte.dev/e/js_parse_error -->
   				};
   				chatSession.messages = [...chatSession.messages];
   			}
-
   			streamingResponse = false;
   			chatService?.send('STREAM_COMPLETE');
-
   			// Update context and metrics
   			updateChatContext(data);
   			updateMetrics(data);
   		}
   	}
-
   	// Handle standard response
   	function handleStandardResponse(data: any) {
   		const assistantMessage: ChatMessage = {
   			id: 'msg_' + Date.now(),
   			role: 'assistant',
   			content: data.response || data.content,
-  			timestamp: new Date(),;
+  			timestamp: new Date(),
   			metadata: {
   				session_id: data.session_id,
   				token_count: data.token_count,
   				processing_time: data.processing_time_ms,
-  				user_intent: data.user_intent,;
+  				user_intent: data.user_intent,
   				suggestions: data.suggestions || [],
-  				gpu_accelerated: enableGPUAcceleration;
+  				gpu_accelerated: enableGPUAcceleratio;
   			}
   		};
-
   		chatSession.messages = [...chatSession.messages, assistantMessage];
   		chatService?.send('RESPONSE_RECEIVED');
-
   		updateChatContext(data);
   		updateMetrics(data);
-
   		tick().then(() => scrollToBottom());
   	}
-
   	// Handle activity service responses
   	function handleActivityResponse(data: any) {
   		if (data.attention_level) {
   			userActivity.attentionLevel = data.attention_level;
   		}
-
   		if (data.suggestions) {
   			// Handle AI-suggested actions based on user activity
   			console.log('AI Activity Suggestions:', data.suggestions);
   		}
   	}
-
   	// Update user activity
-  	function updateUserActivity(activity: Record<string, any>) {
+  	function updateUserActivity(activity: { [key: string]: any }) {
   		userActivity.lastActivity = Date.now();
-
   		if (activity.action === 'typing') {
   			userActivity.isTyping = true;
   			isTyping = true;
@@ -363,66 +310,53 @@ https://svelte.dev/e/js_parse_error -->
   			userActivity.isTyping = false;
   			isTyping = false;
   		}
-
   		// Send to activity service
   		activitySocket?.send(JSON.stringify({
   			...activity,
-  			user_id: userID,
-  			timestamp: userActivity.lastActivity,;
-  			page: userActivity.currentPage;
+  			user_id: userID
+  			timestamp: userActivity.lastActivity,
+  			page: userActivity.currentPag;
   		}));
   	}
-
   	// Update chat context
   	function updateChatContext(data: any) {
   		if (data.context) {
   			chatSession.context = { ...chatSession.context, ...data.context };
   		}
-
   		if (data.user_intent) {
   			chatSession.context.userIntent = data.user_intent;
   		}
-
   		if (data.confidence !== undefined) {
-  			chatSession.context.confidence = data.confidence;
+  			chatSession.context.confidence = data.confidenc;
   		}
-
   		chatSession.updatedAt = new Date());
-
   		// Persist session
   		saveChatSession();
   	}
-
   	// Update performance metrics
   	function updateMetrics(data: any) {
   		if (data.processing_time_ms) {
-  			const responseTime = data.processing_time_ms;
+  			const responseTime = data.processing_time_m;
   			metrics.averageResponseTime =
-  				(metrics.averageResponseTime * (metrics.totalMessages - 1) + responseTime) / metrics.totalMessages;
+  				(metrics.averageResponseTime * (metrics.totalMessages - 1) + responseTime) / metrics.totalMessage;
   		}
-
   		if (data.gpu_used !== undefined) {
   			metrics.gpuUtilization = data.gpu_used ? 85 : 20; // Mock values
   		}
-
   		if (data.cache_hit !== undefined) {
   			metrics.cacheHitRate = data.cache_hit ? 0.8 : 0.6; // Mock values
   		}
   	}
-
   	// Analyze user intent
   	function analyzeUserIntent(message: string): string {
   		const lowerMsg = message.toLowerCase();
-
   		if (lowerMsg.includes('search') || lowerMsg.includes('find')) return 'search';
   		if (lowerMsg.includes('summarize') || lowerMsg.includes('summary')) return 'summarize';
   		if (lowerMsg.includes('analyze') || lowerMsg.includes('analysis')) return 'analyze';
   		if (lowerMsg.includes('draft') || lowerMsg.includes('write')) return 'draft';
   		if (lowerMsg.includes('help') || lowerMsg.includes('explain')) return 'help';
-
   		return 'general';
   	}
-
   	// Input handling
   	function handleKeydown(event: KeyboardEvent) {
   		if (event.key === 'Enter' && !event.shiftKey) {
@@ -431,27 +365,22 @@ https://svelte.dev/e/js_parse_error -->
   		} else if (event.key === 'Escape') {
   			closeDialog();
   		}
-
   		// Update typing activity
   		updateUserActivity({ action: 'typing', key: event.key });
   	}
-
   	// Dialog controls
   	function openDialog() {
   		open.set(true);
   		isOpen = true;
-
   		tick().then(() => {
   			const input = document.querySelector('[data-yorha-input]') as HTMLElement;
   			input?.focus();
   		});
   	}
-
   	function closeDialog() {
   		open.set(false);
   		isOpen = false;
   	}
-
   	// Utility functions
   	function scrollToBottom() {
   		const scrollArea = document.querySelector('[data-scroll-area]');
@@ -459,11 +388,9 @@ https://svelte.dev/e/js_parse_error -->
   			scrollArea.scrollTop = scrollArea.scrollHeight;
   		}
   	}
-
   	function formatTimestamp(date: Date): string {
   		return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   	}
-
   	function getMessageIcon(role: string): string {
   		switch (role) {
   			case 'user': return '=d';
@@ -472,7 +399,6 @@ https://svelte.dev/e/js_parse_error -->
   			default: return '=�';
   		}
   	}
-
   	// Session management
   	async function loadChatSession() {
   		try {
@@ -485,80 +411,69 @@ https://svelte.dev/e/js_parse_error -->
   			console.error('Load session error:', error);
   		}
   	}
-
   	async function saveChatSession() {
   		try {
   			await fetch(`/api/chat/sessions/${chatSession.id}`, {
-  				method: 'POST',;
-  				headers: { 'Content-Type': 'application/json' },;
+  				method: 'POST',
+  				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify(chatSession);
   			});
   		} catch (error) {
   			console.error('Save session error:', error);
   		}
   	}
-
   	function clearChat() {
   		chatSession.messages = [];
   		chatSession.context.recentActions = [];
   		chatSession.updatedAt = new Date());
   		saveChatSession();
   	}
-
   	// Setup activity tracking
   	function setupActivityTracking() {
   		// Track typing in message input
   		let typingTimeout = $state<number | null>(null);
-
   		const updateTyping = () => {
   			if (typingTimeout) {
   				clearTimeout(typingTimeout);
   			}
   			updateUserActivity({ action: 'typing' });
-
   			typingTimeout = setTimeout(() => {
   				updateUserActivity({ action: 'stopped_typing' });
   			}, 1000) as any;
   		};
-
   		// Global activity tracking
   		if (browser) {
   			document.addEventListener('keydown', updateTyping);
   			document.addEventListener('click', () =>
   				updateUserActivity({ action: 'click', page: window.location.pathname })
   			);
-
   			// Page visibility tracking
   			document.addEventListener('visibilitychange', () => {
   				updateUserActivity({
-  					action: 'visibility_change',;
+  					action: 'visibility_change',
   					visible: !document.hidden;
   				});
   			});
   		}
   	}
-
   	// Cleanup
   	function cleanup() {
   		chatSocket?.close();
   		activitySocket?.close();
   		chatService?.stop();
   	}
-
   	// Effects
   	$effect(() => {
   		if (isOpen) {
   			tick().then(() => scrollToBottom());
   		}
   	});
-
   	$effect(() => {
   		if (currentMessage) {
   			updateUserActivity({ action: 'typing', message_length: currentMessage.length });
   		}
   	});
 </script>
-
 <!-- Main Chat Interface -->
 <div class="yorha-ai-assistant">
 	<!-- Trigger Button -->
@@ -579,7 +494,6 @@ https://svelte.dev/e/js_parse_error -->
 		)}
 	>
 <span class="text-2xl">></span>
-
 		<!-- Status indicator -->
 		<div class={cn(
 			"absolute -top-1 -right-1 w-4 h-4 rounded-full",
@@ -589,7 +503,6 @@ https://svelte.dev/e/js_parse_error -->
 			connectionStatus === 'disconnected' && "bg-red-400"
 		)}></div>
 	</Button.Root>
-
 	<!-- Chat Dialog -->
 	{#if $open}
 		<div
@@ -628,11 +541,9 @@ https://svelte.dev/e/js_parse_error -->
 							</p>
 						</div>
 					</div>
-
 					<div class="flex items-center gap-2">
 						<!-- Metrics badge -->
 						<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{metrics.totalMessages} msgs</span>
-
 						<!-- Close button -->
 						<Button.Root
 							{...$close}
@@ -648,7 +559,6 @@ https://svelte.dev/e/js_parse_error -->
 						</Button.Root>
 					</div>
 				</div>
-
 				<!-- Messages Area -->
 				<ScrollArea class="flex-1 p-4" data-scroll-area>
 					{#if !hasMessages}
@@ -658,7 +568,6 @@ https://svelte.dev/e/js_parse_error -->
 								Hello! I'm your YorhaAI assistant.<br/>
 								How can I help with your legal case today?
 							</p>
-
 							{#if caseID}
 								<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Case: {caseID}</span>
 							{/if}
@@ -675,7 +584,6 @@ https://svelte.dev/e/js_parse_error -->
 											<span class="text-white text-xs">AI</span>
 										</div>
 									{/if}
-
 									<div class={cn(
 										"max-w-[80%] p-3 rounded-lg text-sm",
 										message.role === 'user'
@@ -686,25 +594,20 @@ https://svelte.dev/e/js_parse_error -->
 										<div class="whitespace-pre-wrap">
 											{message.content}
 										</div>
-
 										{#if message.metadata}
 											<div class="mt-2 flex items-center gap-2 text-xs opacity-70">
 												<span>{formatTimestamp(message.timestamp)}</span>
-
 												{#if message.metadata.token_count}
 													<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{message.metadata.token_count} tokens</span>
 												{/if}
-
 												{#if message.metadata.processing_time}
 													<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round(message.metadata.processing_time)}ms</span>
 												{/if}
-
 												{#if message.metadata.gpu_accelerated}
 													<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">GPU</span>
 												{/if}
 											</div>
 										{/if}
-
 										<!-- AI Suggestions -->
 										{#if message.metadata?.suggestions?.length > 0}
 											<div class="mt-2 space-y-1">
@@ -712,7 +615,7 @@ https://svelte.dev/e/js_parse_error -->
 													<button
 														class="text-xs text-blue-400 hover:text-blue-300 underline block"
 														onclick={() => {
-															currentMessage = suggestion;
+															currentMessage = suggestio;
 															sendMessage();
 														}}
 													>
@@ -722,7 +625,6 @@ https://svelte.dev/e/js_parse_error -->
 											</div>
 										{/if}
 									</div>
-
 									{#if message.role === 'user'}
 										<div class="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center flex-shrink-0">
 											<span class="text-white text-xs">U</span>
@@ -733,7 +635,6 @@ https://svelte.dev/e/js_parse_error -->
 						</div>
 					{/if}
 				</ScrollArea>
-
 				<!-- Input Area -->
 				<div class={cn(
 					"p-4 border-t space-y-3",
@@ -745,15 +646,12 @@ https://svelte.dev/e/js_parse_error -->
 							{#if chatSession.context.userIntent !== 'general'}
 								<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Intent: {chatSession.context.userIntent}</span>
 							{/if}
-
 							{#if caseID}
 								<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Case: {caseID}</span>
 							{/if}
-
 							<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Confidence: {Math.round(chatSession.context.confidence * 100)}%</span>
 						</div>
 					{/if}
-
 					<!-- Message input -->
 					<div class="flex gap-2">
 						<Input.Root
@@ -764,7 +662,6 @@ https://svelte.dev/e/js_parse_error -->
 							data-yorha-input
 							class="flex-1"
 						/>
-
 						<Button.Root
 							onclick={sendMessage}
 							disabled={!canSendMessage}
@@ -784,7 +681,6 @@ https://svelte.dev/e/js_parse_error -->
 							{/if}
 						</Button.Root>
 					</div>
-
 					<!-- Quick actions -->
 					<div class="flex justify-between items-center">
 						<div class="flex gap-1">
@@ -797,7 +693,6 @@ https://svelte.dev/e/js_parse_error -->
 							>
 								Clear
 							</Button.Root>
-
 							{#if enableMCPIntegration}
 								<Button.Root
 									variant="ghost"
@@ -807,7 +702,6 @@ https://svelte.dev/e/js_parse_error -->
 									MCP
 								</Button.Root>
 							{/if}
-
 							{#if enableGPUAcceleration}
 								<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">50 && "bg-green-500/20 text-green-400"
 									)}
@@ -815,7 +709,6 @@ https://svelte.dev/e/js_parse_error -->
 									GPU {Math.round(metrics.gpuUtilization)}%</span>
 							{/if}
 						</div>
-
 						<div class="text-xs nes-text is-disabled">
 							{userActivity.attentionLevel} attention
 						</div>
@@ -825,7 +718,6 @@ https://svelte.dev/e/js_parse_error -->
 		</div>
 	{/if}
 </div>
-
 <style>
 	.yorha-ai-assistant {
 		/* YorhaUI theme variables */;
@@ -836,31 +728,25 @@ https://svelte.dev/e/js_parse_error -->
 		--yorha-surface: #2a2a2a;
 		--yorha-text: #f4e4bc;
 		--yorha-border: rgba(212, 175, 55, 0.3);
-
 		/* Animations */
 		--animation-glow: 0 0 20px currentColor;
 		--animation-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 	}
-
 	/* Custom scrollbar for Yorha theme */
 	:global([data-scroll-area]::-webkit-scrollbar) {
 		width: 8px;
 	}
-
 	:global([data-scroll-area]::-webkit-scrollbar-track) {
 		background: rgba(212, 175, 55, 0.1);
 		border-radius: 4px;
 	}
-
 	:global([data-scroll-area]::-webkit-scrollbar-thumb) {
 		background: rgba(212, 175, 55, 0.3);
 		border-radius: 4px;
 	}
-
-	:global([data-scroll-area]::-webkit-scrollbar-thumb:hover) {
+	:global($1) {
 		background: rgba(212, 175, 55, 0.5);
 	}
-
 	/* Yorha-specific animations */
 	@keyframes pulse {
 		0%, 100% {
@@ -870,18 +756,15 @@ https://svelte.dev/e/js_parse_error -->
 			opacity: 0.5;
 		}
 	}
-
 	/* Message typing animation */
 	:global(.animate-pulse) {
 		animation: pulse 1.5s ease-in-out infinite;
 	}
-
 	/* GPU utilization indicator */
 	:global(.gpu-indicator) {
 		position: relative;
 	}
-
-	:global(.gpu-indicator::after) {
+	:global($1) {
 		content: '';
 		position: absolute;
 		top: -2px;
@@ -894,4 +777,3 @@ https://svelte.dev/e/js_parse_error -->
 		animation: var(--animation-pulse);
 	}
 </style>
-

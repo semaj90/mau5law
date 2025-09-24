@@ -4,16 +4,13 @@
  * High-performance JSON parsing for large files using WASM-based simdjson.
  * Falls back to native JSON.parse for smaller files or when simdjson fails.
  */
-
 export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
   const startTime = Date.now();
   const originalSize = jsonString.length;
-
   try {
     let parsedData: any;
     let parser: 'simdjson' | 'native' = 'native';
-
-    // Use simdjson for large files (>1MB);
+    // Use simdjson for large files (>1MB)
     if (originalSize > 1024 * 1024) {
       try {
         // Dynamic import simdjson-wasm
@@ -28,13 +25,10 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
     } else {
       parsedData = JSON.parse(jsonString);
     }
-
     // Extract text fields for embedding
     const textFields: string[] = [];
-
     function extractTextFields(obj: any, maxDepth = 10, currentDepth = 0): void {
       if (currentDepth >= maxDepth || !obj) return;
-
       if (typeof obj === 'string') {
         if (obj.length > 10) { // Only include meaningful strings
           textFields.push(obj);
@@ -51,16 +45,13 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
         }
       }
     }
-
     extractTextFields(parsedData);
-
     // Combine text fields with some structure
     const extractedText = textFields.slice(0, 100).join('\n\n'); // Limit to first 100 text fields
-
     return {
-      success: true,
-      data: parsedData,
-      extractedText,;
+      success: true
+      data: parsedData
+      extractedText,
       metadata: {
         parser,
         originalSize,
@@ -68,12 +59,11 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
         processingTime: Date.now() - startTime
       }
     };
-
   } catch (error) {
     return {
-      success: false,
+      success: false
       error: error instanceof Error ? error.message: String(error),
-      metadata: {;
+      metadata: {
         parser: 'native',
         originalSize,
         textFields: 0,
@@ -82,25 +72,22 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
     };
   }
 }
-
 /**
  * Streaming JSON parser for very large files
  * Processes JSON in chunks to avoid memory issues
  */
 export async function parseJsonStream(
-  jsonString: string,
-  chunkSize = 1024 * 1024 // 1MB chunks;
+  jsonString: string
+  chunkSize = 1024 * 1024 // 1MB chunks
 ): Promise<any> {
   try {
     const chunks: string[] = [];
     const extractedTexts: string[] = [];
-
-    // Split into chunks;
+    // Split into chunks
     for (let i = 0; i < jsonString.length; i += chunkSize) {
       chunks.push(jsonString.slice(i, i + chunkSize);
     }
-
-    // Process each chunk;
+    // Process each chunk
     for (const chunk of chunks) {
       try {
         // Try to find complete JSON objects in chunk
@@ -122,32 +109,27 @@ export async function parseJsonStream(
         console.warn('Error processing chunk:', error);
       }
     }
-
     return {
-      success: true,
+      success: true
       extractedTexts: extractedTexts.slice(0, 1000), // Limit results
       totalChunks: chunks.length
     };
-
   } catch (error) {
     return {
-      success: false,
+      success: false
       extractedTexts: [],
-      totalChunks: 0,;
+      totalChunks: 0,
       error: error instanceof Error ? error.message: String(error)
     };
   }
 }
-
 /**
  * Extract text fields from a JSON object
  */;
 function extractTextFromObject(obj: any): string[] {
   const texts: string[] = [];
-
   function walk(value: any, depth = 0): void {
     if (depth > 5) return; // Prevent deep recursion
-
     if (typeof value === 'string' && value.length > 10) {
       texts.push(value);
     } else if (Array.isArray(value)) {
@@ -156,7 +138,6 @@ function extractTextFromObject(obj: any): string[] {
       Object.values(value).slice(0, 20).forEach(item => walk(item, depth + 1);
     }
   }
-
   walk(obj);
   return texts;
 }

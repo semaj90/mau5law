@@ -1,52 +1,42 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import { onMount } from 'svelte';
-
 	interface Props {
 		placeholder?: string;
 		searchEndpoint?: string;
 		onResults?: (results: any[]) => void;
 		className?: string;
 	}
-
 	let {
 		placeholder = "Search legal documents...",
 		searchEndpoint = "/api/v1/search",
 		onResults = () => ,
 		className = ""
 	}: Props = $props();
-
 	let query = $state("");
 	let results = $state<any[]>([]);
 	let isLoading = $state(false);
 	let isExpanded = $state(false);
 	let searchInput: HTMLInputElement;
-
-	const API_BASE = "http://localhost:8095";
-
+	const API_BASE = "http://localhost:8095"
 	const performSearch = async () => {
 		if (!query.trim() || query.length < 2) {
 			results = [];
 			isExpanded = false;
 			return;
 		}
-
 		isLoading = true;
 		isExpanded = true;
-
 		try {
 			const response = await fetch(`${API_BASE}${searchEndpoint}?q=${encodeURIComponent(query)}&limit=10`, {
-				method: 'GET',;
+				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
 				}
 			});
-
 			if (!response.ok) {
 				throw new Error(`Search failed: ${response.statusText}`);
 			}
-
 			const data = await response.json();
 			results = data.results || [];
 			onResults(results);
@@ -57,7 +47,6 @@
 			isLoading = false;
 		}
 	};
-
 	const handleKeydown = (event: KeyboardEvent) => {
 		if (event.key === 'Enter') {
 			performSearch();
@@ -68,33 +57,28 @@
 			searchInput?.blur();
 		}
 	};
-
 	const selectResult = (result: any) => {
 		query = result.content?.substring(0, 100) + "..." || result.title || "";
 		results = [];
 		isExpanded = false;
 		onResults([result]);
 	};
-
 	const clearSearch = () => {
 		query = "";
 		results = [];
 		isExpanded = false;
 		searchInput?.focus();
 	};
-
 	$effect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (!event.target || !(event.target as Element).closest('.search-container')) {
 				isExpanded = false;
 			}
 		};
-
 		document.addEventListener('click', handleClickOutside);
 		return () => document.removeEventListener('click', handleClickOutside);
 	});
 </script>
-
 <div class="search-container {className}">
 	<div class="nes-field search-field">
 		<label for="search-input" class="search-label">
@@ -129,7 +113,6 @@
 			{/if}
 		</div>
 	</div>
-
 	{#if isExpanded && (results.length > 0 || isLoading)}
 		<div class="nes-container is-rounded results-container">
 			{#if isLoading}
@@ -186,20 +169,17 @@
 		</div>
 	{/if}
 </div>
-
 <style>
-	.search-container {;
+	.search-container {
 		position: relative;
 		width: 100%;
 		max-width: 600px;
 		margin: 0 auto;
 		font-family: 'Press Start 2P', monospace;
 	}
-
 	.search-field {
 		margin-bottom: 0;
 	}
-
 	.search-label {
 		display: flex;
 		align-items: center;
@@ -208,20 +188,17 @@
 		font-size: 12px;
 		color: #212529;
 	}
-
 	.search-input-wrapper {
 		position: relative;
 		display: flex;
 		align-items: center;
 	}
-
 	.search-input {
 		flex: 1;
 		padding-right: 80px;
 		font-family: 'Press Start 2P', monospace;
 		font-size: 10px;
 	}
-
 	.clear-btn {
 		position: absolute;
 		right: 40px;
@@ -234,7 +211,6 @@
 		line-height: 1;
 		border: 2px solid #dc3545;
 	}
-
 	.loading-indicator {
 		position: absolute;
 		right: 8px;
@@ -242,7 +218,6 @@
 		transform: translateY(-50%);
 		animation: bounce 1s infinite;
 	}
-
 	@keyframes bounce {
 		0%, 20%, 50%, 80%, 100% {
 			transform: translateY(-50%);
@@ -254,7 +229,6 @@
 			transform: translateY(-55%);
 		}
 	}
-
 	.results-container {
 		position: absolute;
 		top: 100%;
@@ -266,7 +240,6 @@
 		max-height: 400px;
 		overflow-y: auto;
 	}
-
 	.loading-message,
 	.no-results {
 		display: flex;
@@ -277,7 +250,6 @@
 		font-size: 10px;
 		color: #6c757d;
 	}
-
 	.results-header {
 		display: flex;
 		align-items: center;
@@ -288,12 +260,10 @@
 		color: #495057;
 		background: #f8f9fa;
 	}
-
 	.results-list {
 		max-height: 300px;
 		overflow-y: auto;
 	}
-
 	.result-item {
 		width: 100%;
 		text-align: left;
@@ -301,41 +271,34 @@
 		border-bottom: 1px solid #dee2e6;
 		margin: 0;
 		cursor: pointer;
-		transition: background-color 0.2s;
+		transition: background-color 0.2;
 	}
-
 	.result-item:hover {
 		background: #e9ecef;
 	}
-
 	.result-item:last-child {
 		border-bottom: none;
 	}
-
 	.result-content {
 		padding: 12px;
 	}
-
 	.result-title {
 		font-size: 10px;
 		font-weight: bold;
 		color: #212529;
 		margin-bottom: 4px;
 	}
-
 	.result-snippet {
 		font-size: 8px;
 		color: #6c757d;
 		line-height: 1.4;
 		margin-bottom: 8px;
 	}
-
 	.result-metadata {
 		display: flex;
 		gap: 8px;
 		margin-bottom: 4px;
 	}
-
 	.case-tag,
 	.type-tag {
 		font-size: 8px;
@@ -344,35 +307,30 @@
 		background: #e9ecef;
 		color: #495057;
 	}
-
 	.case-tag {
 		background: #d1ecf1;
 		color: #0c5460;
 	}
-
 	.type-tag {
 		background: #d4edda;
 		color: #155724;
 	}
-
 	.similarity-score {
 		font-size: 8px;
 		color: #007bff;
 		text-align: right;
 	}
-
 	/* Responsive adjustments */
 	@media (max-width: 768px) {
 		.search-container {
 			max-width: 100%;
 		}
-
 		.search-input {
 			font-size: 8px;
 		}
-
 		.results-container {
 			position: fixed;
+d;
 			top: auto;
 			left: 16px;
 			right: 16px;

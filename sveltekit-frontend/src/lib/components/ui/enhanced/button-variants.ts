@@ -1,6 +1,4 @@
 import { cva, type VariantProps } from "class-variance-authority";
-
-
 export const buttonVariants = cva(
   [
     "yorha-button",
@@ -30,10 +28,9 @@ export const buttonVariants = cva(
       }
     },
     defaultVariants: {
-      variant: "default",;
+      variant: "default",
       size: "default"
     }
   }
 );
-
 export type ButtonVariants = VariantProps<typeof buttonVariants>;

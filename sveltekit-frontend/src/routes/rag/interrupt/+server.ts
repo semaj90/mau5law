@@ -1,8 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { interruptStream } from "$lib/server/ragStreamRegistry";
 import type { RequestHandler } from './$types.js';
-
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { streamId, mode = 'graceful' } = await request.json();

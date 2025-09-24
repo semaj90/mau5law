@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import type { PageData } from './$types.js';
   import type { ActionData } from './$types.js';
   import { enhance } from '$app/forms';
@@ -19,28 +18,25 @@
     type LegalEvidenceItem,
     getConfidenceClass
   } from '$lib/components/ui/orchestrated';
-
   let { data, form }: { data: PageData; form: ActionData } = $props();
   // Svelte 5 runes for reactive state
   let queryText = $state('');
   let isLoading = $state(false);
   let ragResponse = $state<any>(null);
   let showDocuments = $state(false);
-
   // Transform case documents to legal evidence format
   let evidenceItems = $derived<LegalEvidenceItem[]>(
     (data as { documents?: unknown; caseData?: unknown; processed?: unknown; ragHistory?: unknown }).documents.map(doc => ({
       id: doc.id,
       title: doc.title,
       type: doc.type as LegalEvidenceItem['type'],
-      priority: 'medium' as const,;
-      confidence: doc.processed ? 0.95 : 0.5,;
+      priority: 'medium' as const,
+      confidence: doc.processed ? 0.95 : 0.5,
       metadata: { processed: doc.processed },
       createdAt: new Date(doc.uploadedAt),
       updatedAt: new Date(doc.uploadedAt)
     }))
   );
-
   // Handle form submission with enhanced UX
   function handleRAGSubmit() {
     isLoading = true;
@@ -48,27 +44,23 @@
     return ({ result }) => {
       isLoading = false;
       if ((result as { type?: unknown; data?: unknown }).type === 'success' && (result as { type?: unknown; data?: unknown }).data?.response) {
-        ragResponse = (result as { type?: unknown; data?: unknown }).data.response;
+        ragResponse = (result as { type?: unknown; data?: unknown }).data.respon;
         queryText = ''; // Clear input after successful query
       }
     };
   }
-
   // Format confidence display
   function formatConfidence(confidence: number): string {
     return `${Math.round(confidence * 100)}%`;
   }
-
   // Format processing time
   function formatProcessingTime(ms: number): string {
     return ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(1)}s`;
   }
 </script>
-
 <svelte:head>
   <title>RAG Analysis - {(data as { documents?: unknown; caseData?: unknown; processed?: unknown; ragHistory?: unknown }).caseData.title}</title>
 </svelte:head>
-
 <div class="container mx-auto p-6 space-y-6">
   <!-- Case Header -->
   <div class="mb-8">
@@ -79,7 +71,6 @@
       Status: <span class="font-medium">{(data as { documents?: unknown; caseData?: unknown; processed?: unknown; ragHistory?: unknown }).caseData.status}</span>
     </p>
   </div>
-
   <!-- RAG Query Interface -->
   <OrchestratedCard.Analysis>
     <div.Header class="nes-container">
@@ -89,7 +80,6 @@
         powered by legal AI models
       </div.Description>
     </div.Header>
-
   <div.Content class="space-y-4 nes-container">
       <!-- Query Form -->
       <form method="POST" action="?/query" use:enhance={handleRAGSubmit}>
@@ -111,14 +101,12 @@
           </OrchestratedButton.AnalyzeEvidence>
         </div>
       </form>
-
       <!-- Error Display -->
       {#if form?.error}
         <div class="p-3 bg-destructive/10 border border-destructive/20 rounded-md text-destructive">
           {form.error}
         </div>
       {/if}
-
       <!-- RAG Response -->
       {#if ragResponse}
         <div class="space-y-4 p-4 bg-muted/50 rounded-lg">
@@ -133,12 +121,10 @@
               </span>
             </div>
           </div>
-
           <!-- Answer -->
           <div class="prose prose-sm max-w-none">
             <div class="whitespace-pre-wrap">{ragResponse.answer}</div>
           </div>
-
           <!-- Sources -->
           {#if ragResponse.sources?.length > 0}
             <div class="mt-4">
@@ -162,7 +148,6 @@
       {/if}
     </div.Content>
   </OrchestratedCard.Analysis>
-
   <!-- Case Documents -->
   <OrchestratedCard.Evidence>
     <div.Header class="nes-container">
@@ -179,7 +164,6 @@
         </button>
       </div>
     </div.Header>
-
     {#if showDocuments}
       <div.Content class="nes-container">
         <div class="grid gap-3">
@@ -206,7 +190,6 @@
       </div.Content>
     {/if}
   </OrchestratedCard.Evidence>
-
   <!-- RAG History -->
   {#if (data as { documents?: unknown; caseData?: unknown; processed?: unknown; ragHistory?: unknown }).ragHistory?.length > 0}
     <div class="nes-container">
@@ -230,7 +213,6 @@
     </div>
   {/if}
 </div>
-
 <style>
   .confidence-very-high { @apply text-green-600 font-medium; }
   .confidence-high { @apply text-blue-600 font-medium; }

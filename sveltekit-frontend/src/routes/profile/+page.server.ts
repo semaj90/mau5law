@@ -1,21 +1,17 @@
 import type { PageServerLoad, Actions } from './$types.js';
-
 // Use DB barrel for tables/helpers; keep zod schema from schema module
 import { db, helpers, cases, evidence } from '$lib/server/db';
 import { profileUpdateZodSchema } from '$lib/db/schema';
 import { redirect, error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-
 // SOLUTION: Use the pre-extracted Zod schema for SuperForms compatibility
 // No more TypeScript errors with drizzle-zod schemas!
 const profileSchema = profileUpdateZodSchema;
-
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {
     throw redirect(302, '/login');
   }
-
   try {
     // Example profile data (replace with your actual profile fetching logic)
     const u: any = locals.user;
@@ -24,10 +20,8 @@ export const load: PageServerLoad = async ({ locals }) => {
       firstName: u.firstName || '',
       lastName: u.lastName || ''
     };
-
     // Initialize the SuperForm with drizzle-zod schema
     const profileForm = await superValidate(profileData, zod(profileSchema as any));
-
     // Get user account statistics
     const [
       totalCases,
@@ -42,38 +36,29 @@ export const load: PageServerLoad = async ({ locals }) => {
     ] = await Promise.all([
       // Total cases
       db.select({ count: helpers.count() as any }).from(cases),
-
       // Open cases
       db
         .select({ count: helpers.count() as any })
         .from(cases)
         .where(helpers.eq(cases.status, 'open') as any),
-
       // Closed cases
       db
         .select({ count: helpers.count() as any })
         .from(cases)
         .where(helpers.eq(cases.status, 'closed') as any),
-
       // Total crimes (placeholder - table doesn't exist yet)
       Promise.resolve([{ count: 0 }]),
-
       // Total criminals (placeholder - no criminals table in barrel)
       Promise.resolve([{ count: 0 }]),
-
       // Total evidence
       db.select({ count: helpers.count() as any }).from(evidence),
-
       // Felony cases (placeholder)
       Promise.resolve([{ count: 0 }]),
-
       // Misdemeanor cases (placeholder)
       Promise.resolve([{ count: 0 }]),
-
       // Citation cases (placeholder)
       Promise.resolve([{ count: 0 }])
     ]);
-
     const userStats = {
       totalCases: totalCases[0]?.count || 0,
       openCases: openCases[0]?.count || 0,
@@ -85,19 +70,17 @@ export const load: PageServerLoad = async ({ locals }) => {
       misdemeanorCases: misdemeanorCases[0]?.count || 0,
       citationCases: citationCases[0]?.count || 0
     };
-
     return {
-      user: locals.user,;
+      user: locals.user,
       session: locals.session,
       userStats,
       profileForm, // Add the SuperForm
     };
   } catch (error: any) {
     console.error('Error loading user stats:', error);
-
-    // Return basic data if stats fail;
+    // Return basic data if stats fail
     return {
-      user: locals.user,;
+      user: locals.user,
       session: locals.session,
       userStats: {
         totalCases: 0,
@@ -114,30 +97,24 @@ export const load: PageServerLoad = async ({ locals }) => {
     };
   }
 };
-
 export const actions: Actions = {
   updateProfile: async ({ request, locals }) => {
     if (!locals.user) {
       throw redirect(302, '/login');
     }
-
     const form = await superValidate(request, zod(profileSchema as any));
-
     if (!form.valid) {
       return { form };
     }
-
     try {
       // Update profile in database
-      // await db.update(profileTable);
+      // await db.update(profileTable)
       //   .set({
       //     firstName: form.data.firstName,
       //     lastName: form.data.lastName,
       //   })
-      //   .where(eq(profileTable.id, locals.user.id);
-
+      //   .where(eq(profileTable.id, locals.user.id)
       console.log('Profile updated:', form.data);
-
       return { form, success: true };
     } catch (err) {
       console.error('Profile update failed:', err);

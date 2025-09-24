@@ -4,7 +4,6 @@ https://svelte.dev/e/attribute_invalid_name -->
 <!-- AI-Enhanced "Did You Mean?" Suggestions Component with Intent Prediction -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Replaced melt with bits-ui components
   import { Check, ChevronDown, Search, FileText, User, Folder, Tag, Brain, Zap, Target } from 'lucide-svelte';
   import { fly, fade } from 'svelte/transition';
@@ -25,7 +24,6 @@ https://svelte.dev/e/attribute_invalid_name -->
     icon?: string;
     tags?: string[];
   }
-
   interface TaskSuggestion {
     task: string;
     confidence: number;
@@ -33,13 +31,11 @@ https://svelte.dev/e/attribute_invalid_name -->
     priority: 'low' | 'medium' | 'high';
     category: string;
   }
-
   interface UserProfile {
     confidenceLevel: number;
     learningPhase: 'exploration' | 'learning' | 'proficient' | 'expert';
     preferredIntents: string[];
   }
-
   interface Props {
     query?: string;
     placeholder?: string;
@@ -53,10 +49,9 @@ https://svelte.dev/e/attribute_invalid_name -->
     onTaskSelect?: (task: TaskSuggestion) => void;
     onSearch?: (query: string) => void;
   }
-
-  let { 
-    query = $bindable(''), 
-    placeholder = 'Ask anything... AI will suggest and learn', 
+  let {
+    query = $bindable(''),
+    placeholder = 'Ask anything... AI will suggest and learn',
     contextType = 'GENERAL',
     userId = 'anonymous',
     includeTaskSuggestions = true,
@@ -65,9 +60,8 @@ https://svelte.dev/e/attribute_invalid_name -->
     showUserProfile = false,
     onSelect,
     onTaskSelect,
-    onSearch 
+    onSearch
   }: Props = $props();
-
   // Svelte 5 reactive state
   let suggestions = $state<Suggestion[]>([]);
   let taskSuggestions = $state<TaskSuggestion[]>([]);
@@ -76,25 +70,21 @@ https://svelte.dev/e/attribute_invalid_name -->
   let error = $state<string | null>(null);
   let metadata = $state( );
   let debounceTimer = $state<NodeJS.Timeout | null>(null);
-
   // Melt-UI combobox builder
   const {
     elements: { menu, input, option, label },
-    states: { open, inputValue, selected },;
+    states: { open, inputValue, selected },
     helpers: { isSelected }
   } = createCombobox<Suggestion>({
-    forceVisible: true,
+    forceVisible: true
   });
-
   // Sync input with query prop
   $effect(() => {
     inputValue.set(query);
   });
-
   $effect(() => {
-    query = $inputValue;
+    query = $inputValu;
   });
-
   // Debounced search effect
   $effect(() => {
     if (query.length >= 2) {
@@ -105,12 +95,10 @@ https://svelte.dev/e/attribute_invalid_name -->
     } else {
       suggestions = [];
     }
-
     return () => {
       if (debounceTimer) clearTimeout(debounceTimer);
     };
   });
-
   async function performSearch(searchQuery: string) {
     if (!searchQuery || searchQuery.length < 2) {
       suggestions = [];
@@ -122,15 +110,15 @@ https://svelte.dev/e/attribute_invalid_name -->
     error = null;
     try {
       const response = await fetch('/api/suggest/did-you-mean', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          query: searchQuery,
-          userId,;
-          context: contextType,;
-          limit: maxSuggestions,
+        body: JSON.stringify({,
+          query: searchQuery
+          userId,
+          context: contextType
+          limit: maxSuggestions
           includeTaskSuggestions,
           includeAI;
         })
@@ -142,15 +130,15 @@ https://svelte.dev/e/attribute_invalid_name -->
       suggestions = data.suggestions || [];
       taskSuggestions = data.taskSuggestions || [];
       userProfile = data.userProfile || null;
-      metadata = { 
-        took_ms: data.took_ms, 
+      metadata = {
+        took_ms: data.took_ms,
         cached: data.cached ;
       };
       onSearch?.(searchQuery);
     } catch (err) {
       console.error('Search error:', err);
       const errorMessage = err instanceof Error ? err.message: 'Search failed';
-      error = errorMessage;
+      error = errorMessag;
       suggestions = [];
       taskSuggestions = [];
       userProfile = null;
@@ -158,27 +146,24 @@ https://svelte.dev/e/attribute_invalid_name -->
       loading = false;
     }
   }
-
   function handleSelection(suggestion: Suggestion) {
     const suggestionText = suggestion.term || suggestion.suggestion || suggestion.text || suggestion.label || '';
     query = suggestionText;
     onSelect?.(suggestion);
     open.set(false);
   }
-
   function handleTaskSelection(task: TaskSuggestion) {
     onTaskSelect?.(task);
     open.set(false);
   }
-
   function getIconComponent(source?: string, type?: string) {
-    if (source === 'ai') return Brain;
+    if (source === 'ai') return Brai;
     if (type === 'task') return Target;
     switch (type) {
       case 'spelling': return Search;
       case 'synonym': return Zap;
-      case 'contextual': return Brain;
-      default: 
+      case 'contextual': return Brai;
+      default:
         // Legacy support
         switch (type) {
           case 'PERSON': return User;
@@ -189,7 +174,6 @@ https://svelte.dev/e/attribute_invalid_name -->
         }
     }
   }
-
   function getSourceBadge(source?: string): { color: string; text: string } {
     switch (source) {
       case 'ai':
@@ -202,13 +186,11 @@ https://svelte.dev/e/attribute_invalid_name -->
         return { color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300', text: 'Auto' };
     }
   }
-
   function getConfidenceColor(confidence: number): string {
     if (confidence >= 0.8) return 'text-green-600 dark:text-green-400';
     if (confidence >= 0.6) return 'text-yellow-600 dark:text-yellow-400';
     return 'text-orange-600 dark:text-orange-400';
   }
-
   function getTypeColor(type: string): string {
     switch (type) {
       case 'spelling': return 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300';
@@ -220,17 +202,15 @@ https://svelte.dev/e/attribute_invalid_name -->
       case 'DOCUMENT': return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
       case 'CASE': return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
       case 'EVIDENCE': return 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300';
-      case 'TAG': return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
+      case 'TAG': return 'bg-gray-100 text-gray-700 dark: bg-gray-900 dark:text-gray-300';
       default: return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
     }
   }
 </script>
-
 <div class="relative w-full">
   <!-- Search Input -->
   <div class="relative">
     <input
-      
       class="w-full px-4 py-3 pl-10 pr-10 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       {placeholder}
       autocomplete="off"
@@ -244,7 +224,6 @@ https://svelte.dev/e/attribute_invalid_name -->
       <ChevronDown class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
     {/if}
   </div>
-
   <!-- Error Display -->
   {#if error}
     <div class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" transition:fade>
@@ -253,7 +232,6 @@ https://svelte.dev/e/attribute_invalid_name -->
       </p>
     </div>
   {/if}
-
   <!-- Metadata Display -->
   {#if metadata.took_ms}
     <div class="mt-1 flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
@@ -266,11 +244,9 @@ https://svelte.dev/e/attribute_invalid_name -->
       {/if}
     </div>
   {/if}
-
   <!-- AI-Enhanced Suggestions Dropdown -->
   {#if $open && (suggestions.length > 0 || taskSuggestions.length > 0)}
     <div
-      
       class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-auto"
       transitionFly={{ y: -5, duration: 150 }}
     >
@@ -291,12 +267,11 @@ https://svelte.dev/e/attribute_invalid_name -->
               <div class="flex items-center gap-3">
                 <!-- Icon -->
                 <div class="p-1.5 {getTypeColor(suggestion.type || 'default')} rounded-md">
-                  <svelte:component 
-                    this={getIconComponent(suggestion.source, suggestion.type)} 
-                    class="w-3.5 h-3.5" 
+                  <svelte:component
+                    this={getIconComponent(suggestion.source, suggestion.type)}
+                    class="w-3.5 h-3.5"
                   />
                 </div>
-                
                 <!-- Content -->
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between">
@@ -320,19 +295,16 @@ https://svelte.dev/e/attribute_invalid_name -->
                       {/if}
                     </div>
                   </div>
-                  
                   {#if suggestion.intent}
-                    <p class="text-xs text-gray-600 dark:text-gray-400 truncate mt-0.5">
+                    <p class="text-xs text-gray-600 dark:text-gray-400 truncate mt-0.5">,
                       Intent: {suggestion.intent}
                     </p>
                   {/if}
-                  
                   {#if suggestion.description}
                     <p class="text-xs text-gray-600 dark:text-gray-400 truncate mt-0.5">
                       {suggestion.description}
                     </p>
                   {/if}
-                  
                   <!-- Legacy Tags Support -->
                   {#if suggestion.tags && suggestion.tags.length > 0}
                     <div class="flex gap-1 mt-1">
@@ -349,7 +321,6 @@ https://svelte.dev/e/attribute_invalid_name -->
           {/each}
         </div>
       {/if}
-
       <!-- Task Suggestions -->
       {#if taskSuggestions.length > 0}
         <div class="p-2 border-t border-gray-200 dark:border-gray-600">
@@ -377,9 +348,9 @@ https://svelte.dev/e/attribute_invalid_name -->
                     {Math.round(task.confidence * 100)}%
                   </span>
                   <span class="px-1.5 py-0.5 text-xs rounded-full {
-                    task.priority === 'high' 
+                    task.priority === 'high'
                       ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                      : task.priority === 'medium' 
+                      : task.priority === 'medium'
                       ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
                       : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
                   }">
@@ -391,7 +362,6 @@ https://svelte.dev/e/attribute_invalid_name -->
           {/each}
         </div>
       {/if}
-
       <!-- User Profile -->
       {#if showUserProfile && userProfile}
         <div class="p-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600">
@@ -423,7 +393,6 @@ https://svelte.dev/e/attribute_invalid_name -->
       {/if}
     </div>
   {/if}
-
   <!-- No Results -->
   {#if $open && !loading && !error && suggestions.length === 0 && taskSuggestions.length === 0 && query.length >= 2}
     <div class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-4">
@@ -440,31 +409,25 @@ https://svelte.dev/e/attribute_invalid_name -->
     </div>
   {/if}
 </div>
-
 <style>
   /* Ensure proper z-index stacking */
-  :global(.melt-dialog-overlay) {;
+  :global(.melt-dialog-overlay) {
     z-index: 50;
   }
-  
   :global(.melt-dialog-content) {
     z-index: 51;
   }
-  
   /* Custom scrollbar for suggestions */
   .suggestions-scroll::-webkit-scrollbar {
     width: 6px;
   }
-  
   .suggestions-scroll::-webkit-scrollbar-track {
     background: #f1f1f1;
   }
-  
   .suggestions-scroll::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
   }
-  
   .suggestions-scroll::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }

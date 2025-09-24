@@ -1,7 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import { onMount } from 'svelte';
   import { scale, fly, fade } from 'svelte/transition';
   import { spring } from 'svelte/motion';
@@ -24,7 +22,6 @@
   } from 'lucide-svelte'
   import GamingAIButton from './GamingAIButton.svelte';
   import NierAIAssistant from './NierAIAssistant.svelte';
-
   interface AIMessage {
     id: string
     role: 'user' | 'assistant' | 'system'
@@ -38,7 +35,6 @@
       confidence?: number
     }
   }
-
   interface Props {
     caseContext?: {
       id: string;
@@ -47,12 +43,10 @@
     }
     isVisible?: boolean
   }
-
   let {
     caseContext,
     isVisible = true
   }: Props = $props()
-
   // Component States
   let showAIInterface = $state(false);
   let showNierAssistant = $state(false);
@@ -60,30 +54,25 @@
   let aiMode = $state<'idle' | 'thinking' | 'active'>('idle')
   let isConnected = $state(true);
   let systemStatus = $state<'online' | 'processing' | 'offline'>('online')
-
   // Gaming UI States
   let scanlinePosition = spring(0, { stiffness: 0.1, damping: 0.8 })
   let glitchEffect = $state(false);
   let terminalMode = $state(false);
-
   // AI Messages
   let messages = $state<AIMessage[]>([
     {
       id: '1',
       role: 'system',
-      content: 'YoRHa Legal AI System - Version 2.0.1 - Initialized\nConnection established with Case Management Database\nGemma3 Legal AI modules loaded successfully\nReady for legal analysis and consultation',;
-      timestamp: new Date(),;
+      content: 'YoRHa Legal AI System - Version 2.0.1 - Initialized\nConnection established with Case Management Database\nGemma3 Legal AI modules loaded successfully\nReady for legal analysis and consultation',
+      timestamp: new Date(),
       metadata: { confidence: 100, model: 'gemma3-legal' }
     }
   ])
-
   let inputValue = $state('');
   let isTyping = $state(false);
-
   // Real AI Integration
   async function sendMessage(content?: string) {
     if (!content || !content.trim()) return
-
     // Add user message
     const userMessage: AIMessage = {
       id: crypto.randomUUID(),
@@ -93,65 +82,54 @@
       status: 'sending';
     }
     messages = [...messages, userMessage]
-
     // Set typing state
     isTyping = true
     aiMode = 'thinking'
-
     try {
       const response = await fetch('/api/ai/chat', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({;
-          message: content,;
+        body: JSON.stringify({,
+          message: content
           }); const settings = {
             model: 'gemma3-legal',
             temperature: 0.1;
           }
         })
       })
-
       if (!response.ok) {
         throw new Error(`API Error: ${response.status}`)
       }
-
       const data = await response.json()
-
       // Add AI response
       const aiMessage: AIMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
         content: data.response,
         timestamp: new Date(),
-        status: 'sent',;
+        status: 'sent',
         metadata: {
           model: data.model,
           confidence: Math.floor(Math.random() * 20) + 80, // Simulate confidence
           processingTime: Math.floor(Math.random() * 1000) + 500;
         }
       }
-
       messages = [...messages, aiMessage]
-
       // Update user message status
       messages = messages.map(msg =>
         msg.id === userMessage.id ? { ...msg, status: 'sent' } : msg
       )
-
     } catch (error) {
       console.error('AI Chat Error:', error)
-
       // Add error message
       const errorMessage: AIMessage = {
         id: crypto.randomUUID(),
-        role: 'system',;
+        role: 'system',
         content: `ERROR: AI system unavailable - ${error instanceof Error ? error.message: 'Unknown error'}`,
-        timestamp: new Date(),;
+        timestamp: new Date(),
         metadata: { confidence: 0 }
       }
-
       messages = [...messages, errorMessage]
-
       // Update user message status
       messages = messages.map(msg =>
         msg.id === userMessage.id ? { ...msg, status: 'error' } : msg
@@ -162,7 +140,6 @@
       inputValue = ''
     }
   }
-
   // Gaming Interface Themes
   const themes = {
     yorha: {
@@ -188,15 +165,13 @@
       secondary: 'text-green-400',
       accent: 'text-lime-400',
       danger: 'text-red-500',
-      bg: 'bg-black',;
-      panel: 'bg-green-950/80',;
+      bg: 'bg-black',
+      panel: 'bg-green-950/80',
       border: 'border-green-500/40';
     }
   }
-
   let currentTheme = $state('yorha');
   let theme = $derived(themes[currentTheme as keyof typeof themes])
-
   // System monitoring data
   let systemMetrics = $state({
     cpuUsage: 23,
@@ -204,29 +179,24 @@
     aiProcessing: 12,
     caseAnalysis: 89
   });
-
   // Gaming-style AI responses
   const processAICommand = async (command: string) => {
     isTyping = true
     aiMode = 'thinking'
-
     // Add user message
     const userMessage: AIMessage = {
       id: Date.now.toString(),
       role: 'user',
-      content: command,
+      content: command
       timestamp: new Date(),
       status: 'sent';
     }
     messages = [...messages, userMessage]
-
     // Simulate processing with gaming effects
     await new Promise(resolve => setTimeout(resolve, 1200))
-
     // Generate contextual AI response
     let response = ''
     let confidence = Math.floor(Math.random() * 20) + 80
-
     if (command.toLowerCase().includes('analyze')) {
       response = `[ANALYSIS COMPLETE]\n\nDetected patterns in case evidence suggest high probability of digital tampering.\nCross-referencing with legal precedent database...\n\nRecommendation: Focus investigation on metadata inconsistencies found in Evidence-ID: ${Math.floor(Math.random() * 1000)}`
     } else if (command.toLowerCase().includes('search')) {
@@ -236,33 +206,28 @@
     } else {
       response = `[PROCESSING COMPLETE]\n\nQuery processed successfully.\nAnalysis confidence: ${confidence}%\n\nAdditional context required for enhanced analysis. Please provide specific case parameters or evidence identifiers.`
     }
-
     // Add AI response
     const aiResponse: AIMessage = {
       id: (Date.now() + 1).toString(),
       role: 'assistant',
-      content: response,
-      timestamp: new Date(),;
+      content: response
+      timestamp: new Date(),
       metadata: {
         tokens: response.length,
         model: 'YoRHa-Legal-AI-v2',
         processingTime: 1.2,
-        confidence: confidence;
+        confidence: confidenc;
       }
     }
-
     messages = [...messages, aiResponse]
     isTyping = false
     aiMode = 'active'
-
     // Reset to idle after showing result
     setTimeout(() => {
       aiMode = 'idle'
     }, 2000)
   }
-
   // Removed duplicate sendMessage arrow function
-
   const toggleInterface = () => {
     showAIInterface = !showAIInterface
     if (showAIInterface) {
@@ -271,12 +236,10 @@
       setTimeout(() => glitchEffect = false, 500)
     }
   }
-
   const openNierAssistant = () => {
     showNierAssistant = true
     showAIInterface = false
   }
-
   // System monitoring simulation
   $effect(() => {
     const interval = setInterval(() => {
@@ -285,11 +248,9 @@
       systemMetrics.aiProcessing = Math.floor(Math.random() * 25) + 5
       systemMetrics.caseAnalysis = Math.floor(Math.random() * 15) + 85
     }, 3000)
-
     return () => clearInterval(interval)
   })
 </script>
-
 <!-- Gaming AI Button -->
 <GamingAIButton
   bind:isVisible={isVisible}
@@ -298,7 +259,6 @@
   toggle={toggleInterface}
   settingsclick={() => terminalMode = !terminalMode}
 />
-
 <!-- Gaming AI Interface -->
 {#if showAIInterface}
   <div
@@ -315,7 +275,6 @@
       onclick={() => showAIInterface = false}
       keydown={e => { if (e.key === 'Enter' || e.key === ' ') showAIInterface = false; }}
     ></div>
-
     <!-- Main Interface Panel -->
     <div
       class="relative w-full max-w-4xl h-full max-h-[80vh] {theme.panel} backdrop-blur-md
@@ -336,7 +295,6 @@
               <p class="text-sm {theme.secondary}">Status: {systemStatus.toUpperCase()}</p>
             </div>
           </div>
-
           <!-- Case Context Display -->
           {#if caseContext}
             <div class="flex items-center gap-2 px-3 py-1 bg-blue-500/20 rounded-lg border border-blue-500/30">
@@ -345,7 +303,6 @@
             </div>
           {/if}
         </div>
-
         <!-- Header Controls -->
         <div class="flex items-center gap-2">
           <button
@@ -355,7 +312,6 @@
           >
             <Settings class="w-5 h-5 {theme.secondary}" />
           </button>
-
           <button
             onclick={openNierAssistant}
             class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
@@ -363,7 +319,6 @@
           >
             <Maximize2 class="w-5 h-5 {theme.secondary}" />
           </button>
-
           <button
             onclick={() => showAIInterface = false}
             class="p-2 rounded-lg hover:bg-red-500/20 transition-colors"
@@ -372,7 +327,6 @@
           </button>
         </div>
       </div>
-
       <!-- System Metrics Bar -->
       <div class="flex items-center gap-4 px-4 py-2 bg-gray-800/50 border-b {theme.border}">
         {#each Object.entries(systemMetrics) as [key, value]}
@@ -388,7 +342,6 @@
           </div>
         {/each}
       </div>
-
       <div class="flex h-full">
         <!-- Messages Area -->
         <div class="flex-1 flex flex-col">
@@ -413,7 +366,6 @@
                       {/if}
                     </div>
                   {/if}
-
                   <div
                     class="px-4 py-3 rounded-lg {message.role === 'user'
                       ? 'bg-blue-600 text-white ml-auto'
@@ -421,7 +373,6 @@
                       ? 'bg-gray-700/50 border border-gray-600/50 ' + theme.secondary: 'bg-gray-700/30 border border-gray-600/30 ' + theme.primary}"
                   >
                     <pre class="text-sm whitespace-pre-wrap font-mono">{message.content}</pre>
-
                     {#if message.metadata && message.role === 'assistant'}
                       <div class="flex gap-4 mt-2 pt-2 border-t border-gray-600/30 text-xs {theme.secondary}">
                         {#if message.metadata.processingTime}
@@ -439,7 +390,6 @@
                 </div>
               </div>
             {/each}
-
             <!-- Typing Indicator -->
             {#if isTyping}
               <div class="flex justify-start" in:fade>
@@ -455,7 +405,6 @@
               </div>
             {/if}
           </div>
-
           <!-- Input Area -->
           <div class="p-4 border-t {theme.border}">
             <form onsubmit={e => { e.preventDefault(); sendMessage(inputValue); }} class="flex gap-3">
@@ -470,7 +419,6 @@
                 />
                 <Activity class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 {theme.secondary} animate-pulse" />
               </div>
-
               <button
                 type="submit"
                 disabled={!inputValue.trim() || isTyping}
@@ -480,7 +428,6 @@
                 EXECUTE
               </button>
             </form>
-
             <!-- Quick Commands -->
             <div class="flex gap-2 mt-3">
               {#each ['analyze case', 'search evidence', 'system status', 'generate report'] as cmd}
@@ -495,11 +442,9 @@
             </div>
           </div>
         </div>
-
         <!-- Side Panel -->
         <div class="w-80 border-l {theme.border} bg-gray-800/30 p-4">
           <h3 class="text-sm font-bold {theme.primary} mb-4 uppercase">AI Control Panel</h3>
-
           <!-- AI Modes -->
           <div class="space-y-2 mb-6">
             {#each [
@@ -520,7 +465,6 @@
               </button>
             {/each}
           </div>
-
           <!-- System Monitor -->
           <div class="space-y-3">
             <h4 class="text-xs font-bold {theme.secondary} uppercase">System Monitor</h4>
@@ -533,7 +477,6 @@
           </div>
         </div>
       </div>
-
       <!-- Scanline Effect -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
         <div
@@ -544,7 +487,6 @@
     </div>
   </div>
 {/if}
-
 <!-- Nier Assistant Integration -->
 {#if showNierAssistant}
   <NierAIAssistant;
@@ -553,7 +495,6 @@
     close={() => showNierAssistant = false}
   />
 {/if}
-
 <style>
   @keyframes scanner {
     0% { top: 0%; opacity: 1; }
@@ -561,4 +502,3 @@
     100% { top: 100%; opacity: 1; }
   }
 </style>
-

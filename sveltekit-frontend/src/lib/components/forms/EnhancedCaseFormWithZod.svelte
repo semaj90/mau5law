@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -7,13 +7,12 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { enhance } from '$app/forms';
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
   import { z } from 'zod';
   import { writable } from 'svelte/store';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/input/Input.svelte';
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
@@ -34,7 +33,6 @@ https://svelte.dev/e/js_parse_error -->
   import { caseFormSchema, type CaseForm } from '$lib/schemas/forms';
   import { createCaseCreationForm } from '$lib/forms/superforms-xstate-integration';
   import type { SuperValidated } from 'sveltekit-superforms';
-
   // Svelte 5 Props Interface
   interface Props {
     data?: unknown; // SuperValidated<CaseForm>
@@ -47,7 +45,6 @@ https://svelte.dev/e/js_parse_error -->
     onerror?: (event: { message: string }) => void;
     ondraft?: (event: { data: CaseForm }) => void;
   }
-
   // Svelte 5 props with defaults
   let {
     data = undefined,
@@ -60,10 +57,9 @@ https://svelte.dev/e/js_parse_error -->
     onerror,
     ondraft
   }: Props = $props();
-
   // Enhanced form integration with XState
   const formIntegration = createCaseCreationForm(data, {
-    autoSave: enableAutoSave,
+    autoSave: enableAutoSave
     autoSaveDelay: 2000,
     resetOnSuccess: !editMode,
     onSubmit: async (formData) => {
@@ -77,23 +73,19 @@ https://svelte.dev/e/js_parse_error -->
       componentError = new Error(error);
     }
   });
-
   const { form, errors, enhance: formEnhance, submitting, message, delayed } = formIntegration.form;
-  const { isValid, isSubmitting, progress } = formIntegration;
-
+  const { isValid, isSubmitting, progress } = formIntegratio;
   // Local state using Svelte 5 runes
   let showAdvanced = $state(false);
   let uploadedFiles = $state<File[]>([]);
   let validationStatus = $state<'idle' | 'validating' | 'valid' | 'invalid'>('idle');
   let componentError = $state<Error | null>(null);
-
   // Priority levels with colors
   const priorityLevels = [
     { value: 'low', label: 'Low Priority', color: 'text-green-600' },
     { value: 'medium', label: 'Medium Priority', color: 'text-yellow-600' },
     { value: 'high', label: 'High Priority', color: 'text-red-600' }
   ];
-
   // Status options
   const statusOptions = [
     { value: 'draft', label: 'Draft', description: 'Case is being prepared' },
@@ -101,7 +93,6 @@ https://svelte.dev/e/js_parse_error -->
     { value: 'pending', label: 'Pending', description: 'Awaiting review or action' },
     { value: 'closed', label: 'Closed', description: 'Case is completed' }
   ];
-
   // Enhanced form validation with real-time feedback
   $effect(() => {
     if (enableRealTimeValidation && $form) {
@@ -112,11 +103,9 @@ https://svelte.dev/e/js_parse_error -->
       }, 300);
     }
   });
-
   // Auto-save indicator
   let lastSaved = $state<Date | null>(null);
   let isAutoSaving = $state(false);
-
   // Enhanced file upload handler
   function handleFileUpload(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -124,12 +113,10 @@ https://svelte.dev/e/js_parse_error -->
       uploadedFiles = [...uploadedFiles, ...Array.from(target.files)];)
     }
   }
-
   // Remove uploaded file
   function removeFile(index: number) {
     uploadedFiles = uploadedFiles.filter((_, i) => i !== index);
   }
-
   // Format file size
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -138,7 +125,6 @@ https://svelte.dev/e/js_parse_error -->
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   // Enhanced form submission with progress tracking
   function createEnhancedSubmit() {
     return enhance(({ formData, action, cancel }) => {
@@ -146,19 +132,16 @@ https://svelte.dev/e/js_parse_error -->
       uploadedFiles.forEach((file, index) => {
         formData.append(`attachments[${index}]`, file);
       });
-
       // Add metadata
       formData.append.toISOString(),
         userAgent: navigator.userAgent,
         validationStatus,
         autoSaved: lastSaved !== null
       }));
-
       return async ({ result, update }) => {
         if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'success') {
           // Handle success
           if (onsuccess) onsuccess({ caseItem: (result as { type?: unknown; data?: unknown; error?: unknown }).data });
-
           // Reset form if not in edit mode
           if (!editMode) {
             uploadedFiles = [];
@@ -170,14 +153,12 @@ https://svelte.dev/e/js_parse_error -->
           if (onerror) onerror({ message: errorMsg });
           componentError = new Error(errorMsg);
         }
-
         // Update the form
         await update();
       };
     });
   }
 </script>
-
 {#if !componentError}
 <Card class="w-full max-w-4xl mx-auto">
   <CardHeader>
@@ -193,7 +174,6 @@ https://svelte.dev/e/js_parse_error -->
           </CardDescription>
         </div>
       </div>
-
       <!-- Progress indicator -->
       {#if $progress > 0}
         <div class="flex items-center space-x-2">
@@ -208,7 +188,6 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   </CardHeader>
-
   <CardContent>
     <!-- Auto-save status -->
     {#if enableAutoSave && (lastSaved || isAutoSaving)}
@@ -222,7 +201,6 @@ https://svelte.dev/e/js_parse_error -->
             <span class="text-sm">Last saved: {lastSaved.toLocaleTimeString()}</span>
           {/if}
         </div>
-
         <!-- Real-time validation status -->
         {#if enableRealTimeValidation}
           <div class="flex items-center space-x-2">
@@ -240,7 +218,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     {/if}
-
     <form
       method="POST"
       action={submitAction}
@@ -271,7 +248,6 @@ https://svelte.dev/e/js_parse_error -->
             </p>
           {/if}
         </div>
-
         <!-- Priority -->
         <div class="space-y-2">
           <Label for="priority" class="flex items-center space-x-2">
@@ -295,7 +271,6 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </div>
       </div>
-
       <!-- Title -->
       <div class="space-y-2">
         <Label for="title">Case Title *</Label>
@@ -311,7 +286,6 @@ https://svelte.dev/e/js_parse_error -->
           <p class="text-sm text-destructive">{$errors.title[0]}</p>
         {/if}
       </div>
-
       <!-- Description -->
       <div class="space-y-2">
         <Label for="description">Description</Label>
@@ -331,7 +305,6 @@ https://svelte.dev/e/js_parse_error -->
           {$form.description?.length || 0}/1000 characters
         </p>
       </div>
-
       <!-- Advanced Options -->
       <div class="border-t pt-6">
         <Button
@@ -342,7 +315,6 @@ https://svelte.dev/e/js_parse_error -->
         >
           {showAdvanced ? 'Hide' : 'Show'} Advanced Options
         </Button>
-
         {#if showAdvanced}
           <div class="space-y-6 border-l-2 border-muted pl-6">
             <!-- Status and Assignment -->
@@ -366,7 +338,6 @@ https://svelte.dev/e/js_parse_error -->
                   </Select.Content>
                 </Select.Root>
               </div>
-
               <!-- Due Date -->
               <div class="space-y-2">
                 <Label for="dueDate" class="flex items-center space-x-2">
@@ -386,7 +357,6 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
               </div>
             </div>
-
             <!-- Tags -->
             <div class="space-y-2">
               <Label for="tags">Tags (max 10)</Label>
@@ -400,7 +370,6 @@ https://svelte.dev/e/js_parse_error -->
                 Use tags to categorize and organize cases
               </p>
             </div>
-
             <!-- Options -->
             <div class="flex flex-col space-y-3">
               <div class="flex items-center space-x-2">
@@ -411,7 +380,6 @@ https://svelte.dev/e/js_parse_error -->
                 />
                 <Label for="isConfidential">Mark as confidential</Label>
               </div>
-
               <div class="flex items-center space-x-2">
                 <Checkbox
                   id="notifyAssignee"
@@ -424,7 +392,6 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/if}
       </div>
-
       <!-- File Upload Section -->
       <div class="border-t pt-6">
         <div class="space-y-4">
@@ -432,7 +399,6 @@ https://svelte.dev/e/js_parse_error -->
             <Upload class="h-5 w-5" />
             <Label class="text-base font-medium">Case Documents</Label>
           </div>
-
           <!-- File Upload Input -->
           <div class="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6">
             <div class="text-center">
@@ -456,7 +422,6 @@ https://svelte.dev/e/js_parse_error -->
               </p>
             </div>
           </div>
-
           <!-- Uploaded Files List -->
           {#if uploadedFiles.length > 0}
             <div class="space-y-2">
@@ -486,7 +451,6 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </div>
       </div>
-
       <!-- Form Actions -->
       <div class="flex items-center justify-between pt-6 border-t">
         <div class="flex items-center space-x-4">
@@ -498,12 +462,10 @@ https://svelte.dev/e/js_parse_error -->
             </Button>
           {/if}
         </div>
-
         <div class="flex items-center space-x-3">
           <Button type="button" variant="ghost">
             Cancel
           </Button>
-
           <Button
             type="submit"
             disabled={$submitting || !$isValid}
@@ -522,7 +484,6 @@ https://svelte.dev/e/js_parse_error -->
   </CardContent>
 </Card>
 {/if}
-
 {#if componentError}
   <div class="error-boundary bg-red-50 border border-red-200 rounded-lg p-6 m-4">
     <h2 class="text-lg font-semibold text-red-800 mb-2">Form Error</h2>
@@ -537,5 +498,4 @@ https://svelte.dev/e/js_parse_error -->
     </Button>
   </div>
 {/if}
-
 <style lang="postcss">/*$$__STYLE_CONTENT__$$*/</style>

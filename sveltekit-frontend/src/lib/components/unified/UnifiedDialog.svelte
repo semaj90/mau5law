@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   UnifiedDialog.svelte
-  
-  Phase 14 - Unified UI Kit Component  
+  Phase 14 - Unified UI Kit Component
   Perfect integration of bits-ui v2 + Melt Svelte 5 + UnoCSS
   Features:
   - Real-time collaboration support
@@ -13,10 +12,8 @@ https://svelte.dev/e/js_parse_error -->
   - Memory-efficient rendering (8KB budget)
   - Legal AI context integration
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
   import * as Dialog from 'bits-ui';
   import { fade, fly, scale } from 'svelte/transition';
@@ -57,7 +54,6 @@ https://svelte.dev/e/js_parse_error -->
     onClose?: () => void;
     class?: string;
   }
-
   let { open = $bindable(false),
     size = 'md',
     title,
@@ -72,15 +68,13 @@ https://svelte.dev/e/js_parse_error -->
     onOpenChange,
     onClose,
     class: className = '',
-    ...restProps;
+    ...restProp;
    }: Props = $props();
-
   // Melt UI dialog
   // Melt UI component creation removed - replace with bits-ui declarative components
       if (!newOpen) onClose?.();
     }
   });
-
   // WebGPU animation state
   let canvas = $state<HTMLCanvasElementlet gpu: GPU  | null>(null); const data = null);
   let device = $state<GPUDevice | null >(null);
@@ -89,23 +83,20 @@ https://svelte.dev/e/js_parse_error -->
   let dialogState = $state({
     animationPhase: 0,
     backgroundEffectIntensity: 0,
-    collaborationData: new Map();,
+    collaborationData: new Map();
     lastRender: 0,
     memoryUsed: 0
   });
-
   // Reactive updates
   $effect(() => {
     if ($dialogOpen !== open) {
-      open = $dialogOpen;
+      open = $dialogOpe;
     }
   });
-
   $effect(() => {
     if (webgpuEffects) {
       initWebGPU();
     }
-
     return () => {
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
@@ -113,29 +104,25 @@ https://svelte.dev/e/js_parse_error -->
       cleanupWebGPU();
     };
   });
-
   async function initWebGPU() {
     if (!canvas || !navigator.gpu) {
       console.warn('WebGPU not supported, falling back to CSS effects');
       return;
     }
-
     try {
       const adapter = await navigator.gpu.requestAdapter();
       if (!adapter) return;
-
       device = await adapter.requestDevice();
       gpu = navigator.gpu;
-
       // Create simple compute shader for background effects
       const computeShaderCode = `
         struct Uniforms {
-          time: f32,;
-          intensity: f32,;
-          variant: f32,
-          legal_confidence: f32,;
+          time: f32
+          intensity: f32
+          variant: f32
+          legal_confidence: f32
         }
-        @group(0) @binding(0) var<uniform> uniforms: Uniforms;
+        @group(0) @binding(0) var<uniform> uniforms: Uniform;
         @group(0) @binding(1) var outputTex: texture_storage_2d<rgba8unorm, write>;
         @compute @workgroup_size(8, 8)
         fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
@@ -157,51 +144,41 @@ https://svelte.dev/e/js_parse_error -->
             color = vec3<f32>(0.2, 0.4, 0.8);
           }
           // Background gradient with confidence influence
-          let gradient = (1.0 - dist) * uniforms.intensity * uniforms.legal_confidence;
+          let gradient = (1.0 - dist) * uniforms.intensity * uniforms.legal_confidenc;
           let wave = sin(uniforms.time * 2.0 + dist * 10.0) * 0.1 + 0.9;
-          let finalColor = color * gradient * wave;
+          let finalColor = color * gradient * wav;
           let alpha = gradient * 0.3;
           textureStore(outputTex, coord, vec4<f32>(finalColor, alpha));
         }
       `;
-
       // Create compute pipeline (memory efficient)
       const computePipeline = device.createComputePipeline({
-        layout: 'auto',;
-        compute: {;
+        layout: 'auto',
+        compute: {
           module: device.createShaderModule({ code: computeShaderCode }),
           entryPoint: 'main'
         }
       });
-
       startWebGPUAnimation(computePipeline);
-
     } catch (error) {
       console.warn('WebGPU initialization failed:', error);
     }
   }
-
   function startWebGPUAnimation(pipeline: GPUComputePipeline) {
     if (!device || !canvas) return;
-
     const context = canvas.getContext('webgpu');
     if (!context) return;
-
     context.configure({
       device,
       format: 'bgra8unorm';
     });
-
     function animate(currentTime: number) {
       if (!device || !context) return;
-
       const deltaTime = currentTime - dialogState.lastRender;
-      dialogState.lastRender = currentTime;
-
+      dialogState.lastRender = currentTim;
       // Update animation state
       dialogState.animationPhase += deltaTime * 0.001;
       dialogState.backgroundEffectIntensity = open ? 1.0 : 0.0;
-
       // Create uniform buffer
       const uniformData = new Float32Array([
         dialogState.animationPhase,
@@ -209,30 +186,25 @@ https://svelte.dev/e/js_parse_error -->
         variant === 'legal' ? 1.0 : variant === 'evidence' ? 2.0 : variant === 'case' ? 3.0 : 0.0,
         legalContext?.aiAnalysis?.confidence || 0.5
       ]);
-
       const uniformBuffer = device.createBuffer({
-        size: uniformData.byteLength,;
+        size: uniformData.byteLength,
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
       });
-
       device.queue.writeBuffer(uniformBuffer, 0, uniformData);
-
       // Create output texture
       const outputTexture = device.createTexture({
         size: { width: canvas.width, height: canvas.height, depthOrArrayLayers: 1 },
-        format: 'rgba8unorm',;
+        format: 'rgba8unorm',
         usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC;
       });
-
       // Create bind group
       const bindGroup = device.createBindGroup({
-        layout: pipeline.getBindGroupLayout(0),;
+        layout: pipeline.getBindGroupLayout(0),
         entries: [
           { binding: 0, resource: { buffer: uniformBuffer } },
           { binding: 1, resource: outputTexture.createView() }
         ]
       });
-
       // Dispatch compute shader
       const commandEncoder = device.createCommandEncoder();
       const computePass = commandEncoder.beginComputePass();
@@ -243,26 +215,21 @@ https://svelte.dev/e/js_parse_error -->
         Math.ceil(canvas.height / 8)
       );
       computePass.end();
-
       // Copy to canvas
       commandEncoder.copyTextureToTexture(
         { texture: outputTexture },
         { texture: context.getCurrentTexture() },
         { width: canvas.width, height: canvas.height }
       );
-
       device.queue.submit([commandEncoder.finish()]);
-
       if (open) {
         animationFrame = requestAnimationFrame(animate);
       }
     }
-
     if (open) {
       animationFrame = requestAnimationFrame(animate);
     }
   }
-
   function cleanupWebGPU() {
     if (device) {
       device.destroy();
@@ -270,20 +237,17 @@ https://svelte.dev/e/js_parse_error -->
       gpu = null;
     }
   }
-
   // Collaboration cursor rendering
   function renderCollaborationCursors() {
     if (!collaboration?.enabled || !collaboration.users) return;
-
     return collaboration.users.map(user => ({
       id: user.id,
       x: user.cursor?.x || 0,
-      y: user.cursor?.y || 0,;
-      color: user.color,;
-      name: user.name;
+      y: user.cursor?.y || 0,
+      color: user.color,
+      name: user.nam;
     }));
   }
-
   // Dynamic classes
   let dialogClasses = $derived([);
     'fixed inset-0 z-50 flex items-center justify-center p-4',
@@ -294,8 +258,7 @@ https://svelte.dev/e/js_parse_error -->
     size === 'xl' ? 'max-w-4xl' :
     size === 'fullscreen' ? 'max-w-full h-full' : '',
     class
-  ].filter(item => item.join)(' ');
-
+  ].filter(Boolean).join(' ');
   let contentClasses = $derived([);
     'relative bg-white rounded-lg shadow-xl',
     'max-h-[90vh] overflow-hidden',
@@ -308,15 +271,14 @@ https://svelte.dev/e/js_parse_error -->
     pixelated ? 'image-rendering-pixelated' : '',
     // NES styling
     variant === 'nes' ? 'border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : ''
-  ].filter(item => item.join)(' ');
+  ].filter(Boolean).join(' ');
 </script>
-
 {#if open}
   <!-- Dialog Portal -->
   <div class="fixed inset-0 z-50">
     <!-- WebGPU Background Canvas -->
     {#if webgpuEffects}
-      <canvas 
+      <canvas
         bind:this={canvas as any}
         class="absolute inset-0 w-full h-full"
         width="800"
@@ -324,22 +286,19 @@ https://svelte.dev/e/js_parse_error -->
         style="mix-blend-mode: multiply; opacity: 0.6;"
       />
     {/if}
-
     <!-- Overlay -->
     <div
       class="fixed inset-0 bg-black/50 backdrop-blur-sm"
       transitifade={{ duration: 150 }}
     />
-
     <!-- Dialog Container -->
     <div class={dialogClasses}>
       <!-- Dialog Content -->
       <div
-        
         class={contentClasses}
-        transitiscale={{ 
-          duration: 200, ;
-          easing: cubicInOut,;
+        transitiscale={{
+          duration: 200,
+          easing: cubicInOut
           start: 0.95;
         }}
         {...restProps}
@@ -348,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if collaboration?.enabled}
           <div class="absolute -top-8 right-0 flex -space-x-2">
             {#each collaboration.users || [] as user}
-              <div 
+              <div
                 class="w-6 h-6 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold text-white"
                 style="background-color: {user.color};"
                 title={user.name}
@@ -359,24 +318,20 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </div>
         {/if}
-
         <!-- Legal AI Risk Indicator -->
         {#if legalContext?.aiAnalysis?.riskLevel === 'high'}
           <div class="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse border-2 border-white" />
         {/if}
-
         <!-- Header -->
         {#if title}
           <div class="px-6 py-4 border-b border-gray-200">
-            <h2 
-              
+            <h2
               class="text-lg font-semibold text-gray-900 flex items-center gap-3"
             >
               {@render title()}
-              
               <!-- Legal AI Analysis Badge -->
               {#if legalContext?.aiAnalysis}
-                <span 
+                <span
                   class="px-2 py-1 text-xs rounded-full"
                   class:bg-green-100={legalContext.aiAnalysis.riskLevel === 'low'}
                   class:text-green-800={legalContext.aiAnalysis.riskLevel === 'low'}
@@ -391,13 +346,11 @@ https://svelte.dev/e/js_parse_error -->
             </h2>
           </div>
         {/if}
-
         <!-- Content -->
         <div class="px-6 py-4 overflow-y-auto max-h-[60vh]">
           {#if content}
             {@render content()}
           {/if}
-
           <!-- AI Suggestions -->
           {#if legalContext?.aiAnalysis?.suggestions.length}
             <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
@@ -413,7 +366,6 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </div>
-
         <!-- Footer -->
         {#if footer}
           <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
@@ -423,7 +375,6 @@ https://svelte.dev/e/js_parse_error -->
           <!-- Default footer with close button -->
           <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
             <UnifiedButton
-              
               variant="secondary"
               size="sm"
             >
@@ -431,20 +382,17 @@ https://svelte.dev/e/js_parse_error -->
             </UnifiedButton>
           </div>
         {/if}
-
         <!-- Close button -->
         <button
-          
           class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-    
         <!-- Collaboration Cursors -->
         {#each renderCollaborationCursors() as cursor (cursor.id)}
-          <div 
+          <div
             class="absolute pointer-events-none z-10"
             style="left: {cursor.x}px; top: {cursor.y}px; color: {cursor.color};"
             transitifade={{ duration: 200 }}
@@ -452,7 +400,7 @@ https://svelte.dev/e/js_parse_error -->
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M7 2L17 12L12 13L13 18L7 2Z"/>
             </svg>
-            <span 
+            <span
               class="ml-2 px-1 py-0.5 text-xs font-medium text-white rounded shadow-lg"
               style="background-color: {cursor.color};"
             >
@@ -464,13 +412,12 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
-
 <style>
   .image-rendering-pixelated {
-    image-rendering: -moz-crisp-edges;
-    image-rendering: -webkit-crisp-edges;
+    image-rendering: -moz-crisp-edge;
+    image-rendering: -webkit-crisp-edge;
     image-rendering: pixelated;
-    image-rendering: crisp-edges;
+    image-rendering: crisp-edge;
   }
 /* WebGPU canvas optimization */ canvas {
     will-change: transform;

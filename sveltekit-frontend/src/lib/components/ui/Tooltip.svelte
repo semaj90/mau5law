@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
   interface Props {
     content?: string;
@@ -8,17 +7,14 @@
     disabled?: boolean;
     children?: import('svelte').Snippet;
   }
-
   let {
     content = "",
     placement = "top",
     disabled = false,
     children
   }: Props = $props();
-
   let showTooltip = $state(false);
   let timeoutId = $state<ReturnType<typeof setTimeout> | null>(null);
-
   function handleMouseEnter() {
     if (disabled) return;
     timeoutId = setTimeout(() => {
@@ -30,7 +26,6 @@
     showTooltip = false;
   }
 </script>
-
 <div
   class="space-y-4"
   role="tooltip"
@@ -44,7 +39,6 @@
     </div>
   {/if}
 </div>
-
 <style>/* @unocss-include */ .tooltip-wrapper {
     position: relative;
     display: inline-block;
@@ -89,4 +83,3 @@
     margin-left: 0.5rem;
 }
 </style>
-

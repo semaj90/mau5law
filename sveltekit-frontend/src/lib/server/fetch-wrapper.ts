@@ -1,17 +1,14 @@
-// Unified fetch wrapper with timeout, retry, JSON guard;
+// Unified fetch wrapper with timeout, retry, JSON guard
 export interface FetchOptions extends RequestInit {
   timeoutMs?: number;
   retries?: number;
   retryDelayMs?: number;
   expectedStatus?: number | number[];
 }
-
 export async function safeFetchJson<T=any>(url: string, options: FetchOptions = {}): Promise<any> {
   const { timeoutMs = 10000, retries = 1, retryDelayMs = 250, expectedStatus } = options;
-
   let attempt = 0;
   let lastError: any;
-
   while (attempt <= retries) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -23,11 +20,9 @@ export async function safeFetchJson<T=any>(url: string, options: FetchOptions = 
           ? expectedStatus.includes(res.status)
           : res.status === expectedStatus
         : res.ok;
-
       let data: any;
       const text = await res.text();
       try { data = text ? JSON.parse(text) : undefined; } catch { data = text as any; }
-
       if (!acceptable) {
         return { ok: false, status: res.status, data, error: `Unexpected status ${res.status}` };
       }

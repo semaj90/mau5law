@@ -1,15 +1,13 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Legal Case Manager with Production Features -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, tick } from 'svelte';
     import { page } from '$app/stores';
     import { goto } from '$app/navigation';
     import { dev } from '$app/environment';
-
     // Import subcomponents
     import CaseInfoForm from './CaseInfoForm.svelte';
     import DocumentUploadForm from './DocumentUploadForm.svelte';
@@ -18,11 +16,9 @@ https://svelte.dev/e/js_parse_error -->
     import ReviewSubmitForm from './ReviewSubmitForm.svelte';
     import ProgressIndicator from './subcomponents/ProgressIndicator.svelte';
     import LoadingSpinner from './LoadingSpinner.svelte';
-
     // Import enhanced services
     import { ocrProcessor } from '$lib/services/enhanced-ocr-processor';
     import { caseStore, type CaseData } from '$lib/stores/caseStore';
-
     // Extended case data interface for the form
     interface ExtendedCaseData extends Partial<CaseData> {
         clientInfo?: {
@@ -37,7 +33,6 @@ https://svelte.dev/e/js_parse_error -->
     }
     import { notifications } from '$lib/stores/notification';
     import { analyticsStore } from '$lib/stores/analyticsStore';
-
     // Types
     interface StepConfig {
         id: string;
@@ -47,24 +42,21 @@ https://svelte.dev/e/js_parse_error -->
         required: boolean;
         estimatedTime: number; // in minutes
     }
-
     interface ValidationResult {
         isValid: boolean;
         errors: string[];
         warnings: string[];
     }
-
     // Reactive state using Svelte 5 runes
     let currentStep = $state(0);
     let isProcessing = $state(false);
     let autoSaveEnabled = $state(true);
     let validationResults = $state<Record<number, ValidationResult>(0)>( );
     let processingQueue = $state<string[]>([]);
-
     // Case data with enhanced tracking using Svelte 5 runes
     let caseData = $state<ExtendedCaseData>({
         id: '',
-        title: '',;
+        title: '',
         description: '',
         clientInfo: {
             name: '',
@@ -74,62 +66,60 @@ https://svelte.dev/e/js_parse_error -->
         },
         documents: [],
         evidence: [],
-        aiAnalysis: null,
+        aiAnalysis: null
         status: 'draft',
         priority: 'medium',
-        tags: [],;
+        tags: [],
         metadata: {
             createdAt: new Date(),
             updatedAt: new Date(),
-            version: 1,;
+            version: 1,
             workflow: 'standard';
         }
     });
-
     // Step configuration
     const steps: StepConfig[] = [
         {
             id: 'case-info',
             title: 'Case Information',
             description: 'Basic case details and client information',
-            component: CaseInfoForm,
-            required: true,
+            component: CaseInfoForm
+            required: true
             estimatedTime: 5;
         },
         {
             id: 'document-upload',
             title: 'Document Upload',
             description: 'Upload and process case documents',
-            component: DocumentUploadForm,
-            required: true,
+            component: DocumentUploadForm
+            required: true
             estimatedTime: 10;
         },
         {
             id: 'evidence-analysis',
             title: 'Evidence Analysis',
             description: 'Analyze and categorize evidence',
-            component: EvidenceAnalysisForm,
-            required: false,
+            component: EvidenceAnalysisForm
+            required: false
             estimatedTime: 15;
         },
         {
             id: 'ai-analysis',
             title: 'AI Analysis',
             description: 'AI-powered case analysis and recommendations',
-            component: AIAnalysisForm,
-            required: false,
+            component: AIAnalysisForm
+            required: false
             estimatedTime: 8;
         },
         {
             id: 'review-submit',
             title: 'Review & Submit',
-            description: 'Final review and case submission',;
-            component: ReviewSubmitForm,;
-            required: true,
+            description: 'Final review and case submission',
+            component: ReviewSubmitForm
+            required: true
             estimatedTime: 5;
         }
     ];
-
     // Derived stores converted to Svelte 5 $derived
     let totalSteps = $derived(steps.length);
     let progressPercentage = $derived(
@@ -141,46 +131,41 @@ https://svelte.dev/e/js_parse_error -->
     let estimatedTimeRemaining = $derived(
         steps.slice.reduce((sum, step) => sum + step.estimatedTime, 0)
     );
-
     // Auto-save functionality using Svelte 5 $effect
   let autoSaveTimeout = $state<NodeJS.Timeoutconst AUTOSAVE_DELAY  | null>(null); const data = 3000); // 3 seconds
-
     $effect(() => {
         if (autoSaveEnabled && caseData) {
             clearTimeout(autoSaveTimeout);
             autoSaveTimeout = setTimeout(saveProgress, AUTOSAVE_DELAY);
         }
     });
-
     // Methods
     async function saveProgress(): Promise<void> {
         try {
             await caseStore.updateCase(caseData.id, caseData);
             notifications.add({
                 type: 'info',
-                title: 'Auto-save',;
-                message: 'Progress auto-saved',;
+                title: 'Auto-save',
+                message: 'Progress auto-saved',
                 duration: 2000;
             });
         } catch (error) {
             console.error('Auto-save failed:', error);
             notifications.add({
                 type: 'error',
-                title: 'Auto-save Error',;
-                message: 'Auto-save failed. Please save manually.',;
+                title: 'Auto-save Error',
+                message: 'Auto-save failed. Please save manually.',
                 duration: 5000;
             });
         }
     }
-
     async function validateCurrentStep(): Promise<ValidationResult> {
         const stepConfig = currentStepConfig;
         const result: ValidationResult = {
-            isValid: true,
-            errors: [],;
+            isValid: true
+            errors: [],
             warnings: [];
         };
-
         switch (stepConfig.id) {
             case 'case-info':
                 if (!caseData.title.trim()) {
@@ -193,25 +178,21 @@ https://svelte.dev/e/js_parse_error -->
                     (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).warnings.push('Client email is recommended');
                 }
                 break;
-
             case 'document-upload':
                 if (caseData.documents.length === 0) {
                     (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).errors.push('At least one document is required');
                 }
                 break;
-
             case 'evidence-analysis':
                 if (caseData.evidence.length === 0) {
                     (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).warnings.push('No evidence items found');
                 }
                 break;
-
             case 'ai-analysis':
                 if (!caseData.aiAnalysis) {
                     (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).warnings.push('AI analysis not completed');
                 }
                 break;
-
             case 'review-submit':
                 // Final validation
                 if (!caseData.title || !caseData.clientInfo.name) {
@@ -219,75 +200,62 @@ https://svelte.dev/e/js_parse_error -->
                 }
                 break;
         }
-
         (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).isValid = (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).errors.length === 0;
-
         // Update validation store
         validationResults[currentStep] = result;
-
         return result;
     }
-
     async function nextStep(): Promise<void> {
         isProcessing = true;
-
         try {
             // Validate current step
             const validation = await validateCurrentStep();
-
             if (!validation.isValid) {
                 notifications.add({
                     type: 'error',
-                    title: 'Validation Error',;
-                    message: `Please fix errors: ${validation.errors.join(', ')}`,;
+                    title: 'Validation Error',
+                    message: `Please fix errors: ${validation.errors.join(', ')}`,
                     duration: 5000;
                 });
                 return;
             }
-
             // Show warnings if any
             if (validation.warnings.length > 0) {
                 notifications.add({
                     type: 'warning',
-                    title: 'Validation Warning',;
-                    message: `Warnings: ${validation.warnings.join(', ')}`,;
+                    title: 'Validation Warning',
+                    message: `Warnings: ${validation.warnings.join(', ')}`,
                     duration: 4000;
                 });
             }
-
             // Save progress
             await saveProgress();
-
             // Track analytics
             analyticsStore.logEvent({
-                type: 'case_step_completed',;
-                step: currentStep,
+                type: 'case_step_completed',
+                step: currentStep
                 stepId: currentStepConfig.id,
                 caseId: caseData.id;
             });
-
             // Move to next step
             if (currentStep < steps.length - 1) {
                 currentStep += 1;
-
                 // Smooth scroll to top
                 await tick();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-
         } catch (error) {
             console.error('Error advancing to next step:', error);
             notifications.add({
                 type: 'error',
-                title: 'Step Error',;
-                message: 'Failed to advance to next step',;
+                title: 'Step Error',
+                message: 'Failed to advance to next step',
                 duration: 5000;
             });
         } finally {
             isProcessing = false;
         }
     }
-
     async function previousStep(): Promise<void> {
         if (currentStep > 0) {
             currentStep -= 1;
@@ -295,28 +263,24 @@ https://svelte.dev/e/js_parse_error -->
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
-
     async function jumpToStep(stepIndex: number): Promise<void> {
         if (stepIndex >= 0 && stepIndex < steps.length) {
             // Validate all previous steps
   let canJump = $state(true);
-
             for (let i = 0; i < stepIndex; i++) {
                 currentStep = i;
                 const validation = await validateCurrentStep();
-
                 if (!validation.isValid && steps[i].required) {
                     notifications.add({
                         type: 'error',
-                        title: 'Step Required',;
-                        message: `Cannot skip required step: ${steps[i].title}`,;
+                        title: 'Step Required',
+                        message: `Cannot skip required step: ${steps[i].title}`,
                         duration: 5000;
                     });
                     canJump = false;
                     break;
                 }
             }
-
             if (canJump) {
                 currentStep = stepIndex;
                 await tick();
@@ -324,71 +288,59 @@ https://svelte.dev/e/js_parse_error -->
             }
         }
     }
-
     async function submitCase(): Promise<void> {
         isProcessing = true;
-
         try {
             // Final validation
             const validation = await validateCurrentStep();
-
             if (!validation.isValid) {
                 throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
             }
-
             // Update case status
             caseData.status = 'submitted';
             caseData.metadata = {
                 ...(typeof caseData.metadata === 'object' && caseData.metadata !== null ? caseData.metadata: ),
                 submittedAt: new Date()
             };
-
             // Submit to backend
             const response = await fetch('/api/cases/submit', {
-                method: 'POST',;
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                },;
+                },
                 body: JSON.stringify(caseData);
             });
-
             if (!(response as { ok?: unknown; json?: unknown }).ok) {
                 throw new Error('Failed to submit case');
             }
-
             const result = await (response as { ok?: unknown; json?: unknown }).json();
-
             // Track analytics
             analyticsStore.logEvent.id,
                 stepCount: steps.length,
                 documentCount: caseData.documents.length,
                 evidenceCount: caseData.evidence.length
             });
-
             // Show success notification
             notifications.add({
                 type: 'success',
-                title: 'Success',;
-                message: 'Case submitted successfully!',;
+                title: 'Success',
+                message: 'Case submitted successfully!',
                 duration: 5000;
             });
-
             // Redirect to case view
             await goto(`/cases/${(result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).id}`);
-
         } catch (error) {
             console.error('Case submission failed:', error);
             notifications.add({
                 type: 'error',
-                title: 'Submission Error',;
-                message: 'Failed to submit case. Please try again.',;
+                title: 'Submission Error',
+                message: 'Failed to submit case. Please try again.',
                 duration: 5000;
             });
         } finally {
             isProcessing = false;
         }
     }
-
     async function resetCase(): Promise<void> {
         if (confirm('Are you sure you want to reset all case data? This cannot be undone.')) {
             caseData.id = '';
@@ -396,8 +348,8 @@ https://svelte.dev/e/js_parse_error -->
             caseData.description = '';
             caseData.clientInfo = {
                 name: '',
-                email: '',;
-                phone: '',;
+                email: '',
+                phone: '',
                 address: '';
             };
             caseData.documents = [];
@@ -409,47 +361,40 @@ https://svelte.dev/e/js_parse_error -->
             caseData.metadata = {
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                version: 1,;
+                version: 1,
                 workflow: 'standard';
             };
-
             currentStep = 0;
             validationResults = {};
             notifications.add({
                 type: 'info',
-                title: 'Reset',;
-                message: 'Case data reset',;
+                title: 'Reset',
+                message: 'Case data reset',
                 duration: 3000;
             });
         }
     }
-
     // Voice commands setup (if supported)
     let recognition = $state<any | null>(null);
     let isListening = $state(false);
-
     function setupVoiceCommands(): void {
         if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
             recognition = new (window as any).webkitSpeechRecognition();
             recognition.continuous = false;
             recognition.interimResults = false;
             recognition.lang = 'en-US';
-
             recognition.onresult = (event: unknown) => {
                 const command = event.results[0][0].transcript.toLowerCase();
                 handleVoiceCommand(command);
             };
-
             recognition.onerror = () => {
                 isListening = false;
             };
-
             recognition.onend = () => {
                 isListening = false;
             };
         }
     }
-
     function handleVoiceCommand(command: string): void {
         if (command.includes('next')) {
             nextStep();
@@ -461,10 +406,8 @@ https://svelte.dev/e/js_parse_error -->
             submitCase();
         }
     }
-
     function toggleVoiceListening(): void {
         if (!recognition) return;
-
         if (isListening) {
             recognition.stop();
             isListening = false;
@@ -473,7 +416,6 @@ https://svelte.dev/e/js_parse_error -->
             isListening = true;
         }
     }
-
     // Keyboard shortcuts
     function handleKeydown(event: KeyboardEvent): void {
         if (event.ctrlKey || event.metaKey) {
@@ -499,28 +441,22 @@ https://svelte.dev/e/js_parse_error -->
             }
         }
     }
-
     // Lifecycle
     $effect(() => {
         // Initialize OCR processor
         ocrProcessor.on('initialized', (message) => {
             console.log('OCR Service:', message);
         });
-
         ocrProcessor.on('processing:start', (data) => {
             processingQueue = [...processingQueue, (data as { filename?: unknown }).filename];
         });
-
         ocrProcessor.on('processing:complete', (result) => {
             processingQueue = processingQueue.filter(item => item.metadata).filename);
         });
-
         // Setup voice commands
         setupVoiceCommands();
-
         // Track page view
         analyticsStore.logEvent({ type: 'page_view', page: '/case/new' });
-
         // Check for case ID in URL (edit mode)
   let pageStore = $state<anyconst unsubscribe  | null>(null); const data = page.subscribe(value => pageStore = value));
         const caseId = pageStore?.url.searchParams.get('id');
@@ -529,11 +465,11 @@ https://svelte.dev/e/js_parse_error -->
             try {
                 const existingCase = await caseStore.loadCase(caseId);
                 if (existingCase) {
-                    caseData = existingCase;
+                    caseData = existingCa;
                     notifications.add({
                         type: 'info',
-                        title: 'Case Loaded',;
-                        message: 'Loaded existing case for editing',;
+                        title: 'Case Loaded',
+                        message: 'Loaded existing case for editing',
                         duration: 3000;
                     });
                 }
@@ -542,7 +478,6 @@ https://svelte.dev/e/js_parse_error -->
             }
         }
     });
-
     // Reactive statement for step validation converted to $effect
     $effect(() => {
         if (currentStep >= 0) {
@@ -550,9 +485,7 @@ https://svelte.dev/e/js_parse_error -->
         }
     });
 </script>
-
 <svelte:window keydown={handleKeydown} />
-
 <div class="legal-case-manager min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Header with progress -->
     <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
@@ -566,13 +499,12 @@ https://svelte.dev/e/js_parse_error -->
                         Step {currentStep + 1} of {totalSteps}
                     </div>
                 </div>
-
                 <div class="flex items-center space-x-4">
                     <!-- Voice control button -->
                     {#if recognition}
                         <button
                             onclick={toggleVoiceListening}
-                            class="p-2 rounded-lg border border-gray-300 dark:border-gray-600;
+                            class="p-2 rounded-lg border border-gray-300 dark: border-gray-600;
                                    hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors
                                    {isListening ? 'bg-red-50 border-red-300 text-red-600' : ''}"
                             title="Toggle voice commands"
@@ -583,7 +515,6 @@ https://svelte.dev/e/js_parse_error -->
                             </svg>
                         </button>
                     {/if}
-
                     <!-- Auto-save toggle -->
                     <label class="flex items-center space-x-2 text-sm">
                         <input
@@ -593,7 +524,6 @@ https://svelte.dev/e/js_parse_error -->
                         />
                         <span class="text-gray-600 dark:text-gray-400">Auto-save</span>
                     </label>
-
                     <!-- Estimated time -->
                     {#if estimatedTimeRemaining > 0}
                         <div class="text-sm text-gray-500 dark:text-gray-400">
@@ -604,7 +534,6 @@ https://svelte.dev/e/js_parse_error -->
             </div>
         </div>
     </div>
-
     <!-- Progress indicator -->
     <ProgressIndicator
         {steps}
@@ -612,7 +541,6 @@ https://svelte.dev/e/js_parse_error -->
         validationresults={validationResults}
         step-onclick={(e) => jumpToStep(e.detail)}
     />
-
     <!-- Processing queue indicator -->
     {#if processingQueue.length > 0}
         <div class="bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
@@ -626,7 +554,6 @@ https://svelte.dev/e/js_parse_error -->
             </div>
         </div>
     {/if}
-
     <!-- Main content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
@@ -639,7 +566,6 @@ https://svelte.dev/e/js_parse_error -->
                     {currentStepConfig.description}
                 </p>
             </div>
-
             <!-- Step content -->
             <div class="p-6">
                 {#if isProcessing}
@@ -659,7 +585,6 @@ https://svelte.dev/e/js_parse_error -->
                     />
                 {/if}
             </div>
-
             <!-- Navigation footer -->
             <div class="border-t border-gray-200 dark:border-gray-700 px-6 py-4">
                 <div class="flex items-center justify-between">
@@ -670,29 +595,27 @@ https://svelte.dev/e/js_parse_error -->
                             class="px-4 py-2 border border-gray-300 dark:border-gray-600
                                    rounded-md shadow-sm text-sm font-medium
                                    text-gray-700 dark:text-gray-300
-                                   bg-white dark:bg-gray-700
-                                   hover:bg-gray-50 dark:hover:bg-gray-600;
+                                   bg-white dark:bg-gray-700,
+                                   hover: bg-gray-50 dark:hover:bg-gray-600;
                                    disabled:opacity-50 disabled:cursor-not-allowed
                                    transition-colors"
                         >
                             Previous
                         </button>
-
                         <button
                             onclick={resetCase}
                             disabled={isProcessing}
                             class="px-4 py-2 border border-red-300 dark:border-red-600
                                    rounded-md shadow-sm text-sm font-medium
                                    text-red-700 dark:text-red-300
-                                   bg-white dark:bg-gray-700
-                                   hover:bg-red-50 dark:hover:bg-red-900/20;
+                                   bg-white dark:bg-gray-700,
+                                   hover: bg-red-50 dark:hover:bg-red-900/20;
                                    disabled:opacity-50 disabled:cursor-not-allowed
                                    transition-colors"
                         >
                             Reset
                         </button>
                     </div>
-
                     <div class="flex space-x-3">
                         <button
                             onclick={saveProgress}
@@ -700,14 +623,13 @@ https://svelte.dev/e/js_parse_error -->
                             class="px-4 py-2 border border-gray-300 dark:border-gray-600
                                    rounded-md shadow-sm text-sm font-medium
                                    text-gray-700 dark:text-gray-300
-                                   bg-white dark:bg-gray-700
-                                   hover:bg-gray-50 dark:hover:bg-gray-600;
+                                   bg-white dark:bg-gray-700,
+                                   hover: bg-gray-50 dark:hover:bg-gray-600;
                                    disabled:opacity-50 disabled:cursor-not-allowed
                                    transition-colors"
                         >
                             Save Progress
                         </button>
-
                         {#if isLastStep}
                             <button
                                 onclick={submitCase}
@@ -715,7 +637,7 @@ https://svelte.dev/e/js_parse_error -->
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium
                                        text-white bg-blue-600
-                                       hover:bg-blue-700;
+                                       hover: bg-blue-700;
                                        disabled:opacity-50 disabled:cursor-not-allowed
                                        transition-colors"
                             >
@@ -728,7 +650,7 @@ https://svelte.dev/e/js_parse_error -->
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium
                                        text-white bg-blue-600
-                                       hover:bg-blue-700;
+                                       hover: bg-blue-700;
                                        disabled:opacity-50 disabled:cursor-not-allowed
                                        transition-colors"
                             >
@@ -737,7 +659,6 @@ https://svelte.dev/e/js_parse_error -->
                         {/if}
                     </div>
                 </div>
-
                 <!-- Keyboard shortcuts help -->
                 <div class="mt-4 text-xs text-gray-500 dark:text-gray-400">
                     <span class="font-medium">Keyboard shortcuts:</span>
@@ -747,18 +668,13 @@ https://svelte.dev/e/js_parse_error -->
         </div>
     </main>
 </div>
-
 <style>
-    .legal-case-manager {;
+    .legal-case-manager {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     }
-
     /* Smooth transitions for all interactive elements */
     .legal-case-manager button,
     .legal-case-manager input {
         transition: all 0.2s ease-in-out;
     }
 </style>
-
-
-

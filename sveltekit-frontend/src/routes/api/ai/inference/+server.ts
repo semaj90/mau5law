@@ -18,12 +18,10 @@
  * TensorRT-LLM with Ollama Fallback API
  * High-performance legal AI inference endpoint with Redis optimization
  */
-
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { z } from 'zod'
 import { tensorrtLLMService } from '$lib/services/tensorrt-llm-service'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
 // Request validation schema
 const InferenceRequestSchema = z.object({
   prompt: z.string().min(1),
@@ -33,11 +31,9 @@ const InferenceRequestSchema = z.object({
   system_prompt: z.string().optional(),
   stream: z.boolean().default(false)
 })
-
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
-
     // Validate request
     const validatedData = InferenceRequestSchema.safeParse({
       prompt: body.prompt,
@@ -47,15 +43,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       system_prompt: body.system_prompt,
       stream: body.stream
     })
-
     if (!validatedData.success) {
       return json({
-        success: false,
+        success: false
         error: 'Invalid request data',
         details: validatedData.error.flatten()
       }, { status: 400 })
     }
-
     // Convert to TensorRT service format
     const inferenceRequest = {
       prompt: validatedData.data.prompt,
@@ -65,10 +59,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       system_prompt: validatedData.data.system_prompt,
       stream: validatedData.data.stream
     }
-
     // Generate inference with TensorRT-LLM + Ollama fallback
     const result = await tensorrtLLMService.generateInference(inferenceRequest)
-
     // Format response for backward compatibility
     return json({
       success: result.success,
@@ -83,49 +75,43 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     })
   } catch (error) {
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message : 'Inference failed'
     }, { status: 500 })
   }
 }
-
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'health'
-
     switch (action) {
       case 'health':
         const healthStatus = await tensorrtLLMService.getHealthStatus()
         return json({
-          success: true,
+          success: true
           data: healthStatus
         })
-
       case 'models':
         const models = await tensorrtLLMService.getAvailableModels()
         return json({
-          success: true,
+          success: true
           data: models
         })
-
       case 'warmup':
         await tensorrtLLMService.warmupModels()
         return json({
-          success: true,
+          success: true
           data: { message: 'Models warmed up successfully' }
         })
-
       default:
-        return json({
-          success: false,
+        return json({,
+          success: false
           error: 'Unknown action'
         }, { status: 400 })
     }
   } catch (error) {
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message : 'Health check failed'
     }, { status: 500 })
   }

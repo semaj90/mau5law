@@ -2,7 +2,6 @@
 // and to provide temporary module augmentation for third-party packages
 // during migration/triage. These are intentionally permissive (`any`) and
 // meant to be replaced with proper types later.
-
 declare module 'drizzle-orm' {
   // Common helpers some files import directly from 'drizzle-orm'
   export const desc: any;
@@ -25,7 +24,6 @@ declare module 'drizzle-orm' {
   // Fallback to allow other named imports without breaking compilation
   export const __any__ : any;
 }
-
 // Ambient global runtime services frequently referenced across server routes
 declare const monitoringService: any;
 declare const ollamaLLM: any;
@@ -50,24 +48,19 @@ declare const createHash: any;
 declare const exec: any;
 declare const hashPassword: any;
 declare const FileLike: any;
-
-// Allow importing environment-like objects with arbitrary properties used in code;
+// Allow importing environment-like objects with arbitrary properties used in code
 declare module '$env/static/private' {
   const env: { [key: string]: any };
   export = env;
 }
-
 declare module '$env/static/public' {
   const env: { [key: string]: any };
   export = env;
 }
-
-
 // Auto-generated development global declarations to reduce TS noise while
 // we incrementally normalize runtime service imports. These are lightweight
 // `any` declarations for dev-time only and should be replaced with proper
 // typed services as we stabilize the runtime wiring.
-
 declare module NodeJS {
   interface Global {
     monitoringService: any;
@@ -95,7 +88,6 @@ declare module NodeJS {
     comprehensiveAutosolve: any;
   }
 }
-
 // Fall back global declarations
 declare const monitoringService: any;
 declare const ollamaLLM: any;
@@ -116,5 +108,3 @@ declare const generateEmbedding: any;
 declare const VectorService: any;
 declare const legalPrecedents: any;
 declare const aiReports: any;
-
-

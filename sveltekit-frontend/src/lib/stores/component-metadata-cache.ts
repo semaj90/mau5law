@@ -2,15 +2,13 @@
  * Enhanced-Bits Component Metadata Caching System
  * Caches component metadata, dependencies, and performance stats
  */
-
 import { redisComponentStore } from './redis-component-store.js';
-
 export interface ComponentMetadata {
   name: string;
   category: 'core' | 'legal' | 'ai' | 'gaming' | 'advanced';
-  size: number; // Bundle size in bytes
+  size: number; // Bundle size in bytes,
   dependencies: string[];
-  props: Record<string, any>;
+  props: { [key: string]: any };
   lastModified: number;
   loadTime?: number;
   renderTime?: number;
@@ -18,7 +16,6 @@ export interface ComponentMetadata {
   cacheable: boolean;
   priority: 'critical' | 'high' | 'normal' | 'low';
 }
-
 export interface ComponentPerformanceMetrics {
   loadTime: number;
   renderTime: number;
@@ -27,12 +24,10 @@ export interface ComponentPerformanceMetrics {
   successCount: number;
   lastAccess: number;
 }
-
 class ComponentMetadataCache {
   private metadata = new Map<string, ComponentMetadata>();
   private performanceMetrics = new Map<string, ComponentPerformanceMetrics>();
   private dependencyGraph = new Map<string, Set<string>>();
-
   // Component metadata definitions
   private readonly COMPONENT_DEFINITIONS: Record<string, Partial<ComponentMetadata>> = {
     // Core Components
@@ -41,116 +36,106 @@ class ComponentMetadataCache {
       size: 2048,
       dependencies: [],
       priority: 'critical',
-      cacheable: true,
+      cacheable: true
     },
     Input: {
       category: 'core',
       size: 3072,
       dependencies: ['Label'],
       priority: 'critical',
-      cacheable: true,
+      cacheable: true
     },
     Card: {
       category: 'core',
       size: 4096,
       dependencies: ['CardHeader', 'CardContent'],
       priority: 'high',
-      cacheable: true,
+      cacheable: true
     },
-
     // Legal AI Components
     EvidenceBoard: {
       category: 'legal',
       size: 15360, // ~15KB
       dependencies: ['Card', 'Button', 'Input', 'Dialog'],
       priority: 'high',
-      cacheable: true,
+      cacheable: true
     },
     EvidenceCard: {
       category: 'legal',
       size: 8192,
       dependencies: ['Card', 'Button'],
       priority: 'normal',
-      cacheable: true,
+      cacheable: true
     },
     CaseManager: {
       category: 'legal',
       size: 20480, // ~20KB
       dependencies: ['EvidenceCard', 'Dialog', 'Input', 'Select'],
       priority: 'normal',
-      cacheable: true,
+      cacheable: true
     },
-
     // AI Components
     EmbeddingGemmaChat: {
       category: 'ai',
       size: 25600, // ~25KB
       dependencies: ['Card', 'Input', 'Button', 'ChatMessage'],
       priority: 'high',
-      cacheable: true,
+      cacheable: true
     },
     EnhancedRAGStudio: {
       category: 'ai',
       size: 18432, // ~18KB
       dependencies: ['EmbeddingGemmaChat', 'EvidenceBoard'],
       priority: 'normal',
-      cacheable: true,
+      cacheable: true
     },
-
     // Gaming Components
     NESButton: {
       category: 'gaming',
       size: 6144,
       dependencies: ['Button'],
       priority: 'low',
-      cacheable: true,
+      cacheable: true
     },
     NESContainer: {
       category: 'gaming',
       size: 8192,
       dependencies: ['Card'],
       priority: 'low',
-      cacheable: true,
+      cacheable: true
     },
-
     // Advanced Components
     Board: {
       category: 'advanced',
       size: 12288,
       dependencies: ['Card', 'DragDropZone'],
       priority: 'normal',
-      cacheable: true,
+      cacheable: true
     },
     Dialog: {
       category: 'advanced',
       size: 10240,
       dependencies: ['Button'],
       priority: 'high',
-      cacheable: true,
+      cacheable: true
     },
   };
-
   async initialize() {
     // Load cached metadata from Redis
     await this.loadCachedMetadata();
-
     // Build dependency graph
     this.buildDependencyGraph();
-
     console.log('✅ Component metadata cache initialized');
   }
-
   /**
    * Get metadata for a component
    */
   async getComponentMetadata(componentName: string): Promise<ComponentMetadata | null> {
     // Check memory cache first
     let metadata = this.metadata.get(componentName);
-
     if (!metadata) {
       // Try Redis cache
       metadata = await redisComponentStore.getComponentMetadata(componentName);
-
       if (!metadata) {
         // Generate from definitions
         metadata = this.generateMetadata(componentName);
@@ -162,21 +147,17 @@ class ComponentMetadataCache {
         this.metadata.set(componentName, metadata);
       }
     }
-
     return metadata || null;
   }
-
   /**
    * Cache component metadata
    */
   async cacheMetadata(componentName: string, metadata: ComponentMetadata) {
     // Update memory cache
     this.metadata.set(componentName, metadata);
-
     // Update Redis cache
     await redisComponentStore.cacheComponentMetadata(componentName, metadata);
   }
-
   /**
    * Record component performance metrics
    */
@@ -189,26 +170,21 @@ class ComponentMetadataCache {
       successCount: 0,
       lastAccess: Date.now(),
     };
-
     const updated = {
       ...existing,
       ...metrics,
       lastAccess: Date.now(),
     };
-
     this.performanceMetrics.set(componentName, updated);
-
     // Cache performance metrics
     this.cachePerformanceMetrics(componentName, updated);
   }
-
   /**
    * Get component performance metrics
    */
   getPerformanceMetrics(componentName: string): ComponentPerformanceMetrics | null {
     return this.performanceMetrics.get(componentName) || null;
   }
-
   /**
    * Get components by category
    */
@@ -216,7 +192,6 @@ class ComponentMetadataCache {
     return Array.from(this.metadata.values())
       .filter(meta => meta.category === category);
   }
-
   /**
    * Get component dependencies (recursive)
    */
@@ -224,60 +199,48 @@ class ComponentMetadataCache {
     if (visited.has(componentName)) {
       return []; // Prevent circular dependencies
     }
-
     visited.add(componentName);
     const deps = this.dependencyGraph.get(componentName) || new Set();
     const allDeps = new Set(deps);
-
     // Get recursive dependencies
     for (const dep of deps) {
       const subDeps = this.getComponentDependencies(dep, visited);
       subDeps.forEach(subDep => allDeps.add(subDep));
     }
-
     return Array.from(allDeps);
   }
-
   /**
    * Calculate total bundle size for a component and its dependencies
    */
   async calculateBundleSize(componentName: string): Promise<number> {
     const metadata = await this.getComponentMetadata(componentName);
     if (!metadata) return 0;
-
     let totalSize = metadata.size;
     const dependencies = this.getComponentDependencies(componentName);
-
     for (const dep of dependencies) {
       const depMetadata = await this.getComponentMetadata(dep);
       if (depMetadata) {
         totalSize += depMetadata.size;
       }
     }
-
     return totalSize;
   }
-
   /**
    * Get optimal loading order based on dependencies and priority
    */
   getOptimalLoadingOrder(componentNames: string[]): string[] {
     const ordered: string[] = [];
     const visited = new Set<string>();
-
     const visit = (name: string) => {
       if (visited.has(name)) return;
       visited.add(name);
-
       // Visit dependencies first
       const deps = this.dependencyGraph.get(name) || new Set();
       for (const dep of deps) {
         visit(dep);
       }
-
       ordered.push(name);
     };
-
     // Sort by priority first
     const priorityOrder = { critical: 0, high: 1, normal: 2, low: 3 };
     const sortedComponents = componentNames.sort((a, b) => {
@@ -287,14 +250,11 @@ class ComponentMetadataCache {
       const priorityB = metaB ? priorityOrder[metaB.priority] : 3;
       return priorityA - priorityB;
     });
-
     for (const name of sortedComponents) {
       visit(name);
     }
-
     return ordered;
   }
-
   /**
    * Generate component usage analytics
    */
@@ -307,34 +267,28 @@ class ComponentMetadataCache {
       totalMemoryUsage: 0,
       errorRate: 0,
     };
-
     // Calculate category counts
     for (const metadata of this.metadata.values()) {
       analytics.categoryCounts[metadata.category] =
         (analytics.categoryCounts[metadata.category] || 0) + 1;
     }
-
     // Calculate performance averages
     const metrics = Array.from(this.performanceMetrics.values());
     if (metrics.length > 0) {
       analytics.averageLoadTime = metrics.reduce((sum, m) => sum + m.loadTime, 0) / metrics.length;
       analytics.averageRenderTime = metrics.reduce((sum, m) => sum + m.renderTime, 0) / metrics.length;
       analytics.totalMemoryUsage = metrics.reduce((sum, m) => sum + m.memoryUsage, 0);
-
       const totalRequests = metrics.reduce((sum, m) => sum + m.successCount + m.errorCount, 0);
       const totalErrors = metrics.reduce((sum, m) => sum + m.errorCount, 0);
       analytics.errorRate = totalRequests > 0 ? totalErrors / totalRequests : 0;
     }
-
     return analytics;
   }
-
   private generateMetadata(componentName: string): ComponentMetadata | null {
     const definition = this.COMPONENT_DEFINITIONS[componentName];
     if (!definition) return null;
-
     return {
-      name: componentName,
+      name: componentName
       category: definition.category || 'advanced',
       size: definition.size || 4096,
       dependencies: definition.dependencies || [],
@@ -344,7 +298,6 @@ class ComponentMetadataCache {
       priority: definition.priority || 'normal',
     };
   }
-
   private async loadCachedMetadata() {
     for (const componentName of Object.keys(this.COMPONENT_DEFINITIONS)) {
       const cached = await redisComponentStore.getComponentMetadata(componentName);
@@ -353,21 +306,17 @@ class ComponentMetadataCache {
       }
     }
   }
-
   private buildDependencyGraph() {
     for (const [name, metadata] of this.metadata.entries()) {
       this.dependencyGraph.set(name, new Set(metadata.dependencies));
     }
   }
-
   private async cachePerformanceMetrics(componentName: string, metrics: ComponentPerformanceMetrics) {
     const key = `performance:${componentName}`;
     await redisComponentStore.cacheComponentMetadata(key, metrics, 3600); // 1 hour TTL
   }
 }
-
 // Create singleton instance
 export const componentMetadataCache = new ComponentMetadataCache();
-
 // Initialize on import
 componentMetadataCache.initialize();

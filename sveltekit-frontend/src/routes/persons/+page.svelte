@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import {
     Search, Users, Plus, Eye, Edit, Filter, Grid, List,
@@ -8,7 +7,6 @@
     Star, Trash2, Download, Upload, RefreshCw, Settings
   } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-
   // Interfaces
   interface PersonOfInterest {
     id: string;
@@ -37,7 +35,6 @@
     createdAt: string;
     updatedAt: string;
   }
-
   // State
   let searchQuery = $state('');
   let viewMode = $state<'grid' | 'list' | 'cards'>('cards');
@@ -49,7 +46,6 @@
   let sortOrder = $state<'asc' | 'desc'>('desc');
   let isLoading = $state(false);
   let showAddModal = $state(false);
-
   // Mock data - replace with API calls
   let persons = $state<PersonOfInterest[]>([
     {
@@ -59,7 +55,7 @@
       dateOfBirth: '1982-03-15',
       address: '2847 Tech Boulevard, Silicon Valley',
       relationship: 'suspect',
-      threatLevel: 'high',;
+      threatLevel: 'high',
       status: 'active',
       profileData: {
         occupation: 'Software Engineer',
@@ -70,10 +66,10 @@
         contactInfo: 'marcus.chen@techcorp.com, (555) 012-3456',
         criminalHistory: ['Computer Fraud - 2019', 'Identity Theft - 2020'],
         notes: 'Highly skilled in cybersecurity. Potential access to sensitive systems.',
-        photo: 'https://ui-avatars.com/api/?name=MC&background=dc2626&color=fff&size=200';
+        photo: 'https://ui-avatars.com/api/?name=MC&background=dc2626&color=fff&size=200'
       },
       tags: ['cybercrime', 'fraud', 'high-tech'],
-      caseIds: ['case-2024-001', 'case-2024-007'],;
+      caseIds: ['case-2024-001', 'case-2024-007'],
       position: { x: 37.7749, y: -122.4194 },
       createdBy: 'detective-001',
       createdAt: '2024-12-20T10:30:00Z',
@@ -86,7 +82,7 @@
       dateOfBirth: '1990-07-22',
       address: '156 Harbor View Lane, Waterfront District',
       relationship: 'witness',
-      threatLevel: 'low',;
+      threatLevel: 'low',
       status: 'active',
       profileData: {
         occupation: 'Financial Analyst',
@@ -97,10 +93,10 @@
         contactInfo: 'i.santos@financegroup.com, (555) 987-6543',
         criminalHistory: [],
         notes: 'Cooperative witness. Has valuable information about financial transactions.',
-        photo: 'https://ui-avatars.com/api/?name=IS&background=059669&color=fff&size=200';
+        photo: 'https://ui-avatars.com/api/?name=IS&background=059669&color=fff&size=200'
       },
       tags: ['finance', 'witness', 'cooperative'],
-      caseIds: ['case-2024-003'],;
+      caseIds: ['case-2024-003'],
       position: { x: 37.7849, y: -122.4094 },
       createdBy: 'detective-002',
       createdAt: '2024-12-19T09:15:00Z',
@@ -113,7 +109,7 @@
       dateOfBirth: '1975-11-08',
       address: 'Unknown - Last seen Industrial Area',
       relationship: 'person_of_interest',
-      threatLevel: 'critical',;
+      threatLevel: 'critical',
       status: 'active',
       profileData: {
         occupation: 'Unknown',
@@ -124,21 +120,19 @@
         contactInfo: 'Multiple burner phones',
         criminalHistory: ['Organized Crime - 2010', 'Arms Trafficking - 2015', 'Racketeering - 2018'],
         notes: 'EXTREMELY DANGEROUS. Do not approach alone. Armed and dangerous.',
-        photo: 'https://ui-avatars.com/api/?name=VK&background=991b1b&color=fff&size=200';
+        photo: 'https://ui-avatars.com/api/?name=VK&background=991b1b&color=fff&size=200'
       },
       tags: ['organized-crime', 'dangerous', 'armed'],
-      caseIds: ['case-2024-001', 'case-2024-004', 'case-2024-008'],;
+      caseIds: ['case-2024-001', 'case-2024-004', 'case-2024-008'],
       position: { x: 37.7649, y: -122.3894 },
       createdBy: 'detective-001',
       createdAt: '2024-12-18T14:20:00Z',
       updatedAt: '2024-12-21T16:30:00Z'
     }
   ]);
-
   // Computed properties
   let filteredPersons = $derived(() => {
-    let filtered = persons;
-
+    let filtered = person;
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -149,22 +143,18 @@
         person.tags.some.includes(query))
       );
     }
-
     // Threat level filter
     if (selectedThreatLevel) {
       filtered = filtered.filter(person => person.threatLevel === selectedThreatLevel);
     }
-
     // Status filter
     if (selectedStatus) {
       filtered = filtered.filter(person => person.status === selectedStatus);
     }
-
     // Relationship filter
     if (selectedRelationship) {
       filtered = filtered.filter(person => person.relationship === selectedRelationship);
     }
-
     // Sorting
     filtered.sort((a, b) => {
       let comparison = 0;
@@ -183,12 +173,10 @@
           comparison = threatOrder[a.threatLevel] - threatOrder[b.threatLevel];
           break;
       }
-      return sortOrder === 'asc' ? comparison : -comparison;
+      return sortOrder === 'asc' ? comparison : -compariso;
     });
-
     return filtered;
   });
-
   // Functions
   function getThreatLevelColor(level: string) {
     switch (level) {
@@ -199,7 +187,6 @@
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
-
   function getRelationshipColor(relationship: string) {
     switch (relationship) {
       case 'suspect': return 'bg-red-100 text-red-800';
@@ -209,14 +196,12 @@
       default: return 'bg-gray-100 text-gray-800';
     }
   }
-
   function clearFilters() {
     selectedThreatLevel = '';
     selectedStatus = '';
     selectedRelationship = '';
     searchQuery = '';
   }
-
   function exportData() {
     const dataStr = JSON.stringify(filteredPersons, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
@@ -226,18 +211,15 @@
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
   }
-
   $effect(() => {
     // Load persons data from API
     console.log('Loading persons of interest...');
   });
 </script>
-
 <svelte:head>
   <title>Persons of Interest - YoRHa Legal AI</title>
   <meta name="description" content="Advanced person tracking and management system for legal investigations" />
 </svelte:head>
-
 <div class="yorha-detective-interface">
   <!-- Enhanced Header with Actions -->
   <div class="yorha-3d-panel mb-8">
@@ -257,7 +239,6 @@
             </p>
           </div>
         </div>
-
         <!-- Action Buttons -->
         <div class="flex flex-wrap gap-3">
           <button
@@ -267,7 +248,6 @@
             <Filter class="w-4 h-4 mr-2" />
             <span class="hidden sm:inline">FILTERS</span>
           </button>
-
           <select;
             bind:value={viewMode}
             class="nes-legal-priority-medium yorha-3d-button bg-transparent"
@@ -276,7 +256,6 @@
             <option value="grid">Grid</option>
             <option value="list">List</option>
           </select>
-
           <button
             class="nes-legal-priority-medium yorha-3d-button"
             onclick={exportData}
@@ -284,7 +263,6 @@
             <Download class="w-4 h-4 mr-2" />
             <span class="hidden sm:inline">EXPORT</span>
           </button>
-
           <button
             class="nes-legal-priority-high yorha-3d-button"
             onclick={() => showAddModal = true}
@@ -296,7 +274,6 @@
       </div>
     </div>
   </div>
-
   <!-- Enhanced Search and Filters -->
   <div class="yorha-3d-panel mb-6">
     <div class="p-6">
@@ -306,14 +283,13 @@
         <input
           type="text"
           placeholder="Search persons, aliases, occupations, tags..."
-          class="w-full pl-12 pr-4 py-3 bg-gray-800 border-2 border-yellow-600 rounded-lg text-white placeholder-gray-400 focus:border-yellow-400 focus:outline-none";
+          class="w-full pl-12 pr-4 py-3 bg-gray-800 border-2 border-yellow-600 rounded-lg text-white placeholder-gray-400 focus: border-yellow-400 focus:outline-none";
           bind:value={searchQuery}
         />
         {#if isLoading}
           <RefreshCw class="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-yellow-400 animate-spin" />
         {/if}
       </div>
-
       <!-- Advanced Filters -->
       {#if showFilters}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-yellow-600/30">
@@ -330,7 +306,6 @@
               <option value="critical">Critical</option>
             </select>
           </div>
-
           <!-- Status Filter -->
           <div>
             <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="status">Status</label><select id="status"
@@ -343,7 +318,6 @@
               <option value="archived">Archived</option>
             </select>
           </div>
-
           <!-- Relationship Filter -->
           <div>
             <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="relationship">Relationship</label><select id="relationship"
@@ -357,7 +331,6 @@
               <option value="person_of_interest">Person of Interest</option>
             </select>
           </div>
-
           <!-- Sort Options -->
           <div>
             <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase">Sort By</label>
@@ -380,7 +353,6 @@
             </div>
           </div>
         </div>
-
         <!-- Filter Actions -->
         <div class="flex justify-between items-center mt-4 pt-4 border-t border-yellow-600/30">
           <span class="text-gray-400 text-sm">
@@ -396,7 +368,6 @@
       {/if}
     </div>
   </div>
-
   <!-- Results Display -->
   {#if filteredPersons.length === 0}
     <div class="yorha-3d-panel text-center py-16">
@@ -435,7 +406,6 @@
                     </div>
                   {/if}
                 </div>
-
                 <div class="flex-1 min-w-0">
                   <h3 class="text-lg font-bold text-yellow-400 truncate">{person.name}</h3>
                   {#if person.aliases.length > 0}
@@ -457,7 +427,6 @@
                   </div>
                 </div>
               </div>
-
               <!-- Key Information -->
               <div class="space-y-2 text-sm mb-4">
                 {#if person.profileData.occupation}
@@ -466,19 +435,16 @@
                     {person.profileData.occupation}
                   </div>
                 {/if}
-
                 {#if person.profileData.lastKnownLocation}
                   <div class="flex items-center gap-2 text-gray-300">
                     <MapPin class="w-4 h-4 text-yellow-400" />
                     {person.profileData.lastKnownLocation}
                   </div>
                 {/if}
-
                 <div class="flex items-center gap-2 text-gray-300">
                   <Calendar class="w-4 h-4 text-yellow-400" />
                   Updated {new Date(person.updatedAt).toLocaleDateString()}
                 </div>
-
                 {#if person.threatLevel === 'critical' || person.threatLevel === 'high'}
                   <div class="flex items-center gap-2 text-red-400 bg-red-500/10 p-2 rounded">
                     <AlertTriangle class="w-4 h-4" />
@@ -486,7 +452,6 @@
                   </div>
                 {/if}
               </div>
-
               <!-- Tags -->
               {#if person.tags.length > 0}
                 <div class="flex flex-wrap gap-1 mb-4">
@@ -502,7 +467,6 @@
                   {/if}
                 </div>
               {/if}
-
               <!-- Actions -->
               <div class="flex gap-2">
                 <button class="flex-1 nes-legal-priority-medium yorha-3d-button text-sm">
@@ -535,7 +499,6 @@
                       </div>
                     {/if}
                   </div>
-
                   <div class="flex-1">
                     <div class="flex items-center gap-3 mb-1">
                       <h3 class="text-lg font-bold text-yellow-400">{person.name}</h3>
@@ -546,7 +509,6 @@
                         {person.threatLevel}
                       </span>
                     </div>
-
                     <div class="flex items-center gap-4 text-sm text-gray-400">
                       <span class={cn(
                         "px-2 py-1 rounded uppercase font-medium",
@@ -554,16 +516,13 @@
                       )}>
                         {person.relationship.replace('_', ' ')}
                       </span>
-
                       {#if person.profileData.occupation}
                         <span>{person.profileData.occupation}</span>
                       {/if}
-
                       <span>Updated {new Date(person.updatedAt).toLocaleDateString()}</span>
                     </div>
                   </div>
                 </div>
-
                 <div class="flex gap-2">
                   <button class="nes-legal-priority-medium yorha-3d-button text-sm">
                     <Eye class="w-4 h-4" />
@@ -579,38 +538,31 @@
       </div>
     {/if}
 </div>
-
 <style>
   .yorha-detective-interface {
     @apply min-h-screen p-6;
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
   }
-
   .person-card {
     transition: all 0.3s ease;
   }
-
   .person-card:hover {
     box-shadow: 0 8px 32px rgba(255, 215, 0, 0.1);
   }
-
   /* Custom scrollbar for the interface */
   :global(.yorha-detective-interface *::-webkit-scrollbar) {
     width: 8px;
     height: 8px;
   }
-
   :global(.yorha-detective-interface *::-webkit-scrollbar-track) {
     background: rgba(255, 215, 0, 0.1);
     border-radius: 4px;
   }
-
   :global(.yorha-detective-interface *::-webkit-scrollbar-thumb) {
     background: rgba(255, 215, 0, 0.6);
     border-radius: 4px;
   }
-
-  :global(.yorha-detective-interface *::-webkit-scrollbar-thumb:hover) {
+  :global($1) {
     background: rgba(255, 215, 0, 0.8);
   }
 </style>

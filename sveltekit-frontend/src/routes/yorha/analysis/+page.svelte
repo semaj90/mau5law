@@ -1,10 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   // Svelte 5 runes are built-in, no import needed
   import * as Card from '$lib/components/ui/card';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
   import {
@@ -17,7 +16,6 @@
     Database,
     Clock
   } from 'lucide-svelte';
-
   // Analysis data
   let analysisData = $state({
     caseMetrics: {
@@ -43,12 +41,11 @@
     },
     aiPerformance: {
       accuracy: 94.2,
-      processing_speed: 1.3,;
+      processing_speed: 1.3,
       confidence: 91.8,
       last_update: '2024-01-22 14:35:00';
     }
   });
-
   let recentAnalyses = $state([
     {
       id: 'ANA-001',
@@ -64,7 +61,7 @@
       case_id: 'CASE-2024-088',
       type: 'Behavioral Analysis',
       status: 'processing',
-      confidence: null,
+      confidence: null
       findings: 'Analyzing communication patterns...',
       timestamp: '15 minutes ago';
     },
@@ -74,16 +71,14 @@
       type: 'Financial Correlation',
       status: 'completed',
       confidence: 88.3,
-      findings: 'Suspicious transaction clusters detected',;
+      findings: 'Suspicious transaction clusters detected',
       timestamp: '4 hours ago';
     }
   ]);
 </script>
-
 <svelte:head>
   <title>ANALYSIS - YoRHa Detective Interface</title>
 </svelte:head>
-
 <div class="yorha-interface">
   <!-- Sidebar -->
   <aside class="yorha-sidebar">
@@ -92,45 +87,37 @@
       <div class="yorha-subtitle">DETECTIVE</div>
       <div class="yorha-subtext">Investigation Interface</div>
     </div>
-
     <nav class="yorha-nav">
       <div class="nav-section">
         <a href="/yorha-command-center" class="nav-item">
           <span class="nav-icon">⌂</span>
           COMMAND CENTER
         </a>
-
         <a href="/yorha/cases" class="nav-item">
           <span class="nav-text">ACTIVE CASES</span>
           <span class="nav-count">8</span>
         </a>
-
         <a href="/evidenceboard" class="nav-item">
           <span class="nav-icon">📁</span>
           EVIDENCE
         </a>
-
         <a href="/yorha/persons" class="nav-item">
           <span class="nav-icon">👤</span>
           PERSONS OF INTEREST
         </a>
-
         <button class="nav-item analysis-active">
           <span class="nav-icon">📊</span>
           ANALYSIS
         </button>
-
         <a href="/yorha/search" class="nav-item">
           <span class="nav-icon">🔍</span>
           GLOBAL SEARCH
         </a>
-
         <a href="/yorha/terminal" class="nav-item">
           <span class="nav-icon">></span>
           TERMINAL
         </a>
       </div>
-
       <div class="nav-section">
         <a href="/yorha/config" class="nav-item">
           <span class="nav-icon">⚙</span>
@@ -138,14 +125,12 @@
         </a>
       </div>
     </nav>
-
     <div class="yorha-status">
       <div class="status-item">Online</div>
       <div class="status-time">{new Date().toLocaleTimeString()}</div>
       <div class="status-text">System: Operational</div>
     </div>
   </aside>
-
   <!-- Main Content -->
   <main class="yorha-main">
     <!-- Header -->
@@ -155,7 +140,6 @@
         <h1 class="analysis-title">ANALYSIS</h1>
         <div class="analysis-subtitle">AI-Powered Investigation Intelligence</div>
       </div>
-
       <div class="header-right">
         <Button class="header-btn bits-btn bits-btn">
 <Brain class="w-4 h-4" />
@@ -163,7 +147,6 @@
 </Button>
       </div>
     </header>
-
     <!-- Analysis Dashboard -->
     <div class="analysis-dashboard">
       <!-- Top Row - Key Metrics -->
@@ -193,7 +176,6 @@
             </div>
           </Card.Content>
         </Card.Root>
-
         <Card.Root class="metric-nier-bits-card nes-container">
           <Card.Header class="metric-header nes-container">
             <Database class="metric-icon" />
@@ -215,7 +197,6 @@
             </div>
           </div>
         </div>
-
         <Card.Root class="metric-nier-bits-card nes-container">
           <Card.Header class="metric-header nes-container">
             <AlertCircle class="metric-icon" />
@@ -246,7 +227,6 @@
           </div>
         </div>
       </div>
-
       <!-- AI Performance Panel -->
       <Card.Root class="ai-performance-nier-bits-card nes-container">
         <Card.Header class="nes-container">
@@ -279,7 +259,6 @@
           </div>
         </div>
       </div>
-
       <!-- Recent Analyses -->
       <Card.Root class="recent-analyses-nier-bits-card nes-container">
         <Card.Header class="nes-container">
@@ -308,11 +287,9 @@
                     {/if}
                   </div>
                 </div>
-
                 <div class="analysis-findings">
                   {analysis.findings}
                 </div>
-
                 <div class="analysis-footer">
                   <span class="analysis-timestamp">{analysis.timestamp}</span>
                   <Button class="bits-btn" size="sm" variant="ghost">View Details</Button>
@@ -325,7 +302,6 @@
     </div>
   </main>
 </div>
-
 <style>
   .yorha-interface {
     display: flex;
@@ -336,7 +312,6 @@
     font-size: 12px;
     overflow: hidden;
   }
-
   .yorha-sidebar {
     width: 200px;
     background: #1a1a1a;
@@ -344,12 +319,10 @@
     display: flex;
     flex-direction: column;
   }
-
   .yorha-logo {
     padding: 20px 15px;
     border-bottom: 1px solid #3a3a3a;
   }
-
   .yorha-title,
   .yorha-subtitle {
     font-size: 18px;
@@ -357,27 +330,23 @@
     color: #d4af37;
     line-height: 1;
   }
-
   .yorha-subtext {
     font-size: 10px;
     color: #888;
     margin-top: 5px;
   }
-
   .yorha-nav {
     flex: 1;
     padding: 15px 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-betwee;
   }
-
   .nav-section {
     display: flex;
     flex-direction: column;
     gap: 2px;
   }
-
   .nav-item {
     display: flex;
     align-items: center;
@@ -390,25 +359,21 @@
     font-family: inherit;
     font-size: 11px;
     cursor: pointer;
-    transition: all 0.2s;
-    justify-content: space-between;
+    transition: all 0.2;
+    justify-content: space-betwee;
   }
-
   .nav-item:hover {
     background: #2a2a2a;
     color: #d4af37;
   }
-
   .nav-.analysis-active {
     background: #1a2a1a;
     color: #d4af37;
     border-left: 3px solid #d4af37;
   }
-
   .nav-icon {
     margin-right: 8px;
   }
-
   .nav-count {
     font-size: 10px;
     background: #d4af37;
@@ -416,18 +381,15 @@
     padding: 1px 6px;
     border-radius: 2px;
   }
-
   .yorha-status {
     padding: 15px;
     border-top: 1px solid #3a3a3a;
     font-size: 10px;
     color: #666;
   }
-
   .status-item {
     color: #d4af37;
   }
-
   .yorha-main {
     flex: 1;
     display: flex;
@@ -435,22 +397,19 @@
     background: #2a2a2a;
     overflow: hidden;
   }
-
   .analysis-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid #3a3a3a;
     background: #2a2a2a;
   }
-
   .header-left {
     display: flex;
     align-items: center;
     gap: 15px;
   }
-
   .header-icon {
     background: none;
     border: 1px solid #555;
@@ -459,19 +418,16 @@
     font-family: inherit;
     cursor: pointer;
   }
-
   .analysis-title {
     font-size: 24px;
     font-weight: bold;
     color: #d4af37;
     margin: 0;
   }
-
   .analysis-subtitle {
     font-size: 12px;
     color: #888;
   }
-
   .analysis-dashboard {
     flex: 1;
     padding: 20px;
@@ -480,45 +436,37 @@
     flex-direction: column;
     gap: 20px;
   }
-
   .metrics-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
-
   .metric-card {
     background: #1a1a1a !important;
     border: 1px solid #3a3a3a !important;
     color: #d4af37 !important;
   }
-
   .metric-header {
     display: flex;
     align-items: center;
     gap: 10px;
   }
-
   .metric-icon {
     color: #d4af37;
     width: 20px;
     height: 20px;
   }
-
   .metric-content {
     padding-top: 10px;
   }
-
   .metric-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
   }
-
   .metric-item {
     text-align: center;
   }
-
   .metric-number {
     display: block;
     font-size: 18px;
@@ -526,109 +474,89 @@
     color: #d4af37;
     margin-bottom: 4px;
   }
-
   .metric-number.active {
     color: #4ade80;
   }
-
   .metric-label {
     font-size: 10px;
     color: #888;
   }
-
   .progress-section {
     display: flex;
     flex-direction: column;
     gap: 15px;
   }
-
   .progress-item {
     display: flex;
     flex-direction: column;
     gap: 5px;
   }
-
   .progress-label {
     font-size: 11px;
     color: #ccc;
   }
-
   .threat-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
-
   .threat-item {
     text-align: center;
     padding: 8px;
     border: 1px solid #555;
     border-radius: 4px;
   }
-
   .threat-number {
     display: block;
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 4px;
   }
-
   .threat-label {
     font-size: 10px;
   }
-
   .threat-.critical .threat-number {
     color: #ef4444;
   }
-
   .threat-.high .threat-number {
     color: #f97316;
   }
-
   .threat-.medium .threat-number {
     color: #fbbf24;
   }
-
   .threat-.low .threat-number {
     color: #4ade80;
   }
-
   .ai-performance-card,
   .recent-analyses-card {
     background: #1a1a1a !important;
     border: 1px solid #3a3a3a !important;
     color: #d4af37 !important;
   }
-
   .ai-performance-content {
     display: flex;
     flex-direction: column;
     gap: 15px;
   }
-
   .performance-metrics {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
-
   .performance-item {
     text-align: center;
   }
-
   .performance-label {
     font-size: 11px;
     color: #888;
     margin-bottom: 5px;
   }
-
   .performance-value {
     font-size: 16px;
     font-weight: bold;
     color: #d4af37;
     margin-bottom: 8px;
   }
-
   .performance-footer {
     display: flex;
     align-items: center;
@@ -639,75 +567,63 @@
     padding-top: 15px;
     border-top: 1px solid #3a3a3a;
   }
-
   .analyses-content {
     max-height: 400px;
     overflow-y: auto;
   }
-
   .analyses-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
   }
-
   .analysis-item {
     padding: 15px;
     border: 1px solid #3a3a3a;
     border-radius: 6px;
     background: #2a2a2a;
   }
-
   .analysis-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 10px;
   }
-
   .analysis-basic-info {
     display: flex;
     align-items: center;
     gap: 10px;
   }
-
   .analysis-id {
     font-size: 10px;
     color: #666;
     font-family: 'JetBrains Mono', monospace;
   }
-
   .analysis-case {
     font-size: 11px;
     color: #d4af37;
     font-weight: bold;
   }
-
   .analysis-status {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-
   .confidence-score {
     font-size: 10px;
     color: #4ade80;
   }
-
   .analysis-findings {
     font-size: 12px;
     color: #ccc;
     margin: 10px 0;
     line-height: 1.4;
   }
-
   .analysis-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-top: 10px;
   }
-
   .analysis-timestamp {
     font-size: 10px;
     color: #666;

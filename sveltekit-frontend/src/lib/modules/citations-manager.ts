@@ -4,7 +4,6 @@
  * Compatible with SvelteKit and gaming aesthetic UI
  */;
 }
-
 export interface Citation {
   id: string;
   title: string;
@@ -22,25 +21,22 @@ export interface Citation {
   notes?: string;
   userId?: string;
 }
-
 export interface SavedCitation extends Citation {
   savedAt: Date;
   userId: string;
   collection?: string;
   isPrivate: boolean;
 }
-
 export interface CitationCollection {
   id: string;
   name: string;
   description?: string;
-  citations: string[]; // Citation IDs
+  citations: string[]; // Citation IDs,
   userId: string;
   createdAt: Date;
   updatedAt: Date;
   isShared: boolean;
 }
-
 export interface AuthUser {
   id: string;
   email: string;
@@ -48,56 +44,46 @@ export interface AuthUser {
   role: 'attorney' | 'paralegal' | 'clerk' | 'admin';
   isAuthenticated: boolean;
 }
-
 export interface CitationImportOptions {
   format: 'bluebook' | 'apa' | 'mla' | 'custom';
   includeKeyPoints: boolean;
   includeSummary: boolean;
   includeNotes: boolean;
 }
-
 export class CitationsManager {
   private storageKey = 'legal-ai-citations';
   private collectionsKey = 'legal-ai-collections';
   private currentUser: AuthUser | null = null;
   private subscribers: Array<(user: AuthUser | null) => void> = [];
-
   constructor() {
     this.loadUserState();
   }
-
-  // Authentication Methods;
+  // Authentication Methods
   setUser(user: AuthUser | null): void {
     this.currentUser = user;
     this.saveUserState();
     this.notifySubscribers();
   }
-
   getCurrentUser(): AuthUser | null {
     return this.currentUser;
   }
-
   isAuthenticated(): boolean {
     return this.currentUser?.isAuthenticated ?? false;
   }
-
   onAuthChange(callback: (user: AuthUser | null) => void): () => void {
     this.subscribers.push(callback);
     return () => {
       this.subscribers = this.subscribers.filter(cb => cb !== callback);
     };
   }
-
   private notifySubscribers(): void {
     this.subscribers.forEach(callback => callback(this.currentUser);
   }
-
-  // Citation Management Methods;
+  // Citation Management Methods
   async saveCitation(citation: Citation, collection?: string): Promise<boolean> {
     if (!this.isAuthenticated()) {
       throw new Error('User must be authenticated to save citations');
     }
-
     try {
       const savedCitation: SavedCitation = {
         ...citation,
@@ -106,37 +92,29 @@ export class CitationsManager {
         collection,
         isPrivate: true
       };
-
       const savedCitations = this.getSavedCitations();
       const existingIndex = savedCitations.findIndex(c => c.id === citation.id);
-
       if (existingIndex !== -1) {
         savedCitations[existingIndex] = savedCitation;
       } else {
         savedCitations.push(savedCitation);
       }
-
       this.storeSavedCitations(savedCitations);
-
-      // If saving to a collection, update the collection;
+      // If saving to a collection, update the collection
       if (collection) {
         await this.addCitationToCollection(collection, citation.id);
       }
-
       return true;
     } catch (error) {
       console.error('Failed to save citation:', error);
       return false;
     }
   }
-
   getSavedCitations(): SavedCitation[] {
     if (!this.isAuthenticated()) return [];
-
     try {
       const saved = localStorage.getItem(this.storageKey);
       if (!saved) return [];
-
       const allCitations: SavedCitation[] = JSON.parse(saved);
       return allCitations
         .filter(c => c.userId === this.currentUser!.id);
@@ -149,59 +127,48 @@ export class CitationsManager {
       return [];
     }
   }
-
   removeSavedCitation(citationId: string): boolean {
     if (!this.isAuthenticated()) return false;
-
     try {
       const savedCitations = this.getSavedCitations();
       const filtered = savedCitations.filter(c => c.id !== citationId);
       this.storeSavedCitations(filtered);
-
       // Remove from all collections
       const collections = this.getCollections();
       collections.forEach(collection => {
         this.removeCitationFromCollection(collection.id, citationId);
       });
-
       return true;
     } catch (error) {
       console.error('Failed to remove citation:', error);
       return false;
     }
   }
-
-  // Collection Management Methods;
+  // Collection Management Methods
   createCollection(name: string, description?: string): CitationCollection {
     if (!this.isAuthenticated()) {
       throw new Error('User must be authenticated to create collections');
     }
-
     const collection: CitationCollection = {
       id: `collection-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       name,
-      description,;
+      description,
       citations: [],
       userId: this.currentUser!.id,
       createdAt: new Date(),
       updatedAt: new Date(),
       isShared: false
     };
-
     const collections = this.getCollections();
     collections.push(collection);
     this.storeCollections(collections);
-
     return collection;
   }
-
   getCollections(): CitationCollection[] {
     if (!this.isAuthenticated()) return [];
-
     try {
       const saved = localStorage.getItem(this.collectionsKey);
       if (!saved) return [];
-
       const allCollections: CitationCollection[] = JSON.parse(saved);
       return allCollections
         .filter(c => c.userId === this.currentUser!.id);
@@ -215,50 +182,39 @@ export class CitationsManager {
       return [];
     }
   }
-
   async addCitationToCollection(collectionId: string, citationId: string): Promise<boolean> {
     if (!this.isAuthenticated()) return false;
-
     try {
       const collections = this.getCollections();
       const collection = collections.find(c => c.id === collectionId);
-
       if (!collection) return false;
-
       if (!collection.citations.includes(citationId)) {
         collection.citations.push(citationId);
         collection.updatedAt = new Date();
         this.storeCollections(collections);
       }
-
       return true;
     } catch (error) {
       console.error('Failed to add citation to collection:', error);
       return false;
     }
   }
-
   removeCitationFromCollection(collectionId: string, citationId: string): boolean {
     if (!this.isAuthenticated()) return false;
-
     try {
       const collections = this.getCollections();
       const collection = collections.find(c => c.id === collectionId);
-
       if (!collection) return false;
-
       collection.citations = collection.citations.filter(id => id !== citationId);
       collection.updatedAt = new Date();
       this.storeCollections(collections);
-
       return true;
     } catch (error) {
       console.error('Failed to remove citation from collection:', error);
       return false;
     }
   }
-
-  // Import/Export Methods;
+  // Import/Export Methods
   formatCitationForImport(citation: Citation, options: CitationImportOptions): string {
     switch (options.format) {
       case 'bluebook':
@@ -271,28 +227,22 @@ export class CitationsManager {
         return this.formatCustom(citation, options);
     }
   }
-
   exportCitations(citationIds: string[], options: CitationImportOptions): string {
     const savedCitations = this.getSavedCitations();
     const citationsToExport = savedCitations.filter(c => citationIds.includes(c.id);
-
     return citationsToExport
       .map(citation => this.formatCitationForImport(citation, options)
       .join('\n\n');
   }
-
   importCitationsToReport(citationIds: string[], reportId: string, options: CitationImportOptions): Promise<boolean> {
     // This would integrate with your report system
     // For now, return the formatted citations that can be inserted
     const formatted = this.exportCitations(citationIds, options);
-
     // In a real implementation, this would call your report API
     console.log(`Importing ${citationIds.length} citations to report ${reportId}:`, formatted);
-
     return Promise.resolve(true);
   }
-
-  // Search and Filter Methods;
+  // Search and Filter Methods
   searchSavedCitations(query: string, filters?: {
     category?: string;
     court?: string;
@@ -300,8 +250,7 @@ export class CitationsManager {
     collection?: string;
   }): SavedCitation[] {
     let citations = this.getSavedCitations();
-
-    // Text search;
+    // Text search
     if (query.trim()) {
       const lowercaseQuery = query.toLowerCase();
       citations = citations.filter(item => item.includes)(lowercaseQuery) ||
@@ -311,8 +260,7 @@ export class CitationsManager {
         c.tags?.some(tag => tag.toLowerCase().includes(lowercaseQuery)
       );
     }
-
-    // Apply filters;
+    // Apply filters
     if (filters) {
       if (filters.category) {
         citations = citations.filter(c => c.category === filters.category);
@@ -330,83 +278,61 @@ export class CitationsManager {
         }
       }
     }
-
     return citations.sort((a, b) => b.savedAt.getTime() - a.savedAt.getTime();
   }
-
-  // Private helper methods;
+  // Private helper methods
   private formatBluebook(citation: Citation, options: CitationImportOptions): string {
     let formatted = `${citation.title}, ${citation.citation} (${citation.year}).`;
-
     if (options.includeKeyPoints && citation.keyPoints.length > 0) {
       formatted += `\n\nKey Points: ${citation.keyPoints.join('; ')}.`;
     }
-
     if (options.includeSummary && citation.summary) {
       formatted += `\n\nSummary: ${citation.summary}`;
     }
-
     if (options.includeNotes && citation.notes) {
       formatted += `\n\nNotes: ${citation.notes}`;
     }
-
     return formatted;
   }
-
   private formatAPA(citation: Citation, options: CitationImportOptions): string {
     let formatted = `${citation.title} (${citation.year}). ${citation.citation}.`;
-
     if (options.includeKeyPoints && citation.keyPoints.length > 0) {
       formatted += `\n\nKey Points: ${citation.keyPoints.join('; ')}.`;
     }
-
     if (options.includeSummary && citation.summary) {
       formatted += `\n\nSummary: ${citation.summary}`;
     }
-
     if (options.includeNotes && citation.notes) {
       formatted += `\n\nNotes: ${citation.notes}`;
     }
-
     return formatted;
   }
-
   private formatMLA(citation: Citation, options: CitationImportOptions): string {
     let formatted = `"${citation.title}." ${citation.citation}, ${citation.year}.`;
-
     if (options.includeKeyPoints && citation.keyPoints.length > 0) {
       formatted += `\n\nKey Points: ${citation.keyPoints.join('; ')}.`;
     }
-
     if (options.includeSummary && citation.summary) {
       formatted += `\n\nSummary: ${citation.summary}`;
     }
-
     if (options.includeNotes && citation.notes) {
       formatted += `\n\nNotes: ${citation.notes}`;
     }
-
     return formatted;
   }
-
   private formatCustom(citation: Citation, options: CitationImportOptions): string {
     let formatted = `${citation.title} - ${citation.citation} (${citation.year})`;
-
     if (options.includeKeyPoints && citation.keyPoints.length > 0) {
       formatted += `\n• Key Points: ${citation.keyPoints.join(', ')}`;
     }
-
     if (options.includeSummary && citation.summary) {
       formatted += `\n• Summary: ${citation.summary}`;
     }
-
     if (options.includeNotes && citation.notes) {
       formatted += `\n• Notes: ${citation.notes}`;
     }
-
     return formatted;
   }
-
   private storeSavedCitations(citations: SavedCitation[]): void {
     try {
       const allSaved = this.getAllStoredCitations();
@@ -417,7 +343,6 @@ export class CitationsManager {
       console.error('Failed to store citations:', error);
     }
   }
-
   private getAllStoredCitations(): SavedCitation[] {
     try {
       const saved = localStorage.getItem(this.storageKey);
@@ -426,7 +351,6 @@ export class CitationsManager {
       return [];
     }
   }
-
   private storeCollections(collections: CitationCollection[]): void {
     try {
       const allCollections = this.getAllStoredCollections();
@@ -437,7 +361,6 @@ export class CitationsManager {
       console.error('Failed to store collections:', error);
     }
   }
-
   private getAllStoredCollections(): CitationCollection[] {
     try {
       const saved = localStorage.getItem(this.collectionsKey);
@@ -446,7 +369,6 @@ export class CitationsManager {
       return [];
     }
   }
-
   private loadUserState(): void {
     try {
       const saved = localStorage.getItem('legal-ai-auth-user');
@@ -457,7 +379,6 @@ export class CitationsManager {
       console.error('Failed to load user state:', error);
     }
   }
-
   private saveUserState(): void {
     try {
       if (this.currentUser) {
@@ -470,14 +391,12 @@ export class CitationsManager {
     }
   }
 }
-
 // Create singleton instance
 export const citationsManager = new CitationsManager();
-
-// Utility functions for easy integration;
+// Utility functions for easy integration
 export const useCitationsManager = () => {
   return {
-    manager: citationsManager,
+    manager: citationsManager
     isAuthenticated: citationsManager.isAuthenticated(),
     currentUser: citationsManager.getCurrentUser(),
     saveCitation: citationsManager.saveCitation.bind(citationsManager),

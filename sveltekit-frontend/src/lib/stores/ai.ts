@@ -2,10 +2,8 @@
 // Global AI Summary Store using XState v5, with memoization and streaming support
 import { setup, createActor, assign, fromPromise } from "$lib/utils/xstate";
 import { writable } from "svelte/store";
-
 // Memoization cache (in-memory, can be replaced with Redis for persistence)
 const summaryCache = new Map<string, { summary: string; sources: any[] }>();
-
 // Define context and events interfaces
 export interface AIContext {
   summary: string;
@@ -31,24 +29,23 @@ type AIEvent =;
   | { type: "SAVE_SUMMARY" }
   | { type: "RETRY" }
   | { type: "RESET" };
-
 export const aiGlobalMachine = setup({
   types: {
-    context: Record<string, any> as AIContext,
-    events: Record<string, any> as AIEvent
-  },;
+    context: { [key: string]: any } as AIContext,
+    events: { [key: string]: any } as AIEvent
+  },
   actions: {
     setContext: assign(({ event }) => {
       if (event.type !== "SUMMARIZE") return {};
-      const cacheKey = `${event.caseId}:${hashEvidence(event.evidence)}:${event?.model || "unknown" // @ts-ignore - Model property access}`;
+      const cacheKey = `${event.caseId}:${hashEvidence(event.evidence)}:${event?.model || "unknown" // @ts-ignore - Model property access}`
       return {
         caseId: event.caseId,
         evidence: event.evidence,
         userId: event.userId,
         model: event?.model || "unknown" // @ts-ignore - Model property access,
         cacheKey,
-        loading: true,
-        error: "",;
+        loading: true
+        error: "",
         stream: ""
       };
     }),
@@ -58,8 +55,8 @@ export const aiGlobalMachine = setup({
         return {
           summary: data?.summary || "",
           sources: data?.sources || [],
-          loading: false,
-          stream: "",;
+          loading: false
+          stream: "",
           error: ""
         };
       }
@@ -68,7 +65,7 @@ export const aiGlobalMachine = setup({
     setError: assign(({ event }) => {
       if ((event as any).type === "xstate.error.actor.summarizeEvidence") {
         return {
-          error: ((event as any).error as Error)?.message || "Error generating summary.",;
+          error: ((event as any).error as Error)?.message || "Error generating summary.",
           loading: false
         };
       }
@@ -77,44 +74,39 @@ export const aiGlobalMachine = setup({
     setSaving: assign({ saving: true, error: "" }),
     setSaveSuccess: assign({ saving: false }),
     setSaveError: assign(({ event }) => ({
-      saving: false,
+      saving: false
       error: ((event as any).error as Error)?.message || "Failed to save summary."
     }))
-  },;
+  },
   actors: {
     summarizeEvidence: fromPromise(async ({ input }: { input: AIContext }) => {
-      // Memoization: check cache first;
+      // Memoization: check cache first
       if (summaryCache.has(input.cacheKey)) {
         return summaryCache.get(input.cacheKey)!;
       }
-
-      // Backend endpoint from component documentation;
+      // Backend endpoint from component documentation
       const res = await fetch("/api/ai/process-evidence", {
         method: "POST",
-        body: JSON.stringify({
+        body: JSON.stringify({,
           caseId: input.caseId,
           evidence: input.evidence,
           userId: input.userId,
           model: input?.model || "unknown" // @ts-ignore - Model property access
-        }),;
+        }),
         headers: { "Content-Type": "application/json" }
       });
-
       if (!res.ok) {
         const errorText = await res.text();
         throw new Error(`API request failed: ${res.statusText} - ${errorText}`);
       }
-
       const data = await res.json();
       if (!data.summary) throw new Error("No summary returned from API");
-
-      // Cache the result;
+      // Cache the result
       const result = {
-        summary: data.summary,;
+        summary: data.summary,
         sources: data.sources || []
       };
       summaryCache.set(input.cacheKey, result);
-
       return result;
     }),
     saveSummary: fromPromise(async ({ input }: { input: AIContext }) => {
@@ -123,10 +115,9 @@ export const aiGlobalMachine = setup({
       }
       const res = await fetch("/api/summary/save", {
         method: "POST",
-        body: JSON.stringify({ caseId: input.caseId, summary: input.summary }),;
+        body: JSON.stringify({ caseId: input.caseId, summary: input.summary }),
         headers: { "Content-Type": "application/json" }
       });
-
       if (!res.ok) {
         const errorText = await res.text();
         throw new Error(`API request failed: ${res.statusText} - ${errorText}`);
@@ -140,8 +131,8 @@ export const aiGlobalMachine = setup({
   context: {
     summary: "",
     error: "",
-    loading: false,
-    saving: false,
+    loading: false
+    saving: false
     caseId: "",
     evidence: [],
     userId: "",
@@ -205,17 +196,16 @@ export const aiGlobalMachine = setup({
           actions: "setSaveSuccess"
         },
         onError: {
-          target: "success",;
+          target: "success",
           actions: "setSaveError"
         }
       }
     }
   }
 });
-
-// Utility: hash evidence array for cache key;
+// Utility: hash evidence array for cache key
 function hashEvidence(evidence: any[]): string {
-  // Simple hash, replace with a better hash for production;
+  // Simple hash, replace with a better hash for production
   try {
     // Use crypto for a more robust hash if available (Node.js/modern browsers)
     // This is a placeholder for a real implementation.
@@ -233,27 +223,22 @@ function hashEvidence(evidence: any[]): string {
     return "e" + Date.now();
   }
 }
-
 // Create and export the actor
 export const aiGlobalActor = createActor(aiGlobalMachine);
-;
 // Svelte store wrapper for reactivity
 export const aiGlobalStore = writable(aiGlobalActor.getSnapshot();
-;
-// Subscribe to actor state changes;
+// Subscribe to actor state changes
 aiGlobalActor.subscribe((snapshot) => {
   aiGlobalStore.set(snapshot);
 });
-
 // Start the actor
 aiGlobalActor.start();
-
-// Export convenience functions;
+// Export convenience functions
 export const aiGlobalActions = {
-  summarize: (
-    caseId: string,
-    evidence: any[],
-    userId: string,;
+  summarize: (,
+    caseId: string
+    evidence: any[]
+    userId: string
     model: string = "gemma3-legal:latest";
   ) => {
     aiGlobalActor.send({
@@ -274,5 +259,4 @@ export const aiGlobalActions = {
     aiGlobalActor.send({ type: "RESET" });
   }
 };
-
 export default aiGlobalStore;

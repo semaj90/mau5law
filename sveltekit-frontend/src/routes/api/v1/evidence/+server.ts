@@ -3,12 +3,10 @@
  * GET /api/v1/evidence - List user's evidence (with pagination)
  * POST /api/v1/evidence - Create new evidence
  */
-
 import { json, error, type RequestHandler } from '@sveltejs/kit'
 import { EvidenceCRUDService, CreateEvidenceSchema, type CreateEvidenceData } from '$lib/server/services/user-scoped-crud'
 import { queueEvidenceAnalysis } from '$lib/server/services/background-job-queue'
 import { z } from 'zod'
-
 // Query parameters schema for GET requests
 const EvidenceQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -17,7 +15,6 @@ const EvidenceQuerySchema = z.object({
   evidenceType: z.string().optional(),
   isPublic: z.coerce.boolean().optional()
 })
-
 /*
  * GET /api/v1/evidence
  * List user's evidence with pagination and filtering
@@ -28,15 +25,12 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 })
     }
-
     // Parse query parameters
     const url = new URL(request.url)
     const queryParams = Object.fromEntries(url.searchParams.entries()
     const validatedQuery = EvidenceQuerySchema.parse(queryParams)
-
     // Create service instance
     const evidenceService = new EvidenceCRUDService(locals.user.id)
-
     // Get evidence with pagination - filter by case if specified
     const result = validatedQuery.caseId
       ? await evidenceService.listByCase(validatedQuery.caseId, {
@@ -47,9 +41,8 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           page: validatedQuery.page,
           limit: validatedQuery.limit
         })
-
     return json({
-      success: true,
+      success: true
       data: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).data,
       pagination: {
         page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any })
@@ -77,7 +70,6 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     })
   } catch (err: any) {
     console.error('Error fetching evidence:', err)
-
     if (err instanceof z.ZodError) {
       return json(
         { message: 'Invalid query parameters', code: 'INVALID_QUERY', details: err.errors },)
@@ -93,7 +85,6 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     )
   }
 }
-
 /*
  * POST /api/v1/evidence
  * Create new evidence
@@ -104,20 +95,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 })
     }
-
     // Parse request body
     const body = await request.json()
     const validatedData = CreateEvidenceSchema.parse(body) as CreateEvidenceData
-
     // Create service instance
     const evidenceService = new EvidenceCRUDService(locals.user.id)
-
     // Create evidence
     const evidenceId = await evidenceService.create(validatedData)
-
     // Get the created evidence details
     const createdEvidence = await evidenceService.getById(evidenceId)
-
     // Queue background analysis
     try {
       const jobId = await queueEvidenceAnalysis(evidenceId, locals.user.id)
@@ -126,11 +112,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       console.error('Failed to queue evidence analysis:', queueError)
       // Don't fail the request, just log the error
     }
-
     return json()
       {
-        success: true,
-        data: createdEvidence,
+        success: true
+        data: createdEvidence
         meta: {
           evidenceId,
           userId: locals.user.id,
@@ -143,7 +128,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     )
   } catch (err: any) {
     console.error('Error creating evidence:', err)
-
     if (err instanceof z.ZodError) {
       return json(
         { message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors },)

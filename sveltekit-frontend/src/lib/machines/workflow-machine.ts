@@ -2,13 +2,10 @@
  * XState Workflow Management System
  * Production-ready state machines for legal case workflows
  */
-
 import { createMachine, assign, setup } from 'xstate';
 import type { EventObject, StateValue } from 'xstate';
-
-// ==================== DOCUMENT PROCESSING WORKFLOW ====================;
+// ==================== DOCUMENT PROCESSING WORKFLOW ====================
 }
-
 export interface DocumentContext {
   documentId: string;
   fileName: string;
@@ -20,10 +17,9 @@ export interface DocumentContext {
   embeddings?: number[];
   ocrConfidence?: number;
   processingErrors?: string[];
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   retryCount: number;
 }
-
 export type DocumentEvent =
   | { type: 'UPLOAD_STARTED'; file: File; caseId?: string; uploadedBy: number }
   | { type: 'UPLOAD_COMPLETED'; documentId: string; fileName: string }
@@ -36,42 +32,41 @@ export type DocumentEvent =
   | { type: 'INDEXING_FAILED'; error: string }
   | { type: 'RETRY' }
   | { type: 'ABORT' };
-
 export const documentWorkflowMachine = setup({
   types: {
-    context: Record<string, any> as DocumentContext,
-    events: Record<string, any> as DocumentEvent
+    context: { [key: string]: any } as DocumentContext,
+    events: { [key: string]: any } as DocumentEvent
   },
   actions: {
     setDocumentInfo: assign({
       documentId: ({ event }) => (event as any).documentId,
       fileName: ({ event }) => (event as any).fileName
     }),
-    setExtractedText: assign({
+    setExtractedText: assign({,
       extractedText: ({ event }) => (event as any).text,
       ocrConfidence: ({ event }) => (event as any).confidence
     }),
-    setEmbeddings: assign({
+    setEmbeddings: assign({,
       embeddings: ({ event }) => (event as any).embeddings
     }),
-    addError: assign({
+    addError: assign({,
       processingErrors: ({ context, event }) => [
         ...(context.processingErrors || []),
         (event as any).error
       ]
     }),
-    incrementRetry: assign({
+    incrementRetry: assign({,
       retryCount: ({ context }) => context.retryCount + 1
     }),
-    resetRetries: assign({
+    resetRetries: assign({,
       retryCount: 0
     })
   },
   guards: {
     canRetry: ({ context }) => context.retryCount < 3,
-    isImageFile: ({ context }) => 
+    isImageFile: ({ context }) =>
       context.mimeType?.startsWith('image/') || false,
-    isLargeFile: ({ context }) => 
+    isLargeFile: ({ context }) =>
       context.fileSize > 10 * 1024 * 1024 // 10MB
   }
 }).createMachine({
@@ -90,7 +85,7 @@ export const documentWorkflowMachine = setup({
       on: {
         UPLOAD_STARTED: {
           target: 'uploading',
-          actions: assign({
+          actions: assign({,
             fileName: ({ event }) => event.file.name,
             fileSize: ({ event }) => event.file.size,
             mimeType: ({ event }) => event.file.type,
@@ -115,7 +110,7 @@ export const documentWorkflowMachine = setup({
     extractingText: {
       on: {
         TEXT_EXTRACTION_COMPLETED: {
-          target: 'generatingEmbeddings',;
+          target: 'generatingEmbeddings',
           actions: 'setExtractedText'
         },
         TEXT_EXTRACTION_FAILED: [;
@@ -134,7 +129,7 @@ export const documentWorkflowMachine = setup({
     generatingEmbeddings: {
       on: {
         EMBEDDING_COMPLETED: {
-          target: 'indexing',;
+          target: 'indexing',
           actions: 'setEmbeddings'
         },
         EMBEDDING_FAILED: [;
@@ -153,7 +148,7 @@ export const documentWorkflowMachine = setup({
     indexing: {
       on: {
         INDEXING_COMPLETED: {
-          target: 'completed',;
+          target: 'completed',
           actions: 'resetRetries'
         },
         INDEXING_FAILED: [;
@@ -182,17 +177,15 @@ export const documentWorkflowMachine = setup({
       on: {
         RETRY: {
           target: 'extractingText',
-          guard: 'canRetry',;
+          guard: 'canRetry',
           actions: 'incrementRetry'
         }
       }
     }
   }
 });
-
-// ==================== CASE WORKFLOW ====================;
+// ==================== CASE WORKFLOW ====================
 }
-
 export interface CaseContext {
   caseId: string;
   title: string;
@@ -207,7 +200,6 @@ export interface CaseContext {
   approvals: number;
   requiredApprovals: number;
 }
-
 export type CaseEvent =
   | { type: 'CREATE_CASE'; title: string; assignedTo?: number }
   | { type: 'ACTIVATE_CASE' }
@@ -220,11 +212,10 @@ export type CaseEvent =
   | { type: 'CLOSE_CASE'; reason?: string }
   | { type: 'ARCHIVE_CASE' }
   | { type: 'REOPEN_CASE'; reason: string };
-
 export const caseWorkflowMachine = setup({
   types: {
-    context: Record<string, any> as CaseContext,
-    events: Record<string, any> as CaseEvent
+    context: { [key: string]: any } as CaseContext,
+    events: { [key: string]: any } as CaseEvent
   },
   actions: {
     createCase: assign({
@@ -234,36 +225,36 @@ export const caseWorkflowMachine = setup({
       status: 'draft' as const,
       lastActivity: () => new Date()
     }),
-    addDocument: assign({
+    addDocument: assign({,
       documents: ({ context, event }) => [
         ...context.documents,
         (event as any).documentId
       ],
       lastActivity: () => new Date()
     }),
-    addEvidence: assign({
+    addEvidence: assign({,
       evidence: ({ context, event }) => [
         ...context.evidence,
         (event as any).evidenceId
       ],
       lastActivity: () => new Date()
     }),
-    setReviewers: assign({
+    setReviewers: assign({,
       reviewers: ({ event }) => (event as any).reviewers,
       requiredApprovals: ({ event }) => (event as any).reviewers?.length || 0,
       approvals: 0,
       lastActivity: () => new Date()
     }),
-    incrementApprovals: assign({
+    incrementApprovals: assign({,
       approvals: ({ context }) => context.approvals + 1,
       lastActivity: () => new Date()
     }),
-    updateActivity: assign({
+    updateActivity: assign({,
       lastActivity: () => new Date()
     })
   },
   guards: {
-    hasRequiredApprovals: ({ context }) => 
+    hasRequiredApprovals: ({ context }) =>
       context.approvals >= context.requiredApprovals,
     hasDocuments: ({ context }) => context.documents.length > 0,
     hasEvidence: ({ context }) => context.evidence.length > 0
@@ -329,7 +320,7 @@ export const caseWorkflowMachine = setup({
         }
       }
     },
-    under_review: {;
+    under_review: {
       on: {
         APPROVE: [;
           {
@@ -366,17 +357,15 @@ export const caseWorkflowMachine = setup({
     archived: {
       on: {
         REOPEN_CASE: {
-          target: 'active',;
+          target: 'active',
           actions: 'updateActivity'
         }
       }
     }
   }
 });
-
-// ==================== RAG QUERY WORKFLOW ====================;
+// ==================== RAG QUERY WORKFLOW ====================
 }
-
 export interface RAGContext {
   queryId: string;
   query: string;
@@ -388,12 +377,11 @@ export interface RAGContext {
   sources: string[];
   cached: boolean;
   processingTime: number;
-  tokens: {;
+  tokens: {
     input: number;
     output: number;
   };
 }
-
 export type RAGEvent =
   | { type: 'START_QUERY'; query: string; userId: number; caseId?: string }
   | { type: 'CACHE_HIT'; response: string; sources: string[] }
@@ -403,11 +391,10 @@ export type RAGEvent =
   | { type: 'GENERATION_FAILED'; error: string }
   | { type: 'CACHE_STORED' }
   | { type: 'RETRY' };
-
 export const ragWorkflowMachine = setup({
   types: {
-    context: Record<string, any> as RAGContext,
-    events: Record<string, any> as RAGEvent
+    context: { [key: string]: any } as RAGContext,
+    events: { [key: string]: any } as RAGEvent
   },
   actions: {
     initializeQuery: assign({
@@ -417,23 +404,23 @@ export const ragWorkflowMachine = setup({
       caseId: ({ event }) => (event as any).caseId,
       processingTime: () => Date.now()
     }),
-    setCachedResponse: assign({
+    setCachedResponse: assign({,
       generatedResponse: ({ event }) => (event as any).response,
       sources: ({ event }) => (event as any).sources,
-      cached: true,
+      cached: true
       confidence: 1.0,
       processingTime: ({ context }) => Date.now() - context.processingTime
     }),
-    setSearchResults: assign({
+    setSearchResults: assign({,
       searchResults: ({ event }) => (event as any).results
     }),
-    setGeneratedResponse: assign({
+    setGeneratedResponse: assign({,
       generatedResponse: ({ event }) => (event as any).response,
       confidence: ({ event }) => (event as any).confidence,
       tokens: ({ event }) => (event as any).tokens,
-      sources: ({ context }) => 
+      sources: ({ context }) =>
         context.searchResults.map(r => r.id || r.title).slice(0, 5),
-      cached: false,
+      cached: false
       processingTime: ({ context }) => Date.now() - context.processingTime
     })
   },
@@ -452,7 +439,7 @@ export const ragWorkflowMachine = setup({
     generatedResponse: '',
     confidence: 0,
     sources: [],
-    cached: false,
+    cached: false
     processingTime: 0,
     tokens: { input: 0, output: 0 }
   },
@@ -509,74 +496,59 @@ export const ragWorkflowMachine = setup({
     completed: {
       type: 'final'
     },
-    failed: {;
+    failed: {
       on: {
         RETRY: 'searching'
       }
     }
   }
 });
-
 // ==================== WORKFLOW ORCHESTRATOR ====================
-
 export class WorkflowOrchestrator {
   private static instance: WorkflowOrchestrator;
   private activeWorkflows = new Map<string, any>();
-
   static getInstance(): WorkflowOrchestrator {
     if (!WorkflowOrchestrator.instance) {
       WorkflowOrchestrator.instance = new WorkflowOrchestrator();
     }
     return WorkflowOrchestrator.instance;
   }
-
   createDocumentWorkflow(workflowId: string) {
     const workflow = documentWorkflowMachine.provide({
       // Add any service implementations here
     });
-    
     this.activeWorkflows.set(workflowId, workflow);
     return workflow;
   }
-
   createCaseWorkflow(workflowId: string) {
     const workflow = caseWorkflowMachine.provide({
       // Add any service implementations here
     });
-    
     this.activeWorkflows.set(workflowId, workflow);
     return workflow;
   }
-
   createRAGWorkflow(workflowId: string) {
     const workflow = ragWorkflowMachine.provide({
       // Add any service implementations here
     });
-    
     this.activeWorkflows.set(workflowId, workflow);
     return workflow;
   }
-
   getWorkflow(workflowId: string) {
     return this.activeWorkflows.get(workflowId);
   }
-
   removeWorkflow(workflowId: string) {
     return this.activeWorkflows.delete(workflowId);
   }
-
   getActiveWorkflowsCount(): number {
     return this.activeWorkflows.size;
   }
-
   getAllWorkflows() {
     return Array.from(this.activeWorkflows.entries();
   }
 }
-
 // Export singleton instance
 export const workflowOrchestrator = WorkflowOrchestrator.getInstance();
-;
 // Export machine types for use in components
 export type DocumentWorkflowState = typeof documentWorkflowMachine;
 export type CaseWorkflowState = typeof caseWorkflowMachine;

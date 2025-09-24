@@ -1,41 +1,37 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: unified-orchestrator
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 /**
  * Unified AI Orchestrator API - Single endpoint for all LLM interactions
  * Routes requests through the LLM Orchestrator Bridge to optimal processing
  * Supports both local and server-side orchestrators with MCP multi-core integration
  */
-
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js'
 import type { LLMBridgeRequest } from '$lib/server/ai/llm-orchestrator-bridge.js'
 import { logger } from '$lib/server/ai/logger.js'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
 // Health check endpoint
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const status = await llmOrchestratorBridge.getStatus()
     const metrics = llmOrchestratorBridge.getPerformanceMetrics()
     const activeRequests = llmOrchestratorBridge.getActiveRequests()
-
     return json({
       service: 'unified-ai-orchestrator',
       timestamp: new Date().toISOString(),
@@ -45,10 +41,10 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         server: status.serverOrchestrator,
         client: status.clientOrchestrator
       },
-      performance: metrics,
+      performance: metrics
       activeRequests: {
         count: activeRequests.length,
-        requests: activeRequests.map(req => ({
+        requests: activeRequests.map(req => ({,
           id: req.id,
           type: req.type,
           priority: req.options?.priority || 'normal',
@@ -57,7 +53,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       },
       capabilities: [
         'Smart orchestrator routing',
-        'Multi-core MCP integration', 
+        'Multi-core MCP integration',
         'Local and server-side models',
         'GPU acceleration support',
         'Realtime and batch processing',
@@ -84,32 +80,27 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     )
   }
 }
-
 // Main orchestrator endpoint
 const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
   const startTime = performance.now()
   let requestData: any
-
   try {
     requestData = await request.json()
-    
     // Validate required fields
     if (!requestData.content && !requestData.messages && !requestData.prompt) {
       return json()
         {
-          success: false,
+          success: false
           error: 'Missing required field: content, messages, or prompt',
           timestamp: new Date().toISOString()
         },
         { status: 400 }
       )
     }
-
     // Normalize input format (support multiple input styles)
-    const content = requestData.content || 
-                   requestData.prompt || 
+    const content = requestData.content ||
+                   requestData.prompt ||
                    (requestData.messages ? extractContentFromMessages(requestData.messages) : '')
-
     // Create bridge request
     const bridgeRequest: LLMBridgeRequest = {
       id: generateRequestId(),
@@ -138,29 +129,22 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
         timestamp: Date.now()
       }
     }
-
     logger.info(`[Unified Orchestrator] Processing ${bridgeRequest.type} request: ${bridgeRequest.id}`)
-
     // Process through bridge
     const result = await llmOrchestratorBridge.processRequest(bridgeRequest)
-
     // Format response based on request type
     const response = formatResponse(result, requestData, startTime)
-
     logger.info(
       `[Unified Orchestrator] Request ${bridgeRequest.id} completed: ` +
       `${(result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).orchestratorUsed} orchestrator, ${(result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).executionMetrics.totalLatency.toFixed(2)}ms`
     )
-
     return json(response)
-
   } catch (error) {
     logger.error('[Unified Orchestrator] Request failed:', error)
-    
     const errorResponse = {
-      success: false,
+      success: false
       error: error instanceof Error ? error.message: 'Unknown error',
-      details: error instanceof Error ? error.stack : undefined,
+      details: error instanceof Error ? error.stack : undefined
       orchestratorUsed: 'none',
       executionMetrics: {
         totalLatency: performance.now() - startTime,
@@ -170,16 +154,13 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
       requestId: requestData?.id || 'unknown',
       timestamp: new Date().toISOString()
     }
-
     return json(errorResponse, { status: 500 })
   }
 }
-
 // Streaming endpoint for real-time responses
 const originalPATCHHandler: RequestHandler = async ({ request }) => {
   try {
     const requestData = await request.json()
-    
     // Enable streaming in bridge request
     const bridgeRequest: LLMBridgeRequest = {
       id: generateRequestId(),
@@ -187,7 +168,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       content: requestData.content || requestData.prompt || '',
       options: {
         ...requestData.options,
-        enableStreaming: true,
+        enableStreaming: true
         priority: 'realtime'
       },
       metadata: {
@@ -195,7 +176,6 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
         timestamp: Date.now()
       }
     }
-
     // Create a readable stream for SSE
     const stream = new ReadableStream({
       async start(controller) {
@@ -203,7 +183,6 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
           // For now, just process normally and return result
           // In future, this could use streaming from orchestrator
           const result = await llmOrchestratorBridge.processRequest(bridgeRequest)
-          
           // Send as SSE event
           const data = `data: ${JSON.stringify(result)}\n\n`
           controller.enqueue(new TextEncoder().encode(data)
@@ -215,7 +194,6 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
         }
       }
     })
-
     return new Response(stream, {
       headers: {
         'Content-Type': 'text/event-stream',
@@ -230,53 +208,42 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // Helper functions
-
 function extractContentFromMessages(messages: any[]): string {
   if (!Array.isArray(messages) || messages.length === 0) {
     return ''
   }
-  
   // Get the last user message
   const lastMessage = messages[messages.length - 1]
   return lastMessage?.content || lastMessage?.text || ''
 }
-
 function determineRequestType(requestData: any): LLMBridgeRequest['type'] {
   // Explicit type specified
   if (requestData.type) {
     return requestData.type
   }
-
   // Detect from endpoint or context
   if (requestData.workflow || requestData.workflowType) {
     return 'workflow'
   }
-  
   if (requestData.documentType || requestData.document || requestData.content?.length > 1000) {
     return 'document_processing'
   }
-  
   if (requestData.query || requestData.search || requestData.vector) {
     return 'search'
   }
-  
   if (requestData.embed || requestData.embedding) {
     return 'embedding'
   }
-  
-  if (requestData.legalAnalysis || requestData.legalDomain || 
-      (requestData.content && (requestData.content.includes('legal') || 
+  if (requestData.legalAnalysis || requestData.legalDomain ||
+      (requestData.content && (requestData.content.includes('legal') ||
                               requestData.content.includes('contract') ||
                               requestData.content.includes('statute')))) {
     return 'legal_analysis'
   }
-  
   // Default to chat
   return 'chat'
 }
-
 function formatResponse(result: any, originalRequest: any, startTime: number) {
   const baseResponse = {
     success: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).success,
@@ -291,9 +258,7 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
     requestId: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).requestId,
     timestamp: new Date().toISOString()
   }
-
   // Add additional fields based on original request format
-  
   // OpenAI-compatible format
   if (originalRequest.messages) {
     return {
@@ -315,7 +280,6 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
       }
     }
   }
-
   // Legal analysis format
   if (originalRequest.type === 'legal_analysis' || originalRequest.legalAnalysis) {
     return {
@@ -328,7 +292,6 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
       }
     }
   }
-
   // Document processing format
   if (originalRequest.type === 'document_processing' || originalRequest.document) {
     return {
@@ -341,7 +304,6 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
       }
     }
   }
-
   // Search format
   if (originalRequest.type === 'search' || originalRequest.query) {
     return {
@@ -354,19 +316,15 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
       }
     }
   }
-
   // Default format
   return baseResponse
 }
-
 function generateRequestId(): string {
   return `unified_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
 }
-
 function generateSessionId(): string {
   return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
 }
-
 // OPTIONS handler for CORS
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
@@ -378,7 +336,6 @@ export const OPTIONS: RequestHandler = async () => {
     }
   })
 }
-
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
 export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler)

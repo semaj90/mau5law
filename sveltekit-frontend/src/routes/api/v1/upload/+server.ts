@@ -1,23 +1,19 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * Enhanced Upload API Endpoint - SvelteKit 2 Production
  * Integrates with Upload service (port 8093) with advanced file processing
  * Supports document analysis, OCR, embedding generation, and metadata extraction
  */
-
-
 import { ensureError } from '$lib/utils/ensure-error'
 import { dev } from '$app/environment'
-import type { 
-  EnhancedUploadRequest, 
-  EnhancedUploadResponse, 
-  APIRequestContext 
+import type {
+  EnhancedUploadRequest,
+  EnhancedUploadResponse,
+  APIRequestContext
 } from '$lib/types/api.js'
 import { embeddingService } from '$lib/server/embedding-service.js'
 import crypto from "crypto"
 import { URL } from "url"
-
 // Upload Service Configuration
 const UPLOAD_SERVICE_CONFIG = {
   http: 'http://localhost:8093',
@@ -30,7 +26,6 @@ const UPLOAD_SERVICE_CONFIG = {
     health: '/health'
   }
 }
-
 // Document Processor Configuration
 const DOCUMENT_PROCESSOR_CONFIG = {
   http: 'http://localhost:8081',
@@ -41,13 +36,12 @@ const DOCUMENT_PROCESSOR_CONFIG = {
     health: '/api/health'
   }
 }
-
 // Supported file types and limits
 const FILE_CONFIG = {
   maxSize: 100 * 1024 * 1024, // 100MB
   allowedTypes: [
     'application/pdf',
-    'application/msword', 
+    'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'text/plain',
     'text/csv',
@@ -68,18 +62,15 @@ const FILE_CONFIG = {
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ]
 }
-
 /*
  * POST /api/v1/upload - Enhanced File Upload with Processing
  */
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   const startTime = Date.now()
   const requestId = crypto.randomUUID()
-  
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File
-    
     // Validate file presence
     if (!file) {
       return error(400, ensureError({
@@ -88,7 +79,6 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         requestId
       })
     }
-
     // Validate file size
     if (file.size > FILE_CONFIG.maxSize) {
       return error(400, ensureError({
@@ -97,7 +87,6 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         requestId
       })
     }
-
     // Validate file type
     if (!FILE_CONFIG.allowedTypes.includes(file.type)) {
       return error(400, ensureError({
@@ -107,7 +96,6 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         details: { supportedTypes: FILE_CONFIG.allowedTypes }
       })
     }
-
     // Extract additional parameters
     const uploadRequest: EnhancedUploadRequest = {
       file,
@@ -121,9 +109,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       sessionId: formData.get('sessionId') as string,
       caseId: formData.get('caseId') as string,
       tags: formData.getAll('tags') as string[],
-      metadata: Record<string, any>
+      metadata: { [key: string]: any }
     }
-
     const context: APIRequestContext = {
       requestId,
       startTime,
@@ -133,15 +120,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       userAgent: request.headers.get('user-agent') || undefined,
       caseId: uploadRequest.caseId
     }
-
     // Process upload
     const uploadResponse = await processEnhancedUpload(uploadRequest, context)
-
     return json(uploadResponse)
-
   } catch (err: any) {
     console.error('Upload API Error:', err)
-    
     return error(500, ensureError({
       message: 'Upload processing failed',
       error: dev ? String(err) : 'Internal server error',
@@ -152,14 +135,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     })
   }
 }
-
 /*
  * GET /api/v1/upload - Upload Service Info and Health
  */
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action')
   const documentId = url.searchParams.get('id')
-  
   try {
     switch (action) {
       case 'health':
@@ -172,7 +153,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'config':
         return await handleConfigInfo()
       default:
-        return json({
+        return json({,
           service: 'Enhanced Upload API',
           version: '2.0.0',
           endpoints: {
@@ -184,7 +165,7 @@ export const GET: RequestHandler = async ({ url }) => {
           features: [
             'File Upload & Storage',
             'Text Extraction',
-            'OCR Processing', 
+            'OCR Processing',
             'Embedding Generation',
             'Content Analysis',
             'Metadata Extraction'
@@ -200,25 +181,23 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   }
 }
-
 // Implementation functions would be added here...
 // (The complete implementation is too long for this response)
 async function processEnhancedUpload(request: EnhancedUploadRequest, context: APIRequestContext): Promise<EnhancedUploadResponse> {
   // Implementation stub - full implementation would include all stages
   return {
-    success: true,
+    success: true
     documentId: crypto.randomUUID(),
     filename: request.filename,
     size: request.file.size,
     contentType: request.contentType,
     uploadTime: new Date().toISOString(),
     processingStatus: 'completed',
-    metadata: Record<string, any>,
+    metadata: { [key: string]: any },
     requestId: context.requestId,
     timestamp: new Date().toISOString()
   }
 }
-
 async function handleHealthCheck(): Promise<Response> {
   return json({
     service: 'Enhanced Upload API',
@@ -231,7 +210,6 @@ async function handleHealthCheck(): Promise<Response> {
     timestamp: new Date().toISOString()
   })
 }
-
 async function handleStatusCheck(documentId: string): Promise<Response> {
   return json({
     documentId,
@@ -239,7 +217,6 @@ async function handleStatusCheck(documentId: string): Promise<Response> {
     timestamp: new Date().toISOString()
   })
 }
-
 async function handleConfigInfo(): Promise<Response> {
   return json({
     service: 'Enhanced Upload API',

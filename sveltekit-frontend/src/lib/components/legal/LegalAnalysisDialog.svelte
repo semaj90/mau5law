@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     isOpen?: unknown;
     caseId: string | undefined ;
@@ -15,9 +14,6 @@ https://svelte.dev/e/js_parse_error -->
     caseId = undefined,
     evidenceId = undefined,
     onAnalysisComplete = > void = () => } = $props();
-
-
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import Dialog from '$lib/components/Dialog.svelte';
@@ -29,31 +25,27 @@ https://svelte.dev/e/js_parse_error -->
     recommendations: string[];
     processingTime: number
   }
-
   let prompt = '';
   let analysisType: 'case_analysis' | 'legal_research' | 'document_review' | 'precedent_search' = 'case_analysis';
   let loading = false;
   let analysis: LegalAnalysis | null = null;
   let error = '';
-
   const analysisTypes = [
     { value: 'case_analysis', label: 'Case Analysis' },
     { value: 'legal_research', label: 'Legal Research' },
     { value: 'document_review', label: 'Document Review' },
     { value: 'precedent_search', label: 'Precedent Search' }
   ];
-
   async function performAnalysis() {
     if (!prompt.trim()) {
       error = 'Please enter an analysis prompt';
       return;
     }
-
     loading = true;
     error = '';
     try {
       const response = await fetch('/api/legal/chat', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -61,19 +53,17 @@ https://svelte.dev/e/js_parse_error -->
           prompt,
           caseId,
           userId: 'current-user', // This should come from auth context
-          sessionType: analysisType,;
+          sessionType: analysisType
           context: {
-            caseDetails: caseId ? { id: caseId } : undefined,
-            evidenceIds: evidenceId ? [evidenceId] : undefined,
+            caseDetails: caseId ? { id: caseId } : undefined
+            evidenceIds: evidenceId ? [evidenceId] : undefined
             requestedAnalysis: [analysisType]
           }
         }),
       });
-
       if (!response.ok) {
         throw new Error(`Analysis failed: ${response.statusText}`);
       }
-
       analysis = await response.json();
       onAnalysisComplete(analysis);
     } catch (err) {
@@ -83,24 +73,20 @@ https://svelte.dev/e/js_parse_error -->
       loading = false;
     }
   }
-
   function resetDialog() {
     prompt = '';
     analysis = null;
     error = '';
     loading = false;
   }
-
   function closeDialog() {
     isOpen = false;
     resetDialog();
   }
-
   $effect(() => { if (!isOpen) {
     resetDialog();
   }
 </script>
-
 <Dialog.Root bind:isOpen title="Legal AI Analysis" onClose={closeDialog}>
   <div class="space-y-6">
     {#if !analysis}
@@ -110,7 +96,7 @@ https://svelte.dev/e/js_parse_error -->
           <label for="analysis-type" class="block text-sm font-medium mb-2">
             Analysis Type
           </label>
-          <select 
+          <select
             id="analysis-type"
             bind:value={analysisType}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -120,7 +106,6 @@ https://svelte.dev/e/js_parse_error -->
             {/each}
           </select>
         </div>
-
         <div>
           <label for="prompt" class="block text-sm font-medium mb-2">
             Analysis Prompt
@@ -133,13 +118,11 @@ https://svelte.dev/e/js_parse_error -->
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           ></textarea>
         </div>
-
         {#if error}
           <div class="p-3 bg-red-50 border border-red-200 rounded-md">
             <p class="text-sm text-red-600">{error}</p>
           </div>
         {/if}
-
         <div class="flex gap-3 pt-4">
           <button
             type="button"
@@ -175,12 +158,10 @@ https://svelte.dev/e/js_parse_error -->
             <span class="text-sm font-medium">{(analysis.confidence * 100).toFixed(1)}%</span>
           </div>
         </div>
-
         <div class="bg-gray-50 p-4 rounded-md">
           <h4 class="font-medium mb-2">Legal Analysis</h4>
           <p class="text-sm text-gray-700 whitespace-pre-wrap">{analysis.analysis}</p>
         </div>
-
         {#if analysis.recommendations.length > 0}
           <div>
             <h4 class="font-medium mb-2">Recommendations</h4>
@@ -194,7 +175,6 @@ https://svelte.dev/e/js_parse_error -->
             </ul>
           </div>
         {/if}
-
         {#if analysis.sources.length > 0}
           <div>
             <h4 class="font-medium mb-2">Sources Referenced</h4>
@@ -214,11 +194,9 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
         {/if}
-
         <div class="text-xs text-gray-500">
           Processing time: {analysis.processingTime}ms
         </div>
-
         <div class="flex gap-3 pt-4">
           <button
             type="button"

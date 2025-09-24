@@ -1,10 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
   import { Card } from "bits-ui";
   // Tooltip functionality removed for now - can be re-added with bits-ui Tooltip
-
   interface Props {
     title?: string;
     subtitle?: string;
@@ -20,7 +18,6 @@
     actions?: import('svelte').Snippet;
     onclick?: () => void;
   }
-
   let {
     title,
     subtitle,
@@ -36,46 +33,40 @@
     actions,
     onclick
   }: Props = $props();
-
   // Melt-UI tooltip - conditionally create only when needed
   const tooltipBuilder = tooltip ? createTooltip({
     openDelay: 500,
     closeDelay: 100,
     forceVisible: true
   }) : null;
-
   const trigger = tooltipBuilder?.elements.trigger;
   const tooltipContent = tooltipBuilder?.elements.content;
-  const open = tooltipBuilder?.states.open;
-
+  const open = tooltipBuilder?.states.ope;
   // Dynamic classes based on props
   let cardClasses = $derived(() => {
     const base = 'modern-card transition-all duration-200';
     const variants = {
       default: 'bg-yorha-bg-card border border-yorha-border-primary',
-      elevated: 'bg-yorha-bg-card border border-yorha-border-primary shadow-lg',;
-      outline: 'bg-transparent border border-yorha-border-accent',;
+      elevated: 'bg-yorha-bg-card border border-yorha-border-primary shadow-lg',
+      outline: 'bg-transparent border border-yorha-border-accent',
       ghost: 'bg-transparent border-transparent hover:bg-yorha-bg-hover';
     };
     const sizes = {
       sm: 'p-golden-md',
-      md: 'p-golden-lg',;
-      lg: 'p-golden-xl',;
+      md: 'p-golden-lg',
+      lg: 'p-golden-xl',
       xl: 'p-golden-2xl';
     };
     const interactive = hoverable ? 'hover:border-yorha-border-accent hover:shadow-md' : '';
     const cursor = clickable ? 'cursor-pointer' : '';
-
     return `${base} ${variants[variant]} ${sizes[size]} ${interactive} ${cursor}`;
   });
-
   function handleClick() {
     if (clickable && onclick) {
       onclick();
     }
   }
 </script>
-
 <div.Root
   class={cardClasses}
   role={clickable ? 'button' : undefined}
@@ -93,7 +84,6 @@
       <div class="loading-spinner"></div>
     </div>
   {/if}
-
   {#if header || title || subtitle || actions}
     <div.Header class="nier-bits-yorha-panel-header nes-container">
       {#if header}
@@ -115,38 +105,31 @@
       {/if}
     </div.Header>
   {/if}
-
   {#if children}
     <div.Content class="nier-bits-yorha-panel-content nes-container">{@render children()}</div.Content>
   {/if}
-
   {#if footer}
     <div.Footer class="nier-bits-yorha-panel-content nes-container">{@render footer()}</div.Footer>
   {/if}
 </div.Root>
-
 {#if tooltip && $open}
   <div class="tooltip">{tooltip}</div>
 {/if}
-
 <style>
   .modern-card {
     border-radius: 0.75rem;
     position: relative;
     overflow: hidden;
   }
-
   .modern-card:focus-visible {
     outline: 2px solid var(--yorha-accent-gold);
     outline-offset: 2px;
   }
-
   .card-header {
     border-bottom: 1px solid var(--yorha-border-secondary);
     margin-bottom: var(--golden-lg);
     padding-bottom: var(--golden-md);
   }
-
   .card-title {
     font-size: var(--text-lg);
     font-weight: 600;
@@ -155,29 +138,24 @@
     letter-spacing: 0.025em;
     margin: 0;
   }
-
   .card-subtitle {
     font-size: var(--text-sm);
     color: var(--yorha-text-muted);
     margin: 0;
   }
-
   .card-content {
     flex: 1;
   }
-
   .card-footer {
     border-top: 1px solid var(--yorha-border-secondary);
     margin-top: var(--golden-lg);
     padding-top: var(--golden-md);
   }
-
   .card-actions {
     display: flex;
     gap: var(--golden-sm);
     align-items: center;
   }
-
   .loading-overlay {
     position: absolute;
     inset: 0;
@@ -189,7 +167,6 @@
     border-radius: inherit;
     backdrop-filter: blur(2px);
   }
-
   .loading-spinner {
     width: 2rem;
     height: 2rem;
@@ -198,13 +175,11 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
   }
-
   .tooltip {
     background: var(--yorha-bg-card);
     border: 1px solid var(--yorha-border-primary);

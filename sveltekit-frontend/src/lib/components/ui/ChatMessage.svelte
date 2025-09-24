@@ -1,23 +1,19 @@
 <script lang="ts">
   import { User, Bot, AlertTriangle } from 'lucide-svelte';
-
   interface Props {
     message: { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string }
     analyticsLog?: (event: unknown) => void;
   }
-
   let {
     message,
     analyticsLog = () => {}
   }: Props = $props();
-
   $effect(() => {
     if (message && message.content) {
       analyticsLog({ event: 'chat_message_rendered', role: message.role, timestamp: Date.now() });
     }
   });
 </script>
-
 <div class="flex items-start gap-2 py-2 px-3 rounded-lg mb-2"
   class:bg-gray-100={message.role === 'user'}
   class:bg-nier-surface-light={message.role === 'assistant'}

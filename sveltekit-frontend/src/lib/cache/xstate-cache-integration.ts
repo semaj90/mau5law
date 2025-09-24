@@ -2,12 +2,10 @@
  * XState Neural Sprite Integration with Headless UI Cache
  * Bridges XState machine state management with intelligent caching
  */
-
 import { assign, fromPromise } from 'xstate';
 import { headlessUICache } from './headless-ui-cache.js';
 import type { CacheEntry } from './headless-ui-cache.js';
 }
-
 export interface CacheContext {
   cacheKey: string | null;
   cachedData: any;
@@ -21,7 +19,6 @@ export interface CacheContext {
   semanticQuery?: string;
   computationCost: number;
 }
-
 export type CacheEvent =
   | { type: 'CACHE_LOOKUP'; key: string; semanticQuery?: string }
   | { type: 'CACHE_HIT'; data: any; metadata: CacheContext['cacheMetadata'] }
@@ -30,14 +27,13 @@ export type CacheEvent =
   | { type: 'CACHE_INVALIDATE'; key?: string; pattern?: string }
   | { type: 'CACHE_SYNC' }
   | { type: 'COMPUTE_REQUIRED'; cost: number };
-
 /**
  * XState Cache Actor - manages caching operations
  */;
 export const cacheActor = fromPromise(async ({
     input
   }: {
-    input: {;
+    input: {
       operation: 'get' | 'set' | 'invalidate' | 'sync';
       key?: string;
       data?: any;
@@ -47,22 +43,19 @@ export const cacheActor = fromPromise(async ({
     };
   }) => {
     const startTime = performance.now();
-
     try {
       switch (input.operation) {
         case 'get': {
           if (!input.key) throw new Error('Key required for get operation');
-
           const cachedData = await headlessUICache.get(input.key, input.semanticQuery);
           const responseTime = performance.now() - startTime;
-
           if (cachedData) {
             return {
-              success: true,
-              hit: true,
-              data: cachedData,
+              success: true
+              hit: true
+              data: cachedData
               metadata: {
-                timestamp: Date.now(),;
+                timestamp: Date.now(),
                 source: 'cache' as const,
                 hitRatio: headlessUICache.getStats().hitRatio,
                 responseTime
@@ -70,11 +63,11 @@ export const cacheActor = fromPromise(async ({
             };
           } else {
             return {
-              success: false,
-              hit: false,
-              data: null,
+              success: false
+              hit: false
+              data: null
               metadata: {
-                timestamp: Date.now(),;
+                timestamp: Date.now(),
                 source: 'none' as const,
                 hitRatio: headlessUICache.getStats().hitRatio,
                 responseTime
@@ -82,12 +75,10 @@ export const cacheActor = fromPromise(async ({
             };
           }
         }
-
         case 'set': {
           if (!input.key || input.data === undefined) {
             throw new Error('Key and data required for set operation');
           }
-
           await headlessUICache.set(
             input.key,
             input.data,
@@ -95,15 +86,13 @@ export const cacheActor = fromPromise(async ({
             'client',
             input.semanticText
           );
-
           return {
-            success: true,
-            stored: true,;
+            success: true
+            stored: true
             key: input.key,
             responseTime: performance.now() - startTime
           };
         }
-
         case 'invalidate': {
           if (input.key) {
             // Invalidate specific key - would need to implement in cache
@@ -115,57 +104,52 @@ export const cacheActor = fromPromise(async ({
             // Clear all cache
             await headlessUICache.clear();
           }
-
           return {
-            success: true,;
-            invalidated: true,
+            success: true
+            invalidated: true
             responseTime: performance.now() - startTime
           };
         }
-
         case 'sync': {
           // Trigger cache sync with server
           console.log('[Cache] Syncing with server...');
           return {
-            success: true,;
-            synced: true,
+            success: true
+            synced: true
             responseTime: performance.now() - startTime
           };
         }
-
         default:
           throw new Error(`Unknown cache operation: ${input.operation}`);
       }
     } catch (error: any) {
       return {
-        success: false,;
+        success: false
         error: error.message,
         responseTime: performance.now() - startTime
       };
     }
   }
 );
-
 /**
  * Cache-aware XState machine mixin
  * Adds caching capabilities to any XState machine
  */
-export function withCache<TContext extends Record<string, any>(
-  baseContext: TContext,
+export function withCache<TContext extends { [key: string]: any }(
+  baseContext: TContext
   cacheKeyGenerator?: (context: TContext) => string;
 ) {
   return {
     ...baseContext,
     cache: {
-      cacheKey: null,
-      cachedData: null,
-      cacheHit: false,
-      cacheMetadata: null,
+      cacheKey: null
+      cachedData: null
+      cacheHit: false
+      cacheMetadata: null
       computationCost: 0
     } as CacheContext
   };
 }
-
 /**
  * Cache actions for XState machines
  */;
@@ -180,7 +164,7 @@ export const cacheActions = {
         cache: {
           ...context.cache,
           cachedData: event.data,
-          cacheHit: true,
+          cacheHit: true
           cacheMetadata: event.metadata
         }
       };
@@ -189,15 +173,14 @@ export const cacheActions = {
         ...context,
         cache: {
           ...context.cache,
-          cachedData: null,
-          cacheHit: false,
+          cachedData: null
+          cacheHit: false
           cacheMetadata: null
         }
       };
     }
     return context;
   }),
-
   /**
    * Set cache key for current operation
    */;
@@ -214,7 +197,6 @@ export const cacheActions = {
     }
     return context;
   }),
-
   /**
    * Track computation cost for caching priority
    */;
@@ -230,22 +212,20 @@ export const cacheActions = {
     }
     return context;
   }),
-
   /**
    * Clear cache state
    */;
   clearCacheState: assign<any, any, any, any, any>(({ context }) => ({
     ...context,
     cache: {
-      cacheKey: null,
-      cachedData: null,
-      cacheHit: false,
-      cacheMetadata: null,
+      cacheKey: null
+      cachedData: null
+      cacheHit: false
+      cacheMetadata: null
       computationCost: 0
     }
   }))
 };
-
 /**
  * Cache guards for XState machines
  */;
@@ -256,14 +236,12 @@ export const cacheGuards = {
   hasCacheHit: ({ context }: { context: any }) => {
     return context.cache?.cacheHit === true;
   },
-
   /**
    * Check if computation cost is high enough to warrant caching
    */;
   shouldCache: ({ context }: { context: any }) => {
     return context.cache?.computationCost > 5; // Threshold for caching
   },
-
   /**
    * Check if cached data is recent enough
    */;
@@ -273,7 +251,6 @@ export const cacheGuards = {
     return ageMs < 5 * 60 * 1000; // 5 minutes
   }
 };
-
 /**
  * Example cached machine state definition
  */;
@@ -285,13 +262,12 @@ export const createCachedMachineStates = () => ({
         FETCH_DATA: 'checkingCache'
       }
     },
-
     checkingCache: {
       entry: ['setCacheKey'],
       invoke: {
-        src: cacheActor,;
+        src: cacheActor
         input: ({ context, event }: { context: any; event: any }) => ({
-          operation: 'get' as const,;
+          operation: 'get' as const,
           key: context.cache.cacheKey,
           semanticQuery: context.cache.semanticQuery
         }),
@@ -304,7 +280,7 @@ export const createCachedMachineStates = () => ({
               cache: {
                 ...context.cache,
                 cachedData: event.output.data,
-                cacheHit: true,
+                cacheHit: true
                 cacheMetadata: event.output.metadata
               }
             }))
@@ -323,11 +299,10 @@ export const createCachedMachineStates = () => ({
         onError: 'computing'
       }
     },
-
     computing: {
-      entry: ['trackComputationCost'],;
+      entry: ['trackComputationCost'],
       invoke: {
-        // Your actual computation logic here;
+        // Your actual computation logic here
         src: fromPromise(async ({ input }) => {
           // Simulate computation
           await new Promise((resolve) => setTimeout(resolve, 1000);
@@ -343,10 +318,9 @@ export const createCachedMachineStates = () => ({
         onError: 'error'
       }
     },
-
     cachingResult: {
       invoke: {
-        src: cacheActor,
+        src: cacheActor
         input: ({ context }: { context: any }) => ({
           operation: 'set' as const,
           key: context.cache.cacheKey,
@@ -357,19 +331,16 @@ export const createCachedMachineStates = () => ({
         onError: 'dataReady', // Still succeed even if caching fails
       }
     },
-
     dataReady: {
       type: 'final',
       entry: () => console.log('Data ready (cached or computed)')
     },
-
     error: {
-      type: 'final',;
+      type: 'final',
       entry: () => console.log('Error occurred')
     }
   }
 });
-
 /**
  * Neural Sprite specific cache decorator
  * Enhances Neural Sprite components with intelligent caching
@@ -378,25 +349,21 @@ export function withNeuralSpriteCache(spriteConfig: any) {
   return {
     ...spriteConfig,
     cache: {
-      enabled: true,
+      enabled: true
       strategy: 'semantic',
-      ttl: 30 * 60 * 1000, // 30 minutes;
+      ttl: 30 * 60 * 1000, // 30 minutes
       priority: 'high'
     },
-
-    // Add cache-aware lifecycle methods;
+    // Add cache-aware lifecycle methods
     beforeCompute: async function (context: any) {
       const cacheKey = `neural-sprite:${context.spriteId}:${JSON.stringify(context.inputs)}`;
       const cached = await headlessUICache.get(cacheKey);
-
       if (cached) {
         console.log(`[NeuralSprite] Cache hit for sprite ${context.spriteId}`);
         return { cached: true, result: cached };
       }
-
       return { cached: false };
     },
-
     afterCompute: async function (context: any, result: any) {
       const cacheKey = `neural-sprite:${context.spriteId}:${JSON.stringify(context.inputs)}`;
       await headlessUICache.set(
@@ -406,20 +373,17 @@ export function withNeuralSpriteCache(spriteConfig: any) {
         'client',
         `sprite computation ${context.spriteId}`
       );
-
       console.log(`[NeuralSprite] Cached result for sprite ${context.spriteId}`);
     }
   };
 }
-
-// Export cache statistics for monitoring;
+// Export cache statistics for monitoring
 export function getCacheStats() {
   return headlessUICache.getStats();
 }
-
-// Export cache control functions;
+// Export cache control functions
 export const cacheControl = {
   clear: () => headlessUICache.clear(),
-  getStats: () => headlessUICache.getStats(),;
+  getStats: () => headlessUICache.getStats(),
   dispose: () => headlessUICache.dispose()
 };

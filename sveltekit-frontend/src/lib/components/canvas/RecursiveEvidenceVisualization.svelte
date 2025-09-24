@@ -1,6 +1,5 @@
 <!--
   Recursive Evidence Visualization Component - Modern Svelte 5 Implementation
-
   ✅ APPLIED MODERN SVELTE 5 PATTERNS:
   - $props() interface with TypeScript for type-safe props
   - $state() runes for reactive state management
@@ -8,7 +7,6 @@
   - onclick event handlers (not on:click)
   - Self-importing recursive component pattern
   - Modern canvas-based evidence hierarchy visualization
-
   🏗️ FEATURES:
   - Integrates Phase 1 recursive evidence chain processing with Fabric.js canvas
   - Shows evidence hierarchy, relationships, and legal analysis in visual format
@@ -20,18 +18,15 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onDestroy } from 'svelte';
   import { fabric } from 'fabric';
   import { evidenceHierarchy, processingStatus, recursionMetrics } from '$lib/stores/evidence-stores.js';
   import { writable, type Writable } from 'svelte/store';
-
   // Ensure imported values are Svelte stores (wrap plain values in writable stores)
   function ensureStore<T>(maybeStore: any, initial: T): Writable<T> {
-    if (maybeStore && typeof maybeStore.subscribe === 'function') return maybeStore;
+    if (maybeStore && typeof maybeStore.subscribe === 'function') return maybeStor;
     return writable<T>(maybeStore ?? initial);
   }
-
   const evidenceHierarchyStore = ensureStore<any>(evidenceHierarchy, null);
   const processingStatusStore = ensureStore<any>(processingStatus, 'idle');
   const recursionMetricsStore = ensureStore<any>(recursionMetrics, {
@@ -41,7 +36,6 @@
     analysisTimestamp: new Date().toISOString(),
     recursionStatistics: { visitedNodes: 0, maxDepth: 0, actualDepth: 0 }
   });
-
   // Modern Svelte 5 Props Pattern (only keep used props to avoid unused warnings)
   interface Props {
     caseId: string;
@@ -50,7 +44,6 @@
     enableInteraction?: boolean;
     showMetrics?: boolean;
   }
-
   let {
     caseId,
     width = 1200,
@@ -58,14 +51,11 @@
     enableInteraction = true,
     showMetrics = false
   }: Props = $props();
-
   let canvasElement: HTMLCanvasElement | null = null;
   let fabricCanvas: any = null;
   let evidenceWorker: Worker | null = null;
-
   // Keep last fetched hierarchy in-memory for re-renders
   let lastHierarchy: any = null;
-
   // Visualization state (use any for fabric types to avoid missing type exports)
   let hierarchyNodes = $state<Map<string, any>>(new Map());
   let connectionLines = $state<any[]>([]);
@@ -73,12 +63,10 @@
   let showChainIntegrity = $state<boolean>(true);
   let showLegalImplications = $state<boolean>(true);
   let animationSpeed = $state<number>(1000);
-
   // Canvas controls
   let zoom = $state<number>(1.0);
   let centerX = $state<number>(width / 2);
   let centerY = $state<number>(height / 2);
-
   // Evidence processing metrics
   let activeProcessingJobs = $state<Map<string, any>>(new Map());
   let visualizationMetrics = $state({
@@ -87,18 +75,15 @@
     renderTime: 0,
     layoutTime: 0
   });
-
   // Use $effect synchronously (do not return a Promise)
   $effect(() => {
     initializeCanvas();
     initializeRecursiveWorker();
-
     // Auto-load case evidence if caseId provided
     if (caseId) {
       loadCaseEvidenceHierarchy();
     }
   });
-
   onDestroy(() => {
     if (fabricCanvas && typeof fabricCanvas.dispose === 'function') {
       fabricCanvas.dispose();
@@ -107,36 +92,30 @@
       evidenceWorker.terminate();
     }
   });
-
   async function initializeCanvas() {
     if (!canvasElement) return;
-
     fabricCanvas = new (fabric.Canvas as any)(canvasElement, {
       width,
       height,
       backgroundColor: '#f8fafc',
-      selection: enableInteraction,
-      preserveObjectStacking: true,
-      imageSmoothingEnabled: true,
+      selection: enableInteraction
+      preserveObjectStacking: true
+      imageSmoothingEnabled: true
       allowTouchScrolling: false;
     });
-
     // Initialize canvas interactions and zoom/pan handlers
     setupCanvasInteractions();
     setupZoomAndPan();
-
     // Wire up worker message handler separately
     if (evidenceWorker) {
       evidenceWorker.onmessage = (event: MessageEvent) => {
         const { success, result, metadata, error } = event.data || {};
-
         if (success) {
           console.log('📊 Recursive evidence analysis complete:', metadata);
           // set the values into ensured stores
           evidenceHierarchyStore.set(result);
           recursionMetricsStore.set(metadata);
           processingStatusStore.set('completed');
-
           // remember and visualize the hierarchy
           lastHierarchy = result;
           visualizeEvidenceHierarchy(result);
@@ -147,21 +126,16 @@
       };
     }
   }
-
   async function loadCaseEvidenceHierarchy() {
     if (!caseId || !evidenceWorker) return;
-
     (processingStatus as any).set('processing');
-
     try {
       // Get root evidence items for the case
       const response = await fetch(`/api/v1/evidence/cases/${caseId}`);
       const caseData = await response.json();
-
       const rootEvidenceIds = Array.isArray(caseData?.evidenceItems)
         ? caseData.evidenceItems.map((item: any) => item.id)
         : [];
-
       if (rootEvidenceIds.length > 0) {
         // Process first evidence item as root of hierarchy
         await processEvidenceWithRecursion(rootEvidenceIds[0]);
@@ -171,39 +145,29 @@
       (processingStatus as any).set('error');
     }
   }
-
   async function processEvidenceWithRecursion(rootEvidenceId: string) {
     if (!evidenceWorker) return;
-
     evidenceWorker.postMessage({
       type: 'PROCESS_EVIDENCE_CHAIN',
-      evidenceId: rootEvidenceId,;
+      evidenceId: rootEvidenceId
       options: {
         maxDepth: 25,
         includeWeakCorrelations: true
       }
     });
-
     (processingStatus as any).set('processing');
   }
-
   function visualizeEvidenceHierarchy(hierarchy: any) {
     if (!fabricCanvas || !hierarchy) return;
-
     const startTime = performance.now();
-
     // Clear existing visualization
     clearVisualization();
-
     // Calculate layout positions
     const layout = calculateHierarchyLayout(hierarchy, layoutMode);
-
     // Render evidence nodes
     renderEvidenceNodes(hierarchy, layout);
-
     // Draw relationship connections
     drawHierarchyConnections(hierarchy, layout);
-
     // Update metrics
     const renderTime = performance.now() - startTime;
     visualizationMetrics = {
@@ -212,21 +176,17 @@
       renderTime,
       layoutTime: layout.computeTime || 0
     };
-
     if (typeof fabricCanvas.renderAll === 'function') {
       fabricCanvas.renderAll();
     }
-
     // Auto-fit to canvas
     if (hierarchyNodes.size > 0) {
       fitHierarchyToCanvas();
     }
   }
-
   function calculateHierarchyLayout(hierarchy: any, mode: 'tree' | 'radial' | 'force') {
     const startTime = performance.now();
     const positions = new Map<string, { x: number; y: number }>();
-
     switch (mode) {
       case 'tree':
         return calculateTreeLayout(hierarchy, positions);
@@ -238,19 +198,15 @@
         return { positions, computeTime: performance.now() - startTime };
     }
   }
-
   function calculateTreeLayout(hierarchy: any, positions: Map<string, { x: number; y: number }>) {
     const startTime = performance.now();
     const horizontalSpacing = 250;
     const verticalSpacing = 150;
-
     function layoutNode(node: any, x: number, y: number, depth: number) {
       positions.set(String(node?.evidenceId), { x, y });
-
       if (Array.isArray(node?.children) && node.children.length > 0) {
         const childrenWidth = (node.children.length - 1) * horizontalSpacing;
         const startX = x - childrenWidth / 2;
-
         node.children.forEach((child: any, index: number) => {
           const childX = startX + index * horizontalSpacing;
           const childY = y + verticalSpacing;
@@ -258,52 +214,40 @@
         });
       }
     }
-
     // Start from center top
     layoutNode(hierarchy, centerX, 100, 0);
-
     return {
       positions,
       computeTime: performance.now() - startTime
     };
   }
-
   function calculateRadialLayout(hierarchy: any, positions: Map<string, { x: number; y: number }>) {
     const startTime = performance.now();
-
     function layoutRadial(node: any, cx: number, cy: number, currentRadius: number, angle: number, depth: number) {
       const x = cx + currentRadius * Math.cos(angle);
       const y = cy + currentRadius * Math.sin(angle);
-
       positions.set(String(node?.evidenceId), { x, y });
-
       if (Array.isArray(node?.children) && node.children.length > 0) {
         const childRadius = currentRadius + 120;
         const angleStep = (Math.PI * 2) / Math.max(node.children.length, 1);
-
         node.children.forEach((child: any, index: number) => {
           const childAngle = angle + (index - (node.children.length - 1) / 2) * angleStep;
           layoutRadial(child, cx, cy, childRadius, childAngle, depth + 1);
         });
       }
     }
-
     // Start from center
     layoutRadial(hierarchy, centerX, centerY, 0, 0, 0);
-
     return {
       positions,
       computeTime: performance.now() - startTime
     };
   }
-
   function calculateForceDirectedLayout(hierarchy: any, positions: Map<string, { x: number; y: number }>) {
     const startTime = performance.now();
-
     // Simplified force-directed layout
     const nodes: any[] = [];
     const edges: any[] = [];
-
     function collectNodes(node: any) {
       nodes.push(node);
       if (Array.isArray(node?.children)) {
@@ -313,208 +257,174 @@
         });
       }
     }
-
     collectNodes(hierarchy);
-
     // Initial random positions
     nodes.forEach((node) => {
       positions.set(String(node.evidenceId), {
-        x: centerX + (Math.random() - 0.5) * 400,;
+        x: centerX + (Math.random() - 0.5) * 400,
         y: centerY + (Math.random() - 0.5) * 400;
       });
     });
-
     // Simple force simulation placeholder
     for (let iteration = 0; iteration < 50; iteration++) {
-      // no-op: placeholder for a real force simulation;
+      // no-op: placeholder for a real force simulatio
     }
-
     return {
       positions,
       computeTime: performance.now() - startTime
     };
   }
-
   function renderEvidenceNodes(hierarchy: any, layout: any) {
     if (!fabricCanvas) return;
-
     function renderNode(node: any) {
       const position = layout.positions.get(String(node?.evidenceId));
       if (!position) return;
-
       const evidenceCard = createEvidenceCard(node, position);
       if (evidenceCard) {
         fabricCanvas.add(evidenceCard);
         hierarchyNodes.set(String(node?.evidenceId), evidenceCard);
       }
-
       // Recursively render children
       if (Array.isArray(node?.children)) {
         node.children.forEach((child: any) => renderNode(child));
       }
     }
-
     renderNode(hierarchy);
   }
-
-  function createEvidenceCard(node: any, position: { x: number; y: number }): any {
+  function createEvidenceCard(node: any, position: ;
+{ x: number; y: number }): any {
     const cardWidth = 180;
     const cardHeight = 120;
-
     // Card background
     const bg = new (fabric.Rect as any)({
-      width: cardWidth,
-      height: cardHeight,
+      width: cardWidth
+      height: cardHeight
       fill: getEvidenceCardColor(node),
       stroke: '#e5e7eb',
-      strokeWidth: 2,;
-      rx: 8,;
+      strokeWidth: 2,
+      rx: 8,
       ry: 8;
     });
-
     // Evidence ID
     const idLabel = String(node?.evidenceId ?? '').substring(0, 12) + (String(node?.evidenceId ?? '').length > 12 ? '...' : '');
     const evidenceId = new (fabric.Text as any)(idLabel, {
       fontSize: 12,
       fill: '#1f2937',
-      fontWeight: 'bold',;
-      top: 10,;
+      fontWeight: 'bold',
+      top: 10,
       left: 10;
     });
-
     // Chain integrity indicator
     const chainIntegrity = (node?.chainOfCustody?.completeness) || 0;
     const integrityColor = chainIntegrity > 0.8 ? '#10b981' : chainIntegrity > 0.6 ? '#f59e0b' : '#ef4444';
-
     const integrityIndicator = new (fabric.Circle as any)({
       radius: 6,
-      fill: integrityColor,;
-      top: 15,;
+      fill: integrityColor
+      top: 15,
       left: cardWidth - 20;
     });
-
     // Legal implications count
     const implicationsCount = Array.isArray(node?.legalImplications) ? node.legalImplications.length : 0;
     const implicationsText = new (fabric.Text as any)(`${implicationsCount} implications`, {
       fontSize: 10,
-      fill: '#6b7280',;
-      top: 35,;
+      fill: '#6b7280',
+      top: 35,
       left: 10;
     });
-
     // Confidence score
     const confidence = Math.round((node?.confidence || 0) * 100);
     const confidenceText = new (fabric.Text as any)(`${confidence}% confidence`, {
       fontSize: 10,
-      fill: '#374151',;
-      top: 50,;
+      fill: '#374151',
+      top: 50,
       left: 10;
     });
-
     // Depth indicator
     const depthText = new (fabric.Text as any)(`Depth: ${node?.depth ?? 0}`, {
       fontSize: 9,
-      fill: '#9ca3af',;
-      top: 65,;
+      fill: '#9ca3af',
+      top: 65,
       left: 10;
     });
-
     // Processing time
     const processingTime = Math.round(node?.metadata?.processingTime || 0);
     const timeText = new (fabric.Text as any)(`${processingTime}ms`, {
       fontSize: 9,
-      fill: '#9ca3af',;
-      top: 80,;
+      fill: '#9ca3af',
+      top: 80,
       left: 10;
     });
-
     // Legal implications icons
     const implicationIcons: any[] = [];
     if (showLegalImplications && Array.isArray(node?.legalImplications)) {
       node.legalImplications.forEach((implication: any, index: number) => {
         const icon = new (fabric.Text as any)(getImplicationIcon(String(implication)), {
           fontSize: 14,
-          top: 35 + index * 15,;
+          top: 35 + index * 15,
           left: cardWidth - 25;
         });
         implicationIcons.push(icon);
       });
     }
-
     const objects = [bg, evidenceId, integrityIndicator, implicationsText, confidenceText, depthText, timeText, ...implicationIcons];
-
     return new (fabric.Group as any)(objects, {
       left: position.x - cardWidth / 2,
       top: position.y - cardHeight / 2,
-      selectable: enableInteraction,
-      hasControls: false,
-      hasBorders: enableInteraction,;
+      selectable: enableInteraction
+      hasControls: false
+      hasBorders: enableInteraction
       data: {
-        evidenceId: node?.evidenceId,;
+        evidenceId: node?.evidenceId,
         type: 'recursive-evidence-node',
-        hierarchyNode: node;
+        hierarchyNode: nod;
       }
     });
   }
-
   function drawHierarchyConnections(hierarchy: any, layout: any) {
     if (!fabricCanvas) return;
-
     function drawConnections(node: any) {
       if (!Array.isArray(node?.children)) return;
-
       const parentPos = layout.positions.get(String(node?.evidenceId));
       if (!parentPos) return;
-
       node.children.forEach((child: any) => {
         const childPos = layout.positions.get(String(child?.evidenceId));
         if (!childPos) return;
-
         const line = new (fabric.Line as any)([
           parentPos.x, parentPos.y + 60, // From bottom of parent
           childPos.x, childPos.y - 60    // To top of child
         ], {
           stroke: getRelationshipColor(child?.relationships),
           strokeWidth: getRelationshipWidth(child?.relationships),
-          strokeDashArray: getRelationshipDash(child?.relationships),;
-          selectable: false,;
+          strokeDashArray: getRelationshipDash(child?.relationships),
+          selectable: false
           evented: false;
         });
-
         fabricCanvas.add(line);
         connectionLines.push(line);
-
         // Add relationship strength indicator
         const midX = (parentPos.x + childPos.x) / 2;
         const midY = (parentPos.y + childPos.y) / 2;
-
         const strengthIndicator = new (fabric.Circle as any)({
           radius: 4,
           fill: getRelationshipStrengthColor(child?.relationships),
           left: midX - 4,
-          top: midY - 4,;
-          selectable: false,;
+          top: midY - 4,
+          selectable: false
           evented: false;
         });
-
         fabricCanvas.add(strengthIndicator);
-
         // Recursively draw child connections
         drawConnections(child);
       });
     }
-
     drawConnections(hierarchy);
   }
-
   function getEvidenceCardColor(node: any): string {
     const chainIntegrity = node?.chainOfCustody?.completeness || 0;
-
     if (chainIntegrity > 0.8) return '#f0f9ff'; // Blue - high integrity
     if (chainIntegrity > 0.6) return '#fffbeb'; // Amber - medium integrity
     return '#fef2f2'; // Red - low integrity
   }
-
   function getImplicationIcon(implication: string): string {
     const icons: Record<string, string> = {
       'chain_integrity': '🔗',
@@ -525,51 +435,38 @@
       'max_depth_reached': '⚠️'
     for (const [key, icon] of Object.entries(icons)) {
       if (implication.toLowerCase().includes(key.replace('_', ' '))) {
-        return icon;
+        return ico;
       }
     }
-
     return '📋';
   }
-
   function getRelationshipColor(relationships: any[]): string {
     if (!Array.isArray(relationships) || relationships.length === 0) return '#d1d5db';
-
     const hasChainLink = relationships.some((r: any) => r.relationshipType === 'chain_link');
     const hasCritical = relationships.some((r: any) => r.legalSignificance === 'critical');
-
     if (hasChainLink) return '#3b82f6'; // Blue for chain links
     if (hasCritical) return '#ef4444';  // Red for critical relationships
     return '#10b981'; // Green for standard relationships
   }
-
   function getRelationshipWidth(relationships: any[]): number {
     if (!Array.isArray(relationships) || relationships.length === 0) return 1;
-
     const maxStrength = Math.max(...relationships.map((r: any) => r.strength || 0));
     return Math.max(1, Math.round(maxStrength * 4));
   }
-
   function getRelationshipDash(relationships: any[]): number[] | undefined {
     if (!Array.isArray(relationships) || relationships.length === 0) return [5, 5];
-
     const hasChainLink = relationships.some((r: any) => r.relationshipType === 'chain_link');
     return hasChainLink ? undefined : [3, 3];
   }
-
   function getRelationshipStrengthColor(relationships: any[]): string {
     if (!Array.isArray(relationships) || relationships.length === 0) return '#9ca3af';
-
     const avgStrength = relationships.reduce((sum: number, r: any) => sum + (r.strength || 0), 0) / relationships.length;
-
     if (avgStrength > 0.8) return '#10b981'; // Green - strong
     if (avgStrength > 0.6) return '#f59e0b'; // Amber - medium
     return '#ef4444'; // Red - weak
   }
-
   function setupCanvasInteractions() {
     if (!fabricCanvas) return;
-
     fabricCanvas.on('object:selected', (e: any) => {
       const obj = (e.selected && e.selected[0]) || e.target;
       if (obj?.data?.hierarchyNode) {
@@ -578,7 +475,6 @@
         showEvidenceDetails(obj.data.hierarchyNode);
       }
     });
-
     fabricCanvas.on('object:moving', (e: any) => {
       // Update connections in real-time during drag
       if (e.target?.data?.type === 'recursive-evidence-node') {
@@ -587,26 +483,21 @@
       }
     });
   }
-
   function setupZoomAndPan() {
     if (!fabricCanvas) return;
-
     // Zoom with mouse wheel
     fabricCanvas.on('mouse:wheel', (opt: any) => {
       const delta = opt.e.deltaY;
       let newZoom = typeof fabricCanvas.getZoom === 'function' ? fabricCanvas.getZoom() : zoom;
       newZoom = Math.min(3, Math.max(0.1, newZoom * Math.pow(0.999, delta)));
-
       if (typeof fabricCanvas.zoomToPoint === 'function') {
         fabricCanvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, newZoom);
       } else if (typeof fabricCanvas.setZoom === 'function') {
         fabricCanvas.setZoom(newZoom);
       }
-
       zoom = newZoom;
       opt.e.preventDefault();
     });
-
     // Optional panning support (middle mouse)
     let isPanning = false;
     fabricCanvas.on('mouse:down', (opt: any) => {
@@ -615,7 +506,6 @@
         fabricCanvas.selection = false;
       }
     });
-
     fabricCanvas.on('mouse:move', (opt: any) => {
       if (isPanning && opt?.e && typeof fabricCanvas.relativePan === 'function') {
         const dx = (opt.e.movementX || 0);
@@ -623,35 +513,30 @@
         fabricCanvas.relativePan({ x: dx, y: dy });
       }
     });
-
     fabricCanvas.on('mouse:up', () => {
       isPanning = false;
       fabricCanvas.selection = enableInteraction;
     });
   }
-
   function showEvidenceDetails(node: any) {
     // Trigger detailed evidence analysis view (typed as any to allow property access)
     console.log('🔍 Evidence Details:', {
       id: node?.evidenceId,
       depth: node?.depth,
-      chainIntegrity: node?.chainOfCustody?.completeness,;
+      chainIntegrity: node?.chainOfCustody?.completeness,
       relationships: node?.relationships?.length,
-      legalImplications: node?.legalImplications,;
+      legalImplications: node?.legalImplications,
       confidence: node?.confidence,
-      processingTime: node?.metadata?.processingTime;
+      processingTime: node?.metadata?.processingTim;
     });
   }
-
   function updateNodeConnections(evidenceId: string) {
     // Use the evidenceId to find the corresponding rendered object and refresh its connections.
     // This ensures the parameter is read (avoids "declared but never read") and provides
     // a simple, safe update strategy: re-render the hierarchy if available.
     if (!evidenceId) return;
-
     const key = String(evidenceId);
     const renderedObject = hierarchyNodes.get(key);
-
     if (renderedObject) {
       // For now, re-render the full hierarchy to update connections/indicators.
       // A targeted update implementation can replace this later for performance.
@@ -666,15 +551,13 @@
       console.debug('updateNodeConnections called for unknown id', key);
     }
   }
-
   // Control functions use lastHierarchy for re-renders (avoid using $evidenceHierarchy store syntax here)
   function switchLayoutMode(mode: 'tree' | 'radial' | 'force') {
-    layoutMode = mode;
+    layoutMode = mod;
     if (lastHierarchy) {
       visualizeEvidenceHierarchy(lastHierarchy);
     }
   }
-
   function toggleChainIntegrity() {
     showChainIntegrity = !showChainIntegrity;
     // Re-render with updated visibility
@@ -682,54 +565,43 @@
       visualizeEvidenceHierarchy(lastHierarchy);
     }
   }
-
   function toggleLegalImplications() {
-    showLegalImplications = !showLegalImplications;
+    showLegalImplications = !showLegalImplication;
     // Re-render with updated visibility
     if (lastHierarchy) {
       visualizeEvidenceHierarchy(lastHierarchy);
     }
   }
-
   function fitHierarchyToCanvas() {
     if (!fabricCanvas || hierarchyNodes.size === 0) return;
-
     const objects = Array.from(hierarchyNodes.values());
     const group = new (fabric.Group as any)(objects);
     const bounds = group.getBoundingRect();
-
     const scaleX = (width - 100) / bounds.width;
     const scaleY = (height - 100) / bounds.height;
     const scale = Math.min(scaleX, scaleY, 1);
-
     if (typeof fabricCanvas.setZoom === 'function') {
       fabricCanvas.setZoom(scale);
     }
-
     const centerX = width / 2;
     const centerY = height / 2;
     const boundsCenterX = bounds.left + bounds.width / 2;
     const boundsCenterY = bounds.top + bounds.height / 2;
-
     if (typeof fabricCanvas.relativePan === 'function') {
       fabricCanvas.relativePan({
-        x: centerX - boundsCenterX * scale,;
-        y: centerY - boundsCenterY * scale;
+        x: centerX - boundsCenterX * scale,
+        y: centerY - boundsCenterY * scal;
       });
     }
-
-    zoom = scale;
+    zoom = scal;
   }
-
   async function exportHierarchyVisualization() {
     if (!fabricCanvas) return;
-
     const dataURL = fabricCanvas.toDataURL({
-      format: 'png',;
-      quality: 1,;
+      format: 'png',
+      quality: 1,
       multiplier: 2;
     });
-
     // Download the visualization
     const link = document.createElement('a');
     link.download = `evidence-hierarchy-${caseId}-${Date.now()}.png`;
@@ -737,7 +609,6 @@
     link.click();
   }
 </script>
-
 <!-- Canvas container with controls -->
 <div class="recursive-evidence-visualization">
   <!-- Canvas controls -->
@@ -750,7 +621,6 @@
         <option value="force">Force-Directed</option>
       </select>
     </div>
-
     <div class="control-group">
       <button onclick={toggleChainIntegrity} class:active={showChainIntegrity}>
         Chain Integrity
@@ -759,7 +629,6 @@
         Legal Implications
       </button>
     </div>
-
     <div class="control-group">
       <button onclick={() => fitHierarchyToCanvas()}>
         Fit to Canvas
@@ -768,7 +637,6 @@
         Export PNG
       </button>
     </div>
-
     {#if showMetrics}
       <div class="metrics-display">
         <span>Zoom: {Math.round(zoom * 100)}%</span>
@@ -778,7 +646,6 @@
       </div>
     {/if}
   </div>
-
   <!-- Processing status (use the ensured store) -->
   {#if $processingStatusStore === 'processing'}
     <div class="processing-overlay">
@@ -794,7 +661,6 @@
   {/if}
     </div>
   {/if}
-
   {#if $processingStatusStore === 'processing'}
     <div class="processing-overlay">
       <div class="processing-content">
@@ -842,9 +708,8 @@
         </div>
       </div>
     {/if}
-
   <style>
-    .visualization-controls {;
+    .visualization-controls {
       display: flex;
       gap: 1rem;
       padding: 1rem;
@@ -853,44 +718,37 @@
       flex-wrap: wrap;
       align-items: center;
     }
-
     .control-group {
       display: flex;
       gap: 0.5rem;
       align-items: center;
     }
-
     .control-group label {
       font-weight: 500;
       color: #374151;
     }
-
     .control-group select {
       padding: 0.5rem;
       border: 1px solid #d1d5db;
       border-radius: 4px;
       background: white;
     }
-
     .control-group button {
       padding: 0.5rem 1rem;
       border: 1px solid #d1d5db;
       border-radius: 4px;
       background: white;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2;
     }
-
-    .control-group button:hover {;
+    .control-group button:hover {
       background: #f3f4f6;
     }
-
     .control-group button.active {
       background: #3b82f6;
       color: white;
       border-color: #3b82f6;
     }
-
     .metrics-display {
       display: flex;
       gap: 1rem;
@@ -898,7 +756,6 @@
       color: #6b7280;
       margin-left: auto;
     }
-
   .processing-overlay {
     position: absolute;
     top: 0;
@@ -911,12 +768,10 @@
     justify-content: center;
     z-index: 10;
   }
-
   .processing-content {
     text-align: center;
     padding: 2rem;
   }
-
   .spinner {
     width: 40px;
     height: 40px;
@@ -926,53 +781,44 @@
     animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
-
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
   .canvas-container {
     flex: 1;
     position: relative;
     overflow: hidden;
   }
-
   .evidence-hierarchy-canv.evidence-hierarchy-canvas:active {
     cursor: grabbing;
   }
-
   .hierarchy-summary {
     background: white;
     border-top: 1px solid #e5e7eb;
     padding: 1rem;
   }
-
   .hierarchy-summary h4 {
     margin: 0 0 1rem 0;
     color: #059669;
     font-weight: 600;
   }
-
   .summary-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
-
   .stat {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 0.5rem;
     background: #f9fafb;
     border-radius: 4px;
   }
-
   .stat .label {
     font-weight: 500;
     color: #374151;
   }
-
   .stat .value {
     color: #059669;
     font-weight: 600;

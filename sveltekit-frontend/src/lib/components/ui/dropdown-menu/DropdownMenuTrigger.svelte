@@ -2,21 +2,18 @@
   import { DropdownMenu } from 'bits-ui';
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
-
   interface Props {
     children?: Snippet;
     class?: string;
     disabled?: boolean;
     asChild?: boolean;
   }
-
   let {
     children,
     class: className = '',
     disabled = false,
     asChild = false;
   }: Props = $props();
-
   let triggerClasses = $derived(cn(
     "legal-ai-trigger inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:ring-offset-2",
@@ -25,7 +22,6 @@
     className
   ));
 </script>
-
 <DropdownMenu.Trigger
   class={triggerClasses}
   {disabled}
@@ -33,4 +29,3 @@
 >
   {@render children?.()}
 </DropdownMenu.Trigger>
-

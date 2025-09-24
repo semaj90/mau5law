@@ -2,13 +2,11 @@ import type { UserProfile } from "$lib/server/db/schema/user-management";
 import { db } from "$lib/server/database";
 import { users, userProfiles } from "$lib/server/db/schema/user-management";
 import { eq } from "drizzle-orm";
-
 export interface ContextOptions {
   jurisdictionHint?: boolean;
   practiceAreasHint?: boolean;
   tone?: 'formal' | 'concise' | 'explanatory';
 }
-
 export async function buildUserContextPrompt(userId?: string, opts: ContextOptions = {}): Promise<string> {
   if (!userId) return '';
   try {
@@ -21,11 +19,9 @@ export async function buildUserContextPrompt(userId?: string, opts: ContextOptio
     if (!rows?.length) return '';
     const u: any = rows[0].users;
     const p: any = rows[0].user_profiles;
-
     const lines: string[] = [
       'You are assisting a legal professional. Personalize responses as appropriate.'
     ];
-
     if (opts.jurisdictionHint && u?.jurisdiction) {
       lines.push(`Primary jurisdiction: ${u.jurisdiction}.`);
     }
@@ -41,7 +37,6 @@ export async function buildUserContextPrompt(userId?: string, opts: ContextOptio
     if (opts.tone) {
       lines.push(`Use a ${opts.tone} tone.`);
     }
-
     return lines.join(' ');
   } catch {
     return '';

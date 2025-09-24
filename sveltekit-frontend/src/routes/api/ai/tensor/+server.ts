@@ -1,26 +1,24 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: tensor
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 import { cache, cacheEmbedding, cacheSearchResults } from '$lib/server/cache/redis'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
 // Accept text and return embedding tensor with caching and indexing hooks
 const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
   try {
@@ -38,7 +36,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       type = 'ocr'
     } = body as { text: string; model?: string; tags?: string[]; type?: string }
     if (!text || typeof text !== 'string') return json({ error: 'Missing text' }, { status: 400 })
-
   // Node-safe base64 (avoid btoa which is not defined in Node)
   const base64 = Buffer.from(text, 'utf8').toString('base64')
   const key = `tensor:${model}:${base64.slice(0, 64)}`
@@ -47,10 +44,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       // Mirror both fields for compatibility
       return json({ tensor: cached, embedding: cached, cached: true, model, tags, type, backend: 'cache' })
     }
-
   const fastApiUrl = process.env.FASTAPI_URL || process.env.PUBLIC_FASTAPI_URL
   const vllmUrl = (process.env.VLLM_ENDPOINT || process.env.PUBLIC_VLLM_ENDPOINT || '').replace(/\/$/, '')
-
     // Helper to finalize and cache response
     const finalize = async (embedding: number[], wasCached = false, backend: 'fastapi' | 'vllm' | 'ollama' | 'go') => {
       await cache.set(key, embedding, 24 * 60 * 60 * 1000)
@@ -58,7 +53,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       await cacheSearchResults(text, 'tensor', [{ id: key, score: 1 }], { model, tags })
       return json({ tensor: embedding, embedding, cached: wasCached, model, tags, type, backend })
     }
-
     // Primary: FastAPI embed service
     if (fastApiUrl) {
       try {
@@ -76,7 +70,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         // fall through to Go fallback on error
       }
     }
-
     // Secondary fallback: OpenAI-compatible embeddings (e.g., vLLM) if configured
     if (vllmUrl) {
       try {
@@ -96,7 +89,6 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         // continue to Ollama fallback
       }
     }
-
     // Tertiary fallback: Ollama embeddings API (local default port 11434)
     try {
       const ollamaUrl = (process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL || 'http://localhost:11434').replace(/\/$/, '')
@@ -115,12 +107,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     } catch {
       // continue to Go fallback
     }
-
     // Quaternary fallback: Go tensor bridge (mock-capable) when others aren't available
     try {
       const goReq = {
         operation: 'vectorize',
-        documentId: key,
+        documentId: key
         data: [] as number[],
         options: { timeout: 5000 }
       }
@@ -139,13 +130,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     } catch {
       // swallow and report below
     }
-
     // If we reached here, no backend produced an embedding
     return json({ error: 'Embedding backend unavailable (FASTAPI_URL not configured and Go fallback failed)' }, { status: 502 })
   } catch (e: any) {
     return json({ error: e?.message || 'Tensor error' }, { status: 500 })
   }
 }
-
-
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

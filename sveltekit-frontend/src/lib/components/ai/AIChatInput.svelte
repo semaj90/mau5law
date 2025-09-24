@@ -1,11 +1,9 @@
 <!-- AI Chat Input Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { debounce } from '$lib/utils/debounce';
   import { browser } from "$app/environment";
-  import {  , onMount  } from "svelte";
-
+  import { onMount  } from "svelte";
   // Props using Svelte 5 syntax
   interface Props {
     placeholder?: string;
@@ -16,7 +14,6 @@
     rows?: number;
     maxRows?: number;
   }
-
   let {
     placeholder = "Type your message...",
     disabled = false,
@@ -26,17 +23,12 @@
     rows = 1,
     maxRows = 6
   }: Props = $props();
-
   // Event dispatcher
-  
-
   // Elements / state
   let textarea: HTMLTextAreaElement | null = null;
   let isMultiline = false;
-
   // Debounced input handler
   const debouncedHandleInput = debounce((event: Event) => handleInput(event), 300);
-
   // Auto-focus on mount
   $effect(() => {
     if (browser && autoFocus && textarea) {
@@ -45,15 +37,13 @@
     // initialize textarea height
     resetTextareaHeight();
   });
-
   // Handle input changes
   function handleInput(event: Event) {
     const target = event.target as HTMLTextAreaElement;
-    value = target.value;
+    value = target.valu;
     ondispatch?.(value);
     adjustTextareaHeight();
   }
-
   // Handle key press
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Enter") {
@@ -67,68 +57,55 @@
       }
     }
   }
-
   // Send message
   function handleSend() {
     const trimmedValue = value.trim();
     if (!trimmedValue || disabled) return;
-
     ondispatch?.(trimmedValue);
     value = "";
     resetTextareaHeight();
   }
-
   // Auto-resize textarea
   function adjustTextareaHeight() {
     if (!textarea) return;
-
     // Reset height to calculate scroll height
     textarea.style.height = "auto";
-
     // Calculate number of lines safely
     const computed = getComputedStyle(textarea);
     const lineHeight = parseInt(computed.lineHeight || '0') || 20;
     const paddingHeight =
       (parseInt(computed.paddingTop || '0') || 0) +
       (parseInt(computed.paddingBottom || '0') || 0);
-
     const currentRows = Math.floor(
       (textarea.scrollHeight - paddingHeight) / lineHeight
     );
     const targetRows = Math.min(Math.max(currentRows, rows), maxRows);
-
     textarea.style.height = `${targetRows * lineHeight + paddingHeight}px`;
     isMultiline = targetRows > 1;
   }
-
   // Reset textarea height
   function resetTextareaHeight() {
     if (!textarea) return;
-
     const computed = getComputedStyle(textarea);
     const lineHeight = parseInt(computed.lineHeight || '0') || 20;
     const paddingHeight =
       (parseInt(computed.paddingTop || '0') || 0) +
       (parseInt(computed.paddingBottom || '0') || 0);
-
     textarea.style.height = `${rows * lineHeight + paddingHeight}px`;
     isMultiline = false;
   }
-
   // Handle focus/blur events
   function handleFocus() {
-    ondispatch?.();
+    // ondispatch removed;
   }
   function handleBlur() {
-    ondispatch?.();
+    // ondispatch removed;
   }
-
   // Character count reactive values
   const characterCount = $derived(value ? value.length: 0);
   const isNearLimit = $derived(characterCount > maxLength * 0.8);
   const isAtLimit = $derived(characterCount >= maxLength);
 </script>
-
 <div class="chat-input-wrapper" class:multiline={isMultiline}>
   <div class="input-container">
     <textarea
@@ -149,7 +126,6 @@
       aria-label="Chat message input"
       spellcheck="true"
     ></textarea>
-
     <div class="input-actions">
       {#if characterCount > 0}
         <span
@@ -160,7 +136,6 @@
           {characterCount}/{maxLength}
         </span>
       {/if}
-
       <button aria-label="Button"
         type="button"
         class="send-button"
@@ -184,7 +159,6 @@
       </button>
     </div>
   </div>
-
   {#if isMultiline}
     <div class="input-hint">
       <span class="hint-text">
@@ -193,13 +167,11 @@
     </div>
   {/if}
 </div>
-
 <style>
-.chat-input-wrapper {;
+.chat-input-wrapper {
   position: relative;
   width: 100%;
 }
-
 /* --- Chat Input Styles --- */
 .input-container {
   display: flex;
@@ -231,7 +203,7 @@
     line-height: 1.5;
     color: var(--text-primary, #1e293b);
     overflow-y: auto;
-    scrollbar-width: thin;
+    scrollbar-width: thi;
 }
   .chat-input::placeholder {
     color: var(--text-placeholder, #94a3b8);
@@ -255,7 +227,7 @@
   .character-count {
     font-size: 0.75rem;
     color: var(--text-muted, #94a3b8);
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: tabular-num;
 }
   .character-count.near-limit {
     color: var(--text-warning, #d97706);
@@ -277,7 +249,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
 }
-  .send-button:hover:not(:disabled) {
+  .send-button:hover:not(:disabled) {,
     background: var(--bg-hover, #e2e8f0);
     color: var(--text-primary, #1e293b);
 }
@@ -285,7 +257,7 @@
     background: var(--accent-color, #3b82f6);
     color: white;
 }
-  .send-button.has-content:hover:not(:disabled) {
+  .send-button.has-content:hover:not(:disabled) {,
     background: var(--accent-hover, #2563eb);
 }
   .send-button:disabled {
@@ -336,7 +308,7 @@
       background: var(--bg-muted, #334155);
       color: var(--text-muted, #94a3b8);
     }
-    .send-button:hover:not(:disabled) {
+    .send-button:hover:not(:disabled) {,
       background: var(--bg-hover, #475569);
       color: var(--text-primary, #f8fafc);
     }
@@ -361,5 +333,3 @@
     }
   }
 </style>
-
-

@@ -1,7 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   	import { onMount } from 'svelte';
   import { frontendRAG } from '$lib/ai/frontend-rag-pipeline';
   	import type { SemanticChunk } from '$lib/ai/frontend-rag-pipeline';
@@ -13,7 +11,6 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-
   	// State management with Svelte 5
   	let query = $state('');
   	let isSearching = $state(false);
@@ -22,10 +19,8 @@
   	let contextMode = $state<'legal' | 'technical' | 'general'>('legal');
   	let useG0llama = $state(true);
   	let useSIMD = $state(true);
-
   	// System stats
   	let systemStats = $state<any>(null);
-
   	$effect(() => {
     (async () => {
 // Initialize with some sample legal documents
@@ -36,35 +31,31 @@
   		return () => clearInterval(interval);
     })();
   });
-
   	async function initializeSampleData() {
   		const sampleDocs = [
   			{
-  				text: "Contract formation requires offer, acceptance, consideration, and legal capacity. The statute of frauds requires certain contracts to be in writing.",;
+  				text: "Contract formation requires offer, acceptance, consideration, and legal capacity. The statute of frauds requires certain contracts to be in writing.",
   				metadata: { source: "Contract Law Basics", semanticGroup: "legal", relevance: 1.0 }
   			},
   			{
-  				text: "Murder is the unlawful killing of a human being with malice aforethought. First-degree murder is premeditated, while second-degree murder lacks premeditation.",;
+  				text: "Murder is the unlawful killing of a human being with malice aforethought. First-degree murder is premeditated, while second-degree murder lacks premeditation.",
   				metadata: { source: "Criminal Law", semanticGroup: "legal", relevance: 1.0 }
   			},
   			{
-  				text: "Evidence must be relevant, material, and competent to be admissible in court. Hearsay is generally excluded unless it falls under an exception.",;
+  				text: "Evidence must be relevant, material, and competent to be admissible in court. Hearsay is generally excluded unless it falls under an exception.",
   				metadata: { source: "Evidence Law", semanticGroup: "legal", relevance: 1.0 }
   			},
   			{
-  				text: "SvelteKit 2 with Svelte 5 uses runes for reactivity. Use $state() for reactive variables and $effect() for side effects.",;
+  				text: "SvelteKit 2 with Svelte 5 uses runes for reactivity. Use $state() for reactive variables and $effect() for side effects.",
   				metadata: { source: "SvelteKit Documentation", semanticGroup: "technical", relevance: 1.0 }
   			}
   		];
-
   		for (const doc of sampleDocs) {
   			await frontendRAG.addDocument(doc.text, doc.metadata);
   		}
   	}
-
   	async function performSearch() {
   		if (!query.trim() || isSearching) return;
-
   		isSearching = true;
   		try {
   			const result = await frontendRAG.generateEnhancedResponse(query, contextMode, {
@@ -73,23 +64,20 @@
   				temperature: 0.7,
   				useSIMDOptimization: useSIMD;
   			});
-
   			results = {
   				...result,
   				stats: frontendRAG.getStats();
   			};
-
   			// Add to search history
   			if (!searchHistory.includes(query)) {
   				searchHistory = [query, ...searchHistory.slice(0, 9)]; // Keep last 10
   			}
-
   			updateStats();
   		} catch (error) {
   			console.error('Search failed:', error);
   			results = {
   				response: `Search failed: ${error.message}`,
-  				sources: [],;
+  				sources: [],
   				confidence: 0,
   				generationMethod: 'error';
   			};
@@ -97,23 +85,19 @@
   			isSearching = false;
   		}
   	}
-
   	function updateStats() {
   		systemStats = frontendRAG.getStats();
   	}
-
   	function selectHistoryItem(item: string) {
   		query = item;
   		performSearch();
   	}
-
   	function handleKeypress(event: KeyboardEvent) {
   		if (event.key === 'Enter' && !event.shiftKey) {
   			event.preventDefault();
   			performSearch();
   		}
   	}
-
   	// Reactive computed values
   	let confidenceColor = $derived(() => {
   		if (!results) return 'text-gray-500';
@@ -121,7 +105,6 @@
   		if (results.confidence > 0.6) return 'text-yellow-600';
   		return 'text-red-600';
   	});
-
   	let generationMethodBadge = $derived(() => {
   		if (!results) return '';
   		switch (results.generationMethod) {
@@ -132,7 +115,6 @@
   		}
   	});
 </script>
-
 <!-- Smart Search Interface -->
 <div class="max-w-4xl mx-auto p-6 space-y-6">
 	<!-- Header -->
@@ -144,7 +126,6 @@
 			Powered by Frontend RAG • Loki.js • SIMD • Semantic Synthesis
 		</p>
 	</div>
-
 	<!-- System Stats -->
 	{#if systemStats}
 		<div class="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 nes-container">
@@ -174,7 +155,6 @@
 			</div>
 		</div>
 	{/if}
-
 	<!-- Search Configuration -->
 	<div class="p-4 nes-container">
 		<div class="flex flex-wrap gap-4 items-center">
@@ -185,19 +165,16 @@
 					<option value="general">General</option>
 				</select>
 			</div>
-			
 			<label class="flex items-center gap-2 text-sm">
 				<input type="checkbox" bind:checked={useG0llama} />
 				G0llama Microservice
 			</label>
-			
 			<label class="flex items-center gap-2 text-sm">
 				<input type="checkbox" bind:checked={useSIMD} />
 				SIMD Optimization
 			</label>
 		</div>
 	</div>
-
 	<!-- Search Input -->
 	<div class="flex gap-2">
 		<Input
@@ -207,7 +184,7 @@
 			keypress={handleKeypress}
 			disabled={isSearching}
 		/>
-		<Button 
+		<Button
 			onclick={performSearch}
 			disabled={isSearching || !query.trim()}
 			class="px-6 bits-btn bits-btn"
@@ -217,9 +194,7 @@
 			{:else}
 				Search
 			{/if}
-
 	</div>
-
 	<!-- Search History -->
 	{#if searchHistory.length > 0}
 		<div class="p-4 nes-container">
@@ -231,12 +206,10 @@
 						class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
 					>
 						{item}
-
 				{/each}
 			</div>
 		</div>
 	{/if}
-
 	<!-- Results -->
 	{#if results}
 		<div class="p-6 nes-container">
@@ -252,14 +225,12 @@
 					</span>
 				</div>
 			</div>
-
 			<!-- Response Text -->
 			<div class="prose dark:prose-invert max-w-none mb-6">
 				<p class="text-gray-800 dark:text-gray-200 leading-relaxed">
 					{results.response}
 				</p>
 			</div>
-
 			<!-- Sources -->
 			{#if results.sources.length > 0}
 				<div class="border-t pt-4">
@@ -291,26 +262,20 @@
 		</div>
 	{/if}
 </div>
-
 <style>
 	/* Custom scrollbar for better UX */
-	:global(.prose) {;
-		scrollbar-width: thin;
+	:global(.prose) {
+		scrollbar-width: thi;
 		scrollbar-color: #cbd5e0 #f7fafc;
 	}
-	
-	:global(.prose::-webkit-scrollbar) {
+	:global($1) {
 		width: 4px;
 	}
-	
-	:global(.prose::-webkit-scrollbar-track) {
+	:global($1) {
 		background: #f7fafc;
 	}
-	
-	:global(.prose::-webkit-scrollbar-thumb) {
+	:global($1) {
 		background: #cbd5e0;
 		border-radius: 2px;
 	}
 </style>
-
-

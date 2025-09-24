@@ -1,6 +1,5 @@
 // Search System Type Definitions
 // Enhanced search with Fuse.js integration
-
 export type SearchCategory =
   | 'component'
   | 'service'
@@ -9,7 +8,6 @@ export type SearchCategory =
   | 'demo'
   | 'all';
 }
-
 export interface SearchResult {
   id: string;
   title: string;
@@ -18,16 +16,14 @@ export interface SearchResult {
   path?: string;
   score: number;
   matches: SearchMatch[];
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   tags: string[];
 }
-
 export interface SearchMatch {
   indices: [number, number][];
   key: string;
   value: string;
 }
-
 export interface SearchOptions {
   includeScore?: boolean;
   includeMatches?: boolean;
@@ -36,7 +32,6 @@ export interface SearchOptions {
   limit?: number;
   category?: SearchCategory;
 }
-
 export interface SearchFilter {
   category?: SearchCategory;
   tags?: string[];
@@ -47,7 +42,6 @@ export interface SearchFilter {
     end: Date;
   };
 }
-
 export interface SearchState {
   query: string;
   results: SearchResult[];

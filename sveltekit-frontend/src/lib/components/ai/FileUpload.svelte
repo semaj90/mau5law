@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from "$lib/components/ui/button/Button.svelte";
   import Input from "$lib/components/ui/Input.svelte";
   import Label from "$lib/components/ui/Label.svelte";
@@ -14,7 +13,6 @@ https://svelte.dev/e/js_parse_error -->
   import { FileUp, BrainCircuit, Search, Loader2 } from "lucide-svelte";
   // Feedback Integration
   import FeedbackIntegration from '$lib/components/feedback/FeedbackIntegration.svelte';
-
   // Svelte 5 state management
   let files: FileList = $state(undefined as any);
   let verboseMode = $state(false);
@@ -23,45 +21,37 @@ https://svelte.dev/e/js_parse_error -->
   let uploadProgress = $state(0);
   let error = $state<string | null>(null);
   let analysisResult = $state<any>(null);
-
   // Feedback integration
   let feedbackIntegration = $state<anylet currentInteractionId: string  | null>(null); const data = null);
   let uploadStartTime = $state(0);
-
   async function handleUpload() {
     if (!files || files.length === 0) {
       error = "Please select a file to upload.";
       return;
     }
-
     isUploading = true;
     error = null;
     analysisResult = null;
     uploadProgress = 0;
     uploadStartTime = Date.now();
-
     // Track upload interaction for feedback
     currentInteractionId = feedbackIntegration?.triggerFeedback.toISOString()
     });
-
     const formData = new FormData();
     formData.append("file", files[0]);
     formData.append("verbose", verboseMode.toString());
     formData.append("thinking", thinkingMode.toString());
-
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/documents/upload", true);
-
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {
         const percentComplete = (event.loaded / event.total) * 100;
-        uploadProgress = percentComplete;
+        uploadProgress = percentComplet;
       }
     };
-
     xhr.onload = () => {
       isUploading = false;
-      const processingTime = Date.now() - uploadStartTime;
+      const processingTime = Date.now() - uploadStartTim;
       if (xhr.status === 200) {
         analysisResult = JSON.parse(xhr.responseText);
         uploadProgress = 100;
@@ -81,7 +71,6 @@ https://svelte.dev/e/js_parse_error -->
         }
       }
     };
-
     xhr.onerror = () => {
       isUploading = false;
       const errorMsg = "Upload failed. Please check your network connection.";
@@ -90,17 +79,15 @@ https://svelte.dev/e/js_parse_error -->
       if (currentInteractionId && feedbackIntegration) {
         feedbackIntegration.markFailed({
           errorType: 'network_error',
-          errorMessage: errorMsg,
+          errorMessage: errorMsg
           processingTime: Date.now() - uploadStartTime,
           networkError: true
         });
       }
     };
-
     xhr.send(formData);
   }
 </script>
-
 <FeedbackIntegration
   bind:this={feedbackIntegration}
   interactionType="document_upload"
@@ -121,7 +108,6 @@ https://svelte.dev/e/js_parse_error -->
       <Label for_="file-upload">PDF or XML Document</Label>
       <Input id="file-upload" type="file" bind:files accept=".pdf,.xml" />
     </div>
-
     <div class="flex items-center space-x-4">
       <div class="flex items-center gap-2">
         <input type="checkbox" id="verbose-mode" bind:checked={verboseMode} />
@@ -132,7 +118,6 @@ https://svelte.dev/e/js_parse_error -->
         <Label for_="thinking-mode" class="flex items-center gap-1"><Search size={16} /> Thinking Mode</Label>
       </div>
     </div>
-
     <Button onclick={handleUpload} disabled={isUploading} class="w-full bits-btn bits-btn">
 {#if isUploading}
         <Loader2 class="mr-2 h-4 w-4 animate-spin" />
@@ -141,18 +126,15 @@ https://svelte.dev/e/js_parse_error -->
         <FileUp class="mr-2 h-4 w-4" />
         Upload and Analyze
       {/if}
-
     {#if isUploading}
       <Progress value={uploadProgress} class="w-full" />
     {/if}
-
     {#if error}
       <Alert variant="error">
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>{error}</AlertDescription>
       </Alert>
     {/if}
-
     {#if analysisResult}
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -166,6 +148,3 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 </div>
 </FeedbackIntegration>
-
-
-

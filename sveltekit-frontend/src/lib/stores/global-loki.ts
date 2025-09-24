@@ -1,19 +1,16 @@
 import Loki from '$lib/compat/lokijs';
 import type Redis from 'ioredis';
-
-// Lightweight global Loki store for job lifecycle sync across workers via Redis pub/sub;
+// Lightweight global Loki store for job lifecycle sync across workers via Redis pub/sub
 export class GlobalLokiStore {
   private db: Loki;
   private jobs: Collection<any>;
   private redis?: Redis;
   private pubChannel = 'loki:jobs:updates';
-
   constructor() {
     this.db = new Loki('global.loki');
     // Use simple unique id index
     this.jobs = this.db.addCollection('jobs', { unique: ['id'] }) as any;
   }
-
   initRedis(redisClient?: Redis | any) {
     try {
       // ioredis instance expected; accept undefined for fallback
@@ -41,10 +38,10 @@ export class GlobalLokiStore {
             })
             .catch(() => {});
         } else if (sub && typeof (sub as any).subscribe === 'function') {
-          // Older ioredis versions auto-connect;
+          // Older ioredis versions auto-connect
           try {
             (sub as any).subscribe(this.pubChannel);
-          } catch {}
+          } catch (error) {}
           if (typeof (sub as any).on === 'function') {
             (sub as any).on('message', (_ch: string, msg: string) => {
               try {
@@ -56,7 +53,6 @@ export class GlobalLokiStore {
         }
     } catch (_) {}
   }
-
   private publish(update: any) {
     try {
       if (this.redis && typeof (this.redis as any).publish === 'function') {
@@ -67,7 +63,6 @@ export class GlobalLokiStore {
       }
     } catch (_) {}
   }
-
   private upsertLocal(doc: any) {
     try {
       const existing = (this.jobs as any).by('id', doc.id);
@@ -78,35 +73,29 @@ export class GlobalLokiStore {
       }
     } catch (e) {
       // Fallback simple try-insert
-      try {(this.jobs as any).insert({ ...doc, updatedAt: Date.now() });} catch {}
+      try {(this.jobs as any).insert({ ...doc, updatedAt: Date.now() });} catch (error) {}
     }
   }
-
   applyRemoteUpdate(update: any) {
     if (!update || !update.id) return;
     this.upsertLocal(update);
   }
-
   async startJob(jobMeta: { id: string; [k: string]: any }) {
     const doc = { ...jobMeta, state: 'queued' };
     this.upsertLocal(doc);
     this.publish(doc);
   }
-
   async updateJob(jobId: string, patch: any) {
     const existing = (this.jobs as any).by('id', jobId);
     const merged = { ...(existing || { id: jobId }), ...patch };
     this.upsertLocal(merged);
     this.publish(merged);
   }
-
   async completeJob(jobId: string, result?: any) {
     await this.updateJob(jobId, { state: 'completed', result });
   }
-
   async failJob(jobId: string, error: string) {
     await this.updateJob(jobId, { state: 'failed', error });
   }
 }
-
 export const globalLoki = new GlobalLokiStore();

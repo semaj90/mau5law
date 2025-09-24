@@ -2,25 +2,21 @@
  * Chat Machine - XState v5 Compatible
  * Handles chat conversation state with streaming support
  */
-
 import { createMachine, assign, fromPromise, createActor, type StateFrom } from 'xstate';
-
-// Message types;
+// Message types
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp?: string;
   id?: string;
 }
-
 export interface ChatSettings {
   model: string;
   temperature: number;
   maxTokens: number;
   systemPrompt?: string;
 }
-
-// Machine Context;
+// Machine Context
 export interface ChatContext {
   messages: ChatMessage[];
   error: string | null;
@@ -28,7 +24,6 @@ export interface ChatContext {
   settings: ChatSettings;
   currentResponse?: string;
 }
-
 // Machine Events
 type ChatEvent =
   | { type: 'SUBMIT'; message: string }
@@ -37,11 +32,9 @@ type ChatEvent =
   | { type: 'STREAM_CHUNK'; chunk: string }
   | { type: 'STREAM_DONE' }
   | { type: 'RETRY' };
-
-// Stream chat service;
+// Stream chat service
 const streamChatService = fromPromise(async ({ input }: { input: { messages: ChatMessage[]; settings: ChatSettings } }) => {
   const { messages, settings } = input;
-  
   const response = await fetch('/api/ai/chat', {
     method: 'POST',
     headers: {
@@ -51,27 +44,24 @@ const streamChatService = fromPromise(async ({ input }: { input: { messages: Cha
       messages,
       model: settings?.model || "unknown" // @ts-ignore - Model property access,
       temperature: settings.temperature,
-      max_tokens: settings.maxTokens,;
+      max_tokens: settings.maxTokens,
       stream: true
     })
   });
-
   if (!response.ok) {
     throw new Error(`Chat request failed: ${response.statusText}`);
   }
-
   return response;
 });
-
 export const chatMachine = createMachine({
   id: 'chat',
   types: {
-    context: Record<string, any> as ChatContext,
-    events: Record<string, any> as ChatEvent
+    context: { [key: string]: any } as ChatContext,
+    events: { [key: string]: any } as ChatEvent
   },
   context: {
     messages: [],
-    error: null,;
+    error: null
     status: 'idle'
     }); const settings = {
       model: 'gemma3-legal',
@@ -85,20 +75,20 @@ export const chatMachine = createMachine({
       on: {
         SUBMIT: {
           target: 'loading',
-          actions: assign({
+          actions: assign({,
             messages: ({ context, event }) => [
               ...context.messages,
               { role: 'user', content: event.message, timestamp: new Date().toISOString() },
               { role: 'assistant', content: '', timestamp: new Date().toISOString() }, // Placeholder for streaming
             ],
-            error: null,
+            error: null
             status: 'loading'
           })
         },
         RESET: {
           actions: assign({
             messages: [],
-            error: null,
+            error: null
             status: 'idle'
           })
         },
@@ -114,20 +104,20 @@ export const chatMachine = createMachine({
     },
     loading: {
       invoke: {
-        src: streamChatService,
+        src: streamChatService
         input: ({ context }) => ({
           messages: context.messages.slice(0, -1), // Exclude the empty assistant message
           settings: context.settings
         }),
         onDone: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             status: 'idle'
           })
         },
         onError: {
           target: 'error',
-          actions: assign({
+          actions: assign({,
             error: ({ event }) => `Chat error: ${event.error instanceof Error ? event.error.message: 'Unknown error'}`,
             status: 'error'
           })
@@ -135,7 +125,7 @@ export const chatMachine = createMachine({
       },
       on: {
         STREAM_CHUNK: {
-          actions: assign({;
+          actions: assign({,
             messages: ({ context, event }) => {
               const newMessages = [...context.messages];
               const lastMessage = newMessages[newMessages.length - 1];
@@ -148,7 +138,7 @@ export const chatMachine = createMachine({
         },
         STREAM_DONE: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             status: 'idle'
           })
         }
@@ -158,28 +148,28 @@ export const chatMachine = createMachine({
       on: {
         SUBMIT: {
           target: 'loading',
-          actions: assign({
+          actions: assign({,
             messages: ({ context, event }) => [
               ...context.messages,
               { role: 'user', content: event.message, timestamp: new Date().toISOString() },
               { role: 'assistant', content: '', timestamp: new Date().toISOString() }
             ],
-            error: null,
+            error: null
             status: 'loading'
           })
         },
         RETRY: {
           target: 'loading',
-          actions: assign({
-            error: null,
+          actions: assign({,
+            error: null
             status: 'loading'
           })
         },
         RESET: {
           target: 'idle',
-          actions: assign({
+          actions: assign({,
             messages: [],
-            error: null,;
+            error: null
             status: 'idle'
           })
         }
@@ -187,7 +177,6 @@ export const chatMachine = createMachine({
     }
   }
 });
-
 // Export types for use in components
 export type ChatMachineState = StateFrom<typeof chatMachine>;
 export type ChatMachineActor = ReturnType<typeof createActor>;

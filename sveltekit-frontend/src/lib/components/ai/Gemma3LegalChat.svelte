@@ -1,11 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name;
+<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute nam;
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <!-- Gemma3LegalChat.svelte -->
 <!-- Complete Gemma3 Legal Model Integration Component for SvelteKit -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { createMachine, createActor } from 'xstate';
@@ -33,7 +32,6 @@ https://svelte.dev/e/attribute_invalid_name -->
     userId?: string;
     documentId?: string;
   }
-
   let { caseId = '', userId = '', documentId = '' }: Props = $props();
   // Stores
   const messages = writable<Message[]>([]);
@@ -86,12 +84,12 @@ https://svelte.dev/e/attribute_invalid_name -->
   // State machine for chat workflow
   const chatMachine = createMachine({
     id: 'gemma3Chat',
-    initial: 'idle',;
+    initial: 'idle',
     context: {
       currentQuery: '',
-      useRAG: true,
-      useGPU: true,
-      streamResponse: true,
+      useRAG: true
+      useGPU: true
+      streamResponse: true
       maxTokens: 2000,
       temperature: 0.1;
     },
@@ -105,7 +103,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         }
       },
       processing: {
-        initial: 'embedding',;
+        initial: 'embedding',
         states: {
           embedding: {
             invoke: {
@@ -138,7 +136,7 @@ https://svelte.dev/e/attribute_invalid_name -->
             }
           },
           error: {
-            entry: ['logError'],;
+            entry: ['logError'],
             always: '#gemma3Chat.idle';
           }
         }
@@ -154,8 +152,8 @@ https://svelte.dev/e/attribute_invalid_name -->
           modelPath: '/models/gemma3-legal-q4.wasm',
           weightsPath: '/models/gemma3-legal-weights.bin',
           vocabPath: '/models/gemma3-vocab.json',
-          useWebGPU: true,
-          useSimd: true,
+          useWebGPU: true
+          useSimd: true
           numThreads: navigator.hardwareConcurrency || 4,
           maxContextLength: 4096,
           temperature: 0.1,
@@ -164,8 +162,8 @@ https://svelte.dev/e/attribute_invalid_name -->
         });
         await gemma3Bridge.initialize();
         gpuStatus.set({
-          available: true,;
-          layers: 35,;
+          available: true
+          layers: 35,
           memory: 8192;
         });
       }
@@ -183,8 +181,8 @@ https://svelte.dev/e/attribute_invalid_name -->
             }
             // Fallback to server-side embedding
             return await fetch('/api/embeddings', {
-              method: 'POST',;
-              headers: { 'Content-Type': 'application/json' },;
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ text: context.currentQuery })
             }).then(r => r.json());
           },
@@ -192,11 +190,11 @@ https://svelte.dev/e/attribute_invalid_name -->
             const response = await enhancedRAGService.search({
               query: context.currentQuery,
               embedding: event.data,
-              caseId,;
-              limit: 10,;
+              caseId,
+              limit: 10,
               threshold: 0.7;
             });
-            return (response as { results?: any; json?: any; body?: any }).results;
+            return (response as { results?: any; json?: any; body?: any }).result;
           },
           generateResponse: async (context, event) => {
             const sources = event.data || [];
@@ -205,12 +203,12 @@ https://svelte.dev/e/attribute_invalid_name -->
               // Use local WebAssembly model
               const result = await gemma3Bridge.processLegalText(augmentedPrompt, {
                 maxLength: context.maxTokens,
-                temperature: context.temperature,;
-                stream: context.streamResponse;
+                temperature: context.temperature,
+                stream: context.streamRespon;
               });
               return {
                 content: (result as { text?: any; processingTime?: any; analysis?: any }).text,
-                metadata: {;
+                metadata: {
                   model: 'gemma3-legal-wasm',
                   processingTime: (result as { text?: any; processingTime?: any; analysis?: any }).processingTime,
                   sources,
@@ -220,13 +218,13 @@ https://svelte.dev/e/attribute_invalid_name -->
             } else {
               // Fallback to server API
               const response = await fetch('/api/ai/gemma3-chat', {
-                method: 'POST',;
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  prompt: augmentedPrompt,
-                  maxTokens: context.maxTokens,;
-                  temperature: context.temperature,;
-                  stream: context.streamResponse;
+                body: JSON.stringify({,
+                  prompt: augmentedPrompt
+                  maxTokens: context.maxTokens,
+                  temperature: context.temperature,
+                  stream: context.streamRespon;
                 })
               });
               if (context.streamResponse) {
@@ -242,16 +240,16 @@ https://svelte.dev/e/attribute_invalid_name -->
       // Add welcome message
       messages.update(m => [...m, {
         id: crypto.randomUUID(),
-        role: 'system',;
-        content: 'Gemma3 Legal AI Assistant initialized. GPU acceleration enabled with 35 layers loaded. How can I help you with your legal analysis today?',;
+        role: 'system',
+        content: 'Gemma3 Legal AI Assistant initialized. GPU acceleration enabled with 35 layers loaded. How can I help you with your legal analysis today?',
         timestamp: new Date();
       }]);
     } catch (error) {
       console.error('Failed to initialize Gemma3:', error);
       messages.update(m => [...m, {
         id: crypto.randomUUID(),
-        role: 'system',;
-        content: 'Running in CPU mode. GPU acceleration unavailable.',;
+        role: 'system',
+        content: 'Running in CPU mode. GPU acceleration unavailable.',
         timestamp: new Date();
       }]);
     }
@@ -274,8 +272,8 @@ https://svelte.dev/e/attribute_invalid_name -->
     if (!userInput.trim() || $isProcessing) return;
     const userMessage: Message = {
       id: crypto.randomUUID(),
-      role: 'user',;
-      content: userInput,;
+      role: 'user',
+      content: userInput
       timestamp: new Date();
     };
     messages.update(m => [...m, userMessage]);
@@ -298,8 +296,8 @@ https://svelte.dev/e/attribute_invalid_name -->
       messages.update(m => [...m, {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: 'I encountered an error processing your request. Please try again.',;
-        timestamp: new Date(),;
+        content: 'I encountered an error processing your request. Please try again.',
+        timestamp: new Date(),
         metadata: { model: 'error' }
       }]);
     } finally {
@@ -330,8 +328,8 @@ https://svelte.dev/e/attribute_invalid_name -->
     const assistantMessage: Message = {
       id: crypto.randomUUID(),
       role: 'assistant',
-      content: '',;
-      timestamp: new Date(),;
+      content: '',
+      timestamp: new Date(),
       metadata: { model: 'gemma3-legal' }
     };
     messages.update(m => [...m, assistantMessage]);
@@ -369,11 +367,11 @@ https://svelte.dev/e/attribute_invalid_name -->
   function updatePerformanceMetrics(processingTime: number) {
     performanceMetrics.update(m => ({
       ...m,
-      latency: processingTime,
-      tokensPerSecond: gemma3Bridge?.metrics?.tokensProcessed 
-        ? gemma3Bridge.metrics.tokensProcessed / (processingTime / 1000) 
+      latency: processingTime
+      tokensPerSecond: gemma3Bridge?.metrics?.tokensProcessed
+        ? gemma3Bridge.metrics.tokensProcessed / (processingTime / 1000)
         : 0,
-      cacheHitRate: gemma3Bridge?.metrics?.cacheHits 
+      cacheHitRate: gemma3Bridge?.metrics?.cacheHits
         ? gemma3Bridge.metrics.cacheHits / (gemma3Bridge.metrics.cacheHits + gemma3Bridge.metrics.cacheMisses)
         : 0;
     }));
@@ -381,7 +379,6 @@ https://svelte.dev/e/attribute_invalid_name -->
   // UI state
   let activeTab = $state('chat');
 </script>
-
 <div class="gemma3-legal-chat h-full flex flex-col">
   <!-- Header -->
   <div class="mb-4 nes-container">
@@ -405,7 +402,6 @@ https://svelte.dev/e/attribute_invalid_name -->
       </h3>
     </div>
   </div>
-
   <!-- Main Content -->
   <Tabs bind:value={activeTab} class="flex-1 flex flex-col">
     <TabsList class="grid w-full grid-cols-3">
@@ -413,7 +409,6 @@ https://svelte.dev/e/attribute_invalid_name -->
       <TabsTrigger value="documents">Documents</TabsTrigger>
       <TabsTrigger value="metrics">Performance</TabsTrigger>
     </TabsList>
-
     <!-- Chat Tab -->
     <TabsContent value="chat" class="flex-1 flex flex-col">
       <ScrollArea class="flex-1 p-4">
@@ -444,8 +439,8 @@ https://svelte.dev/e/attribute_invalid_name -->
                   {/if}
                   {#if message.metadata?.confidence}
                     <div class="mt-2">
-                      <N64ProgressBar 
-                        value={message.metadata.confidence * 100} 
+                      <N64ProgressBar
+                        value={message.metadata.confidence * 100}
                         max={100}
                         size="sm"
                         theme="gold"
@@ -462,15 +457,14 @@ https://svelte.dev/e/attribute_invalid_name -->
               </div>
             </div>
           {/each}
-          
           {#if $isProcessing}
             <div class="flex justify-start">
               <div class="nes-container">
                 <div class="yorha-panel-content p-4">
                   <div class="flex items-center gap-4">
-                    <N64LoadingRing 
-                      size="md" 
-                      theme="classic" 
+                    <N64LoadingRing
+                      size="md"
+                      theme="classic"
                       speed="medium"
                       showPercentage={false}
                     />
@@ -485,11 +479,10 @@ https://svelte.dev/e/attribute_invalid_name -->
           {/if}
         </div>
       </ScrollArea>
-
       <!-- Input Area -->
       <div class="p-4 border-t">
         <form onsubmit|preventDefault={sendMessage} class="flex gap-2">
-          <Textarea;
+          <Textarease;
             bind:value={userInput}
             placeholder="Ask a legal question..."
             class="flex-1"
@@ -502,8 +495,8 @@ https://svelte.dev/e/attribute_invalid_name -->
               }
             }}
           />
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={$isProcessing || !userInput.trim()}
             class="self-end bits-btn bits-btn"
           >
@@ -512,11 +505,9 @@ https://svelte.dev/e/attribute_invalid_name -->
             {:else}
               <Send class="h-4 w-4" />
             {/if}
-
         </form>
       </div>
     </TabsContent>
-
     <!-- Documents Tab -->
     <TabsContent value="documents" class="flex-1 p-4">
       <div class="nes-container">
@@ -533,22 +524,18 @@ https://svelte.dev/e/attribute_invalid_name -->
                 Upload legal documents for analysis with Gemma3. Supports contracts, briefs, cases, and statutes.
               </AlertDescription>
             </Alert>
-            
             <div class="grid grid-cols-2 gap-4">
               <Button variant="ghost" class="justify-start bits-btn bits-btn">
 <FileText class="h-4 w-4 mr-2" />
                 Upload Document
-
               <Button variant="ghost" class="justify-start bits-btn bits-btn">
 <Search class="h-4 w-4 mr-2" />
                 Search Documents
-
             </div>
           </div>
         </div>
       </div>
     </TabsContent>
-
     <!-- Metrics Tab -->
     <TabsContent value="metrics" class="flex-1 p-4">
       <div class="grid grid-cols-2 gap-4">
@@ -568,8 +555,8 @@ https://svelte.dev/e/attribute_invalid_name -->
                     {$performanceMetrics.tokensPerSecond.toFixed(1)}
                   </span>
                 </div>
-                <N64ProgressBar 
-                  value={Math.min($performanceMetrics.tokensPerSecond, 150)} 
+                <N64ProgressBar
+                  value={Math.min($performanceMetrics.tokensPerSecond, 150)}
                   max={150}
                   size="sm"
                   theme="green"
@@ -577,7 +564,6 @@ https://svelte.dev/e/attribute_invalid_name -->
                   showPercentage={false}
                 />
               </div>
-              
               <div>
                 <div class="flex justify-between text-sm mb-2">
                   <span class="nes-text is-disabled">Cache Hit Rate</span>
@@ -585,8 +571,8 @@ https://svelte.dev/e/attribute_invalid_name -->
                     {($performanceMetrics.cacheHitRate * 100).toFixed(1)}%
                   </span>
                 </div>
-                <N64ProgressBar 
-                  value={$performanceMetrics.cacheHitRate * 100} 
+                <N64ProgressBar
+                  value={$performanceMetrics.cacheHitRate * 100}
                   max={100}
                   size="sm"
                   theme="blue"
@@ -595,7 +581,6 @@ https://svelte.dev/e/attribute_invalid_name -->
                   sparkle={$performanceMetrics.cacheHitRate > 0.8}
                 />
               </div>
-              
               <div>
                 <div class="flex justify-between text-sm mb-2">
                   <span class="nes-text is-disabled">Response Time</span>
@@ -603,11 +588,11 @@ https://svelte.dev/e/attribute_invalid_name -->
                     {$performanceMetrics.latency.toFixed(0)}ms
                   </span>
                 </div>
-                <N64ProgressBar 
-                  value={Math.max(0, 5000 - $performanceMetrics.latency)} 
+                <N64ProgressBar
+                  value={Math.max(0, 5000 - $performanceMetrics.latency)}
                   max={5000}
                   size="sm"
-                  theme={$performanceMetrics.latency < 1000 ? 'green' : 
+                  theme={$performanceMetrics.latency < 1000 ? 'green' :
                          $performanceMetrics.latency < 3000 ? 'gold' : 'red'}
                   animated={true}
                   showPercentage={false}
@@ -616,7 +601,6 @@ https://svelte.dev/e/attribute_invalid_name -->
             </div>
           </div>
         </div>
-
         <div class="nes-container">
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary text-sm flex items-center gap-2">
@@ -631,8 +615,8 @@ https://svelte.dev/e/attribute_invalid_name -->
                   <span class="nes-text is-disabled">GPU Layers</span>
                   <span class="font-medium">{$gpuStatus.layers}/35</span>
                 </div>
-                <N64ProgressBar 
-                  value={$gpuStatus.layers} 
+                <N64ProgressBar
+                  value={$gpuStatus.layers}
                   max={35}
                   size="sm"
                   theme="purple"
@@ -641,7 +625,6 @@ https://svelte.dev/e/attribute_invalid_name -->
                   sparkle={$gpuStatus.layers === 35}
                 />
               </div>
-              
               <div>
                 <div class="flex justify-between text-sm mb-2">
                   <span class="nes-text is-disabled">VRAM Usage</span>
@@ -649,17 +632,16 @@ https://svelte.dev/e/attribute_invalid_name -->
                     {($gpuStatus.memory / 1024).toFixed(1)}GB / 8.0GB
                   </span>
                 </div>
-                <N64ProgressBar 
-                  value={$gpuStatus.memory / 1024} 
+                <N64ProgressBar
+                  value={$gpuStatus.memory / 1024}
                   max={8}
                   size="sm"
-                  theme={$gpuStatus.memory / 1024 < 6 ? 'green' : 
+                  theme={$gpuStatus.memory / 1024 < 6 ? 'green' :
                          $gpuStatus.memory / 1024 < 7 ? 'gold' : 'red'}
                   animated={true}
                   showPercentage={false}
                 />
               </div>
-              
               <div>
                 <div class="flex justify-between text-sm mb-2">
                   <span class="nes-text is-disabled">GPU Utilization</span>
@@ -667,8 +649,8 @@ https://svelte.dev/e/attribute_invalid_name -->
                     {($performanceMetrics.gpuUtilization * 100).toFixed(0)}%
                   </span>
                 </div>
-                <N64ProgressBar 
-                  value={$performanceMetrics.gpuUtilization * 100} 
+                <N64ProgressBar
+                  value={$performanceMetrics.gpuUtilization * 100}
                   max={100}
                   size="sm"
                   theme="classic"
@@ -684,20 +666,16 @@ https://svelte.dev/e/attribute_invalid_name -->
     </TabsContent>
   </Tabs>
 </div>
-
 <style>
   .gemma3-legal-chat {
     min-height: 600px;
   }
-  
   .prose {
     max-width: none;
   }
-  
   .prose pre {
     background-color: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
   }
 </style>
-

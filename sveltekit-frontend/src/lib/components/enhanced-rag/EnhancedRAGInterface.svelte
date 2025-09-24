@@ -1,7 +1,6 @@
 <!-- Enhanced RAG Interface Component for SvelteKit 2 + Svelte 5 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import Fuse from 'fuse.js';
   // Svelte 5 reactive state
@@ -45,7 +44,7 @@ await loadDocuments();
           label: 'contract',
           score: 0.89,
           confidence: 0.94,
-          source: 'upload',;
+          source: 'upload',
           metadata: {
             wordCount: 25,
             legalTerms: ['contract', 'plaintiff', 'defendant', 'breach', 'damages'],
@@ -69,7 +68,7 @@ await loadDocuments();
           label: 'tort',
           score: 0.92,
           confidence: 0.88,
-          source: 'generated',;
+          source: 'generated',
           metadata: {
             wordCount: 18,
             legalTerms: ['evidence', 'negligence', 'tort', 'liability', 'malpractice'],
@@ -93,7 +92,7 @@ await loadDocuments();
           label: 'criminal',
           score: 0.87,
           confidence: 0.91,
-          source: 'upload',;
+          source: 'upload',
           metadata: {
             wordCount: 20,
             legalTerms: ['criminal', 'defendant', 'charges', 'motion', 'evidence', 'amendment'],
@@ -107,7 +106,7 @@ await loadDocuments();
             authority: 0.82,
             recency: 0.75,
             usage: 0.35;
-          },;
+          },
           timestamp: new Date('2025-01-03');
         }
       ];
@@ -125,10 +124,10 @@ await loadDocuments();
     for (const doc of documents) {
       try {
         const response = await fetch(`${config.ollamaHost}/api/embeddings`, {
-          method: 'POST',;
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: config.embedModel,;
+          body: JSON.stringify({,
+            model: config.embedModel,
             prompt: doc.content;
           })
         });
@@ -150,7 +149,7 @@ await loadDocuments();
         { name: 'summary', weight: 0.3 },
         { name: 'label', weight: 0.2 },
         { name: 'metadata.legalTerms', weight: 0.1 }
-      ],;
+      ],
       threshold: 0.3,
       includeScore: true;
     });
@@ -200,8 +199,8 @@ await loadDocuments();
       tort: 'bg-red-100 text-red-800',
       criminal: 'bg-purple-100 text-purple-800',
       evidence: 'bg-green-100 text-green-800',
-      precedent: 'bg-yellow-100 text-yellow-800',;
-      motion: 'bg-indigo-100 text-indigo-800',;
+      precedent: 'bg-yellow-100 text-yellow-800',
+      motion: 'bg-indigo-100 text-indigo-800',
       brief: 'bg-pink-100 text-pink-800';
     };
     return colors[label as keyof typeof colors] || 'bg-gray-100 text-gray-800';
@@ -211,12 +210,12 @@ await loadDocuments();
     try {
       console.log(`🤖 Analyzing document ${doc.id} with ${config.legalModel}...`);
       const response = await fetch(`${config.ollamaHost}/api/generate`, {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: config.legalModel,;
+        body: JSON.stringify({,
+          model: config.legalModel,
           prompt: `Analyze this legal document and provide key insights:\n\n${doc.content}`,
-          temperature: 0.3,;
+          temperature: 0.3,
           stream: false;
         })
       });
@@ -232,7 +231,6 @@ await loadDocuments();
     }
   }
 </script>
-
 <div class="enhanced-rag-interface p-6 max-w-6xl mx-auto">
   <header class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-2">Enhanced RAG Interface</h1>
@@ -240,7 +238,6 @@ await loadDocuments();
       Powered by nomic-embed-text + gemma3-legal + Fuse.js + LokiJS
     </p>
   </header>
-  
   <!-- Analytics Dashboard -->
   <div class="analytics-panel bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 mb-8">
     <h2 class="text-xl font-semibold mb-4">📊 Analytics Dashboard</h2>
@@ -261,7 +258,6 @@ await loadDocuments();
       </div>
     </div>
   </div>
-  
   <!-- Search Interface -->
   <div class="search-panel bg-white rounded-lg shadow-md p-6 mb-8">
     <h2 class="text-xl font-semibold mb-4">🔍 Semantic Search</h2>
@@ -279,7 +275,6 @@ await loadDocuments();
         Search
       </button>
     </div>
-    
     {#if searchQuery && searchResults.length > 0}
       <div class="search-results">
         <h3 class="font-semibold mb-3">Found {searchResults.length} results:</h3>
@@ -320,11 +315,9 @@ await loadDocuments();
       <div class="text-gray-500">No results found for "{searchQuery}"</div>
     {/if}
   </div>
-  
   <!-- Document Library -->
   <div class="document-library bg-white rounded-lg shadow-md p-6">
     <h2 class="text-xl font-semibold mb-4">📚 Document Library</h2>
-    
     {#if isLoading}
       <div class="loading text-center py-8">
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -355,10 +348,8 @@ await loadDocuments();
                 {/if}
               </div>
             </div>
-            
             <h3 class="font-medium text-gray-900 mb-2">{doc.summary}</h3>
             <p class="text-sm text-gray-600 mb-3">{doc.content}</p>
-            
             <!-- Ranking Features -->
             <div class="ranking-features mb-3">
               <h4 class="text-xs font-medium text-gray-700 mb-1">Ranking Features:</h4>
@@ -369,7 +360,6 @@ await loadDocuments();
                 <span>Usage: {(doc.rankingFeatures.usage * 100).toFixed(0)}%</span>
               </div>
             </div>
-            
             <!-- Metadata -->
             <div class="metadata mb-3">
               <div class="text-xs text-gray-500">
@@ -381,7 +371,6 @@ await loadDocuments();
                 </div>
               {/if}
             </div>
-            
             <div class="flex justify-between items-center">
               <div class="text-xs text-gray-500">
                 Source: {doc.source} • {doc.metadata.wordCount} words • {doc.timestamp.toLocaleDateString()}
@@ -399,38 +388,30 @@ await loadDocuments();
     {/if}
   </div>
 </div>
-
 <style>
-  .enhanced-rag-interface {;
+  .enhanced-rag-interface {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
-  
   .stat-card {
     transition: transform 0.2s ease;
   }
-  
   .stat-card:hover {
     transform: translateY(-2px);
   }
-  
   .result-card {
     transition: all 0.2s ease;
   }
-  
   .result-card:hover {
     transform: translateX(4px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
-  
   .document-card {
     transition: all 0.2s ease;
   }
-  
   .document-card:hover {
     border-color: #3b82f6;
     box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
   }
-  
   .embedding-indicator {
     font-size: 0.6rem;
     padding: 2px 4px;
@@ -438,5 +419,3 @@ await loadDocuments();
     border-radius: 4px;
   }
 </style>
-
-

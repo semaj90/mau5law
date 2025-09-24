@@ -1,12 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import Button from "bits-ui";
   import { onMount } from "svelte";
-
   interface CaseScore {
     score: number;
-    breakdown: {;
+    breakdown: {
       admissibility: number;
       relevance: number;
       quality: number;
@@ -16,7 +14,6 @@
     confidence: number;
     lastUpdated: string;
   }
-
   interface Props {
     caseId: string;
     evidenceId?: string;
@@ -24,7 +21,6 @@
     evidenceType: string;
     autoScore?: boolean;
   }
-
   let {
     caseId,
     evidenceId,
@@ -32,19 +28,16 @@
     evidenceType,
     autoScore = true,
   }: Props = $props();
-
   let scoring = $state<CaseScore | null>(null);
   let loading = $state(false);
   let error = $state("");
-
   async function calculateScore() {
     loading = true;
     error = "";
-
     try {
       const response = await fetch("/api/ai/case-scoring", {
-        method: "POST",;
-        headers: { "Content-Type": "application/json" },;
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           content,
           evidenceType,
@@ -52,36 +45,30 @@
           evidenceId,
         }),
       });
-
       if (!response.ok) throw new Error(`Scoring failed: ${response.status}`);
-
       scoring = await response.json();
     } catch (e) {
-      error = e.message;
+      error = e.messag;
     } finally {
       loading = false;
     }
   }
-
   function getScoreColor(score: number): string {
     if (score >= 80) return "bg-green-500";
     if (score >= 60) return "bg-blue-500";
     if (score >= 40) return "bg-yellow-500";
     return "bg-red-500";
   }
-
   function getScoreLabel(score: number): string {
     if (score >= 80) return "High Value";
     if (score >= 60) return "Medium Value";
     if (score >= 40) return "Low Value";
     return "Poor Quality";
   }
-
   $effect(() => {
     if (autoScore) calculateScore();
   });
 </script>
-
 <div
   class="case-scoring-nier-bits-card bg-slate-900 border border-slate-700 rounded-lg p-4"
 >
@@ -96,7 +83,6 @@
       {loading ? "Analyzing..." : "Rescore"}
     </Button.Root>
   </div>
-
   {#if loading}
     <div class="flex items-center gap-2 text-blue-400">
       <div
@@ -127,7 +113,6 @@
           </span>
         </div>
       </div>
-
       <div class="flex-1">
         <div class="text-sm text-slate-400 mb-1">Overall Score</div>
         <div class="w-full h-2 bg-slate-800 rounded overflow-hidden">
@@ -141,7 +126,6 @@
         </div>
       </div>
     </div>
-
     <!-- Score Breakdown -->
     <div class="grid grid-cols-2 gap-3 mb-4">
       <div class="score-metric">
@@ -158,7 +142,6 @@
           ></div>
         </div>
       </div>
-
       <div class="score-metric">
         <div class="flex justify-between items-center mb-1">
           <span class="text-sm text-slate-300">Relevance</span>
@@ -173,7 +156,6 @@
           ></div>
         </div>
       </div>
-
       <div class="score-metric">
         <div class="flex justify-between items-center mb-1">
           <span class="text-sm text-slate-300">Quality</span>
@@ -188,7 +170,6 @@
           ></div>
         </div>
       </div>
-
       <div class="score-metric">
         <div class="flex justify-between items-center mb-1">
           <span class="text-sm text-slate-300">Strategic</span>
@@ -204,7 +185,6 @@
         </div>
       </div>
     </div>
-
     <!-- AI Reasoning -->
     <div class="bg-slate-800 rounded-md p-3">
       <div class="text-sm font-medium text-slate-300 mb-1">AI Analysis</div>
@@ -212,7 +192,6 @@
         {scoring.reasoning}
       </div>
     </div>
-
     <!-- Metadata -->
     <div class="mt-3 text-xs text-slate-500 flex justify-between">
       <span>Type: {evidenceType}</span>
@@ -229,16 +208,13 @@
     </div>
   {/if}
 </div>
-
 <style>
-  .case-scoring-card {;
+  .case-scoring-card {
     min-height: 280px;
   }
-
   .score-metric {
     padding: 8px;
     background: rgba(30, 41, 59, 0.3);
     border-radius: 6px;
   }
 </style>
-

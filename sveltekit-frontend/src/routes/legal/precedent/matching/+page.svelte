@@ -1,10 +1,9 @@
 <!-- Legal Precedent Matching System -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { page } from '$app/state';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Separator } from '$lib/components/ui/separator';
@@ -16,7 +15,6 @@
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
   import { nesMemoryBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import { glyphShaderCache } from '$lib/cache/glyph-shader-cache-bridge';
-  
   // Svelte 5 Runes
   let activeTab = $state('search');
   let searchQuery = $state('');
@@ -26,7 +24,6 @@
   let selectedPracticeArea = $state('');
   let analysisInProgress = $state(false);
   let analysisProgress = $state(0);
-  
   let precedentMatches = $state([]);
   let similarityScores = $state([]);
   let legalReasoningChain = $state([]);
@@ -34,20 +31,18 @@
   let distinguishingFactors = $state([]);
   let applicabilityAnalysis = $state(null);
   let strengthAssessment = $state(null);
-
   // Legal AI System State
   let legalSystem = $state({
     status: 'idle',
     processingStage: 'Ready for analysis...',
-    vectorSearchActive: false,
+    vectorSearchActive: false
     precedentDatabase: {
-      totalCases: 2847592,;
+      totalCases: 2847592,
       indexed: 2847592,
       lastUpdate: '2024-09-10';
     },
     aiConfidence: 0
   });
-
   // NES-GPU Memory Bridge Integration
   let memoryMetrics = $state({
     vectorCache: { used: 0, total: 16384 },
@@ -55,7 +50,6 @@
     glyphCache: { hitRate: 0, entries: 0 },
     gpuUtilization: 0
   });
-
   interface PrecedentMatch {
     id: string;
     title: string;
@@ -81,7 +75,6 @@
       temporalRelevance: number;
     };
   }
-
   interface CitationNetwork {
     caseId: string;
     citingCases: string[];
@@ -90,7 +83,6 @@
     influenceRank: number;
     networkPosition: 'CORE' | 'PERIPHERAL' | 'BRIDGE';
   }
-
   interface LegalReasoningStep {
     stepNumber: number;
     legalPrinciple: string;
@@ -100,23 +92,19 @@
     strengthScore: number;
     vulnerabilities: string[];
   }
-
   $effect(() => {
     initializePrecedentSystem();
     startSystemMonitoring();
   });
-
   async function initializePrecedentSystem() {
     legalSystem.status = 'initializing';
     legalSystem.processingStage = 'Loading legal precedent databases...';
-    
     // Initialize NES-GPU Memory Bridge for vector operations
     await nesMemoryBridge.initialize({
       mode: 'legal-ai',
       optimizeFor: 'vector-similarity',
       cacheRegions: ['case-embeddings', 'precedent-patterns', 'citation-networks'];
     });
-
     // Initialize Glyph Shader Cache for legal pattern recognition
     await glyphShaderCache.loadPatterns([
       'legal-reasoning-chains',
@@ -124,22 +112,18 @@
       'fact-pattern-similarity',
       'precedent-strength-indicators'
     ]);
-
     legalSystem.status = 'ready';
     legalSystem.processingStage = 'Precedent matching system online';
   }
-
   async function searchPrecedents() {
     if (!searchQuery.trim() && !caseFactPattern.trim()) {
       alert('Please enter either a search query or case fact pattern');
       return;
     }
-
     analysisInProgress = true;
     analysisProgress = 0;
     legalSystem.status = 'analyzing';
     legalSystem.vectorSearchActive = true;
-
     const stages = [
       'Analyzing case fact patterns...',
       'Performing vector similarity search...',
@@ -148,13 +132,10 @@
       'Evaluating legal reasoning chains...',
       'Assessing applicability and strength...'
     ];
-
     for (let i = 0; i < stages.length; i++) {
       legalSystem.processingStage = stages[i];
       analysisProgress = ((i + 1) / stages.length) * 100;
-      
       await new Promise(resolve => setTimeout(resolve, 1800));
-      
       switch (i) {
         case 0:
           break; // Pattern analysis
@@ -176,14 +157,12 @@
           break;
       }
     }
-
     analysisInProgress = false;
     legalSystem.status = 'complete';
     legalSystem.processingStage = 'Precedent analysis complete';
     legalSystem.vectorSearchActive = false;
     legalSystem.aiConfidence = calculateOverallConfidence();
   }
-
   function startSystemMonitoring() {
     setInterval(() => {
       // Update NES-GPU metrics for legal processing
@@ -194,7 +173,6 @@
       memoryMetrics.gpuUtilization = legalSystem.vectorSearchActive ? Math.random() * 40 + 60 : Math.random() * 30;
     }, 2000);
   }
-
   async function performVectorSearch(): Promise<PrecedentMatch[]> {
     // Mock vector search results
     const mockResults: PrecedentMatch[] = [
@@ -202,7 +180,7 @@
         id: 'CASE-2023-001',
         title: 'State v. Johnson - Contract Interpretation Under Duress',
         citation: '847 F.3d 234 (5th Cir. 2023)',
-        court: '5th Circuit Court of Appeals',;
+        court: '5th Circuit Court of Appeals',
         jurisdiction: 'Federal',
         dateDecided: '2023-08-15',
         similarityScore: 0.94,
@@ -237,7 +215,7 @@
         id: 'CASE-2022-087',
         title: 'Martinez v. Global Corp - Unconscionable Contract Terms',
         citation: '623 F.Supp.3d 445 (S.D. Cal. 2022)',
-        court: 'U.S. District Court Southern District of California',;
+        court: 'U.S. District Court Southern District of California',
         jurisdiction: 'Federal',
         dateDecided: '2022-11-22',
         similarityScore: 0.87,
@@ -274,8 +252,8 @@
       {
         id: 'CASE-2021-156',
         title: 'Thompson Industries v. Allied Manufacturing - Good Faith Dealing',
-        citation: '789 F.3d 567 (9th Cir. 2021)',;
-        court: '9th Circuit Court of Appeals',;
+        citation: '789 F.3d 567 (9th Cir. 2021)',
+        court: '9th Circuit Court of Appeals',
         jurisdiction: 'Federal',
         dateDecided: '2021-03-10',
         similarityScore: 0.82,
@@ -310,10 +288,8 @@
         }
       }
     ];
-
-    return mockResults;
+    return mockResult;
   }
-
   async function calculateSimilarityScores() {
     return precedentMatches.map(match => ({
       caseId: match.id,
@@ -324,7 +300,6 @@
       confidenceInterval: [match.similarityScore - 0.05, match.similarityScore + 0.03]
     }));
   }
-
   async function buildCitationNetworks(): Promise<CitationNetwork[]> {
     return precedentMatches.map(match => ({
       caseId: match.id,
@@ -335,7 +310,6 @@
       networkPosition: match.citationCount > 200 ? 'CORE' : match.citationCount > 50 ? 'BRIDGE' : 'PERIPHERAL'
     }));
   }
-
   async function analyzeLegalReasoning(): Promise<LegalReasoningStep[]> {
     return [
       {
@@ -371,12 +345,11 @@
         supportingCases: ['CASE-2023-001', 'CASE-2021-156'],
         factualBasis: 'Multiple remedial options available for contract violations',
         logicalConnection: 'Relief available through rescission, restitution, or damages',
-        strengthScore: 0.83,;
+        strengthScore: 0.83,
         vulnerabilities: ['Election of remedies', 'Mitigation requirements'];
       }
     ];
   }
-
   async function assessApplicability() {
     return {
       overallApplicability: 'HIGH',
@@ -388,7 +361,7 @@
         persuasivePrecedents: precedentMatches.filter(item => item.length),
         averageSimilarity: precedentMatches.reduce((sum, p) => sum + p.similarityScore, 0) / precedentMatches.length,
         recentAuthority: precedentMatches.filter(p => new Date(p.dateDecided) > new Date('2020-01-01')).length
-      },;
+      },
       recommendations: [
         'Focus on binding precedents from same circuit',
         'Address distinguishing factors proactively',
@@ -397,7 +370,6 @@
       ];
     };
   }
-
   async function assessStrength() {
     return {
       overallStrength: 'STRONG',
@@ -408,7 +380,7 @@
         'Limited binding authority in exact factual scenario',
         'Potential distinguishing factors in consumer context',
         'Evolving standards in unconscionability doctrine'
-      ],;
+      ],
       strengths: [
         'Clear binding precedent on core legal principles',
         'Recent favorable authority',
@@ -423,29 +395,25 @@
       ];
     };
   }
-
   function generateMockCitingCases(count: number): string[] {
     const cases = [];
     for (let i = 0; i < Math.min(count, 20); i++) {
       cases.push.padStart(3, '0')}`);
     }
-    return cases;
+    return case;
   }
-
   function generateMockCitedCases(count: number): string[] {
     const cases = [];
     for (let i = 0; i < count; i++) {
       cases.push.padStart(3, '0')}`);
     }
-    return cases;
+    return case;
   }
-
   function calculateOverallConfidence(): number {
     if (precedentMatches.length === 0) return 0;
     const avgScore = precedentMatches.reduce((sum, match) => sum + match.similarityScore, 0) / precedentMatches.length;
     return Math.round(avgScore * 100);
   }
-
   function getPrecedentColor(value: string) {
     switch (value) {
       case 'BINDING': return 'bg-green-600';
@@ -455,7 +423,6 @@
       default: return 'bg-gray-600';
     }
   }
-
   function getStrengthColor(score: number) {
     if (score >= 90) return 'text-green-600';
     if (score >= 75) return 'text-blue-600';
@@ -463,7 +430,6 @@
     return 'text-red-600';
   }
 </script>
-
 <div class="container mx-auto p-6 space-y-6">
   <!-- Header -->
   <div class="flex justify-between items-center">
@@ -478,7 +444,6 @@
       </Badge>
     </div>
   </div>
-
   <!-- System Status -->
   <div>
     <divHeader>
@@ -503,7 +468,6 @@
           <div class="text-sm text-gray-600">Reasoning Steps</div>
         </div>
       </div>
-      
       <div class="bg-gray-100 p-3 rounded-lg">
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm font-medium">Processing Status</span>
@@ -515,7 +479,6 @@
       </div>
     </div>
   </div>
-
   <!-- NES-GPU Memory Metrics -->
   <div>
     <divHeader>
@@ -546,7 +509,6 @@
       </div>
     </div>
   </div>
-
   <!-- Search Interface -->
   <div>
     <divHeader>
@@ -576,7 +538,6 @@
           </Select>
         </div>
       </div>
-
       <div class="grid md:grid-cols-2 gap-4">
         <div class="space-y-2">
           <label class="text-sm font-medium">Court Level</label>
@@ -606,27 +567,23 @@
           </Select>
         </div>
       </div>
-
       <div class="space-y-2">
         <label class="text-sm font-medium">Case Fact Pattern (Optional)</label>
-        <Textarea 
+        <Textarea
           bind:value={caseFactPattern}
           placeholder="Describe the key facts of your case for more precise matching..."
           rows={4}
           class="w-full"
         />
       </div>
-
-      <Button 
-        onclick={searchPrecedents} 
+      <Button
+        onclick={searchPrecedents}
         disabled={analysisInProgress}
         class="bg-blue-600 hover:bg-blue-700 w-full"
       >
 {analysisInProgress ? 'Analyzing Precedents...' : 'Search Precedents'}
-
     </div>
   </div>
-
   <!-- Results Tabs -->
   {#if precedentMatches.length > 0}
     <Tabs bind:value={activeTab} class="w-full">
@@ -637,7 +594,6 @@
         <TabsTrigger value="applicability">Applicability</TabsTrigger>
         <TabsTrigger value="strategy">Strategy</TabsTrigger>
       </TabsList>
-
       <TabsContent value="matches">
         <div class="space-y-4">
           {#each precedentMatches as match}
@@ -665,7 +621,6 @@
                   <div class="text-sm font-medium text-gray-700 mb-2">Legal Holding</div>
                   <p class="text-sm bg-blue-50 p-3 rounded">{match.legalHolding}</p>
                 </div>
-
                 <div class="grid md:grid-cols-2 gap-4">
                   <div>
                     <div class="text-sm font-medium text-gray-700 mb-2">Key Facts</div>
@@ -678,7 +633,6 @@
                       {/each}
                     </ul>
                   </div>
-                  
                   <div>
                     <div class="text-sm font-medium text-gray-700 mb-2">Strength Indicators</div>
                     <div class="space-y-2">
@@ -687,7 +641,6 @@
                         <span class={getStrengthColor(match.strengthIndicators.factualAlignment)}>{match.strengthIndicators.factualAlignment}%</span>
                       </div>
                       <Progress value={match.strengthIndicators.factualAlignment} class="w-full" />
-                      
                       <div class="flex justify-between text-sm">
                         <span>Legal Principles</span>
                         <span class={getStrengthColor(match.strengthIndicators.legalPrinciples)}>{match.strengthIndicators.legalPrinciples}%</span>
@@ -696,7 +649,6 @@
                     </div>
                   </div>
                 </div>
-
                 {#if match.distinguishingFactors.length > 0}
                   <div>
                     <div class="text-sm font-medium text-orange-700 mb-2">Distinguishing Factors</div>
@@ -712,7 +664,6 @@
           {/each}
         </div>
       </TabsContent>
-
       <TabsContent value="reasoning">
         <div class="space-y-4">
           {#each legalReasoningChain as step}
@@ -732,12 +683,10 @@
                   <div class="text-sm font-medium text-blue-700 mb-2">Factual Basis</div>
                   <p class="text-sm bg-blue-50 p-2 rounded">{step.factualBasis}</p>
                 </div>
-
                 <div>
                   <div class="text-sm font-medium text-green-700 mb-2">Logical Connection</div>
                   <p class="text-sm bg-green-50 p-2 rounded">{step.logicalConnection}</p>
                 </div>
-
                 <div class="grid md:grid-cols-2 gap-4">
                   <div>
                     <div class="text-sm font-medium text-gray-700 mb-2">Supporting Cases</div>
@@ -747,7 +696,6 @@
                       {/each}
                     </div>
                   </div>
-
                   <div>
                     <div class="text-sm font-medium text-red-700 mb-2">Vulnerabilities</div>
                     <ul class="text-sm space-y-1">
@@ -765,7 +713,6 @@
           {/each}
         </div>
       </TabsContent>
-
       <TabsContent value="citations">
         <div class="space-y-4">
           {#each citationNetworkMap as network}
@@ -790,7 +737,6 @@
                     <div class="text-sm text-gray-600 mt-1">Network Position</div>
                   </div>
                 </div>
-
                 <div class="grid md:grid-cols-2 gap-4">
                   <div>
                     <div class="text-sm font-medium text-gray-700 mb-2">
@@ -807,7 +753,6 @@
                       </div>
                     </div>
                   </div>
-
                   <div>
                     <div class="text-sm font-medium text-gray-700 mb-2">
                       Cited Cases ({network.citedCases.length})
@@ -829,7 +774,6 @@
           {/each}
         </div>
       </TabsContent>
-
       <TabsContent value="applicability">
         {#if applicabilityAnalysis}
           <div>
@@ -855,9 +799,7 @@
                   <div class="text-sm text-gray-600">Legal Principles</div>
                 </div>
               </div>
-
               <Separator />
-
               <div>
                 <div class="text-sm font-medium text-gray-700 mb-3">Key Factors</div>
                 <div class="grid grid-cols-2 gap-4">
@@ -887,7 +829,6 @@
                   </div>
                 </div>
               </div>
-
               <div>
                 <div class="text-sm font-medium text-gray-700 mb-2">Recommendations</div>
                 <ul class="space-y-1">
@@ -903,7 +844,6 @@
           </div>
         {/if}
       </TabsContent>
-
       <TabsContent value="strategy">
         {#if strengthAssessment}
           <div class="space-y-4">
@@ -926,7 +866,6 @@
                     <div class="text-sm text-gray-600">Reasoning Score</div>
                   </div>
                 </div>
-
                 <div class="grid md:grid-cols-2 gap-4">
                   <div>
                     <div class="text-sm font-medium text-green-700 mb-2">Strengths</div>
@@ -939,7 +878,6 @@
                       {/each}
                     </ul>
                   </div>
-
                   <div>
                     <div class="text-sm font-medium text-red-700 mb-2">Vulnerabilities</div>
                     <ul class="text-sm space-y-1">
@@ -954,7 +892,6 @@
                 </div>
               </div>
             </div>
-
             <div>
               <divHeader>
                 <divTitle>Strategic Recommendations</h3>

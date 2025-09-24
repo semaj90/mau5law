@@ -1,8 +1,6 @@
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
 // Repaired advanced search route: previous file was heavily corrupted with concatenated import + code.
-
 // Temporary lightweight stub to restore compiler health. Will be replaced with full implementation once baseline compiles.
 export interface AdvancedSearchFilters {
   query?: string
@@ -16,7 +14,6 @@ export interface AdvancedSearchFilters {
   offset?: number
   dateRange?: { start: string; end: string }
 }
-
 // Placeholder service (replace with real advancedSearch.search)
 async function fakeSearch(filters: AdvancedSearchFilters): Promise<any> {
   return {
@@ -26,7 +23,6 @@ async function fakeSearch(filters: AdvancedSearchFilters): Promise<any> {
     applied: filters
   }
 }
-
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     if (!locals.user) return json({ error: 'Unauthorized' }, { status: 401 })
@@ -49,7 +45,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json({ success: false, error: 'Search failed', message: (error as Error).message }, { status: 500 })
   }
 }
-
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) return json({ error: 'Unauthorized' }, { status: 401 })
@@ -62,5 +57,4 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({ success: false, error: 'Advanced search failed', message: (error as Error).message }, { status: 500 })
   }
 }
-
 export const prerender = false

@@ -1,10 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than onc;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   	import { onMount } from 'svelte';
   import { avatarStore } from "../stores/avatarStore";
   interface Props {
@@ -12,13 +10,12 @@ https://svelte.dev/e/props_duplicate -->
     clickable?: boolean;
     showUploadButton?: boolean;
   }
-
   let { size = 'medium', clickable = false, showUploadButton = false }: Props = $props();
   	let fileInput: HTMLInputElement;
   let dragOver = $state(false);
   	let avatarSize = $derived({
-  		small: '32px',;
-  		medium: '48px', ;
+  		small: '32px',
+  		medium: '48px',
   		large: '80px';
   	}[size]);
   	$effect(() => {
@@ -29,7 +26,6 @@ https://svelte.dev/e/props_duplicate -->
   			fileInput.click();
   		}
   	}
-
   	function handleFileSelect(event: Event) {
   		const target = event.target as HTMLInputElement;
   		const file = target.files?.[0];
@@ -37,26 +33,22 @@ https://svelte.dev/e/props_duplicate -->
   			uploadFile(file);
   		}
   	}
-
   	function handleDrop(event: DragEvent) {
   		event.preventDefault();
   		dragOver = false;
-  		const files = event.dataTransfer?.files;
+  		const files = event.dataTransfer?.file;
   		if (files && files.length > 0) {
   			uploadFile(files[0]);
   		}
   	}
-
   	function handleDragOver(event: DragEvent) {
   		event.preventDefault();
   		dragOver = true;
   	}
-
   	function handleDragLeave(event: DragEvent) {
   		event.preventDefault();
   		dragOver = false;
   	}
-
   	async function uploadFile(file: File) {
   		// Validate file type
   		const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
@@ -64,29 +56,25 @@ https://svelte.dev/e/props_duplicate -->
   			alert('Please select a valid image file (JPEG, PNG, GIF, SVG, WebP)');
   			return;
   		}
-
   		// Validate file size (5MB)
   		if (file.size > 5 * 1024 * 1024) {
   			alert('File too large. Maximum size: 5MB');
   			return;
   		}
-
   		const result = await avatarStore.uploadAvatar(file);
   		if (!(result as { success?: any; error?: any }).success) {
   			alert((result as { success?: any; error?: any }).error || 'Upload failed');
   		}
   	}
-
   	function handleRemoveAvatar() {
   		if (confirm('Remove your avatar?')) {
   			avatarStore.removeAvatar();
   		}
   	}
 </script>
-
 <div class="mx-auto px-4 max-w-7xl" class:clickable class:drag-over={dragOver}>
-	<div 
-		class="mx-auto px-4 max-w-7xl" 
+	<div
+		class="mx-auto px-4 max-w-7xl"
 		style="width: {avatarSize}; height: {avatarSize};"
 		onclick={() => handleAvatarClick()}
 		onkeydown={(e) => {
@@ -107,14 +95,13 @@ https://svelte.dev/e/props_duplicate -->
 				<div class="mx-auto px-4 max-w-7xl"></div>
 			</div>
 		{:else}
-			<img 
-				src={$avatarStore.url || '/images/default-avatar.svg'} 
+			<img
+				src={$avatarStore.url || '/images/default-avatar.svg'}
 				alt="User Avatar"
 				class="mx-auto px-4 max-w-7xl"
 				loading="lazy"
 			/>
 		{/if}
-		
 		{#if clickable}
 			<div class="mx-auto px-4 max-w-7xl">
 				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -125,21 +112,19 @@ https://svelte.dev/e/props_duplicate -->
 			</div>
 		{/if}
 	</div>
-	
 	{#if showUploadButton}
 		<div class="mx-auto px-4 max-w-7xl">
-			<button 
-				type="button" 
+			<button
+				type="button"
 				class="mx-auto px-4 max-w-7xl"
 				onclick={() => fileInput?.click()}
 				disabled={$avatarStore.isUploading}
 			>
 				{$avatarStore.isUploading ? 'Uploading...' : 'Change Avatar'}
 			</button>
-			
 			{#if $avatarStore.url && $avatarStore.url !== '/images/default-avatar.svg'}
-				<button 
-					type="button" 
+				<button
+					type="button"
 					class="mx-auto px-4 max-w-7xl"
 					onclick={() => handleRemoveAvatar()}
 				>
@@ -148,7 +133,6 @@ https://svelte.dev/e/props_duplicate -->
 			{/if}
 		</div>
 	{/if}
-	
 	{#if $avatarStore.error}
 		<div class="mx-auto px-4 max-w-7xl">
 			{$avatarStore.error}
@@ -156,20 +140,17 @@ https://svelte.dev/e/props_duplicate -->
 		</div>
 	{/if}
 </div>
-
-<input 
+<input
 	bind:this={fileInput}
-	type="file" 
+	type="file"
 	accept="image/jpeg,image/png,image/gif,image/svg+xml,image/webp" onchange={handleFileSelect}
 	style="display: none;"
 />
-
 <style>
 	.avatar-container {
 		position: relative;
 		display: inline-block;
 	}
-
 	.avatar {
 		position: relative;
 		border-radius: 50%;
@@ -178,18 +159,15 @@ https://svelte.dev/e/props_duplicate -->
 		transition: all 0.2s ease;
 		background: #f9fafb;
 	}
-
-	.clickable .avatar:hover {
+	.clickable .avatar: hover {
 		border-color: #3b82f6;
 		cursor: pointer;
 		transform: scale(1.05);
 	}
-
 	.drag-over .avatar {
 		border-color: #10b981;
 		background: #ecfdf5;
 	}
-
 	.avatar-image {
 		width: 100%;
 		height: 100%;
@@ -204,12 +182,10 @@ https://svelte.dev/e/props_duplicate -->
 		border-radius: 50%;
 		animation: spin 1s linear infinite;
 	}
-
 	@keyframes spin {
 		0% { transform: rotate(0deg); }
 		100% { transform: rotate(360deg); }
 	}
-
 	.upload-overlay {
 		position: absolute;
 		top: 0;
@@ -224,18 +200,15 @@ https://svelte.dev/e/props_duplicate -->
 		transition: opacity 0.2s ease;
 		color: white;
 	}
-
 	.clickable:hover .upload-overlay {
 		opacity: 1;
 	}
-
 	.upload-controls {
 		margin-top: 12px;
 		display: flex;
 		gap: 8px;
 		flex-wrap: wrap;
 	}
-
 	.upload-btn, .remove-btn {
 		padding: 8px 16px;
 		border: none;
@@ -245,26 +218,21 @@ https://svelte.dev/e/props_duplicate -->
 		cursor: pointer;
 		transition: all 0.2s ease;
 	}
-
 	.upload-btn {
 		background: #3b82f6;
 		color: white;
 	}
-
-	.upload-btn:hover:not(:disabled) {
+	.upload-btn:hover:not(:disabled) {,
 		background: #2563eb;
 	}
-
 	.upload-btn:disabled {
 		opacity: 0.6;
 		cursor: not-allowed;
 	}
-
 	.remove-btn {
 		background: #ef4444;
 		color: white;
 	}
-
 	.remove-btn:hover {
 		background: #dc2626;
 	}
@@ -280,4 +248,3 @@ https://svelte.dev/e/props_duplicate -->
 	}
 </style>
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

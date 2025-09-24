@@ -1,27 +1,25 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: chat-mock
  * Category: aggressive
  * Memory Bank: CHR_ROM
  * Priority: 180
  * Redis Type: aiChat
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import { randomUUID } from 'node:crypto'
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { apiSuccess, apiError, validateRequest, getRequestId, withErrorHandling } from '$lib/server/api/standard-response'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
 /*
  * Production AI Chat Endpoint
  * Routes requests to available AI services (Ollama, Enhanced RAG, etc.)
@@ -30,23 +28,18 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
   const requestId = getRequestId(event)
   const body = await event.request.json()
-
   // Validate required fields
   const validationError = validateRequest(body, ['message'])
   if (validationError) {
     return apiError(validationError, 400, 'VALIDATION_ERROR', null, requestId)
   }
-
   const { message, sessionId, context, stream, model } = body
-
   if (!message?.trim()) {
     return apiError('Message cannot be empty', 400, 'EMPTY_MESSAGE', null, requestId)
   }
-
     const targetModel = model || 'gemma3-legal'
     const messageId = randomUUID()
     const startTime = Date.now()
-
     // Try Enhanced RAG service first (production microservice)
     try {
       const controller = new AbortController()
@@ -55,24 +48,22 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
         const ragResponse = await fetch('http://localhost:8094/api/rag', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query: message,
+          body: JSON.stringify({,
+            query: message
             context: context || {},
             sessionId,
-            includeVectorSearch: true,
+            includeVectorSearch: true
             includeCitations: true
           }),
           signal: controller.signal
         })
-
         if (ragResponse.ok) {
           const ragData = await ragResponse.json()
           const executionTime = Date.now() - startTime
           clearTimeout(timeout)
-
           return json({
             message: {
-              id: messageId,
+              id: messageId
               content: ragData.response || ragData.answer || 'Enhanced RAG response received',
               role: 'assistant',
               timestamp: new Date(),
@@ -85,8 +76,8 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
                 vectorMatches: ragData.vectorMatches || 0
               }
             },
-            success: true,
-            production: true,
+            success: true
+            production: true
             service: 'enhanced-rag'
           })
         }
@@ -96,20 +87,18 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     } catch (ragError) {
       console.warn('Enhanced RAG service unavailable:', ragError)
     }
-
     // Fallback to Ollama service
     try {
       const ollamaPayload = {
-        model: targetModel,
+        model: targetModel
         prompt: `Legal AI Assistant Query: ${message}\n\nContext: ${JSON.stringify(context || {})}\n\nResponse:`,
-        stream: false,
+        stream: false
         options: {
           temperature: 0.7,
           num_predict: 500,
           stop: ['Human:', 'Assistant:', '\n\n---']
         }
       }
-
       const controller = new AbortController()
       const timeout = setTimeout(() => controller.abort(), 30000)
       try {
@@ -119,33 +108,31 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           body: JSON.stringify(ollamaPayload),
           signal: controller.signal
         })
-
         if (ollamaResponse.ok) {
           const ollamaData = await ollamaResponse.json()
           const executionTime = Date.now() - startTime
           clearTimeout(timeout)
-
           return json({
             message: {
-              id: messageId,
+              id: messageId
               content: ollamaData.response || 'Legal analysis completed',
               role: 'assistant',
               timestamp: new Date(),
-              sources: [{
+              sources: [{,
                 type: 'Local Legal AI Model',
                 score: 0.88,
                 title: `${targetModel} Response`
               }],
               metadata: {
-                model: targetModel,
+                model: targetModel
                 confidence: 0.85,
                 executionTime,
-                fromCache: false,
+                fromCache: false
                 tokens: (ollamaData as any)?.eval_count || 0
               }
             },
-            success: true,
-            production: true,
+            success: true
+            production: true
             service: 'ollama'
           })
         }
@@ -155,10 +142,8 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     } catch (ollamaError) {
       console.warn('Ollama service unavailable:', ollamaError)
     }
-
     // Final fallback - intelligent response based on legal context
     const executionTime = Date.now() - startTime
-
     // Intelligent fallback based on legal context patterns
     const legalPatterns = {
       evidence: /evidence|proof|testimony|witness|exhibit/i,
@@ -167,11 +152,9 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       constitutional: /constitutional|amendment|rights|due process/i,
       procedure: /procedure|motion|filing|court|hearing/i
     }
-
     let intelligentResponse = "I understand you're seeking legal assistance. "
     let detectedArea = 'general'
     let confidence = 0.75
-
     // Pattern matching for intelligent responses
     if (legalPatterns.evidence.test(message)) {
       detectedArea = 'evidence'
@@ -196,11 +179,10 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     } else {
       intelligentResponse += "While I can provide general legal information, please note that this constitutes general guidance only and not specific legal advice. For specific legal matters, consultation with a qualified attorney is recommended."
     }
-
     if (stream) {
       return json({
-        content: intelligentResponse,
-        done: true,
+        content: intelligentResponse
+        done: true
         model: 'intelligent-fallback',
         confidence,
         executionTime,
@@ -208,25 +190,24 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
         sources: [)
           {
             type: 'Legal Knowledge Base',
-            score: confidence,
+            score: confidence
             title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis`
           }
         ],
-        production: false,
+        production: false
         fallback: true
       })
     }
-
   return json({
       message: {
-        id: messageId,
-        content: intelligentResponse,
+        id: messageId
+        content: intelligentResponse
         role: 'assistant',
         timestamp: new Date(),
         sources: [
           {
             type: 'Legal Knowledge Base',
-            score: confidence,
+            score: confidence
             title: `${detectedArea.charAt(0).toUpperCase() + detectedArea.slice(1)} Law Analysis`
           }
         ],
@@ -234,16 +215,15 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           model: 'intelligent-fallback',
           confidence,
           executionTime,
-          fromCache: false,
+          fromCache: false
           detectedArea,
           patternMatched: true
         }
       },
-      success: true,
-      production: false,
-      fallback: true,
+      success: true
+      production: false
+      fallback: true
       message_note: 'AI services unavailable - using intelligent pattern matching'
   })
 })
-
 export const POST = redisOptimized.aiChat(originalPOSTHandler)

@@ -1,7 +1,5 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
-
 /*
  * Production AI Health Check Endpoint
  * Performs comprehensive health checks across all AI services
@@ -11,17 +9,15 @@ export const GET: RequestHandler = async () => {
   const startTime = Date.now()
   const healthData: any = {
     timestamp: new Date().toISOString(),
-    services: {} as Record<string, any>,
+    services: {} as { [key: string]: any },
     overall: 'checking'
   }
-  
   // Check Ollama service
   try {
     const ollamaCheck = await Promise.race([
       fetch('http://localhost:11434/api/tags', { method: 'GET' }),
       new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3000)
     ]) as Response
-    
     if (ollamaCheck.ok) {
       const ollamaData = await ollamaCheck.json()
       healthData.services.ollama = {
@@ -45,14 +41,12 @@ export const GET: RequestHandler = async () => {
       endpoint: 'http://localhost:11434'
     }
   }
-  
   // Check Enhanced RAG service
   try {
     const ragCheck = await Promise.race([
       fetch('http://localhost:8094/health', { method: 'GET' }),
       new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3000)
     ]) as Response
-    
     if (ragCheck.ok) {
       const ragData = await ragCheck.json().catch(() => ({})
       healthData.services.enhancedRAG = {
@@ -76,14 +70,12 @@ export const GET: RequestHandler = async () => {
       endpoint: 'http://localhost:8094'
     }
   }
-  
   // Check Upload service
   try {
     const uploadCheck = await Promise.race([
       fetch('http://localhost:8093/health', { method: 'GET' }),
       new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2000)
     ]) as Response
-    
     if (uploadCheck.ok) {
       healthData.services.uploadService = {
         status: 'healthy',
@@ -104,12 +96,10 @@ export const GET: RequestHandler = async () => {
       endpoint: 'http://localhost:8093'
     }
   }
-  
   // Calculate overall health
   const serviceStatuses = Object.values(healthData.services).map((s: any) => s.status)
   const healthyCount = serviceStatuses.filter(item => item.length)
   const totalServices = serviceStatuses.length
-  
   if (healthyCount === totalServices) {
     healthData.overall = 'healthy'
     healthData.health_score = 100
@@ -120,23 +110,19 @@ export const GET: RequestHandler = async () => {
     healthData.overall = 'unhealthy'
     healthData.health_score = 0
   }
-  
   healthData.summary = {
-    total_services: totalServices,
-    healthy_services: healthyCount,
+    total_services: totalServices
+    healthy_services: healthyCount
     degraded_services: serviceStatuses.filter(item => item.length),
     unavailable_services: serviceStatuses.filter(item => item.length),
     total_check_time: Date.now() - startTime
   }
-  
   healthData.available_models = [
     ...(healthData.services.ollama?.models || []),
     ...(healthData.services.enhancedRAG?.status === 'healthy' ? ['enhanced-rag-legal'] : [])
   ]
-  
   // Return appropriate HTTP status
-  const httpStatus = healthData.overall === 'healthy' ? 200 : 
+  const httpStatus = healthData.overall === 'healthy' ? 200 :
                     healthData.overall === 'degraded' ? 207 : 503
-  
   return json(healthData, { status: httpStatus })
 }

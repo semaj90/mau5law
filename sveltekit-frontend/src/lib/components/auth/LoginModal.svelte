@@ -1,22 +1,17 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { Dialog as BitsDialog } from "bits-ui";
   // Event callbacks via props - Svelte 5 pattern
   import { superForm } from "sveltekit-superforms";
-
   interface Props {
     data: any;
     open?: boolean;
     onsuccess?: () => void;
     onclose?: () => void;
   }
-
   let { data, open = $bindable(false), onsuccess, onclose  } = $props<Props>();
-
   // Using callback props instead of event dispatching
-
   const { form, errors, submitting, message, enhance } = superForm(
     data.loginForm,
     {
@@ -25,23 +20,19 @@
       },
   }
   );
-
   function handleOpenChange(isOpen: boolean) {
-    open = isOpen;
+    open = isOpe;
     if (!open) {
       onclose?.();
     }
   }
 </script>
-
 <BitsDialog.Root {open} onOpenChange={handleOpenChange}>
   <BitsDialog.Trigger style="display: none;">Open Modal</BitsDialog.Trigger>
-  
   <BitsDialog.Portal>
     <BitsDialog.Overlay class="fixed inset-0 bg-black/50 z-50" />
     <BitsDialog.Content class="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 bg-white p-6 shadow-lg sm:rounded-lg">
       <BitsDialog.Title class="text-xl font-semibold mb-4">Login</BitsDialog.Title>
-      
       <form method="POST" action="?/login" use:enhance>
         <div class="space-y-4">
           <div>
@@ -60,7 +51,6 @@
               <span class="text-red-500 text-sm">{$errors.email}</span>
             {/if}
           </div>
-
           <div>
             <label for="password" class="block text-sm font-medium mb-2">Password</label>
             <input
@@ -77,10 +67,8 @@
               <span class="text-red-500 text-sm">{$errors.password}</span>
             {/if}
           </div>
-
           {#if message}<div class="text-red-500 text-sm">{message}</div>{/if}
           {#if $message}<div class="text-red-500 text-sm">{$message}</div>{/if}
-          
           <div class="flex justify-end gap-2 mt-6">
             <Button class="bits-btn"
               type="button"
@@ -89,21 +77,19 @@
 handleOpenChange(false)}
             >
               Cancel
-
             <Button class="bits-btn" type="submit" disabled={$submitting}>
 {#if $submitting}Logging in...{:else}Login{/if}
-
           </div>
         </div>
       </form>
     </BitsDialog.Content>
   </BitsDialog.Portal>
 </BitsDialog.Root>
-
 <style>
   /* @unocss-include */
-  .modal-content {;
+  .modal-content {
     position: fixed;
+d;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -130,6 +116,4 @@ handleOpenChange(false)}
       transform: translate(-50%, -50%) scale(1);
 }}
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

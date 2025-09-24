@@ -1,21 +1,17 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Real-time Evidence Grid with WebSocket and local sync -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     caseId?: string;
     searchQuery?: string;
     selectedTypes?: string[];
   }
-
   let { caseId, searchQuery = "", selectedTypes = [] }: Props = $props();
-
   // Svelte runes ($state, $derived, etc.) are declared globally in src/types/svelte-helpers.d.ts
-
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { evidenceStore, type Evidence } from "$lib/stores/evidenceStore";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
   import {
@@ -41,19 +37,13 @@ https://svelte.dev/e/js_parse_error -->
     WifiOff,
   } from "lucide-svelte";
   import { onMount } from "svelte";
-
   // Props
-  
-  
-  
   let showAdvancedFilters = $state(false);
   // Store subscriptions - using $derived below
-
   // Connection status
   let connectionStatus = $state("disconnected");
   let lastUpdateTime = $state<string | null >(null);
   let syncStatus = $state({ pending: 0, failed: 0, total: 0, inProgress: false });
-
   // UI state
   let viewMode = $state<"grid" | "list" >("grid");
   let sortBy = $state<"date" | "title" | "type" | "relevance" >("date");
@@ -62,24 +52,20 @@ https://svelte.dev/e/js_parse_error -->
   let currentPage = $state(0);
   let selectedEvidence = $state<Set<string>(new Set());
   let editingEvidence = $state<string | null >(null);
-
   // Filtered and sorted evidence
   let filteredEvidence = $state<Evidence[] >([]);
   let paginatedEvidence = $state<Evidence[] >([]);
   let totalPages = $state(0);
-
   // Subscribe to store values (use function form so the global $derived signature is satisfied)
   let evidence = $derived(() => $evidenceStore.evidence || []);
   let isLoading = $derived(() => $evidenceStore.isLoading || false);
   let isConnected = $derived(() => $evidenceStore.isConnected || false);
   let error = $derived(() => $evidenceStore.error || null);
-
   // Reactive filtering and sorting using $derived
   filteredEvidence = $derived(() => {
     return evidence
       .filter((item) => {
         if (caseId && (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).caseId !== caseId) return false;
-
         if (searchQuery) {
           const query = searchQuery.toLowerCase();
           const searchableText = [
@@ -89,14 +75,11 @@ https://svelte.dev/e/js_parse_error -->
             ...((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).tags || []),
           ]
             .join.toLowerCase();
-
           if (!searchableText.includes(query)) return false;
         }
-
         if (selectedTypes.length > 0 && !selectedTypes.includes.type)) {
           return false;
         }
-
         return true;
       })
       .sort((a, b) => {
@@ -121,25 +104,21 @@ https://svelte.dev/e/js_parse_error -->
           default:
             return 0;
         }
-
         const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-        return sortOrder === "asc" ? comparison : -comparison;
+        return sortOrder === "asc" ? comparison : -compariso;
       });
   });
-
   totalPages = $derived(() => Math.ceil(filteredEvidence.length / pageSize));
   paginatedEvidence = $derived(() => filteredEvidence.slice(
     currentPage * pageSize,
     (currentPage + 1) * pageSize
   ));
-
   // Initialize on mount
   $effect(() => {
     const init = async () => {
       await initializeRealTimeEvidence();
     };
     init();
-
     // Update connection status
     const unsubscribe = evidenceStore.isConnected.subscribe((connected) => {
       connectionStatus = connected ? "connected" : "disconnected";
@@ -147,17 +126,14 @@ https://svelte.dev/e/js_parse_error -->
         lastUpdateTime = new Date().toISOString();
       }
     });
-
     // Monitor sync status
     const syncInterval = setInterval(updateSyncStatus, 2000);
-
     return () => {
       unsubscribe();
       clearInterval(syncInterval);
       evidenceStore.disconnect();
     };
   });
-
   async function initializeRealTimeEvidence() {
     try {
       // Load from local cache first
@@ -171,7 +147,6 @@ https://svelte.dev/e/js_parse_error -->
           }
         }, 1000);
       }
-
       // Then sync with server
       await syncWithServer();
     } catch (err) {
@@ -179,28 +154,23 @@ https://svelte.dev/e/js_parse_error -->
       error = err instanceof Error ? err.message: "Initialization failed";
     }
   }
-
   function loadFromLocal() {
     try {
       const localEvidence = caseId
         ? lokiEvidenceService.getEvidenceByCase(caseId)
         : lokiEvidenceService.getAllEvidence();
-
       evidenceStore.evidence.set(localEvidence);
     } catch (err) {
       console.error("Failed to load from local:", err);
     }
   }
-
   async function syncWithServer() {
     try {
       evidenceStore.isLoading.set(true);
-
       const endpoint = caseId
         ? `/api/evidence?caseId=${caseId}`
         : "/api/evidence";
       const response = await fetch(endpoint);
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const serverEvidence = await (response as { ok?: unknown; json?: unknown }).json();
         await lokiEvidenceService.syncWithServer(serverEvidence);
@@ -214,24 +184,21 @@ https://svelte.dev/e/js_parse_error -->
       evidenceStore.isLoading.set(false);
     }
   }
-
   function updateSyncStatus() {
     if (lokiEvidenceService.isReady()) {
       syncStatus = lokiEvidenceService.getSyncStatus();
     }
   }
-
   // Evidence operations
   async function createEvidence() {
     try {
       const newEvidence = {
         title: "New Evidence",
-        description: "",;
+        description: "",
         type: "document",
-        caseId: caseId || "default-case",;
-        tags: [],;
+        caseId: caseId || "default-case",
+        tags: [],
       };
-
       const evidenceId = await evidenceStore.createEvidence(newEvidence);
       editingEvidence = evidenceId;
     } catch (err) {
@@ -239,9 +206,8 @@ https://svelte.dev/e/js_parse_error -->
       error = err instanceof Error ? err.message: "Failed to create evidence";
     }
   }
-
   async function updateEvidence(
-    evidenceId: string,
+    evidenceId: string
     changes: Partial<Evidence>
   ) {
     try {
@@ -252,10 +218,8 @@ https://svelte.dev/e/js_parse_error -->
       error = err instanceof Error ? err.message: "Failed to update evidence";
     }
   }
-
   async function deleteEvidence(evidenceId: string) {
     if (!confirm("Are you sure you want to delete this evidence?")) return;
-
     try {
       await evidenceStore.deleteEvidence(evidenceId);
       selectedEvidence.delete(evidenceId);
@@ -265,7 +229,6 @@ https://svelte.dev/e/js_parse_error -->
       error = err instanceof Error ? err.message: "Failed to delete evidence";
     }
   }
-
   // UI interactions
   function toggleSelection(evidenceId: string) {
     if (selectedEvidence.has(evidenceId)) {
@@ -275,35 +238,30 @@ https://svelte.dev/e/js_parse_error -->
     }
     selectedEvidence = selectedEvidence;
   }
-
   function selectAll() {
     selectedEvidence = new Set(paginatedEvidence.map((e) => e.id));
   }
-
   function clearSelection() {
     selectedEvidence.clear();
     selectedEvidence = selectedEvidence;
   }
-
   function getTypeIcon(type: string) {
     switch (type) {
       case "document":
         return FileText;
       case "image":
-        return Image;
+        return Imag;
       case "video":
         return Video;
       case "audio":
         return Music;
       default:
-        return File;
+        return Fil;
     }
   }
-
   function formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString();
   }
-
   function getRelevanceColor(relevance: number): string {
     if (relevance >= 0.8) return "text-green-600";
     if (relevance >= 0.6) return "text-yellow-600";
@@ -311,7 +269,6 @@ https://svelte.dev/e/js_parse_error -->
     return "text-red-600";
   }
 </script>
-
 <!-- Connection Status Bar -->
 <div
   class="mx-auto px-4 max-w-7xl"
@@ -327,7 +284,6 @@ https://svelte.dev/e/js_parse_error -->
         <span class="mx-auto px-4 max-w-7xl">Offline</span>
       {/if}
     </div>
-
     <!-- Sync Status -->
     {#if syncStatus.pending > 0}
       <div class="mx-auto px-4 max-w-7xl">
@@ -335,23 +291,18 @@ https://svelte.dev/e/js_parse_error -->
         <span>Syncing ({syncStatus.pending} pending)</span>
       </div>
     {/if}
-
     {#if syncStatus.failed > 0}
       <span class="mx-auto px-4 max-w-7xl">{syncStatus.failed} failed</span>
     {/if}
-
     <!-- Stats -->
     <span class="mx-auto px-4 max-w-7xl">Total: {filteredEvidence.length}</span>
-
     {#if selectedEvidence.size > 0}
       <span class="mx-auto px-4 max-w-7xl">Selected: {selectedEvidence.size}</span>
     {/if}
-
     {#if lastUpdateTime}
       <span class="mx-auto px-4 max-w-7xl">Updated: {formatDate(lastUpdateTime)}</span>
     {/if}
   </div>
-
   <!-- Action Buttons -->
   <div class="mx-auto px-4 max-w-7xl">
     <Button class="bits-btn"
@@ -363,7 +314,6 @@ https://svelte.dev/e/js_parse_error -->
     >
       <Undo2 class="w-4 h-4" />
     </Button>
-
     <Button class="bits-btn"
       variant="ghost"
       size="sm"
@@ -373,7 +323,6 @@ https://svelte.dev/e/js_parse_error -->
     >
       <Redo2 class="w-4 h-4" />
     </Button>
-
     <Button class="bits-btn"
       variant="ghost"
       size="sm"
@@ -385,7 +334,6 @@ https://svelte.dev/e/js_parse_error -->
     </Button>
   </div>
 </div>
-
 <!-- Error Banner -->
 {#if error}
   <div class="mx-auto px-4 max-w-7xl">
@@ -405,7 +353,6 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
-
 <!-- Toolbar -->
 <div class="mx-auto px-4 max-w-7xl">
   <div class="mx-auto px-4 max-w-7xl">
@@ -423,7 +370,6 @@ https://svelte.dev/e/js_parse_error -->
           class="mx-auto px-4 max-w-7xl"
         />
       </div>
-
       <!-- Type Filter -->
       <select
         multiple
@@ -439,7 +385,6 @@ https://svelte.dev/e/js_parse_error -->
         <option value="physical">Physical</option>
         <option value="digital">Digital</option>
       </select>
-
       <!-- Sort -->
       <div class="mx-auto px-4 max-w-7xl">
         <select;
@@ -451,7 +396,6 @@ https://svelte.dev/e/js_parse_error -->
           <option value="type">Type</option>
           <option value="relevance">Relevance</option>
         </select>
-
         <Button class="bits-btn"
           variant="ghost"
           size="sm"
@@ -465,7 +409,6 @@ https://svelte.dev/e/js_parse_error -->
         </Button>
       </div>
     </div>
-
     <!-- Right: View and Actions -->
     <div class="mx-auto px-4 max-w-7xl">
       <!-- View Mode Toggle -->
@@ -480,13 +423,11 @@ https://svelte.dev/e/js_parse_error -->
           <Grid class="w-4 h-4" />
         {/if}
       </Button>
-
       <!-- Selection Actions -->
       {#if selectedEvidence.size > 0}
         <Button class="bits-btn" variant="ghost" size="sm" onclick={() => clearSelection()}>
           Clear ({selectedEvidence.size})
         </Button>
-
         <Button class="bits-btn"
           variant="danger"
           size="sm"
@@ -504,7 +445,6 @@ https://svelte.dev/e/js_parse_error -->
           Select All
         </Button>
       {/if}
-
       <!-- Add Evidence -->
       <Button class="bits-btn" onclick={() => createEvidence()}>
         <span class="mr-1">+</span>
@@ -513,7 +453,6 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <!-- Content Area -->
 <div class="mx-auto px-4 max-w-7xl">
   {#if isLoading && evidence.length === 0}
@@ -566,7 +505,6 @@ https://svelte.dev/e/js_parse_error -->
                   class="mx-auto px-4 max-w-7xl"
                 />
               </div>
-
               <div class="mx-auto px-4 max-w-7xl">
                 {#if (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).classification?.relevance !== undefined}
                   <span
@@ -575,7 +513,6 @@ https://svelte.dev/e/js_parse_error -->
                     {Math.round.classification.relevance * 100)}%
                   </span>
                 {/if}
-
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
@@ -583,7 +520,6 @@ https://svelte.dev/e/js_parse_error -->
                 >
                   <Eye class="w-4 h-4" />
                 </Button>
-
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
@@ -593,7 +529,6 @@ https://svelte.dev/e/js_parse_error -->
                 </Button>
               </div>
             </div>
-
             <!-- Content -->
             {#if editingEvidence === (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id}
               <div class="mx-auto px-4 max-w-7xl">
@@ -631,13 +566,11 @@ https://svelte.dev/e/js_parse_error -->
               <h3 class="mx-auto px-4 max-w-7xl">
                 {(item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).title}
               </h3>
-
               {#if (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).description}
                 <p class="mx-auto px-4 max-w-7xl">
                   {(item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).description}
                 </p>
               {/if}
-
               <!-- Metadata -->
               <div class="mx-auto px-4 max-w-7xl">
                 <div class="mx-auto px-4 max-w-7xl">
@@ -651,7 +584,6 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 {/if}
               </div>
-
               <!-- Tags -->
               {#if (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).tags?.length}
                 <div class="mx-auto px-4 max-w-7xl">
@@ -781,7 +713,6 @@ https://svelte.dev/e/js_parse_error -->
         </table>
       </div>
     {/if}
-
     <!-- Pagination -->
     {#if totalPages > 1}
       <div class="mx-auto px-4 max-w-7xl">
@@ -791,7 +722,6 @@ https://svelte.dev/e/js_parse_error -->
             filteredEvidence.length
           )} of {filteredEvidence.length} results
         </div>
-
         <div class="mx-auto px-4 max-w-7xl">
           <Button class="bits-btn"
             variant="ghost"
@@ -801,11 +731,9 @@ https://svelte.dev/e/js_parse_error -->
           >
             Previous
           </Button>
-
           <span class="mx-auto px-4 max-w-7xl">
             Page {currentPage + 1} of {totalPages}
           </span>
-
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
@@ -818,7 +746,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
 </div>
-
 <style>
   .line-clamp-2 {
     display: -webkit-box;
@@ -827,7 +754,6 @@ https://svelte.dev/e/js_parse_error -->
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -836,6 +762,4 @@ https://svelte.dev/e/js_parse_error -->
     overflow: hidden;
   }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

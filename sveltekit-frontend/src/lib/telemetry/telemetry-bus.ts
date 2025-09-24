@@ -10,27 +10,22 @@ export type TelemetryEventType =
   | 'gpu.vector.process.typeMismatch'
   | 'gpu.vector.process.end'
   | 'error';
-
 export interface TelemetryBaseEvent<T extends TelemetryEventType = TelemetryEventType> {
   type: T;
   ts: number;
   meta?: Record<string, unknown>;
 }
-
 export interface TelemetrySubscriber {
   (event: TelemetryBaseEvent): void;
 }
-
 class TelemetryBus {
   private subs: Set<TelemetrySubscriber> = new Set();
   private buffer: TelemetryBaseEvent[] = [];
   private bufferLimit = 500;
-
   subscribe(fn: TelemetrySubscriber): () => void {
     this.subs.add(fn);
     return () => this.subs.delete(fn);
   }
-
   publish<T extends TelemetryEventType>(event: Omit<TelemetryBaseEvent<T>, 'ts'> & { ts?: number }): void {
     const full: TelemetryBaseEvent = { ...event, ts: event.ts ?? performance.now() } as TelemetryBaseEvent;
     this.buffer.push(full);
@@ -39,10 +34,8 @@ class TelemetryBus {
       try { sub(full); } catch (_) { /* swallow */ }
     }
   }
-
   getRecent(limit = 100): TelemetryBaseEvent[] {
     return this.buffer.slice(-limit);
   }
 }
-
 export const telemetryBus = new TelemetryBus();

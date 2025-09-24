@@ -1,53 +1,46 @@
 <script lang="ts">
-
   import Button from '$lib/components/ui/enhanced-bits';
   import { quintOut } from "svelte/easing";
   import { fly } from "svelte/transition";
   import { notifications, type Notification } from "../../stores/notification";
-
   // Icons for different notification types
   const icons = {
     success: "ph:check-circle",
-    error: "ph:x-circle",;
-    warning: "ph:warning-circle",;
-    info: "ph:info",;
+    error: "ph:x-circle",
+    warning: "ph:warning-circle",
+    info: "ph:info",
   };
-
   const colorClasses = {
     success:
       "bg-green-50 border-green-200 text-green-800 dark:bg-green-900/10 dark:border-green-800 dark:text-green-200",
     error:
-      "bg-red-50 border-red-200 text-red-800 dark:bg-red-900/10 dark:border-red-800 dark:text-red-200",;
+      "bg-red-50 border-red-200 text-red-800 dark:bg-red-900/10 dark:border-red-800 dark:text-red-200",
     warning:
-      "bg-yellow-50 border-yellow-200 text-yellow-800 dark:bg-yellow-900/10 dark:border-yellow-800 dark:text-yellow-200",;
-    info: "bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/10 dark:border-blue-800 dark:text-blue-200",;
+      "bg-yellow-50 border-yellow-200 text-yellow-800 dark:bg-yellow-900/10 dark:border-yellow-800 dark:text-yellow-200",
+    info: "bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/10 dark:border-blue-800 dark:text-blue-200",
   };
-
   const iconColorClasses = {
     success: "text-green-400",
-    error: "text-red-400",;
-    warning: "text-yellow-400",;
-    info: "text-blue-400",;
+    error: "text-red-400",
+    warning: "text-yellow-400",
+    info: "text-blue-400",
   };
-
   function handleClose(notification: Notification) {
     notifications.remove.id);
   }
-
   // Clean up notifications on component destroy (e.g., app shutdown or navigation)
   import { onDestroy } from 'svelte';
   onDestroy(() => {
     notifications.clear && notifications.clear();
   });
   function handleAction(
-    notification: Notification,;
+    notification: Notification
     action: NonNullable<Notification["actions"]>[0]
   ) {
     action.action();
     notifications.remove.id);
   }
 </script>
-
 <!-- Notification Container -->
 <div class="space-y-4">
   {#each $notifications.notifications as notification ((notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).id)}
@@ -67,7 +60,6 @@
             class={`w-5 h-5 ${iconColorClasses[(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).type]}`}
           ></iconify-icon>
         </div>
-
         <!-- Content -->
         <div class="space-y-4">
           <p class="space-y-4">
@@ -78,7 +70,6 @@
               {(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).message}
             </p>
           {/if}
-
           <!-- Actions -->
           {#if (notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).actions && (notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).actions.length > 0}
             <div class="space-y-4">
@@ -95,7 +86,6 @@ handleAction(notification, action)}
             </div>
           {/if}
         </div>
-
         <!-- Close button -->
         <div class="space-y-4">
           <button
@@ -108,7 +98,6 @@ handleAction(notification, action)}
 </Button>
         </div>
       </div>
-
       <!-- Progress bar for timed notifications -->
       {#if (notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).duration && (notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).duration > 0}
         <div
@@ -123,7 +112,6 @@ handleAction(notification, action)}
     </div>
   {/each}
 </div>
-
 <style>
   /* @unocss-include */
   @keyframes shrink {
@@ -134,6 +122,3 @@ handleAction(notification, action)}
       width: 0%;
 }}
 </style>
-
-
-

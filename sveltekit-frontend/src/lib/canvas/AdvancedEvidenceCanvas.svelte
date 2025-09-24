@@ -8,16 +8,11 @@ https://svelte.dev/e/expected_token -->
   Advanced Evidence Canvas - Svelte 5 Component
   Canvas-based component for displaying and manipulating evidence data using modern runes
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Svelte 5 runes are auto-imported
-
-
-  import { onMount } from 'svelte'; 
+  import { onMount } from 'svelte';
 </script>
-  
   interface CanvasOptions {
     width: number;
     height: number;
@@ -27,7 +22,6 @@ https://svelte.dev/e/expected_token -->
     gridSize: number;
     snapToGrid: boolean;
   }
-
   interface EvidenceNode {
     id: string;
     type: 'document' | 'image' | 'video' | 'audio' | 'note';
@@ -40,7 +34,6 @@ https://svelte.dev/e/expected_token -->
     selected?: boolean;
     color?: string;
   }
-
   interface CanvasProps {
     width?: number;
     height?: number;
@@ -55,7 +48,6 @@ https://svelte.dev/e/expected_token -->
     onNodeCreate?: (node: Omit<EvidenceNode, 'id'>) => void;
     onNodeDelete?: (nodeId: string) => void;
   }
-
   let {
     width = 800,
     height = 600,
@@ -70,7 +62,6 @@ https://svelte.dev/e/expected_token -->
     onNodeCreate,
     onNodeDelete
   }: CanvasProps = $props();
-
   // Canvas state using Svelte 5 runes
   let canvas: HTMLCanvasElement = $state(undefined as any);
   let ctx: CanvasRenderingContext2D = $state(undefined as any);
@@ -83,7 +74,6 @@ https://svelte.dev/e/expected_token -->
   let pan = $state({ x: 0, y: 0 });
   let isMouseDown = $state(false);
   let lastMousePos = $state({ x: 0, y: 0 });
-
   // Derived canvas options
   let canvasOptions = $derived<CanvasOptions>({
     width,
@@ -94,16 +84,14 @@ https://svelte.dev/e/expected_token -->
     gridSize,
     snapToGrid
   });
-
   // Derived viewport state
   let visibleNodes = $derived(() => {
     const viewportBounds = {
       left: -pan.x / zoom,
-      top: -pan.y / zoom,;
-      right: (-pan.x + width) / zoom,;
+      top: -pan.y / zoom,
+      right: (-pan.x + width) / zoom,
       bottom: (-pan.y + height) / zoom;
     };
-
     return canvasNodes.filter(node => {
       return node.x + node.width >= viewportBounds.left &&
              node.x <= viewportBounds.right &&
@@ -111,7 +99,6 @@ https://svelte.dev/e/expected_token -->
              node.y <= viewportBounds.bottom;
     });
   });
-
   // Derived selection info
   let hasSelection = $derived(selectedNode !== null);
   let selectionInfo = $derived(() => {
@@ -119,137 +106,103 @@ https://svelte.dev/e/expected_token -->
     return {
       id: selectedNode.id,
       type: selectedNode.type,
-      title: selectedNode.title,;
-      position: { x: selectedNode.x, y: selectedNode.y },;
+      title: selectedNode.title,
+      position: { x: selectedNode.x, y: selectedNode.y },
       size: { width: selectedNode.width, height: selectedNode.height }
     };
   });
-
   // Canvas initialization effect
   $effect(() => {
     try {
-      
           if (canvas) {
             ctx = canvas.getContext<unknown>('2d');
             initCanvas();
           }
-        
     } catch (error) {
       console.error('Effect error:', error);
       // Handle error gracefully
     }
   });
-
   // Re-render when nodes change
   $effect(() => {
     try {
-      
           if (ctx && canvasNodes) {
             render();
           }
-        
     } catch (error) {
       console.error('Effect error:', error);
       // Handle error gracefully
     }
   });
-
   // Update nodes when prop changes
   $effect(() => {
     try {
-      
-          canvasNodes = nodes;
-        
+          canvasNodes = node;
     } catch (error) {
       console.error('Effect error:', error);
-    
     errorMessage = error instanceof Error ? error.message: 'An error occurred';}
   });
-
   // Selection change effect
   $effect(() => {
     try {
-      
           onNodeSelect?.(selectedNode);
-        
     } catch (error) {
       console.error('Effect error:', error);
-    
     errorMessage = error instanceof Error ? error.message: 'An error occurred';}
   });
-
   function initCanvas(): void {
     if (!canvas || !ctx) return;
-    
     canvas.width = width;
     canvas.height = height;
-    
     // Set up high DPI scaling
     const devicePixelRatio = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
-    
     canvas.width = rect.width * devicePixelRatio;
     canvas.height = rect.height * devicePixelRatio;
-    
     ctx.scale(devicePixelRatio, devicePixelRatio);
-    
     clear();
     render();
   }
-
   function clear(): void {
     if (!ctx) return;
-    
     ctx.fillStyle = canvasOptions.backgroundColor;
     ctx.fillRect(0, 0, width, height);
   }
-
   function render(): void {
     if (!ctx) return;
-    
     clear();
-    
     // Apply transformations
     ctx.save();
     ctx.translate(pan.x, pan.y);
     ctx.scale(zoom, zoom);
-    
     // Draw grid if enabled
     if (gridSize > 0) {
       drawGrid();
     }
-    
     // Draw nodes
     visibleNodes.forEach(node => {
       drawNode(node);
     });
-    
     // Draw selection highlight
     if (selectedNode) {
       drawSelectionHighlight(selectedNode);
     }
-    
     ctx.restore();
   }
-
   function drawGrid(): void {
     if (!ctx) return;
-    
     ctx.strokeStyle = '#333333';
     ctx.lineWidth = 0.5 / zoom;
-    
-    const startX = Math.floor(-pan.x / zoom / gridSize) * gridSize;
-    const endX = Math.ceil((-pan.x + width) / zoom / gridSize) * gridSize;
-    const startY = Math.floor(-pan.y / zoom / gridSize) * gridSize;
-    const endY = Math.ceil((-pan.y + height) / zoom / gridSize) * gridSize;
-    
+    const startX = Math.floor(-pan.x / zoom / gridSize) * gridSiz;
+    const endX = Math.ceil((-pan.x + width) / zoom / gridSize) * gridSiz;
+    const startY = Math.floor(-pan.y / zoom / gridSize) * gridSiz;
+    const endY = Math.ceil((-pan.y + height) / zoom / gridSize) * gridSiz;
     for (let x = startX; x <= endX; x += gridSize) {
       ctx.beginPath();
       ctx.moveTo(x, startY);
       ctx.lineTo(x, endY);
       ctx.stroke();
     }
-    
     for (let y = startY; y <= endY; y += gridSize) {
       ctx.beginPath();
       ctx.moveTo(startX, y);
@@ -257,175 +210,140 @@ https://svelte.dev/e/expected_token -->
       ctx.stroke();
     }
   }
-
   function drawNode(node: EvidenceNode): void {
     if (!ctx) return;
-    
     // Node background
     ctx.fillStyle = node.color || getNodeColor(node.type);
     ctx.fillRect(node.x, node.y, node.width, node.height);
-    
     // Node border
     ctx.strokeStyle = node.selected ? '#00ff00' : '#666666';
     ctx.lineWidth = node.selected ? 2 / zoom : 1 / zoom;
     ctx.strokeRect(node.x, node.y, node.width, node.height);
-    
     // Node title
     ctx.fillStyle = '#ffffff';
     ctx.font = `${12 / zoom}px Arial`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
-    
     const textX = node.x + 8 / zoom;
     const textY = node.y + 8 / zoom;
     const maxWidth = node.width - 16 / zoom;
-    
     wrapText(ctx, node.title, textX, textY, maxWidth, 16 / zoom);
-    
     // Node type icon
     drawNodeTypeIcon(node);
   }
-
   function drawNodeTypeIcon(node: EvidenceNode): void {
     if (!ctx) return;
-    
     const iconSize = 16 / zoom;
     const iconX = node.x + node.width - iconSize - 8 / zoom;
     const iconY = node.y + 8 / zoom;
-    
     ctx.fillStyle = '#ffffff';
     ctx.font = `${iconSize}px Arial`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    
     const icon = getNodeTypeIcon(node.type);
     ctx.fillText(icon, iconX + iconSize / 2, iconY + iconSize / 2);
   }
-
   function drawSelectionHighlight(node: EvidenceNode): void {
     if (!ctx) return;
-    
     ctx.strokeStyle = '#00ff00';
     ctx.lineWidth = 3 / zoom;
     ctx.setLineDash([5 / zoom, 5 / zoom]);
-    ctx.strokeRect(node.x - 2 / zoom, node.y - 2 / zoom, 
+    ctx.strokeRect(node.x - 2 / zoom, node.y - 2 / zoom,
                    node.width + 4 / zoom, node.height + 4 / zoom);
     ctx.setLineDash([]);
   }
-
   function getNodeColor(type: EvidenceNode['type']): string {
     const colors = {
       document: '#4a5568',
       image: '#2d3748',
-      video: '#1a202c',;
-      audio: '#2c5282',;
+      video: '#1a202c',
+      audio: '#2c5282',
       note: '#553c9a';
     };
     return colors[type] || '#4a5568';
   }
-
   function getNodeTypeIcon(type: EvidenceNode['type']): string {
     const icons = {
       document: '📄',
       image: '🖼️',
-      video: '🎬',;
-      audio: '🔊',;
+      video: '🎬',
+      audio: '🔊',
       note: '📝';
     };
     return icons[type] || '📄';
   }
-
-  function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, 
+  function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number
                     maxWidth: number, lineHeight: number): void {
     const words = text.split(' ');
     let line = '';
     let currentY = y;
-    
     for (const word of words) {
       const testLine = line + word + ' ';
       const metrics = ctx.measureText(testLine);
       const testWidth = metrics.width;
-      
       if (testWidth > maxWidth && line !== '') {
         ctx.fillText(line, x, currentY);
         line = word + ' ';
         currentY += lineHeight;
       } else {
-        line = testLine;
+        line = testLi;
       }
     }
-    
     ctx.fillText(line, x, currentY);
   }
-
   function getMousePosition(event: MouseEvent): { x: number; y: number } {
     if (!canvas) return { x: 0, y: 0 };
-    
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
-    
     const rawX = (event.clientX - rect.left) * scaleX;
     const rawY = (event.clientY - rect.top) * scaleY;
-    
     // Transform to canvas coordinates
     const x = (rawX - pan.x) / zoom;
     const y = (rawY - pan.y) / zoom;
-    
     return { x, y };
   }
-
   function getNodeAtPosition(x: number, y: number): EvidenceNode | null {
     // Check from top to bottom (reverse order for proper layering)
     for (let i = canvasNodes.length - 1; i >= 0; i--) {
       const node = canvasNodes[i];
       if (x >= node.x && x <= node.x + node.width &&
           y >= node.y && y <= node.y + node.height) {
-        return node;
+        return nod;
       }
     }
     return null;
   }
-
   function snapToGridIfEnabled(x: number, y: number): { x: number; y: number } {
     if (!snapToGrid || gridSize <= 0) return { x, y };
-    
     return {
-      x: Math.round(x / gridSize) * gridSize,;
-      y: Math.round(y / gridSize) * gridSize;
+      x: Math.round(x / gridSize) * gridSize,
+      y: Math.round(y / gridSize) * gridSiz;
     };
   }
-
   // Event handlers
   function handleMouseDown(event: MouseEvent): void {
     if (!canvas) return;
-    
     const mousePos = getMousePosition(event);
     const clickedNode = getNodeAtPosition(mousePos.x, mousePos.y);
-    
     isMouseDown = true;
     lastMousePos = { x: event.clientX, y: event.clientY };
-    
     if (clickedNode) {
-      selectedNode = clickedNode;
+      selectedNode = clickedNod;
       isDragging = true;
       dragOffset = {
-        x: mousePos.x - clickedNode.x,;
+        x: mousePos.x - clickedNode.x,
         y: mousePos.y - clickedNode.y;
       };
     } else {
       selectedNode = null;
       isDragging = false;
     }
-    
     render();
   }
-
   function handleMouseMove(event: MouseEvent): void {
     if (!isMouseDown) return;
-    
     const currentMousePos = { x: event.clientX, y: event.clientY };
-    
     if (isDragging && selectedNode) {
       // Drag selected node
       const mousePos = getMousePosition(event);
@@ -433,62 +351,49 @@ https://svelte.dev/e/expected_token -->
         mousePos.x - dragOffset.x,
         mousePos.y - dragOffset.y
       );
-      
       selectedNode.x = newPos.x;
       selectedNode.y = newPos.y;
-      
       onNodeMove?.(selectedNode.id, newPos.x, newPos.y);
     } else if (enablePan && !selectedNode) {
       // Pan canvas
       pan.x += currentMousePos.x - lastMousePos.x;
       pan.y += currentMousePos.y - lastMousePos.y;
     }
-    
-    lastMousePos = currentMousePos;
+    lastMousePos = currentMousePo;
     render();
   }
-
   function handleMouseUp(): void {
     isMouseDown = false;
     isDragging = false;
   }
-
   function handleWheel(event: WheelEvent): void {
     if (!enableZoom) return;
-    
     event.preventDefault();
-    
     const mousePos = getMousePosition(event);
     const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
     const newZoom = Math.max(0.1, Math.min(3.0, zoom * zoomFactor));
-    
     // Zoom towards mouse position
     pan.x = mousePos.x * zoom - mousePos.x * newZoom + pan.x;
     pan.y = mousePos.y * zoom - mousePos.y * newZoom + pan.y;
-    
     zoom = newZoom;
     render();
   }
-
   function handleDoubleClick(event: MouseEvent): void {
     const mousePos = getMousePosition(event);
     const clickedNode = getNodeAtPosition(mousePos.x, mousePos.y);
-    
     if (!clickedNode) {
       // Create new node
       const newNode: Omit<EvidenceNode, 'id'> = {
         type: 'note',
         title: 'New Evidence',
         x: mousePos.x,
-        y: mousePos.y,;
-        width: 150,;
+        y: mousePos.y,
+        width: 150,
         height: 100;
       };
-      
       onNodeCreate?.(newNode);
     }
   }
-
   function handleKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Delete' || event.key === 'Backspace') {
       if (selectedNode) {
@@ -501,7 +406,6 @@ https://svelte.dev/e/expected_token -->
       render();
     }
   }
-
   // Public methods
   export function addNode(node: Omit<EvidenceNode, 'id'>): string {
     const id = `node_${Date.now()}_${Math.random.toString-substring(2)}`;
@@ -510,84 +414,63 @@ https://svelte.dev/e/expected_token -->
     render();
     return id;
   }
-
   export function removeNode(nodeId: string): boolean {
     const initialLength = canvasNodes.length;
     canvasNodes = canvasNodes.filter(node => node.id !== nodeId);
-    
     if (selectedNode?.id === nodeId) {
       selectedNode = null;
     }
-    
     render();
     return canvasNodes.length !== initialLength;
   }
-
   export function updateNode(nodeId: string, updates: Partial<EvidenceNode>): boolean {
     const nodeIndex = canvasNodes.findIndex(node => node.id === nodeId);
     if (nodeIndex === -1) return false;
-    
     canvasNodes[nodeIndex] = { ...canvasNodes[nodeIndex], ...updates };
-    
     if (selectedNode?.id === nodeId) {
       selectedNode = canvasNodes[nodeIndex];
     }
-    
     render();
     return true;
   }
-
   export function selectNode(nodeId: string | null): boolean {
     if (nodeId === null) {
       selectedNode = null;
       render();
       return true;
     }
-    
     const node = canvasNodes.find(n => n.id === nodeId);
     if (!node) return false;
-    
-    selectedNode = node;
+    selectedNode = nod;
     render();
     return true;
   }
-
   export function resetView(): void {
     zoom = 1.0;
     pan = { x: 0, y: 0 };
     render();
   }
-
   export function fitToNodes(): void {
     if (canvasNodes.length === 0) return;
-    
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    
     canvasNodes.forEach(node => {
       minX = Math.min(minX, node.x);
       minY = Math.min(minY, node.y);
       maxX = Math.max(maxX, node.x + node.width);
       maxY = Math.max(maxY, node.y + node.height);
     });
-    
     const nodeWidth = maxX - minX;
     const nodeHeight = maxY - minY;
     const padding = 50;
-    
     const zoomX = (width - padding * 2) / nodeWidth;
     const zoomY = (height - padding * 2) / nodeHeight;
     zoom = Math.min(zoomX, zoomY, 1.0);
-    
     const centerX = (minX + maxX) / 2;
     const centerY = (minY + maxY) / 2;
-    
     pan.x = width / 2 - centerX * zoom;
     pan.y = height / 2 - centerY * zoom;
-    
     render();
   }
-
-
 <canvas
   bind:this={canvas as any}
   width={width}
@@ -601,7 +484,6 @@ https://svelte.dev/e/expected_token -->
   onkeydown={handleKeyDown}
   tabindex="0"
 />
-
 <!-- Canvas info overlay -->
 {#if hasSelection}
   <div class="canvas-info">
@@ -611,14 +493,12 @@ https://svelte.dev/e/expected_token -->
     <p>Size: {selectionInfo?.size.width} × {selectionInfo?.size.height}</p>
   </div>
 {/if}
-
 <div class="canvas-controls">
   <button aria-label="Action button" onclick={(event: MouseEvent) => resetView}>Reset View</button>
   <button aria-label="Action button" onclick={(event: MouseEvent) => fitToNodes}>Fit to Nodes</button>
   <span>Zoom: {Math.round(zoom * 100)}%</span>
   <span>Nodes: {canvasNodes.length}</span>
 </div>
-
 <style>
   .canvas-info {
     position: absolute;
@@ -631,16 +511,13 @@ https://svelte.dev/e/expected_token -->
     font-size: 12px;
     min-width: 150px;
   }
-
   .canvas-info h4 {
     margin: 0 0 8px 0;
     font-size: 14px;
   }
-
   .canvas-info p {
     margin: 4px 0;
   }
-
   .canvas-controls {
     position: absolute;
     bottom: 10px;
@@ -649,7 +526,6 @@ https://svelte.dev/e/expected_token -->
     gap: 10px;
     align-items: center;
   }
-
   .canvas-controls button {
     padding: 4px 8px;
     background: #333;
@@ -659,11 +535,9 @@ https://svelte.dev/e/expected_token -->
     cursor: pointer;
     font-size: 12px;
   }
-
-  .canvas-controls button:hover {;
+  .canvas-controls button:hover {
     background: #555;
   }
-
   .canvas-controls span {
     color: white;
     font-size: 12px;

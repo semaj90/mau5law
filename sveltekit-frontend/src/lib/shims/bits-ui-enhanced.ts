@@ -1,7 +1,6 @@
 // Bits UI + Enhanced-Bits Integration Layer
 // Combines bits-ui headless components with enhanced-bits custom styling
 // Provides unified component API with custom design system support
-
 import type { ComponentType } from 'svelte';
 import {
   createCustomTheme,
@@ -9,7 +8,6 @@ import {
   type CustomDesignTokens,
   type ComponentBarrelConfig
 } from '$lib/components/ui/enhanced-bits';
-
 // Bits UI re-exports with enhanced styling
 export {
   Dialog,
@@ -26,7 +24,6 @@ export {
   Toolbar,
   Resizable
 } from 'bits-ui';
-
 // Enhanced-bits styling utilities
 export {
   createCustomTheme,
@@ -34,7 +31,6 @@ export {
   NESDesignSystem,
   MinimalDesignSystem
 } from '$lib/components/ui/enhanced-bits';
-
 // Integration helpers
 export interface BitsUIEnhancedConfig {
   theme: CustomDesignTokens;
@@ -43,41 +39,37 @@ export interface BitsUIEnhancedConfig {
   accessibility?: boolean;
   animations?: boolean;
 }
-
 export function createEnhancedComponent(config: BitsUIEnhancedConfig) {
   return {
     ...config.component,
     theme: config.theme,
-    variant: config.variant || 'nes',;
+    variant: config.variant || 'nes',
     enhanced: true
   };
 }
-
 // Compound component helpers for shadcn-style usage
 export function createCompoundComponent<T>(
-  RootComponent: ComponentType,
+  RootComponent: ComponentType
   subComponents: Record<string, ComponentType>
 ): T & Record<string, ComponentType> {
   return Object.assign(RootComponent, {
-    Root: RootComponent,
+    Root: RootComponent
     ...subComponents
   }) as T & Record<string, ComponentType>;
 }
-
 // Theme-aware component wrapper
 export function withEnhancedStyling(
-  Component: ComponentType,
-  theme: CustomDesignTokens,
+  Component: ComponentType
+  theme: CustomDesignTokens
   variant: 'nes' | 'minimal' | 'custom' = 'nes'
 ) {
   return {
-    component: Component,
+    component: Component
     theme,
-    variant,;
+    variant,
     apply: (element: HTMLElement) => applyCustomDesign(element, theme)
   };
 }
-
 // Legacy melt-ui migration helpers (for smooth transition)
 export const legacyMeltSupport = {
   melt: (..._args: any[]) => ({}),
@@ -91,7 +83,6 @@ export const legacyMeltSupport = {
   createToolbar: () => ({ Toolbar }),
   createResizable: () => ({ Resizable }),
 };
-
 export default {
   ...legacyMeltSupport,
   createEnhancedComponent,

@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import { embedText } from '$lib/ai/tensor-client';
-
   let text = 'A short legal passage about indemnification and liability.';
   let simdParse = true;
   let gpuTile = true;
@@ -11,7 +10,6 @@ https://svelte.dev/e/js_parse_error -->
   let ocrBusy = false;
   let runBusy = false;
   let webgpuSupported = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
-
   async function run() {
     runBusy = true;
     result = null;
@@ -24,7 +22,6 @@ https://svelte.dev/e/js_parse_error -->
       runBusy = false;
     }
   }
-
   async function onImageSelected(e: Event) {
     const input = e.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -44,11 +41,9 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="page">
   <h1>GPU Tiling + SIMD Demo (OCR → Embedding)</h1>
   <p>WebGPU: {webgpuSupported ? 'available' : 'unavailable'}</p>
-
   <div class="controls">
     <label>
       <input type="checkbox" bind:checked={simdParse}>
@@ -59,7 +54,6 @@ https://svelte.dev/e/js_parse_error -->
       GPU tiling (WebGPU)
     </label>
   </div>
-
   <div class="inputs">
     <div>
       <label for="pick-image-for-ocr">Pick image for OCR:</label><input id="pick-image-for-ocr" type="file" accept="image/*" onchange={onImageSelected} disabled={ocrBusy}>
@@ -69,18 +63,15 @@ https://svelte.dev/e/js_parse_error -->
       <label for="text">Text</label><textarea id="text" bind:value={text} rows="6" />
     </div>
   </div>
-
   <div class="actions">
     <button onclick={run} disabled={runBusy}>Process</button>
     {#if runBusy}<span>Running…</span>{/if}
   </div>
-
   {#if result}
     <h3>Result</h3>
     <pre>{JSON.stringify(result, null, 2)}</pre>
   {/if}
 </div>
-
 <style>
   .page { padding: 1rem; display: grid; gap: 1rem; }
   .controls { display: flex; gap: 1.5rem; align-items: center; }
@@ -88,4 +79,3 @@ https://svelte.dev/e/js_parse_error -->
   .inputs .text textarea { width: 100%; }
   .actions { display: flex; gap: .75rem; align-items: center; }
 </style>
-

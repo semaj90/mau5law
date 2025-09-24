@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Citation Rich Text Editor with Legal Citation Formatter
-  
   Features:
   - Rich text editing with Quill.js
   - Legal citation format validation
@@ -12,22 +11,12 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   const { caseId: string, citation: Partial<Citation> | null = null, mode: 'create' | 'edit' = 'create', disabled = false } = $props();
-
   import { onMount,   } from "svelte";
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
-
   // Props
-  
-  
-  
-  
-
   // Event dispatcher
-  
-
   // Form state
   let formData = $state({
     title: citation?.title || '',
@@ -42,20 +31,18 @@ https://svelte.dev/e/js_parse_error -->
     contextNotes: citation?.contextNotes || '',
     relevanceScore: citation?.relevanceScore || 5,
     citationPurpose: citation?.citationPurpose || 'support',
-    publicationDate: citation?.publicationDate ? 
+    publicationDate: citation?.publicationDate ?
       new Date(citation.publicationDate).toISOString.split('T')[0] : '',
     jurisdiction: citation?.jurisdiction || '',
-    court: citation?.court || '',;
-    verified: citation?.verified || false,;
+    court: citation?.court || '',
+    verified: citation?.verified || false,
     tags: citation?.tags || [];
   });
-
   // Quill editor instance
   let quillEditor: any = null;
   let editorContainer: HTMLElement;
   let isLoading = $state(false);
   let errors = writable<Record<string, string>( );
-
   // Citation types
   const citationTypes = [
     { value: 'case_law', label: 'Case Law' },
@@ -69,7 +56,6 @@ https://svelte.dev/e/js_parse_error -->
     { value: 'academic_paper', label: 'Academic Paper' },
     { value: 'other', label: 'Other' }
   ];
-
   const citationPurposes = [
     { value: 'support', label: 'Support' },
     { value: 'distinguish', label: 'Distinguish' },
@@ -77,7 +63,6 @@ https://svelte.dev/e/js_parse_error -->
     { value: 'background', label: 'Background' },
     { value: 'counter_argument', label: 'Counter Argument' }
   ];
-
   // Initialize Quill editor
   $effect(() => {
     (async () => {
@@ -93,35 +78,29 @@ try {
         [{ 'color': [] }, { 'background': [] }],
         ['clean']
       ];
-
       quillEditor = new Quill(editorContainer, {
         modules: {
-          toolbar: toolbarOptions;
+          toolbar: toolbarOption;
         },
-        theme: 'snow',;
-        placeholder: 'Enter citation details, relevant quotes, and context notes...',;
+        theme: 'snow',
+        placeholder: 'Enter citation details, relevant quotes, and context notes...',
     })();
   });
-
       // Set initial content
       if (formData.contextNotes) {
-        quillEditor.root.innerHTML = formData.contextNotes;
+        quillEditor.root.innerHTML = formData.contextNote;
       }
-
       // Listen for content changes
       quillEditor.on('text-change', () => {
         formData.contextNotes = quillEditor.root.innerHTML;
       });
-
     } catch (error) {
       console.error('Failed to load Quill editor:', error);
     }
   });
-
   // Auto-format citation based on type
   function formatCitation() {
     if (!formData.title || !formData.author) return;
-
     let formatted = '';
     switch (formData.citationType) {
       case 'case_law':
@@ -138,26 +117,21 @@ try {
     }
     formData.citation = formatted;
   }
-
   // Validate form data
   function validateForm(): boolean {
     const newErrors: Record<string, string> = {};
     if (!formData.title.trim()) {
       newErrors.title = 'Title is required';
     }
-
     if (!formData.citationType) {
       newErrors.citationType = 'Citation type is required';
     }
-
     if (formData.url && !isValidUrl(formData.url)) {
       newErrors.url = 'Please enter a valid URL';
     }
-
     errors.set(newErrors);
     return Object.keys(errors).length === 0;
   }
-
   function isValidUrl(url: string): boolean {
     try {
       new URL(url);
@@ -166,11 +140,9 @@ try {
       return false;
     }
   }
-
   // Save citation
   async function handleSave() {
     if (!validateForm()) return;
-
     isLoading = true;
     try {
       const endpoint = '/api/citations';
@@ -178,18 +150,15 @@ try {
       const payload = {
         ...formData,
         caseId,
-        publicationDate: formData.publicationDate ? new Date(formData.publicationDate) : null,
+        publicationDate: formData.publicationDate ? new Date(formData.publicationDate) : null
         ...(mode === 'edit' && { id: citation?.id })
       };
-
       const response = await fetch(endpoint, {
         method,
-        headers: { 'Content-Type': 'application/json' },;
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload);
       });
-
       const result = await (response as { json?: any }).json();
-
       if ((result as { success?: any; citation?: any; error?: any }).success) {
         ondispatch?.((result as { success?: any; citation?: any; error?: any }).citation);
       } else {
@@ -201,23 +170,18 @@ try {
       isLoading = false;
     }
   }
-
   // Delete citation
   async function handleDelete() {
     if (!citation?.id || mode === 'create') return;
-
     if (!confirm('Are you sure you want to delete this citation?')) return;
-
     isLoading = true;
     try {
       const response = await fetch('/api/citations', {
-        method: 'DELETE',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: citation.id })
       });
-
       const result = await (response as { json?: any }).json();
-
       if ((result as { success?: any; citation?: any; error?: any }).success) {
         ondispatch?.(citation.id);
       } else {
@@ -229,7 +193,6 @@ try {
       isLoading = false;
     }
   }
-
   // Add tag
   function addTag(event: KeyboardEvent) {
     if (event.key === 'Enter' && event.target) {
@@ -242,12 +205,10 @@ try {
       }
     }
   }
-
   // Remove tag
   function removeTag(tagToRemove: string) {
     formData.tags = formData.tags.filter(tag => tag !== tagToRemove);
   }
-
   // Auto-format on field changes
   $effect(() => {
     if (formData.title || formData.author || formData.source) {
@@ -255,7 +216,6 @@ try {
     }
   });
 </script>
-
 <!-- Citation Editor Form -->
 <div class="citation-editor space-y-6 p-6 bg-white rounded-lg shadow-sm border">
   <div class="flex justify-between items-center">
@@ -263,7 +223,7 @@ try {
       {mode === 'create' ? 'Add New Citation' : 'Edit Citation'}
     </h3>
     {#if mode === 'edit'}
-      <button 
+      <button
         onclick={handleDelete}
         disabled={isLoading}
         class="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50"
@@ -272,7 +232,6 @@ try {
       </button>
     {/if}
   </div>
-
   <form onsubmit|preventDefault={handleSave} class="space-y-4">
     <!-- Basic Information -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -291,7 +250,6 @@ try {
           <p class="text-red-600 text-sm mt-1">{$errors.title}</p>
         {/if}
       </div>
-
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-citation-type-">
           Citation Type *
@@ -307,7 +265,6 @@ try {
         </select>
       </div>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-author-">
@@ -320,7 +277,6 @@ try {
           placeholder="Author name"
         />
       </div>
-
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-source-">
           Source
@@ -333,7 +289,6 @@ try {
         />
       </div>
     </div>
-
     <!-- Auto-formatted Citation -->
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1" for="-formatted-citation-">
@@ -346,7 +301,6 @@ try {
         placeholder="Auto-generated citation format"
       />
     </div>
-
     <!-- URLs and Identifiers -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
@@ -363,7 +317,6 @@ try {
           <p class="text-red-600 text-sm mt-1">{$errors.url}</p>
         {/if}
       </div>
-
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-doi-">
           DOI
@@ -376,7 +329,6 @@ try {
         />
       </div>
     </div>
-
     <!-- Legal Details -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
@@ -390,7 +342,6 @@ try {
           placeholder="Federal, State, etc."
         />
       </div>
-
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-court-">
           Court
@@ -402,7 +353,6 @@ try {
           placeholder="Supreme Court, etc."
         />
       </div>
-
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-publication-date-">
           Publication Date
@@ -414,7 +364,6 @@ try {
         />
       </div>
     </div>
-
     <!-- Abstract and Quotes -->
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1" for="-abstract-">
@@ -427,7 +376,6 @@ try {
         placeholder="Brief summary of the citation..."
       />
     </div>
-
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1" for="-relevant-quote-">
         Relevant Quote
@@ -439,7 +387,6 @@ try {
         placeholder="Key quote from the citation..."
       />
     </div>
-
     <!-- Rich Text Editor for Context Notes -->
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -449,7 +396,6 @@ try {
         <div bind:this={editorContainer} class="min-h-[200px]"></div>
       </div>
     </div>
-
     <!-- Citation Purpose and Relevance -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
@@ -465,7 +411,6 @@ try {
           {/each}
         </select>
       </div>
-
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-relevance-score-110">
           Relevance Score (1-10)
@@ -483,7 +428,6 @@ try {
         </div>
       </div>
     </div>
-
     <!-- Tags -->
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1" for="-tags-">
@@ -514,7 +458,6 @@ try {
         </div>
       {/if}
     </div>
-
     <!-- Verification -->
     <div class="flex items-center space-x-2">
       <input
@@ -528,12 +471,11 @@ try {
         Mark as verified
       </label>
     </div>
-
     <!-- Action Buttons -->
     <div class="flex justify-end space-x-3 pt-4 border-t">
       <button
         type="button"
-        onclick={() => ondispatch?.()}
+        onclick={() => // ondispatch removed}
         disabled={isLoading}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
       >
@@ -549,19 +491,16 @@ try {
     </div>
   </form>
 </div>
-
 <style>
-  :global(.ql-editor) {;
+  :global(.ql-editor) {
     min-height: 150px;
     font-family: inherit;
   }
-  
   :global(.ql-toolbar) {
     border-top: 1px solid #ccc;
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
   }
-  
   :global(.ql-container) {
     border-bottom: 1px solid #ccc;
     border-left: 1px solid #ccc;

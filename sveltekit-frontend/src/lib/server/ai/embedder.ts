@@ -1,6 +1,5 @@
 import { cache } from '../cache/redis.js';
-
-// Configuration for embedding service;
+// Configuration for embedding service
 const EMBEDDING_CONFIG = {
   // Prefer local Gemma3 if available, fallback to Nomic API
   useLocal: process.env.EMBEDDER_TYPE === 'local' || process.env.LOCAL_EMBEDDER_URL,
@@ -9,12 +8,10 @@ const EMBEDDING_CONFIG = {
   nomicUrl: process.env.NOMIC_URL,
   defaultModel: process.env.EMBEDDING_MODEL || 'nomic-embed-text-v1.5'
 };
-
 // Nomic library stub note:
 // The project previously depended on '@langchain/nomic' which is currently not installed.
 // To unblock builds we avoid a hard dependency and provide a lightweight fallback.
 // If you later install '@langchain/nomic', replace the stub in embedWithNomic with real client calls.
-
 /**
  * Get embeddings from local Gemma3 service
  */;
@@ -25,16 +22,14 @@ async function embedWithLocal(text: string): Promise<number[]> {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        text: text,;
+      body: JSON.stringify({,
+        text: text
         model: EMBEDDING_CONFIG.defaultModel
       })
     });
-
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Local embedder failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
     }
-
     const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
     return (result as { embedding?: any; vector?: any; data?: any; embeddings?: any; vectors?: any }).embedding || (result as { embedding?: any; vector?: any; data?: any; embeddings?: any; vectors?: any }).vector || (result as { embedding?: any; vector?: any; data?: any; embeddings?: any; vectors?: any }).data;
   } catch (error) {
@@ -42,7 +37,6 @@ async function embedWithLocal(text: string): Promise<number[]> {
     throw error;
   }
 }
-
 /**
  * Get embeddings from Nomic API
  */;
@@ -60,7 +54,7 @@ async function embedWithNomic(text: string): Promise<number[]> {
           Authorization: `Bearer ${EMBEDDING_CONFIG.nomicApiKey}`
         },
         body: JSON.stringify({
-          text,;
+          text,
           model: EMBEDDING_CONFIG.defaultModel
         })
       });
@@ -85,7 +79,6 @@ async function embedWithNomic(text: string): Promise<number[]> {
     throw error;
   }
 }
-
 /**
  * Main embedding function with automatic fallback
  * @param text - Text to embed
@@ -96,25 +89,21 @@ export async function embedText(text: string, model?: string): Promise<number[]>
   if (!text || text.trim().length === 0) {
     throw new Error('Text is required for embedding');
   }
-
   const modelName = model || EMBEDDING_CONFIG.defaultModel;
-
   // Check Redis cache first
   const cachedEmbedding = await cache.getEmbedding(text, modelName);
   if (cachedEmbedding) {
     console.log('🚀 Embedding cache hit');
     return cachedEmbedding;
   }
-
   let embedding: number[];
-
-  // Try local first if configured;
+  // Try local first if configured
   if (EMBEDDING_CONFIG.useLocal) {
     try {
       embedding = await embedWithLocal(text);
     } catch (localError) {
       console.warn('Local embedding failed, trying Nomic API...');
-      // Fallback to Nomic API;
+      // Fallback to Nomic API
       if (EMBEDDING_CONFIG.nomicApiKey) {
         embedding = await embedWithNomic(text);
       } else {
@@ -130,14 +119,11 @@ export async function embedText(text: string, model?: string): Promise<number[]>
       'No embedding service available. Configure NOMIC_API_KEY or LOCAL_EMBEDDER_URL'
     );
   }
-
   // Cache the result in Redis
   await cache.setEmbedding(text, embedding, modelName);
   console.log('💾 Embedding cached in Redis');
-
   return embedding;
 }
-
 /**
  * Batch embed multiple texts efficiently
  * @param texts - Array of texts to embed
@@ -148,8 +134,7 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
   if (!texts || texts.length === 0) {
     return [];
   }
-
-  // For local service, try batch processing;
+  // For local service, try batch processing
   if (EMBEDDING_CONFIG.useLocal) {
     try {
       const response = await fetch(EMBEDDING_CONFIG.localUrl + '/batch', {
@@ -157,12 +142,11 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          texts: texts,;
+        body: JSON.stringify({,
+          texts: texts
           model: model || EMBEDDING_CONFIG.defaultModel
         })
       });
-
       if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
         return (result as { embedding?: any; vector?: any; data?: any; embeddings?: any; vectors?: any }).embeddings || (result as { embedding?: any; vector?: any; data?: any; embeddings?: any; vectors?: any }).vectors || (result as { embedding?: any; vector?: any; data?: any; embeddings?: any; vectors?: any }).data;
@@ -171,7 +155,6 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
       console.warn('Local batch embedding failed, falling back to individual calls');
     }
   }
-
   // Fallback to individual calls
   const embeddings: number[][] = [];
   for (const text of texts) {
@@ -184,52 +167,43 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
       embeddings.push([]);
     }
   }
-
   return embeddings;
 }
-
 /**
  * Get embedding service status
  */;
 export async function getEmbeddingServiceStatus(): Promise<any> {
   let localAvailable = false;
   let nomicAvailable = false;
-
-  // Check local service;
+  // Check local service
   if (EMBEDDING_CONFIG.useLocal) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 2000);
-
       const response = await fetch(EMBEDDING_CONFIG.localUrl + '/health', {
-        method: 'GET',;
+        method: 'GET',
         signal: controller.signal
       });
-
       clearTimeout(timeoutId);
       localAvailable = (response as { ok?: any; statusText?: any; json?: any }).ok;
     } catch (error) {
       // Local service not available
     }
   }
-
   // Check Nomic API
   nomicAvailable = !!EMBEDDING_CONFIG.nomicApiKey;
-
   let activeService: 'local' | 'nomic' | 'none' = 'none';
   if (localAvailable && EMBEDDING_CONFIG.useLocal) {
     activeService = 'local';
   } else if (nomicAvailable) {
     activeService = 'nomic';
   }
-
   return {
-    local: localAvailable,;
-    nomic: nomicAvailable,
+    local: localAvailable
+    nomic: nomicAvailable
     activeService
   };
 }
-
 /**
  * Utility to calculate cosine similarity between two vectors
  */;
@@ -237,20 +211,16 @@ export function cosineSimilarity(a: number[], b: number[]): number {
   if (a.length !== b.length) {
     throw new Error('Vectors must have the same length');
   }
-
   let dotProduct = 0;
   let normA = 0;
   let normB = 0;
-
   for (let i = 0; i < a.length; i++) {
     dotProduct += a[i] * b[i];
     normA += a[i] * a[i];
     normB += b[i] * b[i];
   }
-
   return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
 }
-
 export default {
   embedText,
   embedTexts,

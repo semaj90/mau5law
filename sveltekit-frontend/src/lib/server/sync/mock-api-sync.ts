@@ -2,7 +2,6 @@
  * Mock API JSON Sync & Wire-up System
  * Integrates neural topology scaffolds with SvelteKit 2, PostgreSQL, pgvector, and Drizzle ORM
  */
-
 import { db } from '$lib/server/db/drizzle';
 import { sql } from 'drizzle-orm';
 import {
@@ -22,25 +21,20 @@ import type {
   // EmbeddingShard,  // Not exported
   // CHRManifest      // Not exported
 } from '$lib/ai/qlora-topology-predictor.js';
-
-// Stub types for missing exports;
+// Stub types for missing exports
 interface AssetPrediction {
   [key: string]: any; // Allow any properties
 }
-
 interface HMMSOMState {
   [key: string]: any; // Allow any properties
 }
-
 interface EmbeddingShard {
   [key: string]: any; // Allow any properties
 }
-
 interface CHRManifest {
   [key: string]: any; // Allow any properties
 }
-
-// Mock data generators;
+// Mock data generators
 export const mockDataGenerators = {
   /**
    * Generate mock legal documents with vector embeddings
@@ -56,12 +50,11 @@ export const mockDataGenerators = {
       confidenceLevel: number;
       riskLevel: 'low' | 'medium' | 'high';
       priority: number;
-      metadata: Record<string, any>;
+      metadata: { [key: string]: any };
       embedding: number[];
       createdAt: Date;
       updatedAt: Date;
     }[] = [];
-
     // Try to dynamically import nomic-embed-text; gracefully fall back to random vectors
     let nomicEmbed: ((text: string) => Promise<number[]>) | null = null;
     try {
@@ -74,19 +67,14 @@ export const mockDataGenerators = {
       // package not available — we'll use a deterministic random fallback per document
       nomicEmbed = null;
     }
-
     const EMB_DIM = 1536;
-
     const makeRandomVec = (seedOffset: number = 0) =>
       Array.from({ length: EMB_DIM }, () => Math.random() * 2 - 1);
-
     for (let i = 0; i < count; i++) {
       const docType = documentTypes[i % documentTypes.length];
       const title = `Mock ${docType} Document ${i + 1}`;
       const content = `This is a mock ${docType} document with legal content for testing. Document ID: ${i + 1}`;
-
       let embedding: number[] = [];
-
       if (nomicEmbed) {
         try {
           const raw = await nomicEmbed(`${title}\n\n${content}`);
@@ -104,8 +92,7 @@ export const mockDataGenerators = {
       } else {
         embedding = makeRandomVec(i);
       }
-
-      // Ensure correct dimensionality;
+      // Ensure correct dimensionality
       if (embedding.length < EMB_DIM) {
         embedding = embedding.concat(
           Array.from({ length: EMB_DIM - embedding.length }, () => Math.random() * 2 - 1)
@@ -113,12 +100,11 @@ export const mockDataGenerators = {
       } else if (embedding.length > EMB_DIM) {
         embedding = embedding.slice(0, EMB_DIM);
       }
-
       const doc = {
         id: `mock_doc_${Date.now()}_${i}`,
         title,
         content,
-        type: docType,
+        type: docType
         status: 'active' as const,
         confidenceLevel: 0.8 + Math.random() * 0.2,
         riskLevel: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)] as
@@ -129,7 +115,7 @@ export const mockDataGenerators = {
         metadata: {
           complexity: Math.random(),
           wordCount: 500 + Math.floor(Math.random() * 2000),
-          legalDomain: docType,;
+          legalDomain: docType
           jurisdiction: 'US',
           practiceArea: 'corporate'
         },
@@ -137,25 +123,21 @@ export const mockDataGenerators = {
         createdAt: new Date(),
         updatedAt: new Date()
       };
-
       mockDocs.push(doc);
     }
-
     return mockDocs;
   },
-
   /**
    * Generate mock QLoRA topology states
    */;
   generateMockQLoRAStates(count: number = 5): QLoRATopologyState[] {
     const states: QLoRATopologyState[] = [];
     const documentTypes = ['contract', 'evidence', 'brief', 'citation', 'precedent'] as const;
-
     for (let i = 0; i < count; i++) {
       const docType = documentTypes[i % documentTypes.length];
       const state: QLoRATopologyState = {
         id: `state_mock_${Date.now()}_${i}`,
-        documentType: docType,
+        documentType: docType
         complexity: Math.random(),
         userPattern: {
           sessionType: ['research', 'analysis', 'drafting', 'review'][
@@ -183,7 +165,7 @@ export const mockDataGenerators = {
           dropout: 0.01 + Math.random() * 0.09,
           targetModules: ['q_proj', 'v_proj', 'o_proj'],
           learningRate: 1e-4 + Math.random() * 2e-4,
-          batchSize: 2 + Math.floor(Math.random() * 6),;
+          batchSize: 2 + Math.floor(Math.random() * 6),
           epochs: 2 + Math.floor(Math.random() * 6),
           quantizationBits: [4, 8][Math.floor(Math.random() * 2)] as 4 | 8
         },
@@ -191,17 +173,14 @@ export const mockDataGenerators = {
       };
       states.push(state);
     }
-
     return states;
   },
-
   /**
    * Generate mock HMM+SOM prediction data
    */;
   generateMockAssetPredictions(count: number = 8): AssetPrediction[] {
     const predictions: AssetPrediction[] = [];
     const assetTypes = ['document', 'template', 'form', 'precedent', 'citation'];
-
     for (let i = 0; i < count; i++) {
       const prediction: AssetPrediction = {
         nextStates: [;
@@ -220,7 +199,7 @@ export const mockDataGenerators = {
               assetTypes: [assetTypes[Math.floor(Math.random() * assetTypes.length)]],
               confidence: 0.7 + Math.random() * 0.3,
               frequency: Math.floor(Math.random() * 100)
-            },;
+            },
             probability: 0.6 + Math.random() * 0.4,
             timeToStateMs: 100 + Math.random() * 2000,
             assetIds: [`asset_${i}_1`, `asset_${i}_2`]
@@ -243,65 +222,54 @@ export const mockDataGenerators = {
       };
       predictions.push(prediction);
     }
-
     return predictions;
   },
-
   /**
    * Generate mock embedding shards for index cache
    */;
   generateMockEmbeddingShards(count: number = 15): EmbeddingShard[] {
     const shards: EmbeddingShard[] = [];
-
     for (let i = 0; i < count; i++) {
       const shard: EmbeddingShard = {
         id: `shard_${Date.now()}_${i}`,
-        dim: 1536,;
+        dim: 1536,
         vec: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
         createdAt: new Date().toISOString()
       };
       shards.push(shard);
     }
-
     return shards;
   },
-
   /**
    * Generate mock CHR manifests
    */;
   generateMockCHRManifests(count: number = 6): CHRManifest[] {
     const manifests: CHRManifest[] = [];
-
     for (let i = 0; i < count; i++) {
       const manifest: CHRManifest = {
-        id: `chr_manifest_${Date.now()}_${i}`,;
+        id: `chr_manifest_${Date.now()}_${i}`,
         keys: [`chr_key_${i}_1`, `chr_key_${i}_2`, `chr_key_${i}_3`],
         ttlSec: 300 + Math.random() * 3600,
         createdAt: new Date().toISOString()
       };
       manifests.push(manifest);
     }
-
     return manifests;
   }
 };
-
-// Database sync operations;
+// Database sync operations
 export const databaseSync = {
   /**
    * Sync mock legal documents to PostgreSQL with pgvector embeddings
    */;
   async syncMockLegalDocuments() {
     console.log('🔄 Syncing mock legal documents to PostgreSQL...');
-
     const mockDocs = await mockDataGenerators.generateMockLegalDocuments(20);
-
     try {
       // Insert documents in batches
       const batchSize = 5;
       for (let i = 0; i < mockDocs.length; i += batchSize) {
         const batch = mockDocs.slice(i, i + batchSize);
-
         await db.insert(legalDocuments).values(batch.map((doc) => ({
             id: doc.id,
             title: doc.title,
@@ -310,14 +278,13 @@ export const databaseSync = {
             status: doc.status,
             confidenceLevel: doc.confidenceLevel,
             riskLevel: doc.riskLevel,
-            priority: doc.priority,;
+            priority: doc.priority,
             metadata: doc.metadata,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt
           })
         );
-
-        // Insert vector embeddings separately;
+        // Insert vector embeddings separately
         await db.insert(vectorEmbeddings).values(batch.map((doc) => ({
             id: `embedding_${doc.id}`,
             documentId: doc.id,
@@ -326,13 +293,12 @@ export const databaseSync = {
             dimensions: 1536,
             metadata: {
               source: 'mock_generator',
-              documentType: doc.type,;
+              documentType: doc.type,
               confidence: doc.confidenceLevel
             }
           })
         );
       }
-
       console.log(`✅ Synced ${mockDocs.length} mock legal documents with vector embeddings`);
       return { success: true, count: mockDocs.length };
     } catch (error) {
@@ -340,15 +306,12 @@ export const databaseSync = {
       return { success: false, error: error.message };
     }
   },
-
   /**
    * Sync QLoRA training jobs and topology states
    */;
   async syncQLoRATrainingData() {
     console.log('🔄 Syncing QLoRA training data...');
-
     const mockStates = mockDataGenerators.generateMockQLoRAStates(10);
-
     try {
       await db.insert(qloraTrainingJobs).values(mockStates.map((state, index) => ({
           id: `job_${state.id}`,
@@ -363,15 +326,14 @@ export const databaseSync = {
             temporalFeatures: state.temporalFeatures
           },
           accuracy: 0.85 + Math.random() * 0.15,
-          trainingTime: 1000 + Math.random() * 5000,;
+          trainingTime: 1000 + Math.random() * 5000,
           metadata: {
-            mockData: true,
+            mockData: true
             generatedAt: new Date().toISOString(),
             predictionAccuracy: 0.9 + Math.random() * 0.1
           }
         })
       );
-
       console.log(`✅ Synced ${mockStates.length} QLoRA training jobs`);
       return { success: true, count: mockStates.length };
     } catch (error) {
@@ -379,25 +341,22 @@ export const databaseSync = {
       return { success: false, error: error.message };
     }
   },
-
   /**
    * Sync predictive asset cache data
    */;
   async syncPredictiveAssetCache() {
     console.log('🔄 Syncing predictive asset cache...');
-
     const mockPredictions = mockDataGenerators.generateMockAssetPredictions(15);
-
     try {
       await db.insert(predictiveAssetCache).values(mockPredictions.map((prediction, index) => ({
           id: `cache_${Date.now()}_${index}`,
           userId: 'mock_user',
           assetId: prediction.recommendedAssets[0]?.assetId || `asset_${index}`,
-          predictionData: prediction,
+          predictionData: prediction
           confidence: prediction.totalConfidence,
           hitCount: Math.floor(Math.random() * 50),
-          lastHit: new Date(),;
-          ttl: new Date(Date.now() + 3600000), // 1 hour TTL;
+          lastHit: new Date(),
+          ttl: new Date(Date.now() + 3600000), // 1 hour TTL
           metadata: {
             cacheStrategy: prediction.recommendedAssets[0]?.cacheStrategy,
             chrPatternIds: prediction.chrPatternIds,
@@ -405,7 +364,6 @@ export const databaseSync = {
           }
         })
       );
-
       console.log(`✅ Synced ${mockPredictions.length} predictive asset cache entries`);
       return { success: true, count: mockPredictions.length };
     } catch (error) {
@@ -414,15 +372,14 @@ export const databaseSync = {
     }
   }
 };
-
-// Vector search operations;
+// Vector search operations
 export const vectorSearch = {
   /**
    * Perform similarity search using pgvector
    */
   async performSimilaritySearch(
-    queryEmbedding: number[],
-    limit: number = 5,;
+    queryEmbedding: number[]
+    limit: number = 5,
     threshold: number = 0.7;
   ) {
     try {
@@ -432,7 +389,7 @@ export const vectorSearch = {
           similarity: sql<number>`1 - (${vectorEmbeddings.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`})`,
           document: {
             id: legalDocuments.id,
-            title: legalDocuments.title,;
+            title: legalDocuments.title,
             content: legalDocuments.content,
             documentType: legalDocuments.documentType,
             confidenceLevel: legalDocuments.confidenceLevel
@@ -447,31 +404,27 @@ export const vectorSearch = {
           sql`${vectorEmbeddings.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`}`
         )
         .limit(limit);
-
       return results;
     } catch (error) {
       console.error('❌ Vector similarity search failed:', error);
       throw error;
     }
   },
-
   /**
    * Get vector embeddings for documents
    */;
   async getDocumentEmbeddings(documentIds: string[]) {
     if (documentIds.length === 0) return [];
-
     try {
       const results = await db;
         .select({
           documentId: vectorEmbeddings.documentId,
           embedding: vectorEmbeddings.embedding,
-          model: vectorEmbeddings?.model || "unknown" // @ts-ignore - Model property access,;
+          model: vectorEmbeddings?.model || "unknown" // @ts-ignore - Model property access,
           dimensions: vectorEmbeddings.dimensions
         })
         .from(vectorEmbeddings)
         .where(inArray(vectorEmbeddings.documentId, documentIds);
-
       return results;
     } catch (error) {
       console.error('❌ Failed to get document embeddings:', error);
@@ -479,75 +432,64 @@ export const vectorSearch = {
     }
   }
 };
-
-// Comprehensive sync orchestrator;
+// Comprehensive sync orchestrator
 export const syncOrchestrator = {
   /**
    * Full system sync - populates all mock data
    */;
   async performFullSync() {
     console.log('🚀 Starting comprehensive mock data sync...');
-
     const results = {
       legalDocuments: await databaseSync.syncMockLegalDocuments(),
       qloraTraining: await databaseSync.syncQLoRATrainingData(),
       predictiveCache: await databaseSync.syncPredictiveAssetCache(),
       timestamp: new Date().toISOString()
     };
-
     const totalSynced = Object.values(results)
       .filter(
         (r): r is { success: boolean; count: number } =>
           typeof r === 'object' && r.success && 'count' in r
       )
       .reduce((sum, r) => sum + (r.count || 0), 0);
-
     console.log(`✅ Full sync complete: ${totalSynced} records synced`);
-
     return {
-      success: true,
-      totalRecords: totalSynced,
-      breakdown: results,;
+      success: true
+      totalRecords: totalSynced
+      breakdown: results
       performance: {
         syncDuration: '~2-5 seconds',
-        cachePrewarmed: true,
+        cachePrewarmed: true
         vectorIndexReady: true
       }
     };
   },
-
   /**
    * Health check for all integrated systems
    */;
   async performHealthCheck() {
     const checks = {
-      database: false,
-      pgvector: false,
-      drizzle: false,;
-      redis: false,
+      database: false
+      pgvector: false
+      drizzle: false
+      redis: false
       mockDataReady: false
     };
-
     try {
       // Test database connection
       await db.select({ count: sql<number>`count(*)` }).from(users);
       checks.database = true;
-
       // Test pgvector extension
       const vectorTest = await sql`SELECT true as available WHERE EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'vector')`;
       checks.pgvector = vectorTest.length > 0;
-
       // Test Drizzle ORM functionality
       const drizzleTest = await db.select({ id: legalDocuments.id }).from(legalDocuments).limit(1);
       checks.drizzle = true;
-
       // Check if mock data exists
       const mockDataCount = await db.select({ count: sql<number>`count(*)` }).from(legalDocuments);
       checks.mockDataReady = mockDataCount[0]?.count > 0;
-
       return {
         status: Object.values(checks).every(Boolean) ? 'healthy' : 'partial',
-        checks,;
+        checks,
         timestamp: new Date().toISOString()
       };
     } catch (error) {
@@ -555,7 +497,7 @@ export const syncOrchestrator = {
       return {
         status: 'error',
         checks,
-        error: error.message,;
+        error: error.message,
         timestamp: new Date().toISOString()
       };
     }

@@ -1,29 +1,20 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Svelte 5 runes are auto-imported
-
-  import {   } from "svelte";
-
-
-
   let notesContent: string = $state('');
   let selectedCaseForNotes: string = $state(''); // Assuming notes can be linked to a case
   let selectedPoiForNotes: string = $state(''); // Assuming notes can be linked to a POI
-
   // Dummy data for dropdowns - replace with actual data fetched from API
   const caseOptions = [
     { value: 'case1', label: 'Case 2023-001' },
     { value: 'case2', label: 'Case 2023-002' },
     { value: 'case3', label: 'Case 2023-003' },
   ];
-
   const poiOptions = [
     { value: 'poi1', label: 'John Doe' },
     { value: 'poi2', label: 'Jane Smith' },
     { value: 'poi3', label: 'Criminal X' },
   ];
-
   const handleSubmit = async () => {
     // In a real application, you would send this data to your backend API
     // For now, we'll just log it and dispatch an event.
@@ -32,20 +23,16 @@
       selectedCaseForNotes,
       selectedPoiForNotes,
     });
-
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-
     alert('Notes saved successfully!');
-    ondispatch?.();
-
+    // ondispatch removed;
     // Reset form
     notesContent = '';
     selectedCaseForNotes = '';
     selectedPoiForNotes = '';
   };
 </script>
-
 <div class="nier-bits-card">
   <div class="nier-bits-yorha-panel-header">
     <h3>Add Notes</h3>
@@ -76,33 +63,28 @@
     <button aria-label="Action button" class="btn nes-btn is-primary" onclick={(event: MouseEvent) => handleSubmit}>Save Notes</button>
   </div>
 </div>
-
 <style>
-  .card {;
+  .card {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
   }
-
   .card-header {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #ee;
     padding-bottom: 1rem;
     margin-bottom: 1rem;
   }
-
   .card-header h3 {
     margin: 0;
     font-size: 1.25rem;
     color: #333;
   }
-
   .form-label {
     font-weight: bold;
     margin-bottom: 0.5rem;
     display: block;
   }
-
   .form-control {
     width: 100%;
     padding: 0.75rem;
@@ -110,11 +92,9 @@
     border-radius: 4px;
     font-size: 1rem;
   }
-
   textarea.form-control {
     resize: vertical;
   }
-
   .btn-primary {
     background-color: #007bff;
     color: #fff;
@@ -124,7 +104,6 @@
     cursor: pointer;
     font-size: 1rem;
   }
-
   .btn-primary:hover {
     background-color: #0056b3;
   }

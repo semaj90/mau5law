@@ -3,10 +3,8 @@
  * Handles connection pooling, reconnection, and distributed caching
  * Integrates Redis Stack with JSON, Search, and TimeSeries modules
  */
-
 import Redis from 'ioredis';
 import type { RedisOptions } from 'ioredis';
-
 interface RedisConfig {
   host: string;
   port: number;
@@ -20,13 +18,11 @@ interface RedisConfig {
   family: number;
   keyPrefix?: string;
 }
-
 interface RedisConnectionPool {
   primary: Redis;
   subscriber: Redis;
   publisher: Redis;
 }
-
 class RedisService {
   private pool: RedisConnectionPool | null = null;
   private isConnected = false;
@@ -34,7 +30,6 @@ class RedisService {
   private maxReconnectAttempts = 10;
   private reconnectDelay = 1000;
   private initialized = false;
-
   private config: RedisConfig = {
     host: process.env.REDIS_HOST || 'localhost',
     port: parseInt(process.env.REDIS_PORT || '6379'),
@@ -42,68 +37,56 @@ class RedisService {
     db: parseInt(process.env.REDIS_DB || '0'),
     maxRetriesPerRequest: 3,
     retryDelayOnFailover: 100,
-    enableReadyCheck: true,
-    lazyConnect: true,
-    keepAlive: 30000,;
+    enableReadyCheck: true
+    lazyConnect: true
+    keepAlive: 30000,
     family: 4,
     keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:'
   };
-
   /**
    * Initialize Redis connection pool
    */;
   async initialize(): Promise<boolean> {
     try {
-      // Prevent multiple initialization attempts;
+      // Prevent multiple initialization attempts
       if (this.initialized || (this.pool?.primary && ((this.pool.primary as any).status === 'connecting' || (this.pool.primary as any).status === 'connected'))) {
         console.log('[RedisService] Already initialized or connecting');
         return this.initialized;
       }
-
       console.log('[RedisService] Initializing Redis connection pool...');
-
-      // Create primary connection for read/write operations;
+      // Create primary connection for read/write operations
       this.pool = {
         primary: new Redis({
           ...this.config,
-          lazyConnect: false,
+          lazyConnect: false
           connectionName: 'legal-ai-primary'
         }),
-
-        // Separate connection for pub/sub operations;
+        // Separate connection for pub/sub operations
         subscriber: new Redis({
           ...this.config,
-          lazyConnect: false,
+          lazyConnect: false
           connectionName: 'legal-ai-subscriber'
         }),
-;
         publisher: new Redis({
           ...this.config,
-          lazyConnect: false,
+          lazyConnect: false
           connectionName: 'legal-ai-publisher'
         })
       };
-
       // Set up event handlers
       this.setupEventHandlers(this.pool.primary, 'primary');
       this.setupEventHandlers(this.pool.subscriber, 'subscriber');
       this.setupEventHandlers(this.pool.publisher, 'publisher');
-
       // Wait for primary connection
       await this.pool.primary.connect();
-
       // Test Redis Stack modules
       await this.testRedisStackModules();
-
       this.isConnected = true;
       this.initialized = true;
       this.reconnectAttempts = 0;
-
       console.log('✅ [RedisService] Connection pool initialized successfully');
-
       // Global Redis client for backward compatibility
       (globalThis as any).__REDIS = this.pool.primary;
-
       return true;
     } catch (error) {
       console.error('❌ [RedisService] Failed to initialize:', error);
@@ -111,7 +94,6 @@ class RedisService {
       return false;
     }
   }
-
   /**
    * Set up Redis connection event handlers
    */;
@@ -119,30 +101,25 @@ class RedisService {
     redis.on('connect', () => {
       console.log(`✅ [RedisService] ${name} connected`);
     });
-
     redis.on('ready', () => {
       console.log(`🚀 [RedisService] ${name} ready`);
       this.isConnected = true;
       this.reconnectAttempts = 0;
     });
-
     redis.on('error', (error) => {
       console.error(`❌ [RedisService] ${name} error:`, error);
       this.isConnected = false;
     });
-
     redis.on('close', () => {
       console.warn(`⚠️ [RedisService] ${name} connection closed`);
       this.isConnected = false;
       this.handleReconnection();
     });
-
     redis.on('reconnecting', (delay) => {
       console.log(`🔄 [RedisService] ${name} reconnecting in ${delay}ms...`);
       this.reconnectAttempts++;
     });
   }
-
   /**
    * Handle automatic reconnection with exponential backoff
    */;
@@ -153,10 +130,8 @@ class RedisService {
       );
       return;
     }
-
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts);
     console.log(`🔄 [RedisService] Attempting reconnection in ${delay}ms...`);
-
     setTimeout(async () => {
       try {
         await this.initialize();
@@ -165,13 +140,11 @@ class RedisService {
       }
     }, delay);
   }
-
   /**
    * Test Redis Stack modules (JSON, Search, TimeSeries)
    */;
   private async testRedisStackModules(): Promise<void> {
     if (!this.pool?.primary) return;
-
     try {
       // Test JSON module
       await (this.pool.primary as any).sendCommand([
@@ -183,12 +156,10 @@ class RedisService {
       await (this.pool.primary as any).sendCommand(['JSON.GET', 'test:json']);
       await this.pool.primary.del('test:json');
       console.log('✅ [RedisService] JSON module available');
-
       // Test basic operations
       await this.pool.primary.setex('test:basic', 60, 'redis-stack-ready');
       const testValue = await this.pool.primary.get('test:basic');
       await this.pool.primary.del('test:basic');
-
       if (testValue === 'redis-stack-ready') {
         console.log('✅ [RedisService] Basic operations working');
       }
@@ -196,35 +167,30 @@ class RedisService {
       console.warn('⚠️ [RedisService] Some Redis Stack modules may not be available:', error);
     }
   }
-
   /**
    * Get Redis client for operations
    */;
   getClient(): Redis | null {
     return this.pool?.primary || null;
   }
-
   /**
    * Get publisher for pub/sub
    */;
   getPublisher(): Redis | null {
     return this.pool?.publisher || null;
   }
-
   /**
    * Get subscriber for pub/sub
    */;
   getSubscriber(): Redis | null {
     return this.pool?.subscriber || null;
   }
-
   /**
    * Check if Redis is connected and healthy
    */;
   isHealthy(): boolean {
     return this.isConnected && this.pool?.primary !== null;
   }
-
   /**
    * Get Redis connection statistics
    */;
@@ -237,18 +203,16 @@ class RedisService {
     keyspace?: any;
   } {
     const client = this.pool?.primary;
-
     return {
       connected: this.isConnected,
       status: this.isConnected ? 'connected' : 'disconnected',
       reconnectAttempts: this.reconnectAttempts,
       config: {
-        ...this.config,;
+        ...this.config,
         password: this.config.password ? '[REDACTED]' : undefined
       }
     };
   }
-
   /**
    * Get Redis memory and keyspace info
    */;
@@ -256,12 +220,10 @@ class RedisService {
     if (!this.pool?.primary || !this.isHealthy()) {
       return null;
     }
-
     try {
       const info = await (this.pool.primary as any).info();
       const lines = info.split('\r\n');
       const result: any = {};
-
       let section = 'general';
       for (const line of lines) {
         if (line.startsWith('#')) {
@@ -272,69 +234,60 @@ class RedisService {
           result[section][key] = isNaN(Number(value)) ? value : Number(value);
         }
       }
-
       return result;
     } catch (error) {
       console.error('[RedisService] Failed to get Redis info:', error);
       return null;
     }
   }
-
   /**
    * Cache operations with intelligent TTL for legal AI workloads
    */;
   async set(key: string, value: any, ttlSeconds?: number): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
-
     try {
       const serialized = typeof value === 'string' ? value : JSON.stringify(value);
-
       // Intelligent TTL based on key patterns for legal AI optimization
       let smartTtl = ttlSeconds;
       if (!ttlSeconds) {
         if (key.includes('legal:embedding:')) {
-          smartTtl = 86400; // 24h for document embeddings;
+          smartTtl = 86400; // 24h for document embeddings
         } else if (key.includes('legal:case:')) {
-          smartTtl = 43200; // 12h for case data;
+          smartTtl = 43200; // 12h for case data
         } else if (key.includes('legal:search:')) {
-          smartTtl = 1800; // 30min for search results;
+          smartTtl = 1800; // 30min for search results
         } else if (key.includes('legal:chat:')) {
-          smartTtl = 3600; // 1h for chat sessions;
+          smartTtl = 3600; // 1h for chat sessions
         } else if (key.includes('wasm:tensor:')) {
-          smartTtl = 7200; // 2h for WASM tensor operations;
+          smartTtl = 7200; // 2h for WASM tensor operations
         } else if (key.includes('webgpu:cache:')) {
-          smartTtl = 14400; // 4h for WebGPU computations;
+          smartTtl = 14400; // 4h for WebGPU computations
         } else if (key.includes('vector:quantized:')) {
-          smartTtl = 21600; // 6h for quantized vectors;
+          smartTtl = 21600; // 6h for quantized vectors
         } else if (key.includes('legal:metadata:')) {
-          smartTtl = 10800; // 3h for legal document metadata;
+          smartTtl = 10800; // 3h for legal document metadata
         } else {
           smartTtl = 3600; // Default 1h
         }
       }
-
       if (smartTtl) {
         await client.setex(key, smartTtl, serialized);
       } else {
         await client.set(key, serialized);
       }
-
       return true;
     } catch (error) {
       console.error(`[RedisService] Failed to set ${key}:`, error);
       return false;
     }
   }
-
   async get<T = any>(key: string): Promise<T | null> {
     const client = this.getClient();
     if (!client) return null;
-
     try {
       const value = await client.get(key);
       if (!value) return null;
-
       try {
         return JSON.parse(value);
       } catch {
@@ -345,11 +298,9 @@ class RedisService {
       return null;
     }
   }
-
   async del(key: string): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
-
     try {
       await client.del(key);
       return true;
@@ -358,11 +309,9 @@ class RedisService {
       return false;
     }
   }
-
   async exists(key: string): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
-
     try {
       const result = await (client as any).exists(key);
       return result === 1;
@@ -371,11 +320,9 @@ class RedisService {
       return false;
     }
   }
-
   async keys(pattern: string): Promise<string[]> {
     const client = this.getClient();
     if (!client) return [];
-
     try {
       return await (client as any).keys(pattern);
     } catch (error) {
@@ -383,14 +330,12 @@ class RedisService {
       return [];
     }
   }
-
   /**
    * Hash operations
    */;
   async hget(key: string, field: string): Promise<string | null> {
     const client = this.getClient();
     if (!client) return null;
-
     try {
       return await (client as any).hget(key, field);
     } catch (error) {
@@ -398,11 +343,9 @@ class RedisService {
       return null;
     }
   }
-
   async hset(key: string, field: string, value: string): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
-
     try {
       await (client as any).hset(key, field, value);
       return true;
@@ -411,11 +354,9 @@ class RedisService {
       return false;
     }
   }
-
   async hgetall(key: string): Promise<any> {
     const client = this.getClient();
     if (!client) return {};
-
     try {
       return (await (client as any).hgetall(key)) || {};
     } catch (error) {
@@ -423,11 +364,9 @@ class RedisService {
       return {};
     }
   }
-
   async hincrby(key: string, field: string, increment: number): Promise<number> {
     const client = this.getClient();
     if (!client) return 0;
-
     try {
       return await (client as any).hincrby(key, field, increment);
     } catch (error) {
@@ -435,11 +374,9 @@ class RedisService {
       return 0;
     }
   }
-
   async expire(key: string, seconds: number): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
-
     try {
       await (client as any).expire(key, seconds);
       return true;
@@ -448,11 +385,9 @@ class RedisService {
       return false;
     }
   }
-
   async pipeline(): Promise<any> {
     const client = this.getClient();
     if (!client) return null;
-
     try {
       return (client as any).pipeline();
     } catch (error) {
@@ -460,7 +395,6 @@ class RedisService {
       return null;
     }
   }
-
   /**
    * Legal AI specific caching methods
    */;
@@ -474,12 +408,10 @@ class RedisService {
     };
     return await this.set(key, data);
   }
-
   async getCachedEmbedding(documentId: string): Promise<any> {
     const key = `legal:embedding:${documentId}`;
     return await this.get(key);
   }
-
   async cacheSearchResults(query: string, results: any[], ttl: number = 1800): Promise<boolean> {
     const queryHash = Buffer.from(query).toString('base64url');
     const key = `legal:search:${queryHash}`;
@@ -491,13 +423,11 @@ class RedisService {
     };
     return await this.set(key, data, ttl);
   }
-
   async getCachedSearch(query: string): Promise<any> {
     const queryHash = Buffer.from(query).toString('base64url');
     const key = `legal:search:${queryHash}`;
     return await this.get(key);
   }
-
   async cacheWasmTensor(operation: string, input: ArrayBuffer, result: ArrayBuffer): Promise<boolean> {
     const inputHash = Buffer.from(input).toString('base64', 0, 32); // First 32 bytes for key
     const key = `wasm:tensor:${operation}:${inputHash}`;
@@ -509,7 +439,6 @@ class RedisService {
     };
     return await this.set(key, data);
   }
-
   async getCachedWasmTensor(operation: string, input: ArrayBuffer): Promise<ArrayBuffer | null> {
     const inputHash = Buffer.from(input).toString('base64', 0, 32);
     const key = `wasm:tensor:${operation}:${inputHash}`;
@@ -519,7 +448,6 @@ class RedisService {
     }
     return null;
   }
-
   async cacheQuantizedVectors(batchId: string, vectors: Float32Array, quantized: Int8Array): Promise<boolean> {
     const key = `vector:quantized:${batchId}`;
     const data = {
@@ -531,7 +459,6 @@ class RedisService {
     };
     return await this.set(key, data);
   }
-
   async getQuantizedVectors(batchId: string): Promise<Int8Array | null> {
     const key = `vector:quantized:${batchId}`;
     const cached = await this.get(key);
@@ -540,12 +467,10 @@ class RedisService {
     }
     return null;
   }
-
-  // Redis Streams methods;
-  async xAdd(key: string, id: string, fields: Record<string, any>): Promise<string> {
+  // Redis Streams methods
+  async xAdd(key: string, id: string, fields: { [key: string]: any }): Promise<string> {
     const client = this.getClient();
     if (!client) throw new Error('Redis not connected');
-
     try {
       const fieldArray = Object.entries(fields).flat();
       return await (client as any).xadd(key, id, ...fieldArray);
@@ -554,11 +479,9 @@ class RedisService {
       throw error;
     }
   }
-
   async xInfoStream(key: string): Promise<any> {
     const client = this.getClient();
     if (!client) throw new Error('Redis not connected');
-
     try {
       return await (client as any).xinfoStream(key);
     } catch (error) {
@@ -566,16 +489,14 @@ class RedisService {
       throw error;
     }
   }
-
   async xRevRange(
-    key: string,
-    end: string,;
-    start: string,
+    key: string
+    end: string
+    start: string
     options?: { COUNT: number }
   ): Promise<any[]> {
     const client = this.getClient();
     if (!client) throw new Error('Redis not connected');
-
     try {
       const args = [key, end, start];
       if (options?.COUNT) {
@@ -587,32 +508,25 @@ class RedisService {
       throw error;
     }
   }
-
   /**
    * Cleanup and close connections
    */;
   async shutdown(): Promise<void> {
     console.log('[RedisService] Shutting down Redis connections...');
-
     if (this.pool) {
       await Promise.all([
         this.pool.primary.quit(),
         this.pool.subscriber.quit(),
         this.pool.publisher.quit()
       ]);
-
       this.pool = null;
     }
-
     this.isConnected = false;
     console.log('✅ [RedisService] Shutdown complete');
   }
 }
-
 // Singleton instance
 export const redisService = new RedisService();
-
 // Manual initialization only - prevent connection storms
 // Call redisService.initialize() explicitly where needed
-
 export default redisService;

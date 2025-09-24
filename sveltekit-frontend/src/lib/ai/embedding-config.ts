@@ -3,7 +3,6 @@
  * Defines embedding models with Gemma embeddings and nomic-embed-text fallback
  */;
 }
-
 export interface EmbeddingModelConfig {
   id: string;
   name: string;
@@ -16,9 +15,8 @@ export interface EmbeddingModelConfig {
   specialized: boolean;
   capabilities: string[];
 }
-
 export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
-  // Primary: Gemma embeddings (optimized for legal and general tasks);
+  // Primary: Gemma embeddings (optimized for legal and general tasks)
   'embeddinggemma': {
     id: 'embeddinggemma',
     name: 'Gemma Embeddings',
@@ -27,10 +25,9 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     maxTokens: 2048,
     latency: 100,
     accuracy: 0.90,
-    specialized: true,
+    specialized: true
     capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding']
   },
-
   'embeddinggemma:latest': {
     id: 'embeddinggemma:latest',
     name: 'Gemma Embeddings Latest',
@@ -39,11 +36,10 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     maxTokens: 2048,
     latency: 95,
     accuracy: 0.91,
-    specialized: true,;
+    specialized: true
     capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding']
   },
-
-  // Fallback: nomic-embed-text (reliable backup);
+  // Fallback: nomic-embed-text (reliable backup)
   'nomic-embed-text': {
     id: 'nomic-embed-text',
     name: 'Nomic Embed Text',
@@ -52,11 +48,10 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     maxTokens: 2048,
     latency: 120,
     accuracy: 0.85,
-    specialized: false,;
+    specialized: false
     capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text']
   },
-
-  // Specialized legal embedding;
+  // Specialized legal embedding
   'legal-bert-embeddings': {
     id: 'legal-bert-embeddings',
     name: 'Legal-BERT Embeddings',
@@ -65,11 +60,10 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     maxTokens: 512,
     latency: 50,
     accuracy: 0.90,
-    specialized: true,;
+    specialized: true
     capabilities: ['legal-text', 'case-law', 'legal-entity-extraction']
   }
 };
-
 export const EMBEDDING_FALLBACK_CHAINS = {
   'legal-general': [
     'embeddinggemma:latest',
@@ -88,28 +82,22 @@ export const EMBEDDING_FALLBACK_CHAINS = {
     'nomic-embed-text'
   ]
 };
-
 export function getOptimalEmbeddingModel(
   taskType: 'legal-general' | 'legal-fast' | 'general' = 'legal-general',
   availableModels: string[] = [];
 ): string[] {
   const chain = EMBEDDING_FALLBACK_CHAINS[taskType];
-  
   if (availableModels.length === 0) {
     return chain;
   }
-  
   // Filter to only available models
   const availableChain = chain.filter(modelId => availableModels.includes(modelId);
-  
   // If no models from the chain are available, return the full chain
   return availableChain.length > 0 ? availableChain : chain;
 }
-
 export function getEmbeddingModelConfig(modelId: string): EmbeddingModelConfig | null {
   return EMBEDDING_MODELS[modelId] || null;
 }
-
 export function isLegalSpecializedEmbedding(modelId: string): boolean {
   const config = getEmbeddingModelConfig(modelId);
   return config?.specialized && config.capabilities.includes('legal-text') || false;

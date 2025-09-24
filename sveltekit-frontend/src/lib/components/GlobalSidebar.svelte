@@ -18,7 +18,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     getStatusColor,
     MINI_TEXT_LENGTHS
   } from '$lib/utils/formatting';
-
   // Props for sidebar configuration
   let {
     isOpen = true,
@@ -31,25 +30,21 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     showQuickActions?: boolean;
     compactMode?: boolean;
   } = $props();
-
   // Sidebar state management
   let isOpenState = $state(isOpen);
   let activeSection = $state(defaultSection);
   let searchQuery = $state('');
   let isCollapsed = $state(compactMode);
-
   // Section toggles
   let showCases = $state(true);
   let showEvidence = $state(false);
   let showCitations = $state(false);
   let showReports = $state(false);
   let showAIAssistant = $state(false);
-
   // Derived reactive data
   let currentUser = $derived(user);
   let authenticated = $derived(isAuthenticated);
   let stats = $derived(userStats);
-
   // Filtered data based on search
   let filteredCases = $derived(
     userCases.filter(c =>
@@ -58,7 +53,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
       (c.caseNumber && c.caseNumber.toLowerCase().includes(searchQuery.toLowerCase()))
     ).slice(0, 10)
   );
-
   let filteredEvidence = $derived(
     userEvidence.filter(e =>
       e.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -66,7 +60,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
       e.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     ).slice(0, 10)
   );
-
   let filteredCitations = $derived(
     userCitations.filter(c =>
       c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -74,7 +67,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
       (c.notes && c.notes.toLowerCase().includes(searchQuery.toLowerCase()))
     ).slice(0, 10)
   );
-
   let filteredReports = $derived(
     userReports.filter(r =>
       r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -82,46 +74,38 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
       r.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     ).slice(0, 10)
   );
-
   // Initialize sidebar when component mounts
   onMount(() => {
     if (currentUser?.id) {
       userDataActions.init(currentUser.id);
     }
   });
-
   // Helper functions
   function toggleSection(section: string) {
     if (activeSection === section) {
       isCollapsed = !isCollapsed;
     } else {
-      activeSection = section;
+      activeSection = sectio;
       isCollapsed = false;
     }
   }
-
   function navigateTo(path: string) {
     window.location.href = path;
   }
-
   function openAIAssistant(contextType?: string, contextId?: string) {
     // TODO: Implement AI assistant modal/panel
     console.log('Opening AI Assistant:', { contextType, contextId });
   }
-
   function createQuickCase() {
     navigateTo('/cases/create');
   }
-
   function uploadEvidence() {
     navigateTo('/evidence/upload');
   }
-
   function createReport() {
     navigateTo('/reports/create');
   }
 </script>
-
 <aside class="global-sidebar" class:collapsed={isCollapsed} class:closed={!isOpen}>
   <!-- User Profile Section -->
   {#if authenticated && currentUser}
@@ -153,7 +137,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
       {/if}
     </div>
   {/if}
-
   {#if authenticated && !isCollapsed}
     <!-- Search Section -->
     <div class="search-section nes-container is-dark">
@@ -166,7 +149,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         />
       </div>
     </div>
-
     <!-- Dashboard Stats -->
     <div class="stats-section nes-container is-dark with-title">
       <p class="title">📊 Overview</p>
@@ -189,7 +171,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         </div>
       </div>
     </div>
-
     <!-- Quick Actions -->
     {#if showQuickActions}
       <div class="quick-actions nes-container is-dark with-title">
@@ -210,14 +191,12 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         </div>
       </div>
     {/if}
-
     <!-- Cases Section -->
     <div class="section cases-section nes-container is-dark with-title">
       <p class="title" onclick={() => toggleSection('cases')}>
         📁 Cases ({stats.totalCases})
         <span class="toggle-icon">{showCases ? '−' : '+'}</span>
       </p>
-
       {#if showCases}
         <div class="section-content">
           {#if filteredCases.length > 0}
@@ -242,7 +221,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                 {/if}
               </div>
             {/each}
-
             {#if stats.totalCases > 10}
               <div class="view-all">
                 <a href="/cases" class="nes-btn is-small">View All Cases</a>
@@ -257,14 +235,12 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         </div>
       {/if}
     </div>
-
     <!-- Evidence Section -->
     <div class="section evidence-section nes-container is-dark with-title">
       <p class="title" onclick={() => toggleSection('evidence')}>
         📎 Evidence ({stats.totalEvidence})
         <span class="toggle-icon">{showEvidence ? '−' : '+'}</span>
       </p>
-
       {#if showEvidence}
         <div class="section-content">
           {#if filteredEvidence.length > 0}
@@ -293,7 +269,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                 {/if}
               </div>
             {/each}
-
             {#if stats.totalEvidence > 10}
               <div class="view-all">
                 <a href="/evidence" class="nes-btn is-small">View All Evidence</a>
@@ -308,14 +283,12 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         </div>
       {/if}
     </div>
-
     <!-- Citations Section -->
     <div class="section citations-section nes-container is-dark with-title">
       <p class="title" onclick={() => toggleSection('citations')}>
         📚 Citations ({stats.totalCitations})
         <span class="toggle-icon">{showCitations ? '−' : '+'}</span>
       </p>
-
       {#if showCitations}
         <div class="section-content">
           {#if filteredCitations.length > 0}
@@ -340,7 +313,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                 </div>
               </div>
             {/each}
-
             {#if stats.totalCitations > 10}
               <div class="view-all">
                 <a href="/citations" class="nes-btn is-small">View All Citations</a>
@@ -355,14 +327,12 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         </div>
       {/if}
     </div>
-
     <!-- Reports Section -->
     <div class="section reports-section nes-container is-dark with-title">
       <p class="title" onclick={() => toggleSection('reports')}>
         📋 Reports ({stats.totalReports})
         <span class="toggle-icon">{showReports ? '−' : '+'}</span>
       </p>
-
       {#if showReports}
         <div class="section-content">
           {#if filteredReports.length > 0}
@@ -383,7 +353,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                 </div>
               </div>
             {/each}
-
             {#if stats.totalReports > 10}
               <div class="view-all">
                 <a href="/reports" class="nes-btn is-small">View All Reports</a>
@@ -398,14 +367,12 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         </div>
       {/if}
     </div>
-
     <!-- AI Assistant Section -->
     <div class="section ai-section nes-container is-dark with-title">
       <p class="title" onclick={() => toggleSection('ai')}>
         🤖 AI Assistant ({stats.aiConversations})
         <span class="toggle-icon">{showAIAssistant ? '−' : '+'}</span>
       </p>
-
       {#if showAIAssistant}
         <div class="section-content">
           {#if userAIConversations.length > 0}
@@ -424,7 +391,6 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
                 </div>
               </div>
             {/each}
-
             <div class="view-all">
               <a href="/ai/conversations" class="nes-btn is-small">View All Conversations</a>
             </div>
@@ -439,9 +405,8 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     </div>
   {/if}
 </aside>
-
 <style>
-  .global-sidebar {;
+  .global-sidebar {
     width: 320px;
     min-height: 100vh;
     background: #1a1a1a;
@@ -453,138 +418,115 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     overflow-y: auto;
     transition: all 0.3s ease;
     position: fixed;
+d;
     left: 0;
     top: 0;
     z-index: 1000;
   }
-
   .global-sidebar.collapsed {
     width: 80px;
   }
-
   .global-sidebar.closed {
     transform: translateX(-100%);
   }
-
   /* User Profile */
   .user-profile {
     flex-shrink: 0;
   }
-
   .profile-header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
-
   .avatar {
     font-size: 1.5rem;
     flex-shrink: 0;
   }
-
   .user-info {
     flex: 1;
     min-width: 0;
   }
-
   .user-name {
     font-weight: bold;
     font-size: 0.9rem;
     margin-bottom: 0.25rem;
   }
-
   .user-role {
     font-size: 0.7rem;
   }
-
   .collapse-btn {
     flex-shrink: 0;
     padding: 0.25rem 0.5rem;
     min-height: auto;
   }
-
   /* Search */
   .search-section {
     flex-shrink: 0;
   }
-
   .search-input {
     width: 100%;
     font-size: 0.8rem;
   }
-
   /* Stats */
   .stats-section {
     flex-shrink: 0;
   }
-
   .stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
   }
-
   .stat-item {
     text-align: center;
     padding: 0.5rem;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 4px;
   }
-
   .stat-number {
     display: block;
     font-weight: bold;
     font-size: 1.1rem;
     color: #00ff00;
   }
-
   .stat-label {
     display: block;
     font-size: 0.7rem;
     opacity: 0.8;
   }
-
   /* Quick Actions */
   .quick-actions {
     flex-shrink: 0;
   }
-
   .action-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
   }
-
   .action-buttons .nes-btn {
     font-size: 0.7rem;
     padding: 0.25rem 0.5rem;
   }
-
   /* Sections */
   .section {
     flex-shrink: 0;
   }
-
   .section .title {
     cursor: pointer;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin: 0;
     padding: 0.5rem;
     user-select: none;
   }
-
   .toggle-icon {
     font-family: monospace;
     font-weight: bold;
   }
-
   .section-content {
     max-height: 300px;
     overflow-y: auto;
   }
-
   /* Items */
   .item {
     padding: 0.5rem;
@@ -595,74 +537,61 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     cursor: pointer;
     transition: all 0.2s ease;
   }
-
-  .item:hover {
+  .item: hover {
     border-color: #007bff;
     background: rgba(0, 123, 255, 0.1);
   }
-
   .item-header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.25rem;
   }
-
   .item-title {
     flex: 1;
     font-weight: bold;
     font-size: 0.85rem;
     line-height: 1.2;
   }
-
   .item-meta {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
     margin-bottom: 0.25rem;
   }
-
   .file-icon {
     flex-shrink: 0;
     font-size: 1rem;
   }
-
   .favorite-icon {
     flex-shrink: 0;
     color: #ffd700;
   }
-
   .priority-indicator {
     margin-top: 0.25rem;
   }
-
   .tags {
     display: flex;
     gap: 0.25rem;
     flex-wrap: wrap;
     margin-top: 0.25rem;
   }
-
   .citation-source {
     margin-top: 0.25rem;
   }
-
   /* Mini text */
   .mini-text {
     font-size: 0.7rem !important;
     line-height: 1.2;
   }
-
   /* Empty states */
   .empty-state {
     text-align: center;
     padding: 1rem;
   }
-
   .empty-state .nes-btn {
     margin-top: 0.5rem;
   }
-
   /* View all */
   .view-all {
     text-align: center;
@@ -670,41 +599,34 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     padding-top: 0.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
-
   /* Auth prompt */
   .auth-prompt {
     text-align: center;
     flex-shrink: 0;
   }
-
   /* Scrollbar */
   .global-sidebar::-webkit-scrollbar,
   .section-content::-webkit-scrollbar {
     width: 6px;
   }
-
   .global-sidebar::-webkit-scrollbar-track,
   .section-content::-webkit-scrollbar-track {
     background: #2a2a2a;
   }
-
   .global-sidebar::-webkit-scrollbar-thumb,
   .section-content::-webkit-scrollbar-thumb {
     background: #495057;
     border-radius: 3px;
   }
-
-  .global-sidebar::-webkit-scrollbar-thumb:hover,
+  .global-sidebar::-webkit-scrollbar-thumb: hover
   .section-content::-webkit-scrollbar-thumb:hover {
     background: #6c757d;
   }
-
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .global-sidebar {
       width: 280px;
     }
-
     .global-sidebar.collapsed {
       width: 60px;
     }

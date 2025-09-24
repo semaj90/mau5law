@@ -1,33 +1,28 @@
-<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name;
+<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute nam;
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     onsuccess?: () => void;
     open?: boolean;
   }
-
   let { onsuccess, open = true }: Props = $props();
-
   // Bits UI dialog primitives
   import * as Dialog from 'bits-ui';
-
   // State (Svelte 5 runes)
   let email = $state("");
   let password = $state("");
   let confirmPassword = $state("");
   let loading = $state(false);
   let error = $state("");
-
   async function handleRegister() {
     loading = true;
     error = "";
     try {
       const res = await fetch("/api/register", {
-        method: "POST",;
-        headers: { "Content-Type": "application/json" },;
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, confirmPassword })
       });
       const data = await res.json();
@@ -41,7 +36,6 @@ https://svelte.dev/e/attribute_invalid_name -->
     }
   }
 </script>
-
 <Dialog.Root bind:open={open}>
   <!-- Optional external trigger could go here -->
   <Dialog.Portal>
@@ -87,15 +81,16 @@ https://svelte.dev/e/attribute_invalid_name -->
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
-  .overlay {;
+  .overlay {
     position: fixed;
+d;
     inset: 0;
     background: hsl(0 0% 0% / 0.5);
   }
   .content {
     position: fixed;
+d;
     top: 50%;
     left: 50%;
     width: 100%;
@@ -135,7 +130,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     border: 1px solid #d0d0d5;
     border-radius: 0.45rem;
   }
-  input:focus {;
+  input:focus {
     outline: 2px solid #6366f1;
     outline-offset: 1px;
   }
@@ -160,7 +155,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   }
   button[disabled] {
     opacity: 0.6;
-    cursor: progress;
+    cursor: progres;
   }
   .close-btn {
     background: #e5e7eb;
@@ -169,4 +164,3 @@ https://svelte.dev/e/attribute_invalid_name -->
     background: #d1d5db;
   }
 </style>
-

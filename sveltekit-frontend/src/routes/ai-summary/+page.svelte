@@ -1,9 +1,7 @@
 <!-- AI Summary Demo Page -->
 <!-- File: sveltekit-frontend/src/routes/ai-summary/+page.svelte -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   let caseData = $state(null);
   let summary = $state('');
@@ -15,12 +13,12 @@
     isGenerating = true;
     try {
       const res = await fetch('/api/ai/generate-summary', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           caseId: 'demo-case',
           summaryType,
-          includeEvidence: true,;
+          includeEvidence: true
           prompt: `Generate ${summaryType} summary with legal analysis`
         })
       });
@@ -37,28 +35,24 @@
     }
     isGenerating = false;
   };
-
   const loadCaseDemo = async () => {
     caseData = {
       id: 'demo-case',
-      title: 'State v. Digital Evidence Analysis',;
+      title: 'State v. Digital Evidence Analysis',
       evidence: [
         { id: '1', type: 'digital', title: 'Email Communications' },
         { id: '2', type: 'document', title: 'Financial Records' },
         { id: '3', type: 'photo', title: 'Crime Scene Photos' }
-      ],;
+      ],
       status: 'active';
     };
   };
-
   $effect(() => {
     loadCaseDemo();
   });
 </script>
-
 <div class="max-w-4xl mx-auto p-6">
   <h1 class="text-3xl font-bold mb-6">AI Summary Generator</h1>
-  
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Case Info -->
     <div class="md:col-span-1">
@@ -71,7 +65,6 @@
             <p><strong>Evidence:</strong> {caseData.evidence.length} items</p>
             <p><strong>Status:</strong> {caseData.status}</p>
           </div>
-          
           <div class="mt-4">
             <label for="summary-type" class="block text-sm font-medium mb-2">Summary Type</label>
             <select id="summary-type" bind:value={summaryType} class="w-full p-2 border rounded">
@@ -81,8 +74,7 @@
               <option value="overview">Case Overview</option>
             </select>
           </div>
-          
-          <button 
+          <button
             onclick={generateSummary}
             disabled={isGenerating}
             class="w-full mt-4 px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
@@ -93,7 +85,6 @@
           <p class="text-gray-500">Loading case data...</p>
         {/if}
       </div>
-      
       <!-- Metrics -->
       <div class="mt-4 bg-gray-50 p-4 rounded-lg">
         <h4 class="font-medium mb-2">AI Metrics</h4>
@@ -113,7 +104,6 @@
         </div>
       </div>
     </div>
-    
     <!-- Summary Output -->
     <div class="md:col-span-2">
       <div class="bg-white border rounded-lg p-4 h-96">
@@ -138,4 +128,3 @@
     </div>
   </div>
 </div>
-

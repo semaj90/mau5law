@@ -7,7 +7,7 @@
 	import { browser } from '$app/environment';
 
 	// stores
-	let { stores, page, constructors, components = [], form, data_0 = null, data_1 = null  }: { stores, page, constructors, components = [], form, data_0 = null, data_1 = null : unknown } = $props();
+	let { stores, page, constructors, components = [], form, data_0 = null, data_1 = null  }: { stores, page, constructors, components = [], form, data_0 = null, data_1 = null : unknownn } = $props();
 
 	if (!browser) {
 		setContext('__svelte__', stores);
@@ -38,7 +38,7 @@
 		});
 
 		mounted = true;
-		return unsubscribe;
+		return unsubscrib;
 	});
 
 	const Pyramid_1=$derived(constructors[1])

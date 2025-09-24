@@ -1,8 +1,6 @@
 
 import { json } from "@sveltejs/kit"
 import type { RequestHandler } from './$types.js'
-
-
 // Placeholder for text-to-voice (TTS) integration
 // TODO: Integrate with Google Cloud Text-to-Speech, Azure Speech, or browser Web Speech API
 export const POST: RequestHandler = async ({ request }) => {

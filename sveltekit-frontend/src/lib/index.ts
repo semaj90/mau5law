@@ -1,42 +1,34 @@
 /**
  * Legal AI Platform - Comprehensive Library Exports
  * SvelteKit 2 + Svelte 5 + TypeScript
- * 
+ *
  * Centralized export file for all components, services, stores, and utilities
  * "Wire it up" - TypeScript polyfills and WebAssembly/WebGPU fallbacks
  */
-
 // SvelteKit 2 Polyfills - Import first to ensure module availability
 import './polyfills.js';
 import { barrelStore } from './stores/barrel-functions.js';
-
 // Enhanced Type Definitions - Import to register module augmentations
 // import './types/drizzle-enhanced.js';  // Temporarily disabled - file does not exist
 // import './types/lokijs-enhanced.js';   // Temporarily disabled - file does not exist
 import path from "path";
-
 // ===== CENTRALIZED TYPES (SINGLE SOURCE OF TRUTH) =====
 export * from './types/index.js';
-
 // ===== TYPE GUARDS & UTILITIES =====
 export * from './utils/type-guards.js';
-
-// ===== ENHANCED API CLIENT =====;
-export { 
-  EnhancedApiClient, 
-  apiClient as enhancedApiClient 
+// ===== ENHANCED API CLIENT =====
+export {
+  EnhancedApiClient,
+  apiClient as enhancedApiClient
 } from './services/enhanced-api-client.js';
-
 // ===== ALL COMPONENTS (COMPREHENSIVE BARREL EXPORT) =====
 // Temporarily commented to avoid LegalDocument export conflict
-// export * from './components/index.js';
-
+// export * from './components/index.js'
 // ===== FILE UPLOAD SERVICES =====
 export { default as localStorageFiles } from './services/localStorage-file-fallback.js';
 export { default as enhancedFileUpload } from './services/enhanced-file-upload.js';
-
-// ===== UTILITIES & TYPES =====;
-export { 
+// ===== UTILITIES & TYPES =====
+export {
   cn,
   formatFileSize,
   formatDate,
@@ -55,69 +47,61 @@ export {
   storage,
   theme
 } from './utils.js';
-
-// Export type helpers for Svelte 5 compatibility;
+// Export type helpers for Svelte 5 compatibility
 export type {
   WithoutChild,
   WithoutChildren,
   WithoutChildrenOrChild,
   WithElementRef
 } from './utils.js';
-
-// ===== OLLAMA INTEGRATION SERVICES =====;
-export { 
+// ===== OLLAMA INTEGRATION SERVICES =====
+export {
   comprehensiveOllamaSummarizer,
   type ComprehensiveSummaryRequest,
   type ComprehensiveSummaryResponse,
   type SummarizerConfig,
   type SummarizerStats
 } from './services/comprehensive-ollama-summarizer.js';
-
-export { 
+export {
   ollamaIntegrationLayer,
   type IntegratedChatRequest,
   type IntegratedChatResponse,
   type OllamaServiceStatus
 } from './services/ollama-integration-layer.js';
-
-export { 
+export {
   LangChainOllamaService,
   langChainOllamaService,
   type LangChainConfig,
   type ProcessingResult,
   type QueryResult
 } from './ai/langchain-ollama-service.js';
-
 // ===== SERVER SERVICES (Server-side only) =====
 // Note: These should only be imported on the server side
 export type { AuthService } from './server/auth.js';
 export type { EmbeddingService, EmbeddingOptions } from './server/embedding-service.js';
-
 // ===== VERSION INFO =====
 export const VERSION = '2.0.0';
 export const BUILD_DATE = new Date().toISOString();
 export const FRAMEWORK_INFO = {
   sveltekit: '2.x',
   svelte: '5.x',
-  typescript: '5.x',;
+  typescript: '5.x',
   vite: '5.x'
 };
-
-// ===== FEATURE FLAGS =====;
+// ===== FEATURE FLAGS =====
 export const FEATURES = {
-  GPU_ACCELERATION: true,
-  VECTOR_SEARCH: true,
-  REAL_TIME_CHAT: true,
-  CONTEXT7_INTEGRATION: true,
-  MULTI_PROTOCOL_API: true,
-  YORHA_THEME: true,
-  MCP_INTEGRATION: true,
-  WASM_SUPPORT: true,
-  WEBGPU_SUPPORT: true,
+  GPU_ACCELERATION: true
+  VECTOR_SEARCH: true
+  REAL_TIME_CHAT: true
+  CONTEXT7_INTEGRATION: true
+  MULTI_PROTOCOL_API: true
+  YORHA_THEME: true
+  MCP_INTEGRATION: true
+  WASM_SUPPORT: true
+  WEBGPU_SUPPORT: true
   CUDA_SUPPORT: true
 } as const;
-
-// ===== DEVELOPMENT UTILITIES =====;
+// ===== DEVELOPMENT UTILITIES =====
 export const DEV_TOOLS = {
   COMPONENT_COUNT: 392,
   ROUTE_COUNT: 82,
@@ -125,9 +109,8 @@ export const DEV_TOOLS = {
   STORE_COUNT: 8,
   SERVICE_COUNT: 12
 } as const;
-
-// ===== BARREL STORE - MISSING FUNCTIONS & METHODS =====;
-export { 
+// ===== BARREL STORE - MISSING FUNCTIONS & METHODS =====
+export {
   barrelStore,
   testingFramework,
   cacheLayerMethods,
@@ -137,8 +120,7 @@ export {
   configurationProperties,
   utilityFunctions
 } from './stores/barrel-functions.js';
-
-// ===== DATABASE COMPATIBILITY LAYER =====;
+// ===== DATABASE COMPATIBILITY LAYER =====
 export {
   default as drizzleCompatibilityFix,
   drizzleCompatibilityLayer,
@@ -150,36 +132,30 @@ export {
   entityEnhancers,
   createTypeSafeQuery
 } from './database/drizzle-compatibility-fix.js';
-
-// Make barrel store globally available;
+// Make barrel store globally available
 if (typeof globalThis !== 'undefined') {
   globalThis.barrelStore = barrelStore;
 }
-
 // ===== ENHANCED SERVICES & STORES =====
-
 // Global User Store with Svelte 5 Runes
 export { default as globalUserStore } from './stores/global-user-store.svelte.js';
-
-// Search Services with Fuse.js Integration;
-export { 
-  searchService, 
-  globalSearch, 
-  searchServices, 
-  searchComponents, 
-  searchDocumentation, 
-  searchDemos 
+// Search Services with Fuse.js Integration
+export {
+  searchService,
+  globalSearch,
+  searchServices,
+  searchComponents,
+  searchDocumentation,
+  searchDemos
 } from './services/search-service.js';
-
-// Hybrid Vector Operations;
-export { 
-  hybridVectorService, 
-  hybridSearch, 
-  syncVectorData, 
-  getVectorSystemHealth 
+// Hybrid Vector Operations
+export {
+  hybridVectorService,
+  hybridSearch,
+  syncVectorData,
+  getVectorSystemHealth
 } from './services/hybrid-vector-operations.js';
-
-// Search Types;
+// Search Types
 export type {
   SearchResult,
   SearchCategory,
@@ -187,8 +163,7 @@ export type {
   SearchFilter,
   SearchState
 } from './types/search.types.js';
-
-// Default export for convenience;
+// Default export for convenience
 export default {
   VERSION,
   BUILD_DATE,
@@ -197,15 +172,13 @@ export default {
   DEV_TOOLS,
   barrelStore
 };
-
-// ===== TYPESCRIPT ERROR RESOLUTION UTILITIES =====;
+// ===== TYPESCRIPT ERROR RESOLUTION UTILITIES =====
 export const typeScriptErrorResolution = {
-  // Utility to enhance objects with missing properties;
+  // Utility to enhance objects with missing properties
   enhanceWithMissingProperties: <T extends object>(obj: T, properties: Partial<T>): T => {
     return { ...obj, ...properties };
   },
-  
-  // Safe property access with type assertions;
+  // Safe property access with type assertions
   safeAccess: <T>(obj: any, path: string, defaultValue: T): T => {
     const keys = path.split('.');
     let current = obj;
@@ -218,8 +191,7 @@ export const typeScriptErrorResolution = {
     }
     return current;
   },
-  
-  // Type assertion with fallback;
+  // Type assertion with fallback
   assertType: <T>(value: any, fallback: T): T => {
     return value !== null && value !== undefined ? value : fallback;
   }

@@ -2,14 +2,12 @@ import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
 import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } from '$lib/server/embedding-cache-middleware.js'
 import { webgpuRedisOptimizer, optimizedCache } from '$lib/server/webgpu-redis-optimizer.js'
-
 /**
  * Legal AI Embedding Benchmark with WebGPU Optimization
  * Real-world performance testing with legal document processing
  */
-
 interface EmbeddingBenchmarkRequest {
-  mode: 'single' | 'batch' | 'stress' | 'comparison'
+  mode: 'single' | 'batch' | 'stress' | 'comparison',
   config: {
     documentCount?: number
     batchSize?: number
@@ -19,7 +17,6 @@ interface EmbeddingBenchmarkRequest {
     documentTypes?: ('contract' | 'case' | 'statute' | 'brief')[]
   }
 }
-
 interface BenchmarkResult {
   mode: string
   totalDocuments: number
@@ -38,7 +35,6 @@ interface BenchmarkResult {
     coherenceScore: number
   }
 }
-
 // Sample legal documents for testing
 const SAMPLE_LEGAL_DOCUMENTS = {
   contracts: [
@@ -57,19 +53,17 @@ const SAMPLE_LEGAL_DOCUMENTS = {
     "Americans with Disabilities Act Title III requires places of public accommodation to provide reasonable modifications to policies and procedures. Covered entities must ensure equal access unless modifications would fundamentally alter nature of goods or services."
   ]
 }
-
 // GET - System status and available benchmarks
 export const GET: RequestHandler = async () => {
   try {
     const cacheStats = await embeddingCache.getCacheStats()
     const optimizerStats = await webgpuRedisOptimizer.getOptimizationStats()
-    
     return json({
-      success: true,
+      success: true
       service: 'legal-embedding-benchmark',
       systemStatus: {
-        embeddingCache: cacheStats,
-        webgpuOptimizer: optimizerStats,
+        embeddingCache: cacheStats
+        webgpuOptimizer: optimizerStats
         sampleDocuments: {
           contracts: SAMPLE_LEGAL_DOCUMENTS.contracts.length,
           cases: SAMPLE_LEGAL_DOCUMENTS.cases.length,
@@ -87,50 +81,41 @@ export const GET: RequestHandler = async () => {
     })
   } catch (error) {
     return json({
-      success: false,
+      success: false
       error: 'Failed to get benchmark system status',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
   }
 }
-
 // POST - Run embedding benchmarks
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     const benchmarkRequest: EmbeddingBenchmarkRequest = await request.json()
     const { mode, config } = benchmarkRequest
-    
     console.log(`🧪 Legal Embedding Benchmark: ${mode} - Client: ${getClientAddress()}`)
-    
     let result: BenchmarkResult
-    
     switch (mode) {
       case 'single':
         result = await runSingleDocumentBenchmark(config)
         break
-        
       case 'batch':
         result = await runBatchProcessingBenchmark(config)
         break
-        
       case 'stress':
         result = await runStressTestBenchmark(config)
         break
-        
       case 'comparison':
         result = await runComparisonBenchmark(config)
         break
-        
       default:
-        return json({
-          success: false,
+        return json({,
+          success: false
           error: 'Invalid benchmark mode',
           validModes: ['single', 'batch', 'stress', 'comparison']
         }, { status: 400 })
     }
-    
     return json({
-      success: true,
+      success: true
       mode,
       result,
       metadata: {
@@ -143,17 +128,15 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         }
       }
     })
-    
   } catch (error) {
     console.error('Legal embedding benchmark error:', error)
     return json({
-      success: false,
+      success: false
       error: 'Benchmark execution failed',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })
   }
 }
-
 /**
  * Single document embedding benchmark with detailed analysis
  */
@@ -161,34 +144,27 @@ async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult>
   const documents = getAllSampleDocuments().slice(0, config.documentCount || 10)
   const startTime = Date.now()
   const memoryStart = process.memoryUsage().heapUsed
-  
   let cacheHits = 0
   let totalSimilarity = 0
   const results = []
-  
   for (const doc of documents) {
     const docStartTime = Date.now()
-    
     // Process with legal context
     const legalQuery = {
       text: doc.text,
       documentType: doc.type as any,
       practiceArea: config.practiceAreas?.[0] || 'general'
     }
-    
     const embeddingResult = await getLegalEmbedding(legalQuery)
     const docProcessTime = Date.now() - docStartTime
-    
     results.push({
       text: doc.text.substring(0, 100) + '...',
-      processingTime: docProcessTime,
+      processingTime: docProcessTime
       embeddingDimensions: embeddingResult.embedding.length,
       wasCached: embeddingResult.metadata.cacheHit
     })
-    
     if (embeddingResult.metadata.cacheHit) cacheHits++
   }
-  
   // Calculate quality metrics
   if (results.length > 1) {
     for (let i = 0; i < results.length - 1; i++) {
@@ -199,21 +175,19 @@ async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult>
       totalSimilarity += similarity
     }
   }
-  
   const totalTime = Date.now() - startTime
   const memoryPeak = process.memoryUsage().heapUsed
-  
   return {
     mode: 'single',
     totalDocuments: documents.length,
-    processingTime: totalTime,
+    processingTime: totalTime
     avgTimePerDocument: totalTime / documents.length,
     throughput: (documents.length / totalTime) * 1000, // docs per second
     cacheHitRatio: cacheHits / documents.length,
     webgpuUtilization: config.useWebGPU ? 0.75 : 0, // Simulated
     compressionRatio: 4.2,
     memoryUsage: {
-      peak: memoryPeak,
+      peak: memoryPeak
       average: (memoryStart + memoryPeak) / 2
     },
     qualityMetrics: {
@@ -222,7 +196,6 @@ async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult>
     }
   }
 }
-
 /**
  * Batch processing benchmark with parallel optimization
  */
@@ -230,47 +203,39 @@ async function runBatchProcessingBenchmark(config: any): Promise<BenchmarkResult
   const batchSize = config.batchSize || 32
   const iterations = config.iterations || 5
   const documents = getAllSampleDocuments()
-  
   const startTime = Date.now()
   const memoryStart = process.memoryUsage().heapUsed
-  
   let totalDocuments = 0
   let cacheHits = 0
-  
   for (let i = 0; i < iterations; i++) {
     const batch = documents.slice(0, batchSize).map(doc => ({
       text: doc.text,
       documentType: doc.type as any,
       practiceArea: config.practiceAreas?.[i % (config.practiceAreas?.length || 1)] || 'general'
     })
-    
     // Use WebGPU-optimized batch processing
     const embeddings = await getBatchLegalEmbeddings(batch)
     totalDocuments += batch.length
-    
     // Simulate cache hit detection (in real implementation, would track actual hits)
     cacheHits += Math.floor(batch.length * 0.3); // Assume 30% cache hit rate for demo
   }
-  
   const totalTime = Date.now() - startTime
   const memoryPeak = process.memoryUsage().heapUsed
-  
   return {
     mode: 'batch',
     totalDocuments,
-    processingTime: totalTime,
+    processingTime: totalTime
     avgTimePerDocument: totalTime / totalDocuments,
     throughput: (totalDocuments / totalTime) * 1000,
     cacheHitRatio: cacheHits / totalDocuments,
     webgpuUtilization: config.useWebGPU ? 0.85 : 0,
     compressionRatio: 4.5,
     memoryUsage: {
-      peak: memoryPeak,
+      peak: memoryPeak
       average: (memoryStart + memoryPeak) / 2
     }
   }
 }
-
 /**
  * Stress test benchmark with high concurrency
  */
@@ -278,11 +243,9 @@ async function runStressTestBenchmark(config: any): Promise<BenchmarkResult> {
   const concurrency = config.documentCount || 50
   const duration = 30000; // 30 seconds
   const documents = getAllSampleDocuments()
-  
   const startTime = Date.now()
   let completedDocs = 0
   let errors = 0
-  
   // Create concurrent workers
   const workers = Array.from({ length: concurrency }, async (_, workerId) => {
     while (Date.now() - startTime < duration) {
@@ -293,28 +256,22 @@ async function runStressTestBenchmark(config: any): Promise<BenchmarkResult> {
           documentType: doc.type as any,
           practiceArea: config.practiceAreas?.[workerId % (config.practiceAreas?.length || 1)] || 'general'
         }
-        
         await getLegalEmbedding(legalQuery)
         completedDocs++
-        
         // Small random delay to prevent overwhelming
         await new Promise(resolve => setTimeout(resolve, Math.random() * 50)
-        
       } catch (error) {
         errors++
         console.warn(`Worker ${workerId} error:`, error)
       }
     }
   })
-  
   await Promise.all(workers)
-  
   const actualDuration = Date.now() - startTime
-  
   return {
     mode: 'stress',
-    totalDocuments: completedDocs,
-    processingTime: actualDuration,
+    totalDocuments: completedDocs
+    processingTime: actualDuration
     avgTimePerDocument: actualDuration / completedDocs,
     throughput: (completedDocs / actualDuration) * 1000,
     cacheHitRatio: 0.4, // Estimated for stress test
@@ -326,13 +283,11 @@ async function runStressTestBenchmark(config: any): Promise<BenchmarkResult> {
     }
   }
 }
-
 /**
  * Comparison benchmark: WebGPU vs Standard caching
  */
 async function runComparisonBenchmark(config: any): Promise<BenchmarkResult> {
   const documents = getAllSampleDocuments().slice(0, config.documentCount || 20)
-  
   // WebGPU optimized run
   const webgpuStartTime = Date.now()
   for (const doc of documents) {
@@ -344,10 +299,8 @@ async function runComparisonBenchmark(config: any): Promise<BenchmarkResult> {
     await getLegalEmbedding(legalQuery)
   }
   const webgpuTime = Date.now() - webgpuStartTime
-  
   // Standard processing simulation (would use different cache implementation)
   const standardTime = webgpuTime * 2.5; // Simulate 2.5x slower standard processing
-  
   return {
     mode: 'comparison',
     totalDocuments: documents.length * 2, // Both runs
@@ -367,22 +320,18 @@ async function runComparisonBenchmark(config: any): Promise<BenchmarkResult> {
     }
   }
 }
-
 /**
  * Get all sample documents with metadata
  */
 function getAllSampleDocuments() {
   const allDocs = []
-  
   for (const [type, docs] of Object.entries(SAMPLE_LEGAL_DOCUMENTS)) {
     for (const text of docs) {
       allDocs.push({ text, type })
     }
   }
-  
   return allDocs
 }
-
 /**
  * Calculate similarity between embeddings (simplified)
  */
@@ -391,23 +340,20 @@ function calculateEmbeddingSimilarity(dim1: number, dim2: number): number {
   const diff = Math.abs(dim1 - dim2)
   return Math.max(0, 1 - (diff / Math.max(dim1, dim2))
 }
-
 // DELETE - Clear benchmark cache data
 export const DELETE: RequestHandler = async () => {
   try {
     console.log('🗑️ Clearing legal embedding benchmark cache')
-    
     // Clear benchmark-specific cache entries
     // Note: In production, would implement cache pattern clearing
-    
     return json({
-      success: true,
+      success: true
       message: 'Legal embedding benchmark cache cleared',
       timestamp: Date.now()
     })
   } catch (error) {
     return json({
-      success: false,
+      success: false
       error: 'Failed to clear benchmark cache',
       details: error instanceof Error ? error.message: String(error)
     }, { status: 500 })

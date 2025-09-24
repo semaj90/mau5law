@@ -4,7 +4,6 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { enhance } from '$app/forms';
   interface Props {
     data?: unknown;
@@ -14,30 +13,25 @@
   let isLoading = $state(false);
   let showPassword = $state(false);
 </script>
-
 <svelte:head>
   <title>Register - Legal AI Platform</title>
 </svelte:head>
-
 <div class="min-h-screen flex items-center justify-center bg-gray-900 px-4 py-8">
   <div class="w-full max-w-lg">
     <div class="bg-gray-800 p-8 rounded-lg border border-gray-700">
       <h1 class="text-3xl font-bold text-center text-yellow-400 mb-8">
         Legal AI Platform
       </h1>
-      
       <h2 class="text-xl text-center text-white mb-6">
         Create Account
       </h2>
-      
       {#if form?.error}
         <div class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4" data-testid="error-message">
           {form.error}
         </div>
       {/if}
-
-      <form 
-        method="POST" 
+      <form
+        method="POST"
         action="?/register"
         use:enhance={({ formData, cancel }) => {
           isLoading = true;
@@ -66,7 +60,6 @@
               placeholder="John"
             />
           </div>
-
           <div>
             <label for="lastName" class="block text-sm font-medium text-gray-300 mb-1">
               Last Name
@@ -82,7 +75,6 @@
             />
           </div>
         </div>
-
         <!-- Email -->
         <div>
           <label for="email" class="block text-sm font-medium text-gray-300 mb-1">
@@ -98,7 +90,6 @@
             placeholder="john.smith@prosecutor.gov"
           />
         </div>
-
         <!-- Professional Information -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -118,7 +109,6 @@
               <option value="admin">Administrator</option>
             </select>
           </div>
-
           <div>
             <label for="badgeNumber" class="block text-sm font-medium text-gray-300 mb-1">
               Badge/ID (Optional)
@@ -133,7 +123,6 @@
             />
           </div>
         </div>
-
         <!-- Department & Jurisdiction -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -150,7 +139,6 @@
               placeholder="District Attorney's Office"
             />
           </div>
-
           <div>
             <label for="jurisdiction" class="block text-sm font-medium text-gray-300 mb-1">
               Jurisdiction
@@ -166,7 +154,6 @@
             />
           </div>
         </div>
-
         <!-- Password Fields -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -183,7 +170,6 @@
               placeholder="Enter secure password"
             />
           </div>
-
           <div>
             <label for="confirmPassword" class="block text-sm font-medium text-gray-300 mb-1">
               Confirm Password
@@ -199,7 +185,6 @@
             />
           </div>
         </div>
-
         <!-- Show password toggle -->
         <div class="flex items-center">
           <input
@@ -213,7 +198,6 @@
             Show passwords
           </label>
         </div>
-
         <!-- Terms -->
         <div class="space-y-2">
           <div class="flex items-center">
@@ -229,7 +213,6 @@
               I agree to the Terms of Service
             </label>
           </div>
-
           <div class="flex items-center">
             <input
               type="checkbox"
@@ -244,7 +227,6 @@
             </label>
           </div>
         </div>
-
         <!-- Submit Button -->
         <button
           type="submit"
@@ -258,7 +240,6 @@
           {/if}
         </button>
       </form>
-
       <!-- Login Link -->
       <div class="mt-6 text-center">
         <p class="text-gray-400 text-sm">

@@ -1,56 +1,45 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
-  import Button from '$lib/components/ui/button/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-svelte';
-
   interface Props {
     fallback?: string;
     showDetails?: boolean;
     onError?: ((error: Error) => void) | null;
   }
-
   let {
     fallback = '',
     showDetails = false,
     onError = null
   }: Props = $props();
-
   let error: Error | null = null;
   let errorInfo: string = '';
   let isRetrying = false;
-
   // Error details for debugging
   let errorDetails = $derived(error ? {
     name: error.name,
     message: error.message,
-    stack: error.stack,;
+    stack: error.stack,
     timestamp: new Date().toISOString(),
-    userAgent: typeof navigator !== 'undefined' ? navigator.userAgent: 'Unknown',;
+    userAgent: typeof navigator !== 'undefined' ? navigator.userAgent: 'Unknown',
     url: typeof window !== 'undefined' ? window.location.href : 'Unknown';
   } : null);
-
   function handleError(event: ErrorEvent | PromiseRejectionEvent) {
-    const err = 'error' in event ? event.error: event.reason;
-
+    const err = 'error' in event ? event.error: event.reaso;
     if (err instanceof Error) {
       error = err;
-      errorInfo = err.stack || err.message;
-
+      errorInfo = err.stack || err.messag;
       // Call custom error handler if provided
       onError?.(err);
-
       // Log to console for debugging
       console.error('ErrorBoundary caught error:', err);
     }
   }
-
   function retry() {
     isRetrying = true;
     error = null;
     errorInfo = '';
-
     setTimeout(() => {
       isRetrying = false;
       // Reload the page if in browser
@@ -59,37 +48,31 @@
       }
     }, 500);
   }
-
   function goHome() {
     if (typeof window !== 'undefined') {
       window.location.href = '/';
     }
   }
-
   function reportError() {
     if (errorDetails) {
       // Create error report
       const report = {
         ...errorDetails,
-        component: 'ErrorBoundary',;
+        component: 'ErrorBoundary',
         severity: 'high';
       };
-
       // Log to console (could be sent to monitoring service)
       console.warn('Error report generated:', report);
-
       // You could implement actual error reporting here
       // Example: send to Sentry, LogRocket, or custom error tracking
     }
   }
-
   $effect(() => {
     if (typeof window !== 'undefined') {
       window.addEventListener('error', handleError);
       window.addEventListener('unhandledrejection', handleError);
     }
   });
-
   onDestroy(() => {
     if (typeof window !== 'undefined') {
       window.removeEventListener('error', handleError);
@@ -97,7 +80,6 @@
     }
   });
 </script>
-
 {#if error}
   <div class="error-boundary min-h-screen bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 flex items-center justify-center p-4">
     <div class="max-w-2xl w-full">
@@ -115,7 +97,6 @@
             </div>
           </div>
         </div>
-
         <!-- Content -->
         <div class="p-6">
           {#if fallback}
@@ -123,7 +104,6 @@
               <p class="text-blue-800 dark:text-blue-200">{fallback}</p>
             </div>
           {/if}
-
           <!-- Error Summary -->
           <div class="mb-6">
             <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">Error Details</h3>
@@ -138,7 +118,6 @@
               {/if}
             </div>
           </div>
-
           <!-- Actions -->
           <div class="flex flex-wrap gap-3 mb-6">
             <Button
@@ -157,7 +136,6 @@
               Report Issue
             </Button>
           </div>
-
           <!-- Technical Details (Collapsible) -->
           {#if showDetails && errorInfo}
             <details class="mt-4">
@@ -171,7 +149,6 @@
               </div>
             </details>
           {/if}
-
           <!-- Help Text -->
           <div class="mt-6 p-4 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg">
             <h4 class="font-medium text-yellow-800 dark:text-yellow-200 mb-2">What can you do?</h4>
@@ -190,9 +167,8 @@
   <!-- Normal content -->
   {@render children?.()}
 {/if}
-
 <style>
-  .error-boundary {;
+  .error-boundary {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   }

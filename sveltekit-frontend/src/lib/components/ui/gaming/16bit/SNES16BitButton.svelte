@@ -1,7 +1,6 @@
 <!--
   SNES 16-Bit Enhanced Button Component
   Advanced 16-bit styling with gradients and enhanced visuals
-
   Features:
   - Extended SNES color palette
   - Gradient effects and layering
@@ -11,12 +10,9 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Button as BitsButton } from 'bits-ui';
-  import {   } from "svelte";
   import type { GamingComponentProps } from '../types/gaming-types.js';
   import { SNES_COLOR_PALETTE } from '../constants/gaming-constants.js';
-
   interface Props extends GamingComponentProps {
     // Button specific props
     type?: 'button' | 'submit' | 'reset';
@@ -35,7 +31,6 @@
     children?: unknown;
     class?: string;
   }
-
   let {
     era = '16bit',
     variant = 'primary',
@@ -62,15 +57,12 @@
     onHover,
     onFocus;
   }: Props = $props();
-
   // Events now handled via props in Svelte 5
   //
-
   let isPressed = $state(false);
   let isHovered = $state(false);
   let audioContext = $state<AudioContext | null >(null);
   let buttonElement = $state<HTMLButtonElement | null >(null);
-
   // Create 16-bit enhanced button sound with multiple channels
   const playEnhancedButtonSound = async () => {
     if (!enableEnhancedSound) return;
@@ -110,7 +102,6 @@
       console.warn('Could not play enhanced button sound:', error);
     }
   };
-
   const handleClick = async () => {
     if (disabled || loading) return;
     isPressed = true;
@@ -119,26 +110,19 @@
       isPressed = false;
     }, 120);
     onClick?.();
-    ondispatch?.();
   };
-
   const handleHover = () => {
     if (disabled) return;
     isHovered = true;
     onHover?.();
-    ondispatch?.();
   };
-
   const handleUnhover = () => {
     isHovered = false;
   };
-
   const handleFocus = () => {
     if (disabled) return;
     onFocus?.();
-    ondispatch?.();
   };
-
   // Get SNES gradient based on variant
   const getVariantGradient = (variant: string, direction: string) => {
     const baseColors = {
@@ -159,23 +143,21 @@
     const gradientType = direction === 'radial' ? 'radial-gradient(circle, ' : 'linear-gradient(' + directionMap[direction as keyof typeof directionMap] + ', ';
     return gradientType + colors.join(', ') + ')';
   };
-
   const getSizeStyles = (size: string) => {
     const sizeMap = {
       small: { padding: '10px 16px', fontSize: '11px', minHeight: '36px' },
       medium: { padding: '14px 20px', fontSize: '13px', minHeight: '44px' },
-      large: { padding: '18px 24px', fontSize: '15px', minHeight: '52px' },;
+      large: { padding: '18px 24px', fontSize: '15px', minHeight: '52px' },
       xl: { padding: '22px 28px', fontSize: '17px', minHeight: '60px' }
     };
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
   };
-
-  // TODO: Convert to $derived: sizeStyles = getSizeStyles(size)
-  // TODO: Convert to $derived: variantGradient = getVariantGradient(variant, gradientDirection)
-  // TODO: Convert to $derived: mode7Transform = enableMode7 && isPressed ? 'perspective(100px) rotateX(5deg) scale(0.95)' :
-                      enableMode7 && isHovered ? 'perspective(200px) rotateX(-2deg) scale(1.02)' : 'none'
+  // Svelte 5 derived variables
+  const sizeStyles = $derived(getSizeStyles(size));
+  const variantGradient = $derived(getVariantGradient(variant, gradientDirection));
+  const mode7Transform = $derived(enableMode7 && isPressed ? 'perspective(100px) rotateX(5deg) scale(0.95)' :
+                      enableMode7 && isHovered ? 'perspective(200px) rotateX(-2deg) scale(1.02)' : 'none');
 </script>
-
 <BitsButton.Root
   bind:el={buttonElement}
   {type}
@@ -184,11 +166,11 @@
   {name}
   {value}
   onclick={handleClick}
-  ononmouseenter={handleHover}
-  ononmouseleave={handleUnhover}
+  onmouseenter={handleHover}
+  onmouseleave={handleUnhover}
   onfocus={handleFocus}
   class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7 ? 'mode7' : ''} {plasmaEffect ? 'plasma' : ''}"
-  style=";
+  style="
     --button-gradient: {variantGradient};
     --button-padding: {sizeStyles.padding};
     --button-font-size: {sizeStyles.fontSize};
@@ -204,7 +186,6 @@
     {@render children?.()}
   {/if}
 </BitsButton.Root>
-
 <style>
   :global(.snes-16bit-button) {
 /* Base SNES button styling */ font-family: 'Orbitron', 'Arial', sans-serif;
@@ -220,7 +201,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 /* Enhanced 3D effect */ box-shadow: 0 2px 0px rgba(0, 0, 0, 0.3), inset 0 1px 0px rgba(255, 255, 255, 0.4), inset 0 -1px 0px rgba(0, 0, 0, 0.2);
-
     transform: var(--mode7-transform, none);
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 /* Remove default button styles */ -webkit-appearance: none;
@@ -253,10 +233,9 @@ background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%
     opacity: 0.6;
   }
 /* Plasma effect */ :global(.snes-16bit-button.plasma) {
-    animation: plasmaShift 3s ease-in-out infinite alternate;
+    animation: plasmaShift 3s ease-in-out infinite alternatee;
     background-size: 200% 200%;
   }
-
   @keyframes plasmaShift {
     0% { background-position: 0% 0%; }
     50% { background-position: 100% 100%; }
@@ -268,7 +247,6 @@ background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%
 /* Hover effects */ :global(.snes-16bit-button:not(:disabled):hover) {
     border-color: rgba(255, 255, 255, 0.5);
 box-shadow: 0 3px 0px rgba(0, 0, 0, 0.3), inset 0 1px 0px rgba(255, 255, 255, 0.6), inset 0 -1px 0px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2);
-
     filter: brightness(1.1) saturate(1.1);
   }
 /* Active/Pressed state */ :global(.snes-16bit-button:not(:disabled):active) {
@@ -291,7 +269,6 @@ box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2), inset 0 1px 0px rgba(255, 255, 255, 0.
     align-items: center;
     justify-content: center;
   }
-
   .enhanced-spinner {
     width: 16px;
     height: 16px;
@@ -303,7 +280,6 @@ box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2), inset 0 1px 0px rgba(255, 255, 255, 0.
     border-radius: 50%;
     animation: enhancedSpin 0.8s ease-in-out infinite;
   }
-
   @keyframes enhancedSpin {
     0% { transform: rotate(0deg); border-radius: 50%; }
     50% { transform: rotate(180deg); border-radius: 30%; }
@@ -312,17 +288,14 @@ box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2), inset 0 1px 0px rgba(255, 255, 255, 0.
 /* Variant-specific enhancements */ :global(.snes-16bit-button.variant-primary) {
     background: linear-gradient(to bottom, #5cb3ff, #3cbcfc, #0084ff);
   }
-
   :global(.snes-16bit-button.variant-success) {
     background: linear-gradient(to bottom, #9cfc38, #92cc41, #4a7c23);
   }
-
   :global(.snes-16bit-button.variant-warning) {
     background: linear-gradient(to bottom, #f7d51d, #fc9838, #cc6600);
     color: #000000;
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
   }
-
   :global(.snes-16bit-button.variant-error) {
     background: linear-gradient(to bottom, #fc5c5c, #f83800, #cc2800);
   }
@@ -344,11 +317,9 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 0px rgba(0, 0, 0, 0.
 /* Smooth animation style */ :global(.snes-16bit-button.smooth) {
     transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
-
   :global(.snes-16bit-button.smooth:hover) {
     animation: smoothHover 0.4s ease-in-out;
   }
-
   @keyframes smoothHover {
     0%, 100% { transform: translateY(0px) scale(1); }
     50% { transform: translateY(-1px) scale(1.01); }
@@ -356,7 +327,6 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 0px rgba(0, 0, 0, 0.
 /* Enhanced glitch transition */ :global(.snes-16bit-button.glitch-transition:hover) {
     animation: enhancedGlitch 0.3s ease-in-out;
   }
-
   @keyframes enhancedGlitch {
     0% { transform: translateY(0px); filter: hue-rotate(0deg); }
     20% { transform: translateY(-0.5px) translateX(0.5px); filter: hue-rotate(90deg); }
@@ -374,7 +344,6 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 0px rgba(0, 0, 0, 0.
       animation: none;
       background-size: 100% 100%;
     }
-
     :global(.snes-16bit-button.mode7) {
       transform: none !important;
     }
@@ -384,11 +353,9 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 0px rgba(0, 0, 0, 0.
       animation: none;
       transition: opacity 150ms ease;
     }
-
     :global(.snes-16bit-button.plasma) {
       animation: none;
     }
-
     :global(.enhanced-spinner) {
       animation: none;
       border: 2px solid currentColor;

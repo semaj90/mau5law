@@ -1,17 +1,15 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Dialog Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import type { Snippet } from 'svelte';
   import { Dialog as DialogPrimitive } from 'bits-ui';
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
   import { scale, fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-
   // Svelte 5 props pattern
   interface Props {
     open?: boolean;
@@ -28,7 +26,6 @@ https://svelte.dev/e/js_parse_error -->
     closeOnEscape?: boolean;
     closeOnOutsideClick?: boolean;
   }
-
   let { open = $bindable(false),
     onOpenChange,
     variant = 'default',
@@ -42,9 +39,8 @@ https://svelte.dev/e/js_parse_error -->
     footer,
     closeOnEscape = true,
     closeOnOutsideClick = true,
-    ...restProps;
+    ...restProp;
    }: Props = $props();
-
   // UnoCSS-based dialog variants
   const contentVariants = cva(
     // Base classes
@@ -67,24 +63,21 @@ https://svelte.dev/e/js_parse_error -->
         }
       },
       defaultVariants: {
-        variant: 'default',;
+        variant: 'default',
         size: 'default';
       }
     }
   );
-
   // Handle open state changes
   function handleOpenChange(newOpen: boolean) {
-    open = newOpen;
+    open = newOpe;
     onOpenChange?.(newOpen);
   }
-
   // Computed classes
   let contentClass = $derived(
     cn(contentVariants({ variant, size }), class)
   );
 </script>
-
 <DialogPrimitive.Root {open} onOpenChange={handleOpenChange} {closeOnEscape} {closeOnOutsideClick} {...restProps}>
   <!-- Dialog Trigger -->
   {#if trigger}
@@ -92,21 +85,19 @@ https://svelte.dev/e/js_parse_error -->
       {@render trigger()}
     </DialogPrimitive.Trigger>
   {/if}
-
   <!-- Dialog Portal -->
   <DialogPrimitive.Portal>
     <!-- Overlay with backdrop blur -->
     <DialogPrimitive.Overlay
       class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
     />
-
     <!-- Dialog Content -->
     <DialogPrimitive.Content
       class={contentClass}
       transition={scale}
       transitionConfig={{
         duration: 200,
-        easing: quintOut,
+        easing: quintOut
         start: 0.95;
       }}
     >
@@ -128,21 +119,18 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
         </div>
       {/if}
-
       <!-- Main Content -->
       {#if children}
         <div class="dialog-body">
           {@render children()}
         </div>
       {/if}
-
       <!-- Footer Section -->
       {#if footer}
         <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 border-t pt-4">
           {@render footer()}
         </div>
       {/if}
-
       <!-- Close Button -->
       <DialogPrimitive.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:nes-text is-disabled">
         <div class="i-lucide-x w-4 h-4" />
@@ -151,22 +139,18 @@ https://svelte.dev/e/js_parse_error -->
     </DialogPrimitive.Content>
   </DialogPrimitive.Portal>
 </DialogPrimitive.Root>
-
-<style>/* YoRHa-specific dialog styling */ :global(.yorha-dialog) {;
+<style>/* YoRHa-specific dialog styling */ :global(.yorha-dialog) {
     font-family: 'JetBrains Mono', monospace;
   }
-
   :global(.yorha-dialog .dialog-body) {
     color: rgb(212, 175, 55);
   }
 /* Animate dialog entrance */ :global([data-state="open"]) {
     animation: dialog-content-show 0.2s ease-out;
   }
-
   :global([data-state="closed"]) {
-    animation: dialog-content-hide 0.2s ease-in;
+    animation: dialog-content-hide 0.2s ease-i;
   }
-
   @keyframes dialog-content-show {
     from {
       opacity: 0;
@@ -177,7 +161,6 @@ https://svelte.dev/e/js_parse_error -->
       transform: translate(-50%, -50%) scale(1);
     }
   }
-
   @keyframes dialog-content-hide {
     from {
       opacity: 1;

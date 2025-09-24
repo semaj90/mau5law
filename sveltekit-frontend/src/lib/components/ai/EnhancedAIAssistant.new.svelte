@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be uniqu;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Enhanced AI Assistant - Simplified Version -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import {
     Brain,
     Loader2,
@@ -13,16 +12,11 @@ https://svelte.dev/e/attribute_duplicate -->
     Settings,
     Trash2,
   } from "lucide-svelte";
-  import {   } from "svelte";
-
-  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string | undefined = undefined;
-  export const evidenceIds: string[] = []; // External reference for evidence context;
-  let { placeholder = $bindable()  }: { placeholder = $bindable() : any } = $props(); // "Ask AI about this case...";
-  let { maxHeight = $bindable()  }: { maxHeight = $bindable() : any } = $props(); // "400px";
-  let { showReferences = $bindable()  }: { showReferences = $bindable() : any } = $props(); // true;
-
-
-
+  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string | undefined = undefined
+  export const evidenceIds: string[] = []; // External reference for evidence context
+  let { placeholder = $bindable()  }: { placeholder = $bindable() : any } = $props(); // "Ask AI about this case..."
+  let { maxHeight = $bindable()  }: { maxHeight = $bindable() : any } = $props(); // "400px"
+  let { showReferences = $bindable()  }: { showReferences = $bindable() : any } = $props(); // true
   // State
   let query = $state("");
   let isLoading = $state(false);
@@ -30,49 +24,41 @@ https://svelte.dev/e/attribute_duplicate -->
   let showSettings = $state(false);
   let showCitationDialog = $state(false);
   let selectedCitation = $state("");
-
   // Settings
   let selectedModel = $state("gpt-4");
   let temperature = $state(0.7);
   let searchThreshold = $state(0.7);
   let maxResults = $state(5);
-
   async function handleSubmit() {
     if (!query.trim() || isLoading) return;
-
     isLoading = true;
     const userMessage = { role: "user", content: query };
     messages = [...messages, userMessage];
     query = "";
-
     // Mock AI response
     setTimeout(() => {
       const aiResponse = {
-        role: "assistant",;
+        role: "assistant",
         content: `Based on your query about "${userMessage.content}", here's my analysis:
-
   This is a legal matter that requires careful consideration of relevant statutes, case law, and regulatory frameworks. The key factors to consider include:
-
   1. Jurisdictional requirements
   2. Applicable legal precedents
   3. Statutory framework
   4. Regulatory compliance
-
-  I can provide more specific guidance if you share additional details about your case context.`,;
+  I can provide more specific guidance if you share additional details about your case context.`,
         references: [
           {
             title: "Relevant Case Law",
             citation: "Example v. Case, 123 F.3d 456 (2023)",
-            relevance: 0.9,;
+            relevance: 0.9,
           },
           {
-            title: "Statutory Reference",;
-            citation: "42 U.S.C. § 1983",;
-            relevance: 0.8,;
+            title: "Statutory Reference",
+            citation: "42 U.S.C. § 1983",
+            relevance: 0.8,
           },
         ],
       };
-
       messages = [...messages, aiResponse];
       isLoading = false;
     }, 1500);
@@ -89,7 +75,6 @@ https://svelte.dev/e/attribute_duplicate -->
     messages = [];
   }
 </script>
-
 <div class="container mx-auto px-4">
   <!-- Header -->
   <div class="flex justify-between items-center mb-6">
@@ -113,7 +98,6 @@ https://svelte.dev/e/attribute_duplicate -->
       </button>
     </div>
   </div>
-
   <!-- Messages -->
   <div class="flex-1 overflow-y-auto mb-4" style="max-height: {maxHeight}">
     {#each messages as message}
@@ -121,7 +105,6 @@ https://svelte.dev/e/attribute_duplicate -->
         <div class="message-content">
           {message.content}
         </div>
-
         {#if message.references && showReferences}
           <div class="mt-2 space-y-2">
             <h4>References:</h4>
@@ -139,7 +122,6 @@ https://svelte.dev/e/attribute_duplicate -->
         {/if}
       </div>
     {/each}
-
     {#if isLoading}
       <div class="flex items-center gap-2 p-4">
         <div class="flex items-center gap-2">
@@ -149,7 +131,6 @@ https://svelte.dev/e/attribute_duplicate -->
       </div>
     {/if}
   </div>
-
   <!-- Input -->
   <form class="flex gap-2" onsubmit|preventDefault={handleSubmit}>
     <input
@@ -167,7 +148,6 @@ https://svelte.dev/e/attribute_duplicate -->
       <Search class="w-4 h-4" />
     </button>
   </form>
-
   <!-- Settings Panel -->
   {#if showSettings}
     <div class="container mx-auto px-4">
@@ -177,7 +157,6 @@ https://svelte.dev/e/attribute_duplicate -->
           >×</button
         >
       </div>
-
       <div class="container mx-auto px-4">
         <div class="container mx-auto px-4">
           <label for="model">Model:</label>
@@ -187,7 +166,6 @@ https://svelte.dev/e/attribute_duplicate -->
             <option value="claude-3">Claude 3</option>
           </select>
         </div>
-
         <div class="container mx-auto px-4">
           <label for="temp">Temperature: {temperature}</label>
           <input
@@ -199,7 +177,6 @@ https://svelte.dev/e/attribute_duplicate -->
             bind:value={temperature}
           />
         </div>
-
         <div class="container mx-auto px-4">
           <label for="threshold">Search Threshold: {searchThreshold}</label>
           <input
@@ -211,7 +188,6 @@ https://svelte.dev/e/attribute_duplicate -->
             bind:value={searchThreshold}
           />
         </div>
-
         <div class="container mx-auto px-4">
           <label for="max">Max Results:</label>
           <input
@@ -225,7 +201,6 @@ https://svelte.dev/e/attribute_duplicate -->
       </div>
     </div>
   {/if}
-
   <!-- Citation Dialog -->
   {#if showCitationDialog}
     <div
@@ -251,12 +226,10 @@ https://svelte.dev/e/attribute_duplicate -->
             <Quote class="w-5 h-5" /> Legal Citation
           </h4>
         </div>
-
         <div class="space-y-4">
           <div class="p-4 bg-gray-50 rounded">
             <p>{selectedCitation}</p>
           </div>
-
           <div class="flex gap-2">
             <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onclick={() => insertCitation()}>
               Insert Citation
@@ -269,7 +242,6 @@ https://svelte.dev/e/attribute_duplicate -->
             </button>
           </div>
         </div>
-
         <div class="flex justify-end mt-4">
           <button
             class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
@@ -282,10 +254,9 @@ https://svelte.dev/e/attribute_duplicate -->
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
-  .ai-assistant {;
+  .ai-assistant {
     position: relative;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
@@ -296,7 +267,7 @@ https://svelte.dev/e/attribute_duplicate -->
 }
   .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 12px 16px;
     border-bottom: 1px solid #e5e7eb;
@@ -314,7 +285,7 @@ https://svelte.dev/e/attribute_duplicate -->
 }
   .case-badge {
     font-size: 0.75rem;
-    background: #dbeafe;
+    background: #dbeaf;
     color: #1e40af;
     padding: 2px 8px;
     border-radius: 12px;
@@ -330,7 +301,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border-radius: 4px;
     cursor: pointer;
     color: #6b7280;
-    transition: all 0.2s;
+    transition: all 0.2;
 }
   .icon-btn:hover {
     background: #f3f4f6;
@@ -348,7 +319,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border-radius: 8px;
 }
   .message.user {
-    background: #dbeafe;
+    background: #dbeaf;
     margin-left: 20%;
     text-align: right;
 }
@@ -381,7 +352,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border: 1px solid #e5e7eb;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
     width: 100%;
     text-align: left;
 }
@@ -409,7 +380,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border: 1px solid #d1d5db;
     border-radius: 6px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2;
 }
   .input:focus {
     border-color: #3b82f6;
@@ -422,9 +393,9 @@ https://svelte.dev/e/attribute_duplicate -->
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2;
 }
-  .submit-btn:hover:not(:disabled) {
+  .submit-btn:hover:not(:disabled) {,
     background: #2563eb;
 }
   .submit-btn:disabled {
@@ -444,7 +415,7 @@ https://svelte.dev/e/attribute_duplicate -->
 }
   .settings-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
@@ -529,7 +500,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border-radius: 6px;
     cursor: pointer;
     font-weight: 500;
-    transition: background 0.2s;
+    transition: background 0.2;
 }
   .btn-primary:hover {
     background: #2563eb;
@@ -542,7 +513,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border-radius: 6px;
     cursor: pointer;
     font-weight: 500;
-    transition: background 0.2s;
+    transition: background 0.2;
 }
   .btn-secondary:hover {
     background: #4b5563;
@@ -559,12 +530,10 @@ https://svelte.dev/e/attribute_duplicate -->
     border: 1px solid #d1d5db;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
 }
   .btn-close:hover {
     background: #e5e7eb;
 }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

@@ -3,15 +3,12 @@ import { eq, desc } from "drizzle-orm"
 import { json } from '@sveltejs/kit'
 import { chatSessions } from '$lib/server/db/schema-unified'
 import type { RequestHandler } from './$types.js'
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const sessionData = await request.json()
-
     if (!sessionData.id) {
       return json({ error: 'Session ID is required' }, { status: 400 })
     }
-
     // Create new chat session
     const [newSession] = await db
       .insert(chatSessions)
@@ -29,9 +26,8 @@ export const POST: RequestHandler = async ({ request }) => {
         // createdAt and updatedAt have defaultNow() so they're auto-populated
       })
       .returning()
-
     return json({
-      success: true,
+      success: true
       session: newSession
     })
   } catch (error: any) {
@@ -44,11 +40,9 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId')
-
     if (sessionId) {
       // Get specific session
       const session = await db
@@ -56,11 +50,9 @@ export const GET: RequestHandler = async ({ url }) => {
         .from(chatSessions)
         .where(eq(chatSessions.id, sessionId)
         .limit(1)
-
       if (session.length === 0) {
         return json({ error: 'Session not found' }, { status: 404 })
       }
-
       return json({ session: session[0] })
     } else {
       // Get all recent sessions (most recent first)
@@ -69,7 +61,6 @@ export const GET: RequestHandler = async ({ url }) => {
         .from(chatSessions)
         .orderBy(desc(chatSessions.updatedAt)
         .limit(50)
-
       return json({ sessions })
     }
   } catch (error: any) {

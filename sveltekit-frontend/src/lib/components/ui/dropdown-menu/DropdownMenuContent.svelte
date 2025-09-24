@@ -3,7 +3,6 @@
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   import { scale } from 'svelte/transition';
-
   interface Props {
     children?: Snippet;
     class?: string;
@@ -16,7 +15,6 @@
     collisionPadding?: number;
     sticky?: 'partial' | 'always';
   }
-
   let {
     children,
     class: className = '',
@@ -29,7 +27,6 @@
     collisionPadding = 8,
     sticky = 'partial';
   }: Props = $props();
-
   let contentClasses = $derived(cn(
     "legal-ai-dropdown-content z-50 min-w-48 overflow-hidden rounded-xl border bg-slate-900/95 backdrop-blur-md shadow-2xl",
     "border-amber-500/20 shadow-amber-500/10 p-1",
@@ -41,7 +38,6 @@
     className
   ));
 </script>
-
 <DropdownMenu.Content
   class={contentClasses}
   {side}
@@ -57,4 +53,3 @@
 >
   {@render children?.()}
 </DropdownMenu.Content>
-

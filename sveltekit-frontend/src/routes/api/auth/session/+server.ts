@@ -1,24 +1,20 @@
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
-
 /*
  * Session Validation API Endpoint
  * GET /api/auth/session - Check current session status
  */
-
 import { ExistingUserAuthService as UserAuthService } from '$lib/server/db/existing-user-operations.js'
 import { dev } from '$app/environment'
-
 export const GET: RequestHandler = async ({ cookies }) => {
   try {
     const sessionId = cookies.get('session_id')
-    
     if (!sessionId) {
       return json({
-        success: false,
+        success: false
         message: 'No session found',
         data: {
-          authenticated: false,
+          authenticated: false
           user: null
         },
         meta: {
@@ -33,24 +29,21 @@ export const GET: RequestHandler = async ({ cookies }) => {
         }
       })
     }
-
     // Validate session
     const result = await UserAuthService.validateSession(sessionId)
-    
     if (!(result as { success?: any; user?: any; session?: any }).success || !(result as { success?: any; user?: any; session?: any }).user) {
       // Clear invalid session cookie
       cookies.delete('session_id', {
         path: '/',
-        httpOnly: true,
+        httpOnly: true
         secure: !dev,
         sameSite: 'strict'
       })
-
       return json({
-        success: false,
+        success: false
         message: 'Invalid or expired session',
         data: {
-          authenticated: false,
+          authenticated: false
           user: null
         },
         meta: {
@@ -65,18 +58,16 @@ export const GET: RequestHandler = async ({ cookies }) => {
         }
       })
     }
-
     // Remove sensitive information from user object
     const { passwordHash, ...safeUser } = (result as { success?: any; user?: any; session?: any }).user
-    
     return json({
-      success: true,
+      success: true
       message: 'Session valid',
       data: {
-        authenticated: true,
-        user: safeUser,
+        authenticated: true
+        user: safeUser
         session: {
-          id: sessionId,
+          id: sessionId
           expiresAt: (result as { success?: any; user?: any; session?: any }).session?.expiresAt,
           isActive: (result as { success?: any; user?: any; session?: any }).session?.isActive
         }
@@ -92,23 +83,20 @@ export const GET: RequestHandler = async ({ cookies }) => {
         ...(dev && { 'Access-Control-Allow-Origin': '*' })
       }
     })
-
   } catch (err: any) {
     console.error('Session validation API error:', err)
-
     // Clear potentially corrupted session cookie
     cookies.delete('session_id', {
       path: '/',
-      httpOnly: true,
+      httpOnly: true
       secure: !dev,
       sameSite: 'strict'
     })
-
     return json({
-      success: false,
+      success: false
       message: 'Session validation failed',
       data: {
-        authenticated: false,
+        authenticated: false
         user: null
       },
       code: 'SESSION_VALIDATION_ERROR',
@@ -116,13 +104,12 @@ export const GET: RequestHandler = async ({ cookies }) => {
         timestamp: new Date().toISOString(),
         version: '1.0.0'
       }
-    }, { 
-      status: 200, // Return 200 but with authenticated: false,
+    }, {
+      status: 200, // Return 200 but with authenticated: false
       headers: { 'Content-Type': 'application/json' }
     })
   }
 }
-
 // OPTIONS handler for CORS preflight requests
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {

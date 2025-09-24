@@ -1,10 +1,8 @@
 // Enhanced Case API Client
 // Integrates REST architecture with PostgreSQL-first workers and clustering
-
 import { restClient, type APIResponse } from './enhanced-rest-architecture.js';
 import type { CaseForm } from '../schemas/forms.js';
 }
-
 export interface CaseCreationRequest {
   // Core case fields from CaseForm
   caseNumber: string;
@@ -17,8 +15,7 @@ export interface CaseCreationRequest {
   tags?: string[];
   isConfidential?: boolean;
   notifyAssignee?: boolean;
-  
-  // Additional metadata;
+  // Additional metadata
   metadata?: {
     createdVia?: string;
     formVersion?: string;
@@ -28,7 +25,6 @@ export interface CaseCreationRequest {
     sessionId?: string;
   };
 }
-
 export interface CaseResponse {
   id: string;
   caseNumber: string;
@@ -43,7 +39,6 @@ export interface CaseResponse {
   createdAt: string;
   updatedAt: string;
 }
-
 export interface WorkerTriggerResponse {
   success: boolean;
   data: {
@@ -53,42 +48,36 @@ export interface WorkerTriggerResponse {
     action: string;
     caseId?: string;
   };
-  metadata: {;
+  metadata: {
     timestamp: string;
     worker: string;
     version: string;
   };
 }
-
 export class EnhancedCaseAPI {
-  
   /**
    * Create a new legal case with full workflow integration
    */;
   async createCase(data: CaseCreationRequest): Promise<APIResponse<CaseResponse> {
     try {
       console.log('🚀 Creating case with enhanced API:', data);
-      
-      // Step 1: Create the case via REST API;
+      // Step 1: Create the case via REST API
       const caseResponse = await restClient.post<CaseResponse>('/cases', {
         ...data,
         metadata: {
           createdVia: 'yorha-command-center',
           formVersion: '2.0',
-          workflowStep: 'case-creation',;
+          workflowStep: 'case-creation',
           timestamp: new Date().toISOString(),
           ...data.metadata
         }
       });
-
       if (!caseResponse.success) {
         throw new Error(caseResponse.error || 'Failed to create case');
       }
-
       const createdCase = caseResponse.data;
       console.log('✅ Case created successfully:', createdCase);
-
-      // Step 2: Trigger PostgreSQL-first worker for auto-tagging;
+      // Step 2: Trigger PostgreSQL-first worker for auto-tagging
       if (createdCase && createdCase.id) {
         try {
           await this.triggerWorkerProcessing(createdCase.id, data);
@@ -97,29 +86,25 @@ export class EnhancedCaseAPI {
           // Don't fail the whole operation if worker trigger fails
         }
       }
-
       return caseResponse;
-
     } catch (error: any) {
       console.error('❌ Enhanced case creation failed:', error);
       return {
-        success: false,
-        error: error instanceof Error ? error.message: String(error),;
+        success: false
+        error: error instanceof Error ? error.message: String(error),
         data: undefined
       };
     }
   }
-
   /**
    * Trigger PostgreSQL-first worker processing
    */
   async triggerWorkerProcessing(
-    caseId: string, 
+    caseId: string
     formData: CaseCreationRequest;
   ): Promise<APIResponse<WorkerTriggerResponse> {
     try {
       console.log('📡 Triggering worker processing for case:', caseId);
-
       const workerResponse = await restClient.post<WorkerTriggerResponse>('/worker/autotag/trigger', {
         type: 'case_created',
         caseId,
@@ -134,39 +119,34 @@ export class EnhancedCaseAPI {
           timestamp: new Date().toISOString(),
           formMetadata: {
             // These fields are not in the CaseForm schema, using defaults
-            location: 'not_specified',;
+            location: 'not_specified',
             jurisdiction: 'not_specified',
             clientName: 'not_specified',
             assignedTo: formData.assignedTo
           }
         }
       });
-
       if (workerResponse.success) {
         console.log('✅ Worker processing triggered successfully:', workerResponse.data);
       } else {
         console.warn('⚠️ Worker trigger response not successful:', workerResponse.error);
       }
-
       return workerResponse;
-
     } catch (error: any) {
       console.error('❌ Worker trigger failed:', error);
       return {
-        success: false,
-        error: error instanceof Error ? error.message: String(error),;
+        success: false
+        error: error instanceof Error ? error.message: String(error),
         data: undefined
       };
     }
   }
-
   /**
    * Get case by ID with enhanced data
    */;
   async getCaseById(caseId: string): Promise<APIResponse<CaseResponse> {
     return restClient.get<CaseResponse>(`/cases/${caseId}`);
   }
-
   /**
    * Search cases with enhanced filtering
    */;
@@ -180,7 +160,6 @@ export class EnhancedCaseAPI {
     useVectorSearch?: boolean;
   }): Promise<APIResponse> {
     const searchParams = new URLSearchParams();
-    
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
         if (Array.isArray(value)) {
@@ -190,39 +169,34 @@ export class EnhancedCaseAPI {
         }
       }
     });
-
     return restClient.get(`/cases?${searchParams}`);
   }
-
   /**
    * Update case with workflow integration
    */
   async updateCase(
-    caseId: string, 
+    caseId: string
     updates: Partial<CaseCreationRequest>;
   ): Promise<APIResponse<CaseResponse> {
     return restClient.post<CaseResponse>(`/cases/${caseId}`, {
       ...updates,
       metadata: {
         updatedVia: 'yorha-command-center',
-        workflowStep: 'case-update',;
+        workflowStep: 'case-update',
         timestamp: new Date().toISOString(),
         ...updates.metadata
       }
     });
   }
-
   /**
    * Get worker processing status for a case
    */;
   async getWorkerStatus(caseId?: string): Promise<APIResponse> {
-    const url = caseId 
+    const url = caseId
       ? `/worker/autotag/trigger?caseId=${caseId}`
       : '/worker/autotag/trigger';
-    
     return restClient.get(url);
   }
-
   /**
    * Get case analytics with clustering data
    */;
@@ -236,27 +210,21 @@ export class EnhancedCaseAPI {
       weekly: Array<any>;
   }>> {
     const searchParams = new URLSearchParams();
-    
     if (params.dateRange) {
       searchParams.append('dateStart', params.dateRange.start);
       searchParams.append('dateEnd', params.dateRange.end);
     }
-    
     if (params.caseType?.length) {
       searchParams.append('caseType', params.caseType.join(',');
     }
-    
     if (params.priority?.length) {
       searchParams.append('priority', params.priority.join(',');
     }
-    
     if (params.includeClusterData) {
       searchParams.append('includeClusters', 'true');
     }
-
     return restClient.get(`/cases/analytics?${searchParams}`);
   }
-
   /**
    * Cluster similar cases using enhanced REST architecture
    */;
@@ -272,14 +240,12 @@ export class EnhancedCaseAPI {
   }>> {
     return restClient.post('/cases/cluster', {
       ...params,
-      algorithm: params.algorithm || 'kmeans',;
+      algorithm: params.algorithm || 'kmeans',
       k: params.k || 5
     });
   }
 }
-
 // Singleton instance
 export const enhancedCaseAPI = new EnhancedCaseAPI();
-;
 // Export for use in components
 export default enhancedCaseAPI;

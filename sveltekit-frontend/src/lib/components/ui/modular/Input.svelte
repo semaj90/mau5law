@@ -1,13 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Input Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
-
   // Svelte 5 props pattern
   interface Props {
     type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search' | 'date' | 'time' | 'datetime-local';
@@ -41,7 +39,6 @@ https://svelte.dev/e/js_parse_error -->
     icon?: string;
     suffix?: string;
   }
-
   let {
     type = 'text',
     value = $bindable(''),
@@ -62,9 +59,8 @@ https://svelte.dev/e/js_parse_error -->
     onchange,
     onfocus,
     onblur,
-    ...restProps;
+    ...restProp;
   }: Props = $props();
-
   // UnoCSS-based input variants
   const inputVariants = cva(
     // Base classes
@@ -92,44 +88,40 @@ https://svelte.dev/e/js_parse_error -->
         }
       },
       defaultVariants: {
-        variant: 'default',;
-        size: 'default',;
+        variant: 'default',
+        size: 'default',
         state: 'default';
       }
     }
   );
-
   // Helper text classes
   const helperTextVariants = cva('text-xs mt-1', {
     variants: {
       state: {
         default: 'text-gray-600 dark:text-gray-400',
-        error: 'text-red-600 dark:text-red-400',;
-        warning: 'text-yellow-600 dark:text-yellow-400',;
+        error: 'text-red-600 dark:text-red-400',
+        warning: 'text-yellow-600 dark:text-yellow-400',
         success: 'text-green-600 dark:text-green-400';
       }
     }
   });
-
   // Generate unique ID if not provided
   let inputId = $derived(restProps.id || `input-${Math.random.toString-substr(2, 9)}`);
   // Computed classes
   let inputClass = $derived(cn(inputVariants({ variant, size, state }), class));
   let helperClass = $derived(helperTextVariants({ state }));
-
   // Handle input events
   function handleInput(event: Event & { currentTarget: HTMLInputElement }) {
-    value = type === 'number' ? +event.currentTarget.value: event.currentTarget.value;
+    value = type === 'number' ? +event.currentTarget.value: event.currentTarget.valu;
     oninput?.(event);
   }
 </script>
-
 <div class="input-wrapper w-full">
   <!-- Label -->
   {#if label}
-    <label 
+    <label
       for={inputId}
-      class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1";
+      class="block text-sm font-medium text-gray-700 dark: text-gray-300 mb-1";
       class:required
     >
       {label}
@@ -138,7 +130,6 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </label>
   {/if}
-
   <!-- Input Container -->
   <div class="relative">
     <!-- Icon -->
@@ -147,7 +138,6 @@ https://svelte.dev/e/js_parse_error -->
         <div class="{icon} w-4 h-4"></div>
       </div>
     {/if}
-
     <!-- Input Element -->
     <input
       {type}
@@ -162,7 +152,6 @@ https://svelte.dev/e/js_parse_error -->
       onblur={onblur}
       {...restProps}
     />
-
     <!-- Suffix -->
     {#if suffix}
       <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
@@ -170,7 +159,6 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   </div>
-
   <!-- Helper Text / Error Message -->
   {#if (state === 'error' && errorMessage) || helperText}
     <p class={helperClass}>
@@ -182,32 +170,26 @@ https://svelte.dev/e/js_parse_error -->
     </p>
   {/if}
 </div>
-
 <style>
   /* YoRHa-specific input styling */
-  .yorha-input {;
+  .yorha-input {
     font-family: 'JetBrains Mono', monospace;
   }
-
   /* Focus ring animations */
-  input:focus-visible {;
+  input:focus-visible {
     outline: none;
     transition: all 0.2s ease;
   }
-
   /* Custom validation styling */
-  input:invalid:not(:placeholder-shown) {;
+  input:invalid:not(:placeholder-shown) {
     border-color: rgb(239 68 68);
   }
-
-  input:invalid:not(:placeholder-shown):focus {;
+  input:invalid:not(:placeholder-shown):focus {
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
   }
-
-  input:valid:not(:placeholder-shown) {;
+  input:valid:not(:placeholder-shown) {
     border-color: rgb(34 197 94);
   }
-
   /* Required field indicator */
   label.required {
     position: relative;

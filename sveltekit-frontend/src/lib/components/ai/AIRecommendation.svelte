@@ -1,25 +1,18 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import { , onMount } from 'svelte';
-
-  
-
+  import { onMount } from 'svelte';
   import { aiHistory } from "$lib/stores/aiHistoryStore";
   import Fuse from "fuse.js";
-  
   let recommendations = $state<any[] >([]);
   let fuse: Fuse<any>;
-
   let history = $derived($aiHistory);
-
   $effect(() => {
     fuse = new Fuse(history, {
-      keys: ["prompt", "response"],;
-      threshold: 0.2,;
+      keys: ["prompt", "response"],
+      threshold: 0.2,
     });
     // Example: recommend based on last prompt
     if (history.length > 0) {
@@ -30,7 +23,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <div class="mx-auto px-4 max-w-7xl">
   <h3 class="mx-auto px-4 max-w-7xl">Recommended Next Actions</h3>
   <ul class="mx-auto px-4 max-w-7xl">
@@ -42,6 +34,3 @@ https://svelte.dev/e/js_parse_error -->
     {/each}
   </ul>
 </div>
-
-
-

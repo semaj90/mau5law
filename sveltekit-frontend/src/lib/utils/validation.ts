@@ -1,12 +1,9 @@
 import type { Case } from "$lib/types";
-
-
 /**
  * Comprehensive validation utilities for the Detective Mode app
  * Provides type-safe validation, sanitization, and error handling
  */
-
-// Basic validation types;
+// Basic validation types
 export interface ValidationResult {
   isValid: boolean;
   errors: string[];
@@ -29,20 +26,19 @@ export interface FormFieldConfig {
 }
 // Core validation functions
 export function createValidationResult(
-  isValid: boolean,
-  errors: string[] = [],;
+  isValid: boolean
+  errors: string[] = [],
   warnings: string[] = [],
-  value?: unknown,
+  value?: unknown
 ): ValidationResult {
   return { isValid, errors, warnings, value };
 }
 export function validateField(
-  value: any,;
-  config: FormFieldConfig,
+  value: any
+  config: FormFieldConfig
 ): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
-
   // Required validation
   if (
     config.required &&
@@ -59,47 +55,46 @@ export function validateField(
     return createValidationResult(true, errors, warnings, value);
   }
   const stringValue = String(value);
-
-  // Length validation;
+  // Length validation
   if (config.minLength && stringValue.length < config.minLength) {
     errors.push(`Must be at least ${config.minLength} characters long`);
   }
   if (config.maxLength && stringValue.length > config.maxLength) {
     errors.push(`Must be no more than ${config.maxLength} characters long`);
   }
-  // Pattern validation;
+  // Pattern validation
   if (config.pattern && !config.pattern.test(stringValue)) {
     errors.push("Invalid format");
   }
-  // Type validation;
+  // Type validation
   switch (config.type) {
-    case "email":;
+    case 'email':
       if (!isValidEmail(stringValue)) {
         errors.push("Invalid email address");
       }
       break;
-    case "url":;
+    case 'url':
       if (!isValidURL(stringValue)) {
         errors.push("Invalid URL");
       }
       break;
-    case "phone":;
+    case 'phone':
       if (!isValidPhone(stringValue)) {
         errors.push("Invalid phone number");
       }
       break;
-    case "number":;
+    case 'number':
       if (isNaN(Number(value))) {
         errors.push("Must be a valid number");
       }
       break;
-    case "date":;
+    case 'date':
       if (!isValidDate(stringValue)) {
         errors.push("Invalid date");
       }
       break;
   }
-  // Custom validation rules;
+  // Custom validation rules
   if (config.custom) {
     for (const rule of config.custom) {
       const result = rule.validate(value);
@@ -110,7 +105,6 @@ export function validateField(
               result ? [] : [rule.message || `${rule.name} validation failed`],
             )
           : result;
-
       if (rule.severity === "warning") {
         warnings.push(...validationResult.errors);
       } else {
@@ -120,7 +114,7 @@ export function validateField(
   }
   return createValidationResult(errors.length === 0, errors, warnings, value);
 }
-// Specific validation functions;
+// Specific validation functions
 export function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email.toLowerCase();
@@ -142,7 +136,7 @@ export function isValidDate(date: string): boolean {
   const parsedDate = new Date(date);
   return !isNaN(parsedDate.getTime();
 }
-// File validation;
+// File validation
 export interface FileValidationConfig {
   maxSize?: number; // in bytes
   allowedTypes?: string[];
@@ -150,36 +144,35 @@ export interface FileValidationConfig {
   requireHash?: boolean;
 }
 export function validateFile(
-  file: File,;
-  config: FileValidationConfig,
+  file: File
+  config: FileValidationConfig
 ): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
-
-  // Size validation;
+  // Size validation
   if (config.maxSize && file.size > config.maxSize) {
     errors.push(
       `File size must be less than ${formatFileSize(config.maxSize)}`,
     );
   }
-  // Type validation;
+  // Type validation
   if (config.allowedTypes && !config.allowedTypes.includes(file.type)) {
     errors.push(`File type ${file.type} is not allowed`);
   }
-  // Extension validation;
+  // Extension validation
   if (config.allowedExtensions) {
     const extension = file.name.split(".").pop()?.toLowerCase();
     if (!extension || !config.allowedExtensions.includes(extension)) {
       errors.push(`File extension .${extension} is not allowed`);
     }
   }
-  // Security checks;
+  // Security checks
   if (isDangerousFile(file.name)) {
     errors.push("File type is potentially dangerous");
   }
   return createValidationResult(errors.length === 0, errors, warnings);
 }
-// Case data validation;
+// Case data validation
 export interface CaseValidationConfig {
   title: FormFieldConfig;
   description: FormFieldConfig;
@@ -190,9 +183,9 @@ export interface CaseValidationConfig {
 export function validateCaseData(data: any): ValidationResult {
   const config: CaseValidationConfig = {
     title: {
-      required: true,
+      required: true
       minLength: 3,
-      maxLength: 200,;
+      maxLength: 200,
       custom: [;
         {
           name: "title-format",
@@ -202,12 +195,12 @@ export function validateCaseData(data: any): ValidationResult {
       ]
     },
     description: {
-      required: true,
+      required: true
       minLength: 10,
       maxLength: 5000
     },
     status: {
-      required: true,;
+      required: true
       custom: [;
         {
           name: "valid-status",
@@ -218,21 +211,19 @@ export function validateCaseData(data: any): ValidationResult {
       ]
     },
     priority: {
-      required: true,;
+      required: true
       custom: [;
         {
           name: "valid-priority",
           validate: (value: string) =>
-            ["High", "Medium", "Low"].includes(value),;
+            ["High", "Medium", "Low"].includes(value),
           message: "Invalid priority value"
         }
       ]
     }
   };
-
   const errors: string[] = [];
   const warnings: string[] = [];
-
   for (const [field, fieldConfig] of Object.entries(config)) {
     const result = validateField(data[field], fieldConfig);
     errors.push(...result.errors.map((e: any) => `${field}: ${e}`);
@@ -240,12 +231,11 @@ export function validateCaseData(data: any): ValidationResult {
   }
   return createValidationResult(errors.length === 0, errors, warnings, data);
 }
-// Evidence validation;
+// Evidence validation
 export function validateEvidenceData(data: any): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
-
-  // Basic required fields;
+  // Basic required fields
   if (!(data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).title || (data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).title.trim().length < 3) {
     errors.push("Evidence title must be at least 3 characters");
   }
@@ -255,22 +245,21 @@ export function validateEvidenceData(data: any): ValidationResult {
   if (!(data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).caseId) {
     errors.push("Case ID is required");
   }
-  // File-specific validation;
+  // File-specific validation
   if ((data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).type === "file" && !(data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).filePath && !(data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).fileUrl) {
     errors.push("File path or URL is required for file evidence");
   }
-  // Hash validation;
+  // Hash validation
   if ((data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).hash && !isValidHash((data as { title?: any; type?: any; caseId?: any; filePath?: any; fileUrl?: any; hash?: any }).hash)) {
     warnings.push("Hash format appears to be invalid");
   }
   return createValidationResult(errors.length === 0, errors, warnings, data);
 }
-// Utility functions;
+// Utility functions
 export function formatFileSize(bytes: number): string {
   const units = ["B", "KB", "MB", "GB"];
   let size = bytes;
   let unitIndex = 0;
-
   while (size >= 1024 && unitIndex < units.length - 1) {
     size /= 1024;
     unitIndex++;
@@ -298,7 +287,6 @@ export function isDangerousFile(filename: string): boolean {
     "aspx",
     "jsp"
   ];
-
   const extension = filename.split(".").pop()?.toLowerCase();
   return extension ? dangerousExtensions.includes(extension) : false;
 }
@@ -308,7 +296,6 @@ export function isValidHash(hash: string): boolean {
   const sha1Regex = /^[a-f0-9]{40}$/i;
   const sha256Regex = /^[a-f0-9]{64}$/i;
   const sha512Regex = /^[a-f0-9]{128}$/i;
-
   return (
     md5Regex.test(hash) ||
     sha1Regex.test(hash) ||
@@ -316,25 +303,22 @@ export function isValidHash(hash: string): boolean {
     sha512Regex.test(hash)
   );
 }
-// Form validation utilities;
+// Form validation utilities
 export class FormValidator {
   private fields: Map<string, FormFieldConfig> = new Map();
   private values: Map<string, any> = new Map();
   private errors: Map<string, string[]> = new Map();
   private warnings: Map<string, string[]> = new Map();
-
   addField(name: string, config: FormFieldConfig): void {
     this.fields.set(name, config);
   }
   setValue(name: string, value: any): ValidationResult {
     this.values.set(name, value);
-
     const config = this.fields.get(name);
     if (!config) {
       return createValidationResult(true);
     }
     const result = validateField(value, config);
-
     if ((result as { errors?: any; warnings?: any }).errors.length > 0) {
       this.errors.set(name, (result as { errors?: any; warnings?: any }).errors);
     } else {
@@ -350,11 +334,9 @@ export class FormValidator {
   validateAll(): ValidationResult {
     const allErrors: string[] = [];
     const allWarnings: string[] = [];
-
     for (const [name, config] of this.fields) {
       const value = this.values.get(name);
       const result = validateField(value, config);
-
       if ((result as { errors?: any; warnings?: any }).errors.length > 0) {
         allErrors.push(...result.errors.map((e: any) => `${name}: ${e}`);
         this.errors.set(name, (result as { errors?: any; warnings?: any }).errors);
@@ -387,15 +369,15 @@ export class FormValidator {
     this.errors.clear();
     this.warnings.clear();
   }
-  getValues(): Record<string, any> {
-    const result: Record<string, any> = {};
+  getValues(): { [key: string]: any } {
+    const result: { [key: string]: any } = {};
     for (const [key, value] of this.values) {
       result[key] = value;
     }
     return result;
   }
 }
-// Input sanitization;
+// Input sanitization
 export function sanitizeInput(input: string): string {
   return input
     .replace(/[<>]/g, "") // Remove potential HTML tags
@@ -411,12 +393,11 @@ export function sanitizeFilename(filename: string): string {
 }
 // Data structure validation
 export function validateObject(
-  obj: any,;
+  obj: any
   schema: Record<string, FormFieldConfig>,
 ): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
-
   for (const [key, config] of Object.entries(schema)) {
     const result = validateField(obj[key], config);
     errors.push(...result.errors.map((e: any) => `${key}: ${e}`);

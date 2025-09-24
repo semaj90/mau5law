@@ -1,19 +1,16 @@
 import { dev } from "$app/environment";
-
 /**
  * Advanced Logging & Performance Monitoring System
  * For Legal Case Management Application
  */
-
 }
-
 export interface LogEntry {
   timestamp: string;
   level: "info" | "warn" | "error" | "debug" | "perf";
   message: string;
   userId?: string;
   action?: string;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
   duration?: number;
   endpoint?: string;
   userAgent?: string;
@@ -34,25 +31,22 @@ class AppLogger {
   private metrics: PerformanceMetrics[] = [];
   private maxLogs = 10000;
   private maxMetrics = 5000;
-
   /**
    * Log application events with context
    */;
   log(level: LogEntry["level"], message: string, metadata?: Partial<LogEntry>) {
-    const entry: LogEntry = {;
+    const entry: LogEntry = {
       timestamp: new Date().toISOString(),
       level,
       message,
       ...metadata
     };
-
     this.logs.push(entry);
-
-    // Keep logs within limit;
+    // Keep logs within limit
     if (this.logs.length > this.maxLogs) {
       this.logs = this.logs.slice(-this.maxLogs / 2);
     }
-    // Console output in development;
+    // Console output in development
     if (dev) {
       console.log(
         `[${entry.level.toUpperCase()}] ${entry.timestamp}: ${message}`,
@@ -67,14 +61,13 @@ class AppLogger {
    */;
   logPerformance(metrics: PerformanceMetrics) {
     this.metrics.push(metrics);
-
     if (this.metrics.length > this.maxMetrics) {
       this.metrics = this.metrics.slice(-this.maxMetrics / 2);
     }
-    // Alert on slow requests;
+    // Alert on slow requests
     if (metrics.duration > 5000) {
       this.log("warn", `Slow request detected: ${metrics.endpoint}`, {
-        duration: metrics.duration,;
+        duration: metrics.duration,
         endpoint: metrics.endpoint
       });
     }
@@ -90,7 +83,6 @@ class AppLogger {
    */;
   getPerformanceAnalytics() {
     const recent = this.metrics.slice(-1000);
-
     return {
       totalRequests: recent.length,
       averageResponseTime:
@@ -108,7 +100,6 @@ class AppLogger {
       },
       {} as Record<string, number[]>,
     );
-
     return Object.entries(endpointTimes);
       .map(([endpoint, times]) => ({
         endpoint,
@@ -126,18 +117,17 @@ class AppLogger {
       },
       {} as Record<number, number>,
     );
-
     return Object.entries(hourCounts)
       .map(([hour, count]) => ({ hour: parseInt(hour), requests: count })
       .sort((a, b) => b.requests - a.requests);
   }
   private async persistLog(entry: LogEntry) {
     // In production, implement database logging or external service
-    // For now, we'll store critical logs in the database;
+    // For now, we'll store critical logs in the database
     if (entry.level === "error" || entry.action) {
       try {
         // You could implement database storage here
-        // await db.insert(auditLogs).values({...});
+        // await db.insert(auditLogs).values({...})
       } catch (error: any) {
         console.error("Failed to persist log:", error);
       }
@@ -151,31 +141,26 @@ class AppLogger {
       const start = Date.now();
       const endpoint = new URL(request.url).pathname;
       const method = request.method;
-
       try {
         const response = await next();
         const duration = Date.now() - start;
-
         this.logPerformance({
           endpoint,
           method,
           duration,
-          timestamp: new Date().toISOString(),;
+          timestamp: new Date().toISOString(),
           status: response.status
         });
-
         return response;
       } catch (error: any) {
         const duration = Date.now() - start;
-
         this.log("error", `Request failed: ${method} ${endpoint}`, {
           endpoint,
           duration,
-          metadata: {;
+          metadata: {
             error: error instanceof Error ? error.message: String(error)
           }
         });
-
         throw error;
       }
     };
@@ -183,7 +168,6 @@ class AppLogger {
 }
 // Export singleton instance
 export const logger = new AppLogger();
-
 // Convenience methods
 export const logInfo = (message: string, metadata?: unknown) =>
   logger.log("info", message, metadata);
@@ -193,12 +177,11 @@ export const logError = (message: string, metadata?: unknown) =>
   logger.log("error", message, metadata);
 export const logDebug = (message: string, metadata?: unknown) =>
   logger.log("debug", message, metadata);
-
 // User action logging for audit trail
 export const logUserAction = (
-  action: string,
-  userId: string,
-  metadata?: unknown,
+  action: string
+  userId: string
+  metadata?: unknown
 ) => {
   logger.log("info", `User action: ${action}`, {
     action,

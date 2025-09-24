@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
@@ -10,14 +9,12 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-
+  import Button from '$lib/components/ui/Button.svelte';
   // Type definitions
   interface User {
     email: string;
     name?: string;
   }
-
   interface ApiResponse {
     success?: boolean;
     data?: any;
@@ -28,13 +25,11 @@
     documents?: any[];
     activities?: any[];
   }
-
   interface HttpResponse {
     ok: boolean;
     status: number;
     json(): Promise<ApiResponse>;
   }
-
   // Svelte 5 runes for reactive state
   let isLoading = $state(false);
   let testResults = $state<string[]>([]);
@@ -42,7 +37,6 @@
   let currentUser = $state<any>(null);
   let isAuthenticated = $state(false);
   let authError = $state<string | null>(null);
-
   // Test case form data
   let newCase = $state({
     caseNumber: `CASE-${Date.now()}`,
@@ -51,15 +45,14 @@
     priority: 'medium' as 'low' | 'medium' | 'high' | 'critical',
     status: 'draft' as 'draft' | 'open' | 'in_progress' | 'review' | 'closed',
     category: 'testing',
-    tags: ['test', 'authenticated', 'crud'],;
+    tags: ['test', 'authenticated', 'crud'],
     metadata: {
-      test: true,
-      pgvector: true,;
-      authenticated: true,;
+      test: true
+      pgvector: true
+      authenticated: true
       timestamp: Date.now();
     }
   });
-
   // Derived state for test summary
   let testSummary = $derived(() => {
     const total = testResults.length;
@@ -74,26 +67,22 @@
       successRate: total > 0 ? (passed / total * 100).toFixed(1) : '0'
     };
   });
-
   function addResult(message: string, type: 'info' | 'success' | 'error' | 'warning' = 'info') {
     const icons = { info: '📝', success: '✅', error: '❌', warning: '⚠️' };
     const timestamp = new Date().toLocaleTimeString();
     testResults = [...testResults, `[${timestamp}] ${icons[type]} ${message}`];
   }
-
   // Check authentication status
   async function checkAuth() {
     try {
-      const response = await fetch('/api/test-cases?limit=1') as HttpResponse;
+      const response = await fetch('/api/test-cases?limit=1') as HttpRespon;
       const data = await response.json();
-
       if (response.status === 401) {
         isAuthenticated = false;
         authError = 'Authentication required - please log in';
         addResult('Authentication check failed - user not logged in', 'error');
         return false;
       }
-
       if (response.ok && data.user) {
         isAuthenticated = true;
         currentUser = data.user;
@@ -101,7 +90,6 @@
         addResult(`Authentication verified - logged in as ${data.user.email}`, 'success');
         return true;
       }
-
       return false;
     } catch (error) {
       authError = 'Failed to check authentication';
@@ -109,97 +97,79 @@
       return false;
     }
   }
-
   // Test authenticated GET operations
   async function testAuthenticatedGET() {
     if (!isAuthenticated) {
       addResult('Skipping GET test - not authenticated', 'warning');
       return;
     }
-
     isLoading = true;
     addResult('🔍 Testing authenticated GET operations...');
-
     try {
       // Test 1: Get user's cases
       const listResponse = await fetch('/api/test-cases?limit=10');
       const listData = await listResponse.json();
-
       if (listResponse.status === 401) {
         addResult('GET operation failed - session expired', 'error');
         isAuthenticated = false;
         return;
       }
-
       if (listResponse.ok && listData.success) {
         addResult(`GET /api/test-cases - Success (${listData.data?.length || 0} user cases)`, 'success');
         addResult(`User context: ${listData.user?.email} (role: ${listData.user?.role})`, 'info');
         cases = listData.data || [];
-
         // Test with search
         const searchResponse = await fetch('/api/test-cases?search=test&limit=5');
         const searchData = await searchResponse.json();
-
         if (searchResponse.ok && searchData.success) {
           addResult(`GET with search - Found ${searchData.data?.length || 0} matching cases`, 'success');
         }
       } else {
         addResult(`GET /api/test-cases - Failed: ${listData.error}`, 'error');
       }
-
       // Test 2: Get specific case (if any exist)
       if (cases.length > 0) {
         const testCaseId = cases[0].id;
         const singleResponse = await fetch(`/api/test-cases?id=${testCaseId}`);
         const singleData = await singleResponse.json();
-
         if (singleResponse.ok && singleData.success) {
           addResult(`GET specific case - Success with ${singleData.data.documents?.length || 0} docs, ${singleData.data.activities?.length || 0} activities`, 'success');
         } else {
           addResult(`GET specific case - Failed: ${singleData.error}`, 'error');
         }
       }
-
     } catch (error) {
       addResult(`GET operations error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
     }
-
     isLoading = false;
   }
-
   // Test authenticated POST operation
   async function testAuthenticatedPOST() {
     if (!isAuthenticated) {
       addResult('Skipping POST test - not authenticated', 'warning');
       return;
     }
-
     isLoading = true;
     addResult('📝 Testing authenticated POST operation with pgvector embeddings...');
-
     try {
       const response = await fetch('/api/test-cases', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...newCase,
           caseNumber: `AUTH-${Date.now()}` // Unique case number
         })
       });
-
       const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
-
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 401) {
         addResult('POST operation failed - session expired', 'error');
         isAuthenticated = false;
         return null;
       }
-
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).ok && (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).success) {
         addResult(`POST /api/test-cases - Success (ID: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.id})`, 'success');
         addResult(`Embedding generated: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.hasEmbedding ? 'Yes' : 'No'}`, 'info');
         addResult(`Created by: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.createdBy?.name || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.createdBy?.email}`, 'info');
-
         // Refresh cases list
         await testAuthenticatedGET();
         return (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data.id;
@@ -212,66 +182,55 @@
     } catch (error) {
       addResult(`POST operation error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
     }
-
     isLoading = false;
     return null;
   }
-
   // Test authenticated PUT operation
   async function testAuthenticatedPUT(caseId?: string) {
     if (!isAuthenticated) {
       addResult('Skipping PUT test - not authenticated', 'warning');
       return;
     }
-
     if (!caseId && cases.length === 0) {
       addResult('PUT operation skipped - no cases available to update', 'warning');
       return;
     }
-
     isLoading = true;
     const targetId = caseId || cases[0].id;
     addResult(`📝 Testing authenticated PUT operation on case ${targetId}...`);
-
     try {
       const updateData = {
         title: 'Updated Authenticated Test Case',
         description: 'Updated via authenticated API test with new embeddings',
         status: 'in_progress',
         priority: 'high',
-        tags: ['updated', 'authenticated', 'pgvector'],;
+        tags: ['updated', 'authenticated', 'pgvector'],
         metadata: {
-          updated: true,;
+          updated: true
           timestamp: Date.now(),
           updatedViaTest: true;
         }
       };
-
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
-        method: 'PUT',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updateData);
       });
-
       const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
-
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 401) {
         addResult('PUT operation failed - session expired', 'error');
         isAuthenticated = false;
         return;
       }
-
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 403) {
         addResult('PUT operation failed - access denied (not case owner)', 'error');
         return;
       }
-
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).ok && (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).success) {
         addResult(`PUT /api/test-cases - Success`, 'success');
         addResult(`New embedding generated: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.hasNewEmbedding ? 'Yes' : 'No'}`, 'info');
         addResult(`Updated by: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.updatedBy?.name || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.updatedBy?.email}`, 'info');
         addResult(`Changed fields: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.changedFields?.join(', ')}`, 'info');
-
         // Refresh cases list
         await testAuthenticatedGET();
       } else {
@@ -280,49 +239,39 @@
     } catch (error) {
       addResult(`PUT operation error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
     }
-
     isLoading = false;
   }
-
   // Test authenticated DELETE operation
   async function testAuthenticatedDELETE(caseId?: string) {
     if (!isAuthenticated) {
       addResult('Skipping DELETE test - not authenticated', 'warning');
       return;
     }
-
     if (!caseId && cases.length === 0) {
       addResult('DELETE operation skipped - no cases available to delete', 'warning');
       return;
     }
-
     isLoading = true;
     const targetId = caseId || cases[cases.length - 1].id; // Delete the last case
     addResult(`🗑️ Testing authenticated DELETE operation on case ${targetId}...`);
-
     try {
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
         method: 'DELETE';
       });
-
       const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
-
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 401) {
         addResult('DELETE operation failed - session expired', 'error');
         isAuthenticated = false;
         return;
       }
-
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).status === 403) {
         addResult('DELETE operation failed - access denied (not case owner or admin)', 'error');
         return;
       }
-
       if ((response as { json?: unknown; status?: unknown; ok?: unknown }).ok && (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).success) {
         addResult(`DELETE /api/test-cases - Success`, 'success');
         addResult(`Deleted by: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.deletedBy?.name || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.deletedBy?.email}`, 'info');
         addResult(`Related data cleaned: timeline(${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.relatedDataDeleted?.timeline}), activities(${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.relatedDataDeleted?.activities}), docs(${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data?.relatedDataDeleted?.documents})`, 'info');
-
         // Refresh cases list
         await testAuthenticatedGET();
       } else {
@@ -331,52 +280,41 @@
     } catch (error) {
       addResult(`DELETE operation error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
     }
-
     isLoading = false;
   }
-
   // Run full authenticated CRUD test suite
   async function runAuthenticatedCRUDTest() {
     testResults = [];
     addResult('🚀 Starting authenticated CRUD test suite with PostgreSQL + pgvector...');
-
     // Check authentication first
     const authOk = await checkAuth();
     if (!authOk) {
       addResult('Cannot proceed - authentication required', 'error');
       return;
     }
-
     // Test 1: GET operations
     await testAuthenticatedGET();
-
     // Test 2: POST operation
     const newCaseId = await testAuthenticatedPOST();
-
     // Test 3: PUT operation (use newly created case if available)
     if (newCaseId) {
       await testAuthenticatedPUT(newCaseId);
     } else if (cases.length > 0) {
       await testAuthenticatedPUT();
     }
-
     // Test 4: DELETE operation (clean up)
     if (newCaseId) {
       await testAuthenticatedDELETE(newCaseId);
     }
-
     addResult('✅ Authenticated CRUD test suite completed', 'success');
     addResult(`Final summary: ${testSummary.passed}/${testSummary.total} tests passed`, 'info');
   }
-
   function clearResults() {
     testResults = [];
   }
-
   function goToLogin() {
     goto('/login');
   }
-
   // Initialize on mount
   $effect(() => {
     (async () => {
@@ -387,13 +325,11 @@ await checkAuth();
     })();
   });
 </script>
-
 <div class="container mx-auto p-6 space-y-6">
   <div class="text-center">
     <h1 class="text-3xl font-bold mb-2">Authenticated CRUD Operations Test</h1>
     <p class="text-gray-600">Testing authenticated CRUD operations with PostgreSQL, pgvector embeddings, and user sessions</p>
   </div>
-
   <!-- Authentication Status -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -424,7 +360,6 @@ await checkAuth();
       {/if}
     </div>
   </div>
-
   <!-- Test Controls -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -454,7 +389,6 @@ await checkAuth();
           🧹 Clear Results
         </Button>
       </div>
-
       {#if !isAuthenticated}
         <p class="text-sm text-gray-500 mt-2">
           ⚠️ Authentication required to run tests. Please log in first.
@@ -462,7 +396,6 @@ await checkAuth();
       {/if}
     </div>
   </div>
-
   <!-- Test Results Summary -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -493,7 +426,6 @@ await checkAuth();
       </div>
     </div>
   </div>
-
   <!-- Current User's Cases -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -534,7 +466,6 @@ await checkAuth();
       {/if}
     </div>
   </div>
-
   <!-- Test Results Log -->
   <div class="nes-container">
     <div class="yorha-panel-header">

@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { page } from '$app/stores';
   let { data, form  }: { data, form : unknown } = $props();
   let isAutoLoggingIn = $state(false);
@@ -41,7 +40,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       console.log('📡 Calling auto-login endpoint...');
       const response = await fetch('/auth/login/auto', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         }
@@ -66,11 +65,9 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <svelte:head>
   <title>Simple Login - Legal AI Platform</title>
 </svelte:head>
-
 <!-- Simple login page without complex layout -->
 <div class="min-h-screen flex items-center justify-center bg-gray-900 px-4">
   <div class="w-full max-w-md">
@@ -78,31 +75,26 @@ https://svelte.dev/e/js_parse_error -->
       <h1 class="text-3xl font-bold text-center text-yellow-400 mb-8">
         Legal AI Platform (Simple)
       </h1>
-
       {#if showRegistrationSuccess}
         <div class="success-message bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded mb-4" data-testid="success-message">
           Account registered successfully! You can now sign in.
         </div>
       {/if}
-
       {#if form?.error}
         <div class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4" data-testid="error-message">
           {form.error}
         </div>
       {/if}
-
       {#if form?.errors?.email}
         <div class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4" data-testid="error-message">
           Invalid email or password
         </div>
       {/if}
-
       {#if form?.errors?.password}
         <div class="error-message bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4" data-testid="error-message">
           Invalid email or password
         </div>
       {/if}
-
       <form method="POST" action="?/login" class="space-y-6">
         <div>
           <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
@@ -117,7 +109,6 @@ https://svelte.dev/e/js_parse_error -->
             placeholder="Enter your email"
           />
         </div>
-
         <div>
           <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
             Password
@@ -131,7 +122,6 @@ https://svelte.dev/e/js_parse_error -->
             placeholder="Enter your password"
           />
         </div>
-
         <button
           type="submit"
           class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded transition-colors"
@@ -139,7 +129,6 @@ https://svelte.dev/e/js_parse_error -->
           Sign In
         </button>
       </form>
-
       <!-- Quick Demo Login -->
       <div class="mt-4 space-y-2">
         <button
@@ -158,7 +147,6 @@ https://svelte.dev/e/js_parse_error -->
             ⚡ Quick Demo Login
           {/if}
         </button>
-
         <button
           type="button"
           onclick={handleAutoFill}
@@ -167,7 +155,6 @@ https://svelte.dev/e/js_parse_error -->
           📝 Auto-fill Demo Credentials
         </button>
       </div>
-
       <div class="mt-4 text-center">
         <p class="text-gray-400 text-sm">
           Demo Account: demo@legalai.gov / demo123456
@@ -177,7 +164,6 @@ https://svelte.dev/e/js_parse_error -->
           <p>📝 Auto-fill: Fill form then click Sign In</p>
         </div>
       </div>
-
       <div class="mt-6 text-center">
         <a href="/auth/login" class="text-yellow-400 hover:text-yellow-300 text-sm">
           ← Back to Full Login Page
@@ -186,169 +172,129 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
-
 <style>
   /* Inline CSS to avoid dependency on global styles */
-  .min-h-screen {;
+  .min-h-screen {
     min-height: 100vh;
   }
-
   .flex {
     display: flex;
   }
-
   .items-center {
     align-items: center;
   }
-
   .justify-center {
     justify-content: center;
   }
-
   .bg-gray-900 {
     background-color: #111827;
   }
-
   .bg-gray-800 {
     background-color: #1f2937;
   }
-
   .bg-gray-700 {
     background-color: #374151;
   }
-
   .border {
     border-width: 1px;
   }
-
   .border-gray-700 {
     border-color: #374151;
   }
-
   .border-gray-600 {
     border-color: #4b5563;
   }
-
   .rounded {
     border-radius: 0.25rem;
   }
-
   .rounded-lg {
     border-radius: 0.5rem;
   }
-
   .p-8 {
     padding: 2rem;
   }
-
   .px-4 {
     padding-left: 1rem;
     padding-right: 1rem;
   }
-
   .py-2 {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
   }
-
   .px-3 {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
-
   .w-full {
     width: 100%;
   }
-
   .max-w-md {
     max-width: 28rem;
   }
-
   .text-3xl {
     font-size: 1.875rem;
   }
-
   .font-bold {
     font-weight: 700;
   }
-
   .font-semibold {
     font-weight: 600;
   }
-
   .text-center {
     text-align: center;
   }
-
   .text-yellow-400 {
     color: #fbbf24;
   }
-
   .text-white {
     color: #ffffff;
   }
-
   .text-black {
     color: #000000;
   }
-
   .text-gray-300 {
     color: #d1d5db;
   }
-
   .mb-8 {
     margin-bottom: 2rem;
   }
-
   .mb-2 {
     margin-bottom: 0.5rem;
   }
-
   .mt-4 {
     margin-top: 1rem;
   }
-
   .space-y-6 > * + * {
     margin-top: 1.5rem;
   }
-
   .space-y-2 > * + * {
     margin-top: 0.5rem;
   }
-
   .bg-yellow-500 {
     background-color: #eab308;
   }
-
   .bg-green-600 {
     background-color: #16a34a;
   }
-
   .bg-blue-600 {
     background-color: #2563eb;
   }
-
   .hover\:bg-yellow-600:hover {
     background-color: #ca8a04;
   }
-
   .hover\:bg-green-700:hover {
     background-color: #15803d;
   }
-
   .hover\:bg-blue-700:hover {
     background-color: #1d4ed8;
   }
-
   .transition-colors {
     transition-property: color, background-color, border-color;
-    transition-duration: 150ms;
+    transition-duration: 150m;
   }
-
   .focus\:outline-none:focus {
     outline: none;
   }
-
   .focus\:border-yellow-400:focus {
     border-color: #fbbf24;
   }

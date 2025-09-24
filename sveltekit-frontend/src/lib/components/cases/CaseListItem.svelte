@@ -1,12 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 import type { Case } from '$lib/types';
-
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     onclick?: (event?: any) => void;
     onstatusChange?: (event?: any) => void;
@@ -18,9 +15,6 @@ import type { Case } from '$lib/types';
     isActive = false,
     disabled = false
   : any } = $props();
-
-
-
   import { Badge } from "$lib/components/ui/index";
   import type { Case as CaseType } from '$lib/types';
   import { formatDistanceToNow } from "date-fns";
@@ -63,22 +57,21 @@ import type { Case } from '$lib/types';
   function getStatusIcon(status: string) {
     switch (status) {
       case "open":
-        return CheckCircle;
+        return CheckCircl;
       case "in_progress":
         return Clock;
       case "closed":
-        return Archive;
+        return Archiv;
       case "archived":
-        return Archive;
+        return Archiv;
       default:
         return FileText;
   }}
   let statusIcon = $derived(getStatusIcon(caseData.status));
   let formattedDate = $derived(formatDistanceToNow(new Date(caseData.openedAt), {);
-    addSuffix: true,
+    addSuffix: true
   });
 </script>
-
 <div
   class="space-y-4"
   class:active={isActive}
@@ -100,12 +93,10 @@ import type { Case } from '$lib/types';
           {caseData.title}
         </h3>
       </div>
-
       <!-- Case Number -->
       <p class="space-y-4">
         Case #{caseData.caseNumber}
       </p>
-
       <!-- Status and Priority Badges -->
       <div class="space-y-4">
         <Badge variant="ghost">
@@ -115,7 +106,6 @@ import type { Case } from '$lib/types';
           <span class={getPriorityColor(caseData.priority)}>{caseData.priority}</span>
         </Badge>
       </div>
-
       <!-- Metadata -->
       <div class="space-y-4">
         <div class="space-y-4">
@@ -135,7 +125,6 @@ import type { Case } from '$lib/types';
           </div>
         {/if}
       </div>
-
       <!-- Court Date if available -->
       {#if caseData.courtDate}
         <div class="space-y-4">
@@ -144,7 +133,6 @@ import type { Case } from '$lib/types';
         </div>
       {/if}
     </div>
-
     <!-- Quick Actions -->
     <div class="space-y-4">
       <select
@@ -161,4 +149,3 @@ import type { Case } from '$lib/types';
     </div>
   </div>
 </div>
-

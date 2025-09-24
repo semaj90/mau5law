@@ -2,24 +2,20 @@
   import NESButton from './NESButton.svelte';
   import NESCard from './NESCard.svelte';
   import NESModal from './NESModal.svelte';
-
   interface NESGamingShowcaseProps {
     title?: string;
     showStats?: boolean;
   }
-
   let {
     title = 'NES Gaming UI Showcase',
     showStats = true
   }: NESGamingShowcaseProps = $props();
-
   let showModal = $state(false);
   let selectedCard = $state<string | null>(null);
   let score = $state(1337);
   let level = $state(42);
   let lives = $state(3);
   let isPlaying = $state(false);
-
   const gameFeatures = [
     {
       id: 'legal-ai',
@@ -45,17 +41,15 @@
     {
       id: 'gpu-cluster',
       title: 'GPU Cluster',
-      description: 'High-performance tensor operations',;
-      status: 'warning',;
+      description: 'High-performance tensor operations',
+      status: 'warning',
       icon: '⚡';
     }
   ];
-
   function handleCardSelect(cardId: string) {
     selectedCard = cardId;
     showModal = true;
   }
-
   function handleGameAction(action: string) {
     switch (action) {
       case 'start':
@@ -81,7 +75,6 @@
         break;
     }
   }
-
   function getStatusVariant(status: string) {
     switch (status) {
       case 'online': return 'success';
@@ -91,7 +84,6 @@
       default: return 'default';
     }
   }
-
   function getStatusText(status: string) {
     switch (status) {
       case 'online': return 'ONLINE';
@@ -102,7 +94,6 @@
     }
   }
 </script>
-
 <div class="nes-gaming-showcase">
   <!-- Header Section -->
   <div class="showcase-header">
@@ -116,7 +107,6 @@
       </NESButton>
     </div>
   </div>
-
   <!-- Stats Bar -->
   {#if showStats}
     <div class="stats-bar">
@@ -126,14 +116,12 @@
           <span class="stat-value" class:animate={isPlaying}>{score.toLocaleString()}</span>
         </div>
       </NESCard>
-
       <NESCard variant="primary" size="sm">
         <div class="stat-item">
           <span class="stat-label">Level</span>
           <span class="stat-value">{level}</span>
         </div>
       </NESCard>
-
       <NESCard variant="danger" size="sm">
         <div class="stat-item">
           <span class="stat-label">Lives</span>
@@ -146,7 +134,6 @@
       </NESCard>
     </div>
   {/if}
-
   <!-- Game Features Grid -->
   <div class="features-grid">
     {#each gameFeatures as feature}
@@ -168,26 +155,21 @@
       </NESCard>
     {/each}
   </div>
-
   <!-- Action Buttons Grid -->
   <div class="actions-grid">
     <NESButton variant="success" onclick={() => handleGameAction('powerup')}>
       Power Up! (+100)
     </NESButton>
-
     <NESButton variant="warning" onclick={() => handleGameAction('pause')}>
       {isPlaying ? 'Pause' : 'Resume'}
     </NESButton>
-
     <NESButton variant="danger" onclick={() => handleGameAction('damage')}>
       Take Damage (-1 Life)
     </NESButton>
-
     <NESButton variant="primary" onclick={() => showModal = true}>
       Show Modal
     </NESButton>
   </div>
-
   <!-- Demo Modal -->
   <NESModal
     bind:open={showModal}
@@ -207,7 +189,6 @@
                 <p>{feature.description}</p>
               </div>
             </div>
-
             <div class="feature-stats">
               <div class="stat-row">
                 <span>Status:</span>
@@ -230,7 +211,6 @@
         <div class="system-info">
           <h3>YoRHa Legal AI Platform</h3>
           <p>NES-style Gaming Interface Demonstration</p>
-
           <div class="system-stats">
             <div class="stat-row">
               <span>Framework:</span>
@@ -251,7 +231,6 @@
           </div>
         </div>
       {/if}
-
       <div class="modal-actions">
         <NESButton variant="success" onclick={() => showModal = false}>
           Awesome!
@@ -263,23 +242,20 @@
     </div>
   </NESModal>
 </div>
-
 <style>
-  .nes-gaming-showcase {;
+  .nes-gaming-showcase {
     padding: 2rem;
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Press Start 2P', cursiv;
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     min-height: 100vh;
     color: theme('colors.nes.white');
   }
-
   .showcase-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 2rem;
   }
-
   .showcase-title {
     font-size: 1.25rem;
     margin: 0;
@@ -287,67 +263,55 @@
     text-shadow: 2px 2px 0px theme('colors.nes.black');
     letter-spacing: 0.05em;
   }
-
   .header-controls {
     display: flex;
     gap: 1rem;
   }
-
   .stats-bar {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
   }
-
   .stat-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
   }
-
   .stat-label {
     font-size: 0.5rem;
     opacity: 0.8;
   }
-
   .stat-value {
     font-size: 0.75rem;
     font-weight: bold;
   }
-
   .stat-value.animate {
     animation: score-pulse 0.3s ease-in-out;
   }
-
   .life-icon {
     color: theme('colors.nes.red');
     margin-left: 0.25rem;
   }
-
   .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
   }
-
   .feature-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-top: 1rem;
   }
-
   .feature-icon {
     font-size: 2rem;
     filter: drop-shadow(2px 2px 0px theme('colors.nes.black'));
   }
-
   .feature-status {
     text-align: right;
   }
-
   .status-indicator {
     font-size: 0.5rem;
     padding: 0.25rem 0.5rem;
@@ -355,57 +319,47 @@
     background: theme('colors.nes.black');
     display: inline-block;
   }
-
   .status-indicator.online {
     color: theme('colors.nes.green');
     animation: status-blink 2s ease-in-out infinite;
   }
-
   .status-indicator.processing {
     color: theme('colors.nes.yellow');
     animation: status-pulse 1s ease-in-out infinite;
   }
-
   .status-indicator.warning {
     color: theme('colors.nes.orange');
     animation: status-blink 1s ease-in-out infinite;
   }
-
   .status-indicator.error {
     color: theme('colors.nes.red');
     animation: status-urgent 0.5s ease-in-out infinite;
   }
-
   .actions-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
-
   .modal-content {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
-
   .feature-details,
   .system-info {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
   .feature-header {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .feature-large-icon {
     font-size: 3rem;
     filter: drop-shadow(2px 2px 0px theme('colors.nes.black'));
   }
-
   .feature-stats,
   .system-stats {
     display: flex;
@@ -415,79 +369,64 @@
     border: 2px solid currentColor;
     background: rgba(0, 0, 0, 0.3);
   }
-
   .stat-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     font-size: 0.625rem;
   }
-
   .modal-actions {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
   }
-
   /* Animations */
   @keyframes score-pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.1); color: theme('colors.nes.yellow'); }
     100% { transform: scale(1); }
   }
-
   @keyframes status-blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0.6; }
   }
-
   @keyframes status-pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.7; transform: scale(1.05); }
   }
-
   @keyframes status-urgent {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.3; }
   }
-
   /* Responsive Design */
   @media (max-width: 768px) {
     .nes-gaming-showcase {
       padding: 1rem;
     }
-
     .showcase-header {
       flex-direction: column;
       gap: 1rem;
       text-align: center;
     }
-
     .showcase-title {
       font-size: 1rem;
     }
-
     .stats-bar {
       grid-template-columns: 1fr;
     }
-
     .features-grid {
       grid-template-columns: 1fr;
     }
-
     .actions-grid {
       grid-template-columns: repeat(2, 1fr);
     }
-
     .modal-actions {
       flex-direction: column;
     }
   }
-
   @media (max-width: 480px) {
     .actions-grid {
       grid-template-columns: 1fr;
     }
-
     .header-controls {
       flex-direction: column;
       width: 100%;

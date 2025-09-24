@@ -1,20 +1,17 @@
 <!-- Combobox Component for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { Combobox } from 'bits-ui';
   import { Check, ChevronDown, Search, X } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-
   export interface ComboboxOption {
     value: string;
     label: string;
     description?: string;
     category?: string;
     disabled?: boolean;
-    metadata?: Record<string, any>;
+    metadata?: { [key: string]: any };
   }
-
   export interface ComboboxProps {
     options: ComboboxOption[];
     value?: string;
@@ -33,7 +30,6 @@
     onValueChange?: (value: string | string[] | undefined) => void;
     onCreateOption?: (inputValue: string) => ComboboxOption | Promise<ComboboxOption>;
   }
-
   let {
     options = [],
     value = $bindable(multiple ? [] : undefined),
@@ -50,26 +46,22 @@
     error,
     class: className = '',
     onValueChange,
-    onCreateOption;
+    onCreateOptio;
   }: ComboboxProps = $props();
-
   let inputValue = $state('');
   let open = $state(false);
-
   // Filter options based on search input
   let filteredOptions = $derived(() => {
-    if (!inputValue) return options;
+    if (!inputValue) return option;
     const query = inputValue.toLowerCase();
     return options.filter(item => item.includes)(query) ||
       option.description?.toLowerCase().includes(query) ||
       option.category?.toLowerCase().includes(query)
     );
   });
-
   // Group options by category if categories are enabled
   let groupedOptions = $derived(() => {
     if (!categories) return [{ category: null, options: filteredOptions }];
-
     const grouped = filteredOptions.reduce((acc, option) => {
       const category = option.category || 'Other';
       if (!acc[category]) {
@@ -78,13 +70,11 @@
       acc[category].push(option);
       return acc;
     }, as Record<string, ComboboxOption[]>);
-
     return Object.entries.map(([category, options]) => ({
-      category: category === 'Other' ? null : category,
-      options;
+      category: category === 'Other' ? null : category
+      option;
     }));
   });
-
   // Find selected option(s) for display
   let selectedOptions = $derived(() => {
     if (multiple && Array.isArray(value)) {
@@ -94,14 +84,12 @@
     }
     return null;
   });
-
   // Check if option can be created
   let canCreateOption = $derived(() => {
-    return creatable && 
-           inputValue.trim() && 
+    return creatable &&
+           inputValue.trim() &&
            !filteredOptions.some(opt => opt.label.toLowerCase() === inputValue.toLowerCase());
   });
-
   function handleValueChange(newValue: string | undefined) {
     if (multiple) {
       const currentValues = Array.isArray(value) ? value : [];
@@ -109,18 +97,16 @@
         value = [...currentValues, newValue];
       }
     } else {
-      value = newValue;
+      value = newValu;
     }
     onValueChange?.(value);
   }
-
   function removeValue(valueToRemove: string) {
     if (multiple && Array.isArray(value)) {
       value = value.filter(v => v !== valueToRemove);
       onValueChange?.(value);
     }
   }
-
   async function handleCreateOption() {
     if (!canCreateOption || !onCreateOption) return;
     try {
@@ -132,15 +118,13 @@
       console.error('Failed to create option:', error);
     }
   }
-
   // Generate unique ID for accessibility
   const inputId = `combobox-${Math.random.toString-substr(2, 9)}`;
 </script>
-
 <div class="legal-combobox-container w-full space-y-2">
   <!-- Label -->
   {#if label}
-    <label 
+    <label
       for={inputId}
       class="block text-sm font-medium text-yorha-text-primary font-mono"
     >
@@ -150,9 +134,8 @@
       {/if}
     </label>
   {/if}
-
-  <Combobox.Root 
-    bind:inputValue ;
+  <Combobox.Root
+    bind: inputValue ;
     bind:open
     {disabled}
     {multiple}
@@ -171,14 +154,12 @@
         )}
         {required}
       />
-
       <Combobox.Trigger
         class="absolute inset-y-0 right-0 flex h-full w-9 items-center justify-center"
       >
         <ChevronDown class="h-4 w-4 shrink-0 opacity-50" />
       </Combobox.Trigger>
     </div>
-
     <Combobox.Content
       class="relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md border-yorha-border bg-yorha-bg-secondary"
       sideOffset={4}
@@ -198,7 +179,6 @@
           </Combobox.Item>
           <div class="border-b border-yorha-border my-1"></div>
         {/if}
-
         <!-- Options -->
         {#if groupedOptions.length === 0}
           <div class="py-6 text-center text-sm text-yorha-text-secondary font-mono">
@@ -211,7 +191,6 @@
                 {group.category}
               </div>
             {/if}
-            
             {#each group.options as option}
               <Combobox.Item
                 value={option.value}
@@ -227,7 +206,6 @@
                       </span>
                     {/if}
                   </div>
-                  
                   {#if (multiple && Array.isArray(value) && value.includes(option.value)) || (!multiple && value === option.value)}
                     <Check class="h-4 w-4" />
                   {/if}
@@ -238,11 +216,9 @@
         {/if}
       </div>
     </Combobox.Content>
-
     <!-- Hidden input for form submission -->
     <Combobox.HiddenInput />
   </Combobox.Root>
-
   <!-- Selected items display for multiple selection -->
   {#if multiple && Array.isArray(value) && value.length > 0}
     <div class="flex flex-wrap gap-2 mt-2">
@@ -260,14 +236,12 @@
       {/each}
     </div>
   {/if}
-
   <!-- Description -->
   {#if description}
     <p class="text-xs text-yorha-text-secondary font-mono">
       {description}
     </p>
   {/if}
-
   <!-- Error Message -->
   {#if error}
     <p class="text-xs text-red-500 font-mono">
@@ -275,13 +249,11 @@
     </p>
   {/if}
 </div>
-
 <style>
-  :global(.legal-combobox-container input) {;
+  :global(.legal-combobox-container input) {
     transition: all 0.2s ease;
   }
-
-  :global(.legal-combobox-container input:focus) {;
+  :global(.legal-combobox-container input:focus) {
     box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.5);
   }
 </style>

@@ -1,18 +1,14 @@
 // Server-Sent Events endpoint for real-time workflow updates
 import type { RequestHandler } from './$types.js'
 import { workflowOrchestrator } from '$lib/server/workflows/orchestrator'
-
 export const GET: RequestHandler = async ({ url, request }) => {
   console.log('📡 SSE client connected to workflow updates')
-  
   const workflowId = url.searchParams.get('workflowId')
   const clientId = url.searchParams.get('clientId') || `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-  
   // Create a readable stream for SSE
   const stream = new ReadableStream({
     start(controller) {
       console.log(`🔌 Starting SSE stream for client: ${clientId}`)
-      
       // Send initial connection message
       const encoder = new TextEncoder()
       const sendEvent = (type: string, data: any, id?: string) => {
@@ -20,14 +16,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
         if (id) message += `id: ${id}\n`
         message += `event: ${type}\n`
         message += `data: ${JSON.stringify(data)}\n\n`
-        
         try {
           controller.enqueue(encoder.encode(message)
         } catch (error) {
           console.error('❌ SSE send error:', error)
         }
       }
-      
       // Send connection confirmation
       sendEvent('connected', {
         clientId,
@@ -35,7 +29,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
         server: 'legal-ai-sse',
         version: '1.0.0'
       })
-      
       // If specific workflow requested, send current status
       if (workflowId) {
         const workflow = workflowOrchestrator.getWorkflowStatus(workflowId)
@@ -59,7 +52,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
         const stats = workflowOrchestrator.getStatistics()
         sendEvent('overview', stats, `overview-${Date.now()}`)
       }
-      
       // Subscribe to workflow events
       const unsubscribeProgress = workflowOrchestrator.subscribe('WORKFLOW_PROGRESS', (event) => {
         if (!workflowId || event.workflowId === workflowId) {
@@ -72,7 +64,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
           }, `progress-${event.workflowId}-${event.timestamp}`)
         }
       })
-      
       const unsubscribeStarted = workflowOrchestrator.subscribe('WORKFLOW_STARTED', (event) => {
         if (!workflowId || event.workflowId === workflowId) {
           sendEvent('started', {
@@ -83,7 +74,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
           }, `started-${event.workflowId}-${event.timestamp}`)
         }
       })
-      
       const unsubscribeCompleted = workflowOrchestrator.subscribe('WORKFLOW_COMPLETED', (event) => {
         if (!workflowId || event.workflowId === workflowId) {
           sendEvent('completed', {
@@ -93,7 +83,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
           }, `completed-${event.workflowId}-${event.timestamp}`)
         }
       })
-      
       const unsubscribeFailed = workflowOrchestrator.subscribe('WORKFLOW_FAILED', (event) => {
         if (!workflowId || event.workflowId === workflowId) {
           sendEvent('failed', {
@@ -103,7 +92,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
           }, `failed-${event.workflowId}-${event.timestamp}`)
         }
       })
-      
       // Send periodic heartbeat
       const heartbeatInterval = setInterval(() => {
         try {
@@ -116,7 +104,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
           clearInterval(heartbeatInterval)
         }
       }, 30000); // Every 30 seconds
-      
       // Send periodic stats update if no specific workflow
       let statsInterval: NodeJS.Timeout | null = null
       if (!workflowId) {
@@ -130,38 +117,30 @@ export const GET: RequestHandler = async ({ url, request }) => {
           }
         }, 5000); // Every 5 seconds
       }
-      
       // Handle client disconnect
       let disconnected = false
       const cleanup = () => {
         if (disconnected) return
         disconnected = true
-        
         console.log(`🔌 SSE client disconnected: ${clientId}`)
-        
         unsubscribeProgress()
         unsubscribeStarted()
         unsubscribeCompleted()
         unsubscribeFailed()
-        
         clearInterval(heartbeatInterval)
         if (statsInterval) clearInterval(statsInterval)
-        
         try {
           controller.close()
         } catch (error) {
           // Controller already closed
         }
       }
-      
       // Detect client disconnect via AbortSignal
       const abortController = new AbortController()
       request.signal?.addEventListener('abort', cleanup)
-      
       // Store cleanup function for explicit disconnect handling
       (controller as any).cleanup = cleanup
     },
-    
     cancel() {
       console.log('📡 SSE stream cancelled')
       if ((this as any).cleanup) {
@@ -169,7 +148,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
       }
     }
   })
-  
   return new Response(stream, {
     status: 200,
     headers: {
@@ -183,7 +161,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }
   })
 }
-
 // Handle preflight OPTIONS requests for CORS
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {

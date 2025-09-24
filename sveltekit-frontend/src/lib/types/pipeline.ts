@@ -1,6 +1,5 @@
 export type BackendId = 'fastapi' | 'vllm' | 'ollama' | 'go' | 'cache' | 'unknown';
 }
-
 export interface ChunkJob {
   docId: string;
   chunkId: string;
@@ -8,7 +7,6 @@ export interface ChunkJob {
   model?: string;
   tags?: string[];
 }
-
 export interface EmbedResult {
   docId: string;
   chunkId: string;
@@ -17,7 +15,6 @@ export interface EmbedResult {
   backend: BackendId;
   cached?: boolean;
 }
-
 export interface PipelineRequest {
   docId: string;
   text: string;
@@ -25,7 +22,6 @@ export interface PipelineRequest {
   tags?: string[];
   maxChunkBytes?: number;
 }
-
 export interface PipelineResponse {
   ok: boolean;
   docId: string;

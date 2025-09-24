@@ -3,10 +3,8 @@
  * RAG State Machine - XState Implementation
  * Manages complex RAG system states and transitions
  */
-
 import { createMachine, assign } from "xstate";
 }
-
 export interface RAGContext {
   query: string;
   results: any[];
@@ -16,7 +14,6 @@ export interface RAGContext {
   cacheStatus: "miss" | "hit" | "partial";
   optimizationLevel: "basic" | "enhanced" | "neural";
 }
-
 export type RAGEvent =
   | { type: "SEARCH_START"; query: string }
   | { type: "SEARCH_SUCCESS"; results: any[] }
@@ -25,14 +22,13 @@ export type RAGEvent =
   | { type: "OPTIMIZE" }
   | { type: "CACHE_HIT"; results: any[] }
   | { type: "RESET" };
-
 export const ragStateMachine = createMachine({
   id: "ragSystem",
   initial: "idle",
   context: {
     query: "",
     results: [],
-    error: null,
+    error: null
     retryCount: 0,
     searchStartTime: 0,
     cacheStatus: "miss",
@@ -43,7 +39,7 @@ export const ragStateMachine = createMachine({
       on: {
         SEARCH_START: {
           target: "searching",
-          actions: assign({
+          actions: assign({,
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
@@ -56,20 +52,20 @@ export const ragStateMachine = createMachine({
       on: {
         SEARCH_SUCCESS: {
           target: "success",
-          actions: assign({
+          actions: assign({,
             results: ({ event }) => event.results,
             cacheStatus: "miss"
           })
         },
         SEARCH_ERROR: {
           target: "error",
-          actions: assign({
+          actions: assign({,
             error: ({ event }) => event.error
           })
         },
         CACHE_HIT: {
           target: "success",
-          actions: assign({
+          actions: assign({,
             results: ({ event }) => event.results,
             cacheStatus: "hit"
           })
@@ -80,7 +76,7 @@ export const ragStateMachine = createMachine({
       on: {
         SEARCH_START: {
           target: "searching",
-          actions: assign({
+          actions: assign({,
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
@@ -92,10 +88,10 @@ export const ragStateMachine = createMachine({
         },
         RESET: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             query: "",
             results: [],
-            error: null,
+            error: null
             retryCount: 0
           })
         }
@@ -106,14 +102,14 @@ export const ragStateMachine = createMachine({
         RETRY: {
           target: "searching",
           guard: ({ context }) => context.retryCount < 3,
-          actions: assign({
+          actions: assign({,
             retryCount: ({ context }) => context.retryCount + 1,
             error: null
           })
         },
         SEARCH_START: {
           target: "searching",
-          actions: assign({
+          actions: assign({,
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
@@ -122,10 +118,10 @@ export const ragStateMachine = createMachine({
         },
         RESET: {
           target: "idle",
-          actions: assign({
+          actions: assign({,
             query: "",
             results: [],
-            error: null,
+            error: null
             retryCount: 0
           })
         }
@@ -135,7 +131,7 @@ export const ragStateMachine = createMachine({
       after: {
         2000: {
           target: "success",
-          actions: assign({
+          actions: assign({,
             optimizationLevel: ({ context }) =>
               context.optimizationLevel === "basic"
                 ? "enhanced"
@@ -148,10 +144,10 @@ export const ragStateMachine = createMachine({
       on: {
         SEARCH_START: {
           target: "searching",
-          actions: assign({
+          actions: assign({,
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
-            retryCount: 0,;
+            retryCount: 0,
             error: null
           })
         }

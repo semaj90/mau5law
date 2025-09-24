@@ -1,11 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { cva, type VariantProps } from 'class-variance-authority'
   import { cn } from '$lib/utils'
   import type { HTMLButtonAttributes } from 'svelte/elements'
   // optional: import { Button as ButtonPrimitive } from 'bits-ui'
-
   type Props = HTMLButtonAttributes & {
     variant?: VariantProps<typeof buttonVariants>['variant']
     size?: VariantProps<typeof buttonVariants>['size']
@@ -15,7 +13,6 @@
     class?: string
     children?: import('svelte').Snippet
   }
-
   let {
     variant = 'default',
     size = 'default',
@@ -26,9 +23,8 @@
     children,
     disabled,
     type = 'button',
-    ...restProps;
+    ...restProp;
   }: Props = $props()
-
   const buttonVariants = cva(
     'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap hover-lift',
     {
@@ -44,7 +40,7 @@
           legal: 'bg-blue-600 text-white border-2 border-blue-500 hover:bg-blue-700 hover:border-blue-400 shadow-md',
           evidence: 'bg-orange-600 text-white border-2 border-orange-500 hover:bg-orange-700 hover:border-orange-400 shadow-md',
           caseItem: 'bg-green-600 text-white border-2 border-green-500 hover:bg-green-700 hover:border-green-400 shadow-md',
-          nes: 'nes-btn is-primary' // 🎮 optional NES.css integration;
+          nes: 'nes-btn is-primary' // 🎮 optional NES.css integratio
         },
         size: {
           default: 'h-10 px-4 py-2 text-sm rounded-md',
@@ -55,18 +51,16 @@
         }
       },
       defaultVariants: {
-        variant: 'default',;
+        variant: 'default',
         size: 'default';
       }
     }
   )
-
   let buttonClass = $derived(
     cn(buttonVariants({ variant, size }), loading && 'cursor-not-allowed', className)
   )
   let isDisabled = $derived(disabled || loading)
 </script>
-
 <!-- Wrap in Bits-UI if desired:
 <Button class="bits-btn"Primitive.Root asChild>
 -->
@@ -82,19 +76,15 @@
   {#if loading}
     <div class="i-lucide-loader-2 w-4 h-4 animate-spin" aria-hidden="true"></div>
   {/if}
-
   <!-- Icon (aria-hidden, since aria-label or text covers meaning) -->
   {#if icon && !loading}
     <div class="{icon} w-4 h-4" aria-hidden="true"></div>
   {/if}
-
   <!-- Content (snippet or text) -->
   {#if children}
     {@render children()}
   {/if}
-
 <!-- </ButtonPrimitive.Root> -->
-
 <style>
   .yorha-shadow {
 box-shadow: 0 0 10px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -109,4 +99,3 @@ box-shadow: 0 0 10px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 
     transform: translateY(0);
   }
 </style>
-

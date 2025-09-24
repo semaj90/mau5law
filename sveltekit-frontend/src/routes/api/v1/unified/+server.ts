@@ -1,10 +1,8 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * Unified API Layer with JSON responses
  * Central API endpoint that orchestrates all backend services
  */
-
 // NOTE: Previous code referenced a non-existent "redisServiceServiceService" due to a copy/paste/rename error.
 // We standardize on the primary redisService singleton.
 import { redisService } from '$lib/server/redis-service'
@@ -12,7 +10,6 @@ import { minioService } from '$lib/server/storage/minio-service'
 import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service'
 import { workflowOrchestrator } from '$lib/machines/workflow-machine'
 import { URL } from "url"
-
 // API Response types
 export interface APIResponse<T = any> {
   success: boolean
@@ -27,15 +24,13 @@ export interface APIResponse<T = any> {
     servicesUsed: string[]
   }
 }
-
 function generateRequestId(): string {
   return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 }
-
 function createResponse<T>(
-  success: boolean,
-  data?: T,
-  error?: string,
+  success: boolean
+  data?: T
+  error?: string
   performance?: any
 ): APIResponse<T> {
   return {
@@ -48,11 +43,9 @@ function createResponse<T>(
     performance
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now()
   const action = url.searchParams.get('action')
-
   try {
     switch (action) {
       case 'health':
@@ -74,18 +67,15 @@ export const GET: RequestHandler = async ({ url }) => {
           uptime: process.uptime(),
           timestamp: new Date().toISOString()
         }
-
         return json(createResponse(true, healthStatus, undefined, {
           executionTime: Date.now() - startTime,
           servicesUsed: ['all']
         })
-
       case 'search':
         const query = url.searchParams.get('query')
         if (!query) {
           return json(createResponse(false, null, 'Query parameter required')
         }
-
         // Mock search results
         const searchResults = {
           query,
@@ -95,13 +85,11 @@ export const GET: RequestHandler = async ({ url }) => {
           ],
           total: 2
         }
-
         return json(createResponse(true, searchResults, undefined, {
             executionTime: Date.now() - startTime,
             servicesUsed: ['postgresql', 'redis']
           })
         )
-
       default:
         return json(createResponse(false, null, `Unknown action: ${action}`)
     }
@@ -111,21 +99,17 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   }
 }
-
 export const POST: RequestHandler = async ({ request, url }) => {
   const startTime = Date.now()
   const action = url.searchParams.get('action')
-
   try {
     const body = await request.json().catch(() => ({})
-
     switch (action) {
       case 'rag':
         const { query, caseId } = body
         if (!query) {
           return json(createResponse(false, null, 'Query required')
         }
-
         const ragResponse = {
           query,
           response: `Analysis for "${query}": This is a production-ready RAG response that integrates vector search, document retrieval, and AI generation.`,
@@ -133,13 +117,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
           confidence: 0.91,
           caseId
         }
-
         return json(createResponse(true, ragResponse, undefined, {
             executionTime: Date.now() - startTime,
             servicesUsed: ['postgresql', 'redis', 'rabbitmq']
           })
         )
-
       case 'upload':
         const uploadResult = {
           fileId: `file_${Date.now()}`,
@@ -148,12 +130,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           size: body.size || 1024,
           url: `https://example.com/files/file_${Date.now()}`
         }
-
         return json(createResponse(true, uploadResult, undefined, {
           executionTime: Date.now() - startTime,
           servicesUsed: ['minio', 'rabbitmq']
         })
-
       default:
         return json(createResponse(false, null, `Unknown action: ${action}`)
     }

@@ -4,7 +4,6 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { websocketStore } from '$lib/stores/websocket-store';
@@ -13,13 +12,12 @@
   import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';
   // Dynamic fabric import to avoid SSR issues
   let fabricInstance: any = null;
-
   async function getFabric(): Promise<any> {
-    if (fabricInstance) return fabricInstance;
+    if (fabricInstance) return fabricInstanc;
     try {
       const mod: any = await import('fabric');
       fabricInstance = mod.fabric ?? mod.default ?? mod;
-      return fabricInstance;
+      return fabricInstanc;
     } catch (error) {
       console.error('Failed to load fabric.js:', error);
       // Return mock fabric for fallback
@@ -27,7 +25,7 @@
         Canvas: class MockCanvas {
           constructor(element: any, options: any) {
             this.element = element;
-            this.options = options;
+            this.options = option;
           }
           add() {}
           remove() {}
@@ -43,7 +41,6 @@
       };
     }
   }
-
   // Custom types for fabric objects with extended properties
   interface ExtendedFabricObject {
     evidenceId?: string;
@@ -56,7 +53,6 @@
     connectionType?: string;
     annotationText?: string;
   }
-
   // Props
   interface Props {
     caseId: string;
@@ -70,7 +66,6 @@
     showRulers?: boolean;
     autoSave?: boolean;
   }
-
   let {
     caseId,
     evidenceData = [],
@@ -83,35 +78,29 @@
     showRulers = false,
     autoSave = true
   }: Props = $props();
-
   // Canvas and state management
   let canvasElement: HTMLCanvasElement;
   let fabricCanvas: any;
   let canvasContainer: HTMLDivElement;
-
   let selectedTool = $state<'select' | 'evidence' | 'connection' | 'note' | 'highlight' | 'draw'>('select');
   let isDrawing = $state(false);
   let canvasState = $state<any>(null);
   let collaborators = $state<Map<string, any>>(new Map());
   let cursors = $state<Map<string, any>>(new Map());
-
   // Evidence mapping
   let evidenceNodes = $state<Map<string, any>>(new Map());
   let connections = $state<Map<string, any>>(new Map());
   let annotations = $state<Map<string, any>>(new Map());
-
   // AI suggestions
   let aiSuggestions = $state<any[]>([]);
   let showAISuggestions = $state(false);
   let isGeneratingLayout = $state(false);
-
   // UI state
   let sidebarOpen = $state(true);
   let propertiesPanel = $state<any>(null);
   let contextMenu = $state<any>(null);
   let undoStack = $state<any[]>([]);
   let redoStack = $state<any[]>([]);
-
   // Real-time collaboration
   let lastSaveTime = $state<Date>(new Date());
   let saveTimeout: NodeJS.Timeout;
@@ -120,40 +109,32 @@
   let redisChannels = {
     canvas: `legal:canvas:${caseId}`,
     collaboration: `legal:canvas:${caseId}:collab`,
-    cursors: `legal:canvas:${caseId}:cursors`,;
+    cursors: `legal:canvas:${caseId}:cursors`,
     ai: `legal:canvas:${caseId}:ai`
   };
-
   // Lifecycle
   $effect(() => {
     if (!browser) return;
-
     (async () => {
       try {
         await initializeCanvas();
         await loadCanvasData();
-
         if (collaborative) {
           await setupCollaboration();
         }
-
         if (aiAssisted) {
           setupAIIntegration();
         }
-
         setupEventHandlers();
-
         // Setup auto-save with Redis
         if (autoSave) {
           setupAutoSave();
         }
-
       } catch (error) {
         console.error('Failed to initialize canvas:', error);
       }
     })();
   });
-
   onDestroy(async () => {
     if (saveTimeout) clearTimeout(saveTimeout);
     if (pubSubController) {
@@ -161,90 +142,74 @@
     }
     fabricCanvas?.dispose();
   });
-
   async function initializeCanvas() {
     // Get fabric instance
     const fabricInstance = await getFabric();
-
     // Initialize Fabric.js canvas
     fabricCanvas = new fabricInstance.Canvas(canvasElement, {
-      width: canvasWidth,
-      height: canvasHeight,
-      backgroundColor: '#1a1a1a',;
-      selection: !readOnly,;
+      width: canvasWidth
+      height: canvasHeight
+      backgroundColor: '#1a1a1a',
+      selection: !readOnly,
       interactive: !readOnly,
-      preserveObjectStacking: true,
+      preserveObjectStacking: true
       enablePointerEvents: true;
     });
-
     // Configure canvas settings
     fabricCanvas.freeDrawingBrush.width = 2;
     fabricCanvas.freeDrawingBrush.color = '#4a90e2';
-
     // Add grid if enabled
     if (showGrid) {
       await addGridToCanvas();
     }
-
     // Set up zoom and pan
     await setupZoomPan();
   }
-
   async function addGridToCanvas() {
     const fabricInstance = await getFabric();
     const gridSize = 20;
     const grid = [];
-
     // Vertical lines
     for (let i = 0; i <= canvasWidth / gridSize; i++) {
       const line = new fabricInstance.Line([i * gridSize, 0, i * gridSize, canvasHeight], {
         stroke: '#333',
-        strokeWidth: 1,;
-        selectable: false,;
-        evented: false,
+        strokeWidth: 1,
+        selectable: false
+        evented: false
         excludeFromExport: true;
       });
       grid.push(line);
     }
-
     // Horizontal lines
     for (let i = 0; i <= canvasHeight / gridSize; i++) {
       const line = new fabricInstance.Line([0, i * gridSize, canvasWidth, i * gridSize], {
         stroke: '#333',
-        strokeWidth: 1,;
-        selectable: false,;
-        evented: false,
+        strokeWidth: 1,
+        selectable: false
+        evented: false
         excludeFromExport: true;
       });
       grid.push(line);
     }
-
     grid.forEach(line => fabricCanvas.add(line));
     grid.forEach(line => fabricCanvas.sendToBack(line));
   }
-
   async function setupZoomPan() {
     const fabricInstance = await getFabric();
-
     // Mouse wheel zoom
     fabricCanvas.on('mouse:wheel', (opt) => {
       const delta = opt.e.deltaY;
       let zoom = fabricCanvas.getZoom();
       zoom *= 0.999 ** delta;
-
       if (zoom > 5) zoom = 5;
       if (zoom < 0.1) zoom = 0.1;
-
       const point = new fabricInstance.Point(opt.e.offsetX, opt.e.offsetY);
       fabricCanvas.zoomToPoint(point, zoom);
-
       opt.e.preventDefault();
       opt.e.stopPropagation();
     });
-
     // Pan with middle mouse or alt+drag
     let panning = false;
-
     fabricCanvas.on('mouse:down', (opt) => {
       if (opt.e.altKey || opt.e.button === 1) {
         panning = true;
@@ -252,37 +217,31 @@
         fabricCanvas.defaultCursor = 'grab';
       }
     });
-
     fabricCanvas.on('mouse:move', (opt) => {
       if (panning) {
         const delta = new fabricInstance.Point(opt.e.movementX, opt.e.movementY);
         fabricCanvas.relativePan(delta);
-
         // Broadcast cursor movement in collaborative mode
         if (collaborative) {
           broadcastCursorPosition(opt.e.offsetX, opt.e.offsetY);
         }
       }
     });
-
     fabricCanvas.on('mouse:up', () => {
       panning = false;
       fabricCanvas.selection = true;
       fabricCanvas.defaultCursor = 'default';
     });
   }
-
   async function loadCanvasData() {
     try {
       // Try Redis cache first for faster loading
       const cachedData = await loadFromRedisCache();
-
       if (cachedData) {
         // Load from Redis cache
         if (cachedData.canvasData) {
           await loadCanvasFromJSON(JSON.stringify(cachedData.canvasData));
         }
-
         // Restore state from cache
         if (cachedData.evidenceNodes) {
           evidenceNodes = new Map(cachedData.evidenceNodes);
@@ -293,7 +252,6 @@
         if (cachedData.annotations) {
           annotations = new Map(cachedData.annotations);
         }
-
         console.log('✅ Canvas loaded from Redis cache');
       } else {
         // Fallback to API if no cache
@@ -305,43 +263,37 @@
           }
         }
       }
-
       // Add evidence nodes that aren't already on canvas
       await addEvidenceNodes();
-
     } catch (error) {
       console.error('❌ Failed to load canvas data:', error);
     }
   }
-
   async function addEvidenceNodes() {
     for (let index = 0; index < evidenceData.length; index++) {
       const evidence = evidenceData[index];
       if (!evidenceNodes.has(evidence.id)) {
         const node = await createEvidenceNode(evidence, {
-          x: 100 + (index % 5) * 200,;
+          x: 100 + (index % 5) * 200,
           y: 100 + Math.floor(index / 5) * 150;
         });
-
         evidenceNodes.set(evidence.id, node);
         fabricCanvas.add(node);
       }
     }
-
     fabricCanvas.renderAll();
   }
-
-  async function createEvidenceNode(evidence: any, position: { x: number; y: number }) {
+  async function createEvidenceNode(evidence: any, position: ;
+{ x: number; y: number }) {
     const fabricInstance = await getFabric();
     const nodeGroup = new fabricInstance.Group([], {
-      left: position.x,;
-      top: position.y,;
+      left: position.x,
+      top: position.y,
       selectable: !readOnly,
       hasControls: !readOnly,
       hasBorders: !readOnly,
       lockScalingFlip: true;
     });
-
     // Background card
     const background = new fabricInstance.Rect({
       width: 180,
@@ -350,83 +302,73 @@
       stroke: '#fff',
       strokeWidth: 2,
       rx: 8,
-      ry: 8,;
-      shadow: new fabricInstance.Shadow({
-        color: 'rgba(0,0,0,0.3)',;
+      ry: 8,
+      shadow: new fabricInstance.Shadow({,
+        color: 'rgba(0,0,0,0.3)',
         blur: 10,
         offsetX: 2,
         offsetY: 2;
       })
     });
-
     // Title text
     const title = new fabricInstance.Text(evidence.title || `Evidence ${evidence.id}`, {
       fontSize: 14,
       fill: '#fff',
       fontFamily: 'Arial',
       textAlign: 'center',
-      top: 10,;
+      top: 10,
       left: 90,
       originX: 'center',
-      originY: 'top',;
+      originY: 'top',
       width: 160;
     });
-
     // Type indicator
     const typeIcon = new fabricInstance.Text(getEvidenceIcon(evidence.type), {
       fontSize: 20,
       fill: '#fff',
-      fontFamily: 'FontAwesome',;
-      top: 40,;
+      fontFamily: 'FontAwesome',
+      top: 40,
       left: 90,
       originX: 'center',
       originY: 'center';
     });
-
     // Status indicators
     const indicators = [];
     if (evidence.aiSummary) {
       indicators.push(new fabricInstance.Circle({
         radius: 6,
-        fill: '#4CAF50',;
-        top: 100,;
+        fill: '#4CAF50',
+        top: 100,
         left: 20 + indicators.length * 20;
       }));
     }
-
     if (evidence.analyzed) {
       indicators.push(new fabricInstance.Circle({
         radius: 6,
-        fill: '#2196F3',;
-        top: 100,;
+        fill: '#2196F3',
+        top: 100,
         left: 20 + indicators.length * 20;
       }));
     }
-
     // Combine into group
     const objects = [background, title, typeIcon, ...indicators];
     objects.forEach(obj => nodeGroup.addWithUpdate(obj));
-
     // Add custom properties
     nodeGroup.set({
       evidenceId: evidence.id,
       evidenceType: evidence.type,
-      evidenceData: evidence,
+      evidenceData: evidence
       nodeType: 'evidence'
     });
-
     // Add event handlers
     nodeGroup.on('mousedown', (e) => handleNodeClick(nodeGroup, e));
     nodeGroup.on('moving', () => saveCanvasState());
-
     return nodeGroup;
   }
-
   async function createConnection(fromNode: any, toNode: any, connectionType: string = 'related') {
     const fabricInstance = await getFabric();
     const fromCenter = fromNode.getCenterPoint();
     const toCenter = toNode.getCenterPoint();
-
     const connection = new fabricInstance.Line([
       fromCenter.x, fromCenter.y,
       toCenter.x, toCenter.y
@@ -434,15 +376,14 @@
       stroke: getConnectionColor(connectionType),
       strokeWidth: 3,
       selectable: !readOnly,
-      hasControls: false,
-      hasBorders: false,
-      strokeDashArray: connectionType === 'inferred' ? [10, 5] : undefined,;
-      shadow: new fabricInstance.Shadow({
-        color: 'rgba(0,0,0,0.2)',;
+      hasControls: false
+      hasBorders: false
+      strokeDashArray: connectionType === 'inferred' ? [10, 5] : undefined
+      shadow: new fabricInstance.Shadow({,
+        color: 'rgba(0,0,0,0.2)',
         blur: 5;
       })
     });
-
     // Add arrowhead
     const arrowhead = new fabricInstance.Triangle({
       width: 10,
@@ -450,68 +391,60 @@
       fill: getConnectionColor(connectionType),
       left: toCenter.x,
       top: toCenter.y,
-      angle: Math.atan2(toCenter.y - fromCenter.y, toCenter.x - fromCenter.x) * 180 / Math.PI + 90,;
-      selectable: false,;
+      angle: Math.atan2(toCenter.y - fromCenter.y, toCenter.x - fromCenter.x) * 180 / Math.PI + 90,
+      selectable: false
       evented: false;
     });
-
     const connectionGroup = new fabricInstance.Group([connection, arrowhead], {
       selectable: !readOnly,
-      hasControls: false,
+      hasControls: false
       hasBorders: false;
     });
-
     connectionGroup.set({
       connectionType,
       fromNodeId: fromNode.evidenceId,
       toNodeId: toNode.evidenceId,
       nodeType: 'connection'
     });
-
     return connectionGroup;
   }
-
-  async function createAnnotation(position: { x: number; y: number }, text: string, type: string = 'note') {
+  async function createAnnotation(position: ;
+{ x: number; y: number }, text: string, type: string = 'note') {
     const fabricInstance = await getFabric();
     const annotation = new fabricInstance.Group([], {
-      left: position.x,;
-      top: position.y,;
+      left: position.x,
+      top: position.y,
       selectable: !readOnly,
       hasControls: !readOnly;
     });
-
     // Background
     const background = new fabricInstance.Rect({
       width: 200,
       height: 60,
       fill: 'rgba(255, 255, 255, 0.95)',
       stroke: '#ddd',
-      strokeWidth: 1,;
-      rx: 4,;
+      strokeWidth: 1,
+      rx: 4,
       ry: 4;
     });
-
     // Text
     const textObj = new fabricInstance.Text(text, {
       fontSize: 12,
       fill: '#333',
       fontFamily: 'Arial',
-      width: 180,;
-      top: 10,;
+      width: 180,
+      top: 10,
       left: 10;
     });
-
     annotation.addWithUpdate(background);
     annotation.addWithUpdate(textObj);
     annotation.set({
-      annotationType: type,
-      annotationText: text,
+      annotationType: type
+      annotationText: text
       nodeType: 'annotation'
     });
-
-    return annotation;
+    return annotatio;
   }
-
   function getEvidenceColor(type: string): string {
     const colors = {
       'document': '#4CAF50',
@@ -522,10 +455,8 @@
       'key_document': '#FFD700',
       'physical': '#795548'
     };
-
     return colors[type as keyof typeof colors] || '#607D8B';
   }
-
   function getEvidenceIcon(type: string): string {
     const icons = {
       'document': '📄',
@@ -536,10 +467,8 @@
       'key_document': '⭐',
       'physical': '📦'
     };
-
     return icons[type as keyof typeof icons] || '📄';
   }
-
   function getConnectionColor(type: string): string {
     const colors = {
       'related': '#4CAF50',
@@ -549,32 +478,26 @@
       'supports': '#8BC34A',
       'inferred': '#9E9E9E'
     };
-
     return colors[type as keyof typeof colors] || '#666';
   }
-
   function handleNodeClick(node: any, event: any) {
     if (readOnly) return;
-
     selectedTool === 'connection' ? handleConnectionStart(node) : selectNode(node);
   }
-
   function selectNode(node: any) {
     fabricCanvas.setActiveObject(node);
     propertiesPanel = {
-      type: node.nodeType,;
-      data: node.nodeType === 'evidence' ? node.evidenceData: node,;
-      position: { x: node.left, y: node.top }
+      type: node.nodeType,
+      data: node.nodeType === 'evidence' ? node.evidenceData: node
+      position: ;
+{ x: node.left, y: node.top }
     };
   }
-
   let connectionStartNode: any = null;
-
   async function handleConnectionStart(node: any) {
     if (node.nodeType !== 'evidence') return;
-
     if (!connectionStartNode) {
-      connectionStartNode = node;
+      connectionStartNode = nod;
       node.set({ stroke: '#FFD700', strokeWidth: 3 });
       fabricCanvas.renderAll();
     } else if (connectionStartNode !== node) {
@@ -582,27 +505,22 @@
       const connection = await createConnection(connectionStartNode, node);
       connections.set(`${connectionStartNode.evidenceId}-${node.evidenceId}`, connection);
       fabricCanvas.add(connection);
-
       // Store the fromNodeId before resetting
       const fromNodeId = connectionStartNode.evidenceId;
-
       // Reset selection
       connectionStartNode.set({ stroke: '#fff', strokeWidth: 2 });
       connectionStartNode = null;
       fabricCanvas.renderAll();
-
       // Broadcast in collaborative mode
       if (collaborative) {
         broadcastCanvasChange('connection_added', {
-          fromNodeId: fromNodeId,
+          fromNodeId: fromNodeId
           toNodeId: node.evidenceId
         });
       }
-
       saveCanvasState();
     }
   }
-
   function setupEventHandlers() {
     // Object modification events
     fabricCanvas.on('object:modified', () => {
@@ -611,18 +529,15 @@
         broadcastCanvasChange('object_modified', fabricCanvas.toJSON());
       }
     });
-
     // Object selection events
     fabricCanvas.on('selection:created', (e) => {
       if (e.selected && e.selected.length === 1) {
         selectNode(e.selected[0]);
       }
     });
-
     fabricCanvas.on('selection:cleared', () => {
       propertiesPanel = null;
     });
-
     // Drawing events
     fabricCanvas.on('path:created', () => {
       saveCanvasState();
@@ -630,7 +545,6 @@
         broadcastCanvasChange('drawing_added', fabricCanvas.toJSON());
       }
     });
-
     // Context menu
     fabricCanvas.on('mouse:down', (e) => {
       if (e.e.button === 2) { // Right click
@@ -639,14 +553,11 @@
         contextMenu = null;
       }
     });
-
     // Keyboard shortcuts
     document.addEventListener('keydown', handleKeyboardShortcuts);
   }
-
   function handleKeyboardShortcuts(e: KeyboardEvent) {
     if (!fabricCanvas) return;
-
     // Undo/Redo
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
@@ -667,17 +578,15 @@
           // Note: This will need fabric instance when available
           // fabricCanvas.setActiveObject(new fabric.ActiveSelection(fabricCanvas.getObjects(), {
           //   canvas: fabricCanvas
-          // }));
+          // }))
           fabricCanvas.renderAll();
           break;
       }
     }
-
     // Delete
     if (e.key === 'Delete' || e.key === 'Backspace') {
       deleteSelectedObjects();
     }
-
     // Tool shortcuts
     switch (e.key) {
       case '1': selectedTool = 'select'; break;
@@ -687,17 +596,13 @@
       case '5': selectedTool = 'highlight'; break;
       case '6': selectedTool = 'draw'; break;
     }
-
     updateToolMode();
   }
-
   function updateToolMode() {
     fabricCanvas.isDrawingMode = selectedTool === 'draw';
     fabricCanvas.selection = selectedTool === 'select';
-
     fabricCanvas.defaultCursor = selectedTool === 'draw' ? 'crosshair' : 'default';
   }
-
   function deleteSelectedObjects() {
     const activeObjects = fabricCanvas.getActiveObjects();
     if (activeObjects.length > 0) {
@@ -709,28 +614,23 @@
         }
         fabricCanvas.remove(obj);
       });
-
       fabricCanvas.discardActiveObject();
       saveCanvasState();
-
       if (collaborative) {
         broadcastCanvasChange('objects_deleted', { count:activeObjects.length });
       }
     }
   }
-
   function showContextMenu(x: number, y: number, target: any) {
     contextMenu = {
       x,
       y,
-      target,;
+      target,
       actions: getContextActions(target);
     };
   }
-
   function getContextActions(target: any) {
     const actions = [];
-
     if (target) {
       if (target.nodeType === 'evidence') {
         actions.push(
@@ -745,7 +645,6 @@
           { label: 'Delete Connection', action: () => deleteConnection(target) }
         );
       }
-
       actions.push({ label: 'Delete', action: () => fabricCanvas.remove(target) });
     } else {
       actions.push(
@@ -753,22 +652,19 @@
         { label: 'Paste', action: () => paste() }
       );
     }
-
-    return actions;
+    return action;
   }
-
   async function analyzeEvidence(evidenceId: string) {
     try {
       const response = await fetch('/api/v1/evidence/advanced-analysis', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidenceId,
           analysisTypes: ['summary', 'entities', 'sentiment'],
           caseId
         })
       });
-
       if (response.ok) {
         const result = await response.json();
         // Update evidence node with analysis results
@@ -778,7 +674,6 @@
       console.error('Failed to analyze evidence:', error);
     }
   }
-
   async function updateEvidenceNode(evidenceId: string, analysisResults: any) {
     const fabricInstance = await getFabric();
     const node = evidenceNodes.get(evidenceId);
@@ -787,50 +682,43 @@
       const indicator = new fabricInstance.Circle({
         radius: 8,
         fill: '#4CAF50',
-        top: -10,;
-        left: -10,;
+        top: -10,
+        left: -10,
         stroke: '#fff',
         strokeWidth: 2;
       });
-
       node.addWithUpdate(indicator);
       fabricCanvas.renderAll();
     }
   }
-
   async function setupCollaboration() {
     try {
       // Initialize Redis pub/sub for real-time collaboration
       pubSubController = createPubSubHelper({
         channels: Object.values(redisChannels),
-        onMessage: handleRedisMessage,
+        onMessage: handleRedisMessage
         autoStart: true;
       });
-
       // WebSocket fallback for real-time collaboration
       websocketStore.subscribeToDashboard();
-
       // Listen for collaborative events
       // Note: websocketStore doesn't have subscribe method, using direct access
       // websocketStore.subscribe((event) => {
       //   if (event.type === 'canvas_change' && event.caseId === caseId) {
-      //     handleCollaborativeChange(event.data);
+      //     handleCollaborativeChange(event.data)
       //   } else if (event.type === 'cursor_move' && event.caseId === caseId) {
-      //     updateCollaboratorCursor(event.userId, event.data);
+      //     updateCollaboratorCursor(event.userId, event.data)
       //   }
-      // });
-
+      // })
       console.log('✅ Canvas collaboration setup complete with Redis');
     } catch (error) {
       console.error('❌ Failed to setup Redis collaboration:', error);
       // Fallback to WebSocket only
     }
   }
-
   function handleRedisMessage({ channel, message }: { channel: string; message: string }) {
     try {
       const data = JSON.parse(message);
-
       switch (channel) {
         case redisChannels.canvas:
           handleCanvasChange(data);
@@ -849,7 +737,6 @@
       console.error('Failed to parse Redis message:', error);
     }
   }
-
   function handleCanvasChange(data: any) {
     // Handle canvas state changes from Redis
     if (data.action === 'full_sync') {
@@ -858,7 +745,6 @@
       applyObjectChange(data);
     }
   }
-
   function handleCollaborativeChange(data: any) {
     // Apply changes from other users
     switch (data.action) {
@@ -873,7 +759,6 @@
         break;
     }
   }
-
   async function updateCollaboratorCursor(userId: string, cursorData: any) {
     const fabricInstance = await getFabric();
     if (!collaboratorCursors.has(userId)) {
@@ -881,12 +766,11 @@
         radius: 8,
         fill: cursorData.color || '#FF5722',
         left: cursorData.x,
-        top: cursorData.y,;
-        selectable: false,;
-        evented: false,
+        top: cursorData.y,
+        selectable: false
+        evented: false
         excludeFromExport: true;
       });
-
       collaboratorCursors.set(userId, cursor);
       fabricCanvas.add(cursor);
     } else {
@@ -894,41 +778,34 @@
       cursor.animate('left', cursorData.x, { duration: 100 });
       cursor.animate('top', cursorData.y, { duration: 100 });
     }
-
     fabricCanvas.renderAll();
   }
-
   function broadcastCanvasChange(action: string, data: any) {
     if (websocketStore.connected) {
       websocketStore.broadcastEvidenceEdit(Number(caseId), action, data);
     }
   }
-
   function broadcastCursorPosition(x: number, y: number) {
     if (websocketStore.connected) {
       websocketStore.broadcastCursorPosition(caseId, { x, y });
     }
   }
-
   function setupAIIntegration() {
     // AI-powered layout suggestions and analysis
     generateAISuggestions();
   }
-
   async function generateAISuggestions() {
     if (!aiAssisted) return;
-
     try {
       const response = await fetch('/api/v1/ai/canvas-suggestions', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
           evidenceData,
           canvasData: fabricCanvas.toJSON()
         })
       });
-
       if (response.ok) {
         const suggestions = await response.json();
         aiSuggestions = suggestions.suggestions || [];
@@ -937,21 +814,18 @@
       console.error('Failed to generate AI suggestions:', error);
     }
   }
-
   async function applyAILayout() {
     isGeneratingLayout = true;
-
     try {
       const response = await fetch('/api/v1/ai/generate-layout', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
           evidenceData,
           layoutType: 'smart'
         })
       });
-
       if (response.ok) {
         const layout = await response.json();
         await applyLayout(layout.positions);
@@ -962,7 +836,6 @@
       isGeneratingLayout = false;
     }
   }
-
   async function applyLayout(positions: any) {
     evidenceNodes.forEach((node, evidenceId) => {
       const position = positions[evidenceId];
@@ -971,21 +844,17 @@
         node.animate('top', position.y, { duration: 500 });
       }
     });
-
     fabricCanvas.renderAll();
     saveCanvasState();
   }
-
   function saveCanvasState() {
     if (readOnly) return;
-
     // Add to undo stack
     undoStack.push(fabricCanvas.toJSON());
     if (undoStack.length > 50) {
       undoStack.shift();
     }
     redoStack = []; // Clear redo stack
-
     // Auto-save
     if (autoSave) {
       if (saveTimeout) clearTimeout(saveTimeout);
@@ -994,7 +863,6 @@
       }, 2000);
     }
   }
-
   async function saveCanvas() {
     try {
       const canvasData = fabricCanvas.toJSON();
@@ -1002,32 +870,28 @@
         caseId,
         canvasData,
         evidenceNodes: Array.from(evidenceNodes.entries()),
-        connections: Array.from(connections.entries()),;
-        annotations: Array.from(annotations.entries()),;
+        connections: Array.from(connections.entries()),
+        annotations: Array.from(annotations.entries()),
         timestamp: new Date().toISOString();
       };
-
       // Save to database via API
       const response = await fetch('/api/v1/evidence/canvas', {
-        method: 'POST',;
-        headers: { 'Content-Type': 'application/json' },;
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(savePayload);
       });
-
       if (response.ok) {
         // Cache in Redis for fast retrieval
         await saveToRedisCache(savePayload);
-
         // Publish canvas change to collaborators
         if (pubSubController && collaborative) {
           await pubSubController.publish(redisChannels.canvas, {
             action: 'canvas_saved',
-            caseId,;
-            timestamp: savePayload.timestamp,;
-            user: 'current_user' // Replace with actual user ID;
+            caseId,
+            timestamp: savePayload.timestamp,
+            user: 'current_user' // Replace with actual user ID
           });
         }
-
         lastSaveTime = new Date();
         console.log('✅ Canvas saved to database and Redis');
       }
@@ -1035,19 +899,17 @@
       console.error('❌ Failed to save canvas:', error);
     }
   }
-
   async function saveToRedisCache(canvasPayload: any) {
     try {
       const response = await fetch('/api/v1/redis/cache', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          key: KEY_PATTERNS.DOCUMENT_CACHE(caseId),;
-          value: canvasPayload,;
+        body: JSON.stringify({,
+          key: KEY_PATTERNS.DOCUMENT_CACHE(caseId),
+          value: canvasPayload
           ttl: CACHE_TTL.DOCUMENT_ANALYSIS;
         })
       });
-
       if (!response.ok) {
         throw new Error('Redis cache failed');
       }
@@ -1055,7 +917,6 @@
       console.warn('⚠️ Redis cache save failed:', error);
     }
   }
-
   async function loadFromRedisCache(): Promise<any | null> {
     try {
       const response = await fetch(`/api/v1/redis/cache/${KEY_PATTERNS.DOCUMENT_CACHE(caseId)}`);
@@ -1069,42 +930,35 @@
     }
     return null;
   }
-
   function setupAutoSave() {
     // Listen for canvas changes and trigger auto-save
     fabricCanvas.on('object:modified', () => {
       saveCanvasState();
       publishCanvasChange('object_modified');
     });
-
     fabricCanvas.on('object:added', () => {
       saveCanvasState();
       publishCanvasChange('object_added');
     });
-
     fabricCanvas.on('object:removed', () => {
       saveCanvasState();
       publishCanvasChange('object_removed');
     });
-
     console.log('✅ Auto-save with Redis enabled');
   }
-
   async function publishCanvasChange(action: string) {
     if (!pubSubController || !collaborative) return;
-
     try {
       await pubSubController.publish(redisChannels.collaboration, {
         action,
         caseId,
-        timestamp: new Date().toISOString(),;
-        user: 'current_user' // Replace with actual user ID;
+        timestamp: new Date().toISOString(),
+        user: 'current_user' // Replace with actual user ID
       });
     } catch (error) {
       console.error('Failed to publish canvas change:', error);
     }
   }
-
   async function loadCanvasFromRedis(canvasData: any) {
     try {
       await fabricCanvas.loadFromJSON(canvasData, () => {
@@ -1115,7 +969,6 @@
       console.error('❌ Failed to load canvas from Redis:', error);
     }
   }
-
   function applyObjectChange(data: any) {
     try {
       const obj = fabricCanvas.getObjects().find(o => o.id === data.objectId);
@@ -1127,7 +980,6 @@
       console.error('❌ Failed to apply object change:', error);
     }
   }
-
   function handleAISuggestion(data: any) {
     // Handle AI suggestions from Redis
     if (data.type === 'layout_suggestion') {
@@ -1138,13 +990,11 @@
       highlightSuggestedConnection(data.suggestion);
     }
   }
-
   async function highlightSuggestedConnection(suggestion: any) {
     const fabricInstance = await getFabric();
     // Visual feedback for AI suggestions
     const fromNode = evidenceNodes.get(suggestion.fromId);
     const toNode = evidenceNodes.get(suggestion.toId);
-
     if (fromNode && toNode) {
       // Add temporary highlight
       const highlight = new fabricInstance.Line([
@@ -1153,20 +1003,17 @@
       ], {
         stroke: '#4CAF50',
         strokeWidth: 3,
-        strokeDashArray: [10, 5],;
-        selectable: false,;
+        strokeDashArray: [10, 5],
+        selectable: false
         evented: false;
       });
-
       fabricCanvas.add(highlight);
-
       // Remove highlight after 5 seconds
       setTimeout(() => {
         fabricCanvas.remove(highlight);
       }, 5000);
     }
   }
-
   async function loadCanvasFromJSON(jsonData: string) {
     try {
       await fabricCanvas.loadFromJSON(jsonData, () => {
@@ -1184,7 +1031,6 @@
       console.error('Failed to load canvas from JSON:', error);
     }
   }
-
   function undo() {
     if (undoStack.length > 0) {
       redoStack.push(fabricCanvas.toJSON());
@@ -1192,7 +1038,6 @@
       loadCanvasFromJSON(previousState);
     }
   }
-
   function redo() {
     if (redoStack.length > 0) {
       undoStack.push(fabricCanvas.toJSON());
@@ -1200,7 +1045,6 @@
       loadCanvasFromJSON(nextState);
     }
   }
-
   function exportCanvas(format: 'json' | 'png' | 'svg' = 'png') {
     switch (format) {
       case 'json':
@@ -1217,23 +1061,19 @@
         break;
     }
   }
-
   function downloadFile(data: string, filename: string, mimeType: string, isDataURL = false) {
     const blob = isDataURL ?
       fetch(data).then(res => res.blob()) :
       new Blob([data], { type: mimeType });
-
     const url = isDataURL ? data : URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = filename;
+    link.download = filenam;
     link.click();
-
     if (!isDataURL) {
       URL.revokeObjectURL(url);
     }
   }
-
   function clearCanvas() {
     fabricCanvas.clear();
     evidenceNodes.clear();
@@ -1241,20 +1081,16 @@
     annotations.clear();
     saveCanvasState();
   }
-
   async function zoomFit() {
     const fabricInstance = await getFabric();
-
     fabricCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     const objects = fabricCanvas.getObjects();
     if (objects.length > 0) {
       const group = new fabricInstance.Group(objects);
       const boundingRect = group.getBoundingRect();
-
       const scaleX = (canvasWidth - 40) / boundingRect.width;
       const scaleY = (canvasHeight - 40) / boundingRect.height;
       const scale = Math.min(scaleX, scaleY, 1);
-
       fabricCanvas.setZoom(scale);
       fabricCanvas.absolutePan(new fabricInstance.Point(
         (canvasWidth - boundingRect.width * scale) / 2 - boundingRect.left * scale,
@@ -1262,39 +1098,32 @@
       ));
     }
   }
-
   // Missing function implementations
   function startConnection(target: any) {
     console.log('Starting connection from:', target);
     // TODO: Implement connection creation
   }
-
   function addNote(target: any) {
     console.log('Adding note to:', target);
     // TODO: Implement note creation
   }
-
   function editConnection(target: any) {
     console.log('Editing connection:', target);
     // TODO: Implement connection editing
   }
-
   function deleteConnection(target: any) {
     console.log('Deleting connection:', target);
     // TODO: Implement connection deletion
   }
-
   function addNoteAt(x: number, y: number) {
     console.log('Adding note at:', x, y);
     // TODO: Implement note creation at position
   }
-
   function paste() {
     console.log('Pasting from clipboard');
     // TODO: Implement paste functionality
   }
 </script>
-
 <div class="canvas-workspace" class:sidebar-open={sidebarOpen}>
   <!-- Toolbar -->
   <div class="toolbar">
@@ -1348,7 +1177,6 @@
         ✏️ Draw
       </Button>
     </div>
-
     <div class="action-group flex gap-2">
       <Button
         variant="ghost"
@@ -1381,7 +1209,6 @@
         💾 Export
       </Button>
     </div>
-
     {#if aiAssisted}
       <div class="ai-group">
         <button
@@ -1399,7 +1226,6 @@
         </button>
       </div>
     {/if}
-
     {#if collaborative}
       <div class="collab-group">
         <div class="collaborators">
@@ -1415,7 +1241,6 @@
       </div>
     {/if}
   </div>
-
   <!-- Sidebar -->
   {#if sidebarOpen}
     <div class="sidebar">
@@ -1423,7 +1248,6 @@
         <h3>Evidence Library</h3>
         <button class="close-btn" onclick={() => sidebarOpen = false}>×</button>
       </div>
-
       <div class="evidence-list">
         {#each evidenceData as evidence}
           <div
@@ -1439,7 +1263,6 @@
           </div>
         {/each}
       </div>
-
       {#if showAISuggestions && aiSuggestions.length > 0}
         <div class="ai-suggestions">
           <h4>AI Suggestions</h4>
@@ -1464,12 +1287,10 @@
       📚 Sidebar
     </Button>
   {/if}
-
   <!-- Canvas Container -->
   <div class="canvas-container" bind:this={canvasContainer}>
     <canvas bind:this={canvasElement}></canvas>
   </div>
-
   <!-- Properties Panel -->
   {#if propertiesPanel}
     <div class="properties-panel fixed right-4 top-4 w-80 z-40">
@@ -1530,7 +1351,6 @@
       </Card>
     </div>
   {/if}
-
   <!-- Context Menu -->
   {#if contextMenu}
     <div
@@ -1550,7 +1370,6 @@
     </div>
   {/if}
 </div>
-
 <style>
   .canvas-workspace {
     display: flex;
@@ -1561,7 +1380,6 @@
     position: relative;
     overflow: hidden;
   }
-
   .toolbar {
     position: absolute;
     top: 0;
@@ -1577,13 +1395,11 @@
     gap: 30px;
     z-index: 100;
   }
-
   .tool-group, .action-group, .ai-group, .collab-group {
     display: flex;
     align-items: center;
     gap: 10px;
   }
-
   .tool-btn, .action-btn, .ai-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -1599,17 +1415,14 @@
     align-items: center;
     justify-content: center;
   }
-
   .tool-btn:hover, .action-btn:hover, .ai-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
   }
-
   .tool-btn.active {
     background: rgba(74, 144, 226, 0.6);
     border-color: rgba(74, 144, 226, 0.8);
   }
-
   .sidebar {
     width: 300px;
     background: rgba(0, 0, 0, 0.95);
@@ -1619,19 +1432,16 @@
     overflow-y: auto;
     z-index: 50;
   }
-
   .sidebar-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 20px;
   }
-
   .sidebar-header h3 {
     margin: 0;
     color: #4a90e2;
   }
-
   .close-btn {
     background: none;
     border: none;
@@ -1642,13 +1452,11 @@
     width: 24px;
     height: 24px;
   }
-
   .evidence-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
-
   .evidence-item {
     display: flex;
     align-items: center;
@@ -1660,12 +1468,10 @@
     transition: all 0.2s ease;
     border: 1px solid transparent;
   }
-
   .evidence-item:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(74, 144, 226, 0.5);
   }
-
   .evidence-item.on-canv.evidence-icon {
     font-size: 24px;
     width: 32px;
@@ -1674,23 +1480,19 @@
     align-items: center;
     justify-content: center;
   }
-
   .evidence-info {
     flex: 1;
   }
-
   .evidence-title {
     font-weight: bold;
     font-size: 14px;
     margin-bottom: 4px;
   }
-
   .evidence-type {
     font-size: 12px;
     color: #ccc;
-    text-transform: capitalize;
+    text-transform: capitaliz;
   }
-
   .sidebar-toggle {
     position: absolute;
     top: 80px;
@@ -1704,14 +1506,12 @@
     cursor: pointer;
     font-size: 16px;
   }
-
   .canvas-container {
     flex: 1;
     margin-top: 60px;
     position: relative;
     overflow: hidden;
   }
-
   .properties-panel {
     position: absolute;
     top: 80px;
@@ -1723,36 +1523,30 @@
     border-radius: 8px;
     z-index: 100;
   }
-
   .panel-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-
   .panel-header h3 {
     margin: 0;
     color: #4a90e2;
     font-size: 16px;
   }
-
   .panel-content {
     padding: 20px;
   }
-
   .property-group {
     margin-bottom: 15px;
   }
-
   .property-group label {
     display: block;
     margin-bottom: 5px;
     font-size: 12px;
     color: #ccc;
   }
-
   .property-group input, .property-group select {
     width: 100%;
     background: rgba(255, 255, 255, 0.1);
@@ -1762,16 +1556,13 @@
     border-radius: 4px;
     font-size: 14px;
   }
-
   .position-inputs {
     display: flex;
     gap: 10px;
   }
-
   .position-inputs input {
     width: calc(50% - 5px);
   }
-
   .context-menu {
     position: fixed;
     background: rgba(0, 0, 0, 0.95);
@@ -1782,7 +1573,6 @@
     z-index: 200;
     min-width: 150px;
   }
-
   .context-action {
     display: block;
     width: 100%;
@@ -1795,16 +1585,13 @@
     font-size: 14px;
     transition: background 0.2s ease;
   }
-
   .context-action:hover {
     background: rgba(255, 255, 255, 0.1);
   }
-
   .collaborators {
     display: flex;
     gap: 5px;
   }
-
   .collaborator-avatar {
     width: 32px;
     height: 32px;
@@ -1817,28 +1604,24 @@
     font-size: 14px;
     border: 2px solid rgba(255, 255, 255, 0.3);
   }
-
   .save-status {
     font-size: 12px;
     color: #ccc;
     margin-left: 15px;
   }
-
   .ai-suggestions {
     margin-top: 30px;
     padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
-
   .ai-suggestions h4 {
     margin: 0 0 15px 0;
     color: #4a90e2;
     font-size: 14px;
   }
-
   .suggestion-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: flex-start;
     gap: 10px;
     padding: 10px;
@@ -1846,13 +1629,11 @@
     border-radius: 4px;
     margin-bottom: 10px;
   }
-
   .suggestion-text {
     flex: 1;
     font-size: 12px;
     line-height: 1.4;
   }
-
   .apply-btn {
     background: rgba(74, 144, 226, 0.6);
     border: none;
@@ -1863,11 +1644,9 @@
     cursor: pointer;
     white-space: nowrap;
   }
-
   .apply-btn:hover {
     background: rgba(74, 144, 226, 0.8);
   }
-
   .canvas-workspace.sidebar-open .canvas-container {
     margin-left: 300px;
   }

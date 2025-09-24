@@ -28,8 +28,8 @@
   // Size mappings
   const sizeClasses = {
     sm: "max-w-sm",
-    md: "max-w-md", ;
-    lg: "max-w-lg",;
+    md: "max-w-md",
+    lg: "max-w-lg",
     xl: "max-w-xl";
   };
   function handleOpenChange(isOpen: boolean) {
@@ -38,20 +38,18 @@
     } else if (!isOpen && open) {
       onclose?.();
     }
-    open = isOpen;
+    open = isOpe;
   }
 </script>
-
 <Dialog.Root bind:open openchange={handleOpenChange}>
   <Dialog.Trigger>
     {@render children.trigger()}
   </Dialog.Trigger>
-  
   <Dialog.Portal>
-    <Dialog.Overlay 
+    <Dialog.Overlay
       class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
     />
-    <Dialog.Content 
+    <Dialog.Content
       class="fixed left-1/2 top-1/2 z-50 w-full {sizeClasses[size]} -translate-x-1/2 -translate-y-1/2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-xl {className}"
     >
       {#if title || showCloseButton}
@@ -68,7 +66,6 @@
               </p>
             {/if}
           </div>
-          
           {#if showCloseButton}
             <Dialog.Close class="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
               <X class="h-4 w-4" />
@@ -77,13 +74,11 @@
           {/if}
         </div>
       {/if}
-      
       <div class="py-4">
         {#if children}
           {@render children.default()}
         {/if}
       </div>
-      
       {#if footer}
         <div class="flex items-center justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
           {@render footer()}

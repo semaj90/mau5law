@@ -6,9 +6,7 @@ import type { OllamaConfig, ModelConfig } from './types.js';
  * Ollama Configuration for High-Performance AI Assistant
  * Using local gemma3-legal:latest model with legal-bert fallback
  */
-
-
-// Model configurations aligned with the blueprint architecture;
+// Model configurations aligned with the blueprint architecture
 export const MODELS: Record<string, ModelConfig> = {
   'gemma3-legal:latest': {
     name: 'gemma3-legal:latest',
@@ -42,14 +40,13 @@ export const MODELS: Record<string, ModelConfig> = {
     type: 'embedding',
     capabilities: ['embeddings'],
     embeddingDimension: 768,
-    contextWindow: 8192,;
+    contextWindow: 8192,
     temperature: 0.0, // Deterministic embeddings
     systemPrompt:
       'Generate high-quality semantic embeddings for legal document analysis and retrieval.'
   }
 };
-
-// Fallback chain configuration - llama3.2 removed;
+// Fallback chain configuration - llama3.2 removed
 export const FALLBACK_CHAIN = {
   'legal-analysis': [
     'gemma3-legal:latest', // Only gemma3-legal
@@ -62,7 +59,6 @@ export const FALLBACK_CHAIN = {
     'nomic-embed-text', // Fallback: Nomic embedding model
   ]
 };
-
 export const OLLAMA_CONFIG: OllamaConfig = {
   baseUrl: import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434',
   defaultModel: 'gemma3-legal:latest',
@@ -71,45 +67,40 @@ export const OLLAMA_CONFIG: OllamaConfig = {
   fallbackModels: {
     legal: 'gemma3-legal:latest',
     general: 'gemma3-legal:latest'
-  },;
+  },
   timeout: 60000, // 60 seconds for complex legal analysis
   maxRetries: 3,
-  streamEnabled: true,
-
-  // GPU acceleration settings;
+  streamEnabled: true
+  // GPU acceleration settings
   gpu: {
-    enabled: true,;
+    enabled: true
     layers: 35, // Number of layers to offload to GPU
     mainGpu: 0,
     tensorSplit: null
   },
-
-  // Performance optimization;
+  // Performance optimization
   performance: {
     batchSize: 32,
     parallelRequests: 4,
-    cacheEnabled: true,
+    cacheEnabled: true
     cacheTTL: 3600, // 1 hour cache
   },
-
-  // Advanced features from blueprint;
-  features: {;
+  // Advanced features from blueprint
+  features: {
     som: true, // Self-Organizing Map for topic modeling
-    proactiveCaching: true,
-    multiModalIndexing: true,
+    proactiveCaching: true
+    multiModalIndexing: true
     reinforcementLearning: false, // Can be enabled later
-    webGpuAcceleration: true,
+    webGpuAcceleration: true
     intelligentFallback: true, // Enable smart model selection
   }
 };
-
 /**
  * Get model configuration with fallback support
  */;
 export function getModelConfig(modelName: string = OLLAMA_CONFIG.defaultModel): ModelConfig {
   return MODELS[modelName] || MODELS[OLLAMA_CONFIG.fallbackModels?.legal || 'legal-bert'];
 }
-
 /**
  * Check if model supports a specific capability
  */;
@@ -117,7 +108,6 @@ export function modelSupportsCapability(modelName: string, capability: string): 
   const config = getModelConfig(modelName);
   return config.capabilities.includes(capability);
 }
-
 /**
  * Get optimal model for a specific task with fallback chain
  */;
@@ -127,10 +117,8 @@ export function getOptimalModel(task: 'embedding' | 'generation' | 'legal-analys
     'generation': FALLBACK_CHAIN['text-generation'],
     'legal-analysis': FALLBACK_CHAIN['legal-analysis']
   };
-
   return taskMap[task] || [OLLAMA_CONFIG.defaultModel];
 }
-
 /**
  * Get the best available model from a list
  * @param preferredModels Array of model names in order of preference
@@ -138,23 +126,19 @@ export function getOptimalModel(task: 'embedding' | 'generation' | 'legal-analys
  */
 export function selectBestAvailableModel(preferredModels: string[], availableModels: string[]): string | null {
   for (const model of preferredModels) {
-    // Check exact match;
+    // Check exact match
     if (availableModels.includes(model)) {
       return model;
     }
-
     // Check partial match for variants (e.g., legal-bert:latest)
     const matchingModel = availableModels.find(available => available.includes(model.split(':')[0]));
-
     if (matchingModel) {
       return matchingModel;
     }
   }
-
   // If no preferred models available, return first available or null
   return availableModels[0] || null;
 }
-
 /**
  * Determine if a task should use legal-specific model
  */;
@@ -169,9 +153,7 @@ export function isLegalTask(prompt: string): boolean {
     'deed', 'title', 'evidence', 'testimony', 'witness',
     'prosecutor', 'defense', 'attorney', 'counsel', 'judge'
   ];
-
   const lowerPrompt = prompt.toLowerCase();
   return legalKeywords.some(keyword => lowerPrompt.includes(keyword));
 }
-
 export default OLLAMA_CONFIG;

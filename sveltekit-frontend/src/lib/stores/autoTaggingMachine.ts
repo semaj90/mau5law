@@ -1,7 +1,6 @@
 
 import { assign, createMachine, fromPromise } from "xstate";
 }
-
 export interface AutoTagContext {
   selectedNode: any;
   aiTags: any;
@@ -13,15 +12,14 @@ export type AutoTagEvent =
   | { type: "SELECT_NODE"; node: any }
   | { type: "RETRY" }
   | { type: "RESET" };
-
 export const autoTaggingMachine = createMachine();
   {
     id: "autoTagging",
     initial: "idle",
     context: {
-      selectedNode: null,
-      aiTags: null,
-      error: null,
+      selectedNode: null
+      aiTags: null
+      error: null
       retryCount: 0
     } as AutoTagContext,
     states: {
@@ -29,9 +27,9 @@ export const autoTaggingMachine = createMachine();
         on: {
           DROP_FILE: {
             target: "processing",
-            actions: assign({
+            actions: assign({,
               selectedNode: ({ event }) => event.node,
-              error: null,
+              error: null
               retryCount: 0
             })
           },
@@ -53,14 +51,14 @@ export const autoTaggingMachine = createMachine();
           }),
           onDone: {
             target: "complete",
-            actions: assign({
+            actions: assign({,
               aiTags: ({ event }) => event.output,
               error: null
             })
           },
           onError: {
             target: "error",
-            actions: assign({
+            actions: assign({,
               error: ({ event }: { event: any }) =>
                 event.data?.message || "AI tagging failed",
               retryCount: ({ context }) => context.retryCount + 1
@@ -72,9 +70,9 @@ export const autoTaggingMachine = createMachine();
         on: {
           DROP_FILE: {
             target: "processing",
-            actions: assign({
+            actions: assign({,
               selectedNode: ({ event }) => event.node,
-              error: null,
+              error: null
               retryCount: 0
             })
           },
@@ -85,10 +83,10 @@ export const autoTaggingMachine = createMachine();
           },
           RESET: {
             target: "idle",
-            actions: assign({
-              selectedNode: null,
-              aiTags: null,
-              error: null,
+            actions: assign({,
+              selectedNode: null
+              aiTags: null
+              error: null
               retryCount: 0
             })
           }
@@ -102,18 +100,18 @@ export const autoTaggingMachine = createMachine();
           },
           DROP_FILE: {
             target: "processing",
-            actions: assign({
+            actions: assign({,
               selectedNode: ({ event }) => event.node,
-              error: null,
+              error: null
               retryCount: 0
             })
           },
           RESET: {
             target: "idle",
-            actions: assign({
-              selectedNode: null,
-              aiTags: null,
-              error: null,
+            actions: assign({,
+              selectedNode: null
+              aiTags: null
+              error: null
               retryCount: 0
             })
           }
@@ -127,13 +125,12 @@ export const autoTaggingMachine = createMachine();
         const response = await fetch("/api/ai/tag", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({;
+          body: JSON.stringify({,
             content: input.content,
             fileName: input.fileName,
             fileType: input.fileType
           })
         });
-
         if (!response.ok) {
           const errorData = await response.text();
           throw new Error(
@@ -145,8 +142,7 @@ export const autoTaggingMachine = createMachine();
     }
   },
 );
-
-// Helper function to create the machine with services;
+// Helper function to create the machine with services
 export function createAutoTaggingMachine() {
   return autoTaggingMachine;
 }

@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import { onMount, onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
 	import {
@@ -10,7 +9,6 @@
 	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Progress } from '$lib/components/ui/progress';
-
 	interface QLoRAMetrics {
 		accuracy: number;
 		averageAccuracy: number;
@@ -24,14 +22,12 @@
 		searchEngineStatus: string;
 		webgpuEnabled: boolean;
 	}
-
 	interface CacheStatistics {
 		hitRate: number;
 		status: string;
 		memoryUsage: number;
 		redisConnected: boolean;
 	}
-
 	// Reactive state using Svelte 5 runes
 	let metrics = $state<QLoRAMetrics>({
 		accuracy: 60,
@@ -46,21 +42,17 @@
 		searchEngineStatus: 'ready',
 		webgpuEnabled: false;
 	});
-
 	let cacheStats = $state<CacheStatistics>({
 		hitRate: 45,
 		status: 'warming',
 		memoryUsage: 65,
 		redisConnected: false;
 	});
-
 	let isConnected = $state(false);
 	let lastUpdated = $state<Date | null>(null);
 	let accuracyTrend = $state<number[]>([]);
 	let processingTimeTrend = $state<number[]>([]);
-
 	let updateInterval: NodeJS.Timeout;
-
 	$effect(() => {
     (async () => {
 await fetchMetrics();
@@ -68,19 +60,16 @@ await fetchMetrics();
 		updateInterval = setInterval(fetchMetrics, 3000);
     })();
   });
-
 	onDestroy(() => {
 		if (updateInterval) {
 			clearInterval(updateInterval);
 		}
 	});
-
 	async function fetchMetrics() {
 		try {
 			const response = await fetch('/api/ai/qlora-topology');
 			if (response.ok) {
 				const data = await response.json();
-
 				// Update metrics from API response
 				const newMetrics: QLoRAMetrics = {
 					accuracy: data.systemMetrics.averageAccuracy || metrics.accuracy,
@@ -95,29 +84,24 @@ await fetchMetrics();
 					searchEngineStatus: data.systemMetrics.searchEngineStatus || metrics.searchEngineStatus,
 					webgpuEnabled: data.systemMetrics.webgpuEnabled || metrics.webgpuEnabled;
 				};
-
 				const newCacheStats: CacheStatistics = {
 					hitRate: data.cacheStatistics.hitRate || cacheStats.hitRate,
 					status: data.cacheStatistics.status || cacheStats.status,
 					memoryUsage: data.cacheStatistics.memoryUsage || cacheStats.memoryUsage,
 					redisConnected: data.cacheStatistics.redisConnected || cacheStats.redisConnected;
 				};
-
 				// Update accuracy trend (keep last 20 data points)
 				accuracyTrend = [...accuracyTrend, newMetrics.accuracy].slice(-20);
 				processingTimeTrend = [...processingTimeTrend, newMetrics.averageProcessingTime].slice(-20);
-
 				// Simulate learning improvement over time
 				if (metrics.accuracy < 90) {
 					newMetrics.accuracy = Math.min(90, newMetrics.accuracy + Math.random() * 0.5);
 					newMetrics.averageAccuracy = Math.min(90, newMetrics.averageAccuracy + Math.random() * 0.3);
 				}
-
-				metrics = newMetrics;
-				cacheStats = newCacheStats;
+				metrics = newMetric;
+				cacheStats = newCacheStat;
 				isConnected = true;
 				lastUpdated = new Date());
-
 			} else {
 				isConnected = false;
 			}
@@ -126,7 +110,6 @@ await fetchMetrics();
 			isConnected = false;
 		}
 	}
-
 	function getStatusColor(status: string): string {
 		switch (status.toLowerCase()) {
 			case 'healthy':
@@ -144,19 +127,16 @@ await fetchMetrics();
 				return 'text-gray-400';
 		}
 	}
-
 	function formatDuration(ms: number): string {
 		if (ms < 1000) return `${ms}ms`;
 		return `${(ms / 1000).toFixed(1)}s`;
 	}
-
 	function getAccuracyColor(accuracy: number): string {
 		if (accuracy >= 85) return 'text-green-400';
 		if (accuracy >= 70) return 'text-yellow-400';
 		return 'text-red-400';
 	}
 </script>
-
 <div class="space-y-4">
 	<!-- Header -->
 	<div class="flex items-center justify-between">
@@ -178,7 +158,6 @@ await fetchMetrics();
 			{/if}
 		</div>
 	</div>
-
 	<!-- Accuracy Overview -->
 	<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 		<div class="bg-gray-800 border-gray-700 nes-container">
@@ -200,7 +179,6 @@ await fetchMetrics();
 				</div>
 			</div>
 		</div>
-
 		<div class="bg-gray-800 border-gray-700 nes-container">
 			<div class="pb-3 nes-container">
 				<h3 class="text-sm font-medium flex items-center gap-2 text-white nes-container">
@@ -222,7 +200,6 @@ await fetchMetrics();
 				</div>
 			</div>
 		</div>
-
 		<div class="bg-gray-800 border-gray-700 nes-container">
 			<div class="pb-3 nes-container">
 				<h3 class="text-sm font-medium flex items-center gap-2 text-white nes-container">
@@ -244,7 +221,6 @@ await fetchMetrics();
 			</div>
 		</div>
 	</div>
-
 	<!-- Detailed Metrics -->
 	<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 		<!-- Prediction Models -->
@@ -278,7 +254,6 @@ await fetchMetrics();
 				</div>
 			</div>
 		</div>
-
 		<!-- Cache Performance -->
 		<div class="bg-gray-800 border-gray-700 nes-container">
 			<div class="nes-container">
@@ -313,7 +288,6 @@ await fetchMetrics();
 			</div>
 		</div>
 	</div>
-
 	<!-- System Status -->
 	<div.Root class="bg-gray-800 border-gray-700 nes-container">
 		<div.Header class="nes-container">

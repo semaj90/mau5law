@@ -2,21 +2,17 @@
  * Comprehensive Agent Orchestration
  * Integrates Claude, CrewAI, AutoGen, and RAG systems
  */
-
 export const comprehensiveOrchestrator = {
-  initialized: false,
-  
+  initialized: false
   async initialize() {
     console.log('🤖 Initializing Agent Orchestrator...')
     console.log('✅ Claude Agent: Ready')
-    console.log('✅ CrewAI Integration: Ready') 
+    console.log('✅ CrewAI Integration: Ready')
     console.log('✅ AutoGen Framework: Ready')
     console.log('✅ RAG System: Ready')
-    
     this.initialized = true
     return { status: 'success', agents: ['claude', 'crewai', 'autogen', 'rag'] }
   },
-
   getSystemStatus() {
     return {
       initialized: this.initialized,
@@ -34,41 +30,35 @@ export const comprehensiveOrchestrator = {
     }
   }
 }
-
 export async function executeAgents(query, options = {}) {
   const results = await Promise.allSettled([
     processWithClaude(query, options),
     processWithCrewAI(query, options),
     processWithAutoGen(query, options)
   ])
-
   const successful = results.filter(r => r.status === 'fulfilled')
-  
   return {
     bestResult: successful[0]?.value || { output: 'Agent orchestration completed', confidence: 0.9 },
     systemStatus: comprehensiveOrchestrator.getSystemStatus(),
     totalResults: successful.length,
   }
 }
-
 async function processWithClaude(query, options) {
-  return { 
+  return {
     agent: 'claude',
     output: `Claude analysis: ${query} - Processing with multicore analysis enabled`,
     confidence: 0.95,
     processingTime: '34ms',
   }
 }
-
 async function processWithCrewAI(query, options) {
   return {
-    agent: 'crewai', 
+    agent: 'crewai',
     output: `CrewAI analysis: Systematic approach for ${query}`,
     confidence: 0.88,
     processingTime: '67ms',
   }
 }
-
 async function processWithAutoGen(query, options) {
   return {
     agent: 'autogen',
@@ -77,7 +67,6 @@ async function processWithAutoGen(query, options) {
     processingTime: '45ms',
   }
 }
-
 export async function analyzeAndFixErrors(errorData) {
   return {
     errorAnalysis: {

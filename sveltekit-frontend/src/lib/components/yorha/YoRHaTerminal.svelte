@@ -1,7 +1,6 @@
 <!-- YoRHa Terminal/Console Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   interface TerminalProps {
     title?: string;
@@ -12,7 +11,6 @@
     onCommand?: (command: string) => void;
     maxLines?: number;
   }
-
   let {
     title = "YORHA LEGAL TERMINAL v4.0.0",
     prompt = "YoRHa:legal>",
@@ -22,7 +20,6 @@
     onCommand,
     maxLines = 100
   } = $props<Partial<TerminalProps>>();
-
   let terminalRef: HTMLDivElement
   let inputRef: HTMLInputElement
   let terminalHistory = $state([
@@ -37,26 +34,21 @@
   let historyIndex = $state(-1);
   let isProcessing = $state(false);
   let cursor = $state(true);
-
   $effect(() => {
     // Focus input when terminal is clicked
     terminalRef?.addEventListener('click', () => {
       inputRef?.focus();
     });
-
     // Cursor blink animation
     const interval = setInterval(() => {
       cursor = !cursor;
     }, 500);
-
     // Auto-focus on mount
     if (isActive) {
       inputRef?.focus();
     }
-
     return () => clearInterval(interval);
   });
-
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       executeCommand();
@@ -71,7 +63,6 @@
       autoComplete();
     }
   }
-
   function navigateHistory(direction: 'up' | 'down') {
     if (commandHistory.length === 0) return;
     if (direction === 'up') {
@@ -85,7 +76,6 @@
       currentCommand = "";
     }
   }
-
   function autoComplete() {
     const availableCommands = [
       'help', 'clear', 'status', 'cases', 'evidence', 'analyze',
@@ -105,7 +95,6 @@
       scrollToBottom();
     }
   }
-
   function executeCommand() {
     if (!currentCommand.trim()) return;
     const cmd = currentCommand.trim();
@@ -122,7 +111,6 @@
       scrollToBottom();
     }, 100);
   }
-
   function processCommand(cmd: string) {
     const [command, ...args] = cmd.toLowerCase().split(' ');
     switch (command) {
@@ -244,7 +232,6 @@
       terminalHistory = terminalHistory.slice(-maxLines);
     }
   }
-
   function scrollToBottom() {
     setTimeout(() => {
       terminalRef?.scrollTo({
@@ -254,7 +241,6 @@
     }, 10);
   }
 </script>
-
 <div class="yorha-terminal" bind:this={terminalRef}>
   <!-- Terminal Header -->
   <div class="terminal-header">
@@ -272,7 +258,6 @@
       </div>
     </div>
   </div>
-
   <!-- Terminal Content -->
   <div class="terminal-content">
     <!-- History -->
@@ -281,7 +266,6 @@
         <pre>{line}</pre>
       </div>
     {/each}
-
     <!-- Current Input Line -->
     <div class="terminal-line current" class:processing={isProcessing}>
       <span class="prompt-text">{prompt}</span>
@@ -303,7 +287,6 @@
     </div>
   </div>
 </div>
-
 <style>
   .yorha-terminal {
     background: var(--yorha-bg-primary, #0a0a0a);
@@ -320,47 +303,39 @@
       0 0 0 3px var(--yorha-bg-secondary, #1a1a1a),
       0 0 30px rgba(255, 215, 0, 0.3);
   }
-
   .terminal-header {
     background: var(--yorha-bg-secondary, #1a1a1a);
     border-bottom: 2px solid var(--yorha-secondary, #ffd700);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betwee;
     padding: 8px 16px;
     min-height: 40px;
   }
-
   .header-left {
     display: flex;
     align-items: center;
     gap: 12px;
   }
-
   .terminal-dots {
     display: flex;
     gap: 6px;
   }
-
   .dot {
     width: 12px;
     height: 12px;
     border-radius: 0;
     border: 1px solid var(--yorha-text-muted, #808080);
   }
-
   .dot.red {
     background: var(--yorha-danger, #ff0041);
   }
-
   .dot.yellow {
     background: var(--yorha-warning, #ffaa00);
   }
-
   .dot.green {
     background: var(--yorha-accent, #00ff41);
   }
-
   .terminal-title {
     font-weight: 700;
     color: var(--yorha-secondary, #ffd700);
@@ -368,7 +343,6 @@
     letter-spacing: 1px;
     font-size: 12px;
   }
-
   .status-indicator {
     font-size: 10px;
     font-weight: 600;
@@ -377,43 +351,35 @@
     padding: 4px 8px;
     border: 1px solid currentColor;
   }
-
   .status-indicator.active {
     color: var(--yorha-accent, #00ff41);
     background: rgba(0, 255, 65, 0.1);
   }
-
   .status-indicator.inactive {
     color: var(--yorha-text-muted, #808080);
     background: rgba(128, 128, 128, 0.1);
   }
-
   .terminal-content {
     flex: 1;
     overflow-y: auto;
     padding: 16px;
-    scrollbar-width: thin;
+    scrollbar-width: thi;
     scrollbar-color: var(--yorha-secondary, #ffd700) var(--yorha-bg-primary, #0a0a0a);
   }
-
   .terminal-content::-webkit-scrollbar {
     width: 12px;
   }
-
   .terminal-content::-webkit-scrollbar-track {
     background: var(--yorha-bg-primary, #0a0a0a);
   }
-
   .terminal-content::-webkit-scrollbar-thumb {
     background: var(--yorha-secondary, #ffd700);
     border: 2px solid var(--yorha-bg-primary, #0a0a0a);
   }
-
   .terminal-line {
     margin-bottom: 2px;
     min-height: 20px;
   }
-
   .terminal-line pre {
     margin: 0;
     padding: 0;
@@ -422,24 +388,20 @@
     white-space: pre-wrap;
     word-wrap: break-word;
   }
-
   .terminal-line.command pre {
     color: var(--yorha-secondary, #ffd700);
   }
-
   .terminal-line.current {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-top: 8px;
   }
-
   .prompt-text {
     color: var(--yorha-secondary, #ffd700);
     font-weight: 600;
     flex-shrink: 0;
   }
-
   .command-input {
     background: transparent;
     border: none;
@@ -450,52 +412,42 @@
     flex: 1;
     caret-color: transparent;
   }
-
   .cursor {
     color: var(--yorha-accent, #00ff41);
     font-weight: bold;
     animation: blink 1s infinite;
   }
-
   .cursor.blink {
     opacity: 1;
   }
-
   .processing-indicator {
     color: var(--yorha-warning, #ffaa00);
     font-size: 12px;
     animation: pulse 1.5s infinite;
   }
-
   .terminal-line.processing .prompt-text {
     color: var(--yorha-warning, #ffaa00);
   }
-
   @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
   }
-
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   }
-
   /* Responsive Design */
   @media (max-width: 768px) {
     .yorha-terminal {
       height: 400px;
       font-size: 12px;
     }
-
     .terminal-header {
       padding: 6px 12px;
     }
-
     .terminal-title {
       font-size: 10px;
     }
-
     .terminal-content {
       padding: 12px;
     }

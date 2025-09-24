@@ -7,9 +7,7 @@
  * to be a small, type-safe placeholder that compiles without errors; replace
  * with a real ML model when needed.
  */
-
 export type Latent = number[];
-
 /**
  * Simple, deterministic neural-sprite autoencoder stub.
  *
@@ -19,14 +17,12 @@ export type Latent = number[];
  */;
 export default class NeuralSpriteAutoencoder {
   readonly latentSize: number;
-
   constructor(latentSize = 16) {
 	if (!Number.isInteger(latentSize) || latentSize <= 0) {
 	  throw new TypeError('latentSize must be a positive integer');
 	}
 	this.latentSize = latentSize;
   }
-
   /**
    * Encode a flat numeric array into a compact latent vector.
    * Empty inputs return an empty latent vector.
@@ -40,7 +36,6 @@ export default class NeuralSpriteAutoencoder {
 	const chunkSize = Math.max(1, Math.floor(n / this.latentSize);
 	const latent = new Array<number>(this.latentSize).fill(0);
 	const counts = new Array<number>(this.latentSize).fill(0);
-
 	for (let i = 0; i < n; i++) {
 	  const idx = Math.min(Math.floor(i / chunkSize), this.latentSize - 1);
 	  latent[idx] += input[i];
@@ -51,7 +46,6 @@ export default class NeuralSpriteAutoencoder {
 	}
 	return latent;
   }
-
   /**
    * Decode a latent vector back into a flat numeric array of requested length.
    * If latent length differs from this.latentSize, values are resampled/truncated.
@@ -64,10 +58,8 @@ export default class NeuralSpriteAutoencoder {
 	  throw new TypeError('outputLength must be a non-negative integer');
 	}
 	if (outputLength === 0) return [];
-
 	// If latent is empty, return zeros
 	if (latent.length === 0) return new Array(outputLength).fill(0);
-
 	// Map each output index to a latent index (simple nearest mapping)
 	const out = new Array<number>(outputLength);
 	for (let i = 0; i < outputLength; i++) {
@@ -77,7 +69,6 @@ export default class NeuralSpriteAutoencoder {
 	}
 	return out;
   }
-
   /**
    * Convenience: encode then decode with a target length (round-trip).
    */;
@@ -85,14 +76,12 @@ export default class NeuralSpriteAutoencoder {
 	const z = this.encode(input);
 	return this.decode(z, outputLength);
   }
-
   /**
    * Serialize the model config (not weights — there are none here).
    */;
   serialize(): string {
 	return JSON.stringify({ latentSize: this.latentSize });
   }
-
   /**
    * Restore from a serialized string produced by serialize().
    */;

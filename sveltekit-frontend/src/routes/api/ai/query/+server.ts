@@ -1,32 +1,28 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: query
  * Category: aggressive
  * Memory Bank: CHR_ROM
  * Priority: 170
  * Redis Type: aiSearch
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
-
 import { aiService } from "$lib/server/services/ai-service.js"
 import { URL } from "url"
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
-
-
 const querySchema = z.object({
   query: z.string().min(1).max(5000),
   caseId: z.string().uuid().optional(),
-  options: z.object({
+  options: z.object({,
     model: z.string().optional(),
     temperature: z.number().min(0).max(2).optional(),
     maxTokens: z.number().min(1).max(4000).optional(),
@@ -34,18 +30,15 @@ const querySchema = z.object({
     saveQuery: z.boolean().optional()
   }).optional()
 })
-
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.user) {
       return json({ error: 'Authentication required' }, { status: 401 })
     }
-
     // Parse and validate request
     const body = await request.json()
     const validatedData = querySchema.parse(body)
-
     // Process AI query
     const result = await aiService.processQuery(
       validatedData.query,
@@ -53,9 +46,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       validatedData.caseId,
       validatedData.options
     )
-
     return json({
-      success: true,
+      success: true
       data: {
         response: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).response,
         confidence: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).confidence,
@@ -63,20 +55,17 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         queryId: (result as { response?: any; confidence?: any; contextUsed?: any; queryId?: any }).queryId
       }
     })
-
   } catch (error: any) {
     console.error('AI query API error:', error)
-
     if (error instanceof z.ZodError) {
-      return json({ 
+      return json({
           error: 'Validation failed',
-          details: error.errors 
+          details: error.errors
         }, )
         { status: 400 }
       )
     }
-
-    return json({ 
+    return json({
         error: 'AI query processing failed',
         message: error instanceof Error ? error.message: 'Unknown error'
       }, )
@@ -84,36 +73,30 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     )
   }
 }
-
 // Get similar queries for suggestions
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Authentication required' }, { status: 401 })
     }
-
     const query = url.searchParams.get('q')
     if (!query) {
       return json({ error: 'Query parameter required' }, { status: 400 })
     }
-
     // Generate embedding for the query
     const embedding = await aiService.getOrCreateEmbedding(query)
-    
     // Find similar queries
     const similarQueries = await aiService.findSimilarQueries(
-      embedding, 
-      locals.user.id, 
+      embedding,
+      locals.user.id,
       5
     )
-
     return json({
-      success: true,
+      success: true
       data: {
         suggestions: similarQueries
       }
     })
-
   } catch (error: any) {
     console.error('Similar queries API error:', error)
     return json(
@@ -122,6 +105,5 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     )
   }
 }
-
 export const POST = redisOptimized.aiSearch(originalPOSTHandler)
 export const GET = redisOptimized.aiSearch(originalGETHandler)

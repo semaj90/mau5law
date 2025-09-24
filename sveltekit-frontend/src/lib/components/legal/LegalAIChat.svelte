@@ -1,11 +1,9 @@
 <!-- Legal AI Chat Component - Svelte 5 with TensorRT integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-
   interface LegalQuery {
     id?: number;
     prompt: string;
@@ -17,7 +15,6 @@
     similar_documents_found?: number;
     timestamp?: Date;
   }
-
   // Svelte 5 state
   let prompt = $state('');
   let context = $state('');
@@ -26,11 +23,9 @@
   let queries: LegalQuery[] = $state([]);
   let currentResponse = $state<LegalQuery | null>(null);
   let error = $state<string | null>(null);
-
   // Derived values
   let canSubmit = $derived(prompt.trim().length > 0 && !isLoading);
   let hasQueries = $derived(queries.length > 0);
-
   // Sample prompts for legal AI
   const samplePrompts = [
     "Analyze the liability provisions in a software licensing agreement",
@@ -39,47 +34,40 @@
     "Identify potential risks in a merger and acquisition agreement",
     "Evaluate intellectual property clauses in a partnership contract"
   ];
-
   async function submitQuery() {
     if (!canSubmit) return;
-
     isLoading = true;
     error = null;
     currentResponse = null;
-
     try {
       const response = await fetch('/api/legal-ai', {
-        method: 'POST',;
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           prompt,
-          context: context || undefined,
-          max_tokens: 512,;
+          context: context || undefined
+          max_tokens: 512,
           temperature: 0.3,
           use_vector_search: useVectorSearch;
         })
       });
-
       const data = await response.json();
-
       if (data.success) {
         const newQuery: LegalQuery = {
           id: data.result.query_id,
           prompt,
           response: data.result.response,
-          model_used: data.result.model_used,;
+          model_used: data.result.model_used,
           tokens: data.result.tokens,
           inference_time: data.result.inference_time,
           total_time: data.result.total_time,
-          similar_documents_found: data.result.similar_documents_found,;
+          similar_documents_found: data.result.similar_documents_found,
           timestamp: new Date();
         };
-
         queries = [newQuery, ...queries];
         currentResponse = newQuery;
-
         // Clear form
         prompt = '';
         context = '';
@@ -93,21 +81,17 @@
       isLoading = false;
     }
   }
-
   function useSamplePrompt(sample: string) {
-    prompt = sample;
+    prompt = sampl;
   }
-
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }
-
   async function loadRecentQueries() {
     try {
       const response = await fetch('/api/legal-ai?limit=10');
       const data = await response.json();
-
       if (data.success) {
         queries = data.queries.map((q: any) => ({
           ...q,
@@ -118,12 +102,10 @@
       console.error('Failed to load recent queries:', err);
     }
   }
-
   $effect(() => {
     loadRecentQueries();
   });
 </script>
-
 <div class="legal-ai-chat max-w-4xl mx-auto p-6">
   <div class="header mb-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-2">Legal AI Assistant</h1>
@@ -131,7 +113,6 @@
       Powered by Gemma3 with TensorRT optimization • {useVectorSearch ? 'Vector search enabled' : 'Vector search disabled'}
     </p>
   </div>
-
   <!-- Query Form -->
   <Card class="mb-8">
     <CardHeader>
@@ -152,7 +133,6 @@
           disabled={isLoading}
         ></textarea>
       </div>
-
       <!-- Context Input -->
       <div>
         <label for="context" class="block text-sm font-medium text-gray-700 mb-2">
@@ -167,7 +147,6 @@
           disabled={isLoading}
         ></textarea>
       </div>
-
       <!-- Options -->
       <div class="flex items-center justify-between">
         <label class="flex items-center">
@@ -181,7 +160,6 @@
             Search similar documents
           </span>
         </label>
-
         <Button
           onclick={submitQuery}
           disabled={!canSubmit}
@@ -202,7 +180,6 @@
       </div>
     </CardContent>
   </Card>
-
   <!-- Sample Prompts -->
   <Card class="mb-8">
     <CardHeader>
@@ -222,7 +199,6 @@
       </div>
     </CardContent>
   </Card>
-
   <!-- Error Display -->
   {#if error}
     <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -237,7 +213,6 @@
       </div>
     </div>
   {/if}
-
   <!-- Current Response -->
   {#if currentResponse}
     <Card class="mb-8 border-green-200 bg-green-50">
@@ -266,7 +241,6 @@
       </CardContent>
     </Card>
   {/if}
-
   <!-- Query History -->
   {#if hasQueries}
     <Card>
@@ -304,15 +278,13 @@
     </Card>
   {/if}
 </div>
-
 <style>
-  .line-clamp-3 {;
+  .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-
   .prose {
     line-height: 1.6;
   }

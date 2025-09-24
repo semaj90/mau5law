@@ -1,13 +1,11 @@
 import type { RequestHandler } from './$types.js'
 import { minioService, BUCKETS } from '$lib/server/storage/minio-service'
-
 /**
  * MinIO Bucket Management API
  * GET: List all buckets and their status
  * POST: Create or ensure buckets exist
  * DELETE: Remove empty buckets (admin only)
  */
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Initialize MinIO service
@@ -21,16 +19,13 @@ export const GET: RequestHandler = async ({ url }) => {
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     // Get bucket details
     const includeStats = url.searchParams.get('stats') === 'true'
     const buckets = await minioService.listBuckets()
-
     let bucketDetails = buckets.map(bucket => ({
       name: bucket.name,
       creationDate: bucket.creationDate
     })
-
     // Add file counts if stats requested
     if (includeStats) {
       const detailedBuckets = await Promise.allSettled(buckets.map(async (bucket) => {
@@ -53,24 +48,21 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         })
       )
-
       bucketDetails = detailedBuckets.map(result =>
         (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value: (result as { status?: any; value?: any; reason?: any }).reason
       )
     }
-
     // Show expected vs actual buckets
     const expectedBuckets = Object.values(BUCKETS)
     const actualBuckets = buckets.map(b => b.name)
     const missingBuckets = expectedBuckets.filter(name => !actualBuckets.includes(name)
-
     return new Response(JSON.stringify({
-      success: true,
-      buckets: bucketDetails,
+      success: true
+      buckets: bucketDetails
       summary: {
         total: buckets.length,
         expected: expectedBuckets.length,
-        missing: missingBuckets,
+        missing: missingBuckets
         allBucketsReady: missingBuckets.length === 0
       },
       timestamp: new Date().toISOString()
@@ -78,7 +70,6 @@ export const GET: RequestHandler = async ({ url }) => {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     })
-
   } catch (error) {
     console.error('Bucket listing error:', error)
     return new Response(JSON.stringify({
@@ -90,12 +81,10 @@ export const GET: RequestHandler = async ({ url }) => {
     })
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
     const { action, bucketName } = body
-
     // Initialize MinIO service
     const initialized = await minioService.initialize()
     if (!initialized) {
@@ -106,13 +95,11 @@ export const POST: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     if (action === 'ensure-all') {
       // Ensure all standard buckets exist
       const results = await minioService.ensureAllBuckets()
-
       return new Response(JSON.stringify({
-        success: true,
+        success: true
         action: 'ensure-all',
         results,
         timestamp: new Date().toISOString()
@@ -121,13 +108,11 @@ export const POST: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     if (action === 'create' && bucketName) {
       // Create specific bucket
       const created = await minioService.createBucket(bucketName)
-
       return new Response(JSON.stringify({
-        success: created,
+        success: created
         action: 'create',
         bucketName,
         message: created ? 'Bucket created successfully' : 'Bucket creation failed',
@@ -137,7 +122,6 @@ export const POST: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     return new Response(JSON.stringify({
       error: 'Invalid action. Supported actions: ensure-all, create',
       availableActions: ['ensure-all', 'create']
@@ -145,7 +129,6 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 400,
       headers: { 'Content-Type': 'application/json' }
     })
-
   } catch (error) {
     console.error('Bucket management error:', error)
     return new Response(JSON.stringify({
@@ -157,11 +140,9 @@ export const POST: RequestHandler = async ({ request }) => {
     })
   }
 }
-
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
     const { bucketName, force = false } = await request.json()
-
     if (!bucketName) {
       return new Response(JSON.stringify({
         error: 'bucketName is required'
@@ -170,7 +151,6 @@ export const DELETE: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     // Prevent deletion of standard buckets unless forced
     const standardBuckets = Object.values(BUCKETS)
     if (standardBuckets.includes(bucketName) && !force) {
@@ -183,7 +163,6 @@ export const DELETE: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     // Initialize MinIO service
     const initialized = await minioService.initialize()
     if (!initialized) {
@@ -194,7 +173,6 @@ export const DELETE: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     // Check if bucket is empty before deletion
     const files = await minioService.listFiles(bucketName, undefined, 1)
     if (files.length > 0 && !force) {
@@ -207,12 +185,10 @@ export const DELETE: RequestHandler = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' }
       })
     }
-
     // Delete bucket (implementation needed in MinIO service)
     const deleted = await minioService.deleteBucket(bucketName, force)
-
     return new Response(JSON.stringify({
-      success: deleted,
+      success: deleted
       action: 'delete',
       bucketName,
       message: deleted ? 'Bucket deleted successfully' : 'Bucket deletion failed',
@@ -221,7 +197,6 @@ export const DELETE: RequestHandler = async ({ request }) => {
       status: deleted ? 200 : 500,
       headers: { 'Content-Type': 'application/json' }
     })
-
   } catch (error) {
     console.error('Bucket deletion error:', error)
     return new Response(JSON.stringify({

@@ -1,14 +1,10 @@
 import cluster from "node:cluster"
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
-
 /*
  * Cluster Status API Endpoint
  * Provides real-time cluster health and worker metrics
  */
-
-
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // If we're in a worker process, proxy to primary
@@ -22,14 +18,12 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       }, { status: 503 })
     }
-
     // Get cluster manager instance (would be injected in real implementation)
     const clusterManager = globalThis.clusterManager
-    
     if (!clusterManager) {
       return json({
         error: 'Cluster manager not available',
-        single_process: true,
+        single_process: true
         process: {
           pid: process.pid,
           memory: process.memoryUsage(),
@@ -38,11 +32,9 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       })
     }
-
     // Collect cluster health data
     const health = await clusterManager.getHealth()
     const workers = await clusterManager.getWorkerMetrics()
-
     return json({
       health,
       workers,
@@ -55,10 +47,8 @@ export const GET: RequestHandler = async ({ url }) => {
         architecture: process.arch
       }
     })
-
   } catch (error: any) {
     console.error('Cluster status error:', error)
-    
     return json({
       error: 'Failed to get cluster status',
       message: error instanceof Error ? error.message : 'Unknown error',
@@ -72,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
           cpuUsage: { total: 0, average: 0 },
           errors: { total: 0, rate: 0 }
         },
-        workers: [{
+        workers: [{,
           workerId: 1,
           pid: process.pid,
           status: 'online' as const,

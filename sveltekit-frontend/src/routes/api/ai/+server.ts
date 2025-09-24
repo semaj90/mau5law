@@ -1,6 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit'
 import type { AIServiceResponse } from '$lib/ai/ai-service'
-
 interface AIRequest {
   caseId: string
   prompt: string
@@ -11,7 +10,6 @@ interface AIRequest {
   temperature?: number
   stream?: boolean
 }
-
 interface OllamaResponse {
   model: string
   created_at: string
@@ -25,27 +23,21 @@ interface OllamaResponse {
   eval_count?: number
   eval_duration?: number
 }
-
 class LegalAIService {
   private ollamaUrl: string
   private defaultModel = 'gemma3:legal-latest'
   private embeddingModel = 'embeddinggemma:latest'
-
   constructor() {
     // Use environment variable or default to localhost
     this.ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434'
   }
-
   async generateResponse(request: AIRequest): Promise<AIServiceResponse> {
     const startTime = Date.now()
-
     try {
       // Build system prompt for legal context
       const systemPrompt = this.buildLegalSystemPrompt(request.context || 'general')
-
       // Combine system prompt with user prompt
       const fullPrompt = `${systemPrompt}\n\n${request.prompt}`
-
       // Call Ollama API
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
@@ -54,8 +46,8 @@ class LegalAIService {
         },
         body: JSON.stringify({
           model: request.model || this.defaultModel,
-          prompt: fullPrompt,
-          stream: false,
+          prompt: fullPrompt
+          stream: false
           options: {
             temperature: request.temperature || 0.7,
             top_p: 0.9,
@@ -65,17 +57,13 @@ class LegalAIService {
           }
         })
       })
-
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.status} ${response.statusText}`)
       }
-
       const ollamaResult: OllamaResponse = await response.json()
       const processingTime = Date.now() - startTime
-
       // Parse the response for legal insights
       const analysisResult = this.analyzeLegalResponse(ollamaResult.response, request.context)
-
       return {
         text: ollamaResult.response,
         timestamp: Date.now(),
@@ -89,16 +77,13 @@ class LegalAIService {
           processingTime
         }
       }
-
     } catch (error) {
       console.error('Legal AI Service Error:', error)
       throw new Error(`AI processing failed: ${error instanceof Error ? error.message: 'Unknown error'}`)
     }
   }
-
   private buildLegalSystemPrompt(context: string): string {
     const basePrompt = `You are an expert legal AI assistant with deep knowledge of legal procedures, evidence analysis, and case investigation. You specialize in helping legal professionals analyze complex cases, identify evidence patterns, and provide actionable insights.
-
 Key capabilities:
 - Evidence analysis and categorization
 - Legal precedent identification
@@ -106,7 +91,6 @@ Key capabilities:
 - Witness statement analysis
 - Document authenticity assessment
 - Risk assessment and compliance checking
-
 Guidelines:
 - Always provide factual, objective analysis
 - Cite relevant legal principles when applicable
@@ -114,7 +98,6 @@ Guidelines:
 - Highlight potential risks or concerns
 - Maintain professional legal standards
 - Format responses clearly with headings and bullet points where appropriate`
-
     const contextPrompts = {
       analysis: `\n\nCurrent Task: EVIDENCE ANALYSIS
 Focus on examining the provided evidence for:
@@ -123,7 +106,6 @@ Focus on examining the provided evidence for:
 - Potential weaknesses or strengths
 - Supporting or contradictory elements
 - Recommended preservation actions`,
-
       connection: `\n\nCurrent Task: CONNECTION ANALYSIS
 Focus on identifying relationships between evidence:
 - Temporal connections and timelines
@@ -131,7 +113,6 @@ Focus on identifying relationships between evidence:
 - Corroborating or contradictory evidence
 - Pattern identification
 - Chain of custody considerations`,
-
       annotation: `\n\nCurrent Task: EVIDENCE ANNOTATION
 Focus on providing detailed documentation:
 - Significance of the evidence
@@ -139,7 +120,6 @@ Focus on providing detailed documentation:
 - Required follow-up actions
 - Preservation recommendations
 - Potential challenges or objections`,
-
       investigation: `\n\nCurrent Task: INVESTIGATION PLANNING
 Focus on strategic next steps:
 - Priority evidence to collect
@@ -147,14 +127,11 @@ Focus on strategic next steps:
 - Expert consultations needed
 - Potential legal challenges
 - Timeline and resource planning`,
-
       general: `\n\nCurrent Task: GENERAL LEGAL ASSISTANCE
 Provide comprehensive legal guidance as appropriate for the query.`
     }
-
     return basePrompt + (contextPrompts[context as keyof typeof contextPrompts] || contextPrompts.general)
   }
-
   private analyzeLegalResponse(response: string, context?: string): {
     evidenceConnections: string[]
     suggestedActions: AIServiceResponse['suggestedActions']
@@ -162,7 +139,6 @@ Provide comprehensive legal guidance as appropriate for the query.`
     reasoning: string
   } {
     const lines = response.split('\n').map(line => line.trim()).filter(Boolean)
-
     // Extract evidence connections (look for references to evidence IDs or connections)
     const evidenceConnections: string[] = []
     const connectionPattern = /evidence[_\s]*(?:id|ref)?[:\s]*([a-zA-Z0-9-]+)/gi
@@ -170,10 +146,8 @@ Provide comprehensive legal guidance as appropriate for the query.`
     while ((match = connectionPattern.exec(response)) !== null) {
       evidenceConnections.push(match[1])
     }
-
     // Extract suggested actions based on common legal action phrases
     const suggestedActions: NonNullable<AIServiceResponse['suggestedActions']> = []
-
     const actionPatterns = [
       { pattern: /recommend(?:ed|ing)?\s+(.*?)(?:\.|$)/gi, type: 'investigate' as const },
       { pattern: /should\s+(?:be\s+)?(?:annotated|noted|marked)\s+(.*?)(?:\.|$)/gi, type: 'annotate' as const },
@@ -181,7 +155,6 @@ Provide comprehensive legal guidance as appropriate for the query.`
       { pattern: /search\s+(?:for|through)\s+(.*?)(?:\.|$)/gi, type: 'search' as const },
       { pattern: /categorize\s+(?:as|under)\s+(.*?)(?:\.|$)/gi, type: 'categorize' as const }
     ]
-
     actionPatterns.forEach(({ pattern, type }) => {
       let match
       while ((match = pattern.exec(response)) !== null) {
@@ -195,13 +168,10 @@ Provide comprehensive legal guidance as appropriate for the query.`
         }
       }
     })
-
     // Calculate confidence based on response characteristics
     const confidence = this.calculateConfidence(response, context)
-
     // Extract reasoning (look for explanation phrases)
     const reasoning = this.extractReasoning(response)
-
     return {
       evidenceConnections: [...new Set(evidenceConnections)], // Remove duplicates
       suggestedActions: suggestedActions.slice(0, 5), // Limit to top 5 actions
@@ -209,7 +179,6 @@ Provide comprehensive legal guidance as appropriate for the query.`
       reasoning
     }
   }
-
   private cleanActionDescription(description: string): string {
     // Clean up extracted action descriptions
     return description
@@ -218,13 +187,10 @@ Provide comprehensive legal guidance as appropriate for the query.`
       .replace(/^\s*to\s+/i, '') // Remove leading "to"
       .trim()
   }
-
   private determinePriority(description: string): 'low' | 'medium' | 'high' {
     const highPriorityWords = ['urgent', 'critical', 'immediate', 'asap', 'priority']
     const mediumPriorityWords = ['important', 'should', 'recommend', 'suggest']
-
     const lowDesc = description.toLowerCase()
-
     if (highPriorityWords.some(word => lowDesc.includes(word))) {
       return 'high'
     } else if (mediumPriorityWords.some(word => lowDesc.includes(word))) {
@@ -233,20 +199,16 @@ Provide comprehensive legal guidance as appropriate for the query.`
       return 'low'
     }
   }
-
   private calculateConfidence(response: string, context?: string): number {
     let confidence = 0.5; // Base confidence
-
     // Increase confidence for structured responses
     if (response.includes('•') || response.includes('-') || response.includes('1.')) {
       confidence += 0.1
     }
-
     // Increase confidence for legal terminology
     const legalTerms = ['evidence', 'legal', 'court', 'case', 'precedent', 'statute', 'regulation']
-    const foundTerms = legalTerms.filter(item => item.includes(term)
+    const foundTerms = legalTerms.filter(item => item.includes(term))
     confidence += (foundTerms.length / legalTerms.length) * 0.2
-
     // Increase confidence for specific context-appropriate content
     const contextKeywords = {
       analysis: ['analyze', 'assessment', 'evaluation', 'finding'],
@@ -254,22 +216,18 @@ Provide comprehensive legal guidance as appropriate for the query.`
       annotation: ['note', 'significant', 'important', 'detail'],
       investigation: ['next step', 'recommend', 'investigate', 'follow-up']
     }
-
     if (context && contextKeywords[context as keyof typeof contextKeywords]) {
       const keywords = contextKeywords[context as keyof typeof contextKeywords]
       const foundKeywords = keywords.filter(item => item.includes(keyword)
       confidence += (foundKeywords.length / keywords.length) * 0.2
     }
-
     // Decrease confidence for very short responses
     if (response.length < 100) {
       confidence -= 0.1
     }
-
     // Ensure confidence is between 0 and 1
     return Math.max(0, Math.min(1, confidence)
   }
-
   private extractReasoning(response: string): string {
     // Look for explanation phrases
     const reasoningPatterns = [
@@ -279,31 +237,25 @@ Provide comprehensive legal guidance as appropriate for the query.`
       /this is important because\s+(.*?)(?:\.|$)/i,
       /the rationale is\s+(.*?)(?:\.|$)/i
     ]
-
     for (const pattern of reasoningPatterns) {
       const match = response.match(pattern)
       if (match && match[1]) {
         return match[1].trim()
       }
     }
-
     // If no explicit reasoning found, extract first explanatory sentence
     const sentences = response.split(/[.!?]+/).map(s => s.trim()).filter(Boolean)
     const explanatorySentence = sentences.find(sentence =>
       sentence.length > 20 &&
       (sentence.includes('indicate') || sentence.includes('suggest') || sentence.includes('show')
     )
-
     return explanatorySentence || 'Analysis based on legal best practices and evidence evaluation.'
   }
 }
-
 const legalAI = new LegalAIService()
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: AIRequest = await request.json()
-
     // Validate required fields
     if (!body.caseId || !body.prompt) {
       return json(
@@ -311,15 +263,11 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       )
     }
-
     // Generate AI response
     const response = await legalAI.generateResponse(body)
-
     return json(response)
-
   } catch (error) {
     console.error('AI API Error:', error)
-
     return json({
         error: 'Internal server error',
         message: error instanceof Error ? error.message: 'Unknown error occurred'
@@ -328,27 +276,21 @@ export const POST: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 // GET endpoint for health check and model status
 export const GET: RequestHandler = async () => {
   try {
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434'
-
     // Check if Ollama is available
     const response = await fetch(`${ollamaUrl}/api/tags`)
-
     if (!response.ok) {
       throw new Error('Ollama service unavailable')
     }
-
     const models = await response.json()
-
     return json({
       status: 'healthy',
       models: models.models || [],
       timestamp: new Date().toISOString()
     })
-
   } catch (error) {
     return json()
       {

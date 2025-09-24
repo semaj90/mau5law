@@ -6,19 +6,16 @@
  * - ttlMs optionally limits lifetime of entries.
  * - persistent enables localStorage backing (when available).
  */
-
-type PersistedEntry = {;
+type PersistedEntry = {
   value: unknown;
   expiresAt?: number | null;
 };
-
 interface MultiTierCacheOptions {
   memoryMaxEntries?: number; // max in-memory entries (LRU)
   defaultTtlMs?: number | null; // default TTL in ms, or null for no expiry
   persistent?: boolean; // whether to persist to localStorage
   storageKeyPrefix?: string; // prefix for localStorage keys
 }
-
 export default class MultiTierCache<V = unknown> {
   private memory = new Map<string, { value: V; expiresAt?: number | null }>();
   private memoryMaxEntries: number;
@@ -26,7 +23,6 @@ export default class MultiTierCache<V = unknown> {
   private persistent: boolean;
   private storageKeyPrefix: string;
   private hasLocalStorage: boolean;
-
   constructor(options: MultiTierCacheOptions = {}) {
 	this.memoryMaxEntries = options.memoryMaxEntries ?? 1000;
 	this.defaultTtlMs = options.defaultTtlMs ?? null;
@@ -35,19 +31,15 @@ export default class MultiTierCache<V = unknown> {
 	// use globalThis to safely detect availability of localStorage in different runtimes
 	this.hasLocalStorage = typeof globalThis !== 'undefined' && typeof (globalThis as any).localStorage !== 'undefined';
   }
-
   private now() {
 	return Date.now();
   }
-
   private storageKey(key: string) {
 	return `${this.storageKeyPrefix}${key}`;
   }
-
   private isExpired(expiresAt?: number | null) {
 	return typeof expiresAt === 'number' && expiresAt <= this.now();
   }
-
   private async loadFromStorage(key: string): Promise<any> {
 	if (!this.persistent || !this.hasLocalStorage) return null;
 	try {
@@ -66,7 +58,6 @@ export default class MultiTierCache<V = unknown> {
 	  return null;
 	}
   }
-
   private async saveToStorage(key: string, value: V, expiresAt?: number | null) {
 	if (!this.persistent || !this.hasLocalStorage) return;
 	try {
@@ -78,7 +69,6 @@ export default class MultiTierCache<V = unknown> {
 	  // ignore storage errors (quota, serialization)
 	}
   }
-
   private async removeFromStorage(key: string) {
 	if (!this.persistent || !this.hasLocalStorage) return;
 	try {
@@ -89,7 +79,6 @@ export default class MultiTierCache<V = unknown> {
 	  // ignore
 	}
   }
-
   private evictIfNeeded() {
 	while (this.memory.size > this.memoryMaxEntries) {
 	  // remove oldest (Map preserves insertion order; we keep most-recent-used by re-inserting on get/set)
@@ -98,7 +87,6 @@ export default class MultiTierCache<V = unknown> {
 	  this.memory.delete(oldestKey);
 	}
   }
-
   private pruneExpiredInMemory() {
 	const now = this.now();
 	const toRemove: string[] = [];
@@ -111,13 +99,10 @@ export default class MultiTierCache<V = unknown> {
 	  this.memory.delete(k);
 	}
   }
-
   // Public API
-
   async get(key: string): Promise<V | undefined> {
 	// prune expired entries first
 	this.pruneExpiredInMemory();
-
 	const inMem = this.memory.get(key);
 	if (inMem) {
 	  if (this.isExpired(inMem.expiresAt ?? null)) {
@@ -130,7 +115,6 @@ export default class MultiTierCache<V = unknown> {
 	  this.memory.set(key, inMem);
 	  return inMem.value;
 	}
-
 	// attempt to load from persistent storage
 	const fromStorage = await this.loadFromStorage(key);
 	if (fromStorage) {
@@ -139,23 +123,18 @@ export default class MultiTierCache<V = unknown> {
 	  this.evictIfNeeded();
 	  return fromStorage.value;
 	}
-
 	return undefined;
   }
-
   async set(key: string, value: V, ttlMs?: number | null): Promise<void> {
 	const effectiveTtl = ttlMs === undefined ? this.defaultTtlMs: ttlMs;
 	const expiresAt = typeof effectiveTtl === 'number' && effectiveTtl > 0 ? this.now() + effectiveTtl : null;
-
 	// set in memory and mark as recently used
 	this.memory.delete(key);
 	this.memory.set(key, { value, expiresAt });
 	this.evictIfNeeded();
-
 	// persist if enabled
 	await this.saveToStorage(key, value, expiresAt);
   }
-
   async clear(): Promise<void> {
 	this.memory.clear();
 	if (this.persistent && this.hasLocalStorage) {
@@ -175,14 +154,12 @@ export default class MultiTierCache<V = unknown> {
 	  }
 	}
   }
-
-  // convenience sync helpers (they still return Promise to keep API consistent);
+  // convenience sync helpers (they still return Promise to keep API consistent)
   async has(key: string): Promise<boolean> {
 	const v = await this.get(key);
 	return typeof v !== 'undefined';
   }
-
-  // number of items currently in-memory (not counting persisted-only);
+  // number of items currently in-memory (not counting persisted-only)
   size(): number {
 	this.pruneExpiredInMemory();
 	return this.memory.size;

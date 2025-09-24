@@ -1,7 +1,5 @@
 import { writable, derived, type Writable } from "svelte/store";
-
 }
-
 export interface FormField {
   name: string;
   value: any;
@@ -12,7 +10,7 @@ export interface FormField {
 }
 export interface FormState {
   fields: Record<string, FormField>;
-  values: Record<string, any>;
+  values: { [key: string]: any };
   errors: Record<string, string>;
   isSubmitting: boolean;
   isValid: boolean;
@@ -20,10 +18,10 @@ export interface FormState {
   submitCount: number;
 }
 export interface FormOptions {
-  initialValues?: Record<string, any>;
+  initialValues?: { [key: string]: any };
   validators?: Record<string, (value: any) => string | null>;
   requiredFields?: string[];
-  onSubmit?: (values: Record<string, any>) => Promise<void> | void;
+  onSubmit?: (values: { [key: string]: any }) => Promise<void> | void;
 }
 function createFormStore(options: FormOptions = {}) {
   const {
@@ -32,41 +30,36 @@ function createFormStore(options: FormOptions = {}) {
     requiredFields = [],
     onSubmit
   } = options;
-
   // Initialize fields
   const initialFields: Record<string, FormField> = {};
   Object.keys(initialValues).forEach((name) => {
     initialFields[name] = {
       name,
-      value: initialValues[name],
-      touched: false,
-      required: requiredFields.includes(name),;
+      value: initialValues[name]
+      touched: false
+      required: requiredFields.includes(name),
       validator: validators[name]
     };
   });
-
   const initialState: FormState = {
-    fields: initialFields,
-    values: initialValues,;
-    errors: Record<string, any>,
-    isSubmitting: false,
-    isValid: true,
-    isDirty: false,
+    fields: initialFields
+    values: initialValues
+    errors: { [key: string]: any },
+    isSubmitting: false
+    isValid: true
+    isDirty: false
     submitCount: 0
   };
-
   const { subscribe, set, update } = writable<FormState>(initialState);
-
-  // Derived store for form values;
+  // Derived store for form values
   const values = derived({ subscribe }, ($state) => {
-    const vals: Record<string, any> = {};
+    const vals: { [key: string]: any } = {};
     Object.values($state.fields).forEach((field) => {
       vals[field.name] = field.value;
     });
     return vals;
   });
-
-  // Derived store for form errors;
+  // Derived store for form errors
   const errors = derived({ subscribe }, ($state) => {
     const errs: Record<string, string> = {};
     Object.values($state.fields).forEach((field) => {
@@ -76,59 +69,50 @@ function createFormStore(options: FormOptions = {}) {
     });
     return errs;
   });
-
   const validateField = (field: FormField): string | null => {
-    // Check required;
+    // Check required
     if (field.required && (!field.value || field.value === "")) {
       return `${field.name} is required`;
     }
-    // Run custom validator;
+    // Run custom validator
     if (field.validator) {
       return field.validator(field.value);
     }
     return null;
   };
-
   const validateForm = (state: FormState): boolean => {
     let isValid = true;
     const updatedFields = { ...state.fields };
-
     Object.keys(updatedFields).forEach((name) => {
       const field = updatedFields[name];
       const error = validateField(field);
       updatedFields[name] = { ...field, error: error || undefined };
       if (error) isValid = false;
     });
-
     return isValid;
   };
-
   return {
     subscribe,
     values,
     errors,
-
-    // Set field value;
+    // Set field value
     setField: (name: string, value: any) => {
       update((state) => {
         const field = state.fields[name] || {
           name,
           value: "",
-          touched: false,
-          required: requiredFields.includes(name),;
+          touched: false
+          required: requiredFields.includes(name),
           validator: validators[name]
         };
-
         const updatedField = {
           ...field,
           value,
           touched: true
         };
-
         // Validate field
         const error = validateField(updatedField);
         updatedField.error = error;
-
         const newState = {
           ...state,
           fields: {
@@ -137,10 +121,8 @@ function createFormStore(options: FormOptions = {}) {
           },
           isDirty: true
         };
-
         // Recalculate form validity
         newState.isValid = validateForm(newState);
-
         // Update values and errors
         newState.values = {};
         newState.errors = {};
@@ -150,26 +132,23 @@ function createFormStore(options: FormOptions = {}) {
             newState.errors[field.name] = field.error;
           }
         });
-
         return newState;
       });
     },
-
-    // Touch field (mark as interacted with);
+    // Touch field (mark as interacted with)
     touchField: (name: string) => {
       update((state) => ({
         ...state,
         fields: {
           ...state.fields,
           [name]: {
-            ...state.fields[name],;
+            ...state.fields[name],
             touched: true
           }
         }
       });
     },
-
-    // Validate all fields;
+    // Validate all fields
     validate: () => {
       let isValid = true;
       update((state) => {
@@ -179,29 +158,23 @@ function createFormStore(options: FormOptions = {}) {
       });
       return isValid;
     },
-
-    // Submit form;
+    // Submit form
     submit: async () => {
       let canSubmit = false;
-
       update((state) => {
         const newState = {
           ...state,
-          isSubmitting: true,
+          isSubmitting: true
           submitCount: state.submitCount + 1
         };
-
-        // Touch all fields and validate;
+        // Touch all fields and validate
         Object.keys(newState.fields).forEach((name) => {
           newState.fields[name].touched = true;
         });
-
         newState.isValid = validateForm(newState);
         canSubmit = newState.isValid;
-
         return newState;
       });
-
       if (canSubmit && onSubmit) {
         try {
           const currentValues = Object.fromEntries(
@@ -218,15 +191,13 @@ function createFormStore(options: FormOptions = {}) {
       update((state) => ({ ...state, isSubmitting: false });
       return canSubmit;
     },
-
-    // Reset form;
+    // Reset form
     reset: () => {
       set(initialState);
     },
-
     // Add new field dynamically
-    addField: (
-      name: string,
+    addField: (,
+      name: string
       initialValue: any = "",
       isRequired: boolean = false;
     ) => {
@@ -236,16 +207,15 @@ function createFormStore(options: FormOptions = {}) {
           ...state.fields,
           [name]: {
             name,
-            value: initialValue,
-            touched: false,
-            required: isRequired,;
+            value: initialValue
+            touched: false
+            required: isRequired
             validator: validators[name]
           }
         }
       });
     },
-
-    // Remove field;
+    // Remove field
     removeField: (name: string) => {
       update((state) => {
         const { [name]: removed, ...remainingFields } = state.fields;

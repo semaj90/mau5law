@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
-https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+https: //svelte.dev/e/js_parse_error -->
 <!-- Evidence Analysis Modal with LLM integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  interface Evidence {;
+  interface Evidence {
     id: string;
     content: string;
     type: string;
@@ -20,7 +19,6 @@ https://svelte.dev/e/js_parse_error -->
     };
     tags?: string[];
   }
-
   interface Props {
     open?: boolean;
     evidence?: Evidence;
@@ -33,7 +31,6 @@ https://svelte.dev/e/js_parse_error -->
     evidence = null,
     similarEvidence = null
   }: Props = $props();
-
   import { fade, fly } from 'svelte/transition';
   import { Dialog } from '$lib/components/ui/dialog/Dialog.svelte';
   import Grid from '$lib/components/ui/grid/Grid.svelte';
@@ -46,23 +43,21 @@ https://svelte.dev/e/js_parse_error -->
   let isAnalyzing = $state(false);
   let newTags = $state<string >('');
   let analysisMode = $state<'quick' | 'detailed' | 'legal' >('detailed');
-
   async function analyzeEvidence() {
     if (!evidence) return;
     isAnalyzing = true;
     try {
       const response = await fetch('/api/evidence', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           caseId: evidence.caseId,
-          content: evidence.content,;
+          content: evidence.content,
           type: evidence.type,
-          generateAnalysis: true,;
+          generateAnalysis: true
           metadata: { analysisMode }
         })
       });
-
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; evidence?: unknown }).success) {
         evidence = { ...evidence, ...result.evidence };
@@ -78,15 +73,14 @@ https://svelte.dev/e/js_parse_error -->
     const tags = newTags.split.map(t => t.trim()).filter(Boolean);
     try {
       const response = await fetch('/api/evidence', {
-        method: 'PUT',;
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           evidenceId: evidence.id,
-          caseId: evidence.caseId,;
+          caseId: evidence.caseId,
           tags: [...(evidence.tags || []), ...tags];
         })
       });
-
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; evidence?: unknown }).success) {
         evidence = { ...evidence, tags: (result as { success?: unknown; evidence?: unknown }).evidence.tags };
@@ -109,19 +103,15 @@ https://svelte.dev/e/js_parse_error -->
     return 'text-red-600';
   }
 </script>
-
-<Dialog.Root 
-  bind:open 
-  title="Evidence Analysis" 
+<Dialog.Root
+  bind:open
+  title="Evidence Analysis"
   description="AI-powered legal evidence analysis and tagging"
   size="xl"
 >
   {#snippet trigger()}
-  
       {@render trigger?.()}
-    
   {/snippet}
-
   {#if evidence}
     <div class="space-y-4">
       <!-- Evidence Header -->
@@ -137,15 +127,13 @@ https://svelte.dev/e/js_parse_error -->
             <p class="space-y-4">ID: {evidence.id}</p>
           </div>
         </div>
-        
         <div class="space-y-4">
           <Button class="bits-btn" variant="secondary" size="sm">
 <Download class="space-y-4" />
             Export
-
-          <Button class="bits-btn" 
-            variant="primary" 
-            size="sm" 
+          <Button class="bits-btn"
+            variant="primary"
+            size="sm"
             onclick={() =>
 analyzeEvidence()}
             disabled={isAnalyzing}
@@ -157,13 +145,10 @@ analyzeEvidence()}
               <Brain class="space-y-4" />
               Re-analyze
             {/if}
-
         </div>
       </div>
-
       <!-- Grid Layout -->
       <Grid columns={12} gap="md" responsive={true}>
-        
         <!-- Evidence Content -->
         <GridItem colSpan={8}>
           <div class="space-y-4">
@@ -173,7 +158,6 @@ analyzeEvidence()}
             </p>
           </div>
         </GridItem>
-
         <!-- Quick Stats -->
         <GridItem colSpan={4}>
           <div class="space-y-4">
@@ -189,7 +173,6 @@ analyzeEvidence()}
                 </div>
               </div>
             {/if}
-
             <!-- Admissibility -->
             {#if evidence.analysis?.admissibility}
               <div class="space-y-4">
@@ -204,7 +187,6 @@ analyzeEvidence()}
             {/if}
           </div>
         </GridItem>
-
         <!-- Analysis Section -->
         {#if evidence.analysis}
           <GridItem colSpan={12}>
@@ -213,7 +195,6 @@ analyzeEvidence()}
                 <Sparkles class="space-y-4" />
                 AI Analysis
               </h4>
-              
               <Grid columns={12} gap="md">
                 <!-- Summary -->
                 <GridItem colSpan={6}>
@@ -224,7 +205,6 @@ analyzeEvidence()}
                     </p>
                   </div>
                 </GridItem>
-
                 <!-- Key Points -->
                 <GridItem colSpan={6}>
                   <div>
@@ -239,7 +219,6 @@ analyzeEvidence()}
                     </ul>
                   </div>
                 </GridItem>
-
                 <!-- Legal Reasoning -->
                 <GridItem colSpan={12}>
                   <div>
@@ -253,7 +232,6 @@ analyzeEvidence()}
             </div>
           </GridItem>
         {/if}
-
         <!-- Tags Section -->
         <GridItem colSpan={8}>
           <div class="space-y-4">
@@ -261,7 +239,6 @@ analyzeEvidence()}
               <Tag class="space-y-4" />
               Tags
             </h4>
-            
             <!-- Existing Tags -->
             <div class="space-y-4">
               {#each evidence.tags || [] as tag}
@@ -273,7 +250,6 @@ analyzeEvidence()}
                 </Badge>
               {/each}
             </div>
-
             <!-- Add Tags -->
             <div class="space-y-4">
               <Input
@@ -284,11 +260,9 @@ analyzeEvidence()}
               <Button class="bits-btn" size="sm" onclick={() =>
 updateTags()} disabled={!newTags.trim()}>
                 Add
-
             </div>
           </div>
         </GridItem>
-
         <!-- Similar Evidence -->
         <GridItem colSpan={4}>
           <div class="space-y-4">
@@ -308,17 +282,12 @@ updateTags()} disabled={!newTags.trim()}>
       </Grid>
     </div>
   {/if}
-
   {#snippet footer({ close })}
-  
       <Button class="bits-btn" variant="secondary" onclick={() =>
 close()}>
         Close
-
       <Button class="bits-btn" variant="primary" onclick={() =>
 onsaveAnalysis?.()}>
         Save Analysis
-
   {/snippet}
 </Dialog.Root>
-

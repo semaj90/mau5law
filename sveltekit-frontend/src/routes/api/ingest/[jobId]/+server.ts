@@ -6,13 +6,11 @@
  * Check the status of a queued ingestion job.
  * Jobs are tracked by the worker pool and database.
  */
-
 import { json, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { sharedWorkerPool } from '$lib/server/ingest/worker-pool-simple.js'
 import { db, userDocuments } from '$lib/server/index.js'
 import { eq, and, like } from 'drizzle-orm'
-
 interface JobStatusResponse {
   success: boolean
   jobId: string
@@ -32,25 +30,21 @@ interface JobStatusResponse {
   createdAt?: string
   completedAt?: string
 }
-
 export const GET: RequestHandler = async ({ params }) => {
   try {
     const { jobId } = params
-
     if (!jobId) {
       throw error(400, 'Job ID is required')
     }
-
     // First check worker pool for active/queued jobs
     const workerStats = sharedWorkerPool.getStats()
     const activeJobs = workerStats.activeJobs || []
     const queuedJobs = workerStats.queueSize || 0
-
     // Check if job is currently active
     const activeJob = activeJobs.find((job: any) => job.id === jobId)
     if (activeJob) {
       return json({
-        success: true,
+        success: true
         jobId,
         status: 'processing',
         progress: {
@@ -59,7 +53,6 @@ export const GET: RequestHandler = async ({ params }) => {
         }
       } as JobStatusResponse)
     }
-
     // Check database for completed jobs
     // Jobs are stored with source containing the jobId
     const documents = await db
@@ -75,19 +68,16 @@ export const GET: RequestHandler = async ({ params }) => {
       .from(userDocuments)
       .where(like(userDocuments.source, `%${jobId}%`)
       .limit(1)
-
     if (documents.length > 0) {
       const doc = documents[0]
       let metadata: any = {}
-
       try {
         metadata = JSON.parse(doc.metadata || '{}')
       } catch {
         // Ignore JSON parse errors
       }
-
       return json({
-        success: true,
+        success: true
         jobId,
         status: 'completed',
         documentId: doc.id,
@@ -101,11 +91,10 @@ export const GET: RequestHandler = async ({ params }) => {
         completedAt: metadata.completedAt || doc.createdAt?.toISOString()
       } as JobStatusResponse)
     }
-
     // Check if job might be queued (if queue size > 0 and no active match)
     if (queuedJobs > 0) {
       return json({
-        success: true,
+        success: true
         jobId,
         status: 'queued',
         progress: {
@@ -114,20 +103,17 @@ export const GET: RequestHandler = async ({ params }) => {
         }
       } as JobStatusResponse)
     }
-
     // Job not found
     return json({
-      success: true,
+      success: true
       jobId,
       status: 'not-found',
       error: 'Job not found in queue or database'
     } as JobStatusResponse)
-
   } catch (err) {
     console.error('Job status check error:', err)
-
     return json({
-      success: false,
+      success: false
       jobId: params.jobId || 'unknown',
       status: 'failed',
       error: err instanceof Error ? err.message: String(err)

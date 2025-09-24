@@ -1,12 +1,10 @@
 // Missing type definitions shim for common global types
 // Progressive replacement: Using proper Svelte 5 TypeScript patterns
-
 import type {
   AITask as ProperAITask,
   AIResponse as ProperAIResponse,
   WorkerStatus as ProperWorkerStatus,
 } from '../types/svelte5-patterns';
-
 // AI/LLM Types - Using proper definitions
 declare global {
   type LLMProvider = 'ollama' | 'openai' | 'anthropic' | 'huggingface';
@@ -48,7 +46,6 @@ declare global {
     analyzeError: (error: Error) => Promise<unknown>;
   };
 }
-
 // API Request/Response Types - Using proper definitions
 import type {
   CaseCreateRequest as ProperCaseCreateRequest,
@@ -60,7 +57,6 @@ import type {
   BulkOperationResponse as ProperBulkOperationResponse,
   FormSubmissionResult as ProperFormSubmissionResult,
 } from '../types/svelte5-patterns';
-
 declare global {
   type CaseCreateRequest = ProperCaseCreateRequest;
   type CaseUpdateRequest = ProperCaseUpdateRequest;
@@ -80,7 +76,6 @@ declare global {
   type BulkOperationResponse = ProperBulkOperationResponse;
   type FormSubmissionResult<T = unknown> = ProperFormSubmissionResult<T>;
 }
-
 // Database Types - Using proper definitions
 import type {
   CaseState,
@@ -88,7 +83,6 @@ import type {
   VectorSearchResult as ProperVectorSearchResult,
   VectorSearchOptions as ProperVectorSearchOptions,
 } from '../types/svelte5-patterns';
-
 declare module '$lib/types/database' {
   export type LegalDocument = {
     id: string;
@@ -129,7 +123,6 @@ declare module '$lib/types/database' {
   export type VectorSearchOptions = ProperVectorSearchOptions;
   export type VectorSearchResult = ProperVectorSearchResult;
 }
-
 // Service Types
 declare global {
   type DocumentCache = unknown;
@@ -147,7 +140,6 @@ declare global {
     sources?: unknown[];
   };
 }
-
 // XState Types
 declare global {
   type RecommendationMachineContext = {
@@ -158,12 +150,10 @@ declare global {
   type ConcurrencyTask = unknown;
   type WorkerResult = unknown;
 }
-
 // External Library Types
 declare module '$lib/types' {
-  // Duplicate removed: // Duplicate removed: export type Case = any;
+  // Duplicate removed: // Duplicate removed: export type Case = any
 }
-
 declare global {
   type GGUFInferenceRequest = {
     prompt: string;
@@ -176,11 +166,9 @@ declare global {
     priority: unknown;
   };
 }
-
 // Row/Database result types
 declare global {
     interface RowList<T> {
       rows: T;
     }
 }
-

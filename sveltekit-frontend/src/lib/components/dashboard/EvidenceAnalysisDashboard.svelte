@@ -1,14 +1,12 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { fade, fly } from 'svelte/transition';
   import { AIEvidenceAnalyzer, type EvidenceItem, type EvidenceAnalysis } from '$lib/services/ai-evidence-analyzer';
   import EvidenceAnalysisVisualization from '$lib/components/visualizations/EvidenceAnalysisVisualization.svelte';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-
   let analyzer: AIEvidenceAnalyzer;
   let evidenceItems = writable<EvidenceItem[]>([]);
   let selectedEvidence = writable<EvidenceItem | null>(null);
@@ -16,7 +14,6 @@
   let isAnalyzing = $state(false);
   let uploadedFile: File | null = null;
   let dropZoneActive = false;
-
   // Sample evidence types for demo
   const evidenceTypes = [
     { value: 'document', label: '📄 Document', icon: '📄' },
@@ -26,12 +23,10 @@
     { value: 'digital', label: '💾 Digital', icon: '💾' },
     { value: 'physical', label: '📦 Physical', icon: '📦' }
   ];
-
   $effect(() => {
     analyzer = new AIEvidenceAnalyzer();
     loadSampleEvidence();
   });
-
   function loadSampleEvidence() {
     const sampleEvidence: EvidenceItem[] = [
       {
@@ -39,7 +34,7 @@
         caseId: 'CASE-2024-001',
         type: 'document',
         title: 'Contract Agreement',
-        description: 'Employment contract between parties with disputed terms',;
+        description: 'Employment contract between parties with disputed terms',
         metadata: {
           dateCreated: '2024-01-15',
           author: 'Legal Department',
@@ -63,7 +58,7 @@
         caseId: 'CASE-2024-001',
         type: 'digital',
         title: 'Email Communications',
-        description: 'Email thread discussing contract terms and negotiations',;
+        description: 'Email thread discussing contract terms and negotiations',
         metadata: {
           dateRange: '2023-12-01 to 2024-01-10',
           participants: ['john@company.com', 'jane@client.com'],
@@ -86,7 +81,7 @@
         caseId: 'CASE-2024-001',
         type: 'image',
         title: 'Surveillance Footage Screenshot',
-        description: 'Screenshot from security camera showing meeting between parties',;
+        description: 'Screenshot from security camera showing meeting between parties',
         metadata: {
           captureDate: '2024-01-10',
           location: 'Conference Room B',
@@ -97,8 +92,8 @@
           {
             timestamp: new Date('2024-01-17'),
             handler: 'Security Department',
-            action: 'Image extracted from footage',;
-            location: 'Security Office',;
+            action: 'Image extracted from footage',
+            location: 'Security Office',
             signature: 'SEC-003';
           }
         ],
@@ -106,14 +101,11 @@
         updatedAt: new Date('2024-01-17')
       }
     ];
-
     evidenceItems.set(sampleEvidence);
   }
-
   async function analyzeEvidence(evidence: EvidenceItem) {
     isAnalyzing.set(true);
     selectedEvidence.set(evidence);
-
     try {
       const analysis = await analyzer.analyzeEvidence(evidence);
       currentAnalysis.set(analysis);
@@ -124,7 +116,6 @@
       isAnalyzing.set(false);
     }
   }
-
   async function handleFileUpload(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -132,24 +123,21 @@
       await processUploadedFile(uploadedFile);
     }
   }
-
   async function handleDrop(event: DragEvent) {
     event.preventDefault();
     dropZoneActive = false;
-
     if (event.dataTransfer?.files && event.dataTransfer.files[0]) {
       uploadedFile = event.dataTransfer.files[0];
       await processUploadedFile(uploadedFile);
     }
   }
-
   async function processUploadedFile(file: File) {
     // Create evidence item from uploaded file
     const newEvidence: EvidenceItem = {
       id: crypto.randomUUID(),
       caseId: 'CASE-2024-NEW',
       type: determineFileType(file),
-      title: file.name,;
+      title: file.name,
       description: `Uploaded file: ${file.name}`,
       metadata: {
         fileName: file.name,
@@ -161,19 +149,17 @@
         {
           timestamp: new Date(),
           handler: 'System User',
-          action: 'File uploaded',;
-          location: 'Web Interface',;
+          action: 'File uploaded',
+          location: 'Web Interface',
           signature: crypto.randomUUID();
         }
       ],
       createdAt: new Date(),
       updatedAt: new Date()
     };
-
     evidenceItems.update(items => [...items, newEvidence]);
     await analyzeEvidence(newEvidence);
   }
-
   function determineFileType(file: File): EvidenceItem['type'] {
     if (file.type.startsWith('image/')) return 'image';
     if (file.type.startsWith('video/')) return 'video';
@@ -181,36 +167,28 @@
     if (file.type.includes('pdf') || file.type.includes('document')) return 'document';
     return 'digital';
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     dropZoneActive = true;
   }
-
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
     dropZoneActive = false;
   }
-
   function getEvidenceIcon(type: EvidenceItem['type']) {
     return evidenceTypes.find(t => t.value === type)?.icon || '📁';
   }
-
   function exportAnalysis() {
     if (!$currentAnalysis) return;
-
     const dataStr = JSON.stringify($currentAnalysis, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-
     const exportFileDefaultName = `evidence-analysis-${$currentAnalysis.id}.json`;
-
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
   }
 </script>
-
 <div class="evidence-dashboard">
   <header class="dashboard-header">
     <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
@@ -220,7 +198,6 @@
       Analyze legal evidence using advanced AI models with Gemma 3 Legal
     </p>
   </header>
-
   <div class="dashboard-grid">
     <!-- Evidence List Panel -->
     <Card class="evidence-panel">
@@ -251,7 +228,6 @@
             </span>
           </label>
         </div>
-
         <!-- Evidence List -->
         <div class="evidence-list">
           {#each $evidenceItems as evidence}
@@ -279,7 +255,6 @@
         </div>
       </CardContent>
     </Card>
-
     <!-- Analysis Results Panel -->
     <div class="analysis-panel">
       {#if $isAnalyzing}
@@ -305,7 +280,6 @@
               Re-analyze
             </Button>
           </div>
-
           <EvidenceAnalysisVisualization analysis={$currentAnalysis} />
         </div>
       {:else}
@@ -325,112 +299,85 @@
     </div>
   </div>
 </div>
-
 <style>
   .evidence-dashboard {
     @apply min-h-screen bg-gray-50 dark:bg-gray-900 p-6;
   }
-
   .dashboard-header {
     @apply mb-8;
   }
-
   .dashboard-grid {
     @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
   }
-
   .evidence-panel {
     @apply lg:col-span-1;
   }
-
   .analysis-panel {
     @apply lg:col-span-2;
   }
-
   .upload-zone {
-    @apply border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 mb-4 text-center transition-colors;
+    @apply border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 mb-4 text-center transition-color;
   }
-
   .upload-zone.active {
     @apply border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20;
   }
-
   .upload-label {
     @apply cursor-pointer flex flex-col items-center;
   }
-
   .upload-icon {
     @apply w-12 h-12 text-gray-400 mb-2;
   }
-
   .upload-text {
     @apply text-sm text-gray-600 dark:text-gray-400;
   }
-
   .evidence-list {
     @apply space-y-2 max-h-96 overflow-y-auto;
   }
-
   .evidence-item {
     @apply w-full text-left p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-start gap-3;
   }
-
   .evidence-item.selected {
     @apply bg-indigo-50 dark:bg-indigo-900/30 border-indigo-500;
   }
-
   .evidence-icon {
     @apply text-2xl flex-shrink-0;
   }
-
   .evidence-info {
     @apply flex-1;
   }
-
   .evidence-title {
     @apply font-medium text-gray-900 dark:text-gray-100;
   }
-
   .evidence-description {
     @apply text-sm text-gray-600 dark:text-gray-400 mt-1;
   }
-
   .evidence-meta {
     @apply flex gap-3 mt-2;
   }
-
   .meta-item {
     @apply text-xs text-gray-500 dark:text-gray-500;
   }
-
   .analyzing-indicator {
     @apply flex-shrink-0;
   }
-
   .spinner {
-    @apply w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin;
+    @apply w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spi;
   }
-
   .loading-state {
     @apply flex flex-col items-center justify-center h-96;
   }
-
   .loading-spinner {
     @apply w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4;
   }
-
   .analysis-content {
     @apply space-y-4;
   }
-
   .analysis-actions {
     @apply flex justify-end gap-3 mb-4;
   }
-
   .empty-state {
     @apply flex flex-col items-center justify-center h-96 text-center;
   }
-
   .empty-icon {
     @apply w-16 h-16 text-gray-400 mb-4;
   }

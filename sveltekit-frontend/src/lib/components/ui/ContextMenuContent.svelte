@@ -5,19 +5,15 @@
   let {
     class_ = ""
   }: Props = $props();
-
   // Replaced melt with bits-ui components
   import { getContext } from "svelte";
   import { fly } from "svelte/transition";
-
   const contextMenu = (getContext("contextMenu") as any) || {
     elements: { menu: { subscribe: () => } },
   };
-
   const { elements } = contextMenu;
-  const { menu } = elements;
+  const { menu } = element;
 </script>
-
 {#if $menu}
   <div
     class="space-y-4"
@@ -26,7 +22,6 @@
     {@render children?.()}
   </div>
 {/if}
-
 <style>/* @unocss-include */ .context-menu {
     animation: contextMenuFadeIn 150ms ease-out;
 }
@@ -40,4 +35,3 @@
       transform: scale(1);
 }}
 </style>
-

@@ -5,11 +5,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { goto } from '$app/navigation';
   import FabricEvidenceCanvas from '../canvas/FabricEvidenceCanvas.svelte';
-
   // Types
   interface EvidenceItem {
     id: string;
@@ -35,10 +33,10 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       };
       unifiedInsights?: unknown;
     };
-    position: { x: number; y: number };
+    position: ;
+{ x: number; y: number };
   previewUrl?: string;
   }
-
   interface SearchSuggestion {
     text: string;
     type: 'case' | 'law' | 'evidence' | 'precedent';
@@ -46,7 +44,6 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     source: string;
     reasoning?: string;
   }
-
   // State management using Svelte 5 runes
   let evidenceItems = $state<EvidenceItem[]>([]);
   let filteredEvidence = $state<EvidenceItem[]>([]);
@@ -62,34 +59,28 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   let searchSuggestions = $state<SearchSuggestion[]>([]);
   let showSuggestions = $state(false);
   let processingStatus = $state<'idle' | 'processing' | 'complete'>('idle');
-
   // AI Analysis state
   let aiEnabled = $state(true);
   let ollamaConnected = $state(false);
   let cudaConnected = $state(false);
-
   // Advanced analysis state
   let selectedEvidence = $state<string[]>([]);
   let isAnalyzing = $state(false);
   let aiAnalysisResults = $state<any>(null);
   let showAnalysisModal = $state(false);
-
   // MinIO upload configuration
   let minioConnected = $state(false);
   let uploadToMinIO = $state(true);
   let currentBucket = $state('legal-documents');
   let buckets = $state<string[]>([]);
-
   // Gaming UI state
   let gamingMode = $state(true);
   let particleEffects = $state(true);
   let spatialAudio = $state(true);
   let retroTerminalMode = $state(false);
-
   // Drag and drop state
   let dropZone: HTMLElement;
   let dragCounter = 0;
-
   // Computed properties
   let totalEvidence = $derived(evidenceItems.length);
   let processingCount = $derived(
@@ -98,7 +89,6 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   let readyCount = $derived(
     evidenceItems.filter(item => item.status === 'ready').length
   );
-
   $effect(() => {
     (async () => {
 await loadExistingEvidence();
@@ -119,23 +109,21 @@ await loadExistingEvidence();
     // ignore
   }
   });
-
   // Service health checks
   async function checkServiceStatus() {
     try {
       // Check Ollama connection
       const ollamaResponse = await fetch('/api/v1/evidence/analyze', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({,
           evidenceId: 'health-check',
-          filename: 'test.txt',;
-          content: 'health check',;
+          filename: 'test.txt',
+          content: 'health check',
           type: 'document';
         })
       });
       ollamaConnected = ollamaResponse.status !== 500;
-
       // Check MinIO connection
       try {
         const minioResponse = await fetch('/api/v1/storage/health');
@@ -144,7 +132,6 @@ await loadExistingEvidence();
         console.warn('MinIO health check failed:', error);
         minioConnected = false;
       }
-
       console.log('Service status - Ollama:', ollamaConnected ? '✅' : '❌');
       console.log('Service status - MinIO:', minioConnected ? '✅' : '❌');
     } catch (error) {
@@ -152,7 +139,6 @@ await loadExistingEvidence();
       ollamaConnected = false;
     }
   }
-
   // Load MinIO buckets for selection
   async function loadBuckets() {
     try {
@@ -173,7 +159,6 @@ await loadExistingEvidence();
       buckets = [];
     }
   }
-
   // Load existing evidence
   async function loadExistingEvidence() {
     try {
@@ -187,11 +172,9 @@ await loadExistingEvidence();
       console.error('Failed to load evidence:', error);
     }
   }
-
   // Filter evidence based on search and filters
   function filterEvidence() {
-    let filtered = evidenceItems;
-
+    let filtered = evidenceItem;
     if (searchQuery.trim()) {
       filtered = filtered.filter(item => item.filename).toLowerCase().includes(searchQuery.toLowerCase()) ||
         (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis?.summary?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -199,14 +182,11 @@ await loadExistingEvidence();
         )
       );
     }
-
     if (selectedFilter !== 'all') {
       filtered = filtered.filter(item => item.type) === selectedFilter);
     }
-
     filteredEvidence = filtered;
   }
-
   // Get search suggestions from AI
   async function getSearchSuggestions(query: string) {
     if (query.length < 2) {
@@ -214,21 +194,19 @@ await loadExistingEvidence();
       showSuggestions = false;
       return;
     }
-
     try {
       const response = await fetch('/api/v1/evidence/search/suggest', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query,
-          type: 'legal',;
+          type: 'legal',
           limit: 5;
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
-        searchSuggestions = (data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).data.suggestions;
+        searchSuggestions = (data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).data.suggestion;
         showSuggestions = true;
       }
     } catch (error) {
@@ -236,7 +214,6 @@ await loadExistingEvidence();
       searchSuggestions = [];
     }
   }
-
   // Handle search input with debouncing
   let searchTimeout: ReturnType<typeof setTimeout> | null = null;
   function handleSearchInput() {
@@ -248,14 +225,12 @@ await loadExistingEvidence();
       }
     }, 300);
   }
-
   // Apply search suggestion
   function applySuggestion(suggestion: SearchSuggestion) {
     searchQuery = suggestion.text;
     showSuggestions = false;
     filterEvidence();
   }
-
   // Drag and drop handlers
   function handleDragEnter(e: DragEvent) {
     e.preventDefault();
@@ -264,7 +239,6 @@ await loadExistingEvidence();
       dragActive = true;
     }
   }
-
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     dragCounter--;
@@ -272,67 +246,58 @@ await loadExistingEvidence();
       dragActive = false;
     }
   }
-
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
     e.dataTransfer!.dropEffect = 'copy';
   }
-
   async function handleDrop(e: DragEvent) {
     e.preventDefault();
     dragActive = false;
     dragCounter = 0;
-
     const files = Array.from(e.dataTransfer?.files || []);
     if (files.length === 0) return;
-
     // Calculate drop position relative to the evidence board
     const rect = dropZone.getBoundingClientRect();
     const position = {
-      x: e.clientX - rect.left,;
+      x: e.clientX - rect.left,
       y: e.clientY - rect.top;
     };
-
     await uploadFiles(files, position);
   }
-
   // File upload with AI processing
-  async function uploadFiles(files: File[], position: { x: number; y: number }) {
+  async function uploadFiles(files: File[], position: ;
+{ x: number; y: number }) {
     isUploading = true;
     processingStatus = 'processing';
-
     for (const file of files) {
       try {
         // Create evidence item immediately for UI feedback
         const evidenceId = crypto.randomUUID();
         const newEvidence: EvidenceItem = {
-          id: evidenceId,
+          id: evidenceId
           filename: file.name,
           type: detectFileType(file.type),
           uploadedAt: new Date().toISOString(),
           status: 'uploading',
           size: file.size,
-          mimeType: file.type,;
-          position: {
-            x: position.x + (evidenceItems.length * 20),;
+          mimeType: file.type,
+          position: ;
+{
+            x: position.x + (evidenceItems.length * 20),
             y: position.y + (evidenceItems.length * 20);
           }
         };
-
         // Add preview URL for images
         if (file.type.startsWith('image/')) {
           (newEvidence as any).previewUrl = URL.createObjectURL(file);
         }
-
         evidenceItems = [...evidenceItems, newEvidence];
-
         // Upload file to MinIO
         const formData = new FormData();
         formData.append('file', file);
         formData.append('position', JSON.stringify(newEvidence.position));
         formData.append('bucket', currentBucket);
         formData.append('useMinIO', uploadToMinIO.toString());
-
         // Upload to MinIO if configured, using signed URL (recommended)
         if (uploadToMinIO) {
             try {
@@ -340,16 +305,14 @@ await loadExistingEvidence();
             const keyCandidate = `${(window as any).__CURRENT_USER_ID__ || 'anon'}/${file.name}`;
             const signedResp = await fetch('/api/v1/storage/signed-url', {
               method: 'POST',
-              credentials: 'include',;
-              headers: { 'Content-Type': 'application/json' },;
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ key: keyCandidate, bucket: currentBucket })
             });
-
             if (signedResp.ok) {
               const signedJson = await signedResp.json();
               const uploadUrl = signedJson.url;
               const namespacedKey = signedJson.key;
-
               // Upload directly to MinIO via PUT
               const putResp = await fetch(uploadUrl, { method: 'PUT', body: file });
               if (putResp.ok) {
@@ -363,11 +326,9 @@ await loadExistingEvidence();
                     }
                   } as EvidenceItem) : item
                 );
-
                 toastMessage = `Uploaded ${file.name} → ${signedJson.bucket}/${namespacedKey}`;
                 showToast = true;
                 setTimeout(() => { showToast = false; }, 4000);
-
                 // Trigger AI analysis
                 await analyzeEvidence(evidenceId, file);
               } else {
@@ -406,16 +367,13 @@ await loadExistingEvidence();
             await analyzeEvidence(evidenceId, file);
           }, 1000);
         }
-
       } catch (error) {
         console.error('File upload failed:', file.name, error);
       }
     }
-
     isUploading = false;
     filterEvidence();
   }
-
   // AI analysis of evidence
   async function analyzeEvidence(evidenceId: string, file: File) {
     try {
@@ -426,27 +384,24 @@ await loadExistingEvidence();
       } else if (file.type === 'application/pdf') {
         content = `PDF document: ${file.name}`; // In production, extract PDF text
       }
-
       // Call AI analysis API
       const response = await fetch('/api/v1/evidence/analyze', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidenceId,
-          filename: file.name,;
-          content: content.substring(0, 2000), // Limit content length;
+          filename: file.name,
+          content: content.substring(0, 2000), // Limit content length
           type: detectFileType(file.type);
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const analysisResult = await (response as { ok?: unknown; json?: unknown }).json();
-
         // Update evidence with AI analysis
         evidenceItems = evidenceItems.map.id === evidenceId ? {
             ...item,
             status: 'ready',
-            aiAnalysis: analysisResult.data.analysis;
+            aiAnalysis: analysisResult.data.analysi;
           } : item
         );
       } else {
@@ -454,16 +409,13 @@ await loadExistingEvidence();
         evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'error' } : item
         );
       }
-
     } catch (error) {
       console.error('AI analysis failed:', error);
       evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'error' } : item
       );
     }
-
     filterEvidence();
   }
-
   // Helper functions
   function detectFileType(mimeType: string): EvidenceItem['type'] {
     if (mimeType.startsWith('image/')) return 'image';
@@ -472,18 +424,16 @@ await loadExistingEvidence();
     if (mimeType.includes('pdf') || mimeType.startsWith('text/')) return 'document';
     return 'other';
   }
-
   function getFileIcon(type: EvidenceItem['type']): string {
     const icons = {
       document: '📄',
       image: '🖼️',
-      video: '🎥',;
-      audio: '🎵',;
+      video: '🎥',
+      audio: '🎵',
       other: '📎';
     };
     return icons[type];
   }
-
   // Revoke a preview URL if present
   function revokePreview(url?: string) {
     try {
@@ -494,30 +444,25 @@ await loadExistingEvidence();
       // ignore
     }
   }
-
   // Remove evidence and revoke any preview URL
   function removeEvidence(id: string) {
     // open confirmation modal before deleting
     pendingDeleteId = id;
     showDeleteModal = true;
   }
-
   async function confirmDelete() {
     const id = pendingDeleteId;
     if (!id) return;
-
     const item = evidenceItems.find(it => it.id === id);
-
     let remoteOk = true;
     if (item?.aiAnalysis?.storage?.bucket && item?.aiAnalysis?.storage?.key) {
       try {
         const resp = await fetch('/api/v1/storage/object', {
           method: 'DELETE',
-          credentials: 'include',;
-          headers: { 'Content-Type': 'application/json', 'x-api-key': (window as any).__MINIO_API_KEY__ || '' },;
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json', 'x-api-key': (window as any).__MINIO_API_KEY__ || '' },
           body: JSON.stringify(aiAnalysis).storage.bucket, key: (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis.storage.key })
         });
-
         const txt = await resp.text();
         if (!resp.ok) {
           remoteOk = false;
@@ -534,7 +479,6 @@ await loadExistingEvidence();
         setTimeout(() => { showToast = false; }, 4000);
       }
     }
-
     // Only remove locally if remote deletion succeeded (or there was nothing remote)
     if (remoteOk) {
       if (item && (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).previewUrl) revokePreview((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).previewUrl);
@@ -545,34 +489,29 @@ await loadExistingEvidence();
       filterEvidence();
     }
   }
-
   function cancelDelete() {
     pendingDeleteId = null;
     showDeleteModal = false;
   }
-
   // Cleanup object URLs when component unmounts
   onDestroy(() => {
     evidenceItems.forEach.previewUrl) revokePreview((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).previewUrl);
     });
   });
-
   function getStatusIcon(status: EvidenceItem['status']): string {
     const icons = {
       uploading: '⬆️',
-      processing: '🔄',;
-      ready: '✅',;
+      processing: '🔄',
+      ready: '✅',
       error: '❌';
     };
     return icons[status];
   }
-
   function getScoreColor(score: number): string {
     if (score >= 0.8) return 'text-green-600 bg-green-100';
     if (score >= 0.6) return 'text-yellow-600 bg-yellow-100';
     return 'text-red-600 bg-red-100';
   }
-
   // Real-time updates (simulate with timer)
   function startRealTimeUpdates() {
     setInterval(() => {
@@ -581,14 +520,14 @@ await loadExistingEvidence();
           return {
             ...item,
             status: 'ready',
-            aiAnalysis: {;
+            aiAnalysis: {
               summary: `AI analysis complete for ${(item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).filename}`,
               confidence: Math.random() * 0.4 + 0.6,
               relevantLaws: ['Sample Law 1', 'Sample Law 2'],
               suggestedTags: ['evidence', 'legal'],
               prosecutionScore: Math.random() * 0.5 + 0.5,
               legalRelevance: 'High - Contains relevant legal information',
-              keyFindings: ['Key finding 1', 'Key finding 2'],;
+              keyFindings: ['Key finding 1', 'Key finding 2'],
               recommendations: ['Recommendation 1', 'Recommendation 2'];
             }
           };
@@ -597,25 +536,22 @@ await loadExistingEvidence();
       });
     }, 5000);
   }
-
   // Enhanced AI analysis with all four advanced features
   async function performAdvancedAnalysis() {
     if (selectedEvidence.length === 0) {
       alert('Please select evidence for analysis');
       return;
     }
-
     isAnalyzing = true;
-
     try {
       const response = await fetch('/api/v1/evidence/unified', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          evidenceIds: selectedEvidence,
+        body: JSON.stringify({,
+          evidenceIds: selectedEvidence
           analysisScope: {
-            vectorSimilarity: true,
-            strategyRecommendations: true,
+            vectorSimilarity: true
+            strategyRecommendations: true
             wasmProcessing: false, // Enable for deep document analysis
             correlationAnalysis: true
           },
@@ -626,31 +562,26 @@ await loadExistingEvidence();
             includeVisualization: true
           },
           context: {
-            caseType: 'commercial',;
+            caseType: 'commercial',
             urgency: 'medium';
           }
         })
       });
-
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const analysis = await (response as { ok?: unknown; json?: unknown }).json();
-        aiAnalysisResults = analysis;
-
+        aiAnalysisResults = analysi;
         // Update evidence with comprehensive AI insights
         evidenceItems = evidenceItems.map.id)) {
             // Enhance evidence with unified analysis results
             const correlations = (analysis.correlationAnalysis?.correlations || []).filter((c: unknown) =>
               c.evidenceA === (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id || c.evidenceB === (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id
             );
-
             const vectorGroup = (analysis.vectorAnalysis?.similarityGroups || []).find((g: unknown) =>
               Array.isArray(g.evidenceIds) && g.evidenceIds.includes.id)
             );
-
             const recs = (analysis.unifiedInsights?.recommendations || []).filter((r: unknown) =>
               String(r.action || '').toLowerCase().includes-filename.toLowerCase())
             );
-
             return {
               ...item,
               aiAnalysis: {
@@ -659,19 +590,16 @@ await loadExistingEvidence();
                   correlations,
                   vectorGroup,
                   strategicImportance: analysis.strategyAnalysis?.primaryStrategy,
-                  recommendations: recs;
+                  recommendations: rec;
                 }
               }
             } as EvidenceItem;
           }
           return item;
         });
-
         showAnalysisModal = true;
-
         // Update search suggestions based on analysis
         updateSearchSuggestions(analysis);
-
       } else {
         console.error('Advanced analysis failed');
         alert('Advanced analysis failed. Please try again.');
@@ -683,18 +611,15 @@ await loadExistingEvidence();
       isAnalyzing = false;
     }
   }
-
   // Update search suggestions based on unified analysis
   function updateSearchSuggestions(analysis: unknown) {
     const newSuggestions: SearchSuggestion[] = [];
-
     // Add correlation-based suggestions
     if (analysis.correlationAnalysis?.patterns) {
       (analysis.correlationAnalysis.patterns || []).forEach((pattern: unknown) => {
         newSuggestions.push({ text: `${pattern.type}: ${pattern.description}`, type: 'evidence', confidence: 0.6, source: 'correlation' });
       });
     }
-
     // Add vector similarity suggestions
     if (analysis.vectorAnalysis?.similarityGroups) {
       (analysis.vectorAnalysis?.similarityGroups || []).forEach((group: unknown) => {
@@ -703,29 +628,25 @@ await loadExistingEvidence();
         });
       });
     }
-
     // Add strategy-based suggestions
     if (analysis.strategyAnalysis?.primaryStrategy) {
       newSuggestions.push({ text: `strategy:${analysis.strategyAnalysis.primaryStrategy}`, type: 'case', confidence: 0.6, source: 'strategy' });
     }
-
   // Update suggestions (limit to top 10)
   const merged = [...searchSuggestions, ...newSuggestions];
   // Dedupe by text
   const dedup = Array.from(new Map(merged.map(s => [s.text, s])).values());
   searchSuggestions = dedup.slice(0, 10);
   }
-
   // Fabric.js Canvas Event Handlers
-  function handleEvidenceMove(evidenceId: string, position: { x: number; y: number }) {
+  function handleEvidenceMove(evidenceId: string, position: ;
+{ x: number; y: number }) {
     // Update evidence position in our data
     evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, position } : item
     );
-
     // Optionally save to backend
-    // updateEvidencePosition(evidenceId, position);
+    // updateEvidencePosition(evidenceId, position)
   }
-
   function handleEvidenceSelect(evidenceId: string | null) {
     if (evidenceId) {
       if (!selectedEvidence.includes(evidenceId)) {
@@ -734,7 +655,6 @@ await loadExistingEvidence();
     }
     // Optional: update UI based on selection
   }
-
   function handleCanvasDropZone(data: { x: number; y: number; files?: File[] }) {
     if ((data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).files && (data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).files.length > 0) {
       // Handle file drop with specific position
@@ -743,16 +663,14 @@ await loadExistingEvidence();
       // Handle empty area click - could trigger file picker
       console.log('Canvas drop zone clicked at:', data);
       // Optional: trigger file picker dialog
-      // triggerFilePicker();
+      // triggerFilePicker()
     }
   }
 </script>
-
 <svelte:head>
   <title>🎮 Evidence Board - NES×YoRHa×N64 Legal AI</title>
   <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
 </svelte:head>
-
 <div class="nes-yorha-evidence-board min-h-screen bg-gradient-to-br from-nier-bg-primary via-nier-bg-secondary to-nier-bg-tertiary"
      class:retro-terminal={retroTerminalMode}
      class:particle-effects={particleEffects}>
@@ -760,7 +678,6 @@ await loadExistingEvidence();
   <header class="yorha-nier-bits-card border-b-4 border-nier-accent mb-6">
     <div class="w-full px-6 py-8">
       <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-
         <!-- Title Section with Gaming Elements -->
         <div class="flex flex-col lg:flex-row items-start lg:items-center gap-6">
           <div class="flex items-center gap-4">
@@ -778,7 +695,6 @@ await loadExistingEvidence();
               </p>
             </div>
           </div>
-
           <!-- System Status with NES Badges -->
           <div class="flex flex-wrap gap-2">
             <span class="nes-badge {ollamaConnected ? 'is-success' : 'is-error'}">
@@ -792,10 +708,8 @@ await loadExistingEvidence();
             </span>
           </div>
         </div>
-
         <!-- Gaming Controls & Stats -->
         <div class="flex flex-col lg:flex-row items-start lg:items-center gap-4">
-
           <!-- Evidence Stats with N64 Style -->
           <div class="flex gap-2">
             <div class="n64-stat-nier-bits-card bg-gradient-to-br from-blue-500 to-blue-700 text-white px-4 py-2 rounded-lg shadow-lg transform hover:scale-105 transition-all">
@@ -811,7 +725,6 @@ await loadExistingEvidence();
               <div class="text-xl font-bold">{readyCount}</div>
             </div>
           </div>
-
           <!-- Gaming Mode Toggle -->
           <div class="flex items-center gap-2">
             <button
@@ -822,7 +735,6 @@ await loadExistingEvidence();
             >
               🎮 Gaming
             </button>
-
             <button
               type="button"
               class="nes-btn {retroTerminalMode ? 'is-primary' : ''}"
@@ -836,15 +748,11 @@ await loadExistingEvidence();
       </div>
     </div>
   </header>
-
   <div class="w-full px-4 py-6">
-
     <!-- Gaming-Style Search & Control Panel -->
     <div class="nes-container with-title is-rounded mb-6 relative z-10">
       <p class="title">🔍 AI-Powered Evidence Search & Control</p>
-
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 gap-4 items-end">
-
         <!-- Enhanced Search Input -->
         <div class="lg:col-span-2">
           <label for="search-input" class="nes-text is-primary text-sm mb-2 block">Search Query</label>
@@ -858,7 +766,6 @@ await loadExistingEvidence();
               oninput={handleSearchInput}
             />
           </div>
-
           <!-- AI Suggestions Dropdown -->
           {#if showSuggestions && searchSuggestions.length > 0}
             <div class="nes-container is-dark mt-2 max-h-48 overflow-y-auto">
@@ -882,7 +789,6 @@ await loadExistingEvidence();
             </div>
           {/if}
         </div>
-
         <!-- Filter Selection -->
         <div>
           <label for="filter-select" class="nes-text is-primary text-sm mb-2 block">Evidence Type</label>
@@ -897,7 +803,6 @@ await loadExistingEvidence();
             </select>
           </div>
         </div>
-
         <!-- MinIO Bucket Selection -->
         <div>
           <label for="bucket-select" class="nes-text is-primary text-sm mb-2 block">Storage Bucket</label>
@@ -914,11 +819,8 @@ await loadExistingEvidence();
           </div>
         </div>
       </div>
-
-
       <!-- N64-Style Advanced Controls -->
       <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-
         <!-- Selection & Upload Controls -->
         <div class="flex flex-col gap-2">
           <button
@@ -934,26 +836,22 @@ await loadExistingEvidence();
           >
             {selectedEvidence.length === filteredEvidence.length ? '❌ Deselect All' : '✅ Select All'}
           </button>
-
           <label class="flex items-center gap-2">
             <input type="checkbox" class="nes-checkbox" bind:checked={uploadToMinIO}>
             <span class="nes-text text-sm">📦 Upload to MinIO</span>
           </label>
         </div>
-
         <!-- Gaming Options -->
         <div class="flex flex-col gap-2">
           <label class="flex items-center gap-2">
             <input type="checkbox" class="nes-checkbox" bind:checked={particleEffects}>
             <span class="nes-text text-sm">✨ Particle Effects</span>
           </label>
-
           <label class="flex items-center gap-2">
             <input type="checkbox" class="nes-checkbox" bind:checked={spatialAudio}>
             <span class="nes-text text-sm">🔊 Spatial Audio</span>
           </label>
         </div>
-
         <!-- Advanced AI Analysis -->
         <div class="flex flex-col gap-2">
           <button
@@ -968,7 +866,6 @@ await loadExistingEvidence();
               🧠 AI Analysis ({selectedEvidence.length})
             {/if}
           </button>
-
           {#if selectedEvidence.length > 0}
             <div class="nes-text text-xs text-center">
               {selectedEvidence.length} items selected
@@ -1000,10 +897,8 @@ await loadExistingEvidence();
             {/if}
           </div>
         {/if}
-
         {#if filteredEvidence.length === 0 && !dragActive}
           <div class="text-center py-12">
-
             <!-- Retro Terminal Style Empty State -->
             {#if retroTerminalMode}
               <div class="nes-container is-dark p-6 text-left max-w-2xl mx-auto font-mono">
@@ -1022,7 +917,6 @@ await loadExistingEvidence();
                 <div class="text-8xl mb-4">⚖️</div>
                 <h3 class="nes-text is-primary text-2xl mb-4">No Evidence Loaded</h3>
                 <p class="nes-text mb-4">Drag and drop files here to begin analysis</p>
-
                 <div class="flex flex-wrap justify-center gap-2 mb-4">
                   <span class="nes-badge">📄 PDF</span>
                   <span class="nes-badge">🖼️ Images</span>
@@ -1030,7 +924,6 @@ await loadExistingEvidence();
                   <span class="nes-badge">🎵 Audio</span>
                   <span class="nes-badge">📎 Files</span>
                 </div>
-
                 {#if buckets.length > 0}
                   <div class="mt-4 flex flex-wrap justify-center gap-2">
                     {#each buckets as b}
@@ -1040,14 +933,12 @@ await loadExistingEvidence();
                     {/each}
                   </div>
                 {/if}
-
                 {#if aiEnabled && ollamaConnected}
                   <div class="nes-container is-success p-4 inline-block">
                     <p class="nes-text text-sm">✨ AI Analysis Ready</p>
                     <p class="nes-text text-xs">gemma3-legal model online</p>
                   </div>
                 {/if}
-
                 {#if minioConnected}
                   <div class="nes-container is-primary p-4 inline-block mt-2">
                     <p class="nes-text text-sm">📦 MinIO Storage Ready</p>
@@ -1058,7 +949,6 @@ await loadExistingEvidence();
             {/if}
           </div>
         {/if}
-
         <!-- Fabric.js Evidence Canvas -->
         <div class="evidence-canvas-container">
           <FabricEvidenceCanvas
@@ -1070,22 +960,18 @@ await loadExistingEvidence();
             onDropZone={handleCanvasDropZone}
           />
         </div>
-
         <!-- Gaming-Style Evidence Cards (Alternative Grid View) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4" style="display: none;">
           {#each filteredEvidence as evidence (evidence.id)}
             <div class="evidence-nier-bits-card nes-container {selectedEvidence.includes(evidence.id) ? 'is-success' : 'with-title'} relative"
                  class:n64-glow={gamingMode && selectedEvidence.includes(evidence.id)};
                  class:yorha-selected={selectedEvidence.includes(evidence.id)}>
-
               {#if !selectedEvidence.includes(evidence.id)}
                 <p class="title">{getFileIcon(evidence.type)} Evidence File</p>
               {/if}
-
               <!-- Gaming-Style Header -->
               <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3 flex-1 min-w-0">
-
                   <!-- NES Checkbox -->
                   <label class="flex items-center">
                     <input
@@ -1103,7 +989,6 @@ await loadExistingEvidence();
                     />
                     <span></span>
                   </label>
-
                 <span class="w-10 h-10 flex items-center justify-center">
                   {#if evidence.previewUrl}
                     <img src={evidence.previewUrl} alt={evidence.filename} class="evidence-thumb rounded" />
@@ -1125,7 +1010,6 @@ await loadExistingEvidence();
                   <span class="text-lg" title={evidence.status}>
                 {getStatusIcon(evidence.status)}
               </span>
-
               <!-- AI Analysis -->
               {#if evidence.aiAnalysis}
                 <div class="space-y-2">
@@ -1138,12 +1022,10 @@ await loadExistingEvidence();
                     </span>
                   </div>
                 {/if}
-
                 <!-- Summary -->
                 <p class="text-xs text-gray-700 leading-relaxed">
                   {evidence.aiAnalysis.summary}
                 </p>
-
                 <!-- Relevant Laws -->
                 {#if evidence.aiAnalysis?.relevantLaws && evidence.aiAnalysis.relevantLaws.length > 0}
                   <div class="space-y-1">
@@ -1160,7 +1042,6 @@ await loadExistingEvidence();
                     </div>
                   </div>
                 {/if}
-
                 <!-- Tags -->
                 {#if evidence.aiAnalysis?.suggestedTags && evidence.aiAnalysis.suggestedTags.length > 0}
                   <div class="flex flex-wrap gap-1">
@@ -1171,7 +1052,6 @@ await loadExistingEvidence();
                     {/each}
                   </div>
                 {/if}
-
                 <!-- Storage URL -->
                 {#if evidence.aiAnalysis?.storage?.url}
                   <div class="mt-2 text-xs">
@@ -1180,7 +1060,6 @@ await loadExistingEvidence();
                     </a>
                   </div>
                 {/if}
-
                 <!-- Processing Status -->
                 {#if evidence.status === 'processing'}
                   <div class="mt-3 flex items-center gap-2 text-xs text-blue-600">
@@ -1194,12 +1073,10 @@ await loadExistingEvidence();
                 {/if}
               </div>
             {/if}
-
             </div>
           {/each}
       </div>
     </div>
-
     <!-- Upload Progress -->
     {#if isUploading}
       <div class="fixed bottom-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm">
@@ -1214,16 +1091,13 @@ await loadExistingEvidence();
     {/if}
   </div>
 </div>
-
 </div>
-
 <!-- Toast confirmation -->
 {#if showToast}
   <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded shadow-lg z-50">
     {toastMessage}
   </div>
 {/if}
-
 {#if showDeleteModal}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
@@ -1236,24 +1110,20 @@ await loadExistingEvidence();
     </div>
   </div>
 {/if}
-
 <style>
   .animate-spin {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-
   .evidence-thumb {
     width: 40px;
     height: 40px;
     object-fit: cover;
     display: block;
   }
-
   .evidence-canvas-container {
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     border-radius: 12px;
@@ -1266,7 +1136,6 @@ await loadExistingEvidence();
     position: relative;
     overflow: hidden;
   }
-
   .evidence-canvas-container::before {
     content: '';
     position: absolute;
@@ -1277,11 +1146,10 @@ await loadExistingEvidence();
     background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4, #10b981);
     border-radius: 12px 12px 0 0;
   }
-
   /* Gaming mode enhancements */
   /* Glow effect when the container that actually gets class:retro-glow wraps the canvas */
   /* Enhanced NES × N64 hybrid glow + CRT / pixel layering */
-  :global(.retro-glow) .evidence-canvas-container {;
+  :global(.retro-glow) .evidence-canvas-container {
     position: relative;
     --accent-a: 59 130 246;   /* blue */
     --accent-b: 139 92 246;   /* purple */
@@ -1296,12 +1164,11 @@ await loadExistingEvidence();
       inset 0 0 0 1px rgba(255 255 255 / 0.12),
       inset 0 0 6px 2px rgb(var(--accent-b) / 0.25);
     animation: canvasGlow 3.4s ease-in-out infinite alternate;
-    transition: box-shadow 350ms ease, border-color 350ms ease, transform 400ms;
+    transition: box-shadow 350ms ease, border-color 350ms ease, transform 400m;
     will-change: box-shadow, transform;
   }
-
   /* Pixel / scanline / chromatic edge layering */
-  :global(.retro-glow) .evidence-canvas-container::after,
+  :global(.retro-glow) .evidence-canvas-container:: after
   :global(.retro-glow) .evidence-canvas-container::before {
     content: '';
     pointer-events: none;
@@ -1309,7 +1176,6 @@ await loadExistingEvidence();
     inset: 0;
     border-radius: 10px;
   }
-
   /* Subtle animated radial / scanline hybrid (N64 + CRT feel) */
   :global(.retro-glow) .evidence-canvas-container::before {
     background:
@@ -1326,7 +1192,6 @@ await loadExistingEvidence();
     opacity: 0.55;
     animation: scanDrift 9s linear infinite;
   }
-
   /* NES-style pixel grid & edge glow */
   :global(.retro-glow) .evidence-canvas-container::after {
     background:
@@ -1344,7 +1209,6 @@ await loadExistingEvidence();
     opacity: 0.75;
     animation: hueShift 12s ease-in-out infinite;
   }
-
   /* Depth pop for N64 'cartridge slot' vibe when combined with .n64-depth parent */
   :global(.retro-glow .n64-depth) .evidence-canvas-container {
     transform: translateZ(0) scale(1.012);
@@ -1357,14 +1221,12 @@ await loadExistingEvidence();
       0 0 26px 10px rgb(var(--accent-b) / 0.35),
       inset 0 0 0 1px rgba(255 255 255 / 0.18);
   }
-
   /* YoRHa highlight pulse when drag active (parent toggles .yorha-glow) */
   :global(.yorha-glow) .evidence-canvas-container {
     outline: 2px solid rgba(var(--accent-c) / 0.8);
-    animation: canvasGlow 2.1s ease-in-out infinite alternate,
+    animation: canvasGlow 2.1s ease-in-out infinite alternatee,
                pulseRing 1.8s ease-in-out infinite;
   }
-
   /* Reduce intensity in retro terminal mode */
   :global(.retro-terminal) .evidence-canvas-container,
   :global(.retro-terminal.retro-glow) .evidence-canvas-container {
@@ -1375,33 +1237,28 @@ await loadExistingEvidence();
     animation: none;
     filter: contrast(1.05) saturate(0.85);
   }
-
   /* Accessibility: respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     :global(.retro-glow) .evidence-canvas-container,
-    :global(.retro-glow) .evidence-canvas-container::before,
+    :global(.retro-glow) .evidence-canvas-container:: before
     :global(.retro-glow) .evidence-canvas-container::after {
       animation: none !important;
     }
   }
-
   @keyframes scanDrift {
     0% { transform: translateY(0); opacity: 0.55; }
     50% { transform: translateY(-6px); opacity: 0.42; }
     100% { transform: translateY(0); opacity: 0.55; }
   }
-
   @keyframes hueShift {
     0% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg); }
     50% { filter: brightness(1.1) saturate(1.25) hue-rotate(25deg); }
     100% { filter: brightness(1.05) saturate(1.15) hue-rotate(0deg); }
   }
-
   @keyframes pulseRing {
     0% { outline-offset: 0; }
     100% { outline-offset: 4px; }
   }
-
   @keyframes canvasGlow {
     0% {
       box-shadow:
@@ -1415,4 +1272,3 @@ await loadExistingEvidence();
     }
   }
 </style>
-

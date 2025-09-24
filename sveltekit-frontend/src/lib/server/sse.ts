@@ -1,20 +1,15 @@
 import { logger } from './logger.js';
 import stream from "stream";
-
 // lib/server/sse.ts
 // Server-Sent Events helper for real-time streaming
-
-
 export class SSE {
   private clients: Map<string, WritableStream> = new Map();
   private encoder = new TextEncoder();
-
   /**
    * Create SSE response
    */;
   createResponse(): Response {
     const { readable, writable } = new TransformStream();
-    
     const response = new Response(readable, {
       headers: {
         'Content-Type': 'text/event-stream',
@@ -23,19 +18,15 @@ export class SSE {
         'X-Accel-Buffering': 'no'
       }
     });
-
     // Start heartbeat
     this.startHeartbeat(writable);
-    
     return response;
   }
-
   /**
    * Send event to client
    */;
   send(event: { type: string; data: any }): void {
     const message = `event: ${event.type}\ndata: ${JSON.stringify(event.data)}\n\n`;
-    
     for (const [clientId, stream] of this.clients) {
       try {
         const writer = stream.getWriter();
@@ -47,7 +38,6 @@ export class SSE {
       }
     }
   }
-
   /**
    * Close connection
    */;
@@ -61,7 +51,6 @@ export class SSE {
     }
     this.clients.clear();
   }
-
   private startHeartbeat(stream: WritableStream): void {
     const interval = setInterval(() => {
       try {

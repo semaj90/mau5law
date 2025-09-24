@@ -3,11 +3,9 @@
  * Automatically integrates Redis optimization into any SvelteKit API endpoint
  * Nintendo-inspired memory management for all legal AI operations
  */
-
 import type { RequestHandler } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
 import { appRedisOrchestrator } from '$lib/services/app-redis-orchestrator';
-
 type CacheStrategy = 'aggressive' | 'conservative' | 'minimal' | 'bypass';
 type MemoryBank = 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
 type AIQuery = { query: string; context: Record<string, unknown> };
@@ -19,17 +17,15 @@ type RedisResult = {
   sources?: unknown[];
   confidence?: number;
 };
-
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
-
 /**
  * Universal Redis Orchestrator Wrapper
  * Wraps any existing API endpoint with Redis optimization
  */
 export function withRedisOrchestrator(
-  originalHandler: RequestHandler,
+  originalHandler: RequestHandler
   config: {
     endpointName: string;
     cacheStrategy: CacheStrategy;
@@ -43,46 +39,39 @@ export function withRedisOrchestrator(
   return async event => {
     const { request, locals } = event;
     const startTime = performance.now();
-
     try {
-      // Skip Redis optimization for non-AI endpoints or when bypassed;
+      // Skip Redis optimization for non-AI endpoints or when bypassed
       if (config.cacheStrategy === 'bypass' || !isAIEndpoint(config.endpointName)) {
         return await originalHandler(event);
       }
-
       // Extract AI query from request if this is an AI endpoint
       const body = await extractBody(request);
       const aiQuery: AIQuery | null = config.aiQueryExtractor
         ? config.aiQueryExtractor(body)
         : extractStandardAIQuery(body, config.endpointName);
-
       if (!aiQuery) {
-        // No AI query detected, use original handler;
+        // No AI query detected, use original handler
         return await originalHandler({
           ...event,
           request: recreateRequest(request, body),
         });
       }
-
       // Generate session ID
       const sessionId = generateSessionId(request, locals);
-
       // Process through Redis orchestrator
       const result = await appRedisOrchestrator.processAIQuery(aiQuery.query, sessionId, {
         endpoint: config.endpointName,
         ...aiQuery.context,
-        requiresFresh: config.requiresFresh,;
+        requiresFresh: config.requiresFresh,
         priority: calculatePriority(config.cacheStrategy, config.endpointName),
         memoryBank: config.memoryBank,
       });
-
-      // If we have a cached result, return it immediately;
+      // If we have a cached result, return it immediately
       const r = result as RedisResult;
       if (r.cached || r.source === 'queued') {
         const source = (r.source || 'unknown').toUpperCase();
         const ms = typeof r.processing_time === 'number' ? r.processing_time.toFixed(2) : 'N/A';
         console.log(`🎮 [REDIS MIDDLEWARE] ${config.endpointName} - ${source} (${ms}ms)`);
-
         return json({
           ...parseRedisResult(result),
           _redis_optimization: {
@@ -91,39 +80,34 @@ export function withRedisOrchestrator(
             processing_time: r.processing_time,
             cache_strategy: config.cacheStrategy,
             memory_bank: config.memoryBank,
-            session_id: sessionId,;
+            session_id: sessionId
             timestamp: new Date().toISOString(),
           },
         });
       }
-
-      // No cache hit, process with original handler but track for caching;
+      // No cache hit, process with original handler but track for caching
       const originalResult = await originalHandler({
         ...event,
         request: recreateRequest(request, body),
       });
-
       // Cache the result if it's successful
       await cacheOriginalResult(originalResult, aiQuery.query, sessionId, config, performance.now() - startTime);
-
-      // Add Redis metadata to response;
+      // Add Redis metadata to response
       return addRedisMetadata(originalResult, {
-        endpoint: config.endpointName,;
+        endpoint: config.endpointName,
         source: 'fresh',
         processing_time: performance.now() - startTime,
         cache_strategy: config.cacheStrategy,
         memory_bank: config.memoryBank,
-        session_id: sessionId,
+        session_id: sessionId
       });
     } catch (err) {
       console.error(`🎮 [REDIS MIDDLEWARE] ${config.endpointName} error:`, err);
-
       // Fallback to original handler on Redis errors
       return await originalHandler(event);
     }
   };
 }
-
 /**
  * Quick Redis integration for existing endpoints
  * Just wrap your existing handler
@@ -143,12 +127,11 @@ export const redisOptimized = {
         const userId = typeof body['userId'] === 'string' ? (body['userId'] as string) : undefined;
         const useRAG = typeof body['useRAG'] === 'boolean' ? (body['useRAG'] as boolean) : true;
         return {
-          query: msg,;
+          query: msg
           context: { caseId, userId, useRAG },
         };
       },
     }),
-
   /** AI Analysis endpoints - conservative caching */
   aiAnalysis: (handler: RequestHandler) =>
     withRedisOrchestrator(handler, {
@@ -167,7 +150,6 @@ export const redisOptimized = {
         return { query, context: { analysisType, caseId, evidenceId } };
       },
     }),
-
   /** AI Search endpoints - aggressive caching */
   aiSearch: (handler: RequestHandler) =>
     withRedisOrchestrator(handler, {
@@ -184,14 +166,13 @@ export const redisOptimized = {
         return { query: q, context: { searchType, filters, maxResults } };
       },
     }),
-
   /** Document processing - minimal caching (often unique) */
   documentProcessing: (handler: RequestHandler) =>
     withRedisOrchestrator(handler, {
       endpointName: 'document-processing',
       cacheStrategy: 'minimal',
       memoryBank: 'SAVE_RAM',
-      requiresFresh: true, // Document processing should be fresh;
+      requiresFresh: true, // Document processing should be fresh
       aiQueryExtractor: (body: unknown) => {
         if (!isRecord(body)) return null;
         const content = body['content'];
@@ -202,7 +183,6 @@ export const redisOptimized = {
         return { query: content.substring(0, 500), context: { documentType, caseId, processingMode: mode } };
       },
     }),
-
   /** Evidence analysis - conservative caching */
   evidenceAnalysis: (handler: RequestHandler) =>
     withRedisOrchestrator(handler, {
@@ -221,7 +201,6 @@ export const redisOptimized = {
         return { query, context: { evidenceId, analysisType, caseId } };
       },
     }),
-
   /** Case scoring - aggressive caching */
   caseScoring: (handler: RequestHandler) =>
     withRedisOrchestrator(handler, {
@@ -236,12 +215,11 @@ export const redisOptimized = {
         const method = typeof body['method'] === 'string' ? (body['method'] as string) : 'standard';
         const criteria = isRecord(body['criteria']) ? (body['criteria'] as Record<string, unknown>) : {};
         return {
-          query: JSON.stringify(caseData).substring(0, 1000),;
+          query: JSON.stringify(caseData).substring(0, 1000),
           context: { caseId, scoringMethod: method, criteria },
         };
       },
     }),
-
   /** Generic AI endpoint wrapper */
   generic: (endpointName: string, handler: RequestHandler) =>
     withRedisOrchestrator(handler, {
@@ -250,14 +228,13 @@ export const redisOptimized = {
       memoryBank: 'PRG_ROM',
     }),
 };
-
 /**
  * Batch apply Redis optimization to multiple endpoints
  */
 export function optimizeEndpoints(
   endpoints: Record<
-    string,
-    {;
+    string
+    {
       handler: RequestHandler;
       type: keyof typeof redisOptimized;
       customName?: string;
@@ -265,7 +242,6 @@ export function optimizeEndpoints(
   >
 ) {
   const optimizedEndpoints: Record<string, RequestHandler> = {};
-
   for (const [key, config] of Object.entries(endpoints)) {
     if (config.type === 'generic' && config.customName) {
       optimizedEndpoints[key] = redisOptimized.generic(config.customName, config.handler);
@@ -275,64 +251,52 @@ export function optimizeEndpoints(
       );
     }
   }
-
   return optimizedEndpoints;
 }
-
 // Helper functions
-
 function isAIEndpoint(endpointName: string): boolean {
   const aiKeywords = ['ai', 'analyze', 'search', 'chat', 'generate', 'process', 'embed', 'score'];
   return aiKeywords.some(keyword => endpointName.toLowerCase().includes(keyword));
 }
-
 async function extractBody(request: Request): Promise<unknown> {
   if (request.method !== 'POST' && request.method !== 'PUT') {
     return {};
   }
-
   try {
     return await request.json();
   } catch {
     return {};
   }
 }
-
 function recreateRequest(originalRequest: Request, body: unknown): Request {
   if (originalRequest.method !== 'POST' && originalRequest.method !== 'PUT') {
     return originalRequest;
   }
-
   return new Request(originalRequest.url, {
     method: originalRequest.method,
-    headers: originalRequest.headers,;
+    headers: originalRequest.headers,
     body: JSON.stringify(body),
   });
 }
-
 function extractStandardAIQuery(body: unknown, _endpoint: string): AIQuery | null {
   // Standard query extraction patterns
   const queryFields = ['query', 'message', 'content', 'prompt', 'text', 'input'];
-
   const obj = typeof body === 'object' && body !== null ? (body as Record<string, unknown>) : undefined;
   if (!obj) return null;
-
   for (const field of queryFields) {
     const value = obj[field];
     if (typeof value === 'string') {
       return {
-        query: value,;
+        query: value
         context: {
           ...obj,
-          [field]: undefined,
+          [field]: undefined
         },
       };
     }
   }
-
   return null;
 }
-
 function generateSessionId(request: Request, locals: unknown): string {
   // Generate session ID from user, IP, or create anonymous session
   const l = isRecord(locals) ? (locals as Record<string, unknown>) : {};
@@ -341,12 +305,10 @@ function generateSessionId(request: Request, locals: unknown): string {
     (typeof user?.id === 'string' ? (user.id as string) : undefined) ||
     (typeof l.userId === 'string' ? (l.userId as string) : undefined);
   if (userId) return `user_${userId}`;
-
   const ip = request.headers.get('x-forwarded-for') || 'unknown';
   const sessionKey = `${ip}_${Date.now().toString(36)}`;
   return `anon_${sessionKey}`;
 }
-
 function calculatePriority(strategy: string, endpoint: string): number {
   const basePriorities = {
     'aggressive': 200,
@@ -354,31 +316,26 @@ function calculatePriority(strategy: string, endpoint: string): number {
     'minimal': 100,
     'bypass': 50,
   };
-
   const endpointModifiers = {
     'chat': 20,
     'search': 15,
     'analysis': 10,
     'scoring': 5,
   };
-
   const base = basePriorities[strategy as keyof typeof basePriorities] || 150;
   const modifier = Object.entries(endpointModifiers).find(([key]) => endpoint.includes(key))?.[1] || 0;
-
   return Math.min(255, base + modifier);
 }
-
 function parseRedisResult(result: unknown): Record<string, unknown> {
   try {
-    // If result contains structured data, parse it;
+    // If result contains structured data, parse it
     const rr = result as RedisResult & { response?: string };
     if (typeof rr.response === 'string' && rr.response.startsWith('{')) {
       return JSON.parse(rr.response);
     }
-
     return {
       response: (rr as RedisResult).response,
-      sources: (rr as RedisResult).sources || [],;
+      sources: (rr as RedisResult).sources || [],
       confidence: (rr as RedisResult).confidence ?? 0.8,
       processing_time: (rr as RedisResult).processing_time,
     };
@@ -388,11 +345,10 @@ function parseRedisResult(result: unknown): Record<string, unknown> {
     };
   }
 }
-
 async function cacheOriginalResult(
-  originalResult: Response,
-  query: string,
-  sessionId: string,
+  originalResult: Response
+  query: string
+  sessionId: string
   config: { endpointName: string },
   _processingTime: number
 ): Promise<void> {
@@ -400,16 +356,15 @@ async function cacheOriginalResult(
     // Avoid consuming the original response body here (may be streaming)
     // Trigger a low-priority background cache/store side-effect instead
     await appRedisOrchestrator.processAIQuery(query, sessionId, {
-      endpoint: `${config.endpointName}_cache_store`,;
+      endpoint: `${config.endpointName}_cache_store`,
       priority: 50, // Low priority for cache storage
-      useRAG: false,
-      requiresFresh: false,
+      useRAG: false
+      requiresFresh: false
     });
   } catch (error) {
     console.warn('🎮 Failed to cache original result:', error);
   }
 }
-
 function addRedisMetadata(response: Response, metadata: Record<string, unknown>): Response {
   // Preserve original body; attach metadata in a response header
   const headers = new Headers(response.headers);

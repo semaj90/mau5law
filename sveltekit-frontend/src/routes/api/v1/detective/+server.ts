@@ -1,48 +1,40 @@
 /**
  * Detective Mode API Routes
- * 
+ *
  * Endpoints:
  * GET    /api/v1/detective - Get detective insights for cases
  * POST   /api/v1/detective - Run detective analysis
  */
-
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { db, sql } from '$lib/server/db'
 import { z } from 'zod'
-
 // Detective analysis schema
 const DetectiveAnalysisSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
   analysisType: z.enum(['pattern_detection', 'anomaly_detection', 'connection_analysis', 'timeline_gap', 'risk_assessment']),
   evidenceIds: z.array(z.string().uuid()).optional(),
-  options: z.object({
+  options: z.object({,
     confidenceThreshold: z.number().min(0).max(1).default(0.7),
     includeHypotheses: z.boolean().default(true),
     maxInsights: z.number().min(1).max(50).default(10)
   }).default({})
 })
-
 /**
  * Detective Mode Service
  */
 class DetectiveModeService {
   constructor(private userId: string) {}
-
   async runAnalysis(data: z.infer<typeof DetectiveAnalysisSchema>) {
     const { caseId, analysisType, evidenceIds, options } = data
-
     // Get case details first
     const caseResult = await db.execute(sql`
       SELECT * FROM cases WHERE id = ${caseId} LIMIT 1
     `)
-    
     if (!(caseResult as any).length) {
       throw new Error('Case not found')
     }
-
     // Generate AI-powered insights
     const insights = await this.generateInsights(analysisType, caseId, evidenceIds, options)
-
     return {
       analysisType,
       caseId,
@@ -52,11 +44,9 @@ class DetectiveModeService {
       options
     }
   }
-
   private async generateInsights(analysisType: string, caseId: string, evidenceIds?: string[], options?: any) {
     // This would integrate with your local LLM for real detective analysis
     // For now, return sample insights
-    
     const sampleInsights = {
       pattern_detection: [
         {
@@ -99,11 +89,9 @@ class DetectiveModeService {
         }
       ]
     }
-
     return sampleInsights[analysisType as keyof typeof sampleInsights] || []
   }
 }
-
 /**
  * GET /api/v1/detective
  * Get detective insights with filtering
@@ -113,9 +101,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
     if (!locals.session || !locals.user) {
       return json({ success: false, message: 'Authentication required' }, { status: 401 })
     }
-
     const caseId = url.searchParams.get('caseId')
-    
     // Return sample insights for now
     const insights = [
       {
@@ -129,22 +115,19 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
         createdAt: new Date().toISOString()
       }
     ]
-
     return json({
-      success: true,
-      data: insights,
+      success: true
+      data: insights
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString()
       }
     })
-
   } catch (err: any) {
     console.error('Error fetching detective insights:', err)
     return json({ success: false, message: 'Failed to fetch insights', details: err.message }, { status: 500 })
   }
 }
-
 /**
  * POST /api/v1/detective
  * Run detective analysis on a case
@@ -154,33 +137,26 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!locals.session || !locals.user) {
       return json({ success: false, message: 'Authentication required' }, { status: 401 })
     }
-
     const body = await request.json()
     const validatedData = DetectiveAnalysisSchema.parse(body)
-
     const detectiveService = new DetectiveModeService(locals.user.id)
     const result = await detectiveService.runAnalysis(validatedData)
-
     return json({
-      success: true,
-      data: result,
+      success: true
+      data: result
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString()
       }
     }, { status: 201 })
-
   } catch (err: any) {
     console.error('Error running detective analysis:', err)
-
     if (err instanceof z.ZodError) {
       return json({ success: false, message: 'Invalid analysis request', details: err.errors }, { status: 400 })
     }
-
     if (err.message === 'Case not found') {
       return json({ success: false, message: 'Case not found' }, { status: 404 })
     }
-
     return json({ success: false, message: 'Analysis failed', details: err.message }, { status: 500 })
   }
 }

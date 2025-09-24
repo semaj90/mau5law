@@ -1,7 +1,6 @@
 <!-- Enhanced Chat Component with bits-ui, melt-ui, shadcn-svelte integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy, tick } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { createMachine, assign } from 'xstate';
@@ -9,18 +8,14 @@
   import { cn } from '$lib/utils/cn';
   import { chatStore } from '$lib/stores/chat';
   import type { ChatMessage, ChatSession } from '$lib/types/chat';
-
   // Local state
   let messageInput: string = '';
   let chatContainer: HTMLDivElement | null = null;
-
   // UnoCSS + bits-ui base styles
   import 'uno.css';
-
 	// Keep local messageInput / chatContainer as plain locals (no $state collision)
 	// Auto-scroll integration for Svelte 5 + bits-ui: subscribe to the machine state on mount
 	let machineUnsub: (() => void) | undefined;
-
 	$effect(() => {
 		// subscribe to the XState store when it's available (it will be assigned later in the file)
 		if (typeof state !== 'undefined' && state?.subscribe) {
@@ -32,7 +27,6 @@
 			});
 		}
 	});
-
 	onDestroy(() => {
 		machineUnsub?.();
 	});
@@ -45,14 +39,14 @@
   	// Enhanced Chat Machine with proper error handling
   	const enhancedChatMachine = createMachine({
   		id: 'enhancedChat',
-  		initial: 'idle',;
+  		initial: 'idle',
   		context: {
   			messages: [] as ChatMessage[],
   			currentMessage: '',
-  			isTyping: false,
-  			isLoading: false,
-  			session: null as ChatSession | null,
-  			error: null as string | null,
+  			isTyping: false
+  			isLoading: false
+  			session: null as ChatSession | null
+  			error: null as string | null
   			confidence: 0,
   			model: 'gemma3-legal';
   		},
@@ -72,14 +66,14 @@
   				invoke: {
   					src: 'initializeSession',
   					onDone: {
-  						target: 'idle',;
-  						actions: assign({
+  						target: 'idle',
+  						actions: assign({,
   							session: ({ event }) => event.data
   						})
   					},
   					onError: {
-  						target: 'error',;
-  						actions: assign({
+  						target: 'error',
+  						actions: assign({,
   							error: ({ event }) => event.data.message || 'Failed to initialize session'
   						})
   					}
@@ -87,13 +81,13 @@
   			},
   			sending: {
   				entry: assign({
-  					isLoading: true,
+  					isLoading: true
   					error: null;
   				}),
   				invoke: {
   					src: 'sendMessageToOllama',
   					onDone: {
-  						target: 'idle',;
+  						target: 'idle',
   						actions: [
   							assign({
   								messages: ({ context, event }) => [
@@ -102,7 +96,7 @@
   									event.data.aiResponse
   								],
   								currentMessage: '',
-  								isLoading: false,
+  								isLoading: false
   								confidence: ({ event }) => event.data.confidence || 0
   							}),
   							'saveChatHistory',
@@ -110,8 +104,8 @@
   						]
   					},
   					onError: {
-  						target: 'error',;
-  						actions: assign({
+  						target: 'error',
+  						actions: assign({,
   							error: ({ event }) => event.data.message || 'Failed to send message',
   							isLoading: false
   						})
@@ -122,15 +116,15 @@
   				on: {
   					RETRY: 'sending',
   					CLEAR_ERROR: {
-  						target: 'idle',;
-  						actions: assign({
+  						target: 'idle',
+  						actions: assign({,
   							error: null;
   						})
   					}
   				}
   			}
   		}
-  	}, {;
+  	}, {
   		actions: {
   			updateChatStore: ({ context }) => {
   				chatStore.setMessages(context.messages);
@@ -139,11 +133,11 @@
   				// Save to PostgreSQL with pgvector
   				try {
   					await fetch('/api/chat/save', {
-  						method: 'POST',;
+  						method: 'POST',
   						headers: { 'Content-Type': 'application/json' },
-  						body: JSON.stringify({
+  						body: JSON.stringify({,
   							messages: context.messages.slice(-2), // Last user + AI message
-  							sessionId: context.session?.id,;
+  							sessionId: context.session?.id,
   							model: context.model;
   						})
   					});
@@ -156,65 +150,62 @@
   			initializeSession: async () => {
   				const sessionId = crypto.randomUUID();
   				const session: ChatSession = {
-  					id: sessionId,
+  					id: sessionId
   					createdAt: new Date(),
-  					model: 'gemma3-legal',;
+  					model: 'gemma3-legal',
   					metadata: {
-  						userAgent: navigator.userAgent,;
+  						userAgent: navigator.userAgent,
   						context: 'legal-ai-chat';
   					}
   				};
   				// Initialize session in database
   				try {
   					await fetch('/api/chat/session', {
-  						method: 'POST',;
-  						headers: { 'Content-Type': 'application/json' },;
+  						method: 'POST',
+  						headers: { 'Content-Type': 'application/json' },
   						body: JSON.stringify(session);
   					});
   				} catch (error) {
   					console.warn('Failed to save session:', error);
   				}
-  				return session;
+  				return sessio;
   			},
   			sendMessageToOllama: async ({ context, event }) => {
   				const userMessage: ChatMessage = {
   					id: crypto.randomUUID(),
-  					content: event.message,;
-  					role: 'user',;
+  					content: event.message,
+  					role: 'user',
   					timestamp: new Date(),
   					sessionId: context.session?.id;
   				};
-
   				// Direct Ollama API call with streaming disabled for now
   				const response = await fetch('http://localhost:11434/api/generate', {
-  					method: 'POST',;
+  					method: 'POST',
   					headers: { 'Content-Type': 'application/json' },
-  					body: JSON.stringify({
+  					body: JSON.stringify({,
   						model: context.model,
   						prompt: event.message,
-  						stream: false,;
+  						stream: false
   						options: {
   							temperature: 0.7,
   							max_tokens: 1000,
   							top_p: 0.9;
-  						},;
+  						},
   						system: "You are a helpful legal AI assistant. Provide accurate, professional responses about legal matters. Always include appropriate disclaimers that your advice should not replace professional legal counsel.";
   					})
   				});
-
   				if (!response.ok) {
   					throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
   				}
-
   				const data = await response.json();
   				const aiResponse: ChatMessage = {
   					id: crypto.randomUUID(),
   					content: data.response || 'Sorry, I could not generate a response.',
   					role: 'assistant',
   					timestamp: new Date(),
-  					sessionId: context.session?.id,;
+  					sessionId: context.session?.id,
   					metadata: {
-  						model: context.model,;
+  						model: context.model,
   						confidence: data.confidence || 0.8,
   						totalDuration: data.total_duration,
   						loadDuration: data.load_duration,
@@ -222,7 +213,6 @@
   						evalCount: data.eval_count;
   					}
   				};
-
   				return {
   					userMessage,
   					aiResponse,
@@ -231,7 +221,6 @@
   			}
   		}
   	});
-
   	const { state, send } = useMachine(enhancedChatMachine);
   let messageInput = $state('');
   let chatContainer = $state<HTMLDivElement// Available models
@@ -245,7 +234,6 @@ const { state, send } = useMachine(enhancedChatMachine);
   			handleSend();
   		}
   	}
-
   	function scrollToBottom() {
   		if (chatContainer) {
   			setTimeout(() => {
@@ -253,21 +241,17 @@ const { state, send } = useMachine(enhancedChatMachine);
   			}, 50);
   		}
   	}
-
   	function formatTime(date: Date): string {
   		return new Intl.DateTimeFormat.format(date);
   	}
-
   	$effect(() => {
   		send({ type: 'CONNECT' });
   	});
-
   	// Auto-scroll when messages update
   	// TODO: Convert to $derived: if ($state.context.messages.length > 0) {
   		scrollToBottom()
   	}
 </script>
-
 <div class="enhanced-chat-container flex flex-col h-full max-w-4xl mx-auto p-4 space-y-4">
 	<!-- Header with model selector -->
 	<div class="chat-header flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border">
@@ -278,7 +262,6 @@ const { state, send } = useMachine(enhancedChatMachine);
 				<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Confidence: {Math.round($state.context.confidence * 100)}%</span>
 			{/if}
 		</div>
-
 		<div class="flex items-center space-x-2">
 	// Auto-scroll when messages update
 	$effect(() => { if ($state.context.messages.length > 0) ; });{
@@ -292,7 +275,6 @@ const { state, send } = useMachine(enhancedChatMachine);
 			</select>
 		</div>
 	</div>
-
 	<!-- Messages Area -->
 	<div
 		class="messages-container flex-1 min-h-96 max-h-96 overflow-y-auto p-4 bg-white rounded-lg border shadow-sm"
@@ -338,7 +320,6 @@ const { state, send } = useMachine(enhancedChatMachine);
 				</div>
 			{/each}
 		{/if}
-
 		<!-- Loading indicator -->
 		{#if $state.matches('sending')}
 			<div class="loading-message flex justify-start mb-4">
@@ -355,7 +336,6 @@ const { state, send } = useMachine(enhancedChatMachine);
 			</div>
 		{/if}
 	</div>
-
 	<!-- Error Display -->
 	{#if $state.matches('error') && $state.context.error}
 		<div class="error-container p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -428,36 +408,29 @@ send({ type: 'CLEAR_ERROR' })}
 		</div>
 	</div>
 </div>
-
 <style>
-	.typing-indicator div:nth-child(1) {;
-		animation-delay: 0s;
+	.typing-indicator div:nth-child(1) {
+		animation-delay: 0;
 	}
-	.typing-indicator div:nth-child(2) {;
-		animation-delay: 0.1s;
+	.typing-indicator div:nth-child(2) {
+		animation-delay: 0.1;
 	}
-	.typing-indicator div:nth-child(3) {;
-		animation-delay: 0.2s;
+	.typing-indicator div:nth-child(3) {
+		animation-delay: 0.2;
 	}
-
 	/* Custom scrollbar */
 	.messages-container::-webkit-scrollbar {
 		width: 6px;
 	}
-
 	.messages-container::-webkit-scrollbar-track {
 		background: #f1f5f9;
 		border-radius: 3px;
 	}
-
 	.messages-container::-webkit-scrollbar-thumb {
 		background: #cbd5e1;
 		border-radius: 3px;
 	}
-
 	.messages-container::-webkit-scrollbar-thumb:hover {
 		background: #94a3b8;
 	}
 </style>
-
-

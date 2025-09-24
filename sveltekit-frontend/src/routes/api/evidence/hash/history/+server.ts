@@ -4,8 +4,6 @@ import { json } from "@sveltejs/kit"
 import { db } from "$lib/server/db/index"
 import type { RequestHandler } from './$types.js'
 import { URL } from "url"
-
-
 export const POST: RequestHandler = async ({ request, locals }) => {
   const userId = locals.user?.id
   if (!userId) {
@@ -17,7 +15,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     method = "manual",
     notes
   } = await request.json()
-
   if (!evidenceId || !verifiedHash) {
     return json(
       { error: "evidenceId and verifiedHash required" },)
@@ -35,14 +32,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       .from(evidence)
       .where(eq(evidence.id, evidenceId)
       .limit(1)
-
     if (evidenceItem.length === 0) {
       return json({ error: "Evidence not found" }, { status: 404 })
     }
     const item = evidenceItem[0]
     const storedHash = (item as { hash?: any; fileName?: any }).hash
     const result = storedHash?.toLowerCase() === verifiedHash.toLowerCase()
-
     // Insert verification record using Drizzle
     const verificationResult = await db
       .insert(hashVerifications)
@@ -51,14 +46,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         verifiedHash: verifiedHash.toLowerCase(),
         storedHash,
         result,
-        verificationMethod: method,
-        verifiedBy: userId,
+        verificationMethod: method
+        verifiedBy: userId
         notes
       })
       .returning()
-
     return json({
-      success: true,
+      success: true
       result,
       evidenceId,
       fileName: (item as { hash?: any; fileName?: any }).fileName,
@@ -80,7 +74,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     )
   }
 }
-
 export const GET: RequestHandler = async ({ url, locals }) => {
   const userId = locals.user?.id
   if (!userId) {
@@ -90,7 +83,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const limit = parseInt(url.searchParams.get("limit") || "20")
     const offset = parseInt(url.searchParams.get("offset") || "0")
     const evidenceId = url.searchParams.get("evidenceId")
-
     let query = db
       .select({
         id: hashVerifications.id,
@@ -111,12 +103,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       .orderBy(desc(hashVerifications.verifiedAt)
       .limit(limit)
       .offset(offset)
-
     if (evidenceId) {
       query = query.where(eq(hashVerifications.evidenceId, evidenceId)) as any
     }
     const verifications = await query
-
     return json(verifications)
   } catch (error: any) {
     console.error("Error fetching hash verification history:", error)

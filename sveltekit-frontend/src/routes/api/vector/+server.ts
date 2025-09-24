@@ -2,17 +2,14 @@
 /**
  * Minimal Vector API - Simplified for error reduction
  */
-
 import { json, type RequestHandler } from '@sveltejs/kit'
 import { z } from 'zod'
-
 // Simple request schema
 const VectorRequestSchema = z.object({
   query: z.string().min(1),
   type: z.enum(['search', 'similarity', 'cluster']).default('search'),
   limit: z.number().min(1).max(100).default(10)
 })
-
 // Simple response type
 interface VectorResponse {
   success: boolean
@@ -20,28 +17,23 @@ interface VectorResponse {
   error?: string
   type?: string
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
-
     // Validate request
     const validatedData = VectorRequestSchema.safeParse(body)
     if (!validatedData.success) {
       return json({
-        success: false,
+        success: false
         error: 'Invalid request data'
       }, { status: 400 })
     }
-
     const { query, type, limit } = validatedData.data
-
     const response: VectorResponse = {
-      success: true,
+      success: true
       data: [],
       type
     }
-
     // Simple mock responses based on type
     switch (type) {
       case 'search':
@@ -60,14 +52,12 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         ].slice(0, limit)
         break
-
       case 'similarity':
         response.data = [
           { source: 'doc-1', target: 'doc-2', score: 0.85 },
           { source: 'doc-1', target: 'doc-3', score: 0.79 }
         ]
         break
-
       case 'cluster':
         response.data = [
           { cluster: 1, documents: ['doc-1', 'doc-2'], centroid: 'Legal Documents' },
@@ -75,19 +65,17 @@ export const POST: RequestHandler = async ({ request }) => {
         ]
         break
     }
-
     return json(response)
   } catch (error) {
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message : 'Vector processing failed'
     }, { status: 500 })
   }
 }
-
 export const GET: RequestHandler = async () => {
   return json({
-    success: true,
+    success: true
     data: {
       status: 'Vector service available',
       operations: ['search', 'similarity', 'cluster'],

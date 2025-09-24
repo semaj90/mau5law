@@ -1,7 +1,6 @@
 // Minimal API client stub to satisfy barrel exports; expand with real logic later.
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 }
-
 export interface RequestOptions {
   headers?: Record<string, string>;
   query?: Record<string, string | number | boolean | undefined>;
@@ -13,10 +12,9 @@ export interface RequestOptions {
     timeoutMs?: number; // per-attempt timeout
   };
 }
-
 export async function apiFetch<T = unknown>(
-  url: string,
-  method: HttpMethod = "GET",;
+  url: string
+  method: HttpMethod = "GET",
   opts: RequestOptions = {}
 ): Promise<T> {
   const { headers, query, body, retry } = opts;
@@ -29,7 +27,6 @@ export async function apiFetch<T = unknown>(
     const s = params.toString();
     qs = s ? `?${s}` : "";
   }
-
   const attempts = Math.max(1, retry?.attempts ?? 1);
   const baseBackoff = Math.max(0, retry?.backoffMs ?? 0);
   const maxBackoff = Math.max(
@@ -37,7 +34,6 @@ export async function apiFetch<T = unknown>(
     retry?.maxBackoffMs ?? baseBackoff * 8
   );
   const timeoutMs = retry?.timeoutMs ?? 0;
-
   let lastErr: any;
   for (let i = 0; i < attempts; i++) {
     const controller = timeoutMs > 0 ? new AbortController() : undefined;
@@ -49,7 +45,7 @@ export async function apiFetch<T = unknown>(
       const res = await fetch(`${url}${qs}`, {
         method,
         headers: { "Content-Type": "application/json", ...(headers || {}) },
-        body: body !== undefined ? JSON.stringify(body) : undefined,;
+        body: body !== undefined ? JSON.stringify(body) : undefined
         signal: controller?.signal
       } as RequestInit);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -60,23 +56,23 @@ export async function apiFetch<T = unknown>(
           : ((await res.text()) as any)
       ) as T;
       if (t) clearTimeout(t);
-      // Attach lightweight request metadata for observability (non-enumerable);
+      // Attach lightweight request metadata for observability (non-enumerable)
       if (out && typeof out === 'object') {
         Object.defineProperty(out as any, '__requestMeta', {
-          value: { url, method, attempt: i + 1, ok: true },;
+          value: { url, method, attempt: i + 1, ok: true },
           enumerable: false
         });
       }
       return out;
         } catch (err: any) {
-      // Augment error with context (safe, non-enumerable);
+      // Augment error with context (safe, non-enumerable)
       if (err && typeof err === 'object') {
         try {
           Object.defineProperty(err, '__apiRequest', {
-        value: { url, method, attempt: i + 1, remaining: attempts - (i + 1) },;
+        value: { url, method, attempt: i + 1, remaining: attempts - (i + 1) },
         enumerable: false
           });
-        } catch {}
+        } catch (error) {}
       }
       if (i < attempts - 1 && typeof console !== 'undefined') {
         console.warn(`[apiFetch] attempt ${i + 1} failed (${method} ${url}), retrying…`, err);
@@ -96,6 +92,5 @@ export async function apiFetch<T = unknown>(
   }
   throw lastErr instanceof Error ? lastErr : new Error(String(lastErr);
 }
-
 export const ApiClient = { fetch: apiFetch };
 export default ApiClient;

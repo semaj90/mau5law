@@ -4,22 +4,19 @@
   Integrated with enhanced UI components and vector search
 =================================================================
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Updated to use melt-ui components
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
-
   // TODO: Replace with melt-ui equivalent when available
-  // import { DropdownMenu } from 'bits-ui';
+  // import { DropdownMenu } from 'bits-ui'
   import { onMount, tick } from 'svelte';
   import type { Case, Evidence, Report, CanvasState } from '$lib/data/types';
   import type { ChatMessage } from '$lib/types/chat';
   import { notifications } from '$lib/stores/notification';
   import { aiService } from '$lib/services/aiService';
   // Import client-safe vector search - use API endpoints instead
-  // import { vectorService } from '$lib/server/vector/EnhancedVectorService';
+  // import { vectorService } from '$lib/server/vector/EnhancedVectorService'
   import {
     ArrowDown,
     CornerDownLeft,
@@ -44,22 +41,19 @@
     ShieldCheck,
     BarChart3,
   } from 'lucide-svelte';
-
   // Import our enhanced UI components
   import Button from '$lib/components/ui/enhanced-bits';
   import { Card } from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/Input.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
-
   // State for demonstrations
   let modalOpen = $state(false);
   let searchQuery = $state('');
   let vectorResults = $state([]);
   let isSearching = $state(false);
-
   // Demo data
   let layoutData = $state({
-    user: { name: 'James', email: 'james@example.com' },;
+    user: { name: 'James', email: 'james@example.com' },
     stats: { totalCases: 12, openCases: 5, closedCases: 7, evidenceCount: 142 },
     recentActivity: [
       { action: 'Uploaded Evidence', details: 'witness_statement_01.pdf', time: '2m ago' },
@@ -67,48 +61,42 @@
       { action: 'Generated Report', details: 'Initial Analysis', time: '3h ago' },
     ],
   });
-
   // Vector search integration
   async function performVectorSearch() {
     if (!searchQuery.trim()) return;
-
     isSearching = true;
     try {
       const response = await fetch('/api/vector/search', {
-        method: 'POST',;
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: searchQuery,;
+          query: searchQuery
           options: { limit: 5, threshold: 0.7 },
         }),
       });
-
       const data = await (response as { json?: unknown }).json();
       vectorResults = (data as { results?: unknown }).results || [];
-
       notifications.add({
-        type: 'success',;
-        title: 'Search Complete',;
+        type: 'success',
+        title: 'Search Complete',
         message: `Found ${vectorResults.length} results`,
       });
     } catch (error) {
       console.error('Vector search failed:', error);
       notifications.add({
-        type: 'error',;
-        title: 'Search Failed',;
-        message: 'Vector search service unavailable',;
+        type: 'error',
+        title: 'Search Failed',
+        message: 'Vector search service unavailable',
       });
     } finally {
       isSearching = false;
     }
   }
 </script>
-
 <div class="p-8 font-sans bg-nier-surface text-nier-white min-h-screen">
   <h1 class="text-3xl font-bold mb-4 border-b-2 border-crimson nier-text-glow">
     Enhanced Legal AI Showcase
   </h1>
-
   <!-- Vector Search Demo -->
   <section class="mb-12">
     <h2 class="text-2xl font-semibold mb-4 text-gold">Vector Search Integration</h2>
@@ -123,7 +111,6 @@
           Search
 </Button>
       </div>
-
       {#if vectorResults.length > 0}
         <div class="mt-4">
           <h4 class="text-lg font-semibold text-gold mb-2">Search Results:</h4>
@@ -149,11 +136,9 @@
       {/if}
     </div>
   </section>
-
   <!-- Enhanced UI Components Demo -->
   <section class="mb-12">
     <h2 class="text-2xl font-semibold mb-4 text-gold">Enhanced UI Components</h2>
-
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Button variants -->
       <div class="nes-container">
@@ -175,7 +160,6 @@ Delete Action
           </div>
         </div>
       </div>
-
       <!-- Modal demo -->
       <div class="nes-container">
         <div class="p-4">
@@ -183,7 +167,6 @@ Delete Action
           <Button class="bits-btn" onclick={() =>
 (modalOpen = true)}>Open Modal
 </Button>
-
           <Modal bind:open={modalOpen} title="System Alert">
             <div class="mt-4">
               <p class="text-nier-light-gray mb-4">
@@ -202,7 +185,6 @@ Delete Action
           </Modal>
         </div>
       </div>
-
       <!-- Input components -->
       <div class="nes-container">
         <div class="p-4">
@@ -219,7 +201,6 @@ Delete Action
       </div>
     </div>
   </section>
-
   <!-- Application Layout Demo -->
   <section class="mb-12">
     <h2 class="text-2xl font-semibold mb-4 text-gold">Application Layout</h2>
@@ -227,7 +208,6 @@ Delete Action
       {@render LayoutDemo()}
     </div>
   </section>
-
   <!-- Integration Status -->
   <section class="mb-12">
     <h2 class="text-2xl font-semibold mb-4 text-gold">Integration Status</h2>
@@ -235,27 +215,26 @@ Delete Action
       {@render StatusCard({
         title: 'Svelte 5 Runes',
         status: 'active',
-        description: 'Using $state and $props',;
+        description: 'Using $state and $props',
       })}
       {@render StatusCard({
         title: 'Bits UI',
         status: 'active',
-        description: 'Headless components integrated',;
+        description: 'Headless components integrated',
       })}
       {@render StatusCard({
         title: 'Vector Search',
         status: 'active',
-        description: 'Qdrant + PostgreSQL ready',;
+        description: 'Qdrant + PostgreSQL ready',
       })}
       {@render StatusCard({
-        title: 'UnoCSS',;
-        status: 'active',;
-        description: 'Utility classes configured',;
+        title: 'UnoCSS',
+        status: 'active',
+        description: 'Utility classes configured',
       })}
     </div>
   </section>
 </div>
-
 {#snippet StatusCard({ title, status, description })}
   <div variant="interactive" class="nes-container">
     <div class="p-4 text-center">
@@ -281,7 +260,6 @@ Delete Action
     </div>
   </div>
 {/snippet}
-
 {#snippet LayoutDemo()}
   <div class="flex h-full bg-nier-bg">
     <!-- Sidebar -->
@@ -301,13 +279,11 @@ Delete Action
         {/each}
       </nav>
     </aside>
-
     <!-- Main content -->
     <main class="flex-1 p-6">
       <h1 class="text-2xl font-bold text-nier-white mb-4">
         Welcome back, {layoutData.user.name}
       </h1>
-
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         {#each [{ title: 'Total Cases', value: layoutData.stats.totalCases, icon: FileText }, { title: 'Open Cases', value: layoutData.stats.openCases, icon: FileText }, { title: 'Closed Cases', value: layoutData.stats.closedCases, icon: FileText }, { title: 'Evidence Items', value: layoutData.stats.evidenceCount, icon: Scale }] as stat}
           {@const StatIcon = stat.icon}
@@ -322,7 +298,6 @@ Delete Action
           </div>
         {/each}
       </div>
-
       <div class="nes-container">
         <div class="p-6">
           <h3 class="text-lg font-semibold text-nier-white mb-4">Recent Activity</h3>
@@ -343,8 +318,7 @@ Delete Action
     </main>
   </div>
 {/snippet}
-
-<style>/* Enhanced Nier theme styles */ :global(:root) {;
+<style>/* Enhanced Nier theme styles */ :global(:root) {
     --nier-bg: #0a0a0a;
     --nier-surface: #1a1a1a;
     --nier-surface-light: #2a2a2a;
@@ -354,11 +328,9 @@ Delete Action
     --nier-accent: #f59e0b;
     --nier-accent-light: #fbbf24;
   }
-
   .nier-text-glow {
     text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
   }
-
   .badge {
     display: inline-block;
     padding: 0.25rem 0.5rem;
@@ -366,30 +338,24 @@ Delete Action
     font-weight: 500;
     border-radius: 0.25rem;
   }
-
   .status-case {
     background-color: rgb(59 130 246 / 0.2);
     color: rgb(96 165 250);
   }
-
   .status-evidence {
     background-color: rgb(168 85 247 / 0.2);
     color: rgb(196 181 253);
   }
-
   .status-criminal {
     background-color: rgb(239 68 68 / 0.2);
     color: rgb(248 113 113);
   }
-
   .status-document {
     background-color: rgb(107 114 128 / 0.2);
     color: rgb(156 163 175);
   }
-
   .status-default {
     background-color: rgb(107 114 128 / 0.2);
     color: rgb(156 163 175);
   }
 </style>
-

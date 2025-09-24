@@ -1,18 +1,15 @@
 <script lang="ts">
   import LegalDocumentSummarizer from '$lib/components/ai/LegalDocumentSummarizer.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
-
   function handleSummaryGenerated(summary: any) {
     console.log('Summary generated:', summary);
     // Additional handling if needed
   }
 </script>
-
 <svelte:head>
   <title>Legal Document Summarizer - AI-Powered Analysis</title>
   <meta name="description" content="Convert lengthy legal documents into concise summaries using Gemma3 AI" />
 </svelte:head>
-
 <div class="container mx-auto p-6 max-w-7xl">
   <!-- Page Header -->
   <div class="mb-8">
@@ -42,10 +39,8 @@
       </CardContent>
     </Card>
   </div>
-
   <!-- Main Summarizer Component -->
   <LegalDocumentSummarizer onSummaryGenerated={handleSummaryGenerated} />
-
   <!-- Usage Guide -->
   <div class="mt-8">
     <Card>
@@ -62,7 +57,6 @@
               </p>
             </div>
           </div>
-
           <div class="space-y-2">
             <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-500">
               <h4 class="font-medium text-green-900">2. Content Input</h4>
@@ -71,7 +65,6 @@
               </p>
             </div>
           </div>
-
           <div class="space-y-2">
             <div class="bg-purple-50 p-3 rounded-lg border-l-4 border-purple-500">
               <h4 class="font-medium text-purple-900">3. Configure Focus</h4>
@@ -80,7 +73,6 @@
               </p>
             </div>
           </div>
-
           <div class="space-y-2">
             <div class="bg-orange-50 p-3 rounded-lg border-l-4 border-orange-500">
               <h4 class="font-medium text-orange-900">4. AI Processing</h4>
@@ -90,7 +82,6 @@
             </div>
           </div>
         </div>
-
         <div class="mt-6 p-4 bg-muted rounded-lg">
           <h4 class="font-medium mb-2">💡 Pro Tips</h4>
           <ul class="space-y-1 text-sm text-muted-foreground">

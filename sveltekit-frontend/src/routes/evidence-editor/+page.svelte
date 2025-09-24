@@ -1,30 +1,24 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { page } from '$app/stores';
   import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
   import { UiButton as Button } from '$lib/components/ui';
   import { onMount } from 'svelte';
-
   let caseId: string | null = $state(null);
   let readOnly = $state(false);
-
   $effect(() => {
     // Get case ID from URL params if provided
     caseId = $page.url.searchParams.get('caseId');
     readOnly = $page.url.searchParams.get('readOnly') === 'true';
   });
-
   function toggleReadOnly() {
     readOnly = !readOnly;
   }
 </script>
-
 <svelte:head>
   <title>Visual Evidence Editor - Legal AI Assistant</title>
   <meta name="description" content="Advanced visual evidence management with AI-powered tagging and analysis" />
 </svelte:head>
-
 <div class="space-y-4">
   <!-- Header -->
   <div class="space-y-4">
@@ -35,7 +29,6 @@
           Drag and drop evidence files for AI-powered analysis and tagging
         </p>
       </div>
-
       <div class="space-y-4">
     <Button class="bits-btn"
       onclick={toggleReadOnly}
@@ -43,7 +36,6 @@
           size="sm"
         >
 {readOnly ? 'Enable Editing' : 'Read Only'}
-
         <div class="space-y-4">
           {#if caseId}
             Case: {caseId}
@@ -54,13 +46,11 @@
       </div>
     </div>
   </div>
-
   <!-- Main Editor -->
   <div class="space-y-4">
     <VisualEvidenceEditor {caseId} {readOnly} />
   </div>
 </div>
-
 <!-- Help Overlay (initially hidden) -->
 <div class="space-y-4" style="display: none;" id="help-overlay">
   <h3 class="space-y-4">Quick Start Guide</h3>
@@ -83,9 +73,7 @@
     }}
   >
     Got it!
-
 </div>
-
 <style>
   /* @unocss-include */
   .evidence-editor-page {
@@ -93,4 +81,3 @@
     overflow: hidden;
 }
 </style>
-

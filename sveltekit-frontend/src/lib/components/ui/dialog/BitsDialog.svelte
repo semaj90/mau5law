@@ -3,7 +3,6 @@
   import * as Dialog from './index';
   import { X } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-
   interface Props {
     open?: boolean;
     title?: string;
@@ -16,7 +15,6 @@
     trigger?: unknown;
     footer?: unknown;
   }
-
   let { open = $bindable(false),
     title = '',
     description = '',
@@ -28,21 +26,18 @@
     trigger,
     footer;
    }: Props = $props();
-
   const sizeClasses = {
     sm: 'max-w-sm',
     md: 'max-w-md',
-    lg: 'max-w-lg',;
-    xl: 'max-w-xl',;
+    lg: 'max-w-lg',
+    xl: 'max-w-xl',
     full: 'max-w-[95vw] max-h-[95vh]';
   };
-
   function handleOpenChange(newOpen: boolean) {
-    open = newOpen;
+    open = newOpe;
     onOpenChange?.(newOpen);
   }
 </script>
-
 <Dialog.Root bind:open onOpenChange={handleOpenChange}>
   <!-- Trigger (optional) -->
   {#if trigger}
@@ -50,13 +45,11 @@
       {@render trigger()}
     </Dialog.Trigger>
   {/if}
-
   <!-- Dialog Portal and Overlay -->
   <Dialog.Portal>
     <Dialog.Overlay
       class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
     />
-
     <!-- Dialog Content -->
     <Dialog.Content
       className={cn(
@@ -74,7 +67,6 @@
               {title}
             </Dialog.Title>
           {/if}
-
           {#if description}
             <Dialog.Description class="text-sm nes-text is-disabled legal-dialog-description">
               {description}
@@ -82,7 +74,6 @@
           {/if}
         </div>
       {/if}
-
       <!-- Close Button -->
       {#if showClose}
         <Dialog.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:nes-text is-disabled">
@@ -90,12 +81,10 @@
           <span class="sr-only">Close</span>
         </Dialog.Close>
       {/if}
-
       <!-- Main Content -->
       <div class="legal-dialog-content">
         {@render children?.()}
       </div>
-
       <!-- Footer -->
       {#if footer}
         <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 legal-dialog-footer">
@@ -105,23 +94,18 @@
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>/* Legal AI App Specific Styling */ :global(.legal-dialog) {
     @apply border-yorha-border bg-yorha-bg-secondary;
   }
-
   :global(.legal-dialog-title) {
-    @apply text-yorha-text-primary font-mono;
+    @apply text-yorha-text-primary font-monone;
   }
-
   :global(.legal-dialog-description) {
-    @apply text-yorha-text-secondary font-mono text-xs;
+    @apply text-yorha-text-secondary font-mono text-x;
   }
-
   :global(.legal-dialog-content) {
     @apply text-yorha-text-primary;
   }
-
   :global(.legal-dialog-footer) {
     @apply border-t border-yorha-border pt-4;
   }

@@ -2,7 +2,6 @@
  * API Sync & Wire-up Endpoints
  * RESTful endpoints for neural topology mock data synchronization
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from '@sveltejs/kit'
 import {
@@ -11,11 +10,9 @@ import {
   vectorSearch,
   mockDataGenerators
 } from '$lib/server/sync/mock-api-sync-simple'
-
 // GET /api/sync - Health check and status
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'status'
-
   try {
     switch (action) {
       case 'status':
@@ -25,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
           status: 'ok',
           system: 'Neural Topology Mock API Sync',
           version: '1.0.0',
-          health: healthCheck,
+          health: healthCheck
           endpoints: {
             sync: '/api/sync?action=full',
             search: '/api/sync/search',
@@ -34,42 +31,37 @@ export const GET: RequestHandler = async ({ url }) => {
           },
           timestamp: new Date().toISOString()
         })
-
       case 'full':
         const fullSync = await syncOrchestrator.performFullSync()
         return json({
           action: 'full_sync',
-          result: fullSync,
+          result: fullSync
           message: 'Neural topology mock data synchronized successfully',
           timestamp: new Date().toISOString()
         })
-
       case 'legal-docs':
         const docSync = await databaseSync.syncMockLegalDocuments()
         return json({
           action: 'legal_documents_sync',
-          result: docSync,
+          result: docSync
           timestamp: new Date().toISOString()
         })
-
       case 'qlora':
         const qloraSync = await databaseSync.syncQLoRATrainingData()
         return json({
           action: 'qlora_sync',
-          result: qloraSync,
+          result: qloraSync
           timestamp: new Date().toISOString()
         })
-
       case 'cache':
         const cacheSync = await databaseSync.syncPredictiveAssetCache()
         return json({
           action: 'predictive_cache_sync',
-          result: cacheSync,
+          result: cacheSync
           timestamp: new Date().toISOString()
         })
-
       default:
-        return json({
+        return json({,
           error: 'Unknown action',
           availableActions: ['status', 'health', 'full', 'legal-docs', 'qlora', 'cache'],
           timestamp: new Date().toISOString()
@@ -84,38 +76,32 @@ export const GET: RequestHandler = async ({ url }) => {
     }, { status: 500 })
   }
 }
-
 // POST /api/sync - Manual sync operations
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
     const { action, params = {} } = body
-
     switch (action) {
       case 'vector_search':
         const { queryEmbedding, limit = 5, threshold = 0.7 } = params
         if (!queryEmbedding) {
           return json({ error: 'queryEmbedding required for vector search' }, { status: 400 })
         }
-
         const searchResults = await vectorSearch.performSimilaritySearch(
           queryEmbedding,
           limit,
           threshold
         )
-
         return json({
           action: 'vector_search',
-          results: searchResults,
+          results: searchResults
           count: searchResults.length,
           params: { limit, threshold },
           timestamp: new Date().toISOString()
         })
-
       case 'generate_mock_data':
         const { type, count = 10 } = params
         let mockData
-
         switch (type) {
           case 'legal_documents':
             mockData = await mockDataGenerators.generateMockLegalDocuments(count)
@@ -135,19 +121,16 @@ export const POST: RequestHandler = async ({ request }) => {
           default:
             return json({ error: 'Unknown mock data type' }, { status: 400 })
         }
-
         return json({
           action: 'generate_mock_data',
           type,
-          data: mockData,
+          data: mockData
           count: mockData.length,
           timestamp: new Date().toISOString()
         })
-
       case 'bulk_sync':
         const { types = ['legal_documents', 'qlora', 'cache'] } = params
         const bulkResults = {}
-
         for (const syncType of types) {
           switch (syncType) {
             case 'legal_documents':
@@ -161,15 +144,13 @@ export const POST: RequestHandler = async ({ request }) => {
               break
           }
         }
-
         return json({
           action: 'bulk_sync',
-          results: bulkResults,
+          results: bulkResults
           timestamp: new Date().toISOString()
         })
-
       default:
-        return json({
+        return json({,
           error: 'Unknown POST action',
           availableActions: ['vector_search', 'generate_mock_data', 'bulk_sync'],
           timestamp: new Date().toISOString()

@@ -1,31 +1,27 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: enhanced-chat
  * Category: aggressive
  * Memory Bank: CHR_ROM
  * Priority: 180
  * Redis Type: aiChat
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: aggressive
  * - Memory Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import type { RequestHandler } from './$types.js'
-
 /*
  * Enhanced AI Chat API Endpoint
  * Integrates AI input synthesis, LegalBERT middleware, RAG pipeline, and streaming responses
  */
-
 import { json } from '@sveltejs/kit'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
 // Enhanced request interface
 export interface EnhancedChatRequest {
   query: string
@@ -47,7 +43,6 @@ export interface EnhancedChatRequest {
     maxTokens?: number
   }
 }
-
 export interface EnhancedChatResponse {
   response: string
   synthesizedInput?: unknown
@@ -65,23 +60,18 @@ export interface EnhancedChatResponse {
   recommendations?: string[]
   contextualPrompts?: unknown[]
 }
-
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = Date.now()
-  
   try {
     const body: EnhancedChatRequest = await request.json()
     const { query, context = {}, settings = {} } = body
-
     if (!query?.trim()) {
       return json({ error: 'Query is required' }, { status: 400 })
     }
-
     // Simple AI response generation for now
     const aiResponse = await generateAIResponse(query, context)
-    
     const response: EnhancedChatResponse = {
-      response: aiResponse,
+      response: aiResponse
       confidence: 0.8,
       processingTime: Date.now() - startTime,
       metadata: {
@@ -91,30 +81,28 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       },
       recommendations: ['Verify legal advice with qualified counsel']
     }
-
     return json(response)
   } catch (error: any) {
     console.error('Enhanced AI chat API error:', error)
     return json()
-      { 
+      {
         error: 'Internal server error',
         message: error instanceof Error ? error.message: 'Unknown error',
-        processingTime: Date.now() - startTime 
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     )
   }
 }
-
 async function generateAIResponse(query: string, context: any): Promise<string> {
   try {
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: JSON.stringify({,
         model: 'gemma3-legal:latest',
         prompt: `Legal AI Assistant: ${query}`,
-        stream: false,
+        stream: false
         options: {
           temperature: 0.3,
           top_p: 0.9,
@@ -122,11 +110,9 @@ async function generateAIResponse(query: string, context: any): Promise<string> 
         }
       })
     })
-
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.status}`)
     }
-
     const data = await response.json()
     return data.response || 'No response generated'
   } catch (error: any) {
@@ -134,7 +120,6 @@ async function generateAIResponse(query: string, context: any): Promise<string> 
     return `I understand you're asking about: "${query}". I'm currently experiencing connectivity issues with the AI service. Please try again later or contact support for assistance.`
   }
 }
-
 // Health check endpoint
 const originalGETHandler: RequestHandler = async () => {
   try {
@@ -144,12 +129,10 @@ const originalGETHandler: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
       features: ['basic-generation', 'ollama-integration']
     }
-
     return json(status)
   } catch (error: any) {
     return json({ error: error instanceof Error ? error.message: 'Unknown error' }, { status: 500 })
   }
 }
-
 export const POST = redisOptimized.aiChat(originalPOSTHandler)
 export const GET = redisOptimized.aiChat(originalGETHandler)

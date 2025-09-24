@@ -3,15 +3,12 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 </script>
   import { onMount } from 'svelte';
   import { diagnoseWebGPU, type WebGPUDiagResult } from '$lib/webgpu/diag';
-
   let loading = true;
   let result: WebGPUDiagResult | null = null;
   let error: string | null = null;
-
   async function run() {
     loading = true;
     error = null;
@@ -24,10 +21,8 @@ https://svelte.dev/e/expected_token -->
       loading = false;
     }
   }
-
   $effect(run);
 </script>
-
 <style>
   .card { border: 1px solid var(--border, #ddd); border-radius: 8px; padding: 1rem; margin: 0.5rem 0; }
   .muted { color: #666; font-size: 0.925rem; }
@@ -40,14 +35,11 @@ https://svelte.dev/e/expected_token -->
   button:hover { background: #f0f0f0; }
   h2 { margin: 0.2rem 0; }
 </style>
-
 <h1>WebGPU Diagnostics</h1>
 <p class="muted">Client-side check for adapter/device availability, limits, and common pitfalls.</p>
-
 <div>
   <button onclick={run} aria-label="Re-run diagnostics">Re-run</button>
 </div>
-
 {#if loading}
   <div class="nier-bits-card">Running diagnostics…</div>
 {:else if error}
@@ -65,7 +57,6 @@ https://svelte.dev/e/expected_token -->
         <div class="bad">{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).error}</div>
       {/if}
     </div>
-
     <div class="nier-bits-card">
       <h2>Timings</h2>
       <div class="mono">
@@ -77,7 +68,6 @@ https://svelte.dev/e/expected_token -->
         <div>Used: <span class="mono">{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).powerPreferenceUsed}</span></div>
       {/if}
     </div>
-
     <div class="nier-bits-card">
       <h2>Adapter</h2>
       {#if (result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).adapter}
@@ -90,13 +80,11 @@ https://svelte.dev/e/expected_token -->
         <div class="muted">No adapter details available.</div>
       {/if}
     </div>
-
     <div class="nier-bits-card">
       <h2>Device Limits</h2>
       <div class="mono" style="white-space: pre-wrap">{(result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).deviceLimits ? JSON.stringify(deviceLimits), null, 2) : '—'}</div>
     </div>
   </div>
-
   {#if (result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).warnings.length}
     <div class="nier-bits-card warn">
       <h2>Warnings</h2>
@@ -107,7 +95,6 @@ https://svelte.dev/e/expected_token -->
       </ul>
     </div>
   {/if}
-
   {#if (result as { supported?: unknown; adapterFound?: unknown; deviceCreated?: unknown; error?: unknown; timings?: unknown; powerPreferenceTried?: unknown; powerPreferenceUsed?: unknown; adapter?: unknown; deviceLimits?: unknown; warnings?: unknown; recommendedActions?: unknown }).recommendedActions.length}
     <div class="nier-bits-card">
       <h2>Recommended Actions</h2>
@@ -118,4 +105,3 @@ https://svelte.dev/e/expected_token -->
       </ol>
     </div>
   {/if}
-

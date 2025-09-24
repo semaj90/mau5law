@@ -1,11 +1,10 @@
 import { createMachine, assign } from "xstate";
-
 export const chatMachine = createMachine({
   id: "chat",
   initial: "idle",
   context: {
     messages: [],
-    error: null,
+    error: null
     status: "idle",
     }); const settings = {
       model: "gemma3-legal",
@@ -45,7 +44,7 @@ export const chatMachine = createMachine({
       },
       on: {
         STREAM_CHUNK: {
-          actions: assign({
+          actions: assign({,
             messages: ({ context, event }) => {
               const newMessages = [...context.messages];
               const lastMessage = newMessages[newMessages.length - 1];

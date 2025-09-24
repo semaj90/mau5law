@@ -2,17 +2,13 @@
  * LLM Orchestrator Integration Test Suite
  * Tests the bridge connection between local and server orchestrators
  */
-
 import { llmOrchestratorBridge } from './llm-orchestrator-bridge.js';
 import type { LLMBridgeRequest } from './llm-orchestrator-bridge.js';
-
 export async function testOrchestratorIntegration(): Promise<any> {
   const results: any[] = [];
   let successCount = 0;
-
   console.log('🚀 Starting LLM Orchestrator Integration Tests...\n');
-
-  // Test 1: Basic chat functionality;
+  // Test 1: Basic chat functionality
   try {
     console.log('Test 1: Basic Chat Request...');
     const chatRequest: LLMBridgeRequest = {
@@ -30,21 +26,19 @@ export async function testOrchestratorIntegration(): Promise<any> {
         maxTokens: 200
       },
       metadata: {
-        source: 'api' as const,;
+        source: 'api' as const,
         timestamp: Date.now()
       }
     };
-
     const chatResult = await llmOrchestratorBridge.processRequest(chatRequest);
     results.push({
       test: 'Basic Chat',
       success: chatResult.success,
       orchestrator: chatResult.orchestratorUsed,
       model: chatResult.modelUsed,
-      latency: chatResult.executionMetrics.totalLatency,;
+      latency: chatResult.executionMetrics.totalLatency,
       response: chatResult.response.substring(0, 100) + '...'
     });
-
     if (chatResult.success) {
       successCount++;
       console.log(`✅ Chat test passed - ${chatResult.orchestratorUsed} orchestrator`);
@@ -55,14 +49,12 @@ export async function testOrchestratorIntegration(): Promise<any> {
     console.log(`❌ Chat test error: ${error instanceof Error ? error.message: 'Unknown error'}`);
     results.push({
       test: 'Basic Chat',
-      success: false,;
+      success: false
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
-
   console.log('');
-
-  // Test 2: Legal analysis;
+  // Test 2: Legal analysis
   try {
     console.log('Test 2: Legal Analysis Request...');
     const legalRequest: LLMBridgeRequest = {
@@ -81,11 +73,10 @@ export async function testOrchestratorIntegration(): Promise<any> {
         maxTokens: 300
       },
       metadata: {
-        source: 'api' as const,;
+        source: 'api' as const,
         timestamp: Date.now()
       }
     };
-
     const legalResult = await llmOrchestratorBridge.processRequest(legalRequest);
     results.push({
       test: 'Legal Analysis',
@@ -93,10 +84,9 @@ export async function testOrchestratorIntegration(): Promise<any> {
       orchestrator: legalResult.orchestratorUsed,
       model: legalResult.modelUsed,
       latency: legalResult.executionMetrics.totalLatency,
-      confidence: legalResult.confidence,;
+      confidence: legalResult.confidence,
       response: legalResult.response.substring(0, 100) + '...'
     });
-
     if (legalResult.success) {
       successCount++;
       console.log(`✅ Legal analysis test passed - ${legalResult.orchestratorUsed} orchestrator`);
@@ -109,14 +99,12 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
     results.push({
       test: 'Legal Analysis',
-      success: false,;
+      success: false
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
-
   console.log('');
-
-  // Test 3: Embedding generation;
+  // Test 3: Embedding generation
   try {
     console.log('Test 3: Embedding Generation...');
     const embeddingRequest: LLMBridgeRequest = {
@@ -132,24 +120,22 @@ export async function testOrchestratorIntegration(): Promise<any> {
         priority: 'normal'
       },
       metadata: {
-        source: 'api' as const,;
+        source: 'api' as const,
         timestamp: Date.now()
       }
     };
-
     const embeddingResult = await llmOrchestratorBridge.processRequest(embeddingRequest);
     results.push({
       test: 'Embedding Generation',
       success: embeddingResult.success,
       orchestrator: embeddingResult.orchestratorUsed,
       model: embeddingResult.modelUsed,
-      latency: embeddingResult.executionMetrics.totalLatency,;
+      latency: embeddingResult.executionMetrics.totalLatency,
       response:
         typeof embeddingResult.response === 'string'
           ? `Generated ${embeddingResult.response.length} chars`
           : 'Embedding generated'
     });
-
     if (embeddingResult.success) {
       successCount++;
       console.log(`✅ Embedding test passed - ${embeddingResult.orchestratorUsed} orchestrator`);
@@ -162,14 +148,12 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
     results.push({
       test: 'Embedding Generation',
-      success: false,;
+      success: false
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
-
   console.log('');
-
-  // Test 4: Realtime chat (client-side preference);
+  // Test 4: Realtime chat (client-side preference)
   try {
     console.log('Test 4: Realtime Chat (Client Preference)...');
     const realtimeRequest: LLMBridgeRequest = {
@@ -188,11 +172,10 @@ export async function testOrchestratorIntegration(): Promise<any> {
         maxTokens: 150
       },
       metadata: {
-        source: 'api' as const,;
+        source: 'api' as const,
         timestamp: Date.now()
       }
     };
-
     const realtimeResult = await llmOrchestratorBridge.processRequest(realtimeRequest);
     results.push({
       test: 'Realtime Chat',
@@ -200,10 +183,9 @@ export async function testOrchestratorIntegration(): Promise<any> {
       orchestrator: realtimeResult.orchestratorUsed,
       model: realtimeResult.modelUsed,
       latency: realtimeResult.executionMetrics.totalLatency,
-      metLatencyTarget: realtimeResult.executionMetrics.totalLatency < 500,;
+      metLatencyTarget: realtimeResult.executionMetrics.totalLatency < 500,
       response: realtimeResult.response.substring(0, 100) + '...'
     });
-
     if (realtimeResult.success) {
       successCount++;
       console.log(
@@ -218,22 +200,19 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
     results.push({
       test: 'Realtime Chat',
-      success: false,;
+      success: false
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
-
   console.log('');
-
-  // Test 5: Bridge status check;
+  // Test 5: Bridge status check
   try {
     console.log('Test 5: Bridge Status Check...');
     const status = await llmOrchestratorBridge.getStatus();
     const metrics = llmOrchestratorBridge.getPerformanceMetrics();
-
     results.push({
-      test: 'Bridge Status',;
-      success: true,
+      test: 'Bridge Status',
+      success: true
       bridgeStatus: status.bridge.status,
       totalRequests: metrics.totalRequests,
       successRate: metrics.successfulRequests / Math.max(metrics.totalRequests, 1),
@@ -241,7 +220,6 @@ export async function testOrchestratorIntegration(): Promise<any> {
       serverOrchestrator: status.serverOrchestrator.status || 'unknown',
       clientOrchestrator: status.clientOrchestrator.modelsLoaded || 0
     });
-
     successCount++;
     console.log(`✅ Status check passed - Bridge: ${status.bridge.status}`);
     console.log(`   Server Orchestrator: ${status.serverOrchestrator.status || 'unknown'}`);
@@ -254,35 +232,29 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
     results.push({
       test: 'Bridge Status',
-      success: false,;
+      success: false
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
-
   const totalTests = 5;
   const successRate = (successCount / totalTests) * 100;
-
   console.log('\n📊 Test Summary:');
   console.log(`   Tests passed: ${successCount}/${totalTests} (${successRate.toFixed(1)}%)`);
   console.log(
     `   Total requests processed: ${llmOrchestratorBridge.getPerformanceMetrics().totalRequests}`
   );
-
   const summary = `LLM Orchestrator Integration: ${successCount}/${totalTests} tests passed (${successRate.toFixed(1)}%)`;
-
   return {
     success: successCount === totalTests,
     results,
     summary
   };
 }
-
-// Function to run a quick health check;
+// Function to run a quick health check
 export async function quickHealthCheck(): Promise<any> {
   try {
     const status = await llmOrchestratorBridge.getStatus();
     const healthy = status.bridge.status === 'healthy' || status.bridge.status === 'degraded';
-
     return {
       healthy,
       status,
@@ -290,13 +262,12 @@ export async function quickHealthCheck(): Promise<any> {
     };
   } catch (error) {
     return {
-      healthy: false,
-      status: { error: error instanceof Error ? error.message: 'Unknown error' },;
+      healthy: false
+      status: { error: error instanceof Error ? error.message: 'Unknown error' },
       timestamp: new Date().toISOString()
     };
   }
 }
-
 // Function to test specific orchestrator
 export async function testSpecificOrchestrator(
   orchestratorType: 'server' | 'client' | 'mcp',
@@ -322,17 +293,16 @@ export async function testSpecificOrchestrator(
       maxTokens: 200
     },
     metadata: {
-      source: 'api' as const,;
+      source: 'api' as const,
       timestamp: Date.now()
     }
   };
-
   try {
     const result = await llmOrchestratorBridge.processRequest(request);
     return {
       success: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).success,
       orchestratorUsed: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).orchestratorUsed,
-      expectedOrchestrator: orchestratorType,
+      expectedOrchestrator: orchestratorType
       matchesExpected:
         (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).orchestratorUsed === orchestratorType ||
         (orchestratorType === 'mcp' && (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).orchestratorUsed === 'hybrid'),
@@ -342,7 +312,7 @@ export async function testSpecificOrchestrator(
     };
   } catch (error) {
     return {
-      success: false,;
+      success: false
       error: error instanceof Error ? error.message: 'Unknown error',
       expectedOrchestrator: orchestratorType
     };

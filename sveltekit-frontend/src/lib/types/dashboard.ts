@@ -4,7 +4,6 @@ export type DashboardCard = {
   value: string | number;
   icon?: unknown;
 };
-
 export type DashboardLayout = {
   [key: string]: {
     cards: DashboardCard[];

@@ -1,12 +1,9 @@
 import { json } from "@sveltejs/kit"
 import { loki } from "$lib/stores/lokiStore"
 import type { RequestHandler } from './$types.js'
-
-
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const { canvasState, reportId } = await request.json()
-
     if (!canvasState || !reportId) {
       return json(
         { error: "Canvas state and report ID are required" },)
@@ -24,12 +21,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       updatedAt: new Date().toISOString(),
       updatedBy: locals.user?.id || "anonymous"
     }
-
     // Save to Loki.js (in production this would save to PostgreSQL)
     await loki.saveCanvasState(enhancedCanvasState)
-
     return json({
-      success: true,
+      success: true
       canvasState: enhancedCanvasState
     })
   } catch (error: any) {
@@ -37,12 +32,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({ error: "Failed to save canvas state" }, { status: 500 })
   }
 }
-
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     const canvasId = url.searchParams.get("id")
     const reportId = url.searchParams.get("reportId")
-
     if (!canvasId && !reportId) {
       return json(
         { error: "Canvas ID or Report ID is required" },)
@@ -50,7 +43,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       )
     }
     let canvasState
-
     if (canvasId) {
       canvasState = await loki.getCanvasState(canvasId)
     } else if (reportId) {
@@ -73,11 +65,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json({ error: "Failed to load canvas state" }, { status: 500 })
   }
 }
-
 export const DELETE: RequestHandler = async ({ request, locals }) => {
   try {
     const { canvasId } = await request.json()
-
     if (!canvasId) {
       return json({ error: "Canvas ID is required" }, { status: 400 })
     }
@@ -93,7 +83,6 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
       return json({ error: "Insufficient permissions" }, { status: 403 })
     }
     await loki.deleteCanvasState(canvasId)
-
     return json({ success: true })
   } catch (error: any) {
     console.error("Canvas delete error:", error)

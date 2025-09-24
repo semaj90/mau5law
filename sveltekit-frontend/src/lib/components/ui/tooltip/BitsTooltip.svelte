@@ -22,12 +22,10 @@ https://svelte.dev/e/expected_token -->
     sideOffset = 8,
     children
   }: Props = $props();
-
   import { Tooltip } from "bits-ui";
   import { type Snippet } from "svelte";
   // Svelte 5 runes, UnoCSS, nier.css, context7 best practices
               </script>
-
 <Tooltip.Provider>
   <Tooltip.Root {delayDuration}>
     <Tooltip.Trigger
@@ -44,6 +42,4 @@ https://svelte.dev/e/expected_token -->
     </Tooltip.Content>
   </Tooltip.Root>
 </Tooltip.Provider>
-
 <!-- UnoCSS handles styling via class names; no <style> block needed. -->
-

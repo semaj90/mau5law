@@ -4,7 +4,6 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { authStore } from '$lib/stores/auth-store';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
@@ -21,16 +20,13 @@
     CheckCircle, AlertCircle, Clock, Users,
     Activity, Server, Eye, Code
   } from 'lucide-svelte';
-
   // Test state
-  let testResults = $state<Record<string, any>('')>( );
+  let testResults = $state<{ [key: string]: any }('')>( );
   let testRunning = $state(false);
   let currentTab = $state('auth');
-
   // GPU cluster status
   let clusterStatus = $state<any>(null);
   let context7Docs = $state<any>(null);
-
   // Mock data for testing
   const testCredentials = {
     login: {
@@ -43,22 +39,20 @@
       lastName: 'Smith',
       password: 'SecurePass123!@#',
       confirmPassword: 'SecurePass123!@#',
-      role: 'investigator',;
-      department: 'Metropolitan Police Department',;
+      role: 'investigator',
+      department: 'Metropolitan Police Department',
       jurisdiction: 'Washington DC',
       badgeNumber: 'MPD-4567',
-      enableTwoFactor: true,
-      agreeToTerms: true,
+      enableTwoFactor: true
+      agreeToTerms: true
       agreeToPrivacy: true;
     }
   };
-
   $effect(() => {
     (async () => {
 await runInitialTests();
     })();
   });
-
   async function runInitialTests() {
     testRunning = true;
     testResults = {};
@@ -67,12 +61,11 @@ await runInitialTests();
       console.log('🧪 Testing GPU cluster status...');
       const clusterTest = await mcpGPUOrchestrator.getClusterStatus();
       testResults.cluster = {
-        success: true,;
-        data: clusterTest,;
+        success: true
+        data: clusterTest
         timestamp: new Date().toISOString();
       };
       clusterStatus = clusterTest;
-
       // Test 2: Context7 Documentation
       console.log('🧪 Testing Context7 documentation retrieval...');
       const docsTest = await Promise.allSettled([
@@ -80,24 +73,22 @@ await runInitialTests();
         getBitsUIv2Docs('forms|components'),
         getXStateDocs('machines|actors')
       ]);
-
       testResults.context7 = {
-        success: docsTest.every.status === 'fulfilled'),;
+        success: docsTest.every.status === 'fulfilled'),
         data: docsTest.map.status === 'fulfilled' ? (result as { status?: unknown; value?: unknown }).value: null),
         timestamp: new Date().toISOString();
       };
       context7Docs = testResults.context7.data;
-
       // Test 3: Security Analysis
       console.log('🧪 Testing GPU security analysis...');
       const securityTest = await mcpGPUOrchestrator.dispatchGPUTask({
         id: `test_security_${Date.now()}`,
         type: 'security_analysis',
-        priority: 'medium',;
+        priority: 'medium',
         data: {
           email: 'test@legal-ai.com',
           timestamp: new Date().toISOString(),
-          userAgent: navigator.userAgent,;
+          userAgent: navigator.userAgent,
           fingerprint: btoa(JSON.stringify({ test: true }))
         },
         context: {
@@ -105,24 +96,22 @@ await runInitialTests();
           enhancedSecurity: true;
         },
         config: {
-          useGPU: true,
-          model: 'gemma3-legal',;
+          useGPU: true
+          model: 'gemma3-legal',
           protocol: 'auto';
         }
       });
-
       testResults.security = {
-        success: securityTest.success,;
-        data: securityTest,;
+        success: securityTest.success,
+        data: securityTest
         timestamp: new Date().toISOString();
       };
-
       // Test 4: Legal Professional Validation
       console.log('🧪 Testing legal professional validation...');
       const validationTest = await mcpGPUOrchestrator.dispatchGPUTask({
         id: `test_validation_${Date.now()}`,
         type: 'security_validation',
-        priority: 'medium',;
+        priority: 'medium',
         data: {
           email: 'prosecutor@da.gov',
           firstName: 'John',
@@ -137,59 +126,52 @@ await runInitialTests();
           legalProfessionalCheck: true;
         },
         config: {
-          useGPU: true,
-          model: 'gemma3-legal',;
+          useGPU: true
+          model: 'gemma3-legal',
           protocol: 'auto';
         }
       });
-
       testResults.validation = {
-        success: validationTest.success,;
-        data: validationTest,;
+        success: validationTest.success,
+        data: validationTest
         timestamp: new Date().toISOString();
       };
-
     } catch (error) {
       console.error('Test failed:', error);
       testResults.error = {
-        success: false,;
-        error: error instanceof Error ? error.message: 'Unknown error',;
+        success: false
+        error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString();
       };
     } finally {
       testRunning = false;
     }
   }
-
   function getTestStatusIcon(testKey: string) {
     const test = testResults[testKey];
     if (!test) return Clock;
-    return test.success ? CheckCircle : AlertCircle;
+    return test.success ? CheckCircle : AlertCircl;
   }
-
   function getTestStatusColor(testKey: string) {
     const test = testResults[testKey];
     if (!test) return 'text-gray-400';
     return test.success ? 'text-green-500' : 'text-red-500';
   }
-
   // Mock form data for components
   const mockFormData = {
     login: { email: '', password: '' },
     register: {
       email: '', firstName: '', lastName: '', password: '',
-      confirmPassword: '', role: 'prosecutor', department: '',;
-      jurisdiction: '', badgeNumber: '', enableTwoFactor: false,
+      confirmPassword: '', role: 'prosecutor', department: '',
+      jurisdiction: '', badgeNumber: '', enableTwoFactor: false
       agreeToTerms: false, agreeToPrivacy: false;
     }
   };
-
   function populateTestData(form: 'login' | 'register') {
     if (form === 'login') {
       // Fill login form with test data
       const emailInput = document.getElementById('email') as HTMLInputElement;
       const passwordInput = document.getElementById('password') as HTMLInputElement;
-
       if (emailInput) emailInput.value = testCredentials.login.email;
       if (passwordInput) passwordInput.value = testCredentials.login.password;
     } else {
@@ -207,11 +189,9 @@ await runInitialTests();
     }
   }
 </script>
-
 <svelte:head>
   <title>Authentication Test - Legal AI Platform</title>
 </svelte:head>
-
 <div class="container mx-auto p-6 space-y-6">
   <div class="text-center space-y-4">
     <div class="flex items-center justify-center gap-3">
@@ -223,7 +203,6 @@ await runInitialTests();
       Context7 documentation, and production service clients for the Legal AI Platform.
     </p>
   </div>
-
   <!-- Test Status Overview -->
   <Card>
     <CardHeader>
@@ -247,7 +226,6 @@ await runInitialTests();
             </div>
           </div>
         </div>
-
         <!-- Context7 Documentation -->
         <div class="flex items-center gap-3 p-3 border rounded-lg">
           {#if !testResults.context7}<Clock class="h-5 w-5 {getTestStatusColor('context7')}" />{:else if testResults.context7.success}<CheckCircle class="h-5 w-5 {getTestStatusColor('context7')}" />{:else}<AlertCircle class="h-5 w-5 {getTestStatusColor('context7')}" />{/if}
@@ -258,7 +236,6 @@ await runInitialTests();
             </div>
           </div>
         </div>
-
         <!-- Security Analysis -->
         <div class="flex items-center gap-3 p-3 border rounded-lg">
           {#if !testResults.security}<Clock class="h-5 w-5 {getTestStatusColor('security')}" />{:else if testResults.security.success}<CheckCircle class="h-5 w-5 {getTestStatusColor('security')}" />{:else}<AlertCircle class="h-5 w-5 {getTestStatusColor('security')}" />{/if}
@@ -269,7 +246,6 @@ await runInitialTests();
             </div>
           </div>
         </div>
-
         <!-- Legal Validation -->
         <div class="flex items-center gap-3 p-3 border rounded-lg">
           {#if !testResults.validation}<Clock class="h-5 w-5 {getTestStatusColor('validation')}" />{:else if testResults.validation.success}<CheckCircle class="h-5 w-5 {getTestStatusColor('validation')}" />{:else}<AlertCircle class="h-5 w-5 {getTestStatusColor('validation')}" />{/if}
@@ -281,7 +257,6 @@ await runInitialTests();
           </div>
         </div>
       </div>
-
       <div class="flex gap-2">
         <Button class="bits-btn"
           onclick={runInitialTests}
@@ -295,11 +270,9 @@ await runInitialTests();
             <Activity class="mr-2 h-4 w-4" />
             Refresh Tests
           {/if}
-
       </div>
     </div.Content>
   </div.Root>
-
   <!-- Main Testing Interface -->
   <Tabs.Root bind:value={currentTab}>
     <Tabs.List class="grid w-full grid-cols-4">
@@ -308,7 +281,6 @@ await runInitialTests();
       <Tabs.Trigger value="context7">Context7 Docs</Tabs.Trigger>
       <Tabs.Trigger value="results">Test Results</Tabs.Trigger>
     </Tabs.List>
-
     <!-- Authentication Testing -->
     <Tabs.Content value="auth" class="space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -330,7 +302,6 @@ await runInitialTests();
               size="sm"
             >
               Fill Test Data
-
             <LoginForm
               data={mockFormData.login}
               enableGPUAuth={true}
@@ -338,7 +309,6 @@ await runInitialTests();
             />
           </div.Content>
         </div.Root>
-
         <!-- Registration Testing -->
         <Card>
           <CardHeader>
@@ -357,7 +327,6 @@ await runInitialTests();
               size="sm"
             >
               Fill Test Data
-
             <RegisterForm
               data={mockFormData.register}
               enableGPUValidation={true}
@@ -366,7 +335,6 @@ await runInitialTests();
           </div.Content>
         </div.Root>
       </div>
-
       <!-- Auth Store Status -->
       <Card>
         <CardHeader>
@@ -397,7 +365,6 @@ await runInitialTests();
         </div.Content>
       </div.Root>
     </Tabs.Content>
-
     <!-- GPU Testing -->
     <Tabs.Content value="gpu" class="space-y-6">
       <Card>
@@ -429,7 +396,6 @@ await runInitialTests();
                   </div>
                 </div>
               </div>
-
               <div class="space-y-4">
                 <h4 class="font-medium">Ollama Status</h4>
                 <div class="space-y-2 text-sm">
@@ -459,7 +425,6 @@ await runInitialTests();
         </div.Content>
       </div.Root>
     </Tabs.Content>
-
     <!-- Context7 Documentation -->
     <Tabs.Content value="context7" class="space-y-6">
       <Card>
@@ -502,7 +467,6 @@ await runInitialTests();
         </div.Content>
       </div.Root>
     </Tabs.Content>
-
     <!-- Test Results -->
     <Tabs.Content value="results" class="space-y-6">
       <Card>

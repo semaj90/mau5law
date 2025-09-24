@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   	import type { ComponentProps } from 'svelte';
   	interface GamingButtonProps {
   		variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
@@ -60,33 +59,28 @@
   		}
   	}
 </script>
-
 <button
 	bind:this={buttonElement}
 	class="gaming-button {variant} {size}"
-	class:disabled
+	class: disabled
 	class:loading;
 	class:pressed={isPressed}
 	class:glow={glowEffect}
 	{disabled}
 	onclick={handleClick}
-	
 >
 	{#if loading}
 		<div class="loading-spinner"></div>
 	{/if}
-	
 	<span class="button-content" class:loading>
 		{@render children()}
 	</span>
-	
 	<!-- Gaming button effects -->
 	<div class="button-overlay"></div>
 	<div class="scan-line"></div>
 </button>
-
 <style>
-	.gaming-button {;
+	.gaming-button {
 		position: relative;
 		display: inline-flex;
 		align-items: center;
@@ -111,13 +105,11 @@
 		font-size: 12px;
 		min-height: 32px;
 	}
-	
 	.gaming-button.md {
 		padding: 12px 24px;
 		font-size: 14px;
 		min-height: 40px;
 	}
-	
 	.gaming-button.lg {
 		padding: 16px 32px;
 		font-size: 16px;
@@ -129,68 +121,59 @@
 		color: var(--yorha-secondary, #ffd700);
 box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700), inset 0 0 10px rgba(255, 215, 0, 0.1);
 	}
-	
-	.gaming-button.primary:hover:not(:disabled) {
+	.gaming-button.primary:hover:not(:disabled) {,
 		background: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-bg-primary, #0a0a0a);
 		border-color: var(--yorha-secondary, #ffd700);
 box-shadow: 0 0 0 2px var(--yorha-secondary, #ffd700), 0 0 20px rgba(255, 215, 0, 0.5);
 		transform: translateY(-1px);
 	}
-	
 	.gaming-button.secondary {
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-text-secondary, #b0b0b0);
 		color: var(--yorha-text-secondary, #b0b0b0);
 box-shadow: 0 0 0 1px var(--yorha-text-secondary, #b0b0b0), inset 0 0 5px rgba(176, 176, 176, 0.1);
 	}
-	
-	.gaming-button.secondary:hover:not(:disabled) {
+	.gaming-button.secondary:hover:not(:disabled) {,
 		background: var(--yorha-text-secondary, #b0b0b0);
 		color: var(--yorha-bg-primary, #0a0a0a);
 		border-color: var(--yorha-text-secondary, #b0b0b0);
 box-shadow: 0 0 0 2px var(--yorha-text-secondary, #b0b0b0), 0 0 15px rgba(176, 176, 176, 0.3);
 		transform: translateY(-1px);
 	}
-	
 	.gaming-button.success {
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-accent, #00ff41);
 		color: var(--yorha-accent, #00ff41);
 box-shadow: 0 0 0 1px var(--yorha-accent, #00ff41), inset 0 0 10px rgba(0, 255, 65, 0.1);
 	}
-	
-	.gaming-button.success:hover:not(:disabled) {
+	.gaming-button.success:hover:not(:disabled) {,
 		background: var(--yorha-accent, #00ff41);
 		color: var(--yorha-bg-primary, #0a0a0a);
 		border-color: var(--yorha-accent, #00ff41);
 box-shadow: 0 0 0 2px var(--yorha-accent, #00ff41), 0 0 20px rgba(0, 255, 65, 0.5);
 		transform: translateY(-1px);
 	}
-	
 	.gaming-button.danger {
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-danger, #ff0041);
 		color: var(--yorha-danger, #ff0041);
 box-shadow: 0 0 0 1px var(--yorha-danger, #ff0041), inset 0 0 10px rgba(255, 0, 65, 0.1);
 	}
-	
-	.gaming-button.danger:hover:not(:disabled) {
+	.gaming-button.danger:hover:not(:disabled) {,
 		background: var(--yorha-danger, #ff0041);
 		color: var(--yorha-text-primary, #e0e0e0);
 		border-color: var(--yorha-danger, #ff0041);
 box-shadow: 0 0 0 2px var(--yorha-danger, #ff0041), 0 0 20px rgba(255, 0, 65, 0.5);
 		transform: translateY(-1px);
 	}
-	
 	.gaming-button.warning {
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-warning, #ffaa00);
 		color: var(--yorha-warning, #ffaa00);
 box-shadow: 0 0 0 1px var(--yorha-warning, #ffaa00), inset 0 0 10px rgba(255, 170, 0, 0.1);
 	}
-	
-	.gaming-button.warning:hover:not(:disabled) {
+	.gaming-button.warning:hover:not(:disabled) {,
 		background: var(--yorha-warning, #ffaa00);
 		color: var(--yorha-bg-primary, #0a0a0a);
 		border-color: var(--yorha-warning, #ffaa00);
@@ -206,12 +189,10 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		border-color: var(--yorha-text-muted, #808080) !important;
 		color: var(--yorha-text-muted, #808080) !important;
 	}
-	
 	.gaming-button.pressed {
 		transform: translateY(1px) scale(0.98);
 		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
 	}
-	
 	.gaming-button.glow {
 		animation: gaming-glow 2s ease-in-out infinite alternate;
 	}
@@ -223,7 +204,6 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		gap: 8px;
 		transition: opacity 0.2s ease;
 	}
-	
 	.button-content.loading {
 		opacity: 0.7;
 	}
@@ -247,11 +227,9 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		transition: left 0.5s ease;
 		z-index: 1;
 	}
-	
 	.gaming-button:hover:not(:disabled) .button-overlay {
 		left: 100%;
 	}
-	
 	.scan-line {
 		position: absolute;
 		top: 0;
@@ -267,7 +245,6 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		0% { transform: rotate(0deg); }
 		100% { transform: rotate(360deg); }
 	}
-	
 	@keyframes gaming-glow {
 		0% {
 box-shadow: 0 0 20px currentColor, inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -276,7 +253,6 @@ box-shadow: 0 0 20px currentColor, inset 0 1px 0 rgba(255, 255, 255, 0.2);
 box-shadow: 0 0 40px currentColor, 0 0 60px currentColor, inset 0 1px 0 rgba(255, 255, 255, 0.3);
 		}
 	}
-	
 	@keyframes scan {
 		0%, 100% {
 			transform: translateX(-100%);

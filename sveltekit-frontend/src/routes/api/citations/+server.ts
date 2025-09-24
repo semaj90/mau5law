@@ -1,19 +1,16 @@
 
 /**
  * Citations API with Rich Text Editor Integration
- * 
+ *
  * Provides comprehensive citation management for legal cases
  * Integrates with detective mode and case management system
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { db } from '$lib/server/db/index.js'
 import { eq, and, or, ilike, count, desc } from 'drizzle-orm'
 import { citations } from '$lib/server/db/schemas/cases-schema.js'
 import { caseManagementService } from '$lib/services/case-management-service.js'
-
-
 // Sample citations for when database is not available or for demo data
 const sampleCitations = [
   {
@@ -54,11 +51,9 @@ const sampleCitations = [
     updatedAt: new Date("2024-01-17")
   }
 ]
-
 // UUID validation regex
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-
 function isValidUUID(uuid: string): boolean {
   return UUID_REGEX.test(uuid)
 }
@@ -73,27 +68,22 @@ export const GET: RequestHandler = async ({ url }) => {
     const verified = url.searchParams.get('verified')
     const limit = parseInt(url.searchParams.get('limit') || '20')
     const offset = parseInt(url.searchParams.get('offset') || '0')
-
     if (!caseId) {
       return json({
-        success: false,
+        success: false
         error: 'caseId parameter is required'
       }, { status: 400 })
     }
-
     // Build where conditions
     const whereConditions: any[] = [
       eq(citations.caseId, caseId)
     ]
-
     if (citationType) {
       whereConditions.push(eq(citations.citationType, citationType)
     }
-
     if (verified !== null && verified !== undefined) {
       whereConditions.push(eq(citations.verified, verified === 'true')
     }
-
     if (search) {
       whereConditions.push(
         or(
@@ -105,7 +95,6 @@ export const GET: RequestHandler = async ({ url }) => {
         )
       )
     }
-
     // Get citations with pagination
     const citationsQuery = db
       .select()
@@ -114,33 +103,28 @@ export const GET: RequestHandler = async ({ url }) => {
       .orderBy(desc(citations.relevanceScore), desc(citations.dateCreated)
       .limit(limit)
       .offset(offset)
-
     const citationResults = await citationsQuery
-
     // Get total count for pagination
     const totalQuery = db
       .select({ count: count() })
       .from(citations)
       .where(and(...whereConditions)
-
     const [{ count: totalCount }] = await totalQuery
-
     return json({
-      success: true,
-      citations: citationResults,
+      success: true
+      citations: citationResults
       pagination: {
         limit,
         offset,
-        total: totalCount,
+        total: totalCount
         totalPages: Math.ceil(totalCount / limit)
       },
       filters: { caseId, citationType, search, verified }
     })
-
   } catch (error: any) {
     console.error('Citations fetch error:', error)
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message: 'Unknown error',
       citations: []
     }, { status: 500 })
@@ -149,25 +133,22 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const citationData = await request.json()
-
     // Validate required fields
     const { caseId, title, citationType } = citationData
     if (!caseId || !title || !citationType) {
       return json({
-        success: false,
+        success: false
         error: 'caseId, title, and citationType are required'
       }, { status: 400 })
     }
-
     // Verify case exists
     const caseDetails = await caseManagementService.getCaseById(caseId)
     if (!caseDetails) {
       return json({
-        success: false,
+        success: false
         error: 'Case not found'
       }, { status: 404 })
     }
-
     // Create citation record
     const [newCitation] = await db
       .insert(citations)
@@ -185,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
         contextNotes: citationData.contextNotes || null,
         relevanceScore: citationData.relevanceScore || 5,
         citationPurpose: citationData.citationPurpose || 'support',
-        publicationDate: citationData.publicationDate ? new Date(citationData.publicationDate) : null,
+        publicationDate: citationData.publicationDate ? new Date(citationData.publicationDate) : null
         jurisdiction: citationData.jurisdiction || null,
         court: citationData.court || null,
         verified: citationData.verified || false,
@@ -194,7 +175,6 @@ export const POST: RequestHandler = async ({ request }) => {
         createdBy: citationData.createdBy || null
       })
       .returning()
-
     // Add to case timeline if detective mode is enabled
     if (caseDetails.detectiveMode) {
       await caseManagementService.addTimelineEvent(caseId, {
@@ -212,16 +192,14 @@ export const POST: RequestHandler = async ({ request }) => {
         eventDate: new Date()
       })
     }
-
     return json({
-      success: true,
+      success: true
       citation: newCitation
     }, { status: 201 })
-
   } catch (error: any) {
     console.error('Citation creation error:', error)
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }
@@ -229,28 +207,24 @@ export const POST: RequestHandler = async ({ request }) => {
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const { id, ...updateData } = await request.json()
-
     if (!id) {
       return json({
-        success: false,
+        success: false
         error: 'Citation ID is required'
       }, { status: 400 })
     }
-
     // Check if citation exists
     const existingCitation = await db
       .select()
       .from(citations)
       .where(eq(citations.id, id)
       .limit(1)
-
     if (!existingCitation.length) {
       return json({
-        success: false,
+        success: false
         error: 'Citation not found'
       }, { status: 404 })
     }
-
     // Update citation
     const [updatedCitation] = await db
       .update(citations)
@@ -260,58 +234,49 @@ export const PUT: RequestHandler = async ({ request }) => {
       })
       .where(eq(citations.id, id)
       .returning()
-
     return json({
-      success: true,
+      success: true
       citation: updatedCitation
     })
-
   } catch (error: any) {
     console.error('Citation update error:', error)
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }
 }
-
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
     const { id } = await request.json()
-
     if (!id) {
       return json({
-        success: false,
+        success: false
         error: 'Citation ID is required'
       }, { status: 400 })
     }
-
     // Check if citation exists
     const existingCitation = await db
       .select()
       .from(citations)
       .where(eq(citations.id, id)
       .limit(1)
-
     if (!existingCitation.length) {
       return json({
-        success: false,
+        success: false
         error: 'Citation not found'
       }, { status: 404 })
     }
-
     // Delete the citation
     await db.delete(citations).where(eq(citations.id, id)
-
     return json({
-      success: true,
+      success: true
       message: 'Citation deleted successfully'
     })
-
   } catch (error: any) {
     console.error('Citation deletion error:', error)
     return json({
-      success: false,
+      success: false
       error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 })
   }

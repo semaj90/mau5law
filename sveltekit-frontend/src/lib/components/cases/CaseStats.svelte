@@ -1,15 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   interface Props {
     cases: Case[] ;
   }
   let { cases = []
    }: { cases = []
   : unknown } = $props();
-
-
-
   // Simple Case Stats Component - TODO: Enhance with full functionality
   //
   // 🚀 ENHANCEMENT ROADMAP (See: /ENHANCED_FEATURES_TODO.md)
@@ -26,21 +22,18 @@
   // - Services: AnalyticsService, ExportService, SSE
   // - Components: TrendChart, DistributionChart, MetricCard
   // - Stores: Real-time stats store, user preferences
-
   import type { Case } from '$lib/types/api';
-
   // TODO: Enhanced stats interface
   // interface AdvancedStats {
   //   resolutionTimeAvg: number
   //   evidencePerCaseAvg: number
-  //   casesByPriority: Record<string, number>;
-  //   monthlyTrends: Array;
-  //   assigneeWorkload: Array;
-  //   statusTransitionRates: Record<string, number>;
+  //   casesByPriority: Record<string, number>
+  //   monthlyTrends: Array
+  //   assigneeWorkload: Array
+  //   statusTransitionRates: Record<string, number>
   //   upcomingDeadlines: number
   //   overdueCount: number
   // }
-
   let stats = $derived({
     // TODO: IMPLEMENT ADVANCED CALCULATIONS
     // ===================================
@@ -49,11 +42,10 @@
     // 3. Trend calculations with historical data
     // 4. Performance metrics and KPIs
     // 5. Predictive analytics for case outcomes
-
     // Basic stats (STUB)
     total: cases.length,
-    active: cases.filter(item => item.length),;
-    pending: cases.filter(item => item.length),;
+    active: cases.filter(item => item.length),
+    pending: cases.filter(item => item.length),
     closed: cases.filter(item => item.length),
     recentlyUpdated: cases.filter(c => {
       const weekAgo = new Date());
@@ -62,7 +54,6 @@
     }).length,
   });
 </script>
-
 <div class="case-stats container mx-auto px-4">
   <div class="stat-nier-bits-card">
     <div class="stat-value">{stats.total}</div>
@@ -85,7 +76,6 @@
     <div class="stat-label">Recently Updated</div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .case-stats {
@@ -112,4 +102,3 @@
     margin-top: 0.25rem;
 }
 </style>
-

@@ -15,8 +15,6 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
-
 import { json } from '@sveltejs/kit'
 import type { RequestEvent } from '@sveltejs/kit'
 import { db } from '$lib/server/db/index.js'
@@ -26,14 +24,11 @@ import { eq } from 'drizzle-orm'
 import { v4 as uuidv4 } from 'uuid'
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
-
-
 // Import our new AI suggestion services
 import { generateOllamaSuggestions, type OllamaSuggestion } from '$lib/services/ollama-suggestions-service.js'
 import { generateVectorContextualSuggestions, type ContextualSuggestion } from '$lib/services/vector-suggestions-service.js'
 import { generateEnhancedRAGSuggestions, type RAGSuggestionResponse } from '$lib/services/enhanced-rag-suggestions-service.js'
 import { aiSuggestionsClient, ReportTypeUtils, type SuggestionResponse } from '$lib/services/ai-suggestions-grpc-client.js'
-
 export interface EnhancedSuggestionRequest {
   content: string
   reportType?: 'prosecution_memo' | 'case_brief' | 'evidence_summary' | 'motion' | 'discovery_request' | 'witness_statement' | 'legal_research' | 'closing_argument' | 'general'
@@ -58,7 +53,6 @@ export interface EnhancedSuggestionRequest {
   confidenceThreshold?: number
   temperature?: number
 }
-
 export interface UnifiedSuggestion {
   id: string
   content: string
@@ -66,7 +60,7 @@ export interface UnifiedSuggestion {
   confidence: number
   reasoning: string
   metadata: {
-    source: 'ollama' | 'vector_search' | 'enhanced_rag' | 'protobuf_grpc' | 'rule_based'
+    source: 'ollama' | 'vector_search' | 'enhanced_rag' | 'protobuf_grpc' | 'rule_based',
     category: string
     priority?: number
     keywords?: string[]
@@ -76,7 +70,6 @@ export interface UnifiedSuggestion {
     processingTimeMs?: number
   }
 }
-
 export async function POST({ request, url }: RequestEvent): Promise<any> {
   try {
     const data: EnhancedSuggestionRequest = await request.json()
@@ -95,11 +88,9 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
       confidenceThreshold = 0.6,
       temperature = 0.3
     } = data
-
     if (!content) {
       return json({ error: 'Content is required' }, { status: 400 })
     }
-
     // Generate comprehensive AI suggestions using multiple services
     const suggestions = await generateComprehensiveSuggestions({
       content,
@@ -114,10 +105,8 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
       temperature,
       userId
     })
-
     // Store in database if userId provided
     const recommendationId = uuidv4()
-
     if (userId && sessionId) {
       await storeRecommendations({
         userId,
@@ -128,24 +117,23 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
         reportType
       })
     }
-
     return json({
-      id: recommendationId,
+      id: recommendationId
       suggestions,
       model,
       reportType,
       confidence: suggestions.length > 0 ? suggestions[0].confidence : 0,
       servicesUsed: {
-        vectorSearch: useVectorSearch,
-        ollamaAI: useOllamaAI,
-        enhancedRAG: useEnhancedRAG,
+        vectorSearch: useVectorSearch
+        ollamaAI: useOllamaAI
+        enhancedRAG: useEnhancedRAG
         protobufGRPC: useProtobuf
       },
       timestamp: new Date().toISOString(),
       metadata: {
         contentLength: content.length,
         suggestionsCount: suggestions.length,
-        context: Object.keys(context).length > 0 ? context : undefined,
+        context: Object.keys(context).length > 0 ? context : undefined
         processingServices: suggestions.map(s => s.metadata.source).filter((v, i, a) => a.indexOf(v) === i)
       }
     })
@@ -157,7 +145,6 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
     }, { status: 500 })
   }
 }
-
 async function generateComprehensiveSuggestions({
   content,
   reportType,
@@ -185,30 +172,26 @@ async function generateComprehensiveSuggestions({
 }): Promise<UnifiedSuggestion[]> {
   const allSuggestions: UnifiedSuggestion[] = []
   const processingStartTime = Date.now()
-
   // Service execution promises for parallel processing
   const servicePromises: Promise<void>[] = []
-
   // 1. Protocol Buffers gRPC Service (if enabled)
   if (useProtobuf) {
     servicePromises.push((async () => {
         try {
           const grpcStartTime = Date.now()
           const reportTypeEnum = ReportTypeUtils.fromString(reportType)
-
           const grpcResponse = await aiSuggestionsClient.generateSuggestions({
             content,
-            report_type: reportTypeEnum,
+            report_type: reportTypeEnum
             model,
-            max_suggestions: maxSuggestions,
-            confidence_threshold: confidenceThreshold,
+            max_suggestions: maxSuggestions
+            confidence_threshold: confidenceThreshold
             context: {
               case_id: context.caseId,
-              user_id: userId,
+              user_id: userId
               document_ids: context.evidenceIds
             }
           })
-
           grpcResponse.suggestions.forEach((suggestion, index) => {
             allSuggestions.push({
               id: suggestion.id || `grpc-${index}`,
@@ -233,7 +216,6 @@ async function generateComprehensiveSuggestions({
       })()
     )
   }
-
   // 2. Enhanced RAG Service
   if (useEnhancedRAG) {
     servicePromises.push((async () => {
@@ -248,7 +230,6 @@ async function generateComprehensiveSuggestions({
             maxSuggestions,
             confidenceThreshold
           })
-
           ragResponse.suggestions.forEach((suggestion, index) => {
             allSuggestions.push({
               id: `rag-${index}`,
@@ -273,7 +254,6 @@ async function generateComprehensiveSuggestions({
       })()
     )
   }
-
   // 3. Ollama AI Service
   if (useOllamaAI) {
     servicePromises.push((async () => {
@@ -285,7 +265,6 @@ async function generateComprehensiveSuggestions({
             context,
             { temperature, maxSuggestions }
           )
-
           ollamaSuggestions.forEach((suggestion, index) => {
             allSuggestions.push({
               id: `ollama-${index}`,
@@ -308,7 +287,6 @@ async function generateComprehensiveSuggestions({
       })()
     )
   }
-
   // 4. Vector Contextual Search
   if (useVectorSearch) {
     servicePromises.push((async () => {
@@ -320,7 +298,6 @@ async function generateComprehensiveSuggestions({
             userId,
             context.caseId
           )
-
           vectorSuggestions.forEach((suggestion, index) => {
             allSuggestions.push({
               id: `vector-${index}`,
@@ -343,12 +320,10 @@ async function generateComprehensiveSuggestions({
       })()
     )
   }
-
   // 5. Rule-based fallback (always enabled)
   servicePromises.push((async () => {
       const ruleStartTime = Date.now()
       const ruleBasedSuggestions = generateRuleBasedSuggestions(content, reportType, content.toLowerCase())
-
       ruleBasedSuggestions.forEach((suggestion, index) => {
         allSuggestions.push({
           id: `rule-${index}`,
@@ -366,26 +341,20 @@ async function generateComprehensiveSuggestions({
       })
     })()
   )
-
   // Execute all services in parallel
   await Promise.allSettled(servicePromises)
-
   // Deduplicate, rank, and filter suggestions
   const uniqueSuggestions = deduplicateUnifiedSuggestions(allSuggestions)
   const rankedSuggestions = rankSuggestionsByQuality(uniqueSuggestions, confidenceThreshold)
-
   console.log(`Generated ${allSuggestions.length} total suggestions from ${new Set(allSuggestions.map(s => s.metadata.source)).size} services in ${Date.now() - processingStartTime}ms`)
-
   return rankedSuggestions.slice(0, maxSuggestions)
 }
-
 function generateRuleBasedSuggestions(
-  content: string,
-  reportType: string,
+  content: string
+  reportType: string
   contentLower: string
 ) {
   const suggestions: Array<any> = []
-
   if (reportType === 'prosecution_memo') {
     if (contentLower.includes('suspect') || contentLower.includes('defendant')) {
       suggestions.push({
@@ -454,7 +423,6 @@ function generateRuleBasedSuggestions(
       metadata: { category: 'procedural' }
     })
   }
-
   // Generic content-based suggestions
   if (content.length < 200) {
     suggestions.push({
@@ -465,7 +433,6 @@ function generateRuleBasedSuggestions(
       metadata: { contentLength: content.length, category: 'content_quality' }
     })
   }
-
   if (!contentLower.includes('statute') && !contentLower.includes('law')) {
     suggestions.push({
       content: 'Reference applicable statutes and legal precedents to strengthen your argument.',
@@ -475,7 +442,6 @@ function generateRuleBasedSuggestions(
       metadata: { category: 'legal_support' }
     })
   }
-
   if (!contentLower.includes('conclusion') && content.length > 500) {
     suggestions.push({
       content: 'Consider adding a conclusion section to summarize your key findings and recommendations.',
@@ -485,19 +451,16 @@ function generateRuleBasedSuggestions(
       metadata: { contentLength: content.length, category: 'structure' }
     })
   }
-
   return suggestions
 }
-
 async function getVectorBasedSuggestions(content: string, reportType: string): Promise<any> {
   try {
     // Generate embedding for the content
     const embedding = await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
-      legalDomain: true,
+      legalDomain: true
       cache: true
     }) as number[]
-
     // Search for similar chat messages and their recommendations
     const similarMessages = await db
       .select({
@@ -514,7 +477,6 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
         eq(chatMessages.role, 'user')
       )
       .limit(10)
-
     return similarMessages
       .filter(msg => msg.recommendations && msg.confidence && msg.confidence > 0.6)
       .map(msg => ({
@@ -529,10 +491,8 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
     return []
   }
 }
-
 async function generateContextualSuggestions(content: string, context: any): Promise<any> {
   const suggestions: Array<any> = []
-
   try {
     // If we have case context, suggest case-specific improvements
     if (context.caseId) {
@@ -544,7 +504,6 @@ async function generateContextualSuggestions(content: string, context: any): Pro
         metadata: { caseId: context.caseId, category: 'context_aware' }
       })
     }
-
     // If we have evidence context, suggest evidence-specific analysis
     if (context.evidenceIds && context.evidenceIds.length > 0) {
       suggestions.push({
@@ -555,7 +514,6 @@ async function generateContextualSuggestions(content: string, context: any): Pro
         metadata: { evidenceIds: context.evidenceIds, category: 'evidence_specific' }
       })
     }
-
     // If we have previous messages, suggest consistency
     if (context.previousMessages && context.previousMessages.length > 0) {
       suggestions.push({
@@ -569,16 +527,12 @@ async function generateContextualSuggestions(content: string, context: any): Pro
   } catch (error: any) {
     console.warn('Failed to generate contextual suggestions:', error)
   }
-
   return suggestions
 }
-
 function deduplicateUnifiedSuggestions(suggestions: UnifiedSuggestion[]): UnifiedSuggestion[] {
   const seen = new Map<string, UnifiedSuggestion>()
-
   suggestions.forEach(suggestion => {
     const key = suggestion.content.toLowerCase().replace(/\s+/g, ' ').trim()
-
     if (!seen.has(key)) {
       seen.set(key, suggestion)
     } else {
@@ -589,12 +543,10 @@ function deduplicateUnifiedSuggestions(suggestions: UnifiedSuggestion[]): Unifie
       }
     }
   })
-
   return Array.from(seen.values())
 }
-
 function rankSuggestionsByQuality(
-  suggestions: UnifiedSuggestion[],
+  suggestions: UnifiedSuggestion[]
   confidenceThreshold: number
 ): UnifiedSuggestion[] {
   return suggestions
@@ -608,23 +560,19 @@ function rankSuggestionsByQuality(
         'vector_search': 0.8,
         'rule_based': 0.6
       }
-
       const scoreA = (
         a.confidence * 0.5 +
         (a.metadata.priority || 1) * 0.2 +
         (sourceWeights[a.metadata.source] || 0.5) * 0.3
       )
-
       const scoreB = (
         b.confidence * 0.5 +
         (b.metadata.priority || 1) * 0.2 +
         (sourceWeights[b.metadata.source] || 0.5) * 0.3
       )
-
       return scoreB - scoreA
     })
 }
-
 async function storeRecommendations({
   userId,
   sessionId,
@@ -644,10 +592,9 @@ async function storeRecommendations({
     // Generate embedding for the content
     const embedding = await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
-      legalDomain: true,
+      legalDomain: true
       cache: true
     }) as number[]
-
     // Store the message
     const messageResult = await db.insert(chatMessages).values({
       id: uuidv4(),
@@ -657,15 +604,13 @@ async function storeRecommendations({
       embedding: JSON.stringify(embedding),
       metadata: {
         reportType,
-        suggestionRequestId: recommendationId,
+        suggestionRequestId: recommendationId
         servicesUsed: suggestions.map(s => s.metadata.source),
         totalSuggestions: suggestions.length,
         timestamp: new Date().toISOString()
       }
     }).returning({ id: chatMessages.id })
-
     const messageId = messageResult[0]?.id
-
     if (messageId) {
       // Store each recommendation with enhanced metadata
       for (let i = 0; i < suggestions.length; i++) {

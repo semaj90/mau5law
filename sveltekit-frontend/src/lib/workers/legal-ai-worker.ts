@@ -1,16 +1,13 @@
 /// <reference types="vite/client" />
-
 /**
  * BullMQ Worker for Legal AI Document Processing
  * Integrates SvelteKit with Go Legal AI Server
  */
-
 import { Worker, type Job } from "bullmq";
-// TODO: Fix import - // Orphaned content: import {  import { evidence } from "$lib/server/db/schema-postgres";
+// TODO: Fix import - // Orphaned content: import {  import { evidence } from "$lib/server/db/schema-postgres"
 // TODO: Fix import - // Orphaned content: import {  // Configuration
-const GO_SERVER_URL = import.meta.env.GO_SERVER_URL || 'http://localhost:8080';
-const REDIS_URL = import.meta.env.REDIS_URL || 'redis://localhost:6379';
-
+const GO_SERVER_URL = import.meta.env.GO_SERVER_URL || 'http://localhost:8080'
+const REDIS_URL = import.meta.env.REDIS_URL || 'redis://localhost:6379'
 // Job data interfaces
 export interface LegalAIJobData {
   documentId: string;
@@ -27,7 +24,6 @@ export interface LegalAIJobData {
     useGemma3Legal?: boolean;
   };
 }
-
 export interface GoServerResponse {
   success: boolean;
   document_id: string;
@@ -39,7 +35,6 @@ export interface GoServerResponse {
   metadata: Record<string, unknown>;
   error?: string;
 }
-
 export interface LegalEntity {
   type: string;
   value: string;
@@ -47,7 +42,6 @@ export interface LegalEntity {
   start_pos: number;
   end_pos: number;
 }
-
 export interface RiskAssessment {
   overall_risk: string;
   risk_score: number;
@@ -55,7 +49,6 @@ export interface RiskAssessment {
   recommendations: string[];
   confidence: number;
 }
-
 /**
  * Process document through Go Legal AI Server
  */;
@@ -64,7 +57,7 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
     document_id: jobData.documentId,
     content: jobData.content,
     document_type: jobData.documentType,
-    case_id: jobData.caseId,;
+    case_id: jobData.caseId,
     options: {
       extract_entities: jobData.options?.extractEntities ?? true,
       generate_summary: jobData.options?.generateSummary ?? true,
@@ -74,72 +67,60 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
       use_gemma3_legal: jobData.options?.useGemma3Legal ?? true
     }
   };
-
   console.log(`🔄 Sending document ${jobData.documentId} to Go server for processing...`);
-
   const response = await fetch(`${GO_SERVER_URL}/process-document`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(requestPayload),
-    // 5 minute timeout for complex processing;
+    // 5 minute timeout for complex processing
     signal: AbortSignal.timeout(300000)
   });
-
   if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
     const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text();
     throw new Error(`Go server error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}): ${errorText}`);
   }
-
   return await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 }
-
 /**
  * Update evidence record with AI processing results
  */
 async function updateEvidenceWithResults(
-  documentId: string,
+  documentId: string
   results: GoServerResponse;
 ): Promise<void> {
   try {
     const updateData: Partial<typeof evidence.$inferInsert> = {
       updatedAt: new Date()
     };
-
-    // Add AI-generated summary;
+    // Add AI-generated summary
     if (results.summary) {
       updateData.aiSummary = results.summary;
     }
-
-    // Add extracted entities as JSON;
+    // Add extracted entities as JSON
     if (results.entities && results.entities.length > 0) {
       updateData.aiExtractedEntities = JSON.stringify(results.entities);
     }
-
-    // Add risk assessment;
+    // Add risk assessment
     if (results.risk_assessment) {
       updateData.aiRiskScore = results.risk_assessment.risk_score;
       updateData.aiRiskFactors = JSON.stringify(results.risk_assessment.risk_factors);
     }
-
-    // Add processing metadata;
+    // Add processing metadata
     updateData.aiProcessingMetadata = JSON.stringify({
       processing_time: results.processing_time,
       processed_at: new Date().toISOString(),
       go_server_metadata: results.metadata,
       success: results.success
     });
-
     await db.update(evidence).set(updateData).where(eq(evidence.id, documentId);
-
     console.log(`✅ Evidence record ${documentId} updated with AI results`);
   } catch (error: any) {
     console.error(`❌ Failed to update evidence record ${documentId}:`, error);
     throw error;
   }
 }
-
 /**
  * Create and start the Legal AI worker
  */;
@@ -149,34 +130,27 @@ export function createLegalAIWorker(): Worker {
     async (job: Job<LegalAIJobData>) => {
       const { data } = job;
       const startTime = Date.now();
-
       console.log(`🚀 Processing legal AI job: ${job.id} for document: ${(data as { documentId?: any }).documentId}`);
-
       try {
         // Update job progress
         await job.updateProgress(10);
-
         // Process document with Go server
         const results = await processDocumentWithGoServer(data);
         await job.updateProgress(70);
-
         if (!results.success) {
           throw new Error(`Go server processing failed: ${results.error}`);
         }
-
         // Update database with results
         await updateEvidenceWithResults((data as { documentId?: any }).documentId, results);
         await job.updateProgress(90);
-
         const processingTime = Date.now() - startTime;
         console.log(`✅ Legal AI job completed: ${job.id} in ${processingTime}ms`);
-
-        // Return comprehensive results;
+        // Return comprehensive results
         const jobResult = {
-          success: true,
+          success: true
           documentId: (data as { documentId?: any }).documentId,
           processingTime: `${processingTime}ms`,
-          goServerResults: results,;
+          goServerResults: results
           summary: {
             entitiesExtracted: results.entities?.length || 0,
             summaryGenerated: !!results.summary,
@@ -186,14 +160,12 @@ export function createLegalAIWorker(): Worker {
             riskScore: results.risk_assessment?.risk_score
           }
         };
-
         await job.updateProgress(100);
         return jobResult;
       } catch (error: any) {
         const processingTime = Date.now() - startTime;
         console.error(`❌ Legal AI job failed: ${job.id} after ${processingTime}ms:`, error);
-
-        // Update evidence record with error status;
+        // Update evidence record with error status
         try {
           await db
             .update(evidence);
@@ -201,7 +173,7 @@ export function createLegalAIWorker(): Worker {
               aiAnalysis: {
                 error: error instanceof Error ? error.message: 'Unknown error',
                 processing_time: `${processingTime}ms`,
-                processed_at: new Date().toISOString(),;
+                processed_at: new Date().toISOString(),
                 success: false
               },
               updatedAt: new Date()
@@ -210,56 +182,48 @@ export function createLegalAIWorker(): Worker {
         } catch (dbError) {
           console.error(`❌ Failed to update evidence with error status:`, dbError);
         }
-
         throw error;
       }
     },
     {
       connection: {
-        host: 'localhost',;
+        host: 'localhost',
         port: 6379,
-        // Parse Redis URL if provided;
-        ...(REDIS_URL.startsWith('redis://') && {
+        // Parse Redis URL if provided
+        ...(REDIS_URL.startsWith('redis://') && {,
           host: new URL(REDIS_URL).hostname,
           port: parseInt(new URL(REDIS_URL).port) || 6379
         })
-      },;
+      },
       concurrency: 2, // Process 2 documents simultaneously
       removeOnComplete: { count: 50 }, // Keep last 50 completed jobs
       removeOnFail: { count: 25 }, // Keep last 25 failed jobs
     }
   );
-
-  // Event handlers;
+  // Event handlers
   worker.on('ready', () => {
     console.log('🟢 Legal AI Worker is ready and waiting for jobs');
   });
-
   worker.on('active', (job) => {
     console.log(`🔄 Legal AI Worker processing job: ${job.id}`);
   });
-
   worker.on('completed', (job, result) => {
     console.log(`✅ Legal AI Worker completed job: ${job.id}`);
     console.log(`📊 Results: ${JSON.stringify((result as { summary?: any }).summary, null, 2)}`);
   });
-
   worker.on('failed', (job, error) => {
     console.error(`❌ Legal AI Worker failed job: ${job?.id}:`, error);
   });
-
   worker.on('error', (error) => {
     console.error('❌ Legal AI Worker error:', error);
   });
-
   return worker;
 }
-
 /**
  * Add a document processing job to the queue
  */
 export async function addLegalAIJob(
-  jobData: LegalAIJobData,
+  jobData: LegalAIJobData
   options?: {
     priority?: number;
     delay?: number;
@@ -267,67 +231,57 @@ export async function addLegalAIJob(
   }
 ): Promise<string> {
   const { Queue } = await import('bullmq');
-
   const queue = new Queue('legal-ai-processing', {
     connection: {
       host: 'localhost',
       port: 4005,
-      ...(REDIS_URL.startsWith('redis://') && {
-        host: new URL(REDIS_URL).hostname,;
+      ...(REDIS_URL.startsWith('redis://') && {,
+        host: new URL(REDIS_URL).hostname,
         port: parseInt(new URL(REDIS_URL).port) || 4005
       })
     }
   });
-
   const job = await queue.add('process-document', jobData, {
     priority: options?.priority || 0,
     delay: options?.delay || 0,
     attempts: options?.attempts || 3,
     backoff: {
-      type: 'exponential',;
+      type: 'exponential',
       delay: 5000, // Start with 5 seconds
     },
     removeOnComplete: 50,
     removeOnFail: 25
   });
-
   console.log(`📋 Legal AI job queued: ${job.id} for document: ${jobData.documentId}`);
   return job.id!;
 }
-
 /**
  * Get job status
  */;
 export async function getLegalAIJobStatus(jobId: string): Promise<any> {
   const { Queue } = await import('bullmq');
-
   const queue = new Queue('legal-ai-processing', {
     connection: {
       host: 'localhost',
       port: 4005,
-      ...(REDIS_URL.startsWith('redis://') && {
-        host: new URL(REDIS_URL).hostname,;
+      ...(REDIS_URL.startsWith('redis://') && {,
+        host: new URL(REDIS_URL).hostname,
         port: parseInt(new URL(REDIS_URL).port) || 4005
       })
     }
   });
-
   const job = await queue.getJob(jobId);
-
   if (!job) {
     return { status: 'not_found', progress: 0 };
   }
-
   const state = await job.getState();
   const progress = job.progress || 0;
-
   return {
-    status: state,
+    status: state
     progress: typeof progress === 'number' ? progress : 0,
-    result: job.returnvalue,;
+    result: job.returnvalue,
     error: job.failedReason
   };
 }
-
 // Export for use in startup scripts
 export { GO_SERVER_URL, REDIS_URL };

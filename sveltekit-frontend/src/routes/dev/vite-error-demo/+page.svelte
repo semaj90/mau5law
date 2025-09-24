@@ -1,15 +1,12 @@
 <!-- Vite Error Logger Demo Page -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount } from 'svelte';
   import { logCustomError } from '$lib/vite/vscode-error-logger';
   import { vscodeIntegration, errorNavigator } from '$lib/vite/vscode-extension';
-
   let errorLog: unknown[] = $state([]);
   let errorStats = $state({ total: 0, errors: 0, warnings: 0, info: 0 });
   let isWatching = $state(false);
-
   // Demo error generators
   const demoErrors = [
     {
@@ -36,60 +33,53 @@
     {
       level: 'info' as const,
       message: 'HMR: File changed, hot reloading...',
-      file: 'src/app.html',;
-      line: 1,;
+      file: 'src/app.html',
+      line: 1,
       suggestion: 'File change detected. No action needed.';
     }
   ];
-
   function loadErrorLog() {
     const currentErrors = vscodeIntegration.getCurrentErrors();
     errorLog = currentErrors.errors || [];
     updateStats();
   }
-
   function updateStats() {
     errorStats = {
       total: errorLog.length,
-      errors: errorLog.filter(item => item.length),;
-      warnings: errorLog.filter(item => item.length),;
+      errors: errorLog.filter(item => item.length),
+      warnings: errorLog.filter(item => item.length),
       info: errorLog.filter(item => item.length);
     };
   }
-
   function generateDemoError() {
     const randomError = demoErrors[Math.floor(Math.random() * demoErrors.length)];
     // Simulate error logging (this would normally be done by the Vite plugin)
     const errorEntry = {
       ...randomError,
       timestamp: new Date().toISOString(),
-      buildPhase: 'demo',;
+      buildPhase: 'demo',
       id: Math.random.toString-substr(2, 9);
     };
-
     errorLog = [errorEntry, ...errorLog];
     updateStats();
     console.log(`🔧 Demo Error Generated: ${randomError.message}`);
   }
-
   function clearErrors() {
     errorLog = [];
     updateStats();
     console.log('🧹 Error log cleared');
   }
-
   function startWatching() {
     if (!isWatching) {
       vscodeIntegration.startWatching();
       vscodeIntegration.onErrorUpdate((errors) => {
-        errorLog = errors;
+        errorLog = error;
         updateStats();
       });
       isWatching = true;
       console.log('👀 Started watching for error log changes');
     }
   }
-
   function stopWatching() {
     if (isWatching) {
       vscodeIntegration.stopWatching();
@@ -97,7 +87,6 @@
       console.log('⏹️ Stopped watching for error log changes');
     }
   }
-
   function getErrorIcon(level: string) {
     switch (level) {
       case 'error': return '🚨';
@@ -106,7 +95,6 @@
       default: return '📝';
     }
   }
-
   function getErrorColor(level: string) {
     switch (level) {
       case 'error': return 'text-red-600 bg-red-50 border-red-200';
@@ -115,21 +103,17 @@
       default: return 'text-gray-600 bg-gray-50 border-gray-200';
     }
   }
-
   function formatTimestamp(timestamp: string) {
     return new Date(timestamp).toLocaleTimeString();
   }
-
   $effect(() => {
     loadErrorLog();
   });
 </script>
-
 <svelte:head>
   <title>Vite Error Logger Demo</title>
   <meta name="description" content="Interactive demonstration of the Vite error logging system with VS Code integration" />
 </svelte:head>
-
 <main class="min-h-screen bg-gray-50 py-8">
   <div class="container mx-auto px-4 max-w-6xl">
     <!-- Header -->
@@ -141,7 +125,6 @@
         Interactive demonstration of the Vite error logging system with real-time VS Code integration
       </p>
     </div>
-
     <!-- Controls -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-8">
       <h2 class="text-xl font-semibold mb-4">Controls</h2>
@@ -152,21 +135,18 @@
         >
           🎲 Generate Demo Error
         </button>
-        
         <button
           class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
           onclick={loadErrorLog}
         >
           🔄 Reload Error Log
         </button>
-        
         <button
           class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
           onclick={clearErrors}
         >
           🧹 Clear Errors
         </button>
-        
         <button
           class="px-4 py-2 {isWatching ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-purple-600 hover:bg-purple-700'} text-white rounded-md transition-colors"
           onclick={isWatching ? stopWatching : startWatching}
@@ -175,7 +155,6 @@
         </button>
       </div>
     </div>
-
     <!-- Statistics -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
       <div class="bg-white rounded-lg shadow-md p-6">
@@ -187,7 +166,6 @@
           <div class="text-3xl">📊</div>
         </div>
       </div>
-      
       <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex items-center justify-between">
           <div>
@@ -197,7 +175,6 @@
           <div class="text-3xl">🚨</div>
         </div>
       </div>
-      
       <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex items-center justify-between">
           <div>
@@ -207,7 +184,6 @@
           <div class="text-3xl">⚠️</div>
         </div>
       </div>
-      
       <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex items-center justify-between">
           <div>
@@ -218,7 +194,6 @@
         </div>
       </div>
     </div>
-
     <!-- Error Log -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
       <div class="px-6 py-4 border-b border-gray-200">
@@ -227,7 +202,6 @@
           Real-time error tracking with VS Code integration
         </p>
       </div>
-      
       <div class="max-h-96 overflow-y-auto">
         {#if errorLog.length === 0}
           <div class="p-8 text-center text-gray-500">
@@ -255,13 +229,11 @@
                         </span>
                       </div>
                     </div>
-                    
                     {#if error.file}
                       <p class="text-sm text-gray-600 mt-1">
                         📄 {error.file}{error.line ? `:${error.line}` : ''}{error.column ? `:${error.column}` : ''}
                       </p>
                     {/if}
-                    
                     {#if error.suggestion}
                       <div class="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
                         <p class="text-sm text-blue-700">
@@ -269,7 +241,6 @@
                         </p>
                       </div>
                     {/if}
-                    
                     {#if error.buildPhase}
                       <p class="text-xs text-gray-500 mt-1">
                         🔧 Build Phase: {error.buildPhase}
@@ -283,7 +254,6 @@
         {/if}
       </div>
     </div>
-
     <!-- VS Code Integration Info -->
     <div class="mt-8 bg-indigo-50 rounded-lg p-6">
       <h3 class="text-lg font-semibold text-indigo-900 mb-4">🔗 VS Code Integration</h3>
@@ -307,7 +277,6 @@
           </ul>
         </div>
       </div>
-      
       <div class="mt-4 p-4 bg-indigo-100 rounded">
         <p class="text-sm text-indigo-800">
           <strong>💡 Tip:</strong> Use <code>Ctrl+Shift+P</code> and search for "Tasks: Run Task" to access Vite error logger commands.
@@ -315,7 +284,6 @@
         </p>
       </div>
     </div>
-
     <!-- Technical Details -->
     <div class="mt-8 bg-gray-100 rounded-lg p-6">
       <h3 class="text-lg font-semibold text-gray-900 mb-4">🛠️ Technical Details</h3>
@@ -346,12 +314,10 @@
     </div>
   </div>
 </main>
-
 <style>
-  :global(body) {;
+  :global(body) {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
-  
   code {
     background-color: rgba(0, 0, 0, 0.1);
     padding: 0.125rem 0.25rem;

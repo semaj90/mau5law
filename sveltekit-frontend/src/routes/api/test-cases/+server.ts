@@ -11,16 +11,13 @@ import { validateSession } from '$lib/server/lucia'
 import type { RequestHandler } from './$types.js'
 import crypto from 'crypto'
 import { URL } from 'url'
-
 // Local any-typed alias to reduce noisy overload errors in this route.
 // Use sparingly; replace with proper types when refactoring DB layer.
 const dbAny = db as unknown as any
-
 // Authentication helper
 async function getAuthenticatedUser(locals: App.Locals) {
   const user = locals.user
   const session = locals.session
-
   if (!user || !session) {
     throw error(
       401,
@@ -30,10 +27,8 @@ async function getAuthenticatedUser(locals: App.Locals) {
       })
     )
   }
-
   return { user, session }
 }
-
 // Validation schema for case creation with enhanced fields
 const createCaseSchema = z.object({
   caseNumber: z.string().min(1, 'Case number is required'),
@@ -46,7 +41,6 @@ const createCaseSchema = z.object({
   tags: z.array(z.string()).default([]),
   metadata: z.record(z.any()).default({})
 })
-
 // Validation schema for case updates
 const updateCaseSchema = z.object({
   title: z.string().optional(),
@@ -58,19 +52,16 @@ const updateCaseSchema = z.object({
   tags: z.array(z.string()).optional(),
   metadata: z.record(z.any()).optional()
 })
-
 // GET: Retrieve cases (authenticated users only see their own cases or cases assigned to them)
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Authenticate user
     const { user } = await getAuthenticatedUser(locals)
-
     const caseId = url.searchParams.get('id')
     const status = url.searchParams.get('status')
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 100); // Cap at 100
     const offset = parseInt(url.searchParams.get('offset') || '0')
     const search = url.searchParams.get('search')
-
     if (caseId) {
       // Get specific case with related data (only if user owns it or is assigned)
       const caseData = await db
@@ -98,7 +89,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           )
         )
         .limit(1)
-
       if (caseData.length === 0) {
         throw error(
           404,
@@ -108,14 +98,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           })
         )
       }
-
       // Get related documents
       const documents = await db
         .select()
         .from(caseDocuments)
         .where(eq(caseDocuments.caseId, caseId)
         .orderBy(desc(caseDocuments.created_at)
-
       // Get activities
       const activities = await db
         .select()
@@ -123,16 +111,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         .where(eq(caseActivities.caseId, caseId)
         .orderBy(desc(caseActivities.timestamp)
         .limit(50); // Limit activity history
-
       // Get timeline events
       const timeline = await db
         .select()
         .from(caseTimeline)
         .where(eq(caseTimeline.caseId, caseId)
         .orderBy(desc(caseTimeline.timestamp)
-
       return json({
-        success: true,
+        success: true
         data: {
           ...caseData[0],
           documents,
@@ -141,23 +127,19 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         }
       })
     }
-
     // Build query for cases the user has access to
     const whereConditions = [
       or(eq(cases.createdBy, user.id), eq(cases.assigned_attorney, user.id))
     ]
-
     if (status) {
       whereConditions.push(eq(cases.status, status)
     }
-
     // If search term provided, search in title and description
     if (search) {
       whereConditions.push(
         or(ilike(cases.title, `%${search}%`), ilike(cases.description, `%${search}%`)
       )
     }
-
     // Get cases with pagination
     const result = await db
       .select({
@@ -178,16 +160,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       .orderBy(desc(cases.updated_at)
       .limit(limit)
       .offset(offset)
-
     // Get total count for pagination
     const [{ total }] = await db
       .select({ total: count() })
       .from(cases)
       .where(and(...whereConditions)
-
     return json({
-      success: true,
-      data: result,
+      success: true
+      data: result
       pagination: {
         total,
         limit,
@@ -207,7 +187,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       // Re-throw SvelteKit errors
       throw err
     }
-
     console.error('Error fetching cases:', err)
     throw error(
       500,
@@ -218,25 +197,20 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     )
   }
 }
-
 // POST: Create a new case (authenticated)
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Authenticate user
     const { user, session } = await getAuthenticatedUser(locals)
-
     // Parse and validate request body
     const body = await request.json()
     const validatedData = createCaseSchema.parse(body)
-
     // Generate unique ID and timestamps
     const caseId = crypto.randomUUID()
     const now = new Date()
-
     // Generate embedding for case content (title + description) using pgvector
     const caseContent = `${validatedData.title} ${validatedData.description || ''}`
     let caseEmbedding = null
-
     try {
       // Generate semantic embedding for similarity search
       caseEmbedding = await generateEmbedding(caseContent)
@@ -244,14 +218,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       console.warn('Failed to generate case embedding:', embeddingError)
       // Continue without embedding - not critical for case creation
     }
-
     // Check for duplicate case number for this user
     const existingCase = await db
       .select({ id: cases.id })
       .from(cases)
       .where(and(eq(cases.caseNumber, validatedData.caseNumber), eq(cases.createdBy, user.id))
       .limit(1)
-
     if (existingCase.length > 0) {
       throw error(
         400,
@@ -261,12 +233,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         })
       )
     }
-
     // Insert case into database
     const newCase = await dbAny
       .insert(cases)
       .values({
-        id: caseId,
+        id: caseId
         caseNumber: validatedData.caseNumber,
         title: validatedData.title,
         description: validatedData.description || '',
@@ -282,19 +253,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           createdByName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
           embedding: caseEmbedding ? true : false, // Flag if embedding was generated
         },
-        created_at: now,
+        created_at: now
         updated_at: now
       })
       .returning()
-
     // Create initial activity log
     await dbAny.insert(caseActivities).values({
       id: crypto.randomUUID(),
-      caseId: caseId,
+      caseId: caseId
       type: 'case_created',
       description: `Case ${validatedData.caseNumber} "${validatedData.title}" created`,
       userId: user.id,
-      timestamp: now,
+      timestamp: now
       metadata: {
         title: validatedData.title,
         priority: validatedData.priority,
@@ -302,14 +272,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         userEmail: user.email
       }
     })
-
     // Create initial timeline event
     await dbAny.insert(caseTimeline).values({
       id: crypto.randomUUID(),
-      caseId: caseId,
+      caseId: caseId
       event: 'Case Created',
       description: `Case ${validatedData.caseNumber} "${validatedData.title}" was created by ${user.email}`,
-      timestamp: now,
+      timestamp: now
       type: 'milestone',
       metadata: {
         createdBy: user.id,
@@ -317,26 +286,24 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         priority: validatedData.priority
       }
     })
-
     // If embedding was generated, store it in the embedding cache for future use
     if (caseEmbedding && caseEmbedding.length > 0) {
       try {
         const { embeddingCache } = await import('$lib/server/db/schema')
         const contentHash = await hashContent(caseContent)
-
         await dbAny
           .insert(embeddingCache)
           .values({
             id: crypto.randomUUID(),
-            content_hash: contentHash,
-            embedding: caseEmbedding,
+            content_hash: contentHash
+            embedding: caseEmbedding
             model_name: 'nomic-embed-text',
             metadata: {
               entityType: 'case',
-              entityId: caseId,
+              entityId: caseId
               content: caseContent.substring(0, 500), // Store first 500 chars for reference
             },
-            created_at: now,
+            created_at: now
             expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
           })
           .onConflictDoNothing(); // Don't error if hash already exists
@@ -345,10 +312,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         // Non-critical, continue
       }
     }
-
     return json()
       {
-        success: true,
+        success: true
         message: 'Case created successfully',
         data: {
           ...newCase[0],
@@ -367,9 +333,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       // Re-throw SvelteKit errors
       throw err
     }
-
     console.error('Error creating case:', err)
-
     if (err instanceof z.ZodError) {
       throw error(
         400,
@@ -380,14 +344,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         })
       )
     }
-
     throw error(
       500,
       makeHttpErrorPayload({ message: 'Failed to create case', code: 'CREATE_ERROR' })
     )
   }
 }
-
 // Helper function to hash content for embedding cache
 async function hashContent(content: string): Promise<string> {
   const encoder = new TextEncoder()
@@ -397,27 +359,22 @@ async function hashContent(content: string): Promise<string> {
     .map((b) => b.toString(16).padStart(2, '0')
     .join('')
 }
-
 // PUT: Update an existing case (authenticated, owner or assigned only)
 export const PUT: RequestHandler = async ({ request, url, locals }) => {
   try {
     // Authenticate user
     const { user } = await getAuthenticatedUser(locals)
-
     const caseId = url.searchParams.get('id')
-
     if (!caseId) {
       throw error(
         400,
         makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' })
       )
     }
-
     // Parse and validate request body
     const body = await request.json()
     const validatedData = updateCaseSchema.parse(body)
     const now = new Date()
-
     // Check if user has permission to update this case
     const existingCase = await db
       .select({
@@ -429,17 +386,14 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       .from(cases)
       .where(eq(cases.id, caseId)
       .limit(1)
-
     if (existingCase.length === 0) {
       throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
     }
-
     const caseRecord = existingCase[0]
     const hasPermission =
       caseRecord.createdBy === user.id ||
       caseRecord.assigned_attorney === user.id ||
       user.role === 'admin'
-
     if (!hasPermission) {
       throw error(
         403,
@@ -449,12 +403,10 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         })
       )
     }
-
     // Generate new embedding if title or description changed
     let newEmbedding = null
     const titleChanged = validatedData.title && validatedData.title !== caseRecord.title
     const descriptionChanged = validatedData.description !== undefined
-
     if (titleChanged || descriptionChanged) {
       try {
         const newTitle = validatedData.title || caseRecord.title
@@ -465,12 +417,10 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         console.warn('Failed to generate updated embedding:', embeddingError)
       }
     }
-
     // Build update object with only provided fields
     const updateData: any = {
       updated_at: now
     }
-
     if (validatedData.title) updateData.title = validatedData.title
     if (validatedData.description !== undefined) updateData.description = validatedData.description
     if (validatedData.priority) updateData.priority = validatedData.priority
@@ -478,7 +428,6 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
     if (validatedData.category) updateData.category = validatedData.category
     if (validatedData.assignedAttorney !== undefined)
       updateData.assigned_attorney = validatedData.assignedAttorney
-
     // Update metadata
     if (validatedData.metadata || validatedData.tags || newEmbedding) {
       updateData.metadata = {
@@ -491,35 +440,31 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         lastUpdated: now.toISOString()
       }
     }
-
     // Update case in database
     const updatedCase = await db
       .update(cases)
       .set(updateData)
       .where(eq(cases.id, caseId)
       .returning()
-
     // Log the update activity with detailed changes
     const changedFields = Object.keys(validatedData).filter(
       (key) => validatedData[key] !== undefined && validatedData[key] !== null
     )
-
     await db.insert(caseActivities).values({
       id: crypto.randomUUID(),
-      caseId: caseId,
+      caseId: caseId
       type: 'case_updated',
       description: `Case updated by ${user.email}. Changed: ${changedFields.join(', ')}`,
       userId: user.id,
-      timestamp: now,
+      timestamp: now
       metadata: {
-        changes: validatedData,
+        changes: validatedData
         changedFields,
         updatedBy: user.id,
         updatedByEmail: user.email,
         hasNewEmbedding: !!newEmbedding
       }
     })
-
     // Update embedding cache if embedding was regenerated
     if (newEmbedding && newEmbedding.length > 0) {
       try {
@@ -528,27 +473,26 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         const newDescription = validatedData.description || ''
         const newContent = `${newTitle} ${newDescription}`
         const contentHash = await hashContent(newContent)
-
         await db
           .insert(embeddingCache)
           .values({
             id: crypto.randomUUID(),
-            content_hash: contentHash,
-            embedding: newEmbedding,
+            content_hash: contentHash
+            embedding: newEmbedding
             model_name: 'nomic-embed-text',
             metadata: {
               entityType: 'case',
-              entityId: caseId,
+              entityId: caseId
               content: newContent.substring(0, 500),
               action: 'updated'
             },
-            created_at: now,
+            created_at: now
             expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
           })
           .onConflictDoUpdate({
             target: [embeddingCache.content_hash],
             set: {
-              embedding: newEmbedding,
+              embedding: newEmbedding
               updated_at: now
             }
           })
@@ -556,9 +500,8 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         console.warn('Failed to update embedding cache:', cacheError)
       }
     }
-
     return json({
-      success: true,
+      success: true
       message: 'Case updated successfully',
       data: {
         ...updatedCase[0],
@@ -575,9 +518,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
     if (err.status) {
       throw err
     }
-
     console.error('Error updating case:', err)
-
     if (err instanceof z.ZodError) {
       throw error(
         400,
@@ -588,29 +529,24 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         })
       )
     }
-
     throw error(
       500,
       makeHttpErrorPayload({ message: 'Failed to update case', code: 'UPDATE_ERROR' })
     )
   }
 }
-
 // DELETE: Delete a case (authenticated, owner or admin only)
 export const DELETE: RequestHandler = async ({ url, locals }) => {
   try {
     // Authenticate user
     const { user } = await getAuthenticatedUser(locals)
-
     const caseId = url.searchParams.get('id')
-
     if (!caseId) {
       throw error(
         400,
         makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' })
       )
     }
-
     // Check if user has permission to delete this case
     const existingCase = await db
       .select({
@@ -624,16 +560,12 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       .from(cases)
       .where(eq(cases.id, caseId)
       .limit(1)
-
     if (existingCase.length === 0) {
       throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
     }
-
     const caseRecord = existingCase[0]
-
     // Only case creator or admin can delete cases
     const hasPermission = caseRecord.createdBy === user.id || user.role === 'admin'
-
     if (!hasPermission) {
       throw error(
         403,
@@ -643,7 +575,6 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         })
       )
     }
-
     // Prevent deletion of cases that are in progress (safety check)
     const protectedStatuses = ['in_progress', 'review']
     if (protectedStatuses.includes(caseRecord.status) && user.role !== 'admin') {
@@ -655,17 +586,15 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     })
   )
     }
-
     const now = new Date()
-
     // Log deletion activity before actual deletion
     await db.insert(caseActivities).values({
       id: crypto.randomUUID(),
-      caseId: caseId,
+      caseId: caseId
       type: 'case_deleted',
       description: `Case "${caseRecord.title}" (${caseRecord.caseNumber}) deleted by ${user.email}`,
       userId: user.id,
-      timestamp: now,
+      timestamp: now
       metadata: {
         deletedCase: {
           id: caseRecord.id,
@@ -678,14 +607,12 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         isAdmin: user.role === 'admin'
       }
     })
-
     // Delete related data in proper order (maintain referential integrity)
     const deleteResults = await Promise.allSettled([
       db.delete(caseTimeline).where(eq(caseTimeline.caseId, caseId)),
       db.delete(caseActivities).where(eq(caseActivities.caseId, caseId)),
       db.delete(caseDocuments).where(eq(caseDocuments.caseId, caseId)
     ])
-
     // Log any failures in related data deletion
     deleteResults.forEach((result, index) => {
       if ((result as { status?: any; reason?: any }).status === 'rejected') {
@@ -693,13 +620,11 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         console.warn(`Failed to delete ${tableName} for case ${caseId}:`, (result as { status?: any; reason?: any }).reason)
       }
     })
-
     // Delete the case itself
     const deletedCase = await db
       .delete(cases)
       .where(eq(cases.id, caseId)
       .returning()
-
     if (deletedCase.length === 0) {
       throw error(
         500,
@@ -709,7 +634,6 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         })
       )
     }
-
     // Clean up embedding cache for this case
     try {
       const { embeddingCache } = await import('$lib/server/db/schema')
@@ -720,12 +644,11 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       console.warn('Failed to clean up embedding cache:', cacheError)
       // Non-critical, continue
     }
-
     return json({
-      success: true,
+      success: true
       message: `Case "${caseRecord.title}" deleted successfully`,
       data: {
-        id: caseId,
+        id: caseId
         title: caseRecord.title,
         caseNumber: caseRecord.caseNumber,
         deletedBy: {
@@ -741,12 +664,10 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         }
       }
     })
-
   } catch (err: any) {
     if (err.status) {
       throw err
     }
-
     console.error('Error deleting case:', err)
     throw error(
       500,

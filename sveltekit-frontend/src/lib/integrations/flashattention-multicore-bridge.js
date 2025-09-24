@@ -3,30 +3,25 @@
  * GPU-accelerated processing with RTX 3060 Ti optimization
  * Note: use a standard block comment (not JSDoc) to avoid esbuild/JSDoc parsing quirks.
  */
-
 export const flashAttentionMulticoreBridge = {
-  initialized: false,
-  gpuEnabled: false,
-
+  initialized: false
+  gpuEnabled: false
   async initialize() {
     console.log('⚡ Initializing FlashAttention2 + Multicore Bridge...');
     console.log('🎮 GPU: RTX 3060 Ti detected');
     console.log('🧠 FlashAttention2: Ready');
     console.log('⚙️ Multicore Processing: 8 workers');
     console.log('🚀 CUDA Acceleration: Active');
-
     this.initialized = true;
     this.gpuEnabled = true;
-
     return {
       status: 'success',
       gpu: 'RTX 3060 Ti',
       workers: 8,
-      flashAttention: true,
+      flashAttention: true
       cudaVersion: '12.2',
     };
   },
-
   getStatus() {
     return {
       initialized: this.initialized,
@@ -37,7 +32,7 @@ export const flashAttentionMulticoreBridge = {
         temperature: '67°C',
       },
       flashAttention: {
-        enabled: true,
+        enabled: true
         version: '2.5.8',
         optimization: 'legal-ai-tuned',
       },
@@ -54,19 +49,15 @@ export const flashAttentionMulticoreBridge = {
     };
   },
 };
-
 export async function processWithEnhancedAI(query, context = [], options = {}) {
   const now =
     globalThis.performance && typeof globalThis.performance.now === 'function'
       ? () => globalThis.performance.now()
       : () => Date.now();
   const startTime = now();
-
   // Simulate FlashAttention2 processing
   await new Promise((resolve) => setTimeout(resolve, 50);
-
   const processingTime = now() - startTime;
-
   return {
     legalAnalysis: {
       query,
@@ -95,22 +86,18 @@ export async function processWithEnhancedAI(query, context = [], options = {}) {
     },
   };
 }
-
 export async function analyzeErrorsWithGPU(errorData, sampleErrors = []) {
   const now =
     globalThis.performance && typeof globalThis.performance.now === 'function'
       ? () => globalThis.performance.now()
       : () => Date.now();
   const startTime = now();
-
   // Simulate GPU error analysis
   await new Promise((resolve) => setTimeout(resolve, 80);
-
   const processingTime = now() - startTime;
-
   const prioritizedErrors = sampleErrors.map((error, index) => ({
     id: `error_${index + 1}`,
-    text: error,
+    text: error
     priority: index < 2 ? 'critical' : index < 4 ? 'high' : 'medium',
     category: error.includes('TS')
       ? 'typescript'
@@ -121,7 +108,6 @@ export async function analyzeErrorsWithGPU(errorData, sampleErrors = []) {
     suggestedFix: `GPU-analyzed fix for: ${error.substring(0, 50)}...`,
     confidence: 0.85 + Math.random() * 0.1,
   });
-
   return {
     prioritizedErrors,
     fixProbability: 0.91,
@@ -131,7 +117,7 @@ export async function analyzeErrorsWithGPU(errorData, sampleErrors = []) {
     ),
     gpuMetrics: {
       processingTime: `${processingTime.toFixed(2)}ms`,
-      parallelAnalysis: true,
+      parallelAnalysis: true
       vectorSimilarity: '94% accuracy',
       memoryOptimization: 'flash-attention-2',
     },

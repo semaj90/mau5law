@@ -1,18 +1,15 @@
 import type { RequestHandler } from './$types.js'
-
 /*
  * Legal AI Platform API Router v2
  * Centralized endpoint routing to Go microservices for the full-stack legal AI platform
  * Integrates: Enhanced RAG, Upload Service, Vector Search, Case Management, Evidence Processing
  */
-
 import { json, error } from '@sveltejs/kit'
 import { db } from '$lib/server/db/unified-client'
 import { cases, evidence, criminals, legalDocuments } from '$lib/server/db/schema-postgres'
 import { eq, or, desc, ilike, and } from 'drizzle-orm'
 import { createId } from '@paralleldrive/cuid2'
 import { URL } from 'url'
-
 // Go Microservice Configuration
 const GO_SERVICES = {
   enhanced_rag: {
@@ -52,26 +49,23 @@ const GO_SERVICES = {
     }
   }
 }
-
 // Request Types
 export interface LegalPlatformRequest {
-  action: 'create' | 'read' | 'update' | 'delete' | 'search' | 'process' | 'analyze'
+  action: 'create' | 'read' | 'update' | 'delete' | 'search' | 'process' | 'analyze',
   entity: 'case' | 'evidence' | 'criminal' | 'document' | 'search' | 'upload' | 'ai'
   data?: any
   id?: string
-  filters?: Record<string, any>
+  filters?: { [key: string]: any }
 }
-
 // Utility function to call Go microservices
 async function callGoService(
-  service: keyof typeof GO_SERVICES,
-  endpoint: string,
+  service: keyof typeof GO_SERVICES
+  endpoint: string
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
   data?: any
 ): Promise<any> {
   const serviceConfig = GO_SERVICES[service]
   const url = `${serviceConfig.url}${endpoint}`
-
   try {
     const response = await fetch(url, {
       method,
@@ -80,43 +74,36 @@ async function callGoService(
       },
       body: data ? JSON.stringify(data) : undefined
     })
-
     if (!response.ok) {
       throw new Error(`Service ${service} returned ${response.status}: ${response.statusText}`)
     }
-
     return await response.json()
   } catch (err: any) {
     console.error(`Error calling ${service} service:`, err)
     throw new Error(`Failed to communicate with ${service} service`)
   }
 }
-
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const req: LegalPlatformRequest = await request.json()
-
     // Handle health check
     if (req.action === ('health' as any)) {
       const healthChecks = await Promise.allSettled([
         callGoService('enhanced_rag', '/api/health'),
         callGoService('upload_service', '/health')
       ])
-
       const services = {
         enhanced_rag: healthChecks[0].status === 'fulfilled',
         upload_service: healthChecks[1].status === 'fulfilled',
         database: true, // Assume database is healthy if we got this far
       }
-
       return json({
-        success: true,
+        success: true
         data: { services },
         timestamp: new Date().toISOString(),
         message: 'Health check completed'
       })
     }
-
     // Route based on entity and action
     switch (req.entity) {
       case 'case':
@@ -141,28 +128,23 @@ export const POST: RequestHandler = async ({ request, url }) => {
     throw error(500, err instanceof Error ? err.message: 'Internal server error')
   }
 }
-
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action')
   const entity = url.searchParams.get('entity')
   const id = url.searchParams.get('id')
-
   if (!action || !entity) {
     throw error(400, 'Missing required parameters: action and entity')
   }
-
   const req: LegalPlatformRequest = {
-    action: action as any,
-    entity: entity as any,
+    action: action as any
+    entity: entity as any
     id: id || undefined
   }
-
   return await POST({
     request: new Request('', { method: 'POST', body: JSON.stringify(req) }),
     url
   } as any)
 }
-
 // Case Management Operations
 async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
   switch (req.action) {
@@ -177,7 +159,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
           description: req.data.description,
           priority: req.data.priority || 'medium',
           status: 'open',
-          incidentDate: req.data.incidentDate ? new Date(req.data.incidentDate) : undefined,
+          incidentDate: req.data.incidentDate ? new Date(req.data.incidentDate) : undefined
           location: req.data.location,
           userId: req.data.userId,
           createdBy: req.data.userId,
@@ -185,13 +167,11 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
           updatedAt: new Date()
         })
         .returning()
-
       return json({
-        success: true,
-        data: newCase[0],
+        success: true
+        data: newCase[0]
         message: 'Case created successfully'
       })
-
     case 'read':
       if (req.id) {
         const caseData = await db.select().from(cases).where(eq(cases.id, req.id)
@@ -203,10 +183,8 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
         const allCases = await db.select().from(cases).orderBy(desc(cases.createdAt)).limit(50)
         return json({ success: true, data: allCases })
       }
-
     case 'update':
       if (!req.id) throw error(400, 'Case ID required for update')
-
       const updatedCase = await db
         .update(cases)
         .set({
@@ -215,23 +193,18 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
         })
         .where(eq(cases.id, req.id)
         .returning()
-
       return json({
-        success: true,
-        data: updatedCase[0],
+        success: true
+        data: updatedCase[0]
         message: 'Case updated successfully'
       })
-
     case 'delete':
       if (!req.id) throw error(400, 'Case ID required for deletion')
-
       await db.delete(cases).where(eq(cases.id, req.id)
-
       return json({
-        success: true,
+        success: true
         message: 'Case deleted successfully'
       })
-
     case 'search':
       const searchResults = await db
         .select()
@@ -244,14 +217,11 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
           )
         )
         .limit(20)
-
       return json({ success: true, data: searchResults })
-
     default:
       throw error(400, `Unknown case action: ${req.action}`)
   }
 }
-
 // Evidence Management Operations
 async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any> {
   switch (req.action) {
@@ -274,13 +244,11 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any>
           updatedAt: new Date()
         })
         .returning()
-
       return json({
-        success: true,
-        data: newEvidence[0],
+        success: true
+        data: newEvidence[0]
         message: 'Evidence created successfully'
       })
-
     case 'read':
       if (req.id) {
         const evidenceData = await db.select().from(evidence).where(eq(evidence.id, req.id)
@@ -302,7 +270,6 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any>
           .limit(50)
         return json({ success: true, data: allEvidence })
       }
-
     case 'analyze':
       // Call enhanced RAG service for AI analysis
       const analysisResult = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
@@ -310,18 +277,15 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any>
         evidenceId: req.id,
         data: req.data
       })
-
       return json({
-        success: true,
-        data: analysisResult,
+        success: true
+        data: analysisResult
         message: 'Evidence analysis completed'
       })
-
     default:
       throw error(400, `Unknown evidence action: ${req.action}`)
   }
 }
-
 // Criminal Records Operations
 async function handleCriminalOperations(req: LegalPlatformRequest): Promise<any> {
   switch (req.action) {
@@ -333,7 +297,7 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<any>
           firstName: req.data.firstName,
           lastName: req.data.lastName,
           aliases: req.data.aliases || [],
-          dateOfBirth: req.data.dateOfBirth ? new Date(req.data.dateOfBirth) : undefined,
+          dateOfBirth: req.data.dateOfBirth ? new Date(req.data.dateOfBirth) : undefined
           gender: req.data.gender,
           height: req.data.height,
           weight: req.data.weight,
@@ -344,13 +308,11 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<any>
           updatedAt: new Date()
         })
         .returning()
-
       return json({
-        success: true,
-        data: newCriminal[0],
+        success: true
+        data: newCriminal[0]
         message: 'Criminal record created successfully'
       })
-
     case 'read':
       if (req.id) {
         const criminalData = await db.select().from(criminals).where(eq(criminals.id, req.id)
@@ -366,12 +328,10 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<any>
           .limit(50)
         return json({ success: true, data: allCriminals })
       }
-
     default:
       throw error(400, `Unknown criminal action: ${req.action}`)
   }
 }
-
 // Document Operations
 async function handleDocumentOperations(req: LegalPlatformRequest): Promise<any> {
   switch (req.action) {
@@ -392,13 +352,11 @@ async function handleDocumentOperations(req: LegalPlatformRequest): Promise<any>
           updatedAt: new Date()
         })
         .returning()
-
       return json({
-        success: true,
-        data: newDocument[0],
+        success: true
+        data: newDocument[0]
         message: 'Document created successfully'
       })
-
     case 'read':
       if (req.id) {
         const documentData = await db
@@ -423,28 +381,24 @@ async function handleDocumentOperations(req: LegalPlatformRequest): Promise<any>
           .limit(50)
         return json({ success: true, data: allDocuments })
       }
-
     default:
       throw error(400, `Unknown document action: ${req.action}`)
   }
 }
-
 // Search Operations (Vector + Traditional)
 async function handleSearchOperations(req: LegalPlatformRequest): Promise<any> {
   const { query, type = 'semantic', limit = 10 } = req.data
-
   try {
     // Call enhanced RAG service for semantic search
     const searchResults = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
       type: 'vector_similarity',
       query,
-      search_type: type,
+      search_type: type
       limit
     })
-
     return json({
-      success: true,
-      data: searchResults,
+      success: true
+      data: searchResults
       message: 'Search completed successfully'
     })
   } catch (err: any) {
@@ -456,85 +410,72 @@ async function handleSearchOperations(req: LegalPlatformRequest): Promise<any> {
         or(ilike(cases.title, `%${query}%` as any), ilike(cases.description, `%${query}%` as any)
       )
       .limit(limit)
-
     return json({
-      success: true,
-      data: fallbackResults,
+      success: true
+      data: fallbackResults
       message: 'Search completed (database fallback)',
       fallback: true
     })
   }
 }
-
 // Upload Operations
 async function handleUploadOperations(req: LegalPlatformRequest): Promise<any> {
   try {
     const uploadResult = await callGoService('upload_service', '/upload', 'POST', req.data)
-
     return json({
-      success: true,
-      data: uploadResult,
+      success: true
+      data: uploadResult
       message: 'Upload processed successfully'
     })
   } catch (err: any) {
     throw error(500, `Upload service error: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
 }
-
 // AI Operations (Enhanced RAG, GPU Compute, SOM Training)
 async function handleAIOperations(req: LegalPlatformRequest): Promise<any> {
   const { operation, data } = req.data
-
   try {
     let result
-
     switch (operation) {
       case 'chat':
       case 'analyze':
       case 'summarize':
         result = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
-          type: operation,
+          type: operation
           ...data
         })
         break
-
       case 'train_som':
         result = await callGoService('enhanced_rag', '/api/som/train', 'POST', data)
         break
-
       case 'xstate_event':
         result = await callGoService('enhanced_rag', '/api/xstate/event', 'POST', data)
         break
-
       default:
         throw error(400, `Unknown AI operation: ${operation}`)
     }
-
     return json({
-      success: true,
-      data: result,
+      success: true
+      data: result
       message: `AI operation ${operation} completed successfully`
     })
   } catch (err: any) {
     throw error(500, `AI service error: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
 }
-
 // Health Check endpoint
 export const OPTIONS: RequestHandler = async () => {
   const healthChecks = await Promise.allSettled([
     callGoService('enhanced_rag', '/api/health'),
     callGoService('upload_service', '/health')
   ])
-
   const services = {
     enhanced_rag: healthChecks[0].status === 'fulfilled',
     upload_service: healthChecks[1].status === 'fulfilled',
     database: true // Assume database is healthy if we got this far
   }
-
   return json({
-    success: true,
+    success: true
     services,
     timestamp: new Date().toISOString(),
     message: 'Health check completed'

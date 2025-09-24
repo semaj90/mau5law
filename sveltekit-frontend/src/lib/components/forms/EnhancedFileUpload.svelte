@@ -6,9 +6,6 @@ https://svelte.dev/e/expected_token -->
   Features: Drag & drop, progress tracking, AI processing, validation, preview
   Cleaned: removed duplicated script/markup and ensured single <script>
   // Svelte 5 runes are auto-imported
-
-
-
 // Auto-generated default export
 export default ;
 </script>, template, and <style>.
@@ -38,10 +35,9 @@ export default ;
     Video,
     X,
   } from "lucide-svelte";
-
   // File upload interface
   interface FileUpload {
-    file: File;
+    file: Fil;
     title: string;
     description: string;
     tags: string[];
@@ -56,7 +52,6 @@ export default ;
     enableSummarization?: boolean;
     isAdmissible?: boolean;
   }
-
   // Props interface
   interface Props {
     caseId?: string | undefined;
@@ -70,7 +65,6 @@ export default ;
     oncancel?: () => void;
     onprogress?: (data: { progress: number; file: string }) => void;
   }
-
   let {
     caseId = undefined,
     multiple = false,
@@ -82,7 +76,6 @@ export default ;
     onupload = () => ,
     oncancel = () => ,
     onprogress = () => }: Props = $props();
-
   // State
   let fileInput: HTMLInputElement;
   let isDragOver = $state(false);
@@ -91,25 +84,23 @@ export default ;
   let previews = $state<Record<string, string>('') >( );
   let isUploading = $state(false);
   let currentUploadFile = $state("");
-
   // Local form state (no $form store)
   let formState = $state({
     title: '',
-    description: '',;
+    description: '',
     tags: [] as string[],
     caseId: caseId || '',
     evidenceType: '',
     confidentialityLevel: '',
-    collectedBy: '',;
+    collectedBy: '',
     location: '',
-    enableAiAnalysis: false,
-    enableOcr: false,
-    enableEmbeddings: false,
-    enableSummarization: false,
-    isAdmissible: false,;
+    enableAiAnalysis: false
+    enableOcr: false
+    enableEmbeddings: false
+    enableSummarization: false
+    isAdmissible: false
   });
   let errors = $state<Record<string, string[]>([]) >( );
-
   // Options
   const evidenceTypes = [
     { value: "documents", label: "Documents" },
@@ -123,13 +114,11 @@ export default ;
     { value: "forensic_analysis", label: "Forensic Analysis" },
     { value: "chain_of_custody", label: "Chain of Custody" },
   ];
-
   const confidentialityLevels = [
     { value: "low", label: "Low" },
     { value: "medium", label: "Medium" },
     { value: "high", label: "High" },
   ];
-
   // Helpers
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -138,18 +127,15 @@ export default ;
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   // File handling
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     if (!disabled) isDragOver = true;
   }
-
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
   }
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     isDragOver = false;
@@ -157,12 +143,10 @@ export default ;
     const files = Array.from(event.dataTransfer?.files || []);
     addFiles(files);
   }
-
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files) addFiles(Array.from(target.files));
   }
-
   function addFiles(files: File[]) {
     const validFiles = files.filter((file) => validateFile(file));
     if (multiple) {
@@ -172,7 +156,6 @@ export default ;
     } else {
       selectedFiles = validFiles.slice(0, 1);
     }
-
     validFiles.forEach((file) => {
       if (file.type.startsWith("image/")) {
         const reader = new FileReader();
@@ -182,65 +165,55 @@ export default ;
         reader.readAsDataURL(file);
       }
     });
-
     if (validFiles.length > 0 && !formState.title) {
       const firstFile = validFiles[0];
       formState.title = firstFile.name.replace(/\.[^/.]+$/, "");
     }
   }
-
   function validateFile(file: File): boolean {
     if (file.size > maxSizeMB * 1024 * 1024) {
       alert(`File "${file.name}" is too large. Maximum size is ${maxSizeMB}MB.`);
       return false;
     }
-
     const isValidType = acceptedTypes.some((type) => {
       if (type.startsWith(".")) return file.name.toLowerCase.endsWith(type.toLowerCase());
       if (type.includes("*")) {
         const category = type.split("/")[0];
         return file.type.startsWith(category);
       }
-      return file.type === type;
+      return file.type === typ;
     });
-
     if (!isValidType) {
       alert(`File type "${file.type}" is not supported.`);
       return false;
     }
     return true;
   }
-
   function removeFile(fileName: string) {
     selectedFiles = selectedFiles.filter((f) => f.name !== fileName);
     delete previews[fileName];
     delete uploadProgress[fileName];
   }
-
   function getFileIcon(file: File) {
-    if (file.type.startsWith("image/")) return Image;
+    if (file.type.startsWith("image/")) return Imag;
     if (file.type.startsWith("video/")) return Video;
     if (file.type.startsWith("audio/")) return Music;
     if (file.type.includes("pdf") || file.type.includes("document")) return FileText;
-    return FileIcon;
+    return FileIco;
   }
-
   async function handleFormSubmit() {
     if (selectedFiles.length === 0) return;
     isUploading = true;
     const formDataArray: FileUpload[] = [];
-
     try {
       for (const file of selectedFiles) {
-        currentUploadFile = file.name;
+        currentUploadFile = file.nam;
         uploadProgress[file.name] = 0;
         const fileData: FileUpload = { ...formState, file };
         await simulateUpload(file.name); // replace with actual upload logic later
         formDataArray.push(fileData);
       }
-
       onupload?.({ files: selectedFiles, formData: formDataArray });
-
       // reset
       selectedFiles = [];
       previews = {};
@@ -253,7 +226,6 @@ export default ;
       currentUploadFile = "";
     }
   }
-
   async function simulateUpload(fileName: string): Promise<void> {
     return new Promise((resolve) => {
   let progress = $state(0);
@@ -264,16 +236,14 @@ export default ;
           clearInterval(interval);
           resolve();
         }
-        uploadProgress[fileName] = progress;
+        uploadProgress[fileName] = progres;
         onprogress?.({ progress, file: fileName });
       }, 100);
     });
   }
-
   function openFileDialog() {
     if (!disabled) fileInput?.click();
   }
-
   // Tags
   let tagInput = $state("");
   function addTag() {
@@ -286,12 +256,10 @@ export default ;
   function removeTag(tag: string) {
     formState.tags = formState.tags.filter((t) => t !== tag);
   }
-
   $effect(() => {
     if (caseId) formState.caseId = caseId;
   });
 </script>
-
 <!-- Hidden file input -->
 <input
   bind:this={fileInput}
@@ -300,7 +268,6 @@ export default ;
   accept={acceptedTypes.join(",")} onchange={handleFileSelect}
   class="hidden"
 />
-
 <div class="w-full nes-container">
   <div class="yorha-panel-header pb-4">
     <h3 class="nes-text is-primary flex items-center gap-2">
@@ -308,11 +275,10 @@ export default ;
       {compact ? "Upload Files" : "Evidence Upload"}
     </h3>
   </div>
-
   <div class="yorha-panel-content space-y-6">
     <!-- Drop Zone -->
     <div
-      class="border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer border-muted-foreground border-opacity-25 hover:border-primary hover:border-opacity-50";
+      class="border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer border-muted-foreground border-opacity-25 hover: border-primary hover:border-opacity-50";
       class:border-primary={isDragOver}
       class:bg-primary/5={isDragOver}
       class:opacity-50={disabled};
@@ -352,7 +318,6 @@ export default ;
         </div>
       {/if}
     </div>
-
     <!-- Selected Files Preview -->
     {#if selectedFiles.length > 0}
       <div class="space-y-3">
@@ -367,7 +332,6 @@ export default ;
                   <svelte:component this={getFileIcon(file)} class="h-12 w-12 nes-text is-disabled" />
                 {/if}
               </div>
-
               <div class="flex-1 min-w-0">
                 <p class="font-medium truncate">{file.name}</p>
                 <p class="text-sm nes-text is-disabled">{formatFileSize(file.size)} • {file.type}</p>
@@ -375,7 +339,6 @@ export default ;
                   <progress value={uploadProgress[file.name]} max="100" class="mt-2 w-full" />
                 {/if}
               </div>
-
               <button class="nes-btn" variant="ghost" size="sm" onclick={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
                 <X class="h-4 w-4" />
               </button>
@@ -384,7 +347,6 @@ export default ;
         </div>
       </div>
     {/if}
-
     {#if !compact && selectedFiles.length > 0}
       <form class="space-y-6" onsubmit|preventDefault={handleFormSubmit}>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -393,7 +355,6 @@ export default ;
             <Input id="title" bind:value={formState.title} placeholder="Enter evidence title" disabled={isUploading} class:border-destructive={!!errors.title} />
             {#if errors.title}<p class="text-sm text-destructive">{errors.title[0]}</p>{/if}
           </div>
-
           <div class="space-y-2">
             <Label for="evidenceType">Evidence Type *</Label>
             <select bind:value={formState.evidenceType} disabled={isUploading} id="evidenceType" class="w-full border rounded px-2 py-1">
@@ -402,7 +363,6 @@ export default ;
             </select>
             {#if errors.evidenceType}<p class="text-sm text-destructive">{errors.evidenceType[0]}</p>{/if}
           </div>
-
           <div class="space-y-2">
             <Label for="confidentialityLevel">Confidentiality Level</Label>
             <select bind:value={formState.confidentialityLevel} disabled={isUploading} id="confidentialityLevel" class="w-full border rounded px-2 py-1">
@@ -410,24 +370,20 @@ export default ;
               {#each confidentialityLevels as level}<option value={level.value}>{level.label}</option>{/each}
             </select>
           </div>
-
           <div class="space-y-2">
             <Label for="collectedBy">Collected By</Label>
             <Input id="collectedBy" bind:value={formState.collectedBy} placeholder="Officer/investigator name" disabled={isUploading} />
           </div>
         </div>
-
         <div class="space-y-2">
           <Label for="description">Description</Label>
           <textarea id="description" bind:value={formState.description} placeholder="Describe the evidence and its relevance to the case" rows={3} disabled={isUploading} class="w-full border rounded p-2" class:border-destructive={!!errors.description} />
           {#if errors.description}<p class="text-sm text-destructive">{errors.description[0]}</p>{/if}
         </div>
-
         <div class="space-y-2">
           <Label for="location">Collection Location</Label>
           <Input id="location" bind:value={formState.location} placeholder="Where was this evidence collected?" disabled={isUploading} />
         </div>
-
         <div class="space-y-2">
           <Label for="tags">Tags</Label>
           <div class="flex gap-2">
@@ -436,7 +392,6 @@ export default ;
 Add
 </Button>
           </div>
-
           {#if formState.tags.length > 0}
             <div class="flex flex-wrap gap-2 mt-2">
               {#each formState.tags as tag}
@@ -450,7 +405,6 @@ Add
             </div>
           {/if}
         </div>
-
         <div class="space-y-3">
           <Label>AI Processing Options</Label>
           <div class="grid grid-cols-2 gap-3">
@@ -472,25 +426,21 @@ Add
             </div>
           </div>
         </div>
-
         <div class="flex items-center space-x-2">
           <input type="checkbox" bind:checked={formState.isAdmissible} id="isAdmissible" disabled={isUploading} />
           <Label for="isAdmissible">Mark as admissible evidence</Label>
         </div>
       </form>
     {/if}
-
     <div class="flex justify-between items-center pt-4 border-t">
       <p class="text-sm nes-text is-disabled">
         {selectedFiles.length} file{selectedFiles.length !== 1 ? "s" : ""} selected
         {#if multiple}(max {maxFiles}){/if}
       </p>
-
       <div class="flex gap-2">
         <Button class="bits-btn" variant="ghost" onclick={() =>
 oncancel?.()} disabled={isUploading}>Cancel
 </Button>
-
         <button class="nes-btn" onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
           {#if isUploading}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />Uploading...
@@ -500,7 +450,6 @@ oncancel?.()} disabled={isUploading}>Cancel
 </Button>
       </div>
     </div>
-
     {#if Object.keys(errors).length > 0 && selectedFiles.length > 0}
       <div class="border border-destructive bg-destructive/10 rounded p-3 flex items-start gap-3">
         <AlertCircle class="h-4 w-4" />
@@ -516,9 +465,7 @@ oncancel?.()} disabled={isUploading}>Cancel
     {/if}
   </div>
 </div>
-
 <style>
   /* Minimal local styles; utilities provided by UnoCSS or your CSS framework. */
   .hidden { display: none; }
 </style>
-

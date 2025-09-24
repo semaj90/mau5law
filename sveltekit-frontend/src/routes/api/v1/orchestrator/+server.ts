@@ -1,6 +1,5 @@
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
-
 // Minimal, valid orchestrator endpoint to restore route integrity
 const GET_ENDPOINTS = ['health', 'metrics', 'tasks'] as const
 const POST_OPERATIONS = [
@@ -12,7 +11,6 @@ const POST_OPERATIONS = [
   'attention',
   'conv2d',
 ] as const
-
 export const GET: RequestHandler = async ({ url }) => {
   const endpoint = url.searchParams.get('endpoint') ?? 'health'
   switch (endpoint) {
@@ -20,13 +18,13 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({ success: true, data: { status: 'unknown' }, timestamp: new Date().toISOString() })
     case 'metrics':
       return json({
-        success: true,
+        success: true
         data: { metrics: [], count: 0, latestMetric: null },
         timestamp: new Date().toISOString(),
       })
     case 'tasks':
       return json({
-        success: true,
+        success: true
         data: { activeTasks: [], taskQueue: [], activeCount: 0, queueCount: 0 },
         timestamp: new Date().toISOString(),
       })
@@ -37,7 +35,6 @@ export const GET: RequestHandler = async ({ url }) => {
       )
   }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
   let body: unknown = {}
   try {
@@ -45,26 +42,21 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch {
     body = {}
   }
-
   const obj = body && typeof body === 'object' ? (body as Record<string, unknown>) : {}
   const operation = typeof obj.operation === 'string' ? obj.operation : undefined
   const data = obj.data ?? {}
   const options = obj.options ?? {}
-
   if (!operation) {
     return json({ success: false, error: 'Missing operation' }, { status: 400 })
   }
-
   if (!POST_OPERATIONS.includes(operation as (typeof POST_OPERATIONS)[number])) {
     return json(
       { success: false, error: `Unknown operation: ${operation}`, availableOperations: POST_OPERATIONS },
       { status: 400 }
     )
   }
-
   return json({ success: true, operation, data, options, timestamp: new Date().toISOString() })
 }
-
 export const PUT: RequestHandler = async ({ request }) => {
   let body: unknown = {}
   try {
@@ -76,13 +68,12 @@ export const PUT: RequestHandler = async ({ request }) => {
   const config = obj.config ?? null
   if (!config) return json({ success: false, error: 'Configuration object required' }, { status: 400 })
   return json({
-    success: true,
+    success: true
     message: 'Configuration update acknowledged',
     data: { requestedConfig: config },
     timestamp: new Date().toISOString(),
   })
 }
-
 export const DELETE: RequestHandler = async ({ url }) => {
   const confirm = url.searchParams.get('confirm')
   if (confirm !== 'true')

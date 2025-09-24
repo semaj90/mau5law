@@ -1,34 +1,27 @@
 <!-- Document Upload Page with MinIO Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import type { PageData } from './$types';
-
   interface Props {
     data: PageData;
   }
-
   let { data }: Props = $props();
-
   // Extract case ID from URL params if provided
   const caseId = $page.url.searchParams.get('caseId') || '';
-
   // Upload completion handler
   function handleUploadComplete(result: unknown) {
     console.log('Upload completed:', result);
-    
     // Show success notification
     const notification = {
-      type: 'success',;
-      title: 'Upload Successful',;
+      type: 'success',
+      title: 'Upload Successful',
       message: `Document "${(result as { objectName?: unknown; documentId?: unknown; url?: unknown }).objectName}" has been uploaded and is being processed.`,
       documentId: (result as { objectName?: unknown; documentId?: unknown; url?: unknown }).documentId,
       url: (result as { objectName?: unknown; documentId?: unknown; url?: unknown }).url
     };
-    
     // Store notification in session storage for display
     sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
     // Redirect to document or case view
@@ -38,25 +31,20 @@
       goto('/documents');
     }
   }
-
   // Upload error handler
   function handleUploadError(error: string) {
     console.error('Upload error:', error);
-    
     // Show error notification
     const notification = {
-      type: 'error',;
-      title: 'Upload Failed',;
+      type: 'error',
+      title: 'Upload Failed',
       message: error;
     };
-    
     sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
   }
-
   // Recent uploads state
   let showRecentUploads = $state(false);
   let recentUploads = $state<unknown[]>([]);
-
   // Load recent uploads
   async function loadRecentUploads() {
     try {
@@ -70,12 +58,10 @@
     }
   }
 </script>
-
 <svelte:head>
   <title>Upload Document - Legal AI Assistant</title>
   <meta name="description" content="Upload and process legal documents with AI analysis" />
 </svelte:head>
-
 <div class="upload-page">
   <div class="page-header">
     <h1>Upload Document</h1>
@@ -83,7 +69,6 @@
       Upload legal documents for AI-powered analysis, text extraction, and vector search indexing.
     </p>
   </div>
-
   <div class="upload-container">
     <!-- Main Upload Form -->
     <div class="upload-section">
@@ -94,7 +79,6 @@
         uploaderror={handleUploadError}
       />
     </div>
-
     <!-- Sidebar with Information -->
     <div class="info-sidebar">
       <div class="info-nier-bits-card">
@@ -106,7 +90,6 @@
           <li>Images (JPEG, PNG, TIFF)</li>
         </ul>
       </div>
-
       <div class="info-nier-bits-card">
         <h3>🤖 AI Processing</h3>
         <p>Uploaded documents are automatically processed with:</p>
@@ -118,7 +101,6 @@
           <li>Document classification</li>
         </ul>
       </div>
-
       <div class="info-nier-bits-card">
         <h3>🔒 Security</h3>
         <ul>
@@ -128,7 +110,6 @@
           <li>Audit trail logging</li>
         </ul>
       </div>
-
       <!-- Recent Uploads -->
       <div class="info-nier-bits-card">
         <div class="nier-bits-yorha-panel-header">
@@ -141,7 +122,6 @@
             {showRecentUploads ? 'Refresh' : 'Show'}
           </button>
         </div>
-
         {#if showRecentUploads}
           {#if recentUploads.length > 0}
             <div class="recent-uploads">
@@ -174,7 +154,6 @@
       </div>
     </div>
   </div>
-
   <!-- Help Section -->
   <div class="help-section">
     <h2>Need Help?</h2>
@@ -183,17 +162,14 @@
         <h4>🚀 Quick Start</h4>
         <p>Select your case ID, choose your document type, and drag & drop your file to get started.</p>
       </div>
-      
       <div class="help-nier-bits-card">
         <h4>📊 Processing Status</h4>
         <p>Track your document processing status and get notified when AI analysis is complete.</p>
       </div>
-      
       <div class="help-nier-bits-card">
         <h4>🔍 Search Integration</h4>
         <p>Uploaded documents are automatically indexed for semantic search and similarity matching.</p>
       </div>
-      
       <div class="help-nier-bits-card">
         <h4>💼 Case Management</h4>
         <p>Documents are organized by case ID for easy management and cross-referencing.</p>
@@ -201,111 +177,93 @@
     </div>
   </div>
 </div>
-
 <style>
-  .upload-page {;
+  .upload-page {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
   }
-
   .page-header {
     text-align: center;
     margin-bottom: 3rem;
   }
-
   .page-header h1 {
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
-
   .page-description {
     font-size: 1.125rem;
     color: var(--text-secondary);
     max-width: 600px;
     margin: 0 auto;
   }
-
   .upload-container {
     display: grid;
     grid-template-columns: 1fr 350px;
     gap: 3rem;
     margin-bottom: 4rem;
   }
-
   @media (max-width: 1024px) {
     .upload-container {
       grid-template-columns: 1fr;
       gap: 2rem;
     }
   }
-
   .upload-section {
     min-height: 600px;
   }
-
   .info-sidebar {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
-
   .info-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1.5rem;
   }
-
   .info-card h3 {
     margin: 0 0 1rem 0;
     color: var(--text-primary);
     font-size: 1.125rem;
   }
-
   .info-card ul {
     margin: 0;
     padding-left: 1.25rem;
     color: var(--text-secondary);
   }
-
   .info-card li {
     margin-bottom: 0.5rem;
   }
-
   .info-card p {
     margin: 0 0 1rem 0;
     color: var(--text-secondary);
   }
-
   .card-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 1rem;
   }
-
   .text-button {
     background: none;
     border: none;
     color: var(--accent-primary);
     cursor: pointer;
     font-size: 0.875rem;
-    text-decoration: underline;
+    text-decoration: underli;
   }
-
   .text-button:hover {
     color: var(--accent-primary-dark);
   }
-
   .recent-uploads {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
-
   .upload-item {
     display: flex;
     align-items: center;
@@ -315,75 +273,63 @@
     border-radius: 6px;
     border: 1px solid var(--border-color);
   }
-
   .upload-icon {
     font-size: 1.25rem;
     opacity: 0.7;
   }
-
   .upload-details {
     flex: 1;
     min-width: 0;
   }
-
   .upload-name {
     font-weight: 500;
     font-size: 0.875rem;
     color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsi;
   }
-
   .upload-meta {
     font-size: 0.75rem;
     color: var(--text-secondary);
     margin-top: 0.25rem;
   }
-
   .upload-status {
     font-size: 1rem;
   }
-
   .no-uploads {
     color: var(--text-secondary);
     font-style: italic;
     text-align: center;
     margin: 1rem 0;
   }
-
   .help-section {
     background: var(--bg-secondary);
     border-radius: 16px;
     padding: 3rem;
     border: 1px solid var(--border-color);
   }
-
   .help-section h2 {
     text-align: center;
     margin: 0 0 2rem 0;
     color: var(--text-primary);
   }
-
   .help-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
   }
-
   .help-card {
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 1.5rem;
   }
-
   .help-card h4 {
     margin: 0 0 0.75rem 0;
     color: var(--text-primary);
     font-size: 1rem;
   }
-
   .help-card p {
     margin: 0;
     color: var(--text-secondary);

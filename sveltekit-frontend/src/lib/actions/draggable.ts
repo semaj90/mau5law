@@ -1,7 +1,6 @@
 
 // Enhanced draggable action for detective board evidence nodes
 import { evidenceStore } from '$lib/stores/evidence';
-
 export interface DraggableOptions {
   id?: string; // Evidence ID for store updates
   onDrag?: (x: number, y: number) => void;
@@ -17,13 +16,11 @@ export interface DraggableOptions {
     container?: HTMLElement; // Constrain to container bounds
   };
 }
-
 /**
  * Enhanced draggable action for making elements draggable on the detective board
  */;
 export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
   let { id, onDrag, onDragStart, onDragEnd, handle, disabled = false, constraint } = options;
-
   let isDragging = false;
   let startX = 0;
   let startY = 0;
@@ -31,24 +28,19 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
   let initialY = 0;
   let currentX = 0;
   let currentY = 0;
-
   function updateNodePosition(x: number, y: number) {
     currentX = x;
     currentY = y;
     node.style.transform = `translate(${x}px, ${y}px)`;
-
-    // Update evidence store if ID provided;
+    // Update evidence store if ID provided
     if (id) {
       evidenceStore.updateEvidence(id, { x, y });
     }
-
     onDrag?.(x, y);
   }
-
   function applyConstraints(x: number, y: number): [number, number] {
     let constrainedX = x;
     let constrainedY = y;
-
     if (constraint) {
       if (constraint.container) {
         const containerRect = constraint.container.getBoundingClientRect();
@@ -62,153 +54,116 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
         if (constraint.maxY !== undefined) constrainedY = Math.min(constraint.maxY, constrainedY);
       }
     }
-
     return [constrainedX, constrainedY];
   }
-
   function handleMouseDown(event: MouseEvent) {
     if (disabled || event.button !== 0) return; // Only left mouse button
-
-    // Check if we're dragging from the handle;
+    // Check if we're dragging from the handle
     if (handle) {
       const handleElement = node.querySelector(handle);
       if (!handleElement || !handleElement.contains(event.target as Node)) {
         return;
       }
     }
-
     event.preventDefault();
     event.stopPropagation();
-
     isDragging = true;
     startX = event.clientX;
     startY = event.clientY;
-
     // Get current position relative to parent
     const rect = node.getBoundingClientRect();
     const parent = node.offsetParent as HTMLElement;
     const parentRect = parent?.getBoundingClientRect() || { left: 0, top: 0 };
-
     initialX = rect.left - parentRect.left;
     initialY = rect.top - parentRect.top;
     currentX = initialX;
     currentY = initialY;
-
     // Visual feedback
     node.style.cursor = 'grabbing';
     node.style.zIndex = '1000';
     node.style.userSelect = 'none';
     node.classList.add('dragging');
-
     // Add global event listeners
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-
     onDragStart?.(event);
   }
-
   function handleMouseMove(event: MouseEvent) {
     if (!isDragging) return;
-
     event.preventDefault();
-
     const deltaX = event.clientX - startX;
     const deltaY = event.clientY - startY;
-
     const newX = initialX + deltaX;
     const newY = initialY + deltaY;
-
     const [constrainedX, constrainedY] = applyConstraints(newX, newY);
-
     updateNodePosition(constrainedX, constrainedY);
   }
-
   function handleMouseUp(event: MouseEvent) {
     if (!isDragging) return;
-
     isDragging = false;
-
     // Remove visual feedback
     node.style.cursor = disabled ? '' : 'grab';
     node.style.zIndex = '';
     node.style.userSelect = '';
     node.classList.remove('dragging');
-
     // Remove global event listeners
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
-
     onDragEnd?.(currentX, currentY);
   }
-
-  // Touch support;
+  // Touch support
   function handleTouchStart(event: TouchEvent) {
     if (disabled || event.touches.length !== 1) return;
-
     const touch = event.touches[0];
     const mouseEvent = new MouseEvent('mousedown', {
       clientX: touch.clientX,
       clientY: touch.clientY,
       button: 0
     });
-
     handleMouseDown(mouseEvent);
   }
-
   function handleTouchMove(event: TouchEvent) {
     if (!isDragging || event.touches.length !== 1) return;
-
     event.preventDefault();
-
     const touch = event.touches[0];
     const mouseEvent = new MouseEvent('mousemove', {
       clientX: touch.clientX,
       clientY: touch.clientY
     });
-
     handleMouseMove(mouseEvent);
   }
-
   function handleTouchEnd(event: TouchEvent) {
     if (!isDragging) return;
-
     const mouseEvent = new MouseEvent('mouseup', {
       clientX: 0,
       clientY: 0
     });
-
     handleMouseUp(mouseEvent);
   }
-
   // Initialize
   node.style.cursor = disabled ? '' : 'grab';
   node.style.position = 'absolute';
-
   // Add event listeners
   node.addEventListener('mousedown', handleMouseDown);
   node.addEventListener('touchstart', handleTouchStart);
   node.addEventListener('touchmove', handleTouchMove);
   node.addEventListener('touchend', handleTouchEnd);
-
-  // Cleanup function;
+  // Cleanup function
   return {
     destroy() {
       node.removeEventListener('mousedown', handleMouseDown);
       node.removeEventListener('touchstart', handleTouchStart);
       node.removeEventListener('touchmove', handleTouchMove);
       node.removeEventListener('touchend', handleTouchEnd);
-
       // Clean up global listeners
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
-
       // Reset styles
       node.style.cursor = '';
       node.style.zIndex = '';
       node.style.userSelect = '';
       node.classList.remove('dragging');
     },
-
     update(newOptions: DraggableOptions) {
       id = newOptions.id;
       onDrag = newOptions.onDrag;
@@ -217,7 +172,6 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
       handle = newOptions.handle;
       disabled = newOptions.disabled ?? false;
       constraint = newOptions.constraint;
-
       // Update cursor
       node.style.cursor = disabled ? '' : (isDragging ? 'grabbing' : 'grab');
     }

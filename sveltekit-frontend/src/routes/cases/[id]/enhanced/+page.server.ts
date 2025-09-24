@@ -1,14 +1,11 @@
 import type { PageServerLoad } from './$types.js';
-
 export const load: PageServerLoad = async ({ params, url, depends }) => {
 	depends('case:enhanced-analysis');
-	
 	const caseId = params.id;
 	const analysisType = url.searchParams.get('analysis') || 'comprehensive';
-	
-	// In a real implementation, these would come from actual database queries and AI services;
+	// In a real implementation, these would come from actual database queries and AI services
 	const caseDetails = {
-		id: caseId,
+		id: caseId
 		title: `Enhanced Case Analysis - Case ${caseId}`,
 		status: 'active',
 		priority: 'high',
@@ -16,13 +13,12 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 		lastModified: '2024-01-20',
 		assignedLawyers: ['Sarah Chen', 'Michael Rodriguez'],
 		client: 'TechCorp Industries',
-		practiceArea: 'Corporate Law',;
+		practiceArea: 'Corporate Law',
 		jurisdiction: 'Federal - Northern District of California',
 		caseType: 'Contract Dispute',
 		estimated_value: 2500000,
 		confidence_score: 0.87
 	};
-
 	const analysisResults = {
 		comprehensive: {
 			legal_strength: 0.82,
@@ -41,7 +37,7 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 				{ id: '2023-CV-9012', similarity: 0.78, outcome: 'Defendant Victory', settlement: 0 }
 			],
 			timeline_prediction: {
-				discovery_phase: '3-4 months',;
+				discovery_phase: '3-4 months',
 				mediation: '6-8 months',
 				trial_ready: '12-15 months',
 				estimated_resolution: '8-10 months'
@@ -75,7 +71,6 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 			}
 		}
 	};
-
 	const recentActivity = [
 		{ timestamp: '2024-01-20T10:30:00Z', action: 'Document analysis completed', user: 'AI System' },
 		{ timestamp: '2024-01-20T09:15:00Z', action: 'New evidence uploaded', user: 'Sarah Chen' },
@@ -83,7 +78,6 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 		{ timestamp: '2024-01-19T14:20:00Z', action: 'Case strategy meeting notes added', user: 'Michael Rodriguez' },
 		{ timestamp: '2024-01-18T11:00:00Z', action: 'Opposing counsel response analyzed', user: 'AI System' }
 	];
-
 	const aiInsights = {
 		strategy_recommendations: [
 			{
@@ -93,7 +87,7 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 				confidence: 0.91
 			},
 			{
-				priority: 'medium', 
+				priority: 'medium',
 				recommendation: 'Prepare alternative damages calculation methodology',
 				reasoning: 'Opposing counsel likely to challenge current calculation based on similar cases',
 				confidence: 0.78
@@ -101,7 +95,7 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 			{
 				priority: 'high',
 				recommendation: 'Consider early mediation at 6-month mark',
-				reasoning: 'Settlement probability increases 34% when mediation occurs before discovery completion',;
+				reasoning: 'Settlement probability increases 34% when mediation occurs before discovery completion',
 				confidence: 0.85
 			}
 		],
@@ -112,7 +106,6 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 			{ factor: 'Judicial precedent variation', impact: 'low', probability: 0.43 }
 		]
 	};
-
 	return {
 		caseDetails,
 		analysisResults,

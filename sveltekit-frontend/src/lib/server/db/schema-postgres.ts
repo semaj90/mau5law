@@ -21,9 +21,7 @@ import {
 import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-
 // === ENUMS FOR LEGAL AI APPLICATION ===
-
 export const userRoleEnum = pgEnum('user_role', ['prosecutor', 'detective', 'admin', 'analyst', 'paralegal']);
 export const caseStatusEnum = pgEnum('case_status', ['open', 'in_progress', 'pending_review', 'closed', 'archived']);
 export const casePriorityEnum = pgEnum('case_priority', ['low', 'medium', 'high', 'critical', 'urgent']);
@@ -34,9 +32,7 @@ export const confidentialityEnum = pgEnum('confidentiality_level', ['public', 's
 export const activityStatusEnum = pgEnum('activity_status', ['pending', 'in_progress', 'completed', 'cancelled', 'postponed']);
 export const reportStatusEnum = pgEnum('report_status', ['draft', 'review', 'approved', 'published', 'archived']);
 export const verificationStatusEnum = pgEnum('verification_status', ['pending', 'verified', 'rejected', 'needs_review']);
-
 // === AUTHENTICATION & USER MANAGEMENT ===
-
 export const users = pgTable(
   'users',
   {
@@ -65,9 +61,7 @@ export const users = pgTable(
     ]
   })
 );
-
 // === LUCIA v3 AUTHENTICATION TABLES ===
-
 export const sessions = pgTable(
   'sessions',
   {
@@ -122,9 +116,7 @@ export const passwordResetTokens = pgTable(
     ],
   })
 );
-
 // === CASE MANAGEMENT ===
-
 export const cases = pgTable(
   'cases',
   {
@@ -169,7 +161,6 @@ export const cases = pgTable(
   })
 );
 // === CRIMINAL RECORDS ===
-
 export const criminals = pgTable('criminals', {
   id: uuid('id')
     .default(sql`gen_random_uuid()`)
@@ -212,7 +203,6 @@ export const criminals = pgTable('criminals', {
   ]
 }));
 // === EVIDENCE MANAGEMENT ===
-
 export const evidence = pgTable('evidence', {
   id: uuid('id')
     .default(sql`gen_random_uuid()`)
@@ -258,7 +248,6 @@ export const evidence = pgTable('evidence', {
   ]
 }));
 // === LEGAL DOCUMENT MANAGEMENT ===
-
 export const legalDocuments = pgTable(
   'legal_documents',
   {
@@ -320,7 +309,6 @@ export const legalDocuments = pgTable(
   ]
 );
 // === CASE ACTIVITIES & TIMELINE ===
-
 export const caseActivities = pgTable('case_activities', {
   id: uuid('id')
     .default(sql`gen_random_uuid()`)
@@ -343,7 +331,6 @@ export const caseActivities = pgTable('case_activities', {
   updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
 });
 // === ATTACHMENT VERIFICATIONS ===
-
 export const attachmentVerifications = pgTable(
   'attachment_verifications',
   {
@@ -367,9 +354,7 @@ export const attachmentVerifications = pgTable(
     }),
   ]
 );
-
 // === CANVAS ANNOTATIONS ===
-
 export const canvasAnnotations = pgTable(
   'canvas_annotations',
   {
@@ -407,7 +392,6 @@ export const canvasAnnotations = pgTable(
   ]
 );
 // === CANVAS STATES ===
-
 export const canvasStates = pgTable(
   'canvas_states',
   {
@@ -438,7 +422,6 @@ export const canvasStates = pgTable(
   ]
 );
 // === AI REPORTS & ANALYSIS ===
-
 export const aiReports = pgTable(
   'ai_reports',
   {
@@ -474,7 +457,6 @@ export const aiReports = pgTable(
   ]
 );
 // === CITATIONS ===
-
 export const citations = pgTable(
   'citations',
   {
@@ -520,7 +502,6 @@ export const citations = pgTable(
   ]
 );
 // === REPORTS ===
-
 export const reports = pgTable(
   'reports',
   {
@@ -554,7 +535,6 @@ export const reports = pgTable(
   ]
 );
 // === SAVED REPORTS ===
-
 export const savedReports = pgTable(
   'saved_reports',
   {
@@ -597,7 +577,6 @@ export const savedReports = pgTable(
   ]
 );
 // === THEMES & UI CUSTOMIZATION ===
-
 export const themes = pgTable(
   'themes',
   {
@@ -624,7 +603,6 @@ export const themes = pgTable(
   ]
 );
 // === PERSONS OF INTEREST ===
-
 export const personsOfInterest = pgTable(
   'persons_of_interest',
   {
@@ -659,7 +637,6 @@ export const personsOfInterest = pgTable(
   ]
 );
 // === HASH VERIFICATIONS ===
-
 export const hashVerifications = pgTable(
   'hash_verifications',
   {
@@ -691,7 +668,6 @@ export const hashVerifications = pgTable(
   ]
 );
 // === VECTOR EMBEDDINGS FOR AI SEARCH ===
-
 export const contentEmbeddings = pgTable('content_embeddings', {
   id: uuid('id')
     .default(sql`gen_random_uuid()`)
@@ -782,7 +758,6 @@ export const caseEmbeddings = pgTable(
   ]
 );
 // === RAG (Retrieval Augmented Generation) SESSIONS ===
-
 export const ragSessions = pgTable(
   'rag_sessions',
   {
@@ -824,7 +799,6 @@ export const ragMessages = pgTable('rag_messages', {
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
 });
 // === STATUTES ===
-
 export const statutes = pgTable('statutes', {
   id: uuid('id')
     .default(sql`gen_random_uuid()`)
@@ -841,7 +815,6 @@ export const statutes = pgTable('statutes', {
   updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
 });
 // === LEGAL PRECEDENTS ===
-
 export const legalPrecedents = pgTable('legal_precedents', {
   id: uuid('id')
     .default(sql`gen_random_uuid()`)
@@ -862,7 +835,6 @@ export const legalPrecedents = pgTable('legal_precedents', {
   updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
 });
 // === LEGAL ANALYSIS SESSIONS ===
-
 export const legalAnalysisSessions = pgTable(
   'legal_analysis_sessions',
   {
@@ -897,7 +869,6 @@ export const legalAnalysisSessions = pgTable(
   ]
 );
 // === LEGAL RESEARCH ===
-
 export const legalResearch = pgTable(
   'legal_research',
   {
@@ -937,7 +908,6 @@ export const legalResearch = pgTable(
   ]
 );
 // === VECTOR METADATA ===
-
 export const vectorMetadata = pgTable(
   'vector_metadata',
   {
@@ -955,7 +925,6 @@ export const vectorMetadata = pgTable(
   (table) => [unique('vector_metadata_document_id_unique').on(table.documentId)]
 );
 // === CASE SCORING SYSTEM ===
-
 export const caseScores = pgTable(
   'case_scores',
   {
@@ -987,7 +956,6 @@ export const caseScores = pgTable(
   ]
 );
 // === AI QUERY LOGGING SYSTEM ===
-
 export const userAiQueries = pgTable(
   'user_ai_queries',
   {
@@ -1025,7 +993,6 @@ export const userAiQueries = pgTable(
   ]
 );
 // === AUTO-TAGGING SYSTEM ===
-
 export const autoTags = pgTable(
   'auto_tags',
   {
@@ -1053,7 +1020,6 @@ export const autoTags = pgTable(
   ]
 );
 // === EMBEDDING CACHE ===
-
 export const embeddingCache = pgTable(
   'embedding_cache',
   {
@@ -1069,7 +1035,6 @@ export const embeddingCache = pgTable(
   (table) => [unique('embedding_cache_text_hash_unique').on(table.textHash)]
 );
 // === DOCUMENT CHUNKS ===
-
 export const documentChunks = pgTable('document_chunks', {
   id: uuid('id')
     .default(sql`gen_random_uuid()`)
@@ -1084,51 +1049,35 @@ export const documentChunks = pgTable('document_chunks', {
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
 });
 // === TYPE EXPORTS ===
-
 export type Case = typeof cases.$inferSelect;
 export type NewCase = typeof cases.$inferInsert;
-
 export type Evidence = typeof evidence.$inferSelect;
 export type NewEvidence = typeof evidence.$inferInsert;
-
 export type Report = typeof reports.$inferSelect;
 export type NewReport = typeof reports.$inferInsert;
-
 export type Criminal = typeof criminals.$inferSelect;
 export type NewCriminal = typeof criminals.$inferInsert;
-
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
-
 export type RagSession = typeof ragSessions.$inferSelect;
 export type NewRagSession = typeof ragSessions.$inferInsert;
-
 export type RagMessage = typeof ragMessages.$inferSelect;
 export type NewRagMessage = typeof ragMessages.$inferInsert;
-
 export type LegalDocument = typeof legalDocuments.$inferSelect;
 export type NewLegalDocument = typeof legalDocuments.$inferInsert;
-
 export type CaseActivity = typeof caseActivities.$inferSelect;
 export type NewCaseActivity = typeof caseActivities.$inferInsert;
-
 export type CanvasAnnotation = typeof canvasAnnotations.$inferSelect;
 export type NewCanvasAnnotation = typeof canvasAnnotations.$inferInsert;
-
 export type PersonOfInterest = typeof personsOfInterest.$inferSelect;
 export type NewPersonOfInterest = typeof personsOfInterest.$inferInsert;
-
 export type UserAiQuery = typeof userAiQueries.$inferSelect;
 export type NewUserAiQuery = typeof userAiQueries.$inferInsert;
-
 export type AutoTag = typeof autoTags.$inferSelect;
 export type NewAutoTag = typeof autoTags.$inferInsert;
-
 export type DocumentChunk = typeof documentChunks.$inferSelect;
 export type NewDocumentChunk = typeof documentChunks.$inferInsert;
-
 // === RELATIONS ===
-
 export const usersRelations = relations(users, ({ many }) => ({
   casesAsLead: many(cases, { relationName: 'leadProsecutor' }),
   casesCreated: many(cases, { relationName: 'createdBy' }),
@@ -1138,14 +1087,12 @@ export const usersRelations = relations(users, ({ many }) => ({
   criminalsCreated: many(criminals),
   sessions: many(sessions),
 }));
-
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
     references: [users.id],
   }),
 }));
-
 export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
     fields: [cases.leadProsecutor],
@@ -1160,7 +1107,6 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   evidence: many(evidence),
   activities: many(caseActivities),
 }));
-
 export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [criminals.createdBy],
@@ -1168,7 +1114,6 @@ export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   }),
   evidence: many(evidence),
 }));
-
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
     fields: [evidence.uploadedBy],
@@ -1179,7 +1124,6 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     references: [cases.id],
   }),
 }));
-
 export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
   case: one(cases, {
     fields: [caseActivities.caseId],
@@ -1196,7 +1140,6 @@ export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
     relationName: 'createdBy',
   }),
 }));
-
 export const aiReportsRelations = relations(aiReports, ({ one }) => ({
   case: one(cases, {
     fields: [aiReports.caseId],
@@ -1207,7 +1150,6 @@ export const aiReportsRelations = relations(aiReports, ({ one }) => ({
     references: [users.id],
   }),
 }));
-
 export const personsOfInterestRelations = relations(personsOfInterest, ({ one }) => ({
   case: one(cases, {
     fields: [personsOfInterest.caseId],
@@ -1218,7 +1160,6 @@ export const personsOfInterestRelations = relations(personsOfInterest, ({ one })
     references: [users.id],
   }),
 }));
-
 export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
   case: one(cases, {
     fields: [legalDocuments.caseId],
@@ -1229,14 +1170,12 @@ export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
     references: [evidence.id],
   }),
 }));
-
 export const ragSessionsRelations = relations(ragSessions, ({ one }) => ({
   user: one(users, {
     fields: [ragSessions.userId],
     references: [users.id],
   }),
 }));
-
 export const userAiQueriesRelations = relations(userAiQueries, ({ one }) => ({
   user: one(users, {
     fields: [userAiQueries.userId],
@@ -1247,23 +1186,18 @@ export const userAiQueriesRelations = relations(userAiQueries, ({ one }) => ({
     references: [cases.id],
   }),
 }));
-
 export const autoTagsRelations = relations(autoTags, ({ one }) => ({
   confirmedBy: one(users, {
     fields: [autoTags.confirmedBy],
     references: [users.id],
   }),
 }));
-
 // === DATABASE CONNECTION & HELPERS ===
-
 // Database connection
-const connectionString = process.env.DATABASE_URL || "postgresql://legal_admin:123456@localhost:5432/legal_ai_db";
+const connectionString = process.env.DATABASE_URL || "postgresql://legal_admin:123456@localhost:5432/legal_ai_db"
 const client = postgres(connectionString);
 export const db = drizzle(client);
-
 // Export helpers for query building
 export const helpers = { eq };
-
 // Export all tables for easy access
 // Note: do not re-export tables collectively to avoid redeclaration conflicts

@@ -1,14 +1,12 @@
 <!-- 3D NES.css LOD Effects for Document Processing -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import { quintOut, elasticOut } from 'svelte/easing';
   import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
   import { WebGPUSOMCache } from '$lib/webgpu/som-webgpu-cache';
   import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
-
   interface Props {
     processing?: boolean;
     document?: {
@@ -25,7 +23,6 @@
     performanceTarget?: 'smooth' | 'balanced' | 'quality';
     userId?: string;
   }
-
   let {
     processing = false,
     document = null,
@@ -36,19 +33,16 @@
     performanceTarget = 'balanced',
     userId = 'default'
   }: Props = $props();
-
   // State
   let container: HTMLDivElement;
   let animationFrame: number;
   let particles: Array = [];
-
   let processingStage = $state<'parsing' | 'analyzing' | 'connecting' | 'synthesizing' | 'complete'>('parsing');
   let rotationX = $state(0);
   let rotationY = $state(0);
   let rotationZ = $state(0);
   let zoom = $state(1);
   let pulseIntensity = $state(0);
-
   // Adaptive Rendering Engine State
   let performanceMetrics = $state({
     fps: 60,
@@ -65,15 +59,14 @@
     particleMultiplier: 1.0,
     effectIntensity: 1.0,
     shaderComplexity: 'medium',
-    antiAliasing: true,
+    antiAliasing: true
     shadowQuality: 'medium',
     textureFiltering: 'bilinear';
   });
   let performanceHistory: number[] = [];
   let lastQualityAdjustment = 0;
   let frameCounter = 0;
-  let gpuCache: WebGPUSOMCache;
-
+  let gpuCache: WebGPUSOMCach;
   // Style configurations
   const styleConfigs = {
     nes: {
@@ -132,24 +125,20 @@
         accent: '#E0E0E0',
         background: 'linear-gradient(135deg, #0F0F0F, #2D2D2D)';
       },
-      shadows: 'drop-shadow(0 0 40px rgba(212, 175, 55, 0.4))',;
+      shadows: 'drop-shadow(0 0 40px rgba(212, 175, 55, 0.4))',
       filter: 'contrast(1.1) saturate(0.9)',
       borderRadius: '0px';
     }
   };
-
   let currentStyle = $derived(styleConfigs[style]);
-
   // LOD configurations
   const lodConfigs = {
     low: { particleCount: 25, updateRate: 8, effectIntensity: 0.5 },
     medium: { particleCount: 50, updateRate: 4, effectIntensity: 0.7 },
-    high: { particleCount: 100, updateRate: 2, effectIntensity: 0.9 },;
+    high: { particleCount: 100, updateRate: 2, effectIntensity: 0.9 },
     ultra: { particleCount: 200, updateRate: 1, effectIntensity: 1.0 }
   };
-
   let currentLOD = $derived(lodConfigs[lodLevel]);
-
   // Quality Tier Configurations for Adaptive Rendering
   const qualityTiers = {
     '8BIT_NES': {
@@ -158,23 +147,23 @@
       particleMultiplier: 0.3,
       effectIntensity: 0.4,
       shaderComplexity: 'low',
-      antiAliasing: false,
+      antiAliasing: false
       shadowQuality: 'off',
       textureFiltering: 'nearest',
-      pixelated: true,
+      pixelated: true
       maxParticles: 25,
       updateRate: 8;
     },
     '16BIT_SNES': {
-      name: '16BIT_SNES', 
+      name: '16BIT_SNES',
       renderTarget: '720p',
       particleMultiplier: 0.5,
       effectIntensity: 0.6,
       shaderComplexity: 'low',
-      antiAliasing: true,
+      antiAliasing: true
       shadowQuality: 'low',
       textureFiltering: 'bilinear',
-      pixelated: false,
+      pixelated: false
       maxParticles: 50,
       updateRate: 6;
     },
@@ -184,10 +173,10 @@
       particleMultiplier: 1.0,
       effectIntensity: 0.8,
       shaderComplexity: 'medium',
-      antiAliasing: true,
+      antiAliasing: true
       shadowQuality: 'medium',
       textureFiltering: 'trilinear',
-      pixelated: false,
+      pixelated: false
       maxParticles: 100,
       updateRate: 4;
     },
@@ -197,10 +186,10 @@
       particleMultiplier: 1.5,
       effectIntensity: 1.0,
       shaderComplexity: 'high',
-      antiAliasing: true,
+      antiAliasing: true
       shadowQuality: 'high',
       textureFiltering: 'anisotropic',
-      pixelated: false,
+      pixelated: false
       maxParticles: 150,
       updateRate: 2;
     },
@@ -210,15 +199,14 @@
       particleMultiplier: 2.0,
       effectIntensity: 1.2,
       shaderComplexity: 'ultra',
-      antiAliasing: true,
+      antiAliasing: true
       shadowQuality: 'ultra',
-      textureFiltering: 'anisotropic16x',;
-      pixelated: false,
+      textureFiltering: 'anisotropic16x',
+      pixelated: false
       maxParticles: 200,
       updateRate: 1;
     }
   };
-
   $effect(() => {
     (async () => {
 // Initialize GPU cache for adaptive rendering
@@ -232,13 +220,11 @@
     }
     })();
   });
-
   onDestroy(() => {
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
     }
   });
-
   $effect(() => {
     if (processing) {
       startProcessingAnimation();
@@ -246,14 +232,12 @@
       stopProcessingAnimation();
     }
   });
-
   function startProcessingAnimation() {
     processingStage = 'parsing';
     initializeParticles();
     animate();
     runProcessingSequence();
   }
-
   function stopProcessingAnimation() {
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
@@ -261,10 +245,9 @@
     particles = [];
     processingStage = 'complete';
   }
-
   function initializeParticles() {
     particles = [];
-    const targetParticleCount = adaptiveRendering 
+    const targetParticleCount = adaptiveRendering
       ? Math.floor(qualityTier.maxParticles * qualityTier.particleMultiplier)
       : currentLOD.particleCount;
     for (let i = 0; i < targetParticleCount; i++) {
@@ -272,33 +255,30 @@
     }
     console.log(`🎮 Initialized ${targetParticleCount} particles for quality tier: ${qualityTier.name}`);
   }
-
   function createParticle(type: 'data' | 'connection' | 'analysis' | 'result') {
     const colors = {
       data: currentStyle.colors.primary,
-      connection: currentStyle.colors.secondary,;
-      analysis: currentStyle.colors.accent,;
+      connection: currentStyle.colors.secondary,
+      analysis: currentStyle.colors.accent,
       result: '#00FF00';
     };
-
     return {
       id: `particle_${Date.now()}_${Math.random()}`,
       x: (Math.random() - 0.5) * 400,
       y: (Math.random() - 0.5) * 300,
-      z: (Math.random() - 0.5) * 200,;
+      z: (Math.random() - 0.5) * 200,
       velocity: {
         x: (Math.random() - 0.5) * 2,
         y: (Math.random() - 0.5) * 2,
         z: (Math.random() - 0.5) * 1;
       },
       type,
-      color: colors[type],;
-      size: Math.random() * 6 + 2,;
+      color: colors[type]
+      size: Math.random() * 6 + 2,
       life: 1.0,
       maxLife: Math.random() * 3000 + 2000;
     };
   }
-
   function animate() {
     const frameStartTime = performance.now();
     updateParticles();
@@ -311,7 +291,6 @@
       if (processing) animate();
     });
   }
-
   function updateParticles() {
     const now = Date.now();
     particles.forEach((particle, index) => {
@@ -319,7 +298,6 @@
       particle.x += particle.velocity.x;
       particle.y += particle.velocity.y;
       particle.z += particle.velocity.z;
-
       // Apply physics based on processing stage
       switch (processingStage) {
         case 'parsing':
@@ -340,24 +318,22 @@
             const dy = Math.random() * 100 - particle.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             const force = connection.strength * 0.001;
-            particle.velocity.x += (dx / Math.max(distance, 1)) * force;
-            particle.velocity.y += (dy / Math.max(distance, 1)) * force;
+            particle.velocity.x += (dx / Math.max(distance, 1)) * forc;
+            particle.velocity.y += (dy / Math.max(distance, 1)) * forc;
           });
           break;
         case 'synthesizing':
           // Converge to center
           const centerForce = 0.02;
-          particle.velocity.x += -particle.x * centerForce;
-          particle.velocity.y += -particle.y * centerForce;
-          particle.velocity.z += -particle.z * centerForce;
+          particle.velocity.x += -particle.x * centerForc;
+          particle.velocity.y += -particle.y * centerForc;
+          particle.velocity.z += -particle.z * centerForc;
           break;
       }
-
       // Boundary wrapping
       if (Math.abs(particle.x) > 300) particle.velocity.x *= -0.8;
       if (Math.abs(particle.y) > 200) particle.velocity.y *= -0.8;
       if (Math.abs(particle.z) > 150) particle.velocity.z *= -0.8;
-
       // Life decay
       particle.life = Math.max(0, particle.life - 0.002);
       // Regenerate dead particles
@@ -365,7 +341,6 @@
         particles[index] = createParticle(particle.type);
       }
     });
-
     // Add new particles based on processing stage
     if (particles.length < currentLOD.particleCount && Math.random() < 0.1) {
       const types: Array<'data' | 'connection' | 'analysis' | 'result'> = ['data', 'connection', 'analysis', 'result'];
@@ -373,7 +348,6 @@
       particles.push(createParticle(randomType));
     }
   }
-
   function updateCamera() {
     rotationX += 0.5;
     rotationY += 0.3;
@@ -384,14 +358,13 @@
     const stageIntensities = {
       parsing: 0.3,
       analyzing: 0.6,
-      connecting: 0.8,;
-      synthesizing: 1.0,;
+      connecting: 0.8,
+      synthesizing: 1.0,
       complete: 0.2;
     };
     const targetIntensity = stageIntensities[processingStage];
     pulseIntensity += (targetIntensity - pulseIntensity) * 0.05;
   }
-
   async function runProcessingSequence() {
     const stages = [
       { stage: 'parsing', duration: 2000 },
@@ -399,18 +372,15 @@
       { stage: 'connecting', duration: 2500 },
       { stage: 'synthesizing', duration: 2000 }
     ];
-
     for (const { stage, duration } of stages) {
       if (!processing) break;
       processingStage = stage as any;
       await new Promise(resolve => setTimeout(resolve, duration));
     }
-
     if (processing) {
       processingStage = 'complete';
     }
   }
-
   function getParticleStyle(particle: unknown) {
     const scale = Math.max(0.1, particle.life);
     const opacity = Math.min(1, particle.life * 2);
@@ -420,9 +390,9 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      transform: 
-        translateX(${particle.x}px) 
-        translateY(${particle.y}px) 
+      transform:
+        translateX(${particle.x}px)
+        translateY(${particle.y}px)
         translateZ(${translateZ}px)
         scale(${scale});
       opacity: ${opacity};
@@ -436,20 +406,19 @@
       z-index: ${Math.round(100 + translateZ)};
     `;
   }
-
   function getContainerStyle() {
     // Apply adaptive rendering settings
-    const adaptiveFilter = adaptiveRendering 
+    const adaptiveFilter = adaptiveRendering
       ? `${currentStyle.filter} brightness(${1 + pulseIntensity * qualityTier.effectIntensity})`
       : `${currentStyle.filter} brightness(${1 + pulseIntensity * 0.3})`;
-    const imageRendering = adaptiveRendering && qualityTier.pixelated 
+    const imageRendering = adaptiveRendering && qualityTier.pixelated
       ? 'pixelated'
       : qualityTier.textureFiltering === 'nearest' ? 'pixelated' : 'auto';
     return `
-      transform: 
+      transform:
         perspective(1000px)
-        rotateX(${rotationX * 0.1}deg) 
-        rotateY(${rotationY * 0.1}deg) 
+        rotateX(${rotationX * 0.1}deg)
+        rotateY(${rotationY * 0.1}deg)
         rotateZ(${rotationZ * 0.05}deg)
         scale(${zoom});
       filter: ${adaptiveFilter};
@@ -457,33 +426,29 @@
       will-change: transform, filter;
     `;
   }
-
   function getStageColor() {
     const colors = {
       parsing: currentStyle.colors.primary,
       analyzing: currentStyle.colors.secondary,
-      connecting: currentStyle.colors.accent,;
-      synthesizing: '#00FF00',;
+      connecting: currentStyle.colors.accent,
+      synthesizing: '#00FF00',
       complete: '#FFFFFF';
     };
     return colors[processingStage];
   }
-
   function getStageDescription() {
     const descriptions = {
       parsing: 'Parsing document structure...',
       analyzing: 'Running AI analysis...',
-      connecting: 'Finding connections...',;
-      synthesizing: 'Synthesizing results...',;
+      connecting: 'Finding connections...',
+      synthesizing: 'Synthesizing results...',
       complete: 'Processing complete';
     };
     return descriptions[processingStage];
   }
-
   // ===============================
   // ADAPTIVE RENDERING ENGINE
   // ===============================
-
   /**
    * Initialize the Adaptive Rendering Engine
    */
@@ -499,36 +464,34 @@
     adaptiveQuality = getInitialQualityTier(performanceTarget);
     qualityTier = qualityTiers[adaptiveQuality];
     console.log('🚀 Adaptive Rendering Engine initialized:', {
-      quality: adaptiveQuality,;
-      target: performanceTarget,
+      quality: adaptiveQuality
+      target: performanceTarget
       userId;
     });
   }
-
   /**
    * Get initial quality tier based on performance target
    */
   function getInitialQualityTier(target: string): typeof adaptiveQuality {
     switch (target) {
       case 'smooth': return '16BIT_SNES';   // Prioritize framerate
-      case 'balanced': return '32BIT_N64';   // Balance quality and performance  
+      case 'balanced': return '32BIT_N64';   // Balance quality and performance
       case 'quality': return '64BIT_PS2';    // Prioritize visual quality
       default: return '32BIT_N64';
     }
   }
-
   /**
    * Update performance metrics based on frame timing
    */
   function updatePerformanceMetrics(frameStartTime: number): void {
     const frameEndTime = performance.now();
-    const frameTime = frameEndTime - frameStartTime;
+    const frameTime = frameEndTime - frameStartTim;
     // Calculate FPS
     const currentFPS = 1000 / Math.max(frameTime, 1);
     // Update metrics with exponential moving average
     performanceMetrics.fps = performanceMetrics.fps * 0.9 + currentFPS * 0.1;
     performanceMetrics.frameTime = performanceMetrics.frameTime * 0.9 + frameTime * 0.1;
-    performanceMetrics.lastFrameTimestamp = frameEndTime;
+    performanceMetrics.lastFrameTimestamp = frameEndTim;
     // Update performance history
     performanceHistory.push(currentFPS);
     if (performanceHistory.length > 60) { // Keep last 60 frames (1 second at 60fps)
@@ -536,10 +499,9 @@
     }
     // Update cache hit rate from RL cache
     const cacheStats = reinforcementLearningCache.getLearningState();
-    performanceMetrics.cacheHitRate = cacheStats.hitRate;
+    performanceMetrics.cacheHitRate = cacheStats.hitRat;
     frameCounter++;
   }
-
   /**
    * Evaluate if quality adjustment is needed based on performance
    */
@@ -548,7 +510,7 @@
     // Only adjust every 2 seconds to avoid oscillation
     if (now - lastQualityAdjustment < 2000) return;
     // Calculate average FPS over recent frames
-    const avgFPS = performanceHistory.length > 0 
+    const avgFPS = performanceHistory.length > 0
       ? performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length: 60;
     // Calculate performance score (0-1, where 1 is perfect)
     const performanceScore = calculatePerformanceScore(avgFPS);
@@ -563,7 +525,6 @@
       lastQualityAdjustment = now;
     }
   }
-
   /**
    * Calculate overall performance score
    */
@@ -572,7 +533,7 @@
     // FPS contribution (60% weight)
     const fpsTargets = {
       'smooth': 60,
-      'balanced': 55, 
+      'balanced': 55,
       'quality': 45
     };
     const targetFPS = fpsTargets[performanceTarget] || 55;
@@ -585,7 +546,6 @@
     score += frameConsistency * 0.2;
     return Math.min(score, 1.0);
   }
-
   /**
    * Calculate frame consistency (lower variance = higher consistency)
    */
@@ -597,7 +557,6 @@
     // Convert to consistency score (lower std dev = higher consistency)
     return Math.max(0, 1 - (stdDev / mean));
   }
-
   /**
    * Check if quality can be upgraded
    */
@@ -606,7 +565,6 @@
     const currentIndex = qualityOrder.indexOf(adaptiveQuality);
     return currentIndex < qualityOrder.length - 1;
   }
-
   /**
    * Check if quality can be downgraded
    */
@@ -615,7 +573,6 @@
     const currentIndex = qualityOrder.indexOf(adaptiveQuality);
     return currentIndex > 0;
   }
-
   /**
    * Upgrade to higher quality tier
    */
@@ -627,7 +584,6 @@
       await transitionToQuality(newQuality, 'upgrade');
     }
   }
-
   /**
    * Downgrade to lower quality tier
    */
@@ -639,7 +595,6 @@
       await transitionToQuality(newQuality, 'downgrade');
     }
   }
-
   /**
    * Transition to new quality tier with smooth animation
    */
@@ -647,8 +602,8 @@
     console.log(`🎮 Quality ${direction}: ${adaptiveQuality} → ${newQuality}`);
     // Update predictive engine with quality change
     await predictiveAssetEngine.updateUserState(userId, 'rendering_session', `quality_${direction}`, {
-      previous_quality: adaptiveQuality,
-      new_quality: newQuality,
+      previous_quality: adaptiveQuality
+      new_quality: newQuality
       performance_score: calculatePerformanceScore(performanceMetrics.fps),
       cache_hit_rate: performanceMetrics.cacheHitRate
     });
@@ -663,16 +618,15 @@
     await adjustParticleCount(targetParticleCount);
     // Update cache with quality preference
     await gpuCache.storeResult(`user_quality_preference_${userId}`, {
-      quality: newQuality,;
+      quality: newQuality
       timestamp: Date.now(),
-      performance_context: {;
+      performance_context: {
         fps: performanceMetrics.fps,
         frame_time: performanceMetrics.frameTime,
-        cache_hit_rate: performanceMetrics.cacheHitRate;
+        cache_hit_rate: performanceMetrics.cacheHitRat;
       }
     });
   }
-
   /**
    * Gradually adjust particle count to avoid jarring transitions
    */
@@ -700,7 +654,6 @@
       if (particles.length === targetCount) break;
     }
   }
-
   /**
    * Get adaptive quality information for display
    */
@@ -711,34 +664,33 @@
     cacheHit: number;
     performanceScore: number;
   } {
-    const avgFPS = performanceHistory.length > 0 
+    const avgFPS = performanceHistory.length > 0
       ? performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length: 60;
     return {
-      tier: qualityTier.name,;
-      fps: Math.round(avgFPS),;
+      tier: qualityTier.name,
+      fps: Math.round(avgFPS),
       particles: particles.length,
       cacheHit: Math.round(performanceMetrics.cacheHitRate * 100),
       performanceScore: Math.round(calculatePerformanceScore(avgFPS) * 100);
     };
   }
 </script>
-
-<div 
+<div
   bind:this={container}
   class="nes-lod-processor"
-  style=";
+  style="
     background: {currentStyle.colors.background};
     image-rendering: {currentStyle.pixelSize > 2 ? 'pixelated' : 'auto'};
   "
 >
   <!-- 3D Scene Container -->
-  <div 
+  <div
     class="scene-container"
     style={getContainerStyle()}
   >
     <!-- Document Representation -->
     {#if document}
-      <div 
+      <div
         class="document-core"
         style="
           color: {getStageColor()};
@@ -752,7 +704,6 @@
         <div class="doc-icon">📄</div>
         <div class="doc-title">{document.title}</div>
         <div class="doc-type">{document.type.toUpperCase()}</div>
-        
         <!-- Progress Ring -->
         <div class="progress-ring">
           <svg width="60" height="60" viewBox="0 0 60 60">
@@ -781,21 +732,19 @@
         </div>
       </div>
     {/if}
-
     <!-- 3D Particles -->
     {#each particles as particle (particle.id)}
-      <div 
+      <div
         class="particle {particle.type}"
         style={getParticleStyle(particle)}
         transitionscale={{ duration: 300, easing: quintOut }}
       ></div>
     {/each}
-
     <!-- Connection Lines -->
     {#each connections as connection (connection.id)}
-      <div 
+      <div
         class="connection-line"
-        style=";
+        style="
           background: {currentStyle.colors.secondary};
           opacity: {connection.strength};
           box-shadow: 0 0 10px {currentStyle.colors.secondary};
@@ -804,13 +753,12 @@
       ></div>
     {/each}
   </div>
-
   <!-- UI Overlay -->
   <div class="ui-overlay">
     <!-- Processing Stage Indicator -->
-    <div 
+    <div
       class="stage-indicator"
-      style=";
+      style="
         background: {getStageColor()}22;
         border: 1px solid {getStageColor()};
         color: {getStageColor()};
@@ -829,11 +777,10 @@
       </div>
       <div class="stage-text">{getStageDescription()}</div>
     </div>
-
     <!-- LOD Level Indicator -->
-    <div 
+    <div
       class="lod-indicator"
-      style=";
+      style="
         background: {currentStyle.colors.accent}22;
         border: 1px solid {currentStyle.colors.accent};
         color: {currentStyle.colors.accent};
@@ -843,9 +790,8 @@
       <div class="lod-text">LOD: {lodLevel.toUpperCase()}</div>
       <div class="particle-count">{particles.length} particles</div>
     </div>
-
     <!-- Style Indicator -->
-    <div 
+    <div
       class="style-indicator"
       style="
         background: {currentStyle.colors.primary}22;
@@ -856,11 +802,10 @@
     >
       {style.toUpperCase()} Mode
     </div>
-
     <!-- Adaptive Quality Indicator (if adaptive rendering is enabled) -->
     {#if adaptiveRendering}
       {@const qualityInfo = getAdaptiveQualityInfo()}
-      <div 
+      <div
         class="adaptive-quality-indicator"
         style="
           background: rgba(212, 175, 55, 0.1);
@@ -878,7 +823,6 @@
       </div>
     {/if}
   </div>
-
   <!-- Debug Info (only in development) -->
   {#if import.meta.env.DEV}
     {@const qualityInfo = getAdaptiveQualityInfo()}
@@ -897,7 +841,6 @@
     </div>
   {/if}
 </div>
-
 <style>
   .nes-lod-processor {
     position: relative;
@@ -910,7 +853,6 @@
     align-items: center;
     justify-content: center;
   }
-
   .scene-container {
     position: relative;
     width: 100%;
@@ -918,7 +860,6 @@
     transform-style: preserve-3d;
     transition: all 0.1s ease-out;
   }
-
   .document-core {
     position: absolute;
     left: 50%;
@@ -930,12 +871,10 @@
     min-width: 200px;
     backdrop-filter: blur(5px);
   }
-
   .doc-icon {
     font-size: 3rem;
     margin-bottom: 0.5rem;
   }
-
   .doc-title {
     font-weight: bold;
     font-size: 1.2rem;
@@ -943,19 +882,16 @@
     text-transform: uppercase;
     letter-spacing: 1px;
   }
-
   .doc-type {
     font-size: 0.8rem;
     opacity: 0.8;
     margin-bottom: 1rem;
   }
-
   .progress-ring {
     position: relative;
     display: inline-block;
     margin-top: 1rem;
   }
-
   .progress-text {
     position: absolute;
     top: 50%;
@@ -964,50 +900,42 @@
     font-weight: bold;
     font-size: 0.8rem;
   }
-
   .particle {
     animation: float 3s ease-in-out infinite;
   }
-
   .particle.data {
     border-radius: 50%;
   }
-
   .particle.connection {
     border-radius: 25%;
     transform-origin: center;
     animation: spin 2s linear infinite;
   }
-
   .particle.analysis {
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   }
-
   .particle.result {
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     animation: pulse 1s ease-in-out infinite;
   }
-
   .connection-line {
     position: absolute;
     height: 2px;
     transform-origin: left center;
     animation: flow 2s ease-in-out infinite;
   }
-
   .ui-overlay {
     position: absolute;
     top: 1rem;
     left: 1rem;
     right: 1rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     flex-wrap: wrap;
     gap: 1rem;
     z-index: 200;
     pointer-events: none;
   }
-
   .stage-indicator,
   .lod-indicator,
   .style-indicator,
@@ -1019,7 +947,6 @@
     letter-spacing: 1px;
     backdrop-filter: blur(10px);
   }
-
   .adaptive-quality-indicator {
     display: flex;
     flex-direction: column;
@@ -1027,35 +954,29 @@
     gap: 0.25rem;
     min-width: 120px;
   }
-
   .quality-tier {
     font-size: 0.9rem;
     font-weight: bold;
   }
-
   .quality-metrics {
     display: flex;
     gap: 0.5rem;
     font-size: 0.7rem;
     opacity: 0.9;
   }
-
   .quality-metrics span {
     padding: 0.1rem 0.3rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 2px;
   }
-
   .stage-indicator {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .stage-icon {
     font-size: 1.2rem;
   }
-
   .debug-info {
     position: absolute;
     bottom: 1rem;
@@ -1068,58 +989,47 @@
     border-radius: 4px;
     line-height: 1.4;
   }
-
   /* Animations */
   @keyframes float {
     0%, 100% { transform: translateY(0px) rotate(0deg); }
     50% { transform: translateY(-10px) rotate(180deg); }
   }
-
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
-
   @keyframes pulse {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.2); }
   }
-
   @keyframes flow {
     0% { opacity: 0.3; transform: scaleX(0); }
     50% { opacity: 1; transform: scaleX(1); }
     100% { opacity: 0.3; transform: scaleX(0); }
   }
-
   /* Responsive design */
   @media (max-width: 768px) {
     .nes-lod-processor {
       height: 300px;
     }
-    
     .document-core {
       padding: 1rem;
       min-width: 150px;
     }
-    
     .doc-icon {
       font-size: 2rem;
     }
-    
     .doc-title {
       font-size: 1rem;
     }
-    
     .ui-overlay {
       flex-direction: column;
       align-items: flex-start;
     }
-    
     .adaptive-quality-indicator {
       min-width: 100px;
       font-size: 0.7rem;
     }
-    
     .quality-metrics {
       gap: 0.25rem;
     }

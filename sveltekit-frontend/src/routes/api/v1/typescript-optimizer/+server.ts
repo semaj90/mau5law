@@ -1,37 +1,29 @@
 import type { RequestHandler } from './$types.js'
-
 // TypeScript Error Optimizer API - Production Integration
 // Integrates with enhanced Go service for GPU-accelerated TypeScript error processing
-
-import type { 
-	TypeScriptError, 
-	AutoSolveRequest, 
+import type {
+	TypeScriptError,
+	AutoSolveRequest,
 	AutoSolveResponse,
 	OptimizedFixRequest,
-	OptimizedFixResponse 
+	OptimizedFixResponse
 } from '$lib/types/typescript-optimizer'
-
 const ENHANCED_API_BASE_URL = 'http://localhost:8094'
-
 /* POST /api/v1/typescript-optimizer - Auto-solve TypeScript errors */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json() as AutoSolveRequest
-
 		// Validate request
 		if (!body.errors || !Array.isArray(body.errors)) {
-			return json({ 
-				success: false,
-				error: 'Invalid request: errors array required' 
+			return json({
+				success: false
+				error: 'Invalid request: errors array required'
 			}, { status: 400 })
 		}
-
 		// Route to appropriate endpoint based on strategy
 		const endpoint = determineEndpoint(body)
 		const apiUrl = `${ENHANCED_API_BASE_URL}${endpoint}`
-
 		console.log(`🔧 TypeScript Optimizer: Processing ${body.errors.length} errors via ${endpoint}`)
-
 		// Forward request to Go service
 		const response = await fetch(apiUrl, {
 			method: 'POST',
@@ -40,13 +32,10 @@ export const POST: RequestHandler = async ({ request }) => {
 			},
 			body: JSON.stringify(body)
 		})
-
 		if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
 			throw new Error(`Go service responded with ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`)
 		}
-
 		const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json() as AutoSolveResponse
-
 		// Enhance response with metadata
 		const enhancedResult = {
 			...result,
@@ -54,39 +43,32 @@ export const POST: RequestHandler = async ({ request }) => {
 				...result.metadata,
 				processed_at: new Date().toISOString(),
 				api_version: '2.0.0',
-				go_service_url: apiUrl,
-				sveltekit_integration: true,
+				go_service_url: apiUrl
+				sveltekit_integration: true
 				performance_tier: getPerformanceTier(body.errors.length)
 			}
 		}
-
 		console.log(`✅ TypeScript Optimizer: ${(result as { metadata?: any; fixes_applied?: any; remaining_errors?: any }).fixes_applied} fixes applied, ${(result as { metadata?: any; fixes_applied?: any; remaining_errors?: any }).remaining_errors} remaining`)
-
 		return json(enhancedResult)
-
 	} catch (error: any) {
 		console.error('TypeScript Optimizer Error:', error)
-		
 		return json({
-			success: false,
+			success: false
 			error: 'Internal server error during TypeScript optimization',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
 		}, { status: 500 })
 	}
 }
-
 /* GET /api/v1/typescript-optimizer - Get optimizer status */
 export const GET: RequestHandler = async () => {
 	try {
 		// Check Go service health
 		const healthResponse = await fetch(`${ENHANCED_API_BASE_URL}/api/health`)
 		const healthData = healthResponse.ok ? await healthResponse.json() : null
-
 		// Get optimizer performance stats
 		const performanceResponse = await fetch(`${ENHANCED_API_BASE_URL}/api/optimized/performance`)
 		const performanceData = performanceResponse.ok ? await performanceResponse.json() : null
-
 		return json({
 			service: 'TypeScript Error Optimizer',
 			status: 'operational',
@@ -94,15 +76,15 @@ export const GET: RequestHandler = async () => {
 			timestamp: new Date().toISOString(),
 			go_service: {
 				available: healthResponse.ok,
-				health: healthData,
+				health: healthData
 				url: ENHANCED_API_BASE_URL
 			},
-			performance: performanceData,
+			performance: performanceData
 			capabilities: {
-				auto_solve: true,
-				gpu_acceleration: true,
-				go_llama_direct: true,
-				batch_processing: true,
+				auto_solve: true
+				gpu_acceleration: true
+				go_llama_direct: true
+				batch_processing: true
 				optimization_layers: ['template_matching', 'gpu_kernels', 'caching'],
 				max_concurrent_fixes: 50,
 				supported_strategies: [
@@ -120,7 +102,6 @@ export const GET: RequestHandler = async () => {
 				benchmark: '/api/v1/typescript-optimizer/benchmark'
 			}
 		})
-
 	} catch (error: any) {
 		return json({
 			service: 'TypeScript Error Optimizer',
@@ -131,30 +112,23 @@ export const GET: RequestHandler = async () => {
 		}, { status: 503 })
 	}
 }
-
 // Helper functions
-
 function determineEndpoint(request: AutoSolveRequest): string {
 	const errorCount = request.errors.length
 	const strategy = request.strategy?.toLowerCase() || 'auto'
-
 	// Route to optimal endpoint based on request characteristics
 	if (strategy === 'gpu_first' || errorCount >= 20) {
 		return '/api/gpu/batch-process'
 	}
-	
 	if (strategy === 'optimized' || errorCount >= 5) {
 		return '/api/optimized/auto-solve'
 	}
-	
 	if (request.use_thinking || strategy === 'llama_thinking') {
 		return '/api/go-llama/batch'
 	}
-	
 	// Default to enhanced auto-solver
 	return '/api/auto-solve'
 }
-
 function getPerformanceTier(errorCount: number): string {
 	if (errorCount >= 50) return 'enterprise'
 	if (errorCount >= 20) return 'professional'

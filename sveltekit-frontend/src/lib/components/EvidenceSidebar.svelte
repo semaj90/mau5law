@@ -5,7 +5,6 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
@@ -22,18 +21,15 @@
     Calendar, Tag, Paperclip, MessageSquare, Brain
   } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/enhanced-bits';
-
   // Props
   interface Props {
     collapsed?: boolean;
     className?: string;
   }
-
   let {
     collapsed = $bindable(false),
     className = ''
   }: Props = $props();
-
   // Component state using Svelte 5 runes
   let searchQuery = $state('');
   let selectedCategory = $state<'all' | 'cases' | 'evidence' | 'reports' | 'citations'>('all');
@@ -43,14 +39,12 @@
   let selectedItems = $state<Set<string>>(new Set());
   let isLoading = $state(false);
   let error = $state<string | null>(null);
-
   // User-specific data
   let userCases = $state<Array<CaseItem>>([]);
   let userEvidence = $state<Array<EvidenceItem>>([]);
   let userReports = $state<Array<ReportItem>>([]);
   let userCitations = $state<Array<CitationItem>>([]);
   let recentActivity = $state<Array<ActivityItem>>([]);
-
   // TypeScript interfaces matching Drizzle schema
   interface CaseItem {
     id: string;
@@ -65,7 +59,6 @@
     assignedTo?: string;
     tags: string[];
   }
-
   interface EvidenceItem {
     id: string;
     caseId: string;
@@ -82,7 +75,6 @@
     updatedAt: Date;
     tags: string[];
   }
-
   interface ReportItem {
     id: string;
     title: string;
@@ -94,7 +86,6 @@
     createdAt: Date;
     updatedAt: Date;
   }
-
   interface CitationItem {
     id: string;
     title: string;
@@ -106,7 +97,6 @@
     caseId?: string;
     createdAt: Date;
   }
-
   interface ActivityItem {
     id: string;
     type: 'case_created' | 'evidence_added' | 'report_generated' | 'analysis_completed';
@@ -117,28 +107,25 @@
     timestamp: Date;
     priority: 'low' | 'medium' | 'high';
   }
-
   // Derived values
   let user = $derived(currentUser);
   let authenticated = $derived(isAuthenticated);
   let role = $derived(currentUser?.role);
-
   // Filtered and sorted items
   let filteredItems = $derived(() => {
     let items: Array<any> = [];
-
     switch (selectedCategory) {
       case 'cases':
-        items = userCases;
+        items = userCase;
         break;
       case 'evidence':
         items = userEvidence;
         break;
       case 'reports':
-        items = userReports;
+        items = userReport;
         break;
       case 'citations':
-        items = userCitations;
+        items = userCitation;
         break;
       default:
         items = [
@@ -148,7 +135,6 @@
           ...userCitations.map(item => ({ ...item, _type: 'citation' }))
         ];
     }
-
     // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -158,11 +144,9 @@
         item.tags?.some((tag: string) => tag.toLowerCase().includes(query))
       );
     }
-
     // Apply sorting
     items.sort((a, b) => {
       let comparison = 0;
-
       switch (sortBy) {
         case 'name':
           comparison = a.title.localeCompare(b.title);
@@ -180,19 +164,15 @@
           comparison = a.status?.localeCompare(b.status) || 0;
           break;
       }
-
-      return sortOrder === 'desc' ? -comparison : comparison;
+      return sortOrder === 'desc' ? -comparison : compariso;
     });
-
-    return items;
+    return item;
   });
-
   // Utility functions
   function formatTimestamp(date: Date): string {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
     if (days === 0) {
       const hours = Math.floor(diff / (1000 * 60 * 60));
       if (hours === 0) {
@@ -208,28 +188,25 @@
       return date.toLocaleDateString();
     }
   }
-
   function truncateText(text: string, maxLength: number = 50): string {
     if (!text) return '';
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   }
-
   function getItemIcon(type: string) {
     const icons = {
-      case: Folder,
-      evidence: FileText,
-      report: MessageSquare,
-      citation: Archive,
-      document: FileText,
-      photo: Eye,
-      video: Eye,
-      audio: Eye,;
-      physical: Paperclip,;
+      case: Folder
+      evidence: FileText
+      report: MessageSquare
+      citation: Archive
+      document: FileText
+      photo: Eye
+      video: Eye
+      audio: Eye
+      physical: Paperclip
       digital: FileText;
     };
     return icons[type as keyof typeof icons] || FileText;
   }
-
   function getStatusColor(status: string): string {
     const colors = {
       open: 'text-green-600',
@@ -240,23 +217,21 @@
       completed: 'text-green-600',
       failed: 'text-red-600',
       draft: 'text-gray-500',
-      review: 'text-yellow-600',;
-      approved: 'text-green-600',;
+      review: 'text-yellow-600',
+      approved: 'text-green-600',
       published: 'text-blue-600';
     };
     return colors[status as keyof typeof colors] || 'text-gray-500';
   }
-
   function getPriorityColor(priority: string): string {
     const colors = {
       low: 'text-gray-500',
-      medium: 'text-yellow-600',;
-      high: 'text-orange-600',;
+      medium: 'text-yellow-600',
+      high: 'text-orange-600',
       critical: 'text-red-600';
     };
     return colors[priority as keyof typeof colors] || 'text-gray-500';
   }
-
   // Event handlers
   function toggleFolder(folderId: string) {
     if (expandedFolders.has(folderId)) {
@@ -266,7 +241,6 @@
     }
     expandedFolders = new Set(expandedFolders);
   }
-
   function selectItem(itemId: string) {
     if (selectedItems.has(itemId)) {
       selectedItems.delete(itemId);
@@ -275,13 +249,10 @@
     }
     selectedItems = new Set(selectedItems);
   }
-
   async function loadUserData() {
     if (!authenticated || !user) return;
-
     isLoading = true;
     error = null;
-
     try {
       // Load user-specific data from API
       const [casesRes, evidenceRes, reportsRes, citationsRes, activityRes] = await Promise.all([
@@ -291,32 +262,26 @@
         fetch(`/api/v1/citations/user/${user.id}`),
         fetch(`/api/v1/activity/user/${user.id}?limit=10`)
       ]);
-
       if (casesRes.ok) {
         const casesData = await casesRes.json();
         userCases = casesData.data || [];
       }
-
       if (evidenceRes.ok) {
         const evidenceData = await evidenceRes.json();
         userEvidence = evidenceData.data || [];
       }
-
       if (reportsRes.ok) {
         const reportsData = await reportsRes.json();
         userReports = reportsData.data || [];
       }
-
       if (citationsRes.ok) {
         const citationsData = await citationsRes.json();
         userCitations = citationsData.data || [];
       }
-
       if (activityRes.ok) {
         const activityData = await activityRes.json();
         recentActivity = activityData.data || [];
       }
-
     } catch (err) {
       console.error('Failed to load user data:', err);
       error = 'Failed to load data. Please try again.';
@@ -324,54 +289,45 @@
       isLoading = false;
     }
   }
-
   function navigateToItem(item: any) {
     const routes = {
       case: `/cases/${item.id}`,
       evidence: `/evidence/${item.id}`,
-      report: `/reports/${item.id}`,;
+      report: `/reports/${item.id}`,
       citation: `/citations/${item.id}`
     };
-
     const route = routes[item._type as keyof typeof routes];
     if (route) {
       goto(route);
     }
   }
-
   function createNewItem(type: string) {
     const routes = {
       case: '/cases/new',
-      evidence: '/evidence/new',;
-      report: '/reports/new',;
+      evidence: '/evidence/new',
+      report: '/reports/new',
       citation: '/citations/new';
     };
-
     const route = routes[type as keyof typeof routes];
     if (route) {
       goto(route);
     }
   }
-
   // Lifecycle
   $effect(() => {
     if (authenticated && user) {
       loadUserData();
     }
   });
-
   // Auto-refresh data every 30 seconds
   $effect(() => {
     if (!authenticated) return;
-
     const interval = setInterval(() => {
       loadUserData();
     }, 30000);
-
     return () => clearInterval(interval);
   });
 </script>
-
 <div class={cn(
   "evidence-sidebar flex flex-col h-full bg-white border-r border-gray-200 transition-all duration-200",
   collapsed ? "w-16" : "w-80",
@@ -403,7 +359,6 @@
       </Button>
     {/if}
   </div>
-
   {#if !collapsed}
     <!-- User Info -->
     {#if authenticated && user}
@@ -421,7 +376,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Search and Filters -->
     <div class="p-4 space-y-3 border-b border-gray-200">
       <!-- Search -->
@@ -434,7 +388,6 @@
           class="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-
       <!-- Category Filter -->
       <select;
         bind:value={selectedCategory}
@@ -446,7 +399,6 @@
         <option value="reports">Reports</option>
         <option value="citations">Citations</option>
       </select>
-
       <!-- Sort Options -->
       <div class="flex gap-2">
         <select;
@@ -467,7 +419,6 @@
           <SortAsc class="w-3 h-3" class:rotate-180={sortOrder === 'desc'} />
         </Button>
       </div>
-
       <!-- Quick Actions -->
       <div class="flex gap-1">
         <Button
@@ -492,7 +443,6 @@
         </Button>
       </div>
     </div>
-
     <!-- Content Area -->
     <div class="flex-1 overflow-y-auto">
       {#if isLoading}
@@ -529,7 +479,6 @@
               <Clock class="w-4 h-4" />
               Recent Activity
             </button>
-
             {#if expandedFolders.has('recent')}
               <div class="mt-2 space-y-1">
                 {#each recentActivity.slice(0, 5) as activity (activity.id)}
@@ -546,7 +495,6 @@
             {/if}
           </div>
         {/if}
-
         <!-- Items List -->
         <div class="p-4">
           <div class="flex items-center justify-between mb-3">
@@ -555,7 +503,6 @@
               ({filteredItems.length})
             </h3>
           </div>
-
           <div class="space-y-1">
             {#each filteredItems as item (item.id)}
               {@const Icon = getItemIcon(item._type || item.type)}
@@ -578,13 +525,11 @@
                       </span>
                     {/if}
                   </div>
-
                   {#if item.description}
                     <p class="text-xs text-gray-500 truncate mt-0.5">
                       {truncateText(item.description, 40)}
                     </p>
                   {/if}
-
                   <div class="flex items-center justify-between mt-1">
                     <span class="text-xs text-gray-400">
                       {formatTimestamp(item.updatedAt || item.createdAt)}
@@ -595,7 +540,6 @@
                       </span>
                     {/if}
                   </div>
-
                   {#if item.tags && item.tags.length > 0}
                     <div class="flex flex-wrap gap-1 mt-1">
                       {#each item.tags.slice(0, 2) as tag}
@@ -611,7 +555,6 @@
                 </div>
               </button>
             {/each}
-
             {#if filteredItems.length === 0}
               <div class="text-center py-8">
                 <FileText class="w-8 h-8 text-gray-300 mx-auto mb-2" />
@@ -632,7 +575,6 @@
         </div>
       {/if}
     </div>
-
     <!-- Footer Actions -->
     <div class="p-4 border-t border-gray-200 space-y-2">
       <Button
@@ -644,7 +586,6 @@
         <Brain class="w-4 h-4 mr-2" />
         AI Assistant
       </Button>
-
       <Button
         variant="ghost"
         size="sm"
@@ -657,31 +598,25 @@
     </div>
   {/if}
 </div>
-
 <style>
-  .evidence-sidebar {;
+  .evidence-sidebar {
     --sidebar-width: 320px;
     --sidebar-collapsed-width: 64px;
   }
-
   .evidence-sidebar .rotate-180 {
     transform: rotate(180deg);
   }
-
   /* Custom scrollbar */
   .evidence-sidebar ::-webkit-scrollbar {
     width: 6px;
   }
-
   .evidence-sidebar ::-webkit-scrollbar-track {
     background: #f1f5f9;
   }
-
   .evidence-sidebar ::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
   }
-
   .evidence-sidebar ::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }

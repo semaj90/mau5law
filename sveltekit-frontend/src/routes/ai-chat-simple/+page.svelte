@@ -1,22 +1,18 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 	import { onMount } from 'svelte';
-
 	// Svelte 5 runes
 	let messages = $state<Array<{id: string, role: 'user' | 'assistant', content: string, timestamp: Date}>([]);
 	let currentMessage = $state('');
 	let isLoading = $state(false);
 	let chatContainer: HTMLElement;
-
 	// Enhanced UX state
 	let connectionStatus = $state<'connected' | 'disconnected' | 'connecting'>('disconnected');
-
 	// Check TensorRT service health
 	async function checkServiceHealth() {
 		try {
 			connectionStatus = 'connecting';
-			const response = await fetch('http://localhost:8086/health');
+			const response = await fetch('http://localhost:8086/health')
 			const data = await response.json();
 			connectionStatus = data.status === 'ok' ? 'connected' : 'disconnected';
 			return data;
@@ -26,50 +22,43 @@
 			return null;
 		}
 	}
-
 	// Send message to AI
 	async function sendMessage() {
 		if (!currentMessage.trim() || isLoading) return;
-
 		const userMessage = {
 			id: Date.now.toString(),
-			role: 'user' as const,;
-			content: currentMessage.trim(),;
-			timestamp: new Date();
+			role: 'user' as const,
+			content: currentMessage.trim(),
+			timestamp: new Date()
 		};
-
 		messages = [...messages, userMessage];
 		const messageToSend = currentMessage.trim();
 		currentMessage = '';
 		isLoading = true;
-
 		try {
 			const response = await fetch('http://localhost:8086/api/generate', {
-				method: 'POST',;
+				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					model: 'gemma3-legal:latest',;
-					prompt: messageToSend,;
+				body: JSON.stringify({,
+					model: 'gemma3-legal:latest',
+					prompt: messageToSend
 					stream: false;
 				})
 			});
-
 			const data = await response.json();
-
 			const aiMessage = {
 				id: (Date.now() + 1).toString(),
-				role: 'assistant' as const,;
-				content: data.response || 'Sorry, I encountered an error processing your request.',;
+				role: 'assistant' as const,
+				content: data.response || 'Sorry, I encountered an error processing your request.',
 				timestamp: new Date();
 			};
-
 			messages = [...messages, aiMessage];
 		} catch (error) {
 			console.error('Error sending message:', error);
 			const errorMessage = {
 				id: (Date.now() + 1).toString(),
-				role: 'assistant' as const,;
-				content: 'Sorry, I could not connect to the AI service. Please check that TensorRT bridge is running on port 8086.',;
+				role: 'assistant' as const,
+				content: 'Sorry, I could not connect to the AI service. Please check that TensorRT bridge is running on port 8086.',
 				timestamp: new Date();
 			};
 			messages = [...messages, errorMessage];
@@ -83,7 +72,6 @@
 			}, 100);
 		}
 	}
-
 	// Handle enter key
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.key === 'Enter' && !event.shiftKey) {
@@ -91,24 +79,21 @@
 			sendMessage();
 		}
 	}
-
 	// Initialize
 	$effect(() => {
 		checkServiceHealth();
 		messages = [{
 			id: 'welcome',
-			role: 'assistant',;
-			content: 'Hello! I\'m your legal AI assistant powered by TensorRT. How can I help you today?',;
+			role: 'assistant',
+			content: 'Hello! I\'m your legal AI assistant powered by TensorRT. How can I help you today?',
 			timestamp: new Date();
 		}];
 	});
 </script>
-
 <svelte:head>
 	<title>AI Chat - Legal AI Platform</title>
 	<meta name="description" content="Chat with TensorRT-powered legal AI assistant" />
 </svelte:head>
-
 <main class="flex flex-col h-screen bg-gray-50">
 	<!-- Header -->
 	<header class="bg-white shadow-sm border-b px-6 py-4">
@@ -125,7 +110,6 @@
 			</div>
 		</div>
 	</header>
-
 	<!-- Chat Container -->
 	<div class="flex-1 overflow-hidden">
 		<div bind:this={chatContainer} class="h-full overflow-y-auto px-6 py-4">
@@ -140,7 +124,6 @@
 						</div>
 					</div>
 				{/each}
-
 				{#if isLoading}
 					<div class="flex justify-start">
 						<div class="bg-white text-gray-900 shadow-sm border px-4 py-2 rounded-lg">
@@ -154,7 +137,6 @@
 			</div>
 		</div>
 	</div>
-
 	<!-- Input Area -->
 	<div class="bg-white border-t px-6 py-4">
 		<div class="max-w-4xl mx-auto">
@@ -180,20 +162,19 @@
 		</div>
 	</div>
 </main>
-
 <style>
 	/* Custom scrollbar */
-	:global(.overflow-y-auto::-webkit-scrollbar) {;
+	:global($1) {
 		width: 6px;
 	}
-	:global(.overflow-y-auto::-webkit-scrollbar-track) {
+	:global($1) {
 		background: #f1f1f1;
 	}
-	:global(.overflow-y-auto::-webkit-scrollbar-thumb) {
+	:global($1) {
 		background: #c1c1c1;
 		border-radius: 3px;
 	}
-	:global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
+	:global($1) {
 		background: #a8a8a8;
 	}
 </style>

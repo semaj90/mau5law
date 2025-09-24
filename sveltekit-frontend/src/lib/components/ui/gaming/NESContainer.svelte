@@ -4,7 +4,6 @@
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-
   interface Props {
     variant?: 'cartridge' | 'console' | 'controller' | 'screen' | 'powerpad' | 'zapper';
     size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -30,7 +29,6 @@
     onload?: () => void;
     children?: any;
   }
-
   let {
     variant = 'cartridge',
     size = 'md',
@@ -53,11 +51,9 @@
     children,
     ...restProps
   }: Props = $props();
-
   let container: HTMLElement;
   let isLoaded = $state(false);
   let processingProgress = $state(0);
-
   // NES color schemes
   const nesThemes = {
     classic: {
@@ -96,7 +92,6 @@
       highlight: '#8B5CF6'   // Purple
     }
   };
-
   // Evidence type icons
   const evidenceIcons = {
     document: '📄',
@@ -106,7 +101,6 @@
     audio: '🎵',
     video: '🎬'
   };
-
   // Processing status indicators
   const statusIcons = {
     idle: '⏸️',
@@ -115,7 +109,6 @@
     error: '❌',
     review: '👀'
   };
-
   // Dynamic classes
   let containerClasses = $derived(() => {
     const base = 'nes-container';
@@ -130,7 +123,6 @@
     const processingClass = processingStatus !== 'idle' ? `nes-container--${processingStatus}` : '';
     const priorityClass = priority ? `nes-container--priority-${priority}` : '';
     const evidenceClass = evidenceType ? `nes-container--evidence-${evidenceType}` : '';
-
     return [
       base,
       variantClass,
@@ -147,7 +139,6 @@
       className
     ].filter(Boolean).join(' ');
   });
-
   // Container styling with theme colors
   let containerStyle = $derived(() => {
     const colors = nesThemes[theme];
@@ -159,9 +150,8 @@
       --nes-highlight: ${colors.highlight};
       --nes-progress: ${processingProgress}%;
     `;
-    return style ? `${baseStyle} ${style}` : baseStyle;
+    return style ? `${baseStyle} ${style}` : baseStyl;
   });
-
   // Simulate processing animation
   let processingInterval: ReturnType<typeof setInterval>;
   $effect(() => {
@@ -176,23 +166,19 @@
       processingProgress = 0;
       clearInterval(processingInterval);
     }
-
     return () => {
       clearInterval(processingInterval);
     };
   });
-
   // Power-on sequence
   function powerOn() {
     if (!powered) return;
-
     // Simulate NES power-on sequence
     setTimeout(() => {
       isLoaded = true;
       onload?.();
     }, 800);
   }
-
   // Click handler
   function handleClick(event: MouseEvent) {
     if (onclick) {
@@ -204,16 +190,13 @@
       } catch (error) {
         // Ignore audio errors
       }
-
       onclick(event);
     }
   }
-
   onMount(() => {
     powerOn();
   });
 </script>
-
 <div
   bind:this={container}
   class={containerClasses}
@@ -228,7 +211,6 @@
   {#if variant === 'console' || powered}
     <div class="nes-container__power-led" class:nes-container__power-led--on={powered && isLoaded}></div>
   {/if}
-
   <!-- Cartridge label area (for cartridge variant) -->
   {#if variant === 'cartridge'}
     <div class="nes-container__cartridge-label">
@@ -236,23 +218,21 @@
         {#if evidenceType}
           <span class="evidence-icon">{evidenceIcons[evidenceType]}</span>
         {/if}
-        <slot name="title">Legal Evidence</slot>
+        {#snippet children(name="title")}Legal Evidence{/snippet}
       </div>
       {#if caseId}
         <div class="nes-container__case-id">Case: {caseId}</div>
       {/if}
     </div>
   {/if}
-
   <!-- Main content area -->
   <div class="nes-container__content">
     {#if children}
       {@render children()}
     {:else}
-      <slot />
+      {#snippet children(/)}
     {/if}
   </div>
-
   <!-- Status indicators -->
   <div class="nes-container__status-bar">
     {#if processingStatus !== 'idle'}
@@ -266,7 +246,6 @@
         {/if}
       </div>
     {/if}
-
     {#if confidenceLevel !== undefined}
       <div class="nes-container__confidence" title="Confidence Level: {Math.round(confidenceLevel * 100)}%">
         <span class="confidence-label">CONF:</span>
@@ -276,7 +255,6 @@
         </div>
       </div>
     {/if}
-
     {#if priority}
       <div class="nes-container__priority nes-container__priority--{priority}">
         <span class="priority-label">PRI:</span>
@@ -284,12 +262,10 @@
       </div>
     {/if}
   </div>
-
   <!-- Scan lines effect for screen variant -->
   {#if variant === 'screen'}
     <div class="nes-container__scanlines"></div>
   {/if}
-
   <!-- Power button for console variant -->
   {#if variant === 'console'}
     <button class="nes-container__power-button" class:nes-container__power-button--on={powered}>
@@ -297,7 +273,6 @@
     </button>
   {/if}
 </div>
-
 <style>
   .nes-container {
     position: relative;
@@ -309,100 +284,81 @@
     overflow: hidden;
     transition: all 0.3s ease;
   }
-
   /* Size variants */
   .nes-container--sm {
     min-width: 200px;
     min-height: 120px;
   }
-
   .nes-container--md {
     min-width: 300px;
     min-height: 180px;
   }
-
   .nes-container--lg {
     min-width: 400px;
     min-height: 240px;
   }
-
   .nes-container--xl {
     min-width: 500px;
     min-height: 300px;
   }
-
   /* Variant-specific styling */
   .nes-container--cartridge {
     border-radius: 8px 8px 0 0;
     background: linear-gradient(145deg, var(--nes-primary), var(--nes-secondary));
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
   }
-
   .nes-container--console {
     border-radius: 12px;
     background: linear-gradient(135deg, var(--nes-primary), var(--nes-secondary));
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   }
-
   .nes-container--controller {
     border-radius: 24px;
     background: var(--nes-primary);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
-
   .nes-container--screen {
     border-radius: 0;
     background: #000000;
     border: 6px solid var(--nes-primary);
     box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.3);
   }
-
   .nes-container--powerpad {
     border-radius: 4px;
     background: var(--nes-primary);
     border: 2px solid var(--nes-secondary);
   }
-
   .nes-container--zapper {
     border-radius: 0 16px 16px 0;
     background: linear-gradient(90deg, var(--nes-primary), var(--nes-secondary));
   }
-
   /* Orientation */
   .nes-container--horizontal {
     flex-direction: row;
   }
-
   .nes-container--vertical {
     flex-direction: column;
   }
-
   /* Padding variants */
   .nes-container--padding-none .nes-container__content {
     padding: 0;
   }
-
   .nes-container--padding-sm .nes-container__content {
     padding: 0.5rem;
   }
-
   .nes-container--padding-md .nes-container__content {
     padding: 1rem;
   }
-
   .nes-container--padding-lg .nes-container__content {
     padding: 1.5rem;
   }
-
   .nes-container--padding-xl .nes-container__content {
     padding: 2rem;
   }
-
   /* Animation effects */
   .nes-container--animated {
     animation: nes-container-pulse 2s ease-in-out infinite alternate;
   }
-
   @keyframes nes-container-pulse {
     from {
       box-shadow: 0 0 5px rgba(var(--nes-accent), 0.5);
@@ -411,12 +367,10 @@
       box-shadow: 0 0 20px rgba(var(--nes-accent), 0.8);
     }
   }
-
   /* Glowing effect */
   .nes-container--glowing {
     animation: nes-container-glow 1.5s ease-in-out infinite alternate;
   }
-
   @keyframes nes-container-glow {
     from {
       box-shadow: 0 0 10px var(--nes-accent);
@@ -425,76 +379,62 @@
       box-shadow: 0 0 30px var(--nes-accent), 0 0 40px var(--nes-accent);
     }
   }
-
   /* Power states */
   .nes-container--powered {
     filter: brightness(1);
   }
-
   .nes-container--unpowered {
     filter: brightness(0.3) grayscale(1);
     opacity: 0.6;
   }
-
   /* Processing states */
   .nes-container--processing {
     animation: nes-container-processing 1s linear infinite;
   }
-
   @keyframes nes-container-processing {
     0% { border-color: var(--nes-secondary); }
     50% { border-color: var(--nes-accent); }
     100% { border-color: var(--nes-secondary); }
   }
-
   .nes-container--complete {
     border-color: var(--nes-accent);
     box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
   }
-
   .nes-container--error {
     border-color: #ff0000;
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
     animation: nes-container-error 0.5s ease-in-out 3;
   }
-
   @keyframes nes-container-error {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-5px); }
     75% { transform: translateX(5px); }
   }
-
   /* Priority indicators */
   .nes-container--priority-critical {
     border-color: #ff0000;
     animation: nes-container-critical 1s ease-in-out infinite;
   }
-
   @keyframes nes-container-critical {
     0%, 100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4); }
     50% { box-shadow: 0 0 0 8px rgba(255, 0, 0, 0); }
   }
-
   .nes-container--priority-high {
     border-color: #ff8800;
   }
-
   /* Evidence type styling */
   .nes-container--evidence-document {
     border-style: solid;
   }
-
   .nes-container--evidence-digital {
     border-style: dashed;
     animation: nes-container-digital 2s linear infinite;
   }
-
   @keyframes nes-container-digital {
     0% { border-style: dashed; }
     50% { border-style: dotted; }
     100% { border-style: dashed; }
   }
-
   /* Power LED */
   .nes-container__power-led {
     position: absolute;
@@ -506,12 +446,10 @@
     background: #666666;
     transition: all 0.3s ease;
   }
-
   .nes-container__power-led--on {
     background: #00ff00;
     box-shadow: 0 0 8px #00ff00;
   }
-
   /* Cartridge label */
   .nes-container__cartridge-label {
     position: absolute;
@@ -525,21 +463,17 @@
     text-align: center;
     font-size: 0.75rem;
   }
-
   .nes-container__cartridge-title {
     font-weight: bold;
     margin-bottom: 0.25rem;
   }
-
   .evidence-icon {
     margin-right: 0.5rem;
   }
-
   .nes-container__case-id {
     font-size: 0.6rem;
     opacity: 0.8;
   }
-
   /* Content area */
   .nes-container__content {
     position: relative;
@@ -551,7 +485,6 @@
     justify-content: center;
     align-items: center;
   }
-
   /* Status bar */
   .nes-container__status-bar {
     position: absolute;
@@ -563,18 +496,16 @@
     padding: 0.25rem 0.5rem;
     font-size: 0.6rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-
   .nes-container__processing-indicator {
     display: flex;
     align-items: center;
     gap: 0.25rem;
   }
-
   .nes-container__progress-bar {
     width: 60px;
     height: 4px;
@@ -582,19 +513,16 @@
     border-radius: 2px;
     overflow: hidden;
   }
-
   .progress-fill {
     height: 100%;
     background: var(--nes-accent);
     transition: width 0.3s ease;
   }
-
   .nes-container__confidence {
     display: flex;
     align-items: center;
     gap: 0.25rem;
   }
-
   .confidence-bar {
     width: 40px;
     height: 3px;
@@ -602,41 +530,33 @@
     border-radius: 2px;
     overflow: hidden;
   }
-
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
     transition: width 0.3s ease;
   }
-
   .nes-container__priority {
     display: flex;
     align-items: center;
     gap: 0.25rem;
   }
-
   .nes-container__priority--critical {
     color: #ff0000;
     animation: priority-blink 1s infinite;
   }
-
   @keyframes priority-blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0.5; }
   }
-
   .nes-container__priority--high {
     color: #ff8800;
   }
-
   .nes-container__priority--medium {
     color: #ffff00;
   }
-
   .nes-container__priority--low {
     color: #00ff00;
   }
-
   /* Scan lines for screen variant */
   .nes-container__scanlines {
     position: absolute;
@@ -654,12 +574,10 @@
     pointer-events: none;
     animation: nes-scanlines 0.1s linear infinite;
   }
-
   @keyframes nes-scanlines {
     0% { transform: translateY(0); }
     100% { transform: translateY(4px); }
   }
-
   /* Power button for console */
   .nes-container__power-button {
     position: absolute;
@@ -678,23 +596,19 @@
     justify-content: center;
     transition: all 0.3s ease;
   }
-
   .nes-container__power-button--on {
     background: var(--nes-accent);
     color: #000000;
     box-shadow: 0 0 8px var(--nes-accent);
   }
-
   .nes-container__power-button:hover {
     transform: scale(1.1);
   }
-
   /* Click effect */
   .nes-container[role="button"]:active {
     transform: scale(0.98);
     filter: brightness(0.9);
   }
-
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
     .nes-container,
@@ -705,7 +619,6 @@
       transition: none;
     }
   }
-
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .nes-container {
@@ -713,19 +626,16 @@
       filter: contrast(1.5);
     }
   }
-
   /* Responsive design */
   @media (max-width: 640px) {
     .nes-container--sm {
       min-width: 150px;
       min-height: 100px;
     }
-
     .nes-container__status-bar {
       font-size: 0.5rem;
       padding: 0.125rem 0.25rem;
     }
-
     .nes-container__cartridge-label {
       font-size: 0.6rem;
       padding: 0.25rem;

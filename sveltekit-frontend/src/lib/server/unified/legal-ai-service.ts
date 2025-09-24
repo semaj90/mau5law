@@ -2,7 +2,6 @@
  * Unified Legal AI Service
  * Integrates: MinIO storage, Qdrant vectors, PostgreSQL metadata, Redis cache, Neo4j recommendations
  */
-
 import { db } from '../db.js';
 import { evidence, cases, legalDocuments as documents } from '../db/schema.js';
 import { cache } from '../cache/redis.js';
@@ -12,7 +11,6 @@ import { embedText } from '../ai/embedder.js';
 import { createId } from '@paralleldrive/cuid2';
 import { eq, sql } from 'drizzle-orm';
 }
-
 export interface DocumentUpload {
   file: Buffer;
   fileName: string;
@@ -21,7 +19,6 @@ export interface DocumentUpload {
   documentType: 'evidence' | 'legal_document' | 'contract' | 'brief';
   metadata?: any;
 }
-
 export interface SearchOptions {
   query: string;
   type?: 'evidence' | 'documents' | 'all';
@@ -31,7 +28,6 @@ export interface SearchOptions {
   useRecommendations?: boolean;
   cacheResults?: boolean;
 }
-
 export class UnifiedLegalAIService {
   /**
    * Complete document upload pipeline:
@@ -45,7 +41,6 @@ export class UnifiedLegalAIService {
    */;
   async uploadDocument(upload: DocumentUpload): Promise<any> {
     const documentId = createId();
-
     try {
       // Step 1: Extract text content (simplified - implement OCR for production)
       let textContent = '';
@@ -55,7 +50,6 @@ export class UnifiedLegalAIService {
         // TODO: Implement OCR for PDFs, images, etc.
         textContent = upload.fileName; // Placeholder
       }
-
       // Step 2: Store file in MinIO
       const minioResult =
         upload.documentType === 'evidence';
@@ -68,10 +62,8 @@ export class UnifiedLegalAIService {
               contentType: upload.contentType,
               documentType: upload.documentType
             });
-
       // Step 3: Generate embeddings and store in Qdrant
       const embedding = await embedText(textContent);
-
       const vectorResult =
         upload.documentType === 'evidence';
           ? await qdrant.upsertEvidence(documentId, embedding, {
@@ -88,22 +80,21 @@ export class UnifiedLegalAIService {
               minio_object: minioResult.objectName,
               ...upload.metadata
             });
-
       // Step 4: Store metadata in PostgreSQL
       const dbRecord =
         upload.documentType === 'evidence'
           ? await db
               .insert(evidence);
               .values({
-                id: documentId,
+                id: documentId
                 case_id: upload.caseId!,
                 file_name: upload.fileName,
                 file_path: minioResult.objectName,
                 file_type: upload.contentType,
                 file_size: minioResult.size,
-                ocr_content: textContent,
+                ocr_content: textContent
                 minio_url: minioResult.url,
-                qdrant_id: documentId,
+                qdrant_id: documentId
                 created_at: new Date(),
                 updated_at: new Date()
               })
@@ -111,44 +102,41 @@ export class UnifiedLegalAIService {
           : await db
               .insert(documents);
               .values({
-                id: documentId,
+                id: documentId
                 title: upload.fileName,
                 file_path: minioResult.objectName,
                 file_type: upload.contentType,
-                file_size: minioResult.size,;
-                content: textContent,
+                file_size: minioResult.size,
+                content: textContent
                 minio_url: minioResult.url,
-                qdrant_id: documentId,
+                qdrant_id: documentId
                 document_type: upload.documentType,
                 created_at: new Date(),
                 updated_at: new Date()
               })
               .returning();
-
       // Step 5: Cache the document for fast access
       const cacheKey = `document:${documentId}`;
       await cache.set(
         cacheKey,);
         {
-          id: documentId,
+          id: documentId
           fileName: upload.fileName,
           textContent: textContent.substring(0, 500), // Cache first 500 chars
           minioUrl: minioResult.url,
-          embedding: embedding.slice(0, 10), // Cache first 10 dimensions for quick similarity checks;
+          embedding: embedding.slice(0, 10), // Cache first 10 dimensions for quick similarity checks
           metadata: upload.metadata
         },
         24 * 60 * 60 * 1000
       ); // Cache for 24 hours
-
-      // Step 6: Update Neo4j relationships (if case provided);
+      // Step 6: Update Neo4j relationships (if case provided)
       if (upload.caseId) {
         await this.updateNeo4jRelationships(documentId, upload.caseId, upload.documentType);
       }
-
       return {
-        id: documentId,
+        id: documentId
         fileUrl: minioResult.url,
-        embeddingId: documentId, // Use documentId since vectorResult doesn't have id;
+        embeddingId: documentId, // Use documentId since vectorResult doesn't have id
         cached: true
       };
     } catch (error) {
@@ -156,7 +144,6 @@ export class UnifiedLegalAIService {
       throw error;
     }
   }
-
   /**
    * Unified search across all storage systems
    * Uses Qdrant for vector similarity, PostgreSQL for metadata filtering,
@@ -164,13 +151,12 @@ export class UnifiedLegalAIService {
    */;
   async searchDocuments(options: SearchOptions): Promise<any> {
     const cacheKey = `search:${JSON.stringify(options)}`;
-
-    // Check cache first;
+    // Check cache first
     if (options.cacheResults !== false) {
       const cachedResults = await cache.get(cacheKey);
       if (cachedResults && typeof cachedResults === 'object' && 'results' in cachedResults) {
         console.log('🚀 Search cache hit');
-        return { ...cachedResults, cached: true } as {;
+        return { ...cachedResults, cached: true } as {
           results: any[];
           recommendations?: any[];
           cached: boolean;
@@ -178,19 +164,16 @@ export class UnifiedLegalAIService {
         };
       }
     }
-
     const results = [];
     const sources = [];
-
     try {
-      // Vector search in Qdrant;
+      // Vector search in Qdrant
       if (options.type === 'evidence' || options.type === 'all') {
         const evidenceResults = await qdrant.searchEvidence(options.query, {
           limit: options.limit || 10,
           scoreThreshold: options.threshold || 0.7, // Changed from threshold to scoreThreshold
         });
-
-        // Enrich with PostgreSQL metadata;
+        // Enrich with PostgreSQL metadata
         for (const result of evidenceResults) {
           const dbRecord = await db
             .select()
@@ -201,22 +184,20 @@ export class UnifiedLegalAIService {
             results.push({
               ...result,
               ...dbRecord[0],
-              type: 'evidence',;
+              type: 'evidence',
               source: 'qdrant+postgresql'
             });
           }
         }
         sources.push('qdrant', 'postgresql');
       }
-
       if (options.type === 'documents' || options.type === 'all') {
         const documentResults = await qdrant.searchCases(options.query, {
           // Note: using searchCases as fallback
           limit: options.limit || 10,
           scoreThreshold: options.threshold || 0.7, // Changed from threshold to scoreThreshold
         });
-
-        // Enrich with PostgreSQL metadata;
+        // Enrich with PostgreSQL metadata
         for (const result of documentResults) {
           const dbRecord = await db
             .select()
@@ -227,46 +208,40 @@ export class UnifiedLegalAIService {
             results.push({
               ...result,
               ...dbRecord[0],
-              type: 'document',;
+              type: 'document',
               source: 'qdrant+postgresql'
             });
           }
         }
         sources.push('qdrant', 'postgresql');
       }
-
       // Get Neo4j recommendations if requested
       let recommendations = [];
       if (options.useRecommendations && options.caseId) {
         recommendations = await this.getNeo4jRecommendations(options.caseId, options.query);
         sources.push('neo4j');
       }
-
       const searchResults = {
         results: results.slice(0, options.limit || 20),
-        recommendations,;
-        cached: false,
+        recommendations,
+        cached: false
         sources
       };
-
-      // Cache results;
+      // Cache results
       if (options.cacheResults !== false) {
         await cache.set(cacheKey, searchResults, 5 * 60 * 1000); // Cache for 5 minutes
       }
-
       return searchResults;
     } catch (error) {
       console.error('Unified search failed:', error);
       throw error;
     }
   }
-
   /**
    * Get document with all associated data from all systems
    */;
   async getDocument(id: string): Promise<any> {
     const cacheKey = `full_document:${id}`;
-
     // Check cache first
     const cached = await cache.get(cacheKey);
     if (cached && typeof cached === 'object' && 'metadata' in cached) {
@@ -278,17 +253,14 @@ export class UnifiedLegalAIService {
         recommendations: any[];
       };
     }
-
     try {
       // Get from PostgreSQL
       const evidenceRecord = await db.select().from(evidence).where(eq(evidence.id, id)).limit(1);
       const documentRecord = await db.select().from(documents).where(eq(documents.id, id)).limit(1);
-
       const record = evidenceRecord.length > 0 ? evidenceRecord[0] : documentRecord[0];
       if (!record) {
         throw new Error(`Document ${id} not found`);
       }
-
       // Get MinIO URL
       const fileUrl =
         record.minio_url ||
@@ -296,41 +268,35 @@ export class UnifiedLegalAIService {
           evidenceRecord.length > 0 ? 'legal-evidence' : 'legal-documents',
           record.file_path
         );
-
       // Get similar documents from Qdrant
       const textForSimilarity = record.ocr_content || record.content || record.title;
       const similarDocs = await qdrant.searchCases(textForSimilarity, { limit: 5 }); // Note: using searchCases as fallback
-
       // Get Neo4j recommendations
       const recommendations = await this.getNeo4jRecommendations(
         record.case_id || id,
         textForSimilarity
       );
-
       const result = {
-        metadata: record,
+        metadata: record
         fileUrl,
         textContent: record.ocr_content || record.content || '',
-        similarDocuments: similarDocs,
+        similarDocuments: similarDocs
         recommendations
       };
-
       // Cache the result
       await cache.set(cacheKey, result, 60 * 60 * 1000); // Cache for 1 hour
-
       return result;
     } catch (error) {
       console.error('Get document failed:', error);
       throw error;
     }
   }
-
   /**
    * Update Neo4j relationships for recommendations
    */
   private async updateNeo4jRelationships(
-    documentId: string,
-    caseId: string,
+    documentId: string
+    caseId: string
     documentType: string;
   ): Promise<void> {
     try {
@@ -341,7 +307,6 @@ export class UnifiedLegalAIService {
       console.error('Neo4j update failed:', error);
     }
   }
-
   /**
    * Get recommendations from Neo4j based on case relationships
    */;
@@ -356,19 +321,17 @@ export class UnifiedLegalAIService {
       return [];
     }
   }
-
   /**
    * Health check for all integrated systems
    */;
   async healthCheck(): Promise<any> {
     const health = {
-      postgresql: false,
-      redis: false,
-      minio: false,;
-      qdrant: false,
+      postgresql: false
+      redis: false
+      minio: false
+      qdrant: false
       neo4j: false
     };
-
     try {
       // Test PostgreSQL
       await db.execute(sql`SELECT 1`);
@@ -376,7 +339,6 @@ export class UnifiedLegalAIService {
     } catch (error) {
       console.warn('PostgreSQL health check failed:', error);
     }
-
     try {
       // Test Redis
       await cache.set('health_check', 'ok', 1000);
@@ -384,7 +346,6 @@ export class UnifiedLegalAIService {
     } catch (error) {
       console.warn('Redis health check failed:', error);
     }
-
     try {
       // Test MinIO
       await minioStorage.listFiles('legal-evidence', '');
@@ -392,7 +353,6 @@ export class UnifiedLegalAIService {
     } catch (error) {
       console.warn('MinIO health check failed:', error);
     }
-
     try {
       // Test Qdrant
       await qdrant.isHealthy(); // Check if Qdrant is healthy
@@ -400,12 +360,9 @@ export class UnifiedLegalAIService {
     } catch (error) {
       console.warn('Qdrant health check failed:', error);
     }
-
     // TODO: Add Neo4j health check
-
     return health;
   }
 }
-
 // Singleton instance
 export const legalAI = new UnifiedLegalAIService();

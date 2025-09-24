@@ -1,9 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   // Enhanced AI Search Component with Bits UI and UnoCSS
   // Svelte 5 + Go Microservice + Gemma3-Legal Integration
-
   import { enhancedAIPipeline as enhancedAiPipeline } from "$lib/services/enhanced-ai-pipeline";
   import type {
     EnhancedSearchOptions,
@@ -12,24 +10,21 @@
     PracticeArea,
   } from "$lib/types/ai-types";
   import { Button, Select } from "bits-ui";
-
   // Props
   interface Props {
     initialQuery?: string;
-    practiceArea?: PracticeArea;
-    jurisdiction?: Jurisdiction;
+    practiceArea?: PracticeArease;
+    jurisdiction?: Jurisdictio;
     onResults?: (results: EnhancedSearchResult[]) => void;
     class?: string;
   }
-
   let {
     initialQuery = "",
     practiceArea = "contract_law",
     jurisdiction = "US",
     onResults,
-    class: className = "",;
+    class: className = "",
   }: Props = $props();
-
   // Reactive state
   let query = $state(initialQuery);
   let results: EnhancedSearchResult[] = $state([]);
@@ -39,17 +34,15 @@
   let selectedPracticeArea = $state(practiceArea);
   let selectedJurisdiction = $state(jurisdiction);
   let searchTime = $state(0);
-
   // Search options
-  let searchOptions: EnhancedSearchOptions = $state({
+  let searchOptions: EnhancedSearchOptions = $state({,
     limit: 10,
     minSimilarity: 0.6,
-    useCache: true,
-    useGPU: true,
+    useCache: true
+    useGPU: true
     ragMode: "enhanced",
-    includeContext: true,;
+    includeContext: true
   });
-
   // Practice areas options with proper mapping
   const practiceAreas = [
     { value: "contract_law", label: "Contract Law" },
@@ -67,13 +60,11 @@
     { value: "securities_law", label: "Securities Law" },
     { value: "healthcare_law", label: "Healthcare Law" }
   ];
-
   // Helper function to get practice area label
   function getPracticeAreaLabel(value: PracticeArea): string {
     const area = practiceAreas.find(p => p.value === value);
     return area?.label || value.replace('_', ' ');
   }
-
   // Jurisdictions options with complete mapping
   const jurisdictions = [
     { value: "US", label: "United States" },
@@ -86,13 +77,11 @@
     { value: "CA", label: "Canada" },
     { value: "AU", label: "Australia" }
   ];
-
   // Helper function to get jurisdiction label
   function getJurisdictionLabel(value: Jurisdiction): string {
     const jurisdiction = jurisdictions.find(j => j.value === value);
-    return jurisdiction?.label || value;
+    return jurisdiction?.label || valu;
   }
-
   // RAG modes with proper typing
   const ragModes = [
     { value: "basic", label: "Basic Search" },
@@ -101,33 +90,26 @@
     { value: "semantic", label: "Semantic Search" },
     { value: "keyword", label: "Keyword Search" }
   ];
-
   // Helper function to get RAG mode label
   function getRagModeLabel(value: string): string {
     const mode = ragModes.find(m => m.value === value);
-    return mode?.label || value;
+    return mode?.label || valu;
   }
-
   // Search function
   async function performSearch() {
     if (!query.trim()) return;
-
     loading = true;
     error = null;
-
     try {
       const startTime = performance.now();
-
       const searchResults = await enhancedAiPipeline.semanticSearch(query, {
         ...searchOptions,
-        practiceArea: selectedPracticeArea,
-        jurisdiction: selectedJurisdiction,;
+        practiceArea: selectedPracticeArea
+        jurisdiction: selectedJurisdiction
       });
-
       const endTime = performance.now();
       searchTime = Math.round(endTime - startTime);
-
-      results = searchResults;
+      results = searchResult;
       onResults?.(searchResults);
     } catch (err) {
       error = err instanceof Error ? err.message: "Search failed";
@@ -136,7 +118,6 @@
       loading = false;
     }
   }
-
   // Handle Enter key
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Enter" && !event.shiftKey) {
@@ -144,21 +125,17 @@
       performSearch();
     }
   }
-
   // Format similarity score
   function formatScore(score: number): string {
     return (score * 100).toFixed(1) + "%";
   }
-
   // Highlight query terms in content
   function highlightContent(content: string, query: string): string {
     if (!query) return content;
-
     const terms = query
       .toLowerCase.split(" ")
       .filter((term: string) => term.length > 2);
     let highlighted = content;
-
     terms.forEach((term) => {
       const regex = new RegExp(`(${term})`, "gi");
       highlighted = highlighted.replace(
@@ -166,11 +143,9 @@
         '<mark class="bg-yellow-200 dark:bg-yellow-800">$1</mark>'
       );
     });
-
     return highlighted;
   }
 </script>
-
 <div class="enhanced-ai-search {className}">
   <!-- Search Header -->
   <div
@@ -180,8 +155,7 @@
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
         🤖 Enhanced Legal AI Search
       </h2>
-
-      <Button 
+      <Button
         class="bits-btn flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
         onclick={() =>
 (showAdvanced = !showAdvanced)}
@@ -190,7 +164,6 @@
         Advanced
 </Button>
     </div>
-
     <!-- Search Input -->
     <div class="flex gap-3">
       <div class="flex-1 relative">
@@ -198,13 +171,12 @@
           bind:value={query}
           keydown={handleKeydown}
           placeholder="Search legal documents with AI..."
-          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark: border-gray-600
                  bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent
                  placeholder-gray-500 dark:placeholder-gray-400"
           disabled={loading}
         />
-
         {#if loading}
           <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
             <div
@@ -213,11 +185,10 @@
           </div>
         {/if}
       </div>
-
       <Button.Root
         onclick={performSearch}
         disabled={loading || !query.trim()}
-        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg;
+        class="px-6 py-3 bg-blue-600 hover: bg-blue-700 text-white rounded-lg;
                disabled:opacity-50 disabled:cursor-not-allowed
                flex items-center gap-2 bits-btn bits-btn"
       >
@@ -225,7 +196,6 @@
         Search
       </Button.Root>
     </div>
-
     <!-- Advanced Options -->
     {#if showAdvanced}
       <div
@@ -257,7 +227,6 @@
             </SelectContent>
           </SelectRoot>
         </div>
-
         <div>
           <label
             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
@@ -284,7 +253,6 @@
             </SelectContent>
           </SelectRoot>
         </div>
-
         <div>
           <label
             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
@@ -313,7 +281,6 @@
         </div>
       </div>
     {/if}
-
     <!-- Search Status -->
     {#if results.length > 0 || error}
       <div
@@ -329,7 +296,6 @@
             {searchOptions.ragMode?.toUpperCase()} Mode
           </span>
         {/if}
-
         {#if error}
           <span class="text-red-600 dark:text-red-400 flex items-center gap-2">
             <span class="i-tabler-alert-circle w-4 h-4"></span>
@@ -339,7 +305,6 @@
       </div>
     {/if}
   </div>
-
   <!-- Search Results -->
   {#if results.length > 0}
     <div class="mt-6 space-y-4">
@@ -377,7 +342,6 @@
                 </span>
               </div>
             </div>
-
             <div class="text-right">
               <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
                 {formatScore((result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).similarity)}
@@ -387,7 +351,6 @@
               </div>
             </div>
           </div>
-
           <!-- Content Preview -->
           <div class="prose dark:prose-invert max-w-none">
             <p class="text-gray-700 dark:text-gray-300 line-clamp-3">
@@ -397,7 +360,6 @@
               )}
             </p>
           </div>
-
           <!-- Analysis Results -->
           {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults}
             <div
@@ -423,7 +385,6 @@
                     </ul>
                   </div>
                 {/if}
-
                 {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.risks?.length}
                   <div>
                     <h4 class="font-medium text-gray-900 dark:text-white mb-2">
@@ -446,7 +407,6 @@
               </div>
             </div>
           {/if}
-
           <!-- Actions -->
           <div class="mt-4 flex gap-2">
             <Button.Root
@@ -457,7 +417,6 @@
               <span class="i-tabler-eye w-4 h-4"></span>
               View Details
             </Button.Root>
-
             <Button.Root
               variant="ghost"
               size="sm"
@@ -471,7 +430,6 @@
       {/each}
     </div>
   {/if}
-
   {#if !loading && query && results.length === 0 && !error}
     <div class="mt-6 text-center py-12">
       <div class="text-gray-400 dark:text-gray-600">
@@ -482,13 +440,11 @@
     </div>
   {/if}
 </div>
-
 <style>
-  .line-clamp-3 {;
+  .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 </style>
-

@@ -4,7 +4,6 @@
  * Comprehensive mapping of all available demo routes and features
  */;
 }
-
 export interface RouteDefinition {
   id: string;
   label: string;
@@ -15,9 +14,8 @@ export interface RouteDefinition {
   status: 'active' | 'beta' | 'experimental' | 'deprecated' | 'development';
   tags: string[];
 }
-
 export const allRoutes: RouteDefinition[] = [
-  // === MAIN OPERATIONS ===;
+  // === MAIN OPERATIONS ===
   {
     id: 'command-center',
     label: 'Command Center',
@@ -125,11 +123,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '💬',
     description: 'Interactive chat with legal AI models',
     category: 'ai',
-    status: 'active',;
+    status: 'active',
     tags: ['chat', 'ai', 'conversation']
   },
-
-  // === AI DEMONSTRATIONS ===;
+  // === AI DEMONSTRATIONS ===
   {
     id: 'demo-overview',
     label: 'Demo Overview',
@@ -417,11 +414,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '📊',
     description: 'YoRHa-themed data tables and visualization',
     category: 'demo',
-    status: 'active',;
+    status: 'active',
     tags: ['yorha', 'tables', 'visualization']
   },
-
-  // === DEVELOPER TOOLS ===;
+  // === DEVELOPER TOOLS ===
   {
     id: 'dev-mcp-tools',
     label: 'MCP Tools',
@@ -489,11 +485,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '🗺️',
     description: 'Complete navigation index of all available routes and APIs',
     category: 'admin',
-    status: 'active',;
+    status: 'active',
     tags: ['navigation', 'index', 'routes', 'admin', 'api']
   },
-
-  // === ADMINISTRATIVE ===;
+  // === ADMINISTRATIVE ===
   {
     id: 'settings',
     label: 'System Settings',
@@ -531,11 +526,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '❓',
     description: 'System help and documentation',
     category: 'admin',
-    status: 'active',;
+    status: 'active',
     tags: ['help', 'documentation', 'support']
   },
-
-  // === SPECIALIZED INTERFACES ===;
+  // === SPECIALIZED INTERFACES ===
   {
     id: 'enhanced-rag',
     label: 'Enhanced RAG Demo',
@@ -573,12 +567,11 @@ export const allRoutes: RouteDefinition[] = [
     icon: '🤖',
     description: 'Complete YoRHa-themed administrative dashboard',
     category: 'demo',
-    status: 'active',;
+    status: 'active',
     tags: ['yorha', 'dashboard', 'admin']
   },
-
   // === CRITICAL SYSTEM ORCHESTRATION ROUTES ===
-  // Core System Integration;
+  // Core System Integration
   {
     id: 'ai-demo',
     label: 'AI System Demo',
@@ -726,11 +719,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '🔗',
     description: 'API endpoint monitoring and status',
     category: 'admin',
-    status: 'active',;
+    status: 'active',
     tags: ['api', 'endpoints', 'monitoring']
   },
-
-  // GPU & Performance Integration;
+  // GPU & Performance Integration
   {
     id: 'webgpu-test',
     label: 'WebGPU Testing',
@@ -758,11 +750,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '⚡',
     description: 'GPU cache system demonstration',
     category: 'demo',
-    status: 'active',;
+    status: 'active',
     tags: ['cache', 'gpu', 'performance']
   },
-
-  // Evidence & Legal Processing;
+  // Evidence & Legal Processing
   {
     id: 'evidence-canvas',
     label: 'Evidence Canvas',
@@ -800,11 +791,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '📄',
     description: 'Legal document summarization with AI',
     category: 'ai',
-    status: 'active',;
+    status: 'active',
     tags: ['summarization', 'documents', 'ai']
   },
-
-  // AI & Machine Learning;
+  // AI & Machine Learning
   {
     id: 'ai-test',
     label: 'AI Testing Suite',
@@ -832,11 +822,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '🤝',
     description: 'AI Legal Assistant interface',
     category: 'ai',
-    status: 'active',;
+    status: 'active',
     tags: ['assistant', 'ai', 'legal']
   },
-
-  // Administrative & System;
+  // Administrative & System
   {
     id: 'upload-system',
     label: 'Upload System',
@@ -864,11 +853,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '📊',
     description: 'Storage audit logs and monitoring',
     category: 'admin',
-    status: 'active',;
+    status: 'active',
     tags: ['storage', 'audits', 'monitoring']
   },
-
-  // Testing & Development;
+  // Testing & Development
   {
     id: 'test-hub',
     label: 'Test Hub',
@@ -896,11 +884,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '📝',
     description: 'CRUD operations test dashboard',
     category: 'dev',
-    status: 'active',;
+    status: 'active',
     tags: ['crud', 'testing', 'operations']
   },
-
-  // Legal-Specific Features;
+  // Legal-Specific Features
   {
     id: 'persons-of-interest',
     label: 'Persons of Interest',
@@ -948,11 +935,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '🔖',
     description: 'Saved citations collection',
     category: 'legal',
-    status: 'active',;
+    status: 'active',
     tags: ['citations', 'saved', 'collection']
   },
-
-  // Advanced Features;
+  // Advanced Features
   {
     id: 'brain',
     label: 'System Brain Graph',
@@ -990,11 +976,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '⚡',
     description: 'Advanced optimization dashboard',
     category: 'admin',
-    status: 'active',;
+    status: 'active',
     tags: ['optimization', 'performance', 'dashboard']
   },
-
-  // State Management & Monitoring;
+  // State Management & Monitoring
   {
     id: 'state-machines',
     label: 'State Machine Registry',
@@ -1012,11 +997,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '📊',
     description: 'System status monitoring dashboard',
     category: 'admin',
-    status: 'active',;
+    status: 'active',
     tags: ['status', 'monitoring', 'metrics']
   },
-
-  // Authentication & User Management;
+  // Authentication & User Management
   {
     id: 'login',
     label: 'Login',
@@ -1034,11 +1018,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '📝',
     description: 'User registration and onboarding',
     category: 'admin',
-    status: 'active',;
+    status: 'active',
     tags: ['auth', 'registration', 'onboarding']
   },
-
-  // Enhanced Legal Workflows;
+  // Enhanced Legal Workflows
   {
     id: 'legal-ai-suite',
     label: 'Legal AI Suite',
@@ -1056,11 +1039,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '🚀',
     description: 'Enhanced RAG Studio demonstration',
     category: 'ai',
-    status: 'active',;
+    status: 'active',
     tags: ['enhanced', 'rag', 'studio', 'ai']
   },
-
-  // Performance & Diagnostics;
+  // Performance & Diagnostics
   {
     id: 'perf',
     label: 'Performance Monitoring',
@@ -1078,11 +1060,10 @@ export const allRoutes: RouteDefinition[] = [
     icon: '🔄',
     description: 'Proxy diagnostic and debugging tools',
     category: 'dev',
-    status: 'active',;
+    status: 'active',
     tags: ['proxy', 'diagnostics', 'debugging']
   },
-
-  // YoRHa Extended Features;
+  // YoRHa Extended Features
   {
     id: 'yorha-terminal',
     label: 'YoRHa Terminal',
@@ -1110,11 +1091,11 @@ export const allRoutes: RouteDefinition[] = [
     icon: '👥',
     description: 'YoRHa persons of interest interface',
     category: 'demo',
-    status: 'active',;
+    status: 'active',
     tags: ['yorha', 'persons', 'interest']
   }
 ,
-  // Auto-generated missing routes;
+  // Auto-generated missing routes
   {
     id: 'admin-cluster',
     label: 'Cluster',
@@ -3002,23 +2983,19 @@ export const allRoutes: RouteDefinition[] = [
     icon: '📄',
     description: 'utilities terminal functionality',
     category: 'utilities',
-    status: 'active',;
+    status: 'active',
     tags: ['auto-generated']
   }
 ,
   // Auto-generated missing routes
-
 ];
-
-// Helper functions for route management;
+// Helper functions for route management
 export function getRoutesByCategory(category: RouteDefinition['category']): RouteDefinition[] {
   return allRoutes.filter(route => route.category === category);
 }
-
 export function getActiveRoutes(): RouteDefinition[] {
   return allRoutes.filter(route => route.status === 'active');
 }
-
 export function searchRoutes(query: string): RouteDefinition[] {
   const lowerQuery = query.toLowerCase();
   return allRoutes.filter(item => item.includes)(lowerQuery) ||
@@ -3026,16 +3003,13 @@ export function searchRoutes(query: string): RouteDefinition[] {
     route.tags.some(tag => tag.toLowerCase().includes(lowerQuery)
   );
 }
-
 export function getRouteById(id: string): RouteDefinition | undefined {
   return allRoutes.find(route => route.id === id);
 }
-
 export function getRoutesByTag(tag: string): RouteDefinition[] {
   return allRoutes.filter(route => route.tags.includes(tag);
 }
-
-// Route categories with metadata;
+// Route categories with metadata
 export const routeCategories = {
   main: {
     label: 'CORE OPERATIONS',
@@ -3070,61 +3044,53 @@ export const routeCategories = {
   admin: {
     label: 'ADMINISTRATION',
     icon: '⚙️',
-    description: 'System administration and configuration',;
+    description: 'System administration and configuration',
     color: '#fb7185'
   }
 };
-
-// Statistics for dashboard;
+// Statistics for dashboard
 export const routeStats = {
   total: allRoutes.length,
   active: getActiveRoutes().length,
   experimental: allRoutes.filter(item => item.length),
-  beta: allRoutes.filter(item => item.length),;
+  beta: allRoutes.filter(item => item.length),
   deprecated: allRoutes.filter(item => item.length),
   byCategory: Object.keys(routeCategories).reduce((acc, category) => {
     acc[category] = getRoutesByCategory(category as RouteDefinition['category']).length;
     return acc;
   }, {} as Record<string, number>)
 };
-
 // Additional interfaces and types for compatibility
 export interface DynamicRouteConfig {
   path: string;
   component?: any;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface GeneratedRoute {
   path: string;
   handler: any;
   config: DynamicRouteConfig;
 }
-
 export interface NavigationGuard {
   name: string;
   condition: (route: RouteDefinition) => boolean;
 }
-
 // Route registry for dynamic route management
 export const routeRegistry = new Map<string, RouteDefinition>();
-// Initialize route registry;
+// Initialize route registry
 allRoutes.forEach(route => {
   routeRegistry.set(route.id, route);
 });
-
-// Dynamic route management functions;
+// Dynamic route management functions
 export function getRoute(id: string): RouteDefinition | undefined {
   return routeRegistry.get(id) || getRouteById(id);
 }
-
 export function getAllDynamicRoutes(): RouteDefinition[] {
   return Array.from(routeRegistry.values();
 }
-
 export function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute {
   return {
-    path: config.path,;
+    path: config.path,
     handler: config.component,
     config
   };

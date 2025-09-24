@@ -1,5 +1,5 @@
 // Enhanced Embedding Pipeline Schema for Production Legal AI
-// Comprehensive schema supporting: document ingestion, chunking, embeddings, search, Neo4j sync;
+// Comprehensive schema supporting: document ingestion, chunking, embeddings, search, Neo4j sync
 import {
   pgTable,
   index,
@@ -15,7 +15,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { vector } from "pgvector/drizzle-orm";
 import { relations } from "drizzle-orm";
-
 // Documents table - source documents from MinIO
 export const documents = pgTable(
   'documents',);
@@ -23,13 +22,13 @@ export const documents = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     title: varchar('title', { length: 512 }),
     filename: varchar('filename', { length: 255 }).notNull(),
-    sourceUri: varchar('source_uri', { length: 1024 }).notNull(), // minio://bucket/key
+    sourceUri: varchar('source_uri', { length: 1024 }).notNull(), // minio://bucket/key,
     mimeType: varchar('mime_type', { length: 100 }),
     fileSize: bigint('file_size', { mode: 'number' }),
     extractedText: text('extracted_text'), // OCR/PDF extraction result
     processingStatus: varchar('processing_status', { length: 50 }).notNull().default('pending'), // pending, processing, completed, failed
     caseId: uuid('case_id'), // Optional association with legal case
-    uploadedBy: uuid('uploaded_by').notNull(),;
+    uploadedBy: uuid('uploaded_by').notNull(),
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -42,7 +41,6 @@ export const documents = pgTable(
     createdAtIdx: index('idx_documents_created').on(table.createdAt)
   })
 );
-
 // Document chunks for embedding - supports overlap and hierarchical chunking
 export const documentChunks = pgTable(
   'document_chunks',);
@@ -61,7 +59,7 @@ export const documentChunks = pgTable(
     // pgvector embeddings - supports different model dimensions
     embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text default
     embeddingModel: varchar('embedding_model', { length: 100 }).default('nomic-embed-text'),
-    confidence: real('confidence'), // Extraction/chunking confidence;
+    confidence: real('confidence'), // Extraction/chunking confidence
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull()
@@ -74,7 +72,6 @@ export const documentChunks = pgTable(
     createdAtIdx: index('idx_chunks_created').on(table.createdAt)
   })
 );
-
 // Search queries and embeddings cache
 export const searchQueries = pgTable(
   'search_queries',);
@@ -84,12 +81,12 @@ export const searchQueries = pgTable(
     sessionId: varchar('session_id', { length: 100 }), // For session grouping
     queryText: text('query_text').notNull(),
     queryEmbedding: vector('query_embedding', { dimensions: 384 }),
-    searchType: varchar('search_type', { length: 50 }).notNull().default('semantic'), // semantic, keyword, hybrid, rag;
+    searchType: varchar('search_type', { length: 50 }).notNull().default('semantic'), // semantic, keyword, hybrid, rag
     filters: jsonb('filters').default({}),
     resultsCount: integer('results_count').default(0),
-    searchTime: real('search_time'), // Search duration in ms;
-    results: jsonb('results').default({
-      chunks: [],;
+    searchTime: real('search_time'), // Search duration in ms
+    results: jsonb('results').default({,
+      chunks: [],
       documents: [],
       totalFound: 0,
       searchStrategy: 'semantic'
@@ -103,7 +100,6 @@ export const searchQueries = pgTable(
     createdAtIdx: index('idx_search_created').on(table.createdAt)
   })
 );
-
 // Embedding models configuration
 export const embeddingModels = pgTable(
   'embedding_models',);
@@ -115,7 +111,7 @@ export const embeddingModels = pgTable(
     dimensions: integer('dimensions').notNull(), // Vector dimensions
     contextLength: integer('context_length'),
     tokenizer: varchar('tokenizer', { length: 100 }),
-    config: jsonb('config').default({}),;
+    config: jsonb('config').default({}),
     performance: jsonb('performance').default({}),
     isActive: boolean('is_active').notNull().default(true),
     isDefault: boolean('is_default').notNull().default(false),
@@ -128,7 +124,6 @@ export const embeddingModels = pgTable(
     activeIdx: index('idx_models_active').on(table.isActive, table.isDefault)
   })
 );
-
 // Job queue for async processing
 export const processingJobs = pgTable(
   'processing_jobs',);
@@ -138,7 +133,7 @@ export const processingJobs = pgTable(
     status: varchar('status', { length: 20 }).notNull().default('pending'), // pending, processing, completed, failed, retrying
     priority: integer('priority').default(5), // 1-10, higher = more priority
     documentId: uuid('document_id'),
-    chunkId: uuid('chunk_id'),;
+    chunkId: uuid('chunk_id'),
     payload: jsonb('payload').default({}),
     workerNode: varchar('worker_node', { length: 100 }), // Which worker is processing
     startedAt: timestamp('started_at'),
@@ -156,7 +151,6 @@ export const processingJobs = pgTable(
     createdAtIdx: index('idx_jobs_created').on(table.createdAt)
   })
 );
-
 // Entity extraction and Neo4j sync
 export const entityNodes = pgTable(
   'entity_nodes',);
@@ -168,7 +162,7 @@ export const entityNodes = pgTable(
     normalizedName: varchar('normalized_name', { length: 500 }), // For deduplication
     description: text('description'),
     confidence: real('confidence'),
-    properties: jsonb('properties').default({}),;
+    properties: jsonb('properties').default({}),
     embedding: vector('embedding', { dimensions: 384 }), // Entity embedding for similarity
     documentIds: jsonb('document_ids').default([]),
     chunkIds: jsonb('chunk_ids').default([]),
@@ -183,13 +177,11 @@ export const entityNodes = pgTable(
     syncIdx: index('idx_entities_sync').on(table.lastSyncedAt)
   })
 );
-
-// Relations;
+// Relations
 export const documentsRelations = relations(documents, ({ many }) => ({
-  chunks: many(documentChunks),;
+  chunks: many(documentChunks),
   jobs: many(processingJobs)
 });
-
 export const documentChunksRelations = relations(documentChunks, ({ one, many }) => ({
   document: one(documents, {
     fields: [documentChunks.documentId],
@@ -198,21 +190,19 @@ export const documentChunksRelations = relations(documentChunks, ({ one, many })
   parent: one(documentChunks, {
     fields: [documentChunks.parentChunkId],
     references: [documentChunks.id]
-  }),;
+  }),
   children: many(documentChunks)
 });
-
 export const processingJobsRelations = relations(processingJobs, ({ one }) => ({
   document: one(documents, {
     fields: [processingJobs.documentId],
     references: [documents.id]
   }),
   chunk: one(documentChunks, {
-    fields: [processingJobs.chunkId],;
+    fields: [processingJobs.chunkId],
     references: [documentChunks.id]
   })
 });
-
 // Export types
 export type Document = typeof documents.$inferSelect;
 export type NewDocument = typeof documents.$inferInsert;
@@ -226,47 +216,39 @@ export type ProcessingJob = typeof processingJobs.$inferSelect;
 export type NewProcessingJob = typeof processingJobs.$inferInsert;
 export type EntityNode = typeof entityNodes.$inferSelect;
 export type NewEntityNode = typeof entityNodes.$inferInsert;
-
 // Database migration SQL for pgvector
 export const vectorExtensionSQL = `
 -- Enable pgvector extension
 CREATE EXTENSION IF NOT EXISTS vector;
-
 -- Create indexes for vector similarity search (run after table creation)
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_document_chunks_embedding_hnsw
 ON document_chunks USING hnsw (embedding vector_cosine_ops)
 WITH (m = 16, ef_construction = 64);
-
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_search_queries_embedding_hnsw
 ON search_queries USING hnsw (query_embedding vector_cosine_ops)
 WITH (m = 16, ef_construction = 64);
-
 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_entity_nodes_embedding_hnsw
 ON entity_nodes USING hnsw (embedding vector_cosine_ops)
 WITH (m = 16, ef_construction = 64);
 `;
-
-// Utility functions for vector operations;
+// Utility functions for vector operations
 export const vectorOperations = {
   // Convert number array to pgvector format
   toVector: (arr: number[]): string => `[${arr.join(',')}]`,
-
   // Parse pgvector to number array
   fromVector: (vec: string): number[] =>
     vec
       .replace(/[\[\]]/g, '')
       .split(',')
       .map((n) => parseFloat(n.trim())),
-
-  // Calculate cosine similarity;
+  // Calculate cosine similarity
   cosineSimilarity: (a: number[], b: number[]): number => {
     const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
     const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0);
     const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0);
     return dotProduct / (magnitudeA * magnitudeB);
   },
-
-  // Normalize vector;
+  // Normalize vector
   normalize: (vec: number[]): number[] => {
     const magnitude = Math.sqrt(vec.reduce((sum, val) => sum + val * val, 0);
     return magnitude > 0 ? vec.map((val) => val / magnitude) : vec;

@@ -1,5 +1,5 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
-https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
 Integrity Verification Component
@@ -8,10 +8,10 @@ Displays detailed integrity verification results with AI analysis
 <script lang="ts">
   interface Props {
     integrityStatus: 'pending' | 'verified' | 'compromised' | 'requires-attention';
-    verificationResults: {;
+    verificationResults: {
     originalHash: string
     currentHash: string | undefined;
-    aiAnalysis: {;
+    aiAnalysis: {
     showDetails: boolean
   }
   let { integrityStatus,
@@ -27,13 +27,9 @@ Displays detailed integrity verification results with AI analysis
     aiAnalysis,
     showDetails = false
   : unknown } = $props();
-
-
-
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
   import { CheckCircle, XCircle, AlertTriangle, Shield, Hash, Clock, Brain } from 'lucide-svelte';
-
         hashMatch: boolean
     metadataIntact: boolean
     timestampValid: boolean
@@ -51,18 +47,17 @@ Displays detailed integrity verification results with AI analysis
   function getStatusIcon(status: string) {
     switch (status) {
       case 'verified':
-        return CheckCircle;
+        return CheckCircl;
       case 'compromised':
-        return XCircle;
+        return XCircl;
       case 'requires-attention':
-        return AlertTriangle;
+        return AlertTriangl;
       case 'pending':
         return Clock;
       default:
         return Shield;
     }
   }
-
   function getStatusColor(status: string) {
     switch (status) {
       case 'verified':
@@ -77,7 +72,6 @@ Displays detailed integrity verification results with AI analysis
         return 'text-gray-600 bg-gray-50 border-gray-200';
     }
   }
-
   function getRiskLevelColor(riskLevel: string) {
     switch (riskLevel) {
       case 'low':
@@ -92,20 +86,16 @@ Displays detailed integrity verification results with AI analysis
         return 'text-gray-600';
     }
   }
-
   function getVerificationIcon(passed: boolean) {
     return passed ? CheckCircle: XCircle
   }
-
   function getVerificationColor(passed: boolean) {
     return passed ? 'text-green-600' : 'text-red-600';
   }
-
   function formatHash(hash: string) {
     if (!hash) return 'N/A';
     return `${hash.substring(0, 8)}...${hash.substring(hash.length - 8)}`;
   }
-
   function getOverallScore() {
     if (!verificationResults && !aiAnalysis) return 0;
     let score = 0;
@@ -126,7 +116,6 @@ Displays detailed integrity verification results with AI analysis
     return Math.round((score / factors) * 100);
   }
 </script>
-
 <div class="integrity-verification space-y-6">
   <!-- Overall Status -->
   <div class={`rounded-lg border p-4 ${getStatusColor(integrityStatus)}`}>
@@ -146,20 +135,17 @@ Displays detailed integrity verification results with AI analysis
         </div>
       </div>
     </div>
-    
     <!-- Overall Progress Bar -->
     <div class="mt-3">
       <Progress value={getOverallScore()} class="h-2" />
     </div>
   </div>
-
   <!-- Hash Verification -->
   <div class="bg-white border border-gray-200 rounded-lg p-4">
     <div class="flex items-center space-x-3 mb-4">
       <Hash class="w-5 h-5 text-gray-600" />
       <h4 class="font-semibold">Hash Verification</h4>
     </div>
-    
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Original Hash</label>
@@ -174,12 +160,11 @@ Displays detailed integrity verification results with AI analysis
         </div>
       </div>
     </div>
-    
     {#if verificationResults}
       <div class="mt-4 flex items-center space-x-2">
-        <svelte:component 
-          this={getVerificationIcon(verificationResults.hashMatch)} 
-          class={`w-5 h-5 ${getVerificationColor(verificationResults.hashMatch)}`} 
+        <svelte:component
+          this={getVerificationIcon(verificationResults.hashMatch)}
+          class={`w-5 h-5 ${getVerificationColor(verificationResults.hashMatch)}`}
         />
         <span class={`text-sm font-medium ${getVerificationColor(verificationResults.hashMatch)}`}>
           {verificationResults.hashMatch ? 'Hashes match - integrity verified' : 'Hash mismatch detected - integrity compromised'}
@@ -187,7 +172,6 @@ Displays detailed integrity verification results with AI analysis
       </div>
     {/if}
   </div>
-
   <!-- Detailed Verification Results -->
   {#if verificationResults && showDetails}
     <div class="bg-white border border-gray-200 rounded-lg p-4">
@@ -195,60 +179,55 @@ Displays detailed integrity verification results with AI analysis
         <Shield class="w-5 h-5 text-gray-600" />
         <h4 class="font-semibold">Detailed Verification</h4>
       </div>
-      
       <div class="space-y-3">
         <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
           <span class="text-sm font-medium">Hash Integrity</span>
           <div class="flex items-center space-x-2">
-            <svelte:component 
-              this={getVerificationIcon(verificationResults.hashMatch)} 
-              class={`w-4 h-4 ${getVerificationColor(verificationResults.hashMatch)}`} 
+            <svelte:component
+              this={getVerificationIcon(verificationResults.hashMatch)}
+              class={`w-4 h-4 ${getVerificationColor(verificationResults.hashMatch)}`}
             />
             <Badge variant={verificationResults.hashMatch ? 'success' : 'destructive'}>
               {verificationResults.hashMatch ? 'Pass' : 'Fail'}
             </Badge>
           </div>
         </div>
-        
         <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
           <span class="text-sm font-medium">Metadata Integrity</span>
           <div class="flex items-center space-x-2">
-            <svelte:component 
-              this={getVerificationIcon(verificationResults.metadataIntact)} 
-              class={`w-4 h-4 ${getVerificationColor(verificationResults.metadataIntact)}`} 
+            <svelte:component
+              this={getVerificationIcon(verificationResults.metadataIntact)}
+              class={`w-4 h-4 ${getVerificationColor(verificationResults.metadataIntact)}`}
             />
             <Badge variant={verificationResults.metadataIntact ? 'success' : 'destructive'}>
               {verificationResults.metadataIntact ? 'Pass' : 'Fail'}
             </Badge>
           </div>
         </div>
-        
         <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
           <span class="text-sm font-medium">Timestamp Validation</span>
           <div class="flex items-center space-x-2">
-            <svelte:component 
-              this={getVerificationIcon(verificationResults.timestampValid)} 
-              class={`w-4 h-4 ${getVerificationColor(verificationResults.timestampValid)}`} 
+            <svelte:component
+              this={getVerificationIcon(verificationResults.timestampValid)}
+              class={`w-4 h-4 ${getVerificationColor(verificationResults.timestampValid)}`}
             />
             <Badge variant={verificationResults.timestampValid ? 'success' : 'destructive'}>
               {verificationResults.timestampValid ? 'Pass' : 'Fail'}
             </Badge>
           </div>
         </div>
-        
         <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
           <span class="text-sm font-medium">Digital Signature</span>
           <div class="flex items-center space-x-2">
-            <svelte:component 
-              this={getVerificationIcon(verificationResults.digitalSignatureValid)} 
-              class={`w-4 h-4 ${getVerificationColor(verificationResults.digitalSignatureValid)}`} 
+            <svelte:component
+              this={getVerificationIcon(verificationResults.digitalSignatureValid)}
+              class={`w-4 h-4 ${getVerificationColor(verificationResults.digitalSignatureValid)}`}
             />
             <Badge variant={verificationResults.digitalSignatureValid ? 'success' : 'destructive'}>
               {verificationResults.digitalSignatureValid ? 'Pass' : 'Fail'}
             </Badge>
           </div>
         </div>
-        
         <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
           <span class="text-sm font-medium">AI Analysis Score</span>
           <div class="flex items-center space-x-2">
@@ -261,7 +240,6 @@ Displays detailed integrity verification results with AI analysis
           </div>
         </div>
       </div>
-      
       {#if verificationResults.riskAssessment}
         <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
           <p class="text-sm">
@@ -271,7 +249,6 @@ Displays detailed integrity verification results with AI analysis
       {/if}
     </div>
   {/if}
-
   <!-- AI Analysis Results -->
   {#if aiAnalysis && showDetails}
     <div class="bg-white border border-gray-200 rounded-lg p-4">
@@ -279,7 +256,6 @@ Displays detailed integrity verification results with AI analysis
         <Brain class="w-5 h-5 text-gray-600" />
         <h4 class="font-semibold">AI Analysis Results</h4>
       </div>
-      
       <!-- AI Scores -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <div class="text-center">
@@ -289,7 +265,6 @@ Displays detailed integrity verification results with AI analysis
           <div class="text-sm text-gray-600">Authenticity</div>
           <Progress value={aiAnalysis.authenticity * 100} class="mt-2 h-2" />
         </div>
-        
         <div class="text-center">
           <div class="text-2xl font-bold text-green-600">
             {Math.round(aiAnalysis.completeness * 100)}%
@@ -297,7 +272,6 @@ Displays detailed integrity verification results with AI analysis
           <div class="text-sm text-gray-600">Completeness</div>
           <Progress value={aiAnalysis.completeness * 100} class="mt-2 h-2" />
         </div>
-        
         <div class="text-center">
           <div class="text-2xl font-bold text-purple-600">
             {Math.round(aiAnalysis.relevance * 100)}%
@@ -306,7 +280,6 @@ Displays detailed integrity verification results with AI analysis
           <Progress value={aiAnalysis.relevance * 100} class="mt-2 h-2" />
         </div>
       </div>
-      
       <!-- Risk Level -->
       <div class="mb-4">
         <div class="flex items-center justify-between">
@@ -314,7 +287,6 @@ Displays detailed integrity verification results with AI analysis
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{aiAnalysis.riskLevel.toUpperCase()}</span>
         </div>
       </div>
-      
       <!-- Recommendations -->
       {#if aiAnalysis.recommendations.length > 0}
         <div class="mb-4">
@@ -329,7 +301,6 @@ Displays detailed integrity verification results with AI analysis
           </ul>
         </div>
       {/if}
-      
       <!-- Flagged Anomalies -->
       {#if aiAnalysis.flaggedAnomalies.length > 0}
         <div>
@@ -347,12 +318,10 @@ Displays detailed integrity verification results with AI analysis
     </div>
   {/if}
 </div>
-
 <style>
-  .integrity-verification {;
+  .integrity-verification {
     animation: fadeIn 0.5s ease-out;
   }
-  
   @keyframes fadeIn {
     from {
       opacity: 0;

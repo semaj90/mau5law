@@ -1,16 +1,13 @@
 import crypto from "crypto";
-
 import { writable, type Writable } from "svelte/store";
 import { HistoryManager } from './HistoryManager.js';
-
-// Simple content type for now - will expand when Slate is properly integrated;
+// Simple content type for now - will expand when Slate is properly integrated
 export interface ContentNode {
   type: string;
   text?: string;
   children?: ContentNode[];
   [key: string]: unknown;
 }
-
 /**
  * Report class representing a document in the interactive canvas
  * Manages content, position, state, and history for undo/redo functionality
@@ -24,14 +21,12 @@ export class Report {
   public isDirty: Writable<boolean>;
   public version: Writable<number>;
   public historyManager: HistoryManager;
-
   // Metadata
   public caseId?: string;
   public createdAt: Date;
   public updatedAt: Date;
   public createdBy: string;
   public lastModifiedBy?: string;
-
   constructor(data: {
     id?: string;
     title?: string;
@@ -46,29 +41,25 @@ export class Report {
   }) {
     this.id = data.id || crypto.randomUUID();
     this.title = writable(data.title || "Untitled Report");
-
     // Initialize with default content if none provided
     const initialContent: ContentNode[] = data.content || [;
       {
-        type: "paragraph",;
+        type: "paragraph",
         children: [{ type: "text", text: "" }]
       }
     ];
-
     this.content = writable(initialContent);
     this.position = writable({ x: data.posX || 50, y: data.posY || 50 });
     this.size = writable({
-      width: data.width || 650,;
+      width: data.width || 650,
       height: data.height || 450
     });
     this.isDirty = writable(false);
     this.version = writable(data.version || 1);
-
     this.caseId = data.caseId;
     this.createdAt = new Date();
     this.updatedAt = new Date();
     this.createdBy = data.createdBy;
-
     // Initialize history manager
     this.historyManager = new HistoryManager(initialContent);
   }
@@ -160,23 +151,21 @@ export class Report {
     let currentPosition = { x: 0, y: 0 };
     let currentSize = { width: 0, height: 0 };
     let currentVersion = 0;
-
     // Get current values from stores
     this.title.subscribe((value) => (currentTitle = value))();
     this.content.subscribe((value) => (currentContent = value))();
     this.position.subscribe((value) => (currentPosition = value))();
     this.size.subscribe((value) => (currentSize = value))();
     this.version.subscribe((value) => (currentVersion = value))();
-
     return {
       id: this.id,
-      title: currentTitle,
-      content: currentContent,
+      title: currentTitle
+      content: currentContent
       posX: currentPosition.x,
       posY: currentPosition.y,
       width: currentSize.width,
-      height: currentSize.height,;
-      version: currentVersion,
+      height: currentSize.height,
+      version: currentVersion
       caseId: this.caseId,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
@@ -196,7 +185,7 @@ export class Report {
       posY: parseFloat(data.posY) || 50,
       width: parseFloat(data.width) || 650,
       height: parseFloat(data.height) || 450,
-      caseId: data.caseId,;
+      caseId: data.caseId,
       version: data.version,
       createdBy: createdBy
     });
@@ -218,12 +207,10 @@ export class Report {
         })
         .join("");
     };
-
     let content = "";
     this.content.subscribe((value) => {
       content = extractText(value);
     })();
-
     return content;
   }
   /**
@@ -245,12 +232,11 @@ export class Report {
       content: [],
       posX: 0,
       posY: 0,
-      width: 0,;
+      width: 0,
       height: 0,
       caseId: this.caseId,
       createdBy: this.createdBy
     });
-
     // Subscribe to get current values and clone them
     this.title.subscribe((title) =>
       clonedReport.title.set(`${title} (Copy)`),
@@ -262,7 +248,6 @@ export class Report {
       clonedReport.position.set({ x: pos.x + 20, y: pos.y + 20 }),
     )();
     this.size.subscribe((size) => clonedReport.size.set({ ...size }))();
-
     return clonedReport;
   }
 }

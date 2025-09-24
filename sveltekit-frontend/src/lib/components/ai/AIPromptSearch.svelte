@@ -1,31 +1,22 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-  import { , onMount } from 'svelte';
-
-  
-
+  import { onMount } from 'svelte';
   import { aiHistory } from "$lib/stores/aiHistoryStore";
   import Fuse from "fuse.js";
-  
   let query = $state("");
   let fuse: Fuse<any>;
-
   let history = $derived($aiHistory);
-
   $effect(() => {
     fuse = new Fuse(history, {
-      keys: ["prompt", "response"],;
-      threshold: 0.3,;
+      keys: ["prompt", "response"],
+      threshold: 0.3,
     });
   });
-
   let results = $derived(query && fuse ? fuse.search.map((r) => r.item) : history);
 </script>
-
 <div class="container mx-auto px-4">
   <input aria-label="Search AI history..."
     type="text"
@@ -43,6 +34,3 @@ https://svelte.dev/e/js_parse_error -->
     {/each}
   </ul>
 </div>
-
-
-

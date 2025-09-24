@@ -1,19 +1,15 @@
 import { json } from '@sveltejs/kit'
 import type { RequestEvent } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
-
 // Import health check functions from our services
 import { ollamaSuggestionsService } from '$lib/services/ollama-suggestions-service.js'
 import { enhancedRAGSuggestionsService } from '$lib/services/enhanced-rag-suggestions-service.js'
 import { aiSuggestionsClient } from '$lib/services/ai-suggestions-grpc-client.js'
-
 /*
  * Health check endpoint for AI Suggestions services
  */
 export async function GET({ url }: RequestEvent): Promise<any> {
   const startTime = Date.now()
-  
   try {
     // Check all AI suggestion services in parallel
     const [
@@ -25,7 +21,6 @@ export async function GET({ url }: RequestEvent): Promise<any> {
       checkEnhancedRAGService(),
       checkGRPCService()
     ])
-
     const healthStatus = {
       status: 'operational',
       timestamp: new Date().toISOString(),
@@ -41,7 +36,6 @@ export async function GET({ url }: RequestEvent): Promise<any> {
         down: 0
       }
     }
-
     // Calculate overall health metrics
     Object.values(healthStatus.services).forEach(service => {
       if (service.status === 'healthy') {
@@ -52,19 +46,15 @@ export async function GET({ url }: RequestEvent): Promise<any> {
         healthStatus.overall.down++
       }
     })
-
     // Determine overall status
     if (healthStatus.overall.down > 0) {
       healthStatus.status = 'partial_outage'
     } else if (healthStatus.overall.degraded > 0) {
       healthStatus.status = 'degraded'
     }
-
-    const httpStatus = healthStatus.status === 'operational' ? 200 : 
+    const httpStatus = healthStatus.status === 'operational' ? 200 :
                       healthStatus.status === 'degraded' ? 207 : 503
-
     return json(healthStatus, { status: httpStatus })
-
   } catch (error: any) {
     return json({
       status: 'error',
@@ -79,13 +69,11 @@ export async function GET({ url }: RequestEvent): Promise<any> {
     }, { status: 500 })
   }
 }
-
 async function checkOllamaService(): Promise<any> {
   try {
     const isHealthy = await ollamaSuggestionsService.healthCheck()
     const models = await ollamaSuggestionsService.getAvailableModels()
     const config = ollamaSuggestionsService.getConfig()
-
     return {
       status: isHealthy ? 'healthy' : 'down',
       config,
@@ -99,12 +87,10 @@ async function checkOllamaService(): Promise<any> {
     }
   }
 }
-
 async function checkEnhancedRAGService(): Promise<any> {
   try {
     const health = await enhancedRAGSuggestionsService.healthCheck()
     const config = enhancedRAGSuggestionsService.getServiceInfo()
-
     return {
       status: health.available ? 'healthy' : 'down',
       version: health.version,
@@ -119,12 +105,10 @@ async function checkEnhancedRAGService(): Promise<any> {
     }
   }
 }
-
 async function checkGRPCService(): Promise<any> {
   try {
     const isHealthy = await aiSuggestionsClient.healthCheck()
     const status = aiSuggestionsClient.getConnectionStatus()
-
     return {
       status: isHealthy ? 'healthy' : 'down',
       connected: status.connected,
@@ -137,7 +121,6 @@ async function checkGRPCService(): Promise<any> {
     }
   }
 }
-
 function getHealthResult(promiseResult: PromiseSettledResult<any>) {
   if (promiseResult.status === 'fulfilled') {
     return promiseResult.value

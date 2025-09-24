@@ -9,18 +9,15 @@ import { chatSessions, chatMessages } from '$lib/server/db/schema-unified'
 import type { InferInsertModel } from 'drizzle-orm'
 import { eq, desc } from 'drizzle-orm'
 import { buildUserContextPrompt } from '$lib/server/prompt/contextual-engine'
-
 // Type aliases for insert operations
 type NewChatSession = InferInsertModel<typeof chatSessions>
 type NewChatMessage = InferInsertModel<typeof chatMessages>
 // Local ID helper to avoid missing import issues
 const generateId = () => randomUUID()
-
 const CUDA_SERVER_URL = 'http://localhost:8096'
 const TRITON_SERVER_URL = 'http://localhost:8000'
 const ENHANCED_GRPO_ENDPOINT = '/api/v1/submit'
 const TRITON_ENDPOINT = '/generate'
-
 interface ChatRequest {
   messages: Array<any>
   sessionId?: string
@@ -28,7 +25,6 @@ interface ChatRequest {
   stream?: boolean
   useProfile?: boolean
 }
-
 interface CudaStreamResponse {
   success: boolean
   response: string
@@ -39,31 +35,25 @@ interface CudaStreamResponse {
   reasoning?: string
   recommendations?: string[]
 }
-
 // GET: Retrieve chat session messages
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     const sessionId = url.searchParams.get('sessionId')
-
     if (!sessionId) {
       return json({ error: 'Session ID required' }, { status: 400 })
     }
-
     // Get chat session
     const session = await db.query.chatSessions.findFirst({
       where: eq(chatSessions.id, sessionId)
     })
-
     if (!session) {
       return json({ error: 'Session not found' }, { status: 404 })
     }
-
     // Get messages for session
     const messages = await db.query.chatMessages.findMany({
       where: eq(chatMessages.sessionId, sessionId),
       orderBy: [desc(chatMessages.timestamp)]
     })
-
     return json({
       session,
       messages: messages.reverse(), // Return in chronological order
@@ -73,31 +63,27 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json({ error: 'Failed to retrieve chat session' }, { status: 500 })
   }
 }
-
 // POST: Handle streaming chat with CUDA server integration
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const body: ChatRequest = await readBodyFast(request)
     const { messages, sessionId, model = 'gemma3-legal', stream = true, useProfile = true } = body
-
     if (!messages || messages.length === 0) {
       return json({ error: 'Messages array required' }, { status: 400 })
     }
-
     const lastUserMessage = messages.filter((msg) => msg.role === 'user').pop()
     if (!lastUserMessage) {
       return json({ error: 'No user message found' }, { status: 400 })
     }
-
     // Get or create chat session
     let currentSessionId = sessionId
     if (!currentSessionId) {
       currentSessionId = generateId()
       const newSession: NewChatSession = {
-        id: currentSessionId,
+        id: currentSessionId
         userId: (locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747',
         title: 'Chat Session',
-        context: Record<string, any>,
+        context: { [key: string]: any },
         metadata: {
           model,
           userAgent: request.headers.get('user-agent'),
@@ -106,12 +92,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
       await db.insert(chatSessions).values(newSession)
     }
-
     // Store user message in database
     const userMessageId = generateId()
     const newUserMessage: NewChatMessage = {
-      id: userMessageId,
-      sessionId: currentSessionId,
+      id: userMessageId
+      sessionId: currentSessionId
       content: lastUserMessage.content,
       role: 'user',
       embedding: null, // Will be populated by embedding worker later
@@ -121,7 +106,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
     }
     await db.insert(chatMessages).values(newUserMessage)
-
     // Update session with new message count in metadata
     await db
       .update(chatSessions)
@@ -134,20 +118,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         updatedAt: new Date()
       })
       .where(eq(chatSessions.id, currentSessionId)
-
     if (!stream) {
       // Non-streaming response
       const personalization = useProfile
         ? await buildUserContextPrompt((locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747', {
-            jurisdictionHint: true,
-            practiceAreasHint: true,
+            jurisdictionHint: true
+            practiceAreasHint: true
             tone: 'concise'
           })
         : ''
       const enrichedQuery = personalization
         ? `${personalization}\n\nUser: ${lastUserMessage.content}`
         : lastUserMessage.content
-
       let cudaResponse: CudaStreamResponse
       try {
         // Try CUDA server first
@@ -161,7 +143,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           console.error('❌ Both CUDA and Triton failed:', tritonError)
           // Final fallback
           cudaResponse = {
-            success: false,
+            success: false
             response: 'I apologize, but our AI services are currently unavailable. Please try again later.',
             confidence: 0,
             tokensPerSecond: 0,
@@ -170,12 +152,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           }
         }
       }
-
       // Store AI response in database
       const aiMessageId = generateId()
       const newAiMessage: NewChatMessage = {
-        id: aiMessageId,
-        sessionId: currentSessionId,
+        id: aiMessageId
+        sessionId: currentSessionId
         content: cudaResponse.response,
         role: 'assistant',
         embedding: null, // Will be populated by embedding worker later
@@ -190,16 +171,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
       }
       await db.insert(chatMessages).values(newAiMessage)
-
       return json({
-        sessionId: currentSessionId,
+        sessionId: currentSessionId
         message: cudaResponse.response,
         confidence: cudaResponse.confidence,
         tokensPerSecond: cudaResponse.tokensPerSecond,
         metadata: newAiMessage.metadata
       })
     }
-
     // HTTP Streaming response (preferred for AI chat)
     const readable = new ReadableStream({
       async start(controller) {
@@ -209,28 +188,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           let tokensPerSecond = 0
           let metadata: any = {}
           let aiMessageId = generateId()
-
           // Send initial session info
           const sessionInfo = {
             type: 'session',
-            sessionId: currentSessionId,
+            sessionId: currentSessionId
             model,
             timestamp: new Date().toISOString()
           }
           controller.enqueue(`data: ${JSON.stringify(sessionInfo)}\n\n`)
-
           // Build contextual query again in stream scope
           const personalization = useProfile
             ? await buildUserContextPrompt((locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747', {
-                jurisdictionHint: true,
-                practiceAreasHint: true,
+                jurisdictionHint: true
+                practiceAreasHint: true
                 tone: 'concise'
               })
             : ''
           const enrichedQuery = personalization
             ? `${personalization}\n\nUser: ${lastUserMessage.content}`
             : lastUserMessage.content
-
           // Stream from CUDA server
           const response = await fetch(`${CUDA_SERVER_URL}${ENHANCED_GRPO_ENDPOINT}`, {
             method: 'POST',
@@ -238,49 +214,41 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               'Content-Type': 'application/json',
               Accept: 'text/event-stream'
             },
-            body: JSON.stringify({
+            body: JSON.stringify({,
               type: 'inference',
               priority: 5,
               payload: {
-                prompt: enrichedQuery,
-                sessionId: currentSessionId,
-                includeReasoning: true,
-                includeRecommendations: true,
+                prompt: enrichedQuery
+                sessionId: currentSessionId
+                includeReasoning: true
+                includeRecommendations: true
                 stream: true
               }
             })
           })
-
           if (!(response as { ok?: any; status?: any; body?: any }).ok) {
             throw new Error(`CUDA server error: ${(response as { ok?: any; status?: any; body?: any }).status}`)
           }
-
           const reader = (response as { ok?: any; status?: any; body?: any }).body?.getReader()
           if (!reader) {
             throw new Error('No response body from CUDA server')
           }
-
           const decoder = new TextDecoder()
           let buffer = ''
-
           while (true) {
             const { done, value } = await reader.read()
             if (done) break
-
             buffer += decoder.decode(value, { stream: true })
             const lines = buffer.split('\n')
             buffer = lines.pop() || ''
-
             for (const line of lines) {
               if (line.startsWith('data: ')) {
                 const data = line.slice(6)
                 if (data === '[DONE]') {
                   continue
                 }
-
                 try {
                   const parsed = JSON.parse(data)
-
                   if (parsed.type === 'token') {
                     fullResponse += parsed.content
                     // Forward token to client
@@ -309,13 +277,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               }
             }
           }
-
           // Store complete AI response in database
           if (fullResponse) {
             const newAiMessage: NewChatMessage = {
-              id: aiMessageId,
-              sessionId: currentSessionId,
-              content: fullResponse,
+              id: aiMessageId
+              sessionId: currentSessionId
+              content: fullResponse
               role: 'assistant',
               embedding: null, // Will be populated by embedding worker later
               metadata: {
@@ -326,7 +293,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               }
             }
             await db.insert(chatMessages).values(newAiMessage)
-
             // Update session message count in metadata
             await db
               .update(chatSessions)
@@ -340,12 +306,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               })
               .where(eq(chatSessions.id, currentSessionId)
           }
-
           // Send completion signal
           const completion = {
             type: 'complete',
-            sessionId: currentSessionId,
-            messageId: aiMessageId,
+            sessionId: currentSessionId
+            messageId: aiMessageId
             fullResponse,
             confidence,
             tokensPerSecond,
@@ -365,7 +330,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
       }
     })
-
     return new Response(readable, {
       headers: {
         'Content-Type': 'text/event-stream',
@@ -386,7 +350,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     )
   }
 }
-
 // Helper function for Triton server requests (AWQ4 fallback)
 async function fetchTritonResponse(query: string): Promise<CudaStreamResponse> {
   try {
@@ -396,21 +359,19 @@ async function fetchTritonResponse(query: string): Promise<CudaStreamResponse> {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        prompt: query,
+      body: JSON.stringify({,
+        prompt: query
         max_tokens: 150,
         temperature: 0.3
       }),
       signal: AbortSignal.timeout(30000)
     })
-
     if (!response.ok) {
       throw new Error(`Triton server error: ${response.status}`)
     }
-
     const result = await response.json()
     return {
-      success: true,
+      success: true
       response: result.text || result.response || 'Generated response from Triton',
       confidence: 0.9,
       tokensPerSecond: result.tokens_per_second || 10,
@@ -424,7 +385,6 @@ async function fetchTritonResponse(query: string): Promise<CudaStreamResponse> {
     throw error
   }
 }
-
 // Helper function for non-streaming CUDA requests
 async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaStreamResponse> {
   // Submit task to CUDA service
@@ -433,50 +393,41 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
+    body: JSON.stringify({,
       type: 'inference',
       priority: 5,
       payload: {
-        prompt: query,
-        includeReasoning: true,
-        includeRecommendations: true,
+        prompt: query
+        includeReasoning: true
+        includeRecommendations: true
         stream
       }
     })
   })
-
   if (!submitResponse.ok) {
     throw new Error(`CUDA server error: ${submitResponse.status}`)
   }
-
   const submitData = await submitResponse.json()
   const taskId = submitData.task_id
-
   if (!taskId) {
     throw new Error('No task ID returned from CUDA service')
   }
-
   // Poll for result (simple polling for now)
   let attempts = 0
   const maxAttempts = 30; // 30 seconds max wait
-
   while (attempts < maxAttempts) {
     await new Promise((resolve) => setTimeout(resolve, 1000); // Wait 1 second
     attempts++
-
     const resultResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/result/${taskId}`)
-
     if (!resultResponse.ok) {
       continue; // Keep trying
     }
-
     const resultData = await resultResponse.json()
-
     if (resultData.completed_at && resultData.result) {
       // Task completed successfully
       const result = resultData.result
       return {
-        success: true,
+        success: true
         response: (result as { text?: any; tokens_per_second?: any }).text || 'Generated response',
         confidence: 0.8, // Mock confidence
         tokensPerSecond: (result as { text?: any; tokens_per_second?: any }).tokens_per_second || 0,
@@ -486,17 +437,13 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
         recommendations: ['Response generated using RTX 3060 Ti']
       }
     }
-
     if (resultData.error) {
       throw new Error(`CUDA task failed: ${resultData.error}`)
     }
-
     // Task is still processing, continue polling
   }
-
   throw new Error('CUDA task timed out')
 }
-
 // OPTIONS: CORS preflight
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
@@ -509,22 +456,17 @@ export const OPTIONS: RequestHandler = async () => {
     }
   })
 }
-
 // DELETE: Delete chat session
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId')
-
     if (!sessionId) {
       return json({ error: 'Session ID required' }, { status: 400 })
     }
-
     // Delete all messages in session
     await db.delete(chatMessages).where(eq(chatMessages.sessionId, sessionId)
-
     // Delete session
     await db.delete(chatSessions).where(eq(chatSessions.id, sessionId)
-
     return json({ success: true, sessionId })
   } catch (error) {
     console.error('Error deleting chat session:', error)

@@ -1,10 +1,7 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-
-
 // Minimal repaired Legal Precedents API
 import { db } from '$lib/server/db/index'
-
 // Import with fallback for different schema files
 let legalPrecedents: any
 try {
@@ -13,33 +10,26 @@ try {
 } catch (error: any) {
   console.warn('Legal precedents schema not available')
 }
-
 import { eq } from 'drizzle-orm'
 import crypto from "crypto"
 import { URL } from "url"
-
 export const GET: RequestHandler = async ({ url }) => {
     try {
         const query = url.searchParams.get('query') || ''
-
         // Simulate database query that might fail
         if (!legalPrecedents) {
             throw new Error('Database schema not available')
         }
-
         // In production, this would query the database
         const precedents = []; // Simulated empty result for now
-
         return json({
-            success: true,
+            success: true
             precedents,
             total: precedents.length,
             query
         })
-
     } catch (error) {
         console.error('Legal precedents API error:', error)
-
         // Return mock precedents data
         const query = url.searchParams.get('query') || ''
         const mockPrecedents = [
@@ -66,39 +56,33 @@ export const GET: RequestHandler = async ({ url }) => {
                 tags: ['patents', 'prior-art']
             }
         ]
-
         return json({
-            success: false,
+            success: false
             error: 'failure default to mock',
-            precedents: mockPrecedents,
+            precedents: mockPrecedents
             total: mockPrecedents.length,
             query,
             source: 'mock-database'
         }, { status: 500 })
     }
 }
-
 export const POST: RequestHandler = async ({ request }) => {
     try {
         const body = await request.json().catch(() => ({}))
         if (!body.caseTitle || !body.citation) {
             return json({ success: false, error: 'caseTitle and citation required' }, { status: 400 })
         }
-
         // In production, this would save to database
         const rec = { id: crypto.randomUUID(), ...body, created: new Date().toISOString() }
-
         return json({
-            success: true,
-            precedent: rec,
+            success: true
+            precedent: rec
             message: 'Precedent created successfully'
         })
-
     } catch (error) {
         console.error('Create precedent API error:', error)
-
         return json({
-            success: false,
+            success: false
             error: 'failure default to mock - precedent created locally',
             precedent: {
                 id: 'mock-' + crypto.randomUUID(),
@@ -110,7 +94,5 @@ export const POST: RequestHandler = async ({ request }) => {
         }, { status: 500 })
     }
 }
-
 export const PUT: RequestHandler = async () => json({ success: true, similar: [] })
-
 export const prerender = false

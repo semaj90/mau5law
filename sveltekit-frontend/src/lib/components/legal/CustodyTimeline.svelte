@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -6,7 +6,7 @@ Custody Timeline Component
 Displays the chronological chain of custody events with detailed audit trail
 -->
 <script lang="ts">
-  interface Props {;
+  interface Props {
     events: Array;
     signature?: string;
   }>;
@@ -15,20 +15,19 @@ Displays the chronological chain of custody events with detailed audit trail
       case 'intake':
         return Shield;
       case 'transfer':
-        return Users;
+        return User;
       case 'verification':
         return FileCheck;
       case 'analysis':
-        return CheckCircle;
+        return CheckCircl;
       case 'approval':
         return UserCheck;
       case 'finalization':
-        return CheckCircle;
+        return CheckCircl;
       default:
         return Clock;
     }
   }
-
   function getEventColor(eventType: string) {
     switch (eventType) {
       case 'intake':
@@ -47,69 +46,65 @@ Displays the chronological chain of custody events with detailed audit trail
         return 'bg-gray-100 text-gray-800';
     }
   }
-
   function formatEventTitle(eventType: string) {
-    return eventType.split.map(word => 
+    return eventType.split.map(word =>
       word.charAt.toUpperCase() + word.slice(1)
     ).join(' ');
   }
-
   function formatTimestamp(timestamp: string) {
     return new Date(timestamp).toLocaleString();
   }
-
   function getEventDetails(event: unknown) {
     switch (event.eventType) {
       case 'intake':
         return {
-          primary: `Evidence taken into custody`,;
-          secondary: `Hash verified: ${event.details.hashMatch ? 'Yes' : 'No'}`,;
+          primary: `Evidence taken into custody`,
+          secondary: `Hash verified: ${event.details.hashMatch ? 'Yes' : 'No'}`,
           extra: event.details.originalHash ? `Hash: ${event.details.originalHash.substring(0, 8)}...` : ''
         };
       case 'transfer':
         return {
-          primary: `Custody transferred`,;
-          secondary: `From: ${event.details.fromCustodian} → To: ${event.details.toCustodian}`,;
+          primary: `Custody transferred`,
+          secondary: `From: ${event.details.fromCustodian} → To: ${event.details.toCustodian}`,
           extra: `Reason: ${event.details.transferReason}`
         };
       case 'verification':
         return {
-          primary: `Integrity verification completed`,;
-          secondary: `Status: ${event.details.integrityStatus}`,;
-          extra: event.details.verificationResults ? 
+          primary: `Integrity verification completed`,
+          secondary: `Status: ${event.details.integrityStatus}`,
+          extra: event.details.verificationResults ?
             `AI Score: ${(event.details.verificationResults.aiAnalysisScore * 100).toFixed(0)}%` : ''
         };
       case 'analysis':
         return {
-          primary: `AI analysis completed`,;
-          secondary: `Risk Level: ${event.details.aiAnalysis?.riskLevel || 'Unknown'}`,;
-          extra: event.details.aiAnalysis ? 
+          primary: `AI analysis completed`,
+          secondary: `Risk Level: ${event.details.aiAnalysis?.riskLevel || 'Unknown'}`,
+          extra: event.details.aiAnalysis ?
             `Models: ${event.details.models?.join(', ') || 'Multiple'}` : ''
         };
       case 'approval':
         return {
-          primary: `Custody approved`,;
-          secondary: `Approval status: ${event.details.approvalStatus}`,;
-          extra: event.details.finalIntegrityStatus ? 
+          primary: `Custody approved`,
+          secondary: `Approval status: ${event.details.approvalStatus}`,
+          extra: event.details.finalIntegrityStatus ?
             `Final status: ${event.details.finalIntegrityStatus}` : ''
         };
       case 'finalization':
         return {
-          primary: `Custody workflow finalized`,;
-          secondary: `Total events: ${event.details.custodyReport?.totalEvents || 0}`,;
-          extra: event.details.custodyReport?.totalProcessingTime ? 
+          primary: `Custody workflow finalized`,
+          secondary: `Total events: ${event.details.custodyReport?.totalEvents || 0}`,
+          extra: event.details.custodyReport?.totalProcessingTime ?
             `Duration: ${Math.round(event.details.custodyReport.totalProcessingTime / 1000)}s` : ''
         };
       default:
         return {
-          primary: formatEventTitle(event.eventType),;
-          secondary: 'Event processed',;
+          primary: formatEventTitle(event.eventType),
+          secondary: 'Event processed',
           extra: '';
         };
     }
   }
 </script>
-
 <div class="custody-timeline space-y-4">
   {#if events.length === 0}
     <div class="text-center py-8 text-gray-500">
@@ -120,11 +115,9 @@ Displays the chronological chain of custody events with detailed audit trail
     <div class="relative">
       <!-- Timeline line -->
       <div class="absolute left-6 top-0 bottom-0 w-px bg-gray-200"></div>
-      
       {#each events as event, index}
         {@const details = getEventDetails(event)}
         {@const isLast = index === events.length - 1}
-        
         <div class="relative flex items-start space-x-4 pb-6">
           <!-- Timeline dot -->
           <div class={`
@@ -133,7 +126,6 @@ Displays the chronological chain of custody events with detailed audit trail
           `}>
             <svelte:component this={getEventIcon(event.eventType)} class="w-5 h-5" />
           </div>
-          
           <!-- Event content -->
           <div class="flex-1 min-w-0 bg-white border border-gray-200 rounded-lg shadow-sm p-4">
             <div class="flex items-start justify-between mb-2">
@@ -150,11 +142,9 @@ Displays the chronological chain of custody events with detailed audit trail
                   </p>
                 {/if}
               </div>
-              
               <!-- Event badge -->
               <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{formatEventTitle(event.eventType)}</span>
             </div>
-            
             <!-- Event metadata -->
             <div class="flex items-center justify-between text-xs text-gray-500 pt-2 border-t border-gray-100">
               <span>
@@ -164,7 +154,6 @@ Displays the chronological chain of custody events with detailed audit trail
                 {formatTimestamp(event.timestamp)}
               </span>
             </div>
-            
             <!-- Digital signature indicator -->
             {#if event.signature}
               <div class="mt-2 pt-2 border-t border-gray-100">
@@ -174,7 +163,6 @@ Displays the chronological chain of custody events with detailed audit trail
                 </div>
               </div>
             {/if}
-            
             <!-- Detailed information (expandable) -->
             {#if event.details && Object.keys(errors).length > 0}
               <details class="mt-2 pt-2 border-t border-gray-100">
@@ -191,7 +179,6 @@ Displays the chronological chain of custody events with detailed audit trail
           </div>
         </div>
       {/each}
-      
       <!-- Current stage indicator (if workflow is active) -->
       {#if currentStage && !['completed', 'failed', 'cancelled'].includes(currentStage)}
         <div class="relative flex items-start space-x-4">
@@ -199,7 +186,6 @@ Displays the chronological chain of custody events with detailed audit trail
           <div class="relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-4 border-white shadow-lg bg-blue-100 text-blue-800 animate-pulse">
             <Clock class="w-5 h-5" />
           </div>
-          
           <!-- Active stage content -->
           <div class="flex-1 min-w-0 bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div class="flex items-center justify-between mb-2">
@@ -217,33 +203,27 @@ Displays the chronological chain of custody events with detailed audit trail
     </div>
   {/if}
 </div>
-
 <style>
-  .custody-timeline {;
+  .custody-timeline {
     max-height: 600px;
     overflow-y: auto;
   }
-  
   /* Smooth scrolling for timeline */
   .custody-timeline {
     scroll-behavior: smooth;
   }
-  
   /* Custom scrollbar */
-  .custody-timeline::-webkit-scrollbar {;
+  .custody-timeline::-webkit-scrollbar {
     width: 6px;
   }
-  
   .custody-timeline::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 3px;
   }
-  
   .custody-timeline::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
   }
-  
   .custody-timeline::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }

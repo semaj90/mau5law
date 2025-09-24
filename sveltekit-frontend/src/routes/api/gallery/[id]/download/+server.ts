@@ -2,7 +2,6 @@
  * Gallery Download API - File Download Handler
  * Handles secure file downloads with access control and logging
  */
-
 import { error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { readFile, stat } from 'fs/promises'
@@ -12,7 +11,6 @@ import { db } from '$lib/server/database'
 import { evidence, cases } from '$lib/server/db/schema'
 import { eq } from 'drizzle-orm'
 import { URL } from "url"
-
 interface DownloadLog {
   itemId: string
   userId?: string
@@ -22,17 +20,14 @@ interface DownloadLog {
   fileSize: number
   downloadType: 'view' | 'download'
 }
-
 export const GET: RequestHandler = async ({ params, request, locals, url }) => {
   try {
     const itemId = params.id
     const downloadType = url.searchParams.get('type') || 'download'; // 'download' or 'view'
     const inline = url.searchParams.get('inline') === 'true'
-
     if (!itemId) {
       throw error(400, 'Item ID is required')
     }
-
     // Get item details from database
     const itemQuery = await db
       .select({
@@ -52,13 +47,10 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       .where(eq(evidence.id, itemId)
       .limit(1)
       .execute()
-
     if (itemQuery.length === 0) {
       throw error(404, 'File not found')
     }
-
     const item = itemQuery[0]
-
     // Check access permissions
     // TODO: Implement proper user authentication and authorization
     // For now, only check if file is public or user has access to the case
@@ -69,23 +61,18 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       //   throw error(403, 'Access denied')
       // }
     }
-
     if (!(item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath) {
       throw error(404, 'File path not found')
     }
-
     // Construct full file path
     const fullPath = path.join(process.cwd(), 'static', (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath)
-
     if (!existsSync(fullPath)) {
       console.error(`File not found on disk: ${fullPath}`)
       throw error(404, 'File not found on disk')
     }
-
     // Get file stats
     const stats = await stat(fullPath)
     const fileBuffer = await readFile(fullPath)
-
     // Log download
     await logDownload({
       itemId: (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).id,
@@ -96,11 +83,9 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       fileSize: stats.size,
       downloadType: downloadType as 'view' | 'download'
     })
-
     // Determine content disposition
     const disposition = inline || downloadType === 'view' ? 'inline' : 'attachment'
     const filename = (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).originalFileName || (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileName || 'download'
-
     // Set appropriate headers
     const headers = new Headers({
       'Content-Type': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || 'application/octet-stream',
@@ -112,102 +97,85 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       'X-File-Size': stats.size.toString(),
       'X-Download-Type': downloadType
     })
-
     // Add security headers
     headers.set('X-Content-Type-Options', 'nosniff')
     headers.set('X-Frame-Options', 'DENY')
-
     // For images, add additional headers
     if ((item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType?.startsWith('image/')) {
       headers.set('Accept-Ranges', 'bytes')
     }
-
     // Handle range requests for large files (useful for video streaming)
     const range = request.headers.get('range')
     if (range && stats.size > 1024 * 1024) { // Only for files > 1MB
       return handleRangeRequest(fileBuffer, range, (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || 'application/octet-stream', stats.size)
     }
-
     return new Response(fileBuffer, {
       status: 200,
       headers
     })
-
   } catch (err) {
     console.error('Download error:', err)
-    
     if (err instanceof Error && (
-      err.message.includes('400') || 
-      err.message.includes('403') || 
+      err.message.includes('400') ||
+      err.message.includes('403') ||
       err.message.includes('404')
     )) {
       const statusCode = parseInt(err.message.split(' ')[0]) || 500
       throw error(statusCode, err.message)
     }
-    
     throw error(500, `Download failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
 }
-
 function handleRangeRequest(buffer: Buffer, rangeHeader: string, contentType: string, fileSize: number): Response {
   try {
     const ranges = parseRangeHeader(rangeHeader, fileSize)
-    
     if (!ranges || ranges.length === 0) {
       return new Response(buffer, {
         status: 200,
         headers: {
-          'Content-Type': contentType,
+          'Content-Type': contentType
           'Content-Length': fileSize.toString(),
           'Accept-Ranges': 'bytes'
         }
       })
     }
-
     const range = ranges[0]; // Handle single range for now
     const start = range.start
     const end = range.end
     const chunkSize = end - start + 1
     const chunk = buffer.slice(start, end + 1)
-
     return new Response(chunk, {
       status: 206,
       headers: {
-        'Content-Type': contentType,
+        'Content-Type': contentType
         'Content-Length': chunkSize.toString(),
         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
         'Accept-Ranges': 'bytes'
       }
     })
-
   } catch (error) {
     console.error('Range request error:', error)
     // Fallback to full file
     return new Response(buffer, {
       status: 200,
       headers: {
-        'Content-Type': contentType,
+        'Content-Type': contentType
         'Content-Length': fileSize.toString()
       }
     })
   }
 }
-
 function parseRangeHeader(range: string, fileSize: number): Array< | null {
   try {
     if (!range.startsWith('bytes=')) {
       return null
     }
-
     const ranges = range.slice(6).split(',').map(r => r.trim()
     const parsedRanges: Array<any> = []
-
     for (const rangeStr of ranges) {
       const [startStr, endStr] = rangeStr.split('-')
-      
       let start: number
       let end: number
-
       if (startStr === '') {
         // Suffix-byte-range-spec: -500
         end = fileSize - 1
@@ -221,19 +189,16 @@ function parseRangeHeader(range: string, fileSize: number): Array< | null {
         start = parseInt(startStr)
         end = parseInt(endStr)
       }
-
       // Validate range
       if (start >= 0 && end < fileSize && start <= end) {
         parsedRanges.push({ start, end })
       }
     }
-
     return parsedRanges.length > 0 ? parsedRanges : null
   } catch (error) {
     return null
   }
 }
-
 async function logDownload(log: DownloadLog) {
   try {
     // TODO: Store download logs in database
@@ -246,7 +211,6 @@ async function logDownload(log: DownloadLog) {
       downloadType: log.downloadType,
       ip: log.ip
     })
-
     // Could store in a downloads table:
     // await db.insert(downloads).values({
     //   itemId: log.itemId,
@@ -257,38 +221,31 @@ async function logDownload(log: DownloadLog) {
     //   fileSize: log.fileSize,
     //   downloadType: log.downloadType
     // })
-
   } catch (error) {
     console.error('Failed to log download:', error)
     // Don't throw here as download should still proceed
   }
 }
-
 function getClientIP(request: Request): string {
   // Try to get real IP from various headers (common in production)
   const forwarded = request.headers.get('x-forwarded-for')
   if (forwarded) {
     return forwarded.split(',')[0].trim()
   }
-
   const realIP = request.headers.get('x-real-ip')
   if (realIP) {
     return realIP.trim()
   }
-
   // Fallback to direct connection (development)
   return request.headers.get('x-forwarded-host') || 'unknown'
 }
-
 // HEAD request for file metadata without downloading
 export const HEAD: RequestHandler = async ({ params, locals }) => {
   try {
     const itemId = params.id
-
     if (!itemId) {
       throw error(400, 'Item ID is required')
     }
-
     const itemQuery = await db
       .select({
         id: evidence.id,
@@ -304,13 +261,10 @@ export const HEAD: RequestHandler = async ({ params, locals }) => {
       .where(eq(evidence.id, itemId)
       .limit(1)
       .execute()
-
     if (itemQuery.length === 0) {
       throw error(404, 'File not found')
     }
-
     const item = itemQuery[0]
-
     // Check if file exists on disk
     if ((item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath) {
       const fullPath = path.join(process.cwd(), 'static', (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath)
@@ -318,7 +272,6 @@ export const HEAD: RequestHandler = async ({ params, locals }) => {
         throw error(404, 'File not found on disk')
       }
     }
-
     return new Response(null, {
       status: 200,
       headers: {
@@ -330,15 +283,12 @@ export const HEAD: RequestHandler = async ({ params, locals }) => {
         'X-File-Name': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).originalFileName || (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileName || 'unknown'
       }
     })
-
   } catch (err) {
     console.error('HEAD request error:', err)
-    
     if (err instanceof Error && (err.message.includes('400') || err.message.includes('404'))) {
       const statusCode = parseInt(err.message.split(' ')[0]) || 500
       throw error(statusCode, err.message)
     }
-    
     throw error(500, 'HEAD request failed')
   }
 }

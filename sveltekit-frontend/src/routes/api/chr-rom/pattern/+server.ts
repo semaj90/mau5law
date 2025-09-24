@@ -3,34 +3,27 @@
  * Ultra-fast access to pre-computed UI patterns
  * Target latency: <5ms for cache hits
  */
-
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader.js'
 import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js'
-
 // GET: Single pattern retrieval (for URL-based access)
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = performance.now()
-  
   try {
     const docId = url.searchParams.get('docId')
     const patternType = url.searchParams.get('type')
-    
     if (!docId || !patternType) {
       return json({
-        success: false,
+        success: false
         error: 'docId and type parameters required'
       }, { status: 400 })
     }
-    
     // Get pattern with zero-latency cache lookup
     const result = await chrROMCacheReader.getPattern(docId, patternType)
-    
     const totalLatency = performance.now() - startTime
-    
     return json({
-      success: true,
+      success: true
       docId,
       patternType,
       pattern: (result as { pattern?: any; source?: any; latency?: any }).pattern,
@@ -47,72 +40,59 @@ export const GET: RequestHandler = async ({ url }) => {
         'X-Response-Time': `${totalLatency.toFixed(2)}ms`
       }
     })
-    
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: error.message,
       latency: performance.now() - startTime
     }, { status: 500 })
   }
 }
-
 // POST: Batch pattern retrieval and advanced operations
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now()
-  
   try {
     // Use SIMD JSON parsing for maximum speed
     const body = await readBodyFastWithMetrics(request)
     const { operation, data } = body
-    
     switch (operation) {
       case 'get_pattern':
         return await handleSinglePattern(data, startTime)
-      
       case 'get_batch':
         return await handleBatchPatterns(data, startTime)
-      
       case 'prefetch':
         return await handlePrefetch(data, startTime)
-        
       case 'get_stats':
         return await handleGetStats(startTime)
-        
       default:
-        return json({
-          success: false,
+        return json({,
+          success: false
           error: `Unknown operation: ${operation}`,
           available_operations: ['get_pattern', 'get_batch', 'prefetch', 'get_stats']
         }, { status: 400 })
     }
-    
   } catch (error: any) {
     return json({
-      success: false,
+      success: false
       error: error.message,
       latency: performance.now() - startTime
     }, { status: 500 })
   }
 }
-
 /**
  * Handle single pattern retrieval
  */
 async function handleSinglePattern(data: any, startTime: number) {
   const { docId, patternType, generateOnMiss = true } = data
-  
   if (!docId || !patternType) {
     return json({
-      success: false,
+      success: false
       error: 'docId and patternType required'
     }, { status: 400 })
   }
-  
   const result = await chrROMCacheReader.getPattern(docId, patternType, generateOnMiss)
-  
   return json({
-    success: true,
+    success: true
     operation: 'get_pattern',
     result: {
       docId,
@@ -129,49 +109,42 @@ async function handleSinglePattern(data: any, startTime: number) {
     }
   })
 }
-
 /**
  * Handle batch pattern retrieval (optimized for lists/tables)
  */
 async function handleBatchPatterns(data: any, startTime: number) {
   const { requests, maxConcurrency = 10 } = data
-  
   if (!Array.isArray(requests) || requests.length === 0) {
     return json({
-      success: false,
+      success: false
       error: 'requests array required'
     }, { status: 400 })
   }
-  
   // Validate request format
-  const validRequests = requests.filter(req => 
+  const validRequests = requests.filter(req =>
     req && typeof req.docId === 'string' && typeof req.patternType === 'string'
   )
-  
   if (validRequests.length === 0) {
     return json({
-      success: false,
+      success: false
       error: 'No valid requests found. Each request needs docId and patternType.'
     }, { status: 400 })
   }
-  
   // Execute batch retrieval with controlled concurrency
   const batchResults = await chrROMCacheReader.getBatchPatterns(validRequests)
-  
   // Calculate batch statistics
   const cacheHits = batchResults.filter(item => item.length)
   const avgLatency = batchResults.reduce((sum, r) => sum + r.latency, 0) / batchResults.length
-  
   return json({
-    success: true,
+    success: true
     operation: 'get_batch',
     result: {
-      patterns: batchResults,
+      patterns: batchResults
       statistics: {
         total: batchResults.length,
         cacheHits,
         hitRate: cacheHits / batchResults.length,
-        avgLatency: avgLatency,
+        avgLatency: avgLatency
         fastestResponse: Math.min(...batchResults.map(r => r.latency)),
         slowestResponse: Math.max(...batchResults.map(r => r.latency)
       }
@@ -184,25 +157,21 @@ async function handleBatchPatterns(data: any, startTime: number) {
     }
   })
 }
-
 /**
  * Handle prefetch operation
  */
 async function handlePrefetch(data: any, startTime: number) {
   const { docIds, patternTypes = ['summary_icon', 'category_color', 'status_indicator'] } = data
-  
   if (!Array.isArray(docIds) || docIds.length === 0) {
     return json({
-      success: false,
+      success: false
       error: 'docIds array required'
     }, { status: 400 })
   }
-  
   // Execute prefetch (fire-and-forget style)
   chrROMCacheReader.prefetchPatterns(docIds, patternTypes)
-  
   return json({
-    success: true,
+    success: true
     operation: 'prefetch',
     result: {
       message: 'Prefetch initiated',
@@ -213,13 +182,11 @@ async function handlePrefetch(data: any, startTime: number) {
     total_latency: performance.now() - startTime
   })
 }
-
 /**
  * Handle statistics request
  */
 async function handleGetStats(startTime: number) {
   const stats = chrROMCacheReader.getStats()
-  
   // Add some computed metrics
   const enhancedStats = {
     ...stats,
@@ -230,36 +197,29 @@ async function handleGetStats(startTime: number) {
     },
     recommendations: getPerformanceRecommendations(stats)
   }
-  
   return json({
-    success: true,
+    success: true
     operation: 'get_stats',
-    result: enhancedStats,
+    result: enhancedStats
     total_latency: performance.now() - startTime
   })
 }
-
 /**
  * Generate performance recommendations based on stats
  */
 function getPerformanceRecommendations(stats: any): string[] {
   const recommendations = []
-  
   if (stats.hitRate < 0.7) {
     recommendations.push('Consider increasing cache warming frequency')
   }
-  
   if (stats.averageLatency > 20) {
     recommendations.push('Check Redis connection performance')
   }
-  
   if (stats.totalRequests > 1000 && stats.hitRate > 0.9) {
     recommendations.push('Excellent cache performance - system is optimally tuned')
   }
-  
   if (stats.performance === 'poor') {
     recommendations.push('Enable CHR-ROM pre-computation service')
   }
-  
   return recommendations.length > 0 ? recommendations : ['System performing well']
 }

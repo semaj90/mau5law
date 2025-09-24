@@ -3,26 +3,22 @@
   Complete AI-aware pipeline: DOM → OCR → Chunking → Embeddings → QLoRA → Caching
   Minimal CPU/GPU usage with SIMD optimization and user context awareness
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import { onMount, onDestroy } from 'svelte';
   import { intelligentWebAnalyzer, type UserAnalytics, type QLoRATrainingData } from '$lib/ai/intelligent-web-analyzer.js';
   import { browser } from '$app/environment';
-
   // Svelte 5 runes for reactive state management
   let isInitialized = $state(false);
   let isAnalyzing = $state(false);
   let analysisResults: QLoRATrainingData | null = $state(null);
-  let userAnalytics: UserAnalytics = $state({
+  let userAnalytics: UserAnalytics = $state({,
     userId: 'demo_user_' + Date.now(),
     sessionId: crypto.randomUUID(),
     typingPatterns: { avgSpeed: 0, commonWords: [], specialization: [] },
     interactionPatterns: { clickHeatmap: [], scrollBehavior: { depth: 0, speed: 0 }, focusAreas: [] },
     caseContext: { activeCases: ['Demo Case v. Example'], currentTask: 'Document Analysis', relevantDocuments: [] }
   });
-
   // Analysis metrics
   let analysisMetrics = $state({
     totalElements: 0,
@@ -33,7 +29,6 @@
     memoryUsage: 0,
     qloraDataSize: 0
   });
-
   // Real-time logs
   let logs: string[] = $state([]);
   // Performance monitoring
@@ -46,7 +41,6 @@
     cacheOperations: 0,
     qloraPreparation: 0
   });
-
   // Live user tracking
   let liveInteractions = $state({
     clickCount: 0,
@@ -55,29 +49,25 @@
     focusChanges: 0,
     lastActivity: Date.now();
   });
-
   // Settings
   let settings = $state({
-    autoAnalysis: true,
-    ocrEnabled: true,
-    cacheEnabled: true,
-    qloraTraining: true,
+    autoAnalysis: true
+    ocrEnabled: true
+    cacheEnabled: true
+    qloraTraining: true
     minChunkSize: 1000,
     maxChunkSize: 5000,
     analysisDepth: 'comprehensive' as 'quick' | 'standard' | 'comprehensive'
   });
-
   let analysisState = $state({
     currentStep: '',
     progress: 0,
     elementsProcessed: 0,
     chunksProcessed: 0;
   });
-
   $effect(() => {
     (async () => {
 if (!browser) return;
-
     try {
       addLog('🚀 Initializing Intelligent Web Analyzer...');
       // Initialize with user context
@@ -96,19 +86,16 @@ if (!browser) return;
     }
     })();
   });
-
   onDestroy(() => {
     if (browser && isInitialized) {
       intelligentWebAnalyzer.dispose();
     }
   });
-
   /**
    * Analyze the current page with full AI pipeline
    */
   async function analyzeCurrentPage() {
     if (!isInitialized || isAnalyzing) return;
-
     isAnalyzing = true;
     analysisState.currentStep = 'Starting analysis...';
     analysisState.progress = 0;
@@ -124,7 +111,7 @@ if (!browser) return;
       analysisState.currentStep = 'Processing complete';
       analysisState.progress = 100;
       // Update results
-      analysisResults = results;
+      analysisResults = result;
       // Update metrics
       const processingTime = performance.now() - startTime;
       analysisMetrics = {
@@ -146,7 +133,6 @@ if (!browser) return;
       analysisState.progress = 0;
     }
   }
-
   /**
    * Simulate typing patterns for demo
    */
@@ -159,7 +145,6 @@ if (!browser) return;
     intelligentWebAnalyzer.updateUserContext(userAnalytics);
     addLog('📝 Updated typing patterns for legal specialization');
   }
-
   /**
    * Simulate case context update
    */
@@ -181,7 +166,6 @@ if (!browser) return;
     intelligentWebAnalyzer.updateUserContext(userAnalytics);
     addLog('⚖️ Updated case context with active litigation matters');
   }
-
   /**
    * Set up real-time user tracking
    */
@@ -192,23 +176,21 @@ if (!browser) return;
       liveInteractions.lastActivity = Date.now();
       // Update user analytics heatmap
       userAnalytics.interactionPatterns.clickHeatmap.push({
-        x: e.clientX,;
-        y: e.clientY,;
+        x: e.clientX,
+        y: e.clientY,
         count: 1;
       });
       // Limit heatmap size
       if (userAnalytics.interactionPatterns.clickHeatmap.length > 100) {
-        userAnalytics.interactionPatterns.clickHeatmap = 
+        userAnalytics.interactionPatterns.clickHeatmap =
           userAnalytics.interactionPatterns.clickHeatmap.slice(-100);
       }
     });
-
     // Track keystrokes
     document.addEventListener('keydown', () => {
       liveInteractions.keystrokes++;
       liveInteractions.lastActivity = Date.now();
     });
-
     // Track scrolling
     document.addEventListener('scroll', () => {
       liveInteractions.scrollDistance += Math.abs(window.scrollY);
@@ -219,14 +201,12 @@ if (!browser) return;
         scrollDepth
       );
     });
-
     // Track focus changes
     document.addEventListener('focusin', () => {
       liveInteractions.focusChanges++;
       liveInteractions.lastActivity = Date.now();
     });
   }
-
   /**
    * Clear all data and restart
    */
@@ -251,13 +231,11 @@ if (!browser) return;
     };
     addLog('🗑️ Cleared all analysis data');
   }
-
   /**
    * Export QLoRA training data
    */
   async function exportQLoRAData() {
     if (!analysisResults) return;
-
     try {
       const dataBlob = new Blob([JSON.stringify(analysisResults, null, 2)], {
         type: 'application/json';
@@ -273,7 +251,6 @@ if (!browser) return;
       addLog(`❌ Export failed: ${error.message}`);
     }
   }
-
   /**
    * Test batch processing
    */
@@ -286,20 +263,18 @@ if (!browser) return;
       'Defendant denies all allegations in the complaint',
       'The court finds that the contract terms are enforceable'
     ];
-
     try {
       const startTime = performance.now();
       // Simulate batch embedding generation
       const response = await fetch('/api/embeddings', {
-        method: 'PUT',;
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          texts: testTexts,;
-          model: 'nomic-text',;
+        body: JSON.stringify({,
+          texts: testTexts
+          model: 'nomic-text',
           source: 'batch_test';
         })
       });
-
       if (response.ok) {
         const data = await response.json();
         const processingTime = performance.now() - startTime;
@@ -310,42 +285,35 @@ if (!browser) return;
       addLog(`❌ Batch processing failed: ${error.message}`);
     }
   }
-
   // Utility functions
   function addLog(message: string) {
     logs = [`[${new Date().toLocaleTimeString()}] ${message}`, ...logs.slice(0, 49)];
   }
-
   function estimateMemoryUsage(results: QLoRATrainingData): number {
     return JSON.stringify(length);
   }
-
   // Computed values
   const totalInteractions = $derived(
-    liveInteractions.clickCount + 
-    liveInteractions.keystrokes + 
+    liveInteractions.clickCount +
+    liveInteractions.keystrokes +
     Math.floor(liveInteractions.scrollDistance / 100) +
     liveInteractions.focusChanges
   );
-
   const analysisEfficiency = $derived(
     analysisResults && analysisMetrics.processingTime > 0
       ? (analysisMetrics.chunksGenerated / analysisMetrics.processingTime * 1000).toFixed(2)
       : '0'
   );
-
   const memoryEfficiency = $derived(
     analysisResults && analysisMetrics.memoryUsage > 0
       ? (analysisMetrics.chunksGenerated / (analysisMetrics.memoryUsage / 1024)).toFixed(2)
       : '0'
   );
 </script>
-
 <div class="intelligent-analysis-demo">
   <div class="demo-header">
     <h2>🧠 Intelligent Web Analysis Pipeline</h2>
     <p>Complete AI-aware system: DOM → OCR → Chunks → Embeddings → QLoRA → Cache</p>
-    
     <div class="status-bar" class:initialized={isInitialized} class:analyzing={isAnalyzing}>
       <div class="status-dot"></div>
       {#if isAnalyzing}
@@ -357,12 +325,10 @@ if (!browser) return;
       {/if}
     </div>
   </div>
-
   <div class="demo-grid">
     <!-- Control Panel -->
     <div class="panel control-panel">
       <h3>🎛️ Control Panel</h3>
-      
       <div class="controls">
         <button
           class="primary"
@@ -375,30 +341,24 @@ if (!browser) return;
             🔍 Analyze Page
           {/if}
         </button>
-
         <button onclick={simulateTypingPatterns} disabled={isAnalyzing}>
           📝 Simulate Typing
         </button>
-
         <button onclick={updateCaseContext} disabled={isAnalyzing}>
           ⚖️ Update Case Context
         </button>
-
         <button onclick={testBatchProcessing} disabled={isAnalyzing}>
           🚀 Test Batch Processing
         </button>
-
         <button onclick={clearAll} disabled={isAnalyzing}>
           🗑️ Clear All
         </button>
-
         {#if analysisResults}
           <button class="export" onclick={exportQLoRAData}>
             📥 Export QLoRA Data
           </button>
         {/if}
       </div>
-
       <!-- Settings -->
       <div class="settings">
         <h4>⚙️ Settings</h4>
@@ -420,23 +380,20 @@ if (!browser) return;
         </label>
       </div>
     </div>
-
     <!-- Live Metrics -->
     <div class="panel metrics-panel">
       <h3>📊 Live Metrics</h3>
-      
       {#if isAnalyzing && analysisState.progress > 0}
         <div class="progress-section">
           <div class="progress-bar">
-            <div 
-              class="progress-fill" 
+            <div
+              class="progress-fill"
               style="width: {analysisState.progress}%"
             ></div>
           </div>
           <p class="progress-text">{analysisState.currentStep}</p>
         </div>
       {/if}
-
       <div class="metrics-grid">
         <div class="metric">
           <span class="metric-label">Elements</span>
@@ -463,7 +420,6 @@ if (!browser) return;
           <span class="metric-value">{analysisMetrics.qloraDataSize}</span>
         </div>
       </div>
-
       <div class="efficiency-metrics">
         <div class="efficiency-metric">
           <span>Analysis Efficiency:</span>
@@ -475,11 +431,9 @@ if (!browser) return;
         </div>
       </div>
     </div>
-
     <!-- User Analytics -->
     <div class="panel analytics-panel">
       <h3>👤 User Analytics</h3>
-      
       <div class="analytics-section">
         <h4>Live Interactions</h4>
         <div class="interaction-stats">
@@ -489,7 +443,6 @@ if (!browser) return;
           <span>Focus Changes: {liveInteractions.focusChanges}</span>
         </div>
       </div>
-
       <div class="analytics-section">
         <h4>Typing Patterns</h4>
         <div class="typing-stats">
@@ -497,7 +450,6 @@ if (!browser) return;
           <span>Specialization: {userAnalytics.typingPatterns.specialization.join(', ') || 'None'}</span>
         </div>
       </div>
-
       <div class="analytics-section">
         <h4>Case Context</h4>
         <div class="case-context">
@@ -507,18 +459,15 @@ if (!browser) return;
         </div>
       </div>
     </div>
-
     <!-- Results Display -->
     {#if analysisResults}
       <div class="panel results-panel">
         <h3>📋 Analysis Results</h3>
-        
         <div class="results-summary">
           <p><strong>Total Chunks:</strong> {analysisResults.chunks.length}</p>
           <p><strong>QLoRA Training Examples:</strong> {analysisResults.metadata.distilled_size}</p>
           <p><strong>Distillation Ratio:</strong> {(analysisResults.metadata.distillation_ratio * 100).toFixed(1)}%</p>
         </div>
-
         <div class="chunks-preview">
           <h4>Top Chunks (by importance)</h4>
           {#each analysisResults.chunks.slice(0, 3) as chunk, i}
@@ -536,7 +485,6 @@ if (!browser) return;
         </div>
       </div>
     {/if}
-
     <!-- Live Logs -->
     <div class="panel logs-panel">
       <h3>📜 Processing Logs</h3>
@@ -548,30 +496,25 @@ if (!browser) return;
     </div>
   </div>
 </div>
-
 <style>
-  .intelligent-analysis-demo {;
+  .intelligent-analysis-demo {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
     font-family: 'Inter', sans-serif;
   }
-
   .demo-header {
     text-align: center;
     margin-bottom: 2rem;
   }
-
   .demo-header h2 {
     color: #1f2937;
     margin-bottom: 0.5rem;
   }
-
   .demo-header p {
     color: #6b7280;
     margin-bottom: 1.5rem;
   }
-
   .status-bar {
     display: inline-flex;
     align-items: center;
@@ -582,39 +525,32 @@ if (!browser) return;
     color: #6b7280;
     font-weight: 500;
   }
-
   .status-bar.initialized {
     background: #d1fae5;
     color: #065f46;
   }
-
   .status-bar.analyzing {
     background: #fef3c7;
-    color: #92400e;
+    color: #92400;
     animation: pulse 2s infinite;
   }
-
   .status-dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
     background: #9ca3af;
   }
-
   .initialized .status-dot {
     background: #10b981;
   }
-
   .analyzing .status-dot {
     background: #f59e0b;
   }
-
   .demo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 2rem;
   }
-
   .panel {
     background: white;
     border-radius: 1rem;
@@ -622,68 +558,56 @@ if (!browser) return;
     border: 1px solid #e5e7eb;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-
   .panel h3 {
     margin-bottom: 1rem;
     color: #1f2937;
   }
-
   .controls {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
   }
-
   .controls button {
     padding: 0.75rem 1rem;
     border: none;
     border-radius: 0.5rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
   }
-
-  .controls button:disabled {;
+  .controls button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
-
   .controls button.primary {
     background: #3b82f6;
     color: white;
   }
-
-  .controls button.primary:hover:not(:disabled) {
+  .controls button.primary:hover:not(:disabled) {,
     background: #2563eb;
   }
-
   .controls button.export {
     background: #10b981;
     color: white;
   }
-
-  .controls button:not(.primary):not(.export) {;
+  .controls button:not(.primary):not(.export) {,
     background: #f3f4f6;
     color: #374151;
   }
-
-  .controls button:not(.primary):not(.export):hover:not(:disabled) {;
+  .controls button:not(.primary):not(.export):hover:not(:disabled) {,
     background: #e5e7eb;
   }
-
   .settings {
     border-top: 1px solid #e5e7eb;
     padding-top: 1rem;
   }
-
   .settings h4 {
     margin-bottom: 0.75rem;
     color: #374151;
     font-size: 0.875rem;
     font-weight: 600;
   }
-
   .settings label {
     display: flex;
     align-items: center;
@@ -693,11 +617,9 @@ if (!browser) return;
     color: #6b7280;
     cursor: pointer;
   }
-
   .progress-section {
     margin-bottom: 1.5rem;
   }
-
   .progress-bar {
     width: 100%;
     height: 8px;
@@ -706,26 +628,22 @@ if (!browser) return;
     overflow: hidden;
     margin-bottom: 0.5rem;
   }
-
   .progress-fill {
     height: 100%;
     background: #3b82f6;
     transition: width 0.3s ease;
   }
-
   .progress-text {
     font-size: 0.875rem;
     color: #6b7280;
     margin: 0;
   }
-
   .metrics-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     margin-bottom: 1rem;
   }
-
   .metric {
     display: flex;
     flex-direction: column;
@@ -735,20 +653,17 @@ if (!browser) return;
     background: #f9fafb;
     border-radius: 0.5rem;
   }
-
   .metric-label {
     font-size: 0.75rem;
     color: #6b7280;
     text-transform: uppercase;
     font-weight: 500;
   }
-
   .metric-value {
     font-size: 1.25rem;
     font-weight: 600;
     color: #1f2937;
   }
-
   .efficiency-metrics {
     border-top: 1px solid #e5e7eb;
     padding-top: 1rem;
@@ -756,31 +671,26 @@ if (!browser) return;
     flex-direction: column;
     gap: 0.5rem;
   }
-
   .efficiency-metric {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     font-size: 0.875rem;
     color: #6b7280;
   }
-
   .analytics-section {
     margin-bottom: 1rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #f3f4f6;
   }
-
   .analytics-section:last-child {
     border-bottom: none;
   }
-
   .analytics-section h4 {
     margin-bottom: 0.5rem;
     color: #374151;
     font-size: 0.875rem;
     font-weight: 600;
   }
-
   .interaction-stats,
   .typing-stats {
     display: flex;
@@ -789,24 +699,20 @@ if (!browser) return;
     font-size: 0.875rem;
     color: #6b7280;
   }
-
   .case-context p {
     margin: 0.25rem 0;
     font-size: 0.875rem;
     color: #6b7280;
   }
-
   .results-summary {
     margin-bottom: 1.5rem;
     padding: 1rem;
     background: #f0fdf4;
     border-radius: 0.5rem;
   }
-
   .chunks-preview {
     margin-top: 1rem;
   }
-
   .chunk-preview {
     margin-bottom: 1rem;
     padding: 0.75rem;
@@ -814,39 +720,33 @@ if (!browser) return;
     border-radius: 0.5rem;
     background: #fafafa;
   }
-
   .chunk-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
   }
-
   .chunk-index {
     font-weight: 600;
     color: #1f2937;
   }
-
   .chunk-type {
     color: #6b7280;
     background: #f3f4f6;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
   }
-
   .chunk-weight {
     color: #7c3aed;
     font-weight: 500;
   }
-
   .chunk-content {
     font-size: 0.875rem;
     color: #374151;
     margin: 0;
     line-height: 1.4;
   }
-
   .logs-container {
     max-height: 300px;
     overflow-y: auto;
@@ -856,29 +756,24 @@ if (!browser) return;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.875rem;
   }
-
   .log-entry {
     color: #f3f4f6;
     margin-bottom: 0.25rem;
     line-height: 1.3;
   }
-
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
   }
-
   @media (max-width: 1200px) {
     .demo-grid {
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     }
   }
-
   @media (max-width: 768px) {
     .demo-grid {
       grid-template-columns: 1fr;
     }
-    
     .metrics-grid {
       grid-template-columns: 1fr;
     }

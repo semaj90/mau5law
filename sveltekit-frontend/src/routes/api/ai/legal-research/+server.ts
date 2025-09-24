@@ -15,18 +15,14 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit'
-
 /*
  * Legal Research API Endpoint
  * Provides comprehensive legal research capabilities with RAG integration
  */
-
 import { processRAGPipeline, rerankSearchResults } from "$lib/services/comprehensive-database-orchestrator"
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-
 export interface LegalResearchRequest {
   topic: string
   userRole?: string
@@ -39,7 +35,6 @@ export interface LegalResearchRequest {
   maxResults?: number
   includeAnalysis?: boolean
 }
-
 export interface LegalResearchResult {
   title: string
   citation: string
@@ -51,10 +46,8 @@ export interface LegalResearchResult {
   url?: string
   keyPoints: string[]
 }
-
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = Date.now()
-
   try {
     const body: LegalResearchRequest = await request.json()
     const {
@@ -66,11 +59,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       maxResults = 10,
       includeAnalysis = true
     } = body
-
     if (!topic?.trim()) {
       return json({ error: 'Research topic is required' }, { status: 400 })
     }
-
     // Generate research results
     const results = await performLegalResearch(topic, {
       jurisdiction,
@@ -79,19 +70,15 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       maxResults,
       userRole
     })
-
     // Generate AI analysis if requested
     let analysis = null
     if (includeAnalysis && results.length > 0) {
       analysis = await generateResearchAnalysis(topic, results, userRole)
     }
-
     // Generate research recommendations
     const recommendations = generateResearchRecommendations(topic, results, userRole)
-
     // Calculate overall research quality
     const confidence = calculateResearchConfidence(results, topic)
-
     const response = {
       topic,
       results,
@@ -108,11 +95,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       },
       summary: generateResearchSummary(results, topic)
     }
-
     return json(response)
   } catch (error: any) {
     console.error('Legal research API error:', error)
-
     return json(
       {
         error: 'Research failed',
@@ -123,38 +108,30 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     )
   }
 }
-
 async function performLegalResearch(topic: string, options: any): Promise<LegalResearchResult[]> {
   const results: LegalResearchResult[] = []
-
   try {
     // Try to use real legal databases (mock for now)
     const caseResults = await searchCaseLaw(topic, options)
     const statuteResults = await searchStatutes(topic, options)
     const regulationResults = await searchRegulations(topic, options)
-
     results.push(...caseResults, ...statuteResults, ...regulationResults)
-
     // Rerank results by relevance
     if (results.length > 0) {
       const reranked = await rerankSearchResults(topic, results, {
         maxResults: options.maxResults
       })
-
       // Some implementations return plain array, others an object with rerankedResults
       if (Array.isArray(reranked)) return reranked
       return (reranked as any).rerankedResults || results
     }
   } catch (error: any) {
     console.warn('Legal research failed, using fallback:', error)
-
     // Fallback: generate mock results based on topic
     return generateMockResults(topic, options)
   }
-
   return results.slice(0, options.maxResults)
 }
-
 async function searchCaseLaw(topic: string, options: any): Promise<LegalResearchResult[]> {
   // Mock case law search - in production, integrate with Westlaw, LexisNexis, etc.
   const mockCases = [
@@ -187,12 +164,10 @@ async function searchCaseLaw(topic: string, options: any): Promise<LegalResearch
       ]
     }
   ]
-
   return mockCases.filter(
     (c) => !options.dateRange?.from || new Date(c.date) >= new Date(options.dateRange.from)
   )
 }
-
 async function searchStatutes(topic: string, options: any): Promise<LegalResearchResult[]> {
   // Mock statute search
   const mockStatutes = [
@@ -210,10 +185,8 @@ async function searchStatutes(topic: string, options: any): Promise<LegalResearc
       ]
     }
   ]
-
   return options.sources.includes('statutes') ? mockStatutes : []
 }
-
 async function searchRegulations(topic: string, options: any): Promise<LegalResearchResult[]> {
   // Mock regulation search
   const mockRegulations = [
@@ -231,10 +204,8 @@ async function searchRegulations(topic: string, options: any): Promise<LegalRese
       ]
     }
   ]
-
   return options.sources.includes('regulations') ? mockRegulations : []
 }
-
 function generateMockResults(topic: string, options: any): LegalResearchResult[] {
   const mockResults: LegalResearchResult[] = [
     {
@@ -250,74 +221,56 @@ function generateMockResults(topic: string, options: any): LegalResearchResult[]
       ]
     }
   ]
-
   return mockResults
 }
-
 async function generateResearchAnalysis(
-  topic: string,
-  results: LegalResearchResult[],
+  topic: string
+  results: LegalResearchResult[]
   userRole?: string
 ): Promise<string> {
   const prompt = `Based on the following legal research results for "${topic}", provide a comprehensive analysis:
-
 ${results.map((r, i) => `${i + 1}. ${r.title} - ${r.summary}`).join('\n')}
-
 Please analyze:
 1. Current legal landscape
 2. Key precedents and their impact
 3. Practical implications
 4. Recent developments
 ${userRole ? `5. Specific considerations for a ${userRole}` : ''}
-
 Provide a detailed legal analysis:`
-
   try {
     // For now, return a mock analysis since ollamaService is not imported
     return `Research Analysis for ${topic}:
-
 Based on the ${results.length} sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include:
-
 • Review of relevant precedents and their current validity
 • Analysis of jurisdictional variations and conflicts
 • Assessment of practical implementation challenges
 • Monitoring of ongoing legal developments
-
 ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : ''}
-
 This research provides a foundation for further legal analysis and case preparation.`
   } catch (error: any) {
     console.warn('AI analysis generation failed:', error)
-
     return `Research Analysis for ${topic}:
-
 Based on the ${results.length} sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include:
-
 • Review of relevant precedents and their current validity
 • Analysis of jurisdictional variations and conflicts
 • Assessment of practical implementation challenges
 • Monitoring of ongoing legal developments
-
 ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : ''}
-
 This research provides a foundation for further legal analysis and case preparation.`
   }
 }
-
 function generateResearchRecommendations(
-  topic: string,
-  results: LegalResearchResult[],
+  topic: string
+  results: LegalResearchResult[]
   userRole?: string
 ): string[] {
   const recommendations = []
-
   if (results.length === 0) {
     recommendations.push('Expand search terms and try alternative keywords')
     recommendations.push('Consider searching in multiple jurisdictions')
     recommendations.push('Review secondary sources and legal commentary')
     return recommendations
   }
-
   // Based on result types
   const hasRecentCases = results.some(
     (r) =>
@@ -325,19 +278,15 @@ function generateResearchRecommendations(
       r.date &&
       new Date(r.date) > new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)
   )
-
   if (hasRecentCases) {
     recommendations.push('Monitor recent case developments for evolving standards')
   }
-
   const hasCircuitSplit = results.some(
     (r) => r.summary.toLowerCase().includes('split') || r.summary.toLowerCase().includes('conflict')
   )
-
   if (hasCircuitSplit) {
     recommendations.push('Consider Supreme Court review potential due to circuit split')
   }
-
   // Role-specific recommendations
   switch (userRole) {
     case 'prosecutor':
@@ -353,59 +302,44 @@ function generateResearchRecommendations(
       recommendations.push('Consider scheduling briefing on complex legal issues')
       break
   }
-
   // General recommendations
   recommendations.push('Verify current status of all cited authorities')
   recommendations.push('Check for pending legislation that might affect this area')
   recommendations.push('Review local court rules and procedures')
-
   return recommendations
 }
-
 function calculateResearchConfidence(results: LegalResearchResult[], topic: string): number {
   if (results.length === 0) return 0.1
-
   let confidence = 0.3; // Base confidence
-
   // Boost from number of results
   confidence += Math.min(results.length * 0.05, 0.3)
-
   // Boost from relevance scores
   const avgRelevance = results.reduce((sum, r) => sum + r.relevance, 0) / results.length
   confidence += avgRelevance * 0.4
-
   // Boost from result diversity
   const resultTypes = new Set(results.map((r) => r.type))
   confidence += resultTypes.size * 0.05
-
   return Math.min(confidence, 1.0)
 }
-
 function generateResearchSummary(results: LegalResearchResult[], topic: string): string {
   if (results.length === 0) {
     return `No specific results found for "${topic}". Consider broadening search terms or consulting additional legal databases.`
   }
-
   const caseCount = results.filter((r) => r.type === 'case').length
   const statuteCount = results.filter((r) => r.type === 'statute').length
   const regulationCount = results.filter((r) => r.type === 'regulation').length
-
   const summary = [`Research on "${topic}" yielded ${results.length} relevant sources:`]
-
   if (caseCount > 0) summary.push(`${caseCount} cases`)
   if (statuteCount > 0) summary.push(`${statuteCount} statutes`)
   if (regulationCount > 0) summary.push(`${regulationCount} regulations`)
-
   const topResult = results[0]
   if (topResult) {
     summary.push(
       `\nMost relevant: ${topResult.title} (${Math.round(topResult.relevance * 100)}% relevance)`
     )
   }
-
   return summary.join(', ').replace(', \n', '.\n')
 }
-
 function extractSearchTerms(topic: string): string[] {
   // Extract key terms for search optimization
   return topic
@@ -414,5 +348,4 @@ function extractSearchTerms(topic: string): string[] {
     .filter((word: string) => word.length > 3)
     .filter((word) => !['the', 'and', 'for', 'with', 'from'].includes(word))
 }
-
 export const POST = redisOptimized.aiSearch(originalPOSTHandler)

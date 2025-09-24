@@ -7,7 +7,6 @@ import http from "http";
  * Using existing compiled Go binaries for maximum performance
  */;
 }
-
 export interface ServiceConfig {
   name: string;
   port: number;
@@ -17,7 +16,6 @@ export interface ServiceConfig {
   tier: number;
   priority: 'critical' | 'high' | 'medium' | 'low';
 }
-
 export interface ProtocolRoute {
   service: string;
   endpoint: string;
@@ -30,10 +28,9 @@ export interface ProtocolRoute {
   fallback: string[];
   timeout: number;
 }
-
-// Complete 37 Services Configuration using existing binaries;
+// Complete 37 Services Configuration using existing binaries
 export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
-  // TIER 1: Core Infrastructure (Ports 6000-7000);
+  // TIER 1: Core Infrastructure (Ports 6000-7000),
   postgresql: {
     name: 'PostgreSQL',
     port: 5432,
@@ -79,11 +76,10 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     port: 11434,
     protocols: ['http'],
     healthEndpoint: '/api/tags',
-    tier: 1,;
+    tier: 1,
     priority: 'critical'
   },
-
-  // TIER 2: Core Go Services (Ports 8090-8099);
+  // TIER 2: Core Go Services (Ports 8090-8099),
   enhancedRag: {
     name: 'Enhanced RAG Service',
     port: 8094,
@@ -117,11 +113,10 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     protocols: ['http'],
     healthEndpoint: '/health',
     binary: 'ai-enhanced.exe',
-    tier: 2,;
+    tier: 2,
     priority: 'high'
   },
-
-  // TIER 3: Management & Orchestration (Ports 8210-8219);
+  // TIER 3: Management & Orchestration (Ports 8210-8219),
   xstateManager: {
     name: 'XState Manager',
     port: 8212,
@@ -164,11 +159,10 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     protocols: ['http'],
     healthEndpoint: '/health',
     binary: 'context7-error-pipeline.exe',
-    tier: 3,;
+    tier: 3,
     priority: 'medium'
   },
-
-  // TIER 4: Specialized Services (Ports 8200-8209, 8220-8229);
+  // TIER 4: Specialized Services (Ports 8200-8209, 8220-8229)
   liveAgent: {
     name: 'Live Agent Enhanced',
     port: 8200,
@@ -256,11 +250,10 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     protocols: ['http'],
     healthEndpoint: '/health',
     binary: 'simple-upload.exe',
-    tier: 4,;
+    tier: 4,
     priority: 'low'
   },
-
-  // TIER 5: Additional Services (Ports 8230-8236);
+  // TIER 5: Additional Services (Ports 8230-8236),
   legalClean: {
     name: 'Enhanced Legal Clean',
     port: 8229,
@@ -312,11 +305,10 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     protocols: ['quic', 'http'],
     healthEndpoint: '/health',
     binary: 'rag-quic-proxy.exe',
-    tier: 5,;
+    tier: 5,
     priority: 'medium'
   },
-
-  // gRPC Services (Ports 50051-50052);
+  // gRPC Services (Ports 50051-50052)
   grpcServer: {
     name: 'gRPC Server',
     port: 50051,
@@ -332,14 +324,13 @@ export const SERVICES_CONFIG: Record<string, ServiceConfig> = {
     protocols: ['grpc'],
     healthEndpoint: '/grpc.health.v1.Health/Check',
     binary: 'kratos-server.exe',
-    tier: 2,;
+    tier: 2,
     priority: 'high'
   }
 };
-
 // Multi-Protocol API Routes Configuration
 export const API_ROUTES: ProtocolRoute[] = [
-  // Enhanced RAG Routes;
+  // Enhanced RAG Routes
   {
     service: 'enhancedRag',
     endpoint: '/api/v1/rag',
@@ -349,11 +340,10 @@ export const API_ROUTES: ProtocolRoute[] = [
       http: 'http://localhost:8094/api/v1/rag',
       ws: 'ws://localhost:8094/api/v1/rag/stream'
     },
-    fallback: ['quic', 'grpc', 'http'],;
+    fallback: ['quic', 'grpc', 'http'],
     timeout: 30000
   },
-
-  // Upload Routes;
+  // Upload Routes
   {
     service: 'uploadService',
     endpoint: '/api/v1/upload',
@@ -361,11 +351,10 @@ export const API_ROUTES: ProtocolRoute[] = [
       http: 'http://localhost:8093/upload',
       ws: 'ws://localhost:8093/upload/stream'
     },
-    fallback: ['http'],;
+    fallback: ['http'],
     timeout: 60000
   },
-
-  // AI Summary Routes;
+  // AI Summary Routes
   {
     service: 'aiSummary',
     endpoint: '/api/v1/ai/summary',
@@ -373,11 +362,10 @@ export const API_ROUTES: ProtocolRoute[] = [
       http: 'http://localhost:8097/api/v1/summary',
       ws: 'ws://localhost:8097/api/v1/summary/stream'
     },
-    fallback: ['http'],;
+    fallback: ['http'],
     timeout: 45000
   },
-
-  // Legal AI Routes;
+  // Legal AI Routes
   {
     service: 'legalAI',
     endpoint: '/api/v1/legal',
@@ -385,11 +373,10 @@ export const API_ROUTES: ProtocolRoute[] = [
       grpc: 'grpc://localhost:50051/legal.v1.LegalService',
       http: 'http://localhost:8202/api/v1/legal'
     },
-    fallback: ['grpc', 'http'],;
+    fallback: ['grpc', 'http'],
     timeout: 30000
   },
-
-  // QUIC Gateway Routes;
+  // QUIC Gateway Routes
   {
     service: 'quicGateway',
     endpoint: '/api/v1/quic',
@@ -397,22 +384,20 @@ export const API_ROUTES: ProtocolRoute[] = [
       quic: 'quic://localhost:8216/api/v1/gateway',
       http: 'http://localhost:8216/api/v1/gateway'
     },
-    fallback: ['quic', 'http'],;
+    fallback: ['quic', 'http'],
     timeout: 5000
   },
-
-  // Cluster Management Routes;
+  // Cluster Management Routes
   {
     service: 'clusterManager',
     endpoint: '/api/v1/cluster',
     protocols: {
       http: 'http://localhost:8213/api/v1/cluster'
     },
-    fallback: ['http'],;
+    fallback: ['http'],
     timeout: 15000
   },
-
-  // XState Management Routes;
+  // XState Management Routes
   {
     service: 'xstateManager',
     endpoint: '/api/v1/state',
@@ -420,61 +405,55 @@ export const API_ROUTES: ProtocolRoute[] = [
       http: 'http://localhost:8212/api/v1/state',
       ws: 'ws://localhost:8212/api/v1/state/events'
     },
-    fallback: ['http'],;
+    fallback: ['http'],
     timeout: 10000
   },
-
-  // Load Balancer Routes;
+  // Load Balancer Routes
   {
     service: 'loadBalancer',
     endpoint: '/api/v1/lb',
     protocols: {
       http: 'http://localhost:8222/api/v1/balance'
     },
-    fallback: ['http'],;
+    fallback: ['http'],
     timeout: 5000
   },
-
-  // GPU Indexer Routes;
+  // GPU Indexer Routes
   {
     service: 'gpuIndexer',
     endpoint: '/api/v1/gpu/index',
     protocols: {
       http: 'http://localhost:8220/api/v1/index'
     },
-    fallback: ['http'],;
+    fallback: ['http'],
     timeout: 60000
   },
-
-  // Recommendation Routes;
+  // Recommendation Routes
   {
     service: 'recommendations',
     endpoint: '/api/v1/recommendations',
     protocols: {
       http: 'http://localhost:8223/api/v1/recommend'
     },
-    fallback: ['http'],;
+    fallback: ['http'],
     timeout: 15000
   }
 ];
-
-// Protocol Priority Configuration;
+// Protocol Priority Configuration
 export const PROTOCOL_PRIORITY = {
   performance: ['quic', 'grpc', 'http', 'ws'],
-  reliability: ['http', 'grpc', 'quic', 'ws'],;
+  reliability: ['http', 'grpc', 'quic', 'ws'],
   realtime: ['ws', 'quic', 'grpc', 'http']
 } as const;
-
-// Service Health Check Configuration;
+// Service Health Check Configuration
 export const HEALTH_CHECK_CONFIG = {
   interval: 30000, // 30 seconds
-  timeout: 5000,   // 5 seconds;
+  timeout: 5000,   // 5 seconds
   retries: 3,
   unhealthyThreshold: 3,
   healthyThreshold: 2
 };
-
-// Protocol-specific configurations;
+// Protocol-specific configurations
 export const PROTOCOL_CONFIG = {
   http: {
     timeout: 30000,
@@ -487,32 +466,30 @@ export const PROTOCOL_CONFIG = {
   grpc: {
     timeout: 15000,
     retries: 3,
-    keepAlive: true,
+    keepAlive: true
     keepAliveTimeout: 30000
   },
   quic: {
     timeout: 5000,
     retries: 2,
-    keepAlive: true,
+    keepAlive: true
     maxStreams: 100
   },
-  ws: {;
+  ws: {
     timeout: 0, // No timeout for WebSocket
     pingInterval: 30000,
     pongTimeout: 5000,
     reconnectDelay: 1000
   }
 };
-
-// Service Discovery Configuration;
+// Service Discovery Configuration
 export const SERVICE_DISCOVERY = {
-  enabled: true,
+  enabled: true
   refreshInterval: 60000, // 1 minute
-  healthCheckEnabled: true,
-  autoFailover: true,
+  healthCheckEnabled: true
+  autoFailover: true
   circuitBreakerEnabled: true
 };
-
 export default {
   SERVICES_CONFIG,
   API_ROUTES,

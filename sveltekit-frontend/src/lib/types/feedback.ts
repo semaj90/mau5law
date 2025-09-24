@@ -2,7 +2,6 @@
  * Feedback System Types for Legal AI Platform
  */;
 }
-
 export interface FeedbackSession {
   id: string;
   userId: string;
@@ -11,7 +10,6 @@ export interface FeedbackSession {
   interactions: UserInteraction[];
   context: SessionContext;
 }
-
 export interface UserInteraction {
   id: string;
   type: string;
@@ -20,17 +18,15 @@ export interface UserInteraction {
   feedbackCollected?: boolean;
   rating?: number;
 }
-
 export interface SessionContext {
   page: string;
   userAgent: string;
-  viewport: {;
+  viewport: {
     width: number;
     height: number;
   };
   [key: string]: any;
 }
-
 export interface FeedbackTrigger {
   interactionId: string;
   type: 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance';
@@ -39,7 +35,6 @@ export interface FeedbackTrigger {
   context: any;
   triggered?: boolean;
 }
-
 export interface FeedbackAnalytics {
   totalInteractions: number;
   averageRating: number;
@@ -50,7 +45,6 @@ export interface FeedbackAnalytics {
     weekly: { week: string; rating: number; count: number }[];
   };
 }
-
 export interface UserFeedbackContext {
   userId: string;
   sessionId: string;
@@ -58,7 +52,6 @@ export interface UserFeedbackContext {
   userType: 'attorney' | 'paralegal' | 'investigator' | 'admin';
   experienceLevel?: 'junior' | 'mid' | 'senior' | 'expert';
 }
-
 export interface FeedbackMetrics {
   user_satisfaction: number;
   feature_adoption: number;
@@ -66,7 +59,6 @@ export interface FeedbackMetrics {
   response_time: number;
   completion_rate: number;
 }
-
 export interface FeedbackRecommendation {
   id: string;
   type: 'feature' | 'improvement' | 'tutorial' | 'tip';
@@ -79,8 +71,7 @@ export interface FeedbackRecommendation {
     target: string;
   };
 }
-
-// Database schema types;
+// Database schema types
 export interface UserRating {
   id: string;
   userId: string;
@@ -91,11 +82,10 @@ export interface UserRating {
   feedback?: string;
   queryEmbedding?: number[];
   responseEmbedding?: number[];
-  context: Record<string, any>;
-  metadata: Record<string, any>;
+  context: { [key: string]: any };
+  metadata: { [key: string]: any };
   timestamp: Date;
 }
-
 export interface UserInteractionPattern {
   id: string;
   userId: string;
@@ -104,11 +94,10 @@ export interface UserInteractionPattern {
   avgRating: number;
   contextHash: string;
   embedding?: number[];
-  metadata: Record<string, any>;
+  metadata: { [key: string]: any };
   firstSeen: Date;
   lastSeen: Date;
 }
-
 export interface FeedbackInsight {
   id: string;
   insightType: string;
@@ -117,49 +106,44 @@ export interface FeedbackInsight {
   confidence: number;
   userSegment: string;
   embedding?: number[];
-  metrics: Record<string, any>;
+  metrics: { [key: string]: any };
   recommendations: string[];
   createdAt: Date;
 }
-
-// Component Props;
+// Component Props
 export interface FeedbackWidgetProps {
   interactionId: string;
   sessionId: string;
   userId: string;
-  context?: Record<string, any>;
+  context?: { [key: string]: any };
   show: boolean;
   ratingType?: 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance';
   onSubmitted?: (data: { rating: number; feedback?: string; interactionId: string }) => void;
   onError?: (error: any) => void;
   onClosed?: () => void;
 }
-
-// API Response Types;
+// API Response Types
 export interface FeedbackAPIResponse {
   success: boolean;
   message: string;
   data?: any;
 }
-
 export interface FeedbackBatchResponse extends FeedbackAPIResponse {
-  data: {;
+  data: {
     processed: number;
     failed: number;
     insights: FeedbackInsight[];
   };
 }
-
 export interface RecommendationsResponse extends FeedbackAPIResponse {
-  data: {;
+  data: {
     recommendations: FeedbackRecommendation[];
     metrics: FeedbackMetrics;
     insights: string[];
   };
 }
-
 export interface AnalyticsResponse extends FeedbackAPIResponse {
-  data: {;
+  data: {
     overview: {
       totalRatings: number;
       averageRating: number;
@@ -176,8 +160,7 @@ export interface AnalyticsResponse extends FeedbackAPIResponse {
     recommendations: FeedbackRecommendation[];
   };
 }
-
-// Events;
+// Events
 export interface FeedbackSubmittedEvent {
   interactionId: string;
   rating: number;
@@ -185,7 +168,6 @@ export interface FeedbackSubmittedEvent {
   ratingType: string;
   timestamp: Date;
 }
-
 export interface FeedbackErrorEvent {
   error: Error;
   context: any;

@@ -3,17 +3,14 @@
  * Unified Types - Consolidates duplicate type exports across the application
  * Replaces scattered type definitions with single source of truth
  */
-
-// ===== OLLAMA & AI TYPES =====;
+// ===== OLLAMA & AI TYPES =====
 }
-
 export interface EmbeddingResponse {
   embedding: number[];
   model: string;
   prompt_tokens?: number;
   total_duration?: number;
 }
-
 export interface GenerateResponse {
   response: string;
   model: string;
@@ -27,12 +24,11 @@ export interface GenerateResponse {
   eval_count?: number;
   eval_duration?: number;
 }
-
 export interface OllamaModel {
   name: string;
   size: number;
   digest: string;
-  details: {;
+  details: {
     format: string;
     family: string;
     families?: string[];
@@ -41,7 +37,6 @@ export interface OllamaModel {
   };
   modified_at: string;
 }
-
 export interface OllamaHealthCheck {
   status: 'healthy' | 'unhealthy';
   embedModel: boolean;
@@ -49,10 +44,8 @@ export interface OllamaHealthCheck {
   models: string[];
   error?: string;
 }
-
-// ===== RAG SYSTEM TYPES =====;
+// ===== RAG SYSTEM TYPES =====
 }
-
 export interface RAGQuery {
   query: string;
   caseId?: string;
@@ -64,7 +57,6 @@ export interface RAGQuery {
   limit?: number;
   threshold?: number;
 }
-
 export interface RAGSource {
   id: string;
   content: string;
@@ -79,14 +71,12 @@ export interface RAGSource {
     tags?: string[];
   };
 }
-
 export interface RAGResult {
   source: RAGSource;
   score: number;
   relevance: string;
   highlights?: string[];
 }
-
 export interface RAGSearchResponse {
   results: RAGResult[];
   query: string;
@@ -94,10 +84,8 @@ export interface RAGSearchResponse {
   processingTime: number;
   model: string;
 }
-
-// ===== LEGAL DOMAIN TYPES =====;
+// ===== LEGAL DOMAIN TYPES =====
 }
-
 export interface LegalCase {
   id: string;
   title: string;
@@ -113,7 +101,6 @@ export interface LegalCase {
   dueDate?: Date;
   tags?: string[];
 }
-
 export interface Evidence {
   id: string;
   caseId: string;
@@ -136,7 +123,6 @@ export interface Evidence {
   createdBy: string;
   chainOfCustody?: ChainOfCustodyEntry[];
 }
-
 export interface ChainOfCustodyEntry {
   id: string;
   evidenceId: string;
@@ -148,7 +134,6 @@ export interface ChainOfCustodyEntry {
   ipAddress?: string;
   userAgent?: string;
 }
-
 export interface LegalDocument {
   id: string;
   caseId: string;
@@ -165,7 +150,6 @@ export interface LegalDocument {
   createdAt: Date;
   processedAt?: Date;
 }
-
 export interface LegalEntity {
   id: string;
   type: 'person' | 'organization' | 'location' | 'date' | 'monetary' | 'legal_reference';
@@ -173,9 +157,8 @@ export interface LegalEntity {
   startPos: number;
   endPos: number;
   confidence: number;
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface LegalClause {
   id: string;
   type: 'liability' | 'indemnification' | 'termination' | 'confidentiality' | 'payment' | 'dispute_resolution';
@@ -185,10 +168,8 @@ export interface LegalClause {
   riskLevel: 'low' | 'medium' | 'high';
   analysis?: string;
 }
-
-// ===== USER & AUTHENTICATION TYPES =====;
+// ===== USER & AUTHENTICATION TYPES =====
 }
-
 export interface User {
   id: string;
   email: string;
@@ -203,27 +184,24 @@ export interface User {
   lastLogin?: Date;
   isActive: boolean;
 }
-
 export interface Permission {
   resource: string;
   actions: ('read' | 'write' | 'delete' | 'admin')[];
 }
-
 export interface UserPreferences {
   theme: 'light' | 'dark' | 'auto';
   language: string;
   timezone: string;
-  notifications: {;
+  notifications: {
     email: boolean;
     push: boolean;
     sms: boolean;
   };
-  ui: {;
+  ui: {
     density: 'compact' | 'comfortable' | 'spacious';
     sidebarCollapsed: boolean;
   };
 }
-
 export interface AuthSession {
   id: string;
   userId: string;
@@ -234,10 +212,8 @@ export interface AuthSession {
   userAgent?: string;
   isActive: boolean;
 }
-
-// ===== API & RESPONSE TYPES =====;
+// ===== API & RESPONSE TYPES =====
 }
-
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
@@ -246,10 +222,9 @@ export interface ApiResponse<T = any> {
   timestamp: string;
   requestId?: string;
 }
-
 export interface PaginatedResponse<T = any> {
   data: T[];
-  pagination: {;
+  pagination: {
     page: number;
     limit: number;
     total: number;
@@ -258,14 +233,12 @@ export interface PaginatedResponse<T = any> {
     hasPrev: boolean;
   };
 }
-
 export interface ValidationError {
   field: string;
   message: string;
   code: string;
   value?: unknown;
 }
-
 export interface ApiError {
   code: string;
   message: string;
@@ -274,13 +247,11 @@ export interface ApiError {
   requestId?: string;
   validationErrors?: ValidationError[];
 }
-
-// ===== SEARCH & FILTERING TYPES =====;
+// ===== SEARCH & FILTERING TYPES =====
 }
-
 export interface SearchOptions {
   query?: string;
-  filters?: Record<string, any>;
+  filters?: { [key: string]: any };
   sort?: {
     field: string;
     direction: 'asc' | 'desc';
@@ -290,26 +261,22 @@ export interface SearchOptions {
     limit: number;
   };
 }
-
 export interface SearchResult<T = any> {
   item: T;
   score?: number;
   highlights?: string[];
-  metadata?: Record<string, any>;
+  metadata?: { [key: string]: any };
 }
-
 export interface SearchResponse<T = any> {
   results: SearchResult<T>[];
   total: number;
   query: string;
-  filters?: Record<string, any>;
+  filters?: { [key: string]: any };
   processingTime: number;
   suggestions?: string[];
 }
-
-// ===== CACHING & PERFORMANCE TYPES =====;
+// ===== CACHING & PERFORMANCE TYPES =====
 }
-
 export interface CacheEntry<T = any> {
   key: string;
   value: T;
@@ -322,7 +289,6 @@ export interface CacheEntry<T = any> {
     tags?: string[];
   };
 }
-
 export interface CacheStats {
   totalEntries: number;
   totalSize: number;
@@ -331,10 +297,8 @@ export interface CacheStats {
   evictionCount: number;
   averageAccessTime: number;
 }
-
-// ===== AI ANALYSIS TYPES =====;
+// ===== AI ANALYSIS TYPES =====
 }
-
 export interface AIAnalysisRequest {
   content: string;
   type: 'summary' | 'entities' | 'sentiment' | 'classification' | 'risk_assessment';
@@ -349,7 +313,6 @@ export interface AIAnalysisRequest {
     maxTokens?: number;
   };
 }
-
 export interface AIAnalysisResponse {
   result: string | object;
   confidence: number;
@@ -366,37 +329,31 @@ export interface AIAnalysisResponse {
     tags?: string[];
   };
 }
-
-// ===== XSTATE & WORKFLOW TYPES =====;
+// ===== XSTATE & WORKFLOW TYPES =====
 }
-
 export interface WorkflowContext {
   caseId?: string;
   userId: string;
   currentStep: string;
   progress: number;
   errors: string[];
-  data: Record<string, any>;
+  data: { [key: string]: any };
   aiRecommendations?: string[];
   confidence?: number;
 }
-
 export interface WorkflowEvent {
   type: string;
   payload?: unknown;
   timestamp: Date;
   userId: string;
 }
-
-// ===== MCP & INTEGRATION TYPES =====;
+// ===== MCP & INTEGRATION TYPES =====
 }
-
 export interface MCPRequest {
   tool: string;
-  parameters: Record<string, any>;
-  context?: Record<string, any>;
+  parameters: { [key: string]: any };
+  context?: { [key: string]: any };
 }
-
 export interface MCPResponse<T = any> {
   success: boolean;
   result?: T;
@@ -407,7 +364,6 @@ export interface MCPResponse<T = any> {
     tokens?: number;
   };
 }
-
 export interface Context7Integration {
   stackAnalysis: boolean;
   bestPractices: boolean;
@@ -415,10 +371,8 @@ export interface Context7Integration {
   libraryDocs: boolean;
   performanceOptimization: boolean;
 }
-
-// ===== FORM & VALIDATION TYPES =====;
+// ===== FORM & VALIDATION TYPES =====
 }
-
 export interface FormField {
   name: string;
   type: 'text' | 'email' | 'password' | 'number' | 'date' | 'select' | 'textarea' | 'file';
@@ -434,21 +388,17 @@ export interface FormField {
   };
   options?: { value: string; label: string }[];
 }
-
 export interface FormSchema {
   fields: FormField[];
-  validation?: Record<string, any>;
+  validation?: { [key: string]: any };
 }
-
-// ===== COMPONENT PROPS TYPES =====;
+// ===== COMPONENT PROPS TYPES =====
 }
-
 export interface BaseComponentProps {
   class?: string;
   id?: string;
   'data-testid'?: string;
 }
-
 export interface DialogProps extends BaseComponentProps {
   open?: boolean;
   title?: string;
@@ -456,7 +406,6 @@ export interface DialogProps extends BaseComponentProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   variant?: 'default' | 'destructive' | 'success';
 }
-
 export interface ButtonProps extends BaseComponentProps {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
   size?: 'default' | 'sm' | 'lg' | 'icon';
@@ -464,25 +413,19 @@ export interface ButtonProps extends BaseComponentProps {
   loading?: boolean;
   type?: 'button' | 'submit' | 'reset';
 }
-
 // ===== TYPE GUARDS =====
-
 export function isEmbeddingResponse(obj: any): obj is EmbeddingResponse {
   return obj && typeof obj === 'object' && Array.isArray(obj.embedding);
 }
-
 export function isRAGResult(obj: any): obj is RAGResult {
   return obj && typeof obj === 'object' && obj.source && typeof obj.score === 'number';
 }
-
 export function isApiError(obj: any): obj is ApiError {
   return obj && typeof obj === 'object' && typeof obj.code === 'string' && typeof obj.message === 'string';
 }
-
 export function isLegalCase(obj: any): obj is LegalCase {
   return obj && typeof obj === 'object' && typeof obj.id === 'string' && typeof obj.title === 'string';
 }
-
 export function isUser(obj: any): obj is User {
   return obj && typeof obj === 'object' && typeof obj.id === 'string' && typeof obj.email === 'string';
 }

@@ -1,27 +1,22 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token;
+<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-
   import type { HTMLAttributes } from 'svelte/elements';
   interface Props extends HTMLAttributes<HTMLHeadingElement> {
     level?: 1 | 2 | 3 | 4 | 5 | 6;
   }
-
   let {
     level = 3,
     class: className = '',
     children,
-    ...restProps;
+    ...restProp;
   }: Props & { children?: unknown } = $props();
-
   let classes = $derived(
-    ['nier-card-title', className].filter(item => item.join)(' ')
+    ['nier-card-title', className].filter(Boolean).join(' ')
   );
 </script>
-
 {#if level === 1}
   <h1 class={classes} {...restProps}>
     {@render children?.()}
@@ -47,7 +42,6 @@ https://svelte.dev/e/js_parse_error -->
     {@render children?.()}
   </h6>
 {/if}
-
 <style>
   :global(.nier-card-title) {
     font-family: 'Oswald', 'Montserrat', sans-serif;

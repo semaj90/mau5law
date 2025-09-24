@@ -1,10 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than onc;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Simplified Enhanced AI Assistant -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
   import {
     Brain,
     Loader2,
@@ -13,17 +12,12 @@ https://svelte.dev/e/props_duplicate -->
     Settings,
     Trash2,
   } from "lucide-svelte";
-  import {   } from "svelte";
-
-  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string | undefined = undefined;
+  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string | undefined = undefined
   export const evidenceIds: string[] = [];
-  let { placeholder = $bindable()  }: { placeholder = $bindable() : any } = $props(); // "Ask AI about this case...";
-  let { maxHeight = $bindable()  }: { maxHeight = $bindable() : any } = $props(); // "400px";
-  let { showReferences = $bindable()  }: { showReferences = $bindable() : any } = $props(); // true;
+  let { placeholder = $bindable()  }: { placeholder = $bindable() : any } = $props(); // "Ask AI about this case..."
+  let { maxHeight = $bindable()  }: { maxHeight = $bindable() : any } = $props(); // "400px"
+  let { showReferences = $bindable()  }: { showReferences = $bindable() : any } = $props(); // true
   export const enableVoiceInput = false;
-  ;
-
-
   // State
   let query = $state("");
   let isLoading = $state(false);
@@ -36,47 +30,39 @@ https://svelte.dev/e/props_duplicate -->
   let maxResults = $state(5);
   let temperature = $state(0.7);
   let enabledSources = $state(["cases", "statutes", "regulations", "secondary"]);
-
   // Mock AI response
   async function handleSubmit() {
     if (!query.trim() || isLoading) return;
-
     isLoading = true;
     const userMessage = { role: "user", content: query };
     messages = [...messages, userMessage];
-
     // Clear input
     query = "";
-
     // Mock AI response
     setTimeout(() => {
       const aiResponse = {
-        role: "assistant",;
+        role: "assistant",
         content: `Based on the case information provided, here are my findings regarding "${userMessage.content}":
-
   This appears to be a question about legal precedent and case law. The relevant statutes and regulations would need to be analyzed in the context of your specific jurisdiction.
-
   Key considerations:
   1. Applicable statutory framework
   2. Relevant case precedents
   3. Jurisdictional variations
   4. Current regulatory environment
-
-  Would you like me to elaborate on any of these aspects?`,;
+  Would you like me to elaborate on any of these aspects?`,
         references: [
           {
             title: "Smith v. Jones",
             citation: "123 F.3d 456 (2023)",
-            relevance: 0.9,;
+            relevance: 0.9,
           },
           {
-            title: "42 U.S.C. § 1983",;
-            citation: "Federal Civil Rights Statute",;
-            relevance: 0.8,;
+            title: "42 U.S.C. § 1983",
+            citation: "Federal Civil Rights Statute",
+            relevance: 0.8,
           },
         ],
       };
-
       messages = [...messages, aiResponse];
       isLoading = false;
     }, 1500);
@@ -93,7 +79,6 @@ https://svelte.dev/e/props_duplicate -->
     messages = [];
   }
 </script>
-
 <div class="container mx-auto px-4">
   <!-- Main Chat Interface -->
   <div class="container mx-auto px-4" style="max-height: {maxHeight}">
@@ -125,7 +110,6 @@ https://svelte.dev/e/props_duplicate -->
         </button>
       </div>
     </div>
-
     <!-- Messages -->
     <div class="container mx-auto px-4">
       {#each messages as message}
@@ -133,7 +117,6 @@ https://svelte.dev/e/props_duplicate -->
           <div class="container mx-auto px-4">
             {message.content}
           </div>
-
           {#if message.references && showReferences}
             <div class="container mx-auto px-4">
               <h4 class="container mx-auto px-4">References:</h4>
@@ -151,7 +134,6 @@ https://svelte.dev/e/props_duplicate -->
           {/if}
         </div>
       {/each}
-
       {#if isLoading}
         <div class="container mx-auto px-4">
           <div class="container mx-auto px-4">
@@ -161,7 +143,6 @@ https://svelte.dev/e/props_duplicate -->
         </div>
       {/if}
     </div>
-
     <!-- Input -->
     <form class="container mx-auto px-4" onsubmit|preventDefault={handleSubmit}>
       <div class="container mx-auto px-4">
@@ -182,7 +163,6 @@ https://svelte.dev/e/props_duplicate -->
       </div>
     </form>
   </div>
-
   <!-- Settings Panel -->
   {#if showSettings}
     <div class="container mx-auto px-4">
@@ -192,7 +172,6 @@ https://svelte.dev/e/props_duplicate -->
           >×</button
         >
       </div>
-
       <div class="container mx-auto px-4">
         <div class="container mx-auto px-4">
           <label for="model-select">Model:</label>
@@ -202,7 +181,6 @@ https://svelte.dev/e/props_duplicate -->
             <option value="claude-3">Claude 3</option>
           </select>
         </div>
-
         <div class="container mx-auto px-4">
           <label for="temperature-range">Temperature: {temperature}</label>
           <input
@@ -214,7 +192,6 @@ https://svelte.dev/e/props_duplicate -->
             bind:value={temperature}
           />
         </div>
-
         <div class="container mx-auto px-4">
           <label for="threshold-range"
             >Search Threshold: {searchThreshold}</label
@@ -228,7 +205,6 @@ https://svelte.dev/e/props_duplicate -->
             bind:value={searchThreshold}
           />
         </div>
-
         <div class="container mx-auto px-4">
           <label for="max-results">Max Results:</label>
           <input
@@ -242,7 +218,6 @@ https://svelte.dev/e/props_duplicate -->
       </div>
     </div>
   {/if}
-
   <!-- Citation Dialog -->
   {#if showCitationDialog}
     <div
@@ -265,12 +240,10 @@ https://svelte.dev/e/props_duplicate -->
             Legal Citation
           </h4>
         </div>
-
         <div class="container mx-auto px-4">
           <div class="container mx-auto px-4">
             <p>{selectedCitation}</p>
           </div>
-
           <div class="container mx-auto px-4">
             <button class="container mx-auto px-4" onclick={() => insertCitation()}>
               Insert Citation
@@ -283,7 +256,6 @@ https://svelte.dev/e/props_duplicate -->
             </button>
           </div>
         </div>
-
         <div class="container mx-auto px-4">
           <button
             class="container mx-auto px-4"
@@ -296,7 +268,6 @@ https://svelte.dev/e/props_duplicate -->
     </div>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
   .ai-assistant-container {
@@ -308,7 +279,7 @@ https://svelte.dev/e/props_duplicate -->
 }
 .chat-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 12px 16px;
     border-bottom: 1px solid #e5e7eb;
@@ -326,7 +297,7 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 8px;
 }
   .message.user {
-    background: #dbeafe;
+    background: #dbeaf;
     margin-left: 20%;
     text-align: right;
 }
@@ -359,7 +330,7 @@ https://svelte.dev/e/props_duplicate -->
     border: 1px solid #e5e7eb;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2;
     width: 100%;
     text-align: left;
 }
@@ -389,7 +360,7 @@ https://svelte.dev/e/props_duplicate -->
     border: 1px solid #d1d5db;
     border-radius: 6px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2;
 }
   .chat-input-field:focus {
     border-color: #3b82f6;
@@ -402,9 +373,9 @@ https://svelte.dev/e/props_duplicate -->
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2;
 }
-  .chat-submit-btn:hover:not(:disabled) {
+  .chat-submit-btn:hover:not(:disabled) {,
     background: #2563eb;
 }
   .chat-submit-btn:disabled {
@@ -418,7 +389,7 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 4px;
     cursor: pointer;
     color: #6b7280;
-    transition: all 0.2s;
+    transition: all 0.2;
 }
   .btn-icon:hover {
     background: #f3f4f6;
@@ -437,7 +408,7 @@ https://svelte.dev/e/props_duplicate -->
 }
   .settings-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betwee;
     align-items: center;
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
@@ -479,6 +450,7 @@ https://svelte.dev/e/props_duplicate -->
 }
   .dialog-overlay {
     position: fixed;
+d;
     top: 0;
     left: 0;
     width: 100%;
@@ -556,6 +528,4 @@ https://svelte.dev/e/props_duplicate -->
     background: #e5e7eb;
 }
 </style>
-
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

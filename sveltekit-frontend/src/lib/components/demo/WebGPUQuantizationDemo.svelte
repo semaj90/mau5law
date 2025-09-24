@@ -6,21 +6,18 @@ https://svelte.dev/e/expected_token -->
   Interactive demo showing the complete buffer conversion and quantization system
   for legal AI document processing
 -->
-
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
 </script>
   import { onMount } from 'svelte';
   import { WebGPUBufferUploader, WebGPUBufferUtils_Extended } from '$lib/utils/webgpu-buffer-uploader.js';
-  import { 
-    quantizeForLegalAI, 
+  import {
+    quantizeForLegalAI,
     quantizeWithStats,
     LEGAL_AI_QUANTIZATION_PROFILES,
-    type LegalAIProfile 
+    type LegalAIProfile
   } from '$lib/utils/typed-array-quantization.js';
   import { BufferDebugUtils, toFloat32Array } from '$lib/utils/buffer-conversion.js';
-
   // Demo state
   let webgpuSupported = $state(false);
   let device: GPUDevice | null = $state(null);
@@ -29,12 +26,10 @@ https://svelte.dev/e/expected_token -->
   let currentDemo = $state('basic');
   let results = $state<any[]>([]);
   let errorMessage = $state('');
-
   // Legal AI document simulation
   let documentCount = $state(100);
   let embeddingDimensions = $state(768);
   let selectedProfile: LegalAIProfile = $state('legal_standard');
-  
   // Performance metrics
   let performanceMetrics = $state({
     uploadTime: 0,
@@ -42,7 +37,6 @@ https://svelte.dev/e/expected_token -->
     memoryUsage: 0,
     cacheHitRate: 0
   });
-
   // Demo scenarios
   const demoScenarios = [
     {
@@ -71,53 +65,45 @@ https://svelte.dev/e/expected_token -->
     },
     {
       id: 'cache',
-      name: 'Smart Caching Demo',;
-      description: 'Demonstrate buffer caching and reuse optimization',;
+      name: 'Smart Caching Demo',
+      description: 'Demonstrate buffer caching and reuse optimization',
       icon: '🗄️';
     }
   ];
-
   $effect(() => {
     (async () => {
 await initializeWebGPU();
     })();
   });
-
   async function initializeWebGPU() {
     try {
       if (!navigator.gpu) {
         errorMessage = 'WebGPU not supported in this browser';
         return;
       }
-
       const adapter = await navigator.gpu.requestAdapter();
       if (!adapter) {
         errorMessage = 'No WebGPU adapter available';
         return;
       }
-
       device = await adapter.requestDevice();
       uploader = new WebGPUBufferUploader(device, true); // Enable caching
       webgpuSupported = true;
       errorMessage = '';
-      
       console.log('✅ WebGPU initialized for quantization demo');
     } catch (error) {
       errorMessage = `WebGPU initialization failed: ${error.message}`;
       console.error('WebGPU initialization error:', error);
     }
   }
-
   async function runDemo(demoId: string) {
     if (!device || !uploader) {
       errorMessage = 'WebGPU not initialized';
       return;
     }
-
     demoRunning = true;
     results = [];
     errorMessage = '';
-
     try {
       switch (demoId) {
         case 'basic':
@@ -143,14 +129,11 @@ await initializeWebGPU();
       demoRunning = false;
     }
   }
-
   async function runBasicDemo() {
     // Generate legal document embeddings
     const documentEmbeddings = generateLegalDocumentEmbeddings();
-    
     results.push.toFixed(2)} KB`
     });
-
     // Upload with selected legal AI profile
     const startTime = performance.now();
     const uploadResult = await uploader!.createLegalAnalysisBuffer(
@@ -158,11 +141,10 @@ await initializeWebGPU();
       selectedProfile.replace('legal_', '') as any
     );
     const uploadTime = performance.now() - startTime;
-
     results.push({
-      step: 'Buffer upload complete',;
-      details: {;
-        profile: selectedProfile,
+      step: 'Buffer upload complete',
+      details: {
+        profile: selectedProfile
         uploadTime: `${uploadTime.toFixed(2)}ms`,
         compressionRatio: `${uploadResult.uploadStats.compressionRatio.toFixed(2)}x`,
         originalSize: `${(uploadResult.uploadStats.originalSize / 1024).toFixed(2)} KB`,
@@ -170,7 +152,6 @@ await initializeWebGPU();
         spaceSavings: `${(((uploadResult.uploadStats.originalSize - uploadResult.uploadStats.uploadedSize) / uploadResult.uploadStats.originalSize) * 100).toFixed(1)}%`
       }
     });
-
     // Update performance metrics
     performanceMetrics = {
       uploadTime,
@@ -178,23 +159,18 @@ await initializeWebGPU();
       memoryUsage: uploadResult.uploadStats.uploadedSize,
       cacheHitRate: 0 // Will be updated with cache demos
     };
-
     // Cleanup
     uploadResult.buffer.destroy();
   }
-
   async function runComparisonDemo() {
     const testData = generateLegalDocumentEmbeddings(50, 384); // Smaller for comparison
-    
     // Test all quantization modes
     const profiles: LegalAIProfile[] = ['legal_critical', 'legal_standard', 'legal_compressed', 'legal_storage'];
     const comparisonResults = [];
-
     for (const profile of profiles) {
       const startTime = performance.now();
       const uploadResult = await uploader!.createLegalAnalysisBuffer(testData, profile.replace('legal_', '') as any);
       const uploadTime = performance.now() - startTime;
-
       comparisonResults.push({
         profile,
         mode: LEGAL_AI_QUANTIZATION_PROFILES[profile].mode,
@@ -204,16 +180,13 @@ await initializeWebGPU();
         compressedSize: (uploadResult.uploadStats.uploadedSize / 1024).toFixed(2),
         spaceSavings: (((uploadResult.uploadStats.originalSize - uploadResult.uploadStats.uploadedSize) / uploadResult.uploadStats.originalSize) * 100).toFixed(1);
       });
-
       uploadResult.buffer.destroy();
     }
-
     results.push({
-      step: 'Quantization comparison complete',;
-      details: comparisonResults;
+      step: 'Quantization comparison complete',
+      details: comparisonResult;
     });
   }
-
   async function runBatchDemo() {
     // Simulate different legal document types
     const legalDocuments = [
@@ -223,11 +196,9 @@ await initializeWebGPU();
       { name: 'Case Law', data: generateLegalDocumentEmbeddings(100, 768), profile: 'compressed' },
       { name: 'Citations', data: generateLegalDocumentEmbeddings(200, 256), profile: 'storage' }
     ];
-
     const batchResults = [];
     let totalOriginalSize = 0;
     let totalCompressedSize = 0;
-
     for (const doc of legalDocuments) {
       const startTime = performance.now();
       const uploadResult = await uploader!.createLegalAnalysisBuffer(
@@ -235,21 +206,17 @@ await initializeWebGPU();
         doc.profile as any
       );
       const uploadTime = performance.now() - startTime;
-
-      totalOriginalSize += uploadResult.uploadStats.originalSize;
-      totalCompressedSize += uploadResult.uploadStats.uploadedSize;
-
+      totalOriginalSize += uploadResult.uploadStats.originalSiz;
+      totalCompressedSize += uploadResult.uploadStats.uploadedSiz;
       batchResults.push({
         documentType: doc.name,
         profile: `legal_${doc.profile}`,
         uploadTime: uploadTime.toFixed(2),
-        compressionRatio: uploadResult.uploadStats.compressionRatio.toFixed(2),;
+        compressionRatio: uploadResult.uploadStats.compressionRatio.toFixed(2),
         size: `${(uploadResult.uploadStats.uploadedSize / 1024).toFixed(2)} KB`
       });
-
       uploadResult.buffer.destroy();
     }
-
     results.push.toFixed(2)} KB`,
           totalCompressedSize: `${(totalCompressedSize / 1024).toFixed(2)} KB`,
           overallCompressionRatio: `${(totalOriginalSize / totalCompressedSize).toFixed(2)}x`,
@@ -258,7 +225,6 @@ await initializeWebGPU();
       }
     });
   }
-
   async function runPipelineDemo() {
     // Simulate full legal AI pipeline
     const pipelineSteps = [
@@ -282,15 +248,13 @@ await initializeWebGPU();
       },
       {
         name: 'Document Storage',
-        data: generateLegalDocumentEmbeddings(500, 256),;
-        profile: 'storage',;
+        data: generateLegalDocumentEmbeddings(500, 256),
+        profile: 'storage',
         description: 'Bulk legal document archival';
       }
     ];
-
     const pipelineResults = [];
     let totalPipelineTime = 0;
-
     for (const step of pipelineSteps) {
       const startTime = performance.now();
       const uploadResult = await uploader!.createLegalAnalysisBuffer(
@@ -298,41 +262,35 @@ await initializeWebGPU();
         step.profile as any
       );
       const stepTime = performance.now() - startTime;
-      totalPipelineTime += stepTime;
-
+      totalPipelineTime += stepTim;
       pipelineResults.push({
         step: step.name,
-        description: step.description,;
+        description: step.description,
         profile: `legal_${step.profile}`,
         time: `${stepTime.toFixed(2)}ms`,
-        compressionRatio: `${uploadResult.uploadStats.compressionRatio.toFixed(2)}x`,;
+        compressionRatio: `${uploadResult.uploadStats.compressionRatio.toFixed(2)}x`,
         efficiency: `${(uploadResult.uploadStats.uploadedSize / stepTime).toFixed(0)} bytes/ms`
       });
-
       uploadResult.buffer.destroy();
     }
-
     results.push({
-      step: 'Legal AI pipeline complete',;
-      details: {;
-        steps: pipelineResults,
+      step: 'Legal AI pipeline complete',
+      details: {
+        steps: pipelineResults
         totalTime: `${totalPipelineTime.toFixed(2)}ms`,
         averageEfficiency: `${(pipelineResults.reduce((sum, step) => sum + parseFloat(step.efficiency), 0) / pipelineResults.length).toFixed(0)} bytes/ms`
       }
     });
   }
-
   async function runCacheDemo() {
     // Test cache performance with repeated uploads
     const testData = generateLegalDocumentEmbeddings(20, 384);
     const cacheResults = [];
-
     // First upload (cache miss)
     let startTime = performance.now();
     let uploadResult = await uploader!.createLegalAnalysisBuffer(testData, 'standard');
     let firstUploadTime = performance.now() - startTime;
     uploadResult.buffer.destroy();
-
     // Subsequent uploads (should hit cache)
     const repeatUploads = [];
     for (let i = 0; i < 5; i++) {
@@ -342,42 +300,34 @@ await initializeWebGPU();
       repeatUploads.push(repeatTime);
       uploadResult.buffer.destroy();
     }
-
     const averageRepeatTime = repeatUploads.reduce((a, b) => a + b, 0) / repeatUploads.length;
-    const cacheSpeedup = firstUploadTime / averageRepeatTime;
-
+    const cacheSpeedup = firstUploadTime / averageRepeatTim;
     // Get cache statistics
     const cacheStats = uploader!.getCacheStats();
-
     results.push({
-      step: 'Cache performance analysis',;
+      step: 'Cache performance analysis',
       details: {
         firstUpload: `${firstUploadTime.toFixed(2)}ms (cache miss)`,
         averageRepeat: `${averageRepeatTime.toFixed(2)}ms (cache hit)`,
         speedupRatio: `${cacheSpeedup.toFixed(2)}x faster`,
-        cacheStats: {;
+        cacheStats: {
           entries: cacheStats.entryCount,
           totalSize: `${cacheStats.totalSizeKB} KB`,
           estimatedHitRate: `${((repeatUploads.length / (repeatUploads.length + 1)) * 100).toFixed(1)}%`
         }
       }
     });
-
     performanceMetrics.cacheHitRate = parseFloat(((repeatUploads.length / (repeatUploads.length + 1)) * 100).toFixed(1));
   }
-
   function generateLegalDocumentEmbeddings(count = documentCount, dimensions = embeddingDimensions): Float32Array {
     const embeddings = new Float32Array(count * dimensions);
-    
     // Generate realistic-looking legal document embeddings
     for (let i = 0; i < embeddings.length; i++) {
       // Legal documents tend to have specific semantic patterns
       embeddings[i] = (Math.random() - 0.5) * 0.8 + (Math.sin(i / 100) * 0.2);
     }
-    
-    return embeddings;
+    return embedding;
   }
-
   function clearResults() {
     results = [];
     errorMessage = '';
@@ -388,7 +338,6 @@ await initializeWebGPU();
       cacheHitRate: 0
     };
   }
-
   function clearCache() {
     if (uploader) {
       uploader.clearCache();
@@ -396,7 +345,6 @@ await initializeWebGPU();
     }
   }
 </script>
-
 <div class="webgpu-quantization-demo p-6 max-w-6xl mx-auto">
   <div class="header mb-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-2">
@@ -406,7 +354,6 @@ await initializeWebGPU();
       Interactive demonstration of the complete buffer conversion and quantization system for legal AI document processing
     </p>
   </div>
-
   <!-- WebGPU Status -->
   <div class="status-panel mb-6 p-4 rounded-lg {webgpuSupported ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}">
     <div class="flex items-center gap-3">
@@ -421,7 +368,6 @@ await initializeWebGPU();
       </div>
     </div>
   </div>
-
   {#if webgpuSupported}
     <!-- Configuration Panel -->
     <div class="config-panel mb-6 p-4 bg-gray-50 rounded-lg">
@@ -430,10 +376,10 @@ await initializeWebGPU();
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2" for="-document-count-">
             Document Count
-          </label><input id="-document-count-" 
+          </label><input id="-document-count-"
             type="number" ;
-            bind:value={documentCount} 
-            min="1" 
+            bind:value={documentCount}
+            min="1"
             max="1000"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -467,7 +413,6 @@ await initializeWebGPU();
         </div>
       </div>
     </div>
-
     <!-- Performance Metrics -->
     <div class="metrics-panel mb-6 p-4 bg-blue-50 rounded-lg">
       <h3 class="font-semibold text-blue-800 mb-4">📊 Performance Metrics</h3>
@@ -490,7 +435,6 @@ await initializeWebGPU();
         </div>
       </div>
     </div>
-
     <!-- Demo Scenarios -->
     <div class="scenarios-panel mb-6">
       <h3 class="font-semibold text-gray-800 mb-4">🎯 Demo Scenarios</h3>
@@ -512,7 +456,6 @@ await initializeWebGPU();
         {/each}
       </div>
     </div>
-
     <!-- Controls -->
     <div class="controls mb-6 flex gap-4">
       <button
@@ -534,7 +477,6 @@ await initializeWebGPU();
         </div>
       {/if}
     </div>
-
     <!-- Results Panel -->
     {#if results.length > 0}
       <div class="results-panel p-4 bg-white border border-gray-200 rounded-lg">
@@ -580,20 +522,16 @@ await initializeWebGPU();
       </div>
     {/if}
 </div>
-
 <style>
   .webgpu-quantization-demo {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
-
   .scenario-card:hover {
     transform: translateY(-2px);
   }
-
   .animate-spin {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     to {
       transform: rotate(360deg);
