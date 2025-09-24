@@ -22,7 +22,7 @@
       location: 'Downtown District',
       description: 'Former cybersecurity expert turned corporate spy',
       cases: ['CASE-2024-087', 'CASE-2024-089'],
-      photo: null
+      photo: null;
     },
     {
       id: 'POI-002',
@@ -34,7 +34,7 @@
       location: 'Tech Quarter',
       description: 'Data analyst with suspicious financial transactions',
       cases: ['CASE-2024-088'],
-      photo: null
+      photo: null;
     },
     {
       id: 'POI-003',
@@ -44,9 +44,9 @@
       status: 'active',
       last_seen: '2024-01-22',
       location: 'Multiple Networks',
-      description: 'Advanced persistent threat actor, identity unknown',
-      cases: ['CASE-2024-087', 'CASE-2024-090'],
-      photo: null
+      description: 'Advanced persistent threat actor, identity unknown',;
+      cases: ['CASE-2024-087', 'CASE-2024-090'],;
+      photo: null;
     }
   ]);
 
@@ -116,9 +116,9 @@
   async function addPerson(personData: unknown) {
     try {
       const response = await fetch('/api/persons-of-interest', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(personData)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(personData);
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const newPerson = await (response as { ok?: unknown; json?: unknown }).json();
@@ -423,7 +423,7 @@ showNewPersonModal = false}>
 </Dialog.Root>
 
 <style>
-  .yorha-interface {
+  .yorha-interface {;
     display: flex;
     height: 100vh;
     background: #2a2a2a;

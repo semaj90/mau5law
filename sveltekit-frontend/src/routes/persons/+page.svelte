@@ -59,7 +59,7 @@
       dateOfBirth: '1982-03-15',
       address: '2847 Tech Boulevard, Silicon Valley',
       relationship: 'suspect',
-      threatLevel: 'high',
+      threatLevel: 'high',;
       status: 'active',
       profileData: {
         occupation: 'Software Engineer',
@@ -70,10 +70,10 @@
         contactInfo: 'marcus.chen@techcorp.com, (555) 012-3456',
         criminalHistory: ['Computer Fraud - 2019', 'Identity Theft - 2020'],
         notes: 'Highly skilled in cybersecurity. Potential access to sensitive systems.',
-        photo: 'https://ui-avatars.com/api/?name=MC&background=dc2626&color=fff&size=200'
+        photo: 'https://ui-avatars.com/api/?name=MC&background=dc2626&color=fff&size=200';
       },
       tags: ['cybercrime', 'fraud', 'high-tech'],
-      caseIds: ['case-2024-001', 'case-2024-007'],
+      caseIds: ['case-2024-001', 'case-2024-007'],;
       position: { x: 37.7749, y: -122.4194 },
       createdBy: 'detective-001',
       createdAt: '2024-12-20T10:30:00Z',
@@ -86,7 +86,7 @@
       dateOfBirth: '1990-07-22',
       address: '156 Harbor View Lane, Waterfront District',
       relationship: 'witness',
-      threatLevel: 'low',
+      threatLevel: 'low',;
       status: 'active',
       profileData: {
         occupation: 'Financial Analyst',
@@ -97,10 +97,10 @@
         contactInfo: 'i.santos@financegroup.com, (555) 987-6543',
         criminalHistory: [],
         notes: 'Cooperative witness. Has valuable information about financial transactions.',
-        photo: 'https://ui-avatars.com/api/?name=IS&background=059669&color=fff&size=200'
+        photo: 'https://ui-avatars.com/api/?name=IS&background=059669&color=fff&size=200';
       },
       tags: ['finance', 'witness', 'cooperative'],
-      caseIds: ['case-2024-003'],
+      caseIds: ['case-2024-003'],;
       position: { x: 37.7849, y: -122.4094 },
       createdBy: 'detective-002',
       createdAt: '2024-12-19T09:15:00Z',
@@ -113,7 +113,7 @@
       dateOfBirth: '1975-11-08',
       address: 'Unknown - Last seen Industrial Area',
       relationship: 'person_of_interest',
-      threatLevel: 'critical',
+      threatLevel: 'critical',;
       status: 'active',
       profileData: {
         occupation: 'Unknown',
@@ -124,10 +124,10 @@
         contactInfo: 'Multiple burner phones',
         criminalHistory: ['Organized Crime - 2010', 'Arms Trafficking - 2015', 'Racketeering - 2018'],
         notes: 'EXTREMELY DANGEROUS. Do not approach alone. Armed and dangerous.',
-        photo: 'https://ui-avatars.com/api/?name=VK&background=991b1b&color=fff&size=200'
+        photo: 'https://ui-avatars.com/api/?name=VK&background=991b1b&color=fff&size=200';
       },
       tags: ['organized-crime', 'dangerous', 'armed'],
-      caseIds: ['case-2024-001', 'case-2024-004', 'case-2024-008'],
+      caseIds: ['case-2024-001', 'case-2024-004', 'case-2024-008'],;
       position: { x: 37.7649, y: -122.3894 },
       createdBy: 'detective-001',
       createdAt: '2024-12-18T14:20:00Z',
@@ -268,7 +268,7 @@
             <span class="hidden sm:inline">FILTERS</span>
           </button>
 
-          <select
+          <select;
             bind:value={viewMode}
             class="nes-legal-priority-medium yorha-3d-button bg-transparent"
           >
@@ -306,7 +306,7 @@
         <input
           type="text"
           placeholder="Search persons, aliases, occupations, tags..."
-          class="w-full pl-12 pr-4 py-3 bg-gray-800 border-2 border-yellow-600 rounded-lg text-white placeholder-gray-400 focus:border-yellow-400 focus:outline-none"
+          class="w-full pl-12 pr-4 py-3 bg-gray-800 border-2 border-yellow-600 rounded-lg text-white placeholder-gray-400 focus:border-yellow-400 focus:outline-none";
           bind:value={searchQuery}
         />
         {#if isLoading}
@@ -319,7 +319,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-yellow-600/30">
           <!-- Threat Level Filter -->
           <div>
-            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="threat-level">Threat Level</label><select id="threat-level"
+            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="threat-level">Threat Level</label><select id="threat-level";
               bind:value={selectedThreatLevel}
               class="w-full p-3 bg-gray-800 border border-yellow-600 rounded text-white"
             >
@@ -362,7 +362,7 @@
           <div>
             <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase">Sort By</label>
             <div class="flex gap-2">
-              <select
+              <select;
                 bind:value={sortBy}
                 class="flex-1 p-3 bg-gray-800 border border-yellow-600 rounded text-white text-sm"
               >

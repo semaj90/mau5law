@@ -32,19 +32,19 @@
       id: '1',
       sender: 'assistant',
       content: 'YoRHa AI Assistant Online - Detective Support System Active',
-      timestamp: '19:02:52'
+      timestamp: '19:02:52';
     },
     {
       id: '2',
       sender: 'assistant',
       content: 'Greetings, Detective. I am 9S, your AI investigation assistant. How may I assist with your case analysis today?',
-      timestamp: '19:02:52'
+      timestamp: '19:02:52';
     },
     {
       id: '3',
-      sender: 'assistant',
-      content: 'Hello, Detective! I am 9S, your retro AI investigation assistant. How can',
-      timestamp: '19:02:57'
+      sender: 'assistant',;
+      content: 'Hello, Detective! I am 9S, your retro AI investigation assistant. How can',;
+      timestamp: '19:02:57';
     }
   ]);
 
@@ -68,7 +68,7 @@
   // Enhanced chat builder
   const chatBuilder = createLegalChatInterface({
     practiceArea: 'litigation',
-    confidentiality: 'privileged'
+    confidentiality: 'privileged';
   });
 
   let messagesContainer: HTMLElement;
@@ -100,9 +100,9 @@
 
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      sender: 'detective',
-      content: currentInput,
-      timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0')
+      sender: 'detective',;
+      content: currentInput,;
+      timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0');
     };
 
     messages.push(userMessage);
@@ -113,10 +113,10 @@
     isTyping = true;
     const typingMessage: ChatMessage = {
       id: 'typing',
-      sender: 'assistant',
-      content: '9S is ANALYZING...',
+      sender: 'assistant',;
+      content: '9S is ANALYZING...',;
       timestamp: currentTime + ':' + (new Date().getSeconds() + 1).toString().padStart(2, '0'),
-      isTyping: true
+      isTyping: true;
     };
     messages.push(typingMessage);
 
@@ -129,9 +129,9 @@
       // Add AI response
       const aiResponse: ChatMessage = {
         id: crypto.randomUUID(),
-        sender: 'assistant',
-        content: generateDetectiveResponse(input),
-        timestamp: currentTime + ':' + (new Date().getSeconds() + 2).toString().padStart(2, '0')
+        sender: 'assistant',;
+        content: generateDetectiveResponse(input),;
+        timestamp: currentTime + ':' + (new Date().getSeconds() + 2).toString().padStart(2, '0');
       };
       messages.push(aiResponse);
     }, 2000);
@@ -151,7 +151,7 @@
   function selectSidebarItem(index: number) {
     sidebarItems = sidebarItems.map((item, i) => ({
       ...item,
-      active: i === index
+      active: i === index;
     }));
   }
 
@@ -324,7 +324,7 @@
 </div>
 
 <style>
-  .yorha-detective-interface {
+  .yorha-detective-interface {;
     display: flex;
     height: 100vh;
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);

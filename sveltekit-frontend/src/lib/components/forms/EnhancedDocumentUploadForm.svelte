@@ -170,8 +170,8 @@
       title: "",
       description: "",
       documentType: "other",
-      jurisdiction: undefined,
-      tags: [],
+      jurisdiction: undefined,;
+      tags: [],;
       file: null,
       aiProcessing: {
         generateSummary: true,
@@ -383,7 +383,7 @@
               Title *
             </label>
             <Input
-              id="title"
+              id="title";
               bind:value={$formData.title}
               placeholder="Enter document title"
               class={$errors.title ? "border-red-500" : ""}
@@ -431,7 +431,7 @@
               <label for="jurisdiction" class="block text-sm font-medium mb-2">
                 Jurisdiction
               </label>
-              <Select
+              <Select;
                 bind:value={$formData.jurisdiction}
                 disabled={$isSubmitting}
               >
@@ -508,7 +508,7 @@
               </span>
             </Checkbox>
 
-            <Checkbox
+            <Checkbox;
               bind:checked={$formData.aiProcessing.generateRecommendations}
               disabled={$isSubmitting}
             >

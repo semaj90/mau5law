@@ -30,18 +30,18 @@ export interface SessionState {
 
 // Create reactive session state using Svelte 5 runes
 export const sessionState = $state<SessionState>({
-  user: null,
+  user: null,;
   session: null,
   isAuthenticated: false,
   isLoading: true,
   lastSyncAt: 0
 });
 
-// Derived stores for common use cases
-export const user = $derived(sessionState.user);
-export const isAuthenticated = $derived(sessionState.isAuthenticated);
-export const isLoading = $derived(sessionState.isLoading);
-export const currentUser = $derived(sessionState.user);
+// Derived stores for common use cases (as functions)
+export const getUser = () => sessionState.user;
+export const getIsAuthenticated = () => sessionState.isAuthenticated;
+export const getIsLoading = () => sessionState.isLoading;
+export const getCurrentUser = () => sessionState.user;
 
 // Session management functions
 export const sessionActions = {

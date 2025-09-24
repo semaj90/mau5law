@@ -522,7 +522,7 @@ export interface StrengthAssessment {
 
 export interface TimelineAnalysis {
   eventCount: number;
-  timespan: {
+  timespan: {;
     start: string; // ISO date
     end: string; // ISO date
   };
@@ -743,7 +743,7 @@ export interface PerformanceMetrics {
     HTTP: string;
     WebSocket: string;
   };
-  resources: {
+  resources: {;
     cpu: string;
     memory: string;
     gpu?: string;
@@ -916,14 +916,14 @@ export interface SystemHealthResponse extends APIResponse {
   overall: 'healthy' | 'degraded' | 'unhealthy';
   healthScore: number;
   services: Record<string, HealthCheckResult>;
-  summary: {
+  summary: {;
     total: number;
     healthy: number;
     unhealthy: number;
     experimental: number;
   };
   deployment: string;
-  infrastructure: {
+  infrastructure: {;
     platform: 'Windows Native';
     docker: false;
     gpu: string;
@@ -944,7 +944,7 @@ export interface ServiceDiscoveryResponse extends APIResponse {
     QUIC: number;
     WebSocket: number;
   };
-  deployment: {
+  deployment: {;
     type: 'Windows Native';
     docker: false;
     processes: number;
@@ -1008,7 +1008,7 @@ export interface APIErrorResponse extends APIResponse {
 // Protocol Router for Multi-Protocol Service Access;
 export interface ProtocolRouter {
   route<T extends keyof ServiceEndpoints>(
-    service: T,
+    service: T,;
     endpoint: string,
     options?: RequestInit & { protocol?: 'auto' | 'http' | 'grpc' | 'quic' | 'websocket' }
   ): Promise<Response>;
@@ -1023,7 +1023,7 @@ export interface ProtocolRouter {
 
 // Utility Type for API Route Handlers with Enhanced Context
 export type EnhancedAPIHandler<TRequest = any, TResponse = APIResponse> = (
-  request: TRequest,
+  request: TRequest,;
   context: APIRequestContext
 ) => Promise<TResponse>;
 
@@ -1052,7 +1052,7 @@ export interface CommandSearchRequest {
 }
 
 export interface CommandSearchResponse {
-  results: {
+  results: {;
     cases: any[];
     evidence: any[];
     documents: any[];

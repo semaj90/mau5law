@@ -1,36 +1,36 @@
 // Anonymous Chat API - No authentication required
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 interface ChatRequest {
-  messages: Array<any>;
-  model?: string;
-  stream?: boolean;
+  messages: Array<any>
+  model?: string
+  stream?: boolean
 }
 
 interface OllamaResponse {
-  model: string;
-  created_at: string;
-  response: string;
-  done: boolean;
+  model: string
+  created_at: string
+  response: string
+  done: boolean
 }
 
-// POST: Anonymous chat without database persistence;
+// POST: Anonymous chat without database persistence
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body: ChatRequest = await request.json();
-    const { messages, model = 'gemma3-legal:latest', stream = false } = body;
+    const body: ChatRequest = await request.json()
+    const { messages, model = 'gemma3-legal:latest', stream = false } = body
 
     if (!messages || messages.length === 0) {
-      return json({ error: 'Messages array required' }, { status: 400 });
+      return json({ error: 'Messages array required' }, { status: 400 })
     }
 
-    const lastUserMessage = messages.filter((msg) => msg.role === 'user').pop();
+    const lastUserMessage = messages.filter((msg) => msg.role === 'user').pop()
     if (!lastUserMessage) {
-      return json({ error: 'No user message found' }, { status: 400 });
+      return json({ error: 'No user message found' }, { status: 400 })
     }
 
-    const startTime = Date.now();
+    const startTime = Date.now()
 
     // Create legal prompt with context
     const legalPrompt = `You are YoRHa Legal AI, an advanced legal analysis system. Provide professional legal analysis with the following guidelines:
@@ -43,10 +43,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
 User Question: ${lastUserMessage.content}
 
-Legal Analysis:`;
+Legal Analysis:`
 
     try {
-      // Call Ollama service directly;
+      // Call Ollama service directly
       const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -60,16 +60,16 @@ Legal Analysis:`;
             top_k: 40
           }
         })
-      });
+      })
 
       if (!ollamaResponse.ok) {
-        throw new Error(`Ollama service error: ${ollamaResponse.status}`);
+        throw new Error(`Ollama service error: ${ollamaResponse.status}`)
       }
 
-      const ollamaData: OllamaResponse = await ollamaResponse.json();
-      const responseTime = Date.now() - startTime;
+      const ollamaData: OllamaResponse = await ollamaResponse.json()
+      const responseTime = Date.now() - startTime
 
-      // Return formatted response;
+      // Return formatted response
       return json({
         success: true,
         response: ollamaData.response,
@@ -83,13 +83,13 @@ Legal Analysis:`;
           analysisType: 'legal-query',
           wordCount: ollamaData.response.split(' ').length
         }
-      });
+      })
 
     } catch (ollamaError) {
-      console.error('Ollama service error:', ollamaError);
+      console.error('Ollama service error:', ollamaError)
       
       // Fallback response when Ollama is unavailable
-      const responseTime = Date.now() - startTime;
+      const responseTime = Date.now() - startTime
       return json({
         success: true,
         response: `I'm YoRHa Legal AI. I understand you're asking about: "${lastUserMessage.content}"
@@ -115,16 +115,16 @@ Currently running in demo mode. For detailed legal analysis, please ensure the O
           analysisType: 'demo-response',
           mode: 'fallback'
         }
-      });
+      })
     }
 
   } catch (error) {
-    console.error('Anonymous chat error:', error);
+    console.error('Anonymous chat error:', error)
     return json({ 
-        error: 'Failed to process chat request', 
+        error: 'Failed to process chat request',
         details: error instanceof Error ? error.message: 'Unknown error'
       }, )
       { status: 500 }
-    );
+    )
   }
-};
+}

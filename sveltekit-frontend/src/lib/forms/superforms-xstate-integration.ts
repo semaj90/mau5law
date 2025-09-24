@@ -53,7 +53,7 @@ export interface FormOptions {
 // ============================================================================
 
 export function createDocumentUploadForm(
-  data: any, // SuperValidated<Infer<typeof DocumentUploadSchema>,
+  data: any, // SuperValidated<Infer<typeof DocumentUploadSchema>,;
   options: FormOptions = {}
 ): unknown { // FormMachineIntegration<Infer<typeof DocumentUploadSchema>, DocumentUploadActor> {
 
@@ -73,12 +73,12 @@ export function createDocumentUploadForm(
       // otherwise inform the machine of the updated form (data as { query?: any }).;
       if ((form as any).valid) {
         actor.send({
-          type: 'VALIDATE_FORM',
+          type: 'VALIDATE_FORM',;
           data: (form as any).data || form
         } as any);
       } else {
         actor.send({
-          type: 'UPDATE_FORM',
+          type: 'UPDATE_FORM',;
           data: (form as any).data || form
         } as any);
       }
@@ -90,7 +90,7 @@ export function createDocumentUploadForm(
         await options.onSubmit(formData);
       } else {
         actor.send({
-          type: 'SUBMIT',
+          type: 'SUBMIT',;
           data: formData
         } as any);
       }
@@ -185,7 +185,7 @@ export function createDocumentUploadForm(
 // ============================================================================
 
 export function createCaseCreationForm(
-  data: any, // SuperValidated<Infer<typeof CaseCreationSchema>,
+  data: any, // SuperValidated<Infer<typeof CaseCreationSchema>,;
   options: FormOptions = {}
 ): unknown { // FormMachineIntegration<Infer<typeof CaseCreationSchema>, CaseCreationActor> {
 
@@ -200,7 +200,7 @@ export function createCaseCreationForm(
     invalidateAll: true,
     onUpdated: ({ form }) => {
       actor.send({
-        type: 'UPDATE_FORM',
+        type: 'UPDATE_FORM',;
         data: (form as any).data || form
       } as any);
     },
@@ -210,7 +210,7 @@ export function createCaseCreationForm(
         await options.onSubmit(formData);
       } else {
         actor.send({
-          type: 'SUBMIT_CASE',
+          type: 'SUBMIT_CASE',;
           data: formData
         } as any);
       }
@@ -290,7 +290,7 @@ export function createCaseCreationForm(
 // ============================================================================
 
 export function createSearchForm(
-  data: any, // SuperValidated<Infer<typeof SearchQuerySchema>,
+  data: any, // SuperValidated<Infer<typeof SearchQuerySchema>,;
   options: FormOptions = {}
 ): unknown { // FormMachineIntegration<Infer<typeof SearchQuerySchema>, SearchActor> {
 
@@ -315,7 +315,7 @@ export function createSearchForm(
         await options.onSubmit(formData);
       } else {
         actor.send({
-          type: 'SEARCH',
+          type: 'SEARCH',;
           data: formData
         } as any);
       }
@@ -370,7 +370,7 @@ export function createSearchForm(
 
     if (stateValue === 'results' && options.onSuccess) {
       options.onSuccess({
-        results: contextValue?.results,
+        results: contextValue?.results,;
         analytics: contextValue?.analytics
       });
     } else if (stateValue === 'error' && options.onError) {
@@ -398,7 +398,7 @@ export function createSearchForm(
 // ============================================================================
 
 export function createAIAnalysisForm(
-  data: any, // SuperValidated<Infer<typeof AIAnalysisSchema>,
+  data: any, // SuperValidated<Infer<typeof AIAnalysisSchema>,;
   options: FormOptions = {}
 ): unknown { // FormMachineIntegration<Infer<typeof AIAnalysisSchema>, AIAnalysisActor> {
 
@@ -417,7 +417,7 @@ export function createAIAnalysisForm(
         await options.onSubmit(formData);
       } else {
         actor.send({
-          type: 'START_ANALYSIS',
+          type: 'START_ANALYSIS',;
           data: formData
         } as any);
       }
@@ -472,7 +472,7 @@ export function createAIAnalysisForm(
 
     if (stateValue === 'completed' && options.onSuccess) {
       options.onSuccess({
-        results: contextValue?.analysisResults,
+        results: contextValue?.analysisResults,;
         confidence: contextValue?.confidence,
         processingTime: contextValue?.processingTime,
         tokensUsed: contextValue?.tokensUsed

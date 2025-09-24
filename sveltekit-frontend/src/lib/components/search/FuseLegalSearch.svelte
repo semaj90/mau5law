@@ -5,8 +5,8 @@
   import { onMount } from 'svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
-  import Button from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import * as Card from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Search, Loader2, ExternalLink, Bot } from 'lucide-svelte';
@@ -36,13 +36,13 @@
       { name: 'code', weight: 0.2 },
       { name: 'keywords', weight: 0.1 },
     ],
-    threshold: 0.3, // Lower = more strict matching
+    threshold: 0.3, // Lower = more strict matching;
     distance: 100, // How far to search for pattern
     minMatchCharLength: 2,
     includeScore: true,
     includeMatches: true,
     ignoreLocation: true, // Search anywhere in the text
-    useExtendedSearch: true, // Enable advanced search patterns
+    useExtendedSearch: true, // Enable advanced search patterns;
   };
 
   // Initialize Fuse.js when data changes
@@ -244,7 +244,7 @@ handleAIAction(law, 'chat')}>
 </div>
 
 <style>
-  :global(mark) {
+  :global(mark) {;
     background-color: theme(colors.yellow.200);
     padding: 0.125rem 0.25rem;
     border-radius: 0.25rem;

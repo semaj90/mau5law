@@ -1,8 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
-  export interface Settings {
+  export interface Settings {;
     theme: string;
     language: string;
     ttsEngine: string;
@@ -18,7 +18,7 @@ https://svelte.dev/e/props_duplicate -->
 
   // Default settings object
   const defaultSettings: Settings = {
-    theme: 'light',
+    theme: 'light',;
     language: 'en',
     ttsEngine: 'default',
     voiceLanguage: 'en-US',
@@ -28,7 +28,7 @@ https://svelte.dev/e/props_duplicate -->
     maxHistoryItems: 50,
     enableNotifications: true,
     fontFamily: 'Arial',
-    fontSize: '16px'
+    fontSize: '16px';
   };
 
   // Bindable props with defaults

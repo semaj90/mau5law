@@ -1,148 +1,148 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 interface NarrativeSection {
-  id: string;
-  title: string;
-  content: string;
-  sectionType: 'OPENING' | 'FACTS' | 'EVIDENCE' | 'ARGUMENT' | 'CONCLUSION' | 'TIMELINE' | 'WITNESS' | 'EXPERT';
-  order: number;
-  wordCount: number;
-  confidence: number;
-  lastUpdated: string;
-  aiGenerated: boolean;
-  sources: string[];
-  tags: string[];
-  legalReferences: string[];
-  evidenceReferences: string[];
+  id: string
+  title: string
+  content: string
+  sectionType: 'OPENING' | 'FACTS' | 'EVIDENCE' | 'ARGUMENT' | 'CONCLUSION' | 'TIMELINE' | 'WITNESS' | 'EXPERT'
+  order: number
+  wordCount: number
+  confidence: number
+  lastUpdated: string
+  aiGenerated: boolean
+  sources: string[]
+  tags: string[]
+  legalReferences: string[]
+  evidenceReferences: string[]
   metadata: {
-    tone: 'FORMAL' | 'PERSUASIVE' | 'NEUTRAL' | 'AGGRESSIVE' | 'DEFENSIVE';
-    audience: 'JUDGE' | 'JURY' | 'OPPOSING_COUNSEL' | 'CLIENT' | 'GENERAL';
-    complexity: 'SIMPLE' | 'MODERATE' | 'COMPLEX' | 'EXPERT';
-    style: 'NARRATIVE' | 'ANALYTICAL' | 'CHRONOLOGICAL' | 'THEMATIC';
-  };
-  suggestions: Array<any>;
+    tone: 'FORMAL' | 'PERSUASIVE' | 'NEUTRAL' | 'AGGRESSIVE' | 'DEFENSIVE'
+    audience: 'JUDGE' | 'JURY' | 'OPPOSING_COUNSEL' | 'CLIENT' | 'GENERAL'
+    complexity: 'SIMPLE' | 'MODERATE' | 'COMPLEX' | 'EXPERT'
+    style: 'NARRATIVE' | 'ANALYTICAL' | 'CHRONOLOGICAL' | 'THEMATIC'
+  }
+  suggestions: Array<any>
   revisionHistory: Array<any>
 
 interface CaseNarrative {
-  id: string;
-  caseId: string;
-  title: string;
-  narrativeType: 'OPENING_STATEMENT' | 'CLOSING_ARGUMENT' | 'CASE_SUMMARY' | 'BRIEF' | 'MOTION' | 'INVESTIGATION_REPORT';
-  status: 'DRAFT' | 'REVIEW' | 'APPROVED' | 'FINAL';
-  sections: NarrativeSection[];
-  totalWordCount: number;
-  estimatedReadingTime: number;
-  overallConfidence: number;
-  createdAt: string;
-  lastModified: string;
-  author: string;
-  reviewers: string[];
-  template?: string;
-  aiAssistanceLevel: 'NONE' | 'SUGGESTIONS' | 'COLLABORATIVE' | 'FULLY_GENERATED';
+  id: string
+  caseId: string
+  title: string
+  narrativeType: 'OPENING_STATEMENT' | 'CLOSING_ARGUMENT' | 'CASE_SUMMARY' | 'BRIEF' | 'MOTION' | 'INVESTIGATION_REPORT'
+  status: 'DRAFT' | 'REVIEW' | 'APPROVED' | 'FINAL'
+  sections: NarrativeSection[]
+  totalWordCount: number
+  estimatedReadingTime: number
+  overallConfidence: number
+  createdAt: string
+  lastModified: string
+  author: string
+  reviewers: string[]
+  template?: string
+  aiAssistanceLevel: 'NONE' | 'SUGGESTIONS' | 'COLLABORATIVE' | 'FULLY_GENERATED'
   qualityMetrics: {
-    clarity: number;
-    persuasiveness: number;
-    factualAccuracy: number;
-    legalSoundness: number;
-    coherence: number;
-  };
+    clarity: number
+    persuasiveness: number
+    factualAccuracy: number
+    legalSoundness: number
+    coherence: number
+  }
 }
 
 interface NarrativeRequest {
-  narrativeType?: CaseNarrative['narrativeType'];
-  sections?: string[];
-  tone?: NarrativeSection['metadata']['tone'];
-  audience?: NarrativeSection['metadata']['audience'];
-  includeEvidence?: boolean;
-  includeTimeline?: boolean;
-  includeWitnesses?: boolean;
-  aiAssistance?: boolean;
-  template?: string;
-  maxWordCount?: number;
-  focusAreas?: string[];
+  narrativeType?: CaseNarrative['narrativeType']
+  sections?: string[]
+  tone?: NarrativeSection['metadata']['tone']
+  audience?: NarrativeSection['metadata']['audience']
+  includeEvidence?: boolean
+  includeTimeline?: boolean
+  includeWitnesses?: boolean
+  aiAssistance?: boolean
+  template?: string
+  maxWordCount?: number
+  focusAreas?: string[]
 }
 
 interface AIWritingAssistance {
-  suggestions: Array<any>;
-  alternativePhrasings: Array<any>;
-  factChecking: Array<any>;
-  legalReferences: Array<any>;
+  suggestions: Array<any>
+  alternativePhrasings: Array<any>
+  factChecking: Array<any>
+  legalReferences: Array<any>
   strengthWeaknessAnalysis: {
-    strengths: string[];
-    weaknesses: string[];
-    recommendations: string[];
-  };
+    strengths: string[]
+    weaknesses: string[]
+    recommendations: string[]
+  }
 }
 
 export const GET: RequestHandler = async ({ params, url }) => {
   try {
-    const caseId = params.caseId;
+    const caseId = params.caseId
     
     if (!caseId) {
       return json(
         { success: false, error: 'Case ID required' },)
         { status: 400 }
-      );
+      )
     }
 
-    const narrativeId = url.searchParams.get('narrativeId');
-    const includeAI = url.searchParams.get('includeAI') === 'true';
-    const includeRevisions = url.searchParams.get('includeRevisions') === 'true';
+    const narrativeId = url.searchParams.get('narrativeId')
+    const includeAI = url.searchParams.get('includeAI') === 'true'
+    const includeRevisions = url.searchParams.get('includeRevisions') === 'true'
 
     if (narrativeId) {
       // Get specific narrative
-      const narrative = await getCaseNarrative(caseId, narrativeId, includeRevisions);
-      let aiAssistance = null;
+      const narrative = await getCaseNarrative(caseId, narrativeId, includeRevisions)
+      let aiAssistance = null
       
       if (includeAI && narrative) {
-        aiAssistance = await generateAIWritingAssistance(narrative);
+        aiAssistance = await generateAIWritingAssistance(narrative)
       }
 
       return json({
         success: true,
         narrative,
         aiAssistance
-      });
+      })
     } else {
       // Get all narratives for case
-      const narratives = await getAllCaseNarratives(caseId);
+      const narratives = await getAllCaseNarratives(caseId)
       
       return json({
         success: true,
         narratives,
         totalCount: narratives.length
-      });
+      })
     }
 
   } catch (error) {
-    console.error('Narrative API error:', error);
+    console.error('Narrative API error:', error)
     return json(
       { success: false, error: 'Failed to retrieve narrative data' },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 export const POST: RequestHandler = async ({ params, request }) => {
   try {
-    const caseId = params.caseId;
-    const narrativeRequest: NarrativeRequest = await request.json();
+    const caseId = params.caseId
+    const narrativeRequest: NarrativeRequest = await request.json()
 
     if (!caseId) {
       return json(
         { success: false, error: 'Case ID required' },)
         { status: 400 }
-      );
+      )
     }
 
     // Generate new narrative
-    const narrative = await generateCaseNarrative(caseId, narrativeRequest);
+    const narrative = await generateCaseNarrative(caseId, narrativeRequest)
     
     // Generate AI assistance if requested
-    let aiAssistance = null;
+    let aiAssistance = null
     if (narrativeRequest.aiAssistance) {
-      aiAssistance = await generateAIWritingAssistance(narrative);
+      aiAssistance = await generateAIWritingAssistance(narrative)
     }
 
     return json({
@@ -150,64 +150,64 @@ export const POST: RequestHandler = async ({ params, request }) => {
       narrative,
       aiAssistance,
       message: 'Case narrative generated successfully'
-    });
+    })
 
   } catch (error) {
-    console.error('Narrative generation error:', error);
+    console.error('Narrative generation error:', error)
     return json(
       { success: false, error: 'Failed to generate narrative' },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 export const PUT: RequestHandler = async ({ params, request }) => {
   try {
-    const caseId = params.caseId;
-    const updates = await request.json();
+    const caseId = params.caseId
+    const updates = await request.json()
 
     if (!caseId) {
       return json(
         { success: false, error: 'Case ID required' },)
         { status: 400 }
-      );
+      )
     }
 
-    const narrativeId = updates.narrativeId;
+    const narrativeId = updates.narrativeId
     if (!narrativeId) {
       return json(
         { success: false, error: 'Narrative ID required for updates' },)
         { status: 400 }
-      );
+      )
     }
 
     // Update narrative
-    const updatedNarrative = await updateCaseNarrative(caseId, narrativeId, updates);
+    const updatedNarrative = await updateCaseNarrative(caseId, narrativeId, updates)
     
     // Generate fresh AI assistance
-    const aiAssistance = await generateAIWritingAssistance(updatedNarrative);
+    const aiAssistance = await generateAIWritingAssistance(updatedNarrative)
 
     return json({
       success: true,
       narrative: updatedNarrative,
       aiAssistance,
       message: 'Narrative updated successfully'
-    });
+    })
 
   } catch (error) {
-    console.error('Narrative update error:', error);
+    console.error('Narrative update error:', error)
     return json(
       { success: false, error: 'Failed to update narrative' },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 async function getCaseNarrative(caseId: string, narrativeId: string, includeRevisions: boolean = false): Promise<CaseNarrative | null> {
   // In production, query database
   // For now, generate mock narrative
   
-  return generateMockNarrative(caseId, narrativeId, includeRevisions);
+  return generateMockNarrative(caseId, narrativeId, includeRevisions)
 }
 
 async function getAllCaseNarratives(caseId: string): Promise<CaseNarrative[]> {
@@ -216,14 +216,14 @@ async function getAllCaseNarratives(caseId: string): Promise<CaseNarrative[]> {
     generateMockNarrative(caseId, 'NARRATIVE-001', false),
     generateMockNarrative(caseId, 'NARRATIVE-002', false),
     generateMockNarrative(caseId, 'NARRATIVE-003', false)
-  ].filter(Boolean) as CaseNarrative[];
+  ].filter(Boolean) as CaseNarrative[]
 }
 
 async function generateCaseNarrative(caseId: string, request: NarrativeRequest): Promise<CaseNarrative> {
   // Mock AI-generated narrative based on request
-  const narrativeId = `NARRATIVE-${Date.now()}`;
+  const narrativeId = `NARRATIVE-${Date.now()}`
   
-  const sections: NarrativeSection[] = [;
+  const sections: NarrativeSection[] = [
     {
       id: 'SECTION-001',
       title: 'Case Overview',
@@ -311,9 +311,9 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
         version: 1
       }]
     }
-  ];
+  ]
 
-  const totalWordCount = sections.reduce((sum, section) => sum + section.wordCount, 0);
+  const totalWordCount = sections.reduce((sum, section) => sum + section.wordCount, 0)
 
   return {
     id: narrativeId,
@@ -338,18 +338,18 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
       legalSoundness: 0.89,
       coherence: 0.91
     }
-  };
+  }
 }
 
 async function updateCaseNarrative(caseId: string, narrativeId: string, updates: any): Promise<CaseNarrative> {
   // Mock update implementation
-  const existing = await getCaseNarrative(caseId, narrativeId) || generateMockNarrative(caseId, narrativeId);
+  const existing = await getCaseNarrative(caseId, narrativeId) || generateMockNarrative(caseId, narrativeId)
   
   if (!existing) {
-    throw new Error('Narrative not found');
+    throw new Error('Narrative not found')
   }
 
-  // Apply updates;
+  // Apply updates
   const updatedNarrative: CaseNarrative = {
     ...existing,
     ...updates,
@@ -368,20 +368,20 @@ async function updateCaseNarrative(caseId: string, narrativeId: string, updates:
         }
       ]
     })) : existing.sections
-  };
+  }
 
   // Recalculate metrics
-  updatedNarrative.totalWordCount = updatedNarrative.sections.reduce((sum, section) => sum + section.wordCount, 0);
-  updatedNarrative.estimatedReadingTime = Math.ceil(updatedNarrative.totalWordCount / 250);
-  updatedNarrative.overallConfidence = updatedNarrative.sections.reduce((sum, section) => sum + section.confidence, 0) / updatedNarrative.sections.length;
+  updatedNarrative.totalWordCount = updatedNarrative.sections.reduce((sum, section) => sum + section.wordCount, 0)
+  updatedNarrative.estimatedReadingTime = Math.ceil(updatedNarrative.totalWordCount / 250)
+  updatedNarrative.overallConfidence = updatedNarrative.sections.reduce((sum, section) => sum + section.confidence, 0) / updatedNarrative.sections.length
 
-  return updatedNarrative;
+  return updatedNarrative
 }
 
 async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AIWritingAssistance> {
-  // Mock AI writing assistance;
+  // Mock AI writing assistance
   return {
-    suggestions: [;
+    suggestions: [
       {
         section: 'SECTION-001',
         type: 'CONTENT',
@@ -423,7 +423,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         impact: 'HIGH'
       }
     ],
-    alternativePhrasings: [;
+    alternativePhrasings: [
       {
         original: 'The evidence clearly shows',
         alternatives: [
@@ -445,7 +445,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         context: 'Factual analysis introduction'
       }
     ],
-    factChecking: [;
+    factChecking: [
       {
         claim: 'Incident occurred on January 15, 2024',
         verification: 'VERIFIED',
@@ -465,7 +465,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         notes: 'Minor inconsistencies noted in witness accounts requiring clarification'
       }
     ],
-    legalReferences: [;
+    legalReferences: [
       {
         concept: 'Chain of custody',
         suggestedCitations: [
@@ -515,15 +515,15 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         'Expand discussion of evidence chain of custody procedures'
       ]
     }
-  };
+  }
 }
 
 function generateMockNarrative(caseId: string, narrativeId: string, includeRevisions: boolean = false): CaseNarrative {
-  const narrativeTypes: CaseNarrative['narrativeType'][] = ['OPENING_STATEMENT', 'CLOSING_ARGUMENT', 'CASE_SUMMARY', 'BRIEF', 'MOTION', 'INVESTIGATION_REPORT'];
-  const selectedType = narrativeTypes[Math.floor(Math.random() * narrativeTypes.length)];
+  const narrativeTypes: CaseNarrative['narrativeType'][] = ['OPENING_STATEMENT', 'CLOSING_ARGUMENT', 'CASE_SUMMARY', 'BRIEF', 'MOTION', 'INVESTIGATION_REPORT']
+  const selectedType = narrativeTypes[Math.floor(Math.random() * narrativeTypes.length)]
   
-  const sections = generateMockSections(selectedType, includeRevisions);
-  const totalWordCount = sections.reduce((sum, section) => sum + section.wordCount, 0);
+  const sections = generateMockSections(selectedType, includeRevisions)
+  const totalWordCount = sections.reduce((sum, section) => sum + section.wordCount, 0)
 
   return {
     id: narrativeId,
@@ -548,7 +548,7 @@ function generateMockNarrative(caseId: string, narrativeId: string, includeRevis
       legalSoundness: Math.random() * 0.3 + 0.7,
       coherence: Math.random() * 0.3 + 0.7
     }
-  };
+  }
 }
 
 function generateMockSections(narrativeType: CaseNarrative['narrativeType'], includeRevisions: boolean): NarrativeSection[] {
@@ -587,9 +587,9 @@ function generateMockSections(narrativeType: CaseNarrative['narrativeType'], inc
       { type: 'EVIDENCE', title: 'Evidence Summary' },
       { type: 'CONCLUSION', title: 'Recommendations' }
     ]
-  };
+  }
 
-  const configs = sectionConfigs[narrativeType] || sectionConfigs['CASE_SUMMARY'];
+  const configs = sectionConfigs[narrativeType] || sectionConfigs['CASE_SUMMARY']
 
   return configs.map((config, index) => ({
     id: `SECTION-${String(index + 1).padStart(3, '0')}`,
@@ -619,7 +619,7 @@ function generateMockSections(narrativeType: CaseNarrative['narrativeType'], inc
       reason: 'Section generation',
       version: 1
     }]
-  });
+  })
 }
 
 function generateNarrativeContent(sectionType: NarrativeSection['sectionType'], request?: NarrativeRequest): string {
@@ -632,23 +632,23 @@ function generateNarrativeContent(sectionType: NarrativeSection['sectionType'], 
     'TIMELINE': 'The relevant timeline of events is as follows: [chronological events]. This sequence demonstrates [pattern or causation].',
     'WITNESS': 'Witness testimony will establish [key points]. The credibility of these witnesses is supported by [corroborating evidence].',
     'EXPERT': 'Expert analysis reveals [technical findings]. The methodology used meets the standards established in [legal standard].'
-  };
-
-  let baseContent = contentTemplates[sectionType] || contentTemplates['FACTS'];
-  
-  // Customize based on request parameters;
-  if (request?.tone === 'AGGRESSIVE') {
-    baseContent = baseContent.replace('respectfully request', 'demand').replace('demonstrates', 'clearly proves');
-  } else if (request?.tone === 'DEFENSIVE') {
-    baseContent = baseContent.replace('clearly establishes', 'suggests').replace('proves', 'indicates');
   }
 
-  return `${baseContent}\n\n[This is a mock narrative section generated for demonstration purposes. In a production system, this would contain actual case-specific content generated by AI based on case facts, evidence, and legal research.]`;
+  let baseContent = contentTemplates[sectionType] || contentTemplates['FACTS']
+  
+  // Customize based on request parameters
+  if (request?.tone === 'AGGRESSIVE') {
+    baseContent = baseContent.replace('respectfully request', 'demand').replace('demonstrates', 'clearly proves')
+  } else if (request?.tone === 'DEFENSIVE') {
+    baseContent = baseContent.replace('clearly establishes', 'suggests').replace('proves', 'indicates')
+  }
+
+  return `${baseContent}\n\n[This is a mock narrative section generated for demonstration purposes. In a production system, this would contain actual case-specific content generated by AI based on case facts, evidence, and legal research.]`
 }
 
 function generateMockSources(): string[] {
-  const sources = ['Police Report', 'Witness Statement', 'Expert Analysis', 'Forensic Report', 'Case Law', 'Medical Records', 'Financial Documents'];
-  return sources.slice(0, Math.floor(Math.random() * 3) + 1);
+  const sources = ['Police Report', 'Witness Statement', 'Expert Analysis', 'Forensic Report', 'Case Law', 'Medical Records', 'Financial Documents']
+  return sources.slice(0, Math.floor(Math.random() * 3) + 1)
 }
 
 function generateMockTags(sectionType: string): string[] {
@@ -658,9 +658,9 @@ function generateMockTags(sectionType: string): string[] {
     'EVIDENCE': ['forensics', 'analysis', 'proof'],
     'ARGUMENT': ['legal-theory', 'precedent', 'reasoning'],
     'CONCLUSION': ['summary', 'recommendations', 'relief']
-  };
+  }
   
-  return tagMap[sectionType as keyof typeof tagMap] || ['general'];
+  return tagMap[sectionType as keyof typeof tagMap] || ['general']
 }
 
 function generateMockLegalReferences(): string[] {
@@ -669,15 +669,15 @@ function generateMockLegalReferences(): string[] {
     'State v. Johnson, 567 U.S. 123 (2023)',
     'Criminal Procedure Code Section 45',
     'Constitutional Amendment IV'
-  ].slice(0, Math.floor(Math.random() * 2) + 1);
+  ].slice(0, Math.floor(Math.random() * 2) + 1)
 }
 
 function generateMockEvidenceReferences(): string[] {
-  return Array.from({ length: Math.floor(Math.random() * 4) + 1 }, (_, i) => `EVIDENCE-${String(i + 1).padStart(3, '0')}`);
+  return Array.from({ length: Math.floor(Math.random() * 4) + 1 }, (_, i) => `EVIDENCE-${String(i + 1).padStart(3, '0')}`)
 }
 
 function generateMockSuggestions(): NarrativeSection['suggestions'] {
-  return [;
+  return [
     {
       type: 'IMPROVEMENT',
       text: 'Consider strengthening this argument with additional case law',
@@ -690,11 +690,11 @@ function generateMockSuggestions(): NarrativeSection['suggestions'] {
       rationale: 'Unsupported claims reduce credibility',
       priority: 'HIGH'
     }
-  ].slice(0, Math.floor(Math.random() * 2) + 1);
+  ].slice(0, Math.floor(Math.random() * 2) + 1)
 }
 
 function generateMockRevisionHistory(): NarrativeSection['revisionHistory'] {
-  return [;
+  return [
     {
       timestamp: new Date(Date.now() - 86400000).toISOString(),
       author: 'AI Assistant',
@@ -716,5 +716,5 @@ function generateMockRevisionHistory(): NarrativeSection['revisionHistory'] {
       reason: 'Quality control',
       version: 3
     }
-  ];
+  ]
 }

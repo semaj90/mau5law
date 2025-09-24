@@ -177,7 +177,7 @@ export function drizzleSelect<T>(camelCaseFields: string[]): Record<string, bool
  * Batch transformation for arrays
  */
 export function transformArray<T>(
-  items: Record<string, any>[],
+  items: Record<string, any>[],;
   transformer: (item: Record<string, any>) => T;
 ): T[] {
   return items.map(transformer);

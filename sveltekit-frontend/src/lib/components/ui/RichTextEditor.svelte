@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -53,8 +53,8 @@ https://svelte.dev/e/js_parse_error -->
         Image.configure({
           inline: true,
           allowBase64: true,
-          HTMLAttributes: {
-            class: "max-w-full h-auto rounded-lg",
+          HTMLAttributes: {;
+            class: "max-w-full h-auto rounded-lg",;
           },
         }),
         Placeholder.configure({
@@ -291,7 +291,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* @unocss-include */
-  :global(.ProseMirror) {
+  :global(.ProseMirror) {;
     outline: none;
     min-height: 200px;
 }

@@ -215,7 +215,7 @@ parentPort.on("message", async (job: Job) => {
         source: job.minioUrl || filename,
         content: textContent,
         contentType: `${modality}/${ext}`,
-        embedding: JSON.stringify(embedding),
+        embedding: JSON.stringify(embedding),;
         metadata: JSON.stringify({
           filename,
           originalSize: buffer.length,
@@ -243,7 +243,7 @@ parentPort.on("message", async (job: Job) => {
   } catch (err) {
     parentPort!.postMessage({
       jobId: job.id,
-      error: String(err),
+      error: String(err),;
       filename: job.filename || 'unknown'
     });
   }

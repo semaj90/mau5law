@@ -1,20 +1,20 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { gemma3Client } from '$lib/gemma3Client';
-import { ai_interactions as aiInteractions } from '$lib/server/db/schema-postgres';
-import { db } from '$lib/server/db/drizzle';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
+import { gemma3Client } from '$lib/gemma3Client'
+import { ai_interactions as aiInteractions } from '$lib/server/db/schema-postgres'
+import { db } from '$lib/server/db/drizzle'
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    const { prompt, documentId, caseId } = await request.json();
-    const start = Date.now();
+    const { prompt, documentId, caseId } = await request.json()
+    const start = Date.now()
 
     if (!locals.user?.id) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
+      return json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const response = await gemma3Client.generate(prompt);
-    const responseTime = Date.now() - start;
+    const response = await gemma3Client.generate(prompt)
+    const responseTime = Date.now() - start
 
     await db.insert(aiInteractions).values({
       userId: locals.user.id,
@@ -24,17 +24,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       model: 'gemma3',
       responseTime,
       metadata: { documentId }
-    });
+    })
 
     return json({
       success: true,
       response: response.text,
       responseTime,
       model: 'gemma3'
-    });
+    })
 
   } catch (error) {
-    console.error('Legal analysis API error:', error);
+    console.error('Legal analysis API error:', error)
 
     // Return mock legal analysis on failure
     const mockResponse = {
@@ -50,8 +50,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         'Interview potential witnesses',
         'Research similar case precedents'
       ]
-    };
+    }
 
-    return json(mockResponse, { status: 500 });
+    return json(mockResponse, { status: 500 })
   }
-};
+}

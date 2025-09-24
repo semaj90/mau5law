@@ -11,7 +11,7 @@ export interface AvatarState {
 
 const initialState: AvatarState = {
   url: null,
-  isUploading: false,
+  isUploading: false,;
   error: null,
   lastUpdated: null
 };
@@ -61,7 +61,7 @@ function createAvatarStore() {
           // Update store and cache;
           update((state) => ({
             ...state,
-            url: avatarUrl,
+            url: avatarUrl,;
             error: null,
             lastUpdated: now
           });
@@ -75,7 +75,7 @@ function createAvatarStore() {
           localStorage.removeItem("user_avatar_timestamp");
           update((state) => ({
             ...state,
-            url: "/images/default-avatar.svg",
+            url: "/images/default-avatar.svg",;
             error: null
           });
         }
@@ -110,7 +110,7 @@ function createAvatarStore() {
 
         const response = await fetch("/api/user/avatar/upload", {
           method: "POST",
-          body: formData,
+          body: formData,;
           credentials: "include", // Important for session handling
         });
 
@@ -123,7 +123,7 @@ function createAvatarStore() {
           update((state) => ({
             ...state,
             url: newAvatarUrl,
-            isUploading: false,
+            isUploading: false,;
             error: null,
             lastUpdated: now
           });
@@ -156,7 +156,7 @@ function createAvatarStore() {
 
       try {
         const response = await fetch("/api/user/avatar/upload", {
-          method: "DELETE",
+          method: "DELETE",;
           credentials: "include"
         });
 
@@ -166,7 +166,7 @@ function createAvatarStore() {
 
           update((state) => ({
             ...state,
-            url: defaultAvatar,
+            url: defaultAvatar,;
             error: null,
             lastUpdated: now
           });
@@ -245,21 +245,21 @@ function validateFile(file: File): { valid: boolean; error?: string } {
 
   if (!allowedTypes.includes(file.type)) {
     return {
-      valid: false,
+      valid: false,;
       error: "Invalid file type. Please use JPEG, PNG, GIF, SVG, or WebP."
     };
   }
 
   if (file.size > maxSize) {
     return {
-      valid: false,
+      valid: false,;
       error: "File too large. Maximum size is 5MB."
     };
   }
 
   if (file.size === 0) {
     return {
-      valid: false,
+      valid: false,;
       error: "File is empty. Please select a valid image."
     };
   }

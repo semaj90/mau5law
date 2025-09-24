@@ -1,6 +1,5 @@
 // WebGPU Type Definitions for Legal AI Platform
-// Comprehensive interface definitions for GPU-accelerated processing;
-}
+// Comprehensive interface definitions for GPU-accelerated processing
 
 export interface WebGPUDevice {
   device: GPUDevice;
@@ -227,7 +226,7 @@ export type WebGPUDataType = 'f32' | 'i32' | 'u32' | 'f16';
 export type WebGPUOperationType = 'compute' | 'render' | 'copy';
 export type WebGPUShaderStage = 'vertex' | 'fragment' | 'compute';
 
-// Re-export WebGPU native types for convenience;
+// Re-export WebGPU native types for convenience
 export type {
   GPUDevice,
   GPUAdapter,

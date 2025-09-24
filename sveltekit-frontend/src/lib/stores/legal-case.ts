@@ -12,7 +12,7 @@ export const legalCaseStore = $state({
     cases: [],
     selectedCase: null,
     currentUser: null,
-    loading: false,
+    loading: false,;
     error: null,
     generatingEmbedding: false,
     searchingRelatedEvidence: false,
@@ -81,7 +81,7 @@ export const legalCaseGetters = {
   getCurrentCase: () => legalCaseStore.context.selectedCase,
 
   getEmbeddingStatus: () => ({
-    generating: legalCaseStore.context.generatingEmbedding,
+    generating: legalCaseStore.context.generatingEmbedding,;
     searching: legalCaseStore.context.searchingRelatedEvidence,
     hasResults: legalCaseStore.context.relatedEvidence?.length > 0
   })

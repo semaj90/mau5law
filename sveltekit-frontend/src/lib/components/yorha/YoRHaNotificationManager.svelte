@@ -6,7 +6,7 @@
   import { notificationStore as notificationStoreExport } from '$lib/stores/notifications';
 
   interface Notification {
-    id: string
+    id: string;
     type: 'info' | 'success' | 'warning' | 'error' | 'system';
     title?: string;
     message: string
@@ -67,20 +67,20 @@
 
 <style>
   .notification-group {
-    position: fixed
+    position: fixed;
     z-index: 9999;
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 12px;
-    pointer-events: none
+    pointer-events: none;
   }
 
   .notification-group > :global(.yorha-notification) {
-    pointer-events: auto
+    pointer-events: auto;
   }
 
   /* Position-specific stacking */
-  .notification-group-top-right {
+  .notification-group-top-right {;
     top: 20px;
     right: 20px;
   }
@@ -106,13 +106,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    align-items: center
+    align-items: center;
   }
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .notification-group-top-right,
-    .notification-group-top-left {
+    .notification-group-top-left {;
       top: 10px;
       right: 10px;
       left: 10px;

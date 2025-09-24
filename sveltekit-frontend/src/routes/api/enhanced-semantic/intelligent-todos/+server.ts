@@ -1,21 +1,21 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 export const GET: RequestHandler = async ({ url }) => {
 	try {
-		// Forward request to Enhanced Semantic Architecture service;
+		// Forward request to Enhanced Semantic Architecture service
 		const response = await fetch('http://localhost:8095/api/intelligent-todos', {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json'
 			}
-		});
+		})
 
 		if (!response.ok) {
-			throw new Error(`Enhanced Semantic Architecture API returned ${response.status}: ${response.statusText}`);
+			throw new Error(`Enhanced Semantic Architecture API returned ${response.status}: ${response.statusText}`)
 		}
 
-		const data = await response.json();
+		const data = await response.json()
 		
 		return json({
 			success: true,
@@ -32,13 +32,13 @@ export const GET: RequestHandler = async ({ url }) => {
 				'Redis + Neo4j Integration',
 				'MinIO Object Storage'
 			]
-		});
+		})
 		
 	} catch (error: any) {
-		console.error('Enhanced Semantic API Error:', error);
+		console.error('Enhanced Semantic API Error:', error)
 		
 		// Fallback: Generate mock intelligent todos based on system analysis
-		const mockTodos = [;
+		const mockTodos = [
 			{
 				id: `todo_fallback_${Date.now()}`,
 				title: '🔧 Fix Enhanced Semantic Architecture Connection',
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ url }) => {
 				pagerank_score: 0.68,
 				som_cluster: { x: 7, y: 13 }
 			}
-		];
+		]
 
 		return json({
 			success: true,
@@ -114,15 +114,15 @@ export const GET: RequestHandler = async ({ url }) => {
 				'Simulated Deep Learning',
 				'Basic Priority Assignment'
 			]
-		});
+		})
 	}
-};
+}
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		const { text, options } = await request.json();
+		const { text, options } = await request.json()
 		
-		// Forward to Enhanced Semantic Architecture for processing;
+		// Forward to Enhanced Semantic Architecture for processing
 		const response = await fetch('http://localhost:8095/api/intelligent-todos', {
 			method: 'POST',
 			headers: {
@@ -137,22 +137,22 @@ export const POST: RequestHandler = async ({ request }) => {
 					...options
 				}
 			})
-		});
+		})
 
 		if (!response.ok) {
-			throw new Error(`Enhanced Semantic Architecture API returned ${response.status}`);
+			throw new Error(`Enhanced Semantic Architecture API returned ${response.status}`)
 		}
 
-		const data = await response.json();
-		return json(data);
+		const data = await response.json()
+		return json(data)
 		
 	} catch (error: any) {
-		console.error('Enhanced Semantic API POST Error:', error);
+		console.error('Enhanced Semantic API POST Error:', error)
 		
 		return json({
 			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}

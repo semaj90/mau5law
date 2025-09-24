@@ -62,7 +62,7 @@ class GPUTensorWorker {
       await this.testGoServiceConnection();
 
       this.postMessage({
-        type: 'INITIALIZED',
+        type: 'INITIALIZED',;
         data: {
           webgpuSupported: this.stats.webgpuSupported,
           wasmLoaded: this.wasmModule !== null,
@@ -74,7 +74,7 @@ class GPUTensorWorker {
     } catch (error: any) {
       console.error('GPU Tensor Worker initialization failed:', error);
       this.postMessage({
-        type: 'ERROR',
+        type: 'ERROR',;
         error: `Initialization failed: ${error.message}`
       });
       return false;
@@ -249,7 +249,7 @@ class GPUTensorWorker {
       const shaderModule = this.gpuDevice.createShaderModule({ code: computeShader });
       this.computePipeline = this.gpuDevice.createComputePipeline({
         layout: 'auto',
-        compute: {
+        compute: {;
           module: shaderModule,
           entryPoint: 'main'
         }
@@ -258,7 +258,7 @@ class GPUTensorWorker {
 
     // Create GPU buffers;
     const inputBuffer = this.gpuDevice.createBuffer({
-      size: tensorData.data.byteLength,
+      size: tensorData.data.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true
     });
@@ -267,13 +267,13 @@ class GPUTensorWorker {
     inputBuffer.unmap();
 
     const outputBuffer = this.gpuDevice.createBuffer({
-      size: tensorData.data.byteLength,
+      size: tensorData.data.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     // Create uniform buffers for shape and metadata;
     const shapeBuffer = this.gpuDevice.createBuffer({
-      size: 16, // 4 * 4 bytes for int32 array
+      size: 16, // 4 * 4 bytes for int32 array;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true
     });
@@ -285,7 +285,7 @@ class GPUTensorWorker {
     shapeBuffer.unmap();
 
     const metadataBuffer = this.gpuDevice.createBuffer({
-      size: 16, // 4 * 4 bytes for vec4<i32>
+      size: 16, // 4 * 4 bytes for vec4<i32>;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true
     });
@@ -305,7 +305,7 @@ class GPUTensorWorker {
 
     // Create bind group;
     const bindGroup = this.gpuDevice.createBindGroup({
-      layout: this.computePipeline.getBindGroupLayout(0),
+      layout: this.computePipeline.getBindGroupLayout(0),;
       entries: [
         { binding: 0, resource: { buffer: inputBuffer } },
         { binding: 1, resource: { buffer: outputBuffer } },
@@ -325,7 +325,7 @@ class GPUTensorWorker {
 
     // Read results back;
     const resultBuffer = this.gpuDevice.createBuffer({
-      size: tensorData.data.byteLength,
+      size: tensorData.data.byteLength,;
       usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
     });
 
@@ -348,7 +348,7 @@ class GPUTensorWorker {
     return {
       ...tensorData,
       data: processedData,
-      layout: 'webgpu_processed',
+      layout: 'webgpu_processed',;
       timestamp: Date.now()
     };
   }
@@ -361,7 +361,7 @@ class GPUTensorWorker {
           'Content-Type': 'application/json',
           'X-Request-ID': `worker_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           'X-Processing-Mode': 'webworker'
-        },
+        },;
         body: JSON.stringify(tensorData)
       });
 
@@ -392,7 +392,7 @@ class GPUTensorWorker {
     }
 
     this.tensorCache.set(cacheKey, {
-      data: result,
+      data: result,;
       timestamp: Date.now()
     });
   }
@@ -443,7 +443,7 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
         const initialized = await tensorWorker.initialize();
         tensorWorker.postMessage({
           type: 'INITIALIZED',
-          id,
+          id,;
           data: { initialized }
         });
         break;
@@ -453,7 +453,7 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
         const result = await tensorWorker.processGPUTensor(data as MultiDimArray);
         tensorWorker.postMessage({
           type: 'SUCCESS',
-          id,
+          id,;
           data: result
         });
         break;
@@ -462,7 +462,7 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
         const stats = (tensorWorker as any).getStats();
         tensorWorker.postMessage({
           type: 'STATS',
-          id,
+          id,;
           data: stats
         });
         break;
@@ -471,7 +471,7 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
         (tensorWorker as any).clearCache();
         tensorWorker.postMessage({
           type: 'SUCCESS',
-          id,
+          id,;
           data: { cache_cleared: true }
         });
         break;
@@ -482,7 +482,7 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
   } catch (error: any) {
     tensorWorker.postMessage({
       type: 'ERROR',
-      id,
+      id,;
       error: error instanceof Error ? error.message: String(error)
     });
   }

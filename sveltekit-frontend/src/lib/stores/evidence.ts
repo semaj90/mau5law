@@ -161,7 +161,7 @@ const createEvidenceStore = () => {
     selected_evidence: null,
     isLoading: false,
     error: null,
-    processing_queue: [],
+    processing_queue: [],;
     stats: null,
     chain_of_custody_log: [],
     security_alerts: [],
@@ -176,7 +176,7 @@ const createEvidenceStore = () => {
         selected_evidence: null,
         isLoading: false,
         error: null,
-        processing_queue: [],
+        processing_queue: [],;
         stats: null,
         chain_of_custody_log: [],
         security_alerts: [],
@@ -214,7 +214,7 @@ const createEvidenceStore = () => {
         evidence: evidenceList,
         filtered_evidence: evidenceList,
         stats,
-        isLoading: false,
+        isLoading: false,;
         error: null,
       }));
 
@@ -227,7 +227,7 @@ const createEvidenceStore = () => {
         ...state,
         evidence: [],
         filtered_evidence: [],
-        isLoading: false,
+        isLoading: false,;
         error: message,
       }));
     }
@@ -327,7 +327,7 @@ const createEvidenceStore = () => {
         kind: 'embedding',
         evidenceId: ev.id,
         caseId,
-        dim: ev.embedding.length,
+        dim: ev.embedding.length,;
         vector: ev.embedding,
         createdAt: new Date().toISOString(),
       };
@@ -379,7 +379,7 @@ const createEvidenceStore = () => {
           action: 'collected',
           person: newEvidenceData.collected_by,
           location: newEvidenceData.location_collected,
-          purpose: 'Evidence collection for case investigation',
+          purpose: 'Evidence collection for case investigation',;
           notes: `Evidence "${newEvidenceData.title}" added to case system`,
         };
 
@@ -388,7 +388,7 @@ const createEvidenceStore = () => {
           caseId: currentCaseId,
           chain_of_custody: [initialChainEntry],
           access_log: [],
-          x: Math.random() * 500, // Default canvas position
+          x: Math.random() * 500, // Default canvas position;
           y: Math.random() * 500,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -399,7 +399,7 @@ const createEvidenceStore = () => {
           headers: {
             'Content-Type': 'application/json',
             'X-Legal-Request': 'true',
-          },
+          },;
           body: JSON.stringify(evidencePayload),
         });
 
@@ -436,7 +436,7 @@ const createEvidenceStore = () => {
     updateEvidence: async (
       evidenceId: string,
       updates: Partial<Omit<Evidence, 'id' | 'caseId' | 'created_at'>>,
-      chainOfCustodyAction?: {
+      chainOfCustodyAction?: {;
         action: ChainOfCustodyEntry['action'];
         person: string;
         purpose?: string;
@@ -459,7 +459,7 @@ const createEvidenceStore = () => {
             // Add chain of custody entry if provided;
             if (chainOfCustodyAction) {
               const chainEntry: ChainOfCustodyEntry = {
-                id: `chain_${Date.now()}`,
+                id: `chain_${Date.now()}`,;
                 timestamp: new Date().toISOString(),
                 ...chainOfCustodyAction,
               };
@@ -489,7 +489,7 @@ const createEvidenceStore = () => {
           headers: {
             'Content-Type': 'application/json',
             'X-Legal-Request': 'true',
-          },
+          },;
           body: JSON.stringify(payload),
         });
 
@@ -512,7 +512,7 @@ const createEvidenceStore = () => {
             filtered_evidence: applyFilter(
               state.evidence.map(item => (item.id === evidenceId ? original : item)),
               state.current_filter
-            ),
+            ),;
             error: error instanceof Error ? error.message : String(error),
           }));
         }
@@ -541,7 +541,7 @@ const createEvidenceStore = () => {
           headers: {
             'Content-Type': 'application/json',
             'X-Legal-Request': 'true',
-          },
+          },;
           body: JSON.stringify({ reason }),
         });
 
@@ -559,7 +559,7 @@ const createEvidenceStore = () => {
         update(state => ({
           ...state,
           evidence: originalList,
-          filtered_evidence: applyFilter(originalList, state.current_filter),
+          filtered_evidence: applyFilter(originalList, state.current_filter),;
           error: error instanceof Error ? error.message : String(error),
         }));
         throw error;
@@ -579,7 +579,7 @@ const createEvidenceStore = () => {
           headers: {
             'Content-Type': 'application/json',
             'X-Legal-Request': 'true',
-          },
+          },;
           body: JSON.stringify({ type: processingType }),
         });
 
@@ -693,7 +693,7 @@ const createEvidenceStore = () => {
           headers: {
             'Content-Type': 'application/json',
             'X-Legal-Request': 'true',
-          },
+          },;
           body: JSON.stringify(entry),
         });
 
@@ -729,7 +729,7 @@ const createEvidenceStore = () => {
           headers: {
             'Content-Type': 'application/json',
             'X-Legal-Request': 'true',
-          },
+          },;
           body: JSON.stringify({ evidenceIds, reportType }),
         });
 
@@ -750,7 +750,7 @@ const createEvidenceStore = () => {
     validateIntegrity: async (evidenceId: string) => {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/validate`, {
-          method: 'POST',
+          method: 'POST',;
           headers: { 'X-Legal-Request': 'true' },
         });
 
@@ -772,7 +772,7 @@ const createEvidenceStore = () => {
                 evidence_id: evidenceId,
                 message: validation.message || 'Evidence integrity check failed',
                 timestamp: new Date().toISOString(),
-                severity: 'high',
+                severity: 'high',;
                 resolved: false,
               },
             ],
@@ -826,7 +826,7 @@ const createEvidenceStore = () => {
           headers: {
             'Content-Type': 'application/json',
             'X-Legal-Request': 'true',
-          },
+          },;
           body: JSON.stringify({ evidenceIds, format }),
         });
 
@@ -943,7 +943,7 @@ async function logEvidenceAccess(evidenceId: string, action: string, metadata?: 
       },
       body: JSON.stringify({
         evidence_id: evidenceId,
-        action,
+        action,;
         timestamp: new Date().toISOString(),
         metadata,
       }),

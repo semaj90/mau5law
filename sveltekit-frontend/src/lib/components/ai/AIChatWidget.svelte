@@ -10,8 +10,8 @@
   // Card components removed - using native HTML elements
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
-  import Button from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import {
@@ -88,10 +88,10 @@
       messages = [
         {
           id: Date.now(),
-          role: 'system',
+          role: 'system',;
           content: `I have context about: ${context.title || 'Legal Document'}. How can I help you understand or analyze this?`,
-          timestamp: new Date().toISOString(),
-          type: 'context',
+          timestamp: new Date().toISOString(),;
+          type: 'context',;
         },
       ];
     }
@@ -102,9 +102,9 @@
 
     const userMessage = {
       id: Date.now(),
-      role: 'user',
-      content: currentMessage.trim(),
-      timestamp: new Date().toISOString(),
+      role: 'user',;
+      content: currentMessage.trim(),;
+      timestamp: new Date().toISOString(),;
     };
 
     messages = [...messages, userMessage];
@@ -121,14 +121,14 @@
 
       try {
     const response = await fetch('/api/ai/chat', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: messageToSend,
+          message: messageToSend,;
           context: contextText ? [contextText] : undefined,
           caseId,
-          documentId,
-          temperature: 0.7,
+          documentId,;
+          temperature: 0.7,;
         }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -156,9 +156,9 @@
         id: Date.now() + 1,
         role: 'assistant',
         content: data.response || 'I apologize, but I could not generate a response.',
-        timestamp: new Date().toISOString(),
-        metadata: data.performance || ,
-        suggestions: data.suggestions || [],
+        timestamp: new Date().toISOString(),;
+        metadata: data.performance || ,;
+        suggestions: data.suggestions || [],;
       };
 
       messages = [...messages, aiMessage];
@@ -168,9 +168,9 @@
       const errorMessage = {
         id: Date.now() + 1,
         role: 'assistant',
-        content: 'I apologize, but I encountered an error. Please try again.',
-        timestamp: new Date().toISOString(),
-        error: true,
+        content: 'I apologize, but I encountered an error. Please try again.',;
+        timestamp: new Date().toISOString(),;
+        error: true,;
       };
 
       messages = [...messages, errorMessage];
@@ -204,8 +204,8 @@
 
   function formatTimestamp(timestamp) {
     return new Date(timestamp).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
+      hour: '2-digit',;
+      minute: '2-digit',;
     });
   }
 
@@ -217,8 +217,8 @@
   async function provideFeedback(messageId, feedback) {
     try {
       await fetch('/api/ai/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           messageId,
           feedback,
@@ -378,7 +378,7 @@ handleSuggestionClick(suggestion}>
     <div class="flex-shrink-0 border-t pt-4">
       <div class="flex gap-2">
         <Input
-          bind:element={inputElement}
+          bind:element={inputElement};
           bind:value={currentMessage}
           {placeholder}
           keydown={handleKeydown}

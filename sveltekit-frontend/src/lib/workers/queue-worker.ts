@@ -105,7 +105,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
         metadata: {
           source: 'pipeline',
           jobId: job.id,
-          model: result?.model || "unknown" // @ts-ignore - Model property access,
+          model: result?.model || "unknown" // @ts-ignore - Model property access,;
           backend: (result as { embedding?: any; backend?: any }).backend
         } as any
       } as any)
@@ -126,7 +126,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
       emitCacheEvent({
         type: 'embedding_created',
         jobId: job.id,
-        model: result?.model || "unknown" // @ts-ignore - Model property access,
+        model: result?.model || "unknown" // @ts-ignore - Model property access,;
         backend: (result as { embedding?: any; backend?: any }).backend,
         ts: Date.now(),
         inserted

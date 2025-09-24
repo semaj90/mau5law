@@ -60,9 +60,9 @@
   const sizeClasses = {
     sm: "max-w-sm w-full mx-4",
     md: "max-w-md w-full mx-4",
-    lg: "max-w-2xl w-full mx-4",
-    xl: "max-w-4xl w-full mx-4",
-    fullscreen: "w-screen h-screen max-w-none mx-0",
+    lg: "max-w-2xl w-full mx-4",;
+    xl: "max-w-4xl w-full mx-4",;
+    fullscreen: "w-screen h-screen max-w-none mx-0",;
   };
 
   function handleKeydown(event: KeyboardEvent) {
@@ -132,7 +132,7 @@
     aria-describedby={subtitle ? "modal-subtitle" : undefined}
     tabindex="-1"
   >
-    <div
+    <div;
       bind:this={modalElement}
       class="yorha-modal {sizeClasses[size]} {type}"
       transitionscale={{ duration: 300, easing: quintOut, start: 0.9 }}
@@ -257,7 +257,7 @@ display: flex align-items: flex-start;
     justify-content: space-between;
 position: relative }
 
-  .header-content {
+  .header-content {;
     flex: 1;
     min-width: 0;
   }
@@ -327,15 +327,15 @@ cursor: pointer display: flex align-items: center justify-content: center transi
 overflow-y: auto scrollbar-width: thin scrollbar-color: var(--yorha-secondary, #ffd700) var(--yorha-bg-primary, #0a0a0a);
   }
 
-  .modal-content: :-webkit-scrollbar {
+  .modal-content::-webkit-scrollbar {
     width: 8px;
   }
 
-  .modal-content: :-webkit-scrollbar-track {
+  .modal-content::-webkit-scrollbar-track {
     background: var(--yorha-bg-primary, #0a0a0a);
   }
 
-  .modal-content: :-webkit-scrollbar-thumb {
+  .modal-content::-webkit-scrollbar-thumb {
     background: var(--yorha-secondary, #ffd700);
     border: 1px solid var(--yorha-bg-primary, #0a0a0a);
   }
@@ -404,7 +404,7 @@ cursor: pointer transition: all 0.2s ease;
 position: absolute inset: 0;
 pointer-events: none overflow: hidden }
 
-  .terminal-borders: :before {
+  .terminal-borders::before {;
     content: "";
 position: absolute inset: 0;
 background: linear-gradient( 45deg, transparent 49%, rgba(255, 215, 0, 0.1) 50%, transparent 51% );
@@ -469,7 +469,7 @@ flex-direction: column }
     .modal-button {
 justify-content: center }
   }
-/* Fullscreen variant */ .yorha-modal.max-w-none {
+/* Fullscreen variant */ .yorha-modal.max-w-none {;
     border-radius: 0;
     max-height: 100vh;
   }

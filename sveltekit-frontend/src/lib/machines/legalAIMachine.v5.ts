@@ -23,23 +23,23 @@ export interface Evidence {
 }
 
 export interface LegalAIContext {
-  user: {
+  user: {;
     id: string | null;
     email: string | null;
     role: string | null;
     permissions: string[];
     isAuthenticated: boolean;
   };
-  cases: {
+  cases: {;
     items: Case[];
     currentCase: Case | null;
-    filters: {
+    filters: {;
       search: string;
       status: string;
       priority: string;
       category: string;
     };
-    pagination: {
+    pagination: {;
       page: number;
       limit: number;
       total: number;
@@ -52,15 +52,15 @@ export interface LegalAIContext {
     currentQuery: string;
     lastResponse: any;
     error: string | null;
-    models: {
+    models: {;
       primary: string;
       embedding: string;
       available: string[];
     };
   };
-  system: {
+  system: {;
     connected: boolean;
-    services: {
+    services: {;
       database: boolean;
       redis: boolean;
       ollama: boolean;
@@ -131,14 +131,14 @@ const initialContext: LegalAIContext = {
     },
     metrics: {
       errorCount: 0,
-      performanceScore: 0,
+      performanceScore: 0,;
       uptime: 0
     }
   }
 };
 
 export const legalAIMachine = setup({
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: LegalAIContext;
     events: LegalAIEvent;
   },
@@ -202,7 +202,7 @@ export const legalAIMachine = setup({
         error: null
       })
     })
-  },
+  },;
   actors: {
     checkSystemStatus: fromPromise(async () => {
       try {
@@ -229,7 +229,7 @@ export const legalAIMachine = setup({
           },
           metrics: {
             errorCount: serviceHealth.reduce((acc, s) => acc + s.errorCount, 0),
-            performanceScore,
+            performanceScore,;
             uptime: Date.now()
           }
         };
@@ -237,7 +237,7 @@ export const legalAIMachine = setup({
         console.error('System status check failed:', error);
         return {
           connected: false,
-          services: { database: false, redis: false, ollama: false, gpu: false, pgvector: false, qdrant: false, neo4j: false },
+          services: { database: false, redis: false, ollama: false, gpu: false, pgvector: false, qdrant: false, neo4j: false },;
           metrics: { errorCount: 1, performanceScore: 0, uptime: 0 }
         };
       }
@@ -245,7 +245,7 @@ export const legalAIMachine = setup({
     authenticateUser: fromPromise(async ({ input }: { input: any }) => {
       try {
         const response = await productionServiceClient.callService('/api/auth/login', input.credentials, {
-          timeout: 15000,
+          timeout: 15000,;
           priority: 'reliability'
         });
 
@@ -253,7 +253,7 @@ export const legalAIMachine = setup({
           return {
             id: response.data.id || response.data.user?.id,
             email: response.data.email || input.credentials?.email,
-            role: response.data.role || 'legal_professional',
+            role: response.data.role || 'legal_professional',;
             permissions: response.data.permissions || ['read:cases', 'write:cases', 'ai:query']
           };
         } else {
@@ -267,7 +267,7 @@ export const legalAIMachine = setup({
     loadCases: fromPromise(async ({ input }: { input: any }) => {
       try {
         const response = await productionServiceClient.callService('/api/cases', input?.filters, {
-          timeout: 10000,
+          timeout: 10000,;
           priority: 'performance'
         });
 
@@ -281,7 +281,7 @@ export const legalAIMachine = setup({
             priority: caseData.priority || 'medium', 
             category: caseData.category || 'general',
             createdAt: caseData.created_at || caseData.createdAt,
-            updatedAt: caseData.updated_at || caseData.updatedAt,
+            updatedAt: caseData.updated_at || caseData.updatedAt,;
             description: caseData.description,
             assignedTo: caseData.assigned_to || caseData.assignedTo
           });
@@ -306,7 +306,7 @@ export const legalAIMachine = setup({
             timestamp: new Date().toISOString(),
             model: response.data?.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal',
             protocol: response.protocol,
-            latency: response.latency,
+            latency: response.latency,;
             metadata: response.data.metadata || {}
           };
         } else {
@@ -399,7 +399,7 @@ export const legalAIMachine = setup({
         }
       }
     },
-    error: {
+    error: {;
       on: {
         'SYSTEM.CHECK_STATUS': 'initializing'
       }
@@ -415,7 +415,7 @@ export const legalAIMachine = setup({
         1000: 'authenticated'
       }
     },
-    checkingStatus: {
+    checkingStatus: {;
       after: {
         500: 'idle'
       }

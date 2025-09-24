@@ -20,15 +20,15 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 		EvidenceNode: null,
 		DragDropZone: null,
 		DetectiveBoard: null,
-		loaded: false,
-		loading: false,
-		error: null
+		loaded: false,;
+		loading: false,;
+		error: null;
 	});
 
 	let canvasData = $state({
-		evidence: [],
+		evidence: [],;
 		connections: [],
-		canvasReady: false
+		canvasReady: false;
 	});
 
 	// Load heavy canvas components on demand
@@ -54,9 +54,9 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 				EvidenceNode: nodeModule.default,
 				DragDropZone: dragModule.default,
 				DetectiveBoard: boardModule.default,
-				loaded: true,
-				loading: false,
-				error: null
+				loaded: true,;
+				loading: false,;
+				error: null;
 			};
 
 			console.log(' Canvas components loaded successfully');
@@ -86,15 +86,15 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 					type: 'image',
 					x: 100,
 					y: 100,
-					caseId
+					caseId;
 				},
 				{
 					id: '2',
 					title: 'Witness Statement',
-					type: 'document',
-					x: 300,
+					type: 'document',;
+					x: 300,;
 					y: 150,
-					caseId
+					caseId;
 				}
 			];
 
@@ -117,9 +117,9 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 			EvidenceNode: null,
 			DragDropZone: null,
 			DetectiveBoard: null,
-			loaded: false,
-			loading: false,
-			error: null
+			loaded: false,;
+			loading: false,;
+			error: null;
 		};
 		loadCanvasComponents();
 	}

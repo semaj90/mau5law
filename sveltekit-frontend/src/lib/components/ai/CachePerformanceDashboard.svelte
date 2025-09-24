@@ -26,21 +26,21 @@
       misses: 0,
       hitRate: 0,
       totalQueries: 0,
-      averageResponseTime: 0
+      averageResponseTime: 0;
     },
     embedding: {
       hits: 0,
       misses: 0,
       hitRate: 0,
       totalRequests: 0,
-      costSavings: 0
+      costSavings: 0;
     },
     memory: {
       l1Usage: 0,
       l2Usage: 0,
       l3Usage: 0,
       totalCachedItems: 0
-    },
+    },;
     performance: {
       averageQueryTime: 0,
       p95ResponseTime: 0,
@@ -56,7 +56,7 @@
     textureCount: 0,
     activeStreams: 0,
     evictions: 0,
-    bankSwitches: 0
+    bankSwitches: 0;
   });
 
   let recentQueries = $state([]);
@@ -136,21 +136,21 @@
         misses: Math.floor(Math.random() * 300) + 100,
         hitRate: 70 + Math.random() * 25,
         totalQueries: Math.floor(Math.random() * 1500) + 800,
-        averageResponseTime: 45 + Math.random() * 30
+        averageResponseTime: 45 + Math.random() * 30;
       },
       embedding: {
         hits: Math.floor(Math.random() * 2000) + 800,
         misses: Math.floor(Math.random() * 200) + 50,
         hitRate: 85 + Math.random() * 10,
         totalRequests: Math.floor(Math.random() * 2500) + 1000,
-        costSavings: (Math.random() * 50 + 25).toFixed(2)
+        costSavings: (Math.random() * 50 + 25).toFixed(2);
       },
       memory: {
         l1Usage: Math.random() * 80,
         l2Usage: Math.random() * 60,
         l3Usage: Math.random() * 90,
         totalCachedItems: Math.floor(Math.random() * 500) + 200
-      },
+      },;
       performance: {
         averageQueryTime: 120 + Math.random() * 80,
         p95ResponseTime: 300 + Math.random() * 200,
@@ -170,7 +170,7 @@
       textureCount: Math.floor(Math.random() * 50) + 10,
       activeStreams: Math.floor(Math.random() * 5),
       evictions: Math.floor(Math.random() * 10),
-      bankSwitches: Math.floor(Math.random() * 3)
+      bankSwitches: Math.floor(Math.random() * 3);
     };
   }
 
@@ -521,7 +521,7 @@
 </div>
 
 <style>
-  .cache-dashboard {
+  .cache-dashboard {;
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
     color: #ffffff;
     font-family: 'JetBrains Mono', monospace;
@@ -611,12 +611,12 @@
     transition: all 0.2s;
   }
 
-  .control-buttons button:hover {
+  .control-buttons button:hover {;
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
   }
 
-  .control-buttons button:disabled {
+  .control-buttons button:disabled {;
     opacity: 0.5;
     cursor: not-allowed;
   }

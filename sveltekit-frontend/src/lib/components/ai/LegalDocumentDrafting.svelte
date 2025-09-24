@@ -106,7 +106,7 @@
   async function loadDocumentTypes() {
     try {
       const response = await fetch('/api/ai/document-drafting/types', {
-        method: 'GET',
+        method: 'GET',;
         headers: {
           'Content-Type': 'application/json'
         }
@@ -124,7 +124,7 @@
   async function loadTemplates() {
     try {
       const response = await fetch('/api/ai/document-drafting/templates', {
-        method: 'GET',
+        method: 'GET',;
         headers: {
           'Content-Type': 'application/json'
         }
@@ -142,7 +142,7 @@
   async function loadDraftHistory() {
     try {
       const response = await fetch('/api/ai/document-drafting/history', {
-        method: 'GET',
+        method: 'GET',;
         headers: {
           'Content-Type': 'application/json'
         }
@@ -164,19 +164,19 @@
     try {
       const request = {
         documentType: selectedDocumentType,
-        template: selectedTemplate || undefined,
+        template: selectedTemplate || undefined,;
         title: documentTitle,
         caseContext: caseContext || undefined,
         draftingMode,
-        aiAssistanceLevel
+        aiAssistanceLevel;
       };
       
       const response = await fetch('/api/ai/document-drafting', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(request)
+        },;
+        body: JSON.stringify(request);
       });
       
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -209,11 +209,11 @@
       };
       
       const response = await fetch('/api/ai/document-drafting/generate', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(request)
+        },;
+        body: JSON.stringify(request);
       });
       
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -237,16 +237,16 @@
     try {
       const request = {
         documentId: currentDocument.id,
-        content: documentContent,
-        title: documentTitle
+        content: documentContent,;
+        title: documentTitle;
       };
       
       const response = await fetch('/api/ai/document-drafting/save', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(request)
+        },;
+        body: JSON.stringify(request);
       });
       
       if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -262,10 +262,10 @@
     
     try {
       const response = await fetch(`/api/ai/document-drafting/suggestions/${suggestion.id}/apply`, {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
-        },
+        },;
         body: JSON.stringify({
           documentId: currentDocument.id
         })
@@ -623,7 +623,7 @@
           </div>
           
           <div class="editor-content">
-            <textarea
+            <textarea;
               bind:value={documentContent}
               placeholder="Start typing your document or use AI suggestions..."
               class="document-textarea"
@@ -731,7 +731,7 @@
 </Dialog.Root>
 
 <style>
-  .document-drafting {
+  .document-drafting {;
     max-width: 1600px;
     margin: 0 auto;
     padding: 2rem;

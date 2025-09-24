@@ -16,80 +16,80 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import { json } from "@sveltejs/kit";
-import { ollamaService } from "$lib/services/ollama-service";
-import type { RequestHandler } from './$types.js';
-import { URL } from "url";
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from "@sveltejs/kit"
+import { ollamaService } from "$lib/services/ollama-service"
+import type { RequestHandler } from './$types.js'
+import { URL } from "url"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
 
 // Environment variables fallback
-const env = process.env || {};
+const env = process.env || {}
 
 // Fallback imports with error handling
-let vectorSearch: any = null;
-let aiService: any = null;
-let cache: any = null;
-let tauriLLM: any = null;
+let vectorSearch: any = null
+let aiService: any = null
+let cache: any = null
+let tauriLLM: any = null
 
 try {
-  const vectorSearchModule = await import("../../../../lib/server/search/vector-search.js");
-  vectorSearch = vectorSearchModule.vectorSearch;
+  const vectorSearchModule = await import("../../../../lib/server/search/vector-search.js")
+  vectorSearch = vectorSearchModule.vectorSearch
 } catch (error: any) {
-  console.warn("Vector search not available:", error);
+  console.warn("Vector search not available:", error)
   vectorSearch = { 
     search: async () => ({ results: [] }) 
-  };
+  }
 }
 
 try {
-  const aiServiceModule = await import("../../../../lib/services/ai-service.js");
-  aiService = aiServiceModule.aiService || aiServiceModule.default;
+  const aiServiceModule = await import("../../../../lib/services/ai-service.js")
+  aiService = aiServiceModule.aiService || aiServiceModule.default
 } catch (error: any) {
-  console.warn("AI service not available:", error);
+  console.warn("AI service not available:", error)
   aiService = { 
     generateResponse: async () => "AI service not available" 
-  };
+  }
 }
 
 try {
-  const cacheModule = await import("../../../../lib/server/cache/redis.js");
+  const cacheModule = await import("../../../../lib/server/cache/redis.js")
   cache = cacheModule.cache || { 
-    get: async () => null, 
+    get: async () => null,
     set: async () => {} 
-  };
+  }
 } catch (error: any) {
-  console.warn("Cache not available:", error);
+  console.warn("Cache not available:", error)
   cache = { 
-    get: async () => null, 
+    get: async () => null,
     set: async () => {} 
-  };
+  }
 }
 
 try {
-  const tauriModule = await import("../../../../lib/services/tauri-llm.js");
-  tauriLLM = tauriModule.tauriLLM || tauriModule.default;
+  const tauriModule = await import("../../../../lib/services/tauri-llm.js")
+  tauriLLM = tauriModule.tauriLLM || tauriModule.default
 } catch (error: any) {
-  console.warn("Tauri LLM not available:", error);
+  console.warn("Tauri LLM not available:", error)
   tauriLLM = { 
     isAvailable: () => false 
-  };
+  }
 }
 
 // Enhanced AI response interface with Gemma3 support
 export interface AIResponse {
-  answer: string;
-  sources: Array<any>;
-  query: string;
-  executionTime: number;
-  fromCache: boolean;
-  provider: "local" | "cloud" | "hybrid";
-  model: string;
-  confidence: number;
+  answer: string
+  sources: Array<any>
+  query: string
+  executionTime: number
+  fromCache: boolean
+  provider: "local" | "cloud" | "hybrid"
+  model: string
+  confidence: number
 }
 
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
     const { 
@@ -99,7 +99,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       maxSources = 5, 
       searchThreshold = 0.7, 
       useCache = true 
-    } = await request.json();
+    } = await request.json()
 
     if (!query || query.trim().length === 0) {
       return json({
@@ -107,13 +107,13 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           error: "Query is required"
         },)
         { status: 400 }
-      );
+      )
     }
 
     // Check cache for identical queries
-    const cacheKey = `ai_response:${JSON.stringify({ query, context, includeHistory })}`;
+    const cacheKey = `ai_response:${JSON.stringify({ query, context, includeHistory })}`
     if (useCache) {
-      const cached = (await cache.get(cacheKey)) as AIResponse;
+      const cached = (await cache.get(cacheKey)) as AIResponse
       if (cached) {
         return json({
           success: true,
@@ -122,12 +122,12 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
             fromCache: true,
             executionTime: Date.now() - startTime
           }
-        });
+        })
       }
     }
 
     // Perform vector search to get relevant context
-    let searchResults: any = { results: [] };
+    let searchResults: any = { results: [] }
     try {
       if (vectorSearch && typeof vectorSearch === "function") {
         searchResults = await vectorSearch(query, {
@@ -136,11 +136,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           useCache: true,
           fallbackToQdrant: true,
           searchType: "hybrid"
-        });
+        })
       } else {
-        // Fallback: create mock results for testing Gemma3;
+        // Fallback: create mock results for testing Gemma3
         searchResults = {
-          results: [;
+          results: [
             {
               id: "mock-result-1",
               title: "Mock Legal Document",
@@ -149,11 +149,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
               type: "document"
             }
           ]
-        };
+        }
       }
     } catch (searchError) {
-      console.warn("Vector search failed, using fallback:", searchError);
-      searchResults = { results: [] };
+      console.warn("Vector search failed, using fallback:", searchError)
+      searchResults = { results: [] }
     }
 
     if (searchResults.results.length === 0) {
@@ -166,27 +166,27 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           executionTime: Date.now() - startTime,
           fromCache: false
         }
-      });
+      })
     }
 
     // Prepare context for LLM
-    const relevantSources = searchResults.results.slice(0, maxSources);
+    const relevantSources = searchResults.results.slice(0, maxSources)
     const contextText = relevantSources
       .map((source: any) => 
         `Title: ${source.title}\nContent: ${source.content}\nType: ${source.type}`
       )
-      .join("\n\n---\n\n");
+      .join("\n\n---\n\n")
 
     // Generate AI response with Gemma3 Local LLM priority
-    let aiAnswer: string;
-    let provider: "local" | "cloud" | "hybrid";
-    let model: string;
-    let confidence: number;
+    let aiAnswer: string
+    let provider: "local" | "cloud" | "hybrid"
+    let model: string
+    let confidence: number
 
     try {
-      // Try Ollama Gemma3 first (web environment);
+      // Try Ollama Gemma3 first (web environment)
       if (ollamaService.checkAvailability()) {
-        console.log("Using Ollama Gemma3 for inference");
+        console.log("Using Ollama Gemma3 for inference")
         
         const systemPrompt = `You are a specialized legal AI assistant. Based on the provided context documents, answer the user's question accurately and professionally.
 
@@ -198,23 +198,23 @@ Instructions:
 - Cite specific information from the context
 - If information is insufficient, state this clearly
 - Use appropriate legal terminology
-- Be concise but thorough`;
+- Be concise but thorough`
 
         const response = await ollamaService.generate(query, {
           system: systemPrompt,
           temperature: 0.7,
           maxTokens: 512
-        });
+        })
 
-        aiAnswer = response;
-        provider = "local";
-        model = "gemma2:2b";
+        aiAnswer = response
+        provider = "local"
+        model = "gemma2:2b"
         confidence = 0.85; // High confidence for local processing
         
       } else if (tauriLLM && tauriLLM.isAvailable()) {
         // Try Tauri LLM (desktop environment)
-        await tauriLLM.initialize();
-        console.log("Using Tauri Gemma3 local LLM for inference");
+        await tauriLLM.initialize()
+        console.log("Using Tauri Gemma3 local LLM for inference")
 
         const systemPrompt = `You are a specialized legal AI assistant. Based on the provided context documents, answer the user's question accurately and professionally.
 
@@ -226,20 +226,20 @@ Instructions:
 - Cite specific information from the context
 - If information is insufficient, state this clearly
 - Use appropriate legal terminology
-- Be concise but thorough`;
+- Be concise but thorough`
 
         aiAnswer = await tauriLLM.runInference(query, {
           temperature: 0.7,
           maxTokens: 512,
           systemPrompt: systemPrompt
-        });
+        })
 
-        provider = "local";
-        model = tauriLLM.getCurrentModels().chat || "gemma3-local";
+        provider = "local"
+        model = tauriLLM.getCurrentModels().chat || "gemma3-local"
         confidence = 0.85; // High confidence for local processing
         
       } else {
-        // Fallback to AI service or template response;
+        // Fallback to AI service or template response
         try {
           if (aiService && typeof aiService.generateResponse === "function") {
             aiAnswer = await aiService.generateResponse(query, {
@@ -248,31 +248,31 @@ Instructions:
               context: relevantSources.map((s: any) => s.content),
               temperature: 0.7,
               maxTokens: 512
-            });
-            provider = "cloud";
-            model = "cloud-llm";
-            confidence = 0.75;
+            })
+            provider = "cloud"
+            model = "cloud-llm"
+            confidence = 0.75
           } else {
             // Template response when no AI service is available
-            aiAnswer = generateFallbackResponse(query, relevantSources);
-            provider = "hybrid";
-            model = "template";
-            confidence = 0.5;
+            aiAnswer = generateFallbackResponse(query, relevantSources)
+            provider = "hybrid"
+            model = "template"
+            confidence = 0.5
           }
         } catch (cloudError) {
-          console.warn("Cloud AI failed, using template response:", cloudError);
-          aiAnswer = generateFallbackResponse(query, relevantSources);
-          provider = "hybrid";
-          model = "template";
-          confidence = 0.5;
+          console.warn("Cloud AI failed, using template response:", cloudError)
+          aiAnswer = generateFallbackResponse(query, relevantSources)
+          provider = "hybrid"
+          model = "template"
+          confidence = 0.5
         }
       }
     } catch (error: any) {
-      console.error("AI inference failed:", error);
-      aiAnswer = generateFallbackResponse(query, relevantSources);
-      provider = "hybrid";
-      model = "fallback";
-      confidence = 0.4;
+      console.error("AI inference failed:", error)
+      aiAnswer = generateFallbackResponse(query, relevantSources)
+      provider = "hybrid"
+      model = "fallback"
+      confidence = 0.4
     }
 
     const response: AIResponse = {
@@ -290,9 +290,9 @@ Instructions:
       provider,
       model,
       confidence
-    };
+    }
 
-    // Cache the response;
+    // Cache the response
     if (useCache) {
       await cache.set(cacheKey, response, 10 * 60 * 1000); // 10 minutes
     }
@@ -300,64 +300,64 @@ Instructions:
     return json({
       success: true,
       data: response
-    });
+    })
 
   } catch (error: any) {
-    console.error("AI endpoint error:", error);
+    console.error("AI endpoint error:", error)
     return json({
         success: false,
         error: "Failed to process AI request",
         details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 }
-    );
+    )
   }
-};
-
-// Helper functions for Gemma3 integration;
-function generateFallbackResponse(query: string, sources: any[]): string {
-  if (sources.length === 0) {
-    return `I couldn't find any relevant information to answer your question: "${query}". Please try rephrasing your query or ensure the relevant documents have been uploaded to the system.`;
-  }
-
-  let response = `# Legal Analysis for: "${query}"\n\n`;
-  response += `## Document Summary\n`;
-  response += `I've identified ${sources.length} relevant documents from your case files:\n\n`;
-
-  sources.slice(0, 3).forEach((source: any, index: number) => {
-    response += `**Document ${index + 1}** (${source.type})\n`;
-    response += `- Title: ${source.title}\n`;
-    response += `- Relevance Score: ${(source.score * 100).toFixed(1)}%\n`;
-    response += `- Content Preview: ${source.content.substring(0, 200)}...\n\n`;
-  });
-
-  response += `## Key Findings\n`;
-  response += `Based on the available documents, please review the source materials for detailed information related to your query.\n\n`;
-  response += `## Recommendations\n`;
-  response += `- Review the source documents for comprehensive information\n`;
-  response += `- Consider searching with more specific terms\n`;
-  response += `- For AI-powered analysis, ensure Gemma3 local LLM is properly configured\n`;
-
-  return response;
 }
 
-// Autocomplete endpoint for citations;
+// Helper functions for Gemma3 integration
+function generateFallbackResponse(query: string, sources: any[]): string {
+  if (sources.length === 0) {
+    return `I couldn't find any relevant information to answer your question: "${query}". Please try rephrasing your query or ensure the relevant documents have been uploaded to the system.`
+  }
+
+  let response = `# Legal Analysis for: "${query}"\n\n`
+  response += `## Document Summary\n`
+  response += `I've identified ${sources.length} relevant documents from your case files:\n\n`
+
+  sources.slice(0, 3).forEach((source: any, index: number) => {
+    response += `**Document ${index + 1}** (${source.type})\n`
+    response += `- Title: ${source.title}\n`
+    response += `- Relevance Score: ${(source.score * 100).toFixed(1)}%\n`
+    response += `- Content Preview: ${source.content.substring(0, 200)}...\n\n`
+  })
+
+  response += `## Key Findings\n`
+  response += `Based on the available documents, please review the source materials for detailed information related to your query.\n\n`
+  response += `## Recommendations\n`
+  response += `- Review the source documents for comprehensive information\n`
+  response += `- Consider searching with more specific terms\n`
+  response += `- For AI-powered analysis, ensure Gemma3 local LLM is properly configured\n`
+
+  return response
+}
+
+// Autocomplete endpoint for citations
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
-    const query = url.searchParams.get("q") || "";
-    const limit = parseInt(url.searchParams.get("limit") || "5");
+    const query = url.searchParams.get("q") || ""
+    const limit = parseInt(url.searchParams.get("limit") || "5")
 
     if (query.length < 2) {
-      return json({ suggestions: [] });
+      return json({ suggestions: [] })
     }
 
-    // Quick search for autocomplete;
+    // Quick search for autocomplete
     const searchResults = await vectorSearch(query, {
       limit,
       threshold: 0.5,
       useCache: true,
       searchType: "similarity"
-    });
+    })
 
     const suggestions = searchResults.results.map((result: any) => ({
       id: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).id,
@@ -365,15 +365,15 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       type: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).type,
       score: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).score,
       preview: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).content.substring(0, 100) + "..."
-    });
+    })
 
-    return json({ suggestions });
+    return json({ suggestions })
 
   } catch (error: any) {
-    console.error("Autocomplete error:", error);
-    return json({ suggestions: [] });
+    console.error("Autocomplete error:", error)
+    return json({ suggestions: [] })
   }
-};
+}
 
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
-export const GET = redisOptimized.aiAnalysis(originalGETHandler);
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const GET = redisOptimized.aiAnalysis(originalGETHandler)

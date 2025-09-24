@@ -295,7 +295,7 @@
 </div>
 
 <style>
-  .bits-ui-accessibility-wrapper {
+  .bits-ui-accessibility-wrapper {;
     position: relative;
   }
 

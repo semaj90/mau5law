@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -23,15 +23,16 @@ https://svelte.dev/e/js_parse_error -->
 		contextualAnalysisReady: false
 	});
 
-	const systemLogs = writable<Array>([]);
+	type SystemLog = { timestamp: Date; level: 'info'|'success'|'warning'|'error'; message: string; source: string };
+	const systemLogs = writable<SystemLog[]>([]);
 
 	let selectedCaseId = $state('demo-case-001');
 	let enableRealtimeUpdates = $state(true);
 	let showMetrics = $state(true);
 	let enableClusterMode = $state(true);
 
-	$effect(async () => {
-		await checkSystemStatus();
+	$effect(() => {
+		checkSystemStatus();
 		startSystemMonitoring();
 		logMessage('info', 'Enhanced MCP Integration Demo loaded', 'system');
 	});
@@ -113,12 +114,10 @@ https://svelte.dev/e/js_parse_error -->
 	}
 
 	function logMessage(level: 'info' | 'success' | 'warning' | 'error', message: string, source: string) {
-		systemLogs.update(logs => [{
-			timestamp: new Date(),
-			level,
-			message,
-			source
-		}, ...logs.slice(0, 49)]); // Keep last 50 logs
+			systemLogs.update((logs) => ([
+				{ timestamp: new Date(), level, message, source },
+				...logs.slice(0, 49)
+			])); // Keep last 50 logs
 	}
 
 	async function runSystemDiagnostics() {
@@ -126,44 +125,44 @@ https://svelte.dev/e/js_parse_error -->
 
 		const diagnostics = [
 			{
-				name: 'MCP Server Health',
+				name: 'MCP Server Health',;
 				test: async () => {
 					const response = await fetch('http://localhost:40000/health');
 					return response.ok;
 				}
 			},
 			{
-				name: 'Enhanced RAG Query',
+				name: 'Enhanced RAG Query',;
 				test: async () => {
 					const response = await fetch('http://localhost:40000/mcp/enhanced-rag/query', {
-						method: 'POST',
+						method: 'POST',;
 						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
+						body: JSON.stringify({;
 							query: 'System diagnostic test query',
 							caseId: 'diagnostic-test',
-							maxResults: 1
+							maxResults: 1;
 						})
 					});
 					return response.ok;
 				}
 			},
 			{
-				name: 'Memory Graph Operations',
+				name: 'Memory Graph Operations',;
 				test: async () => {
 					const response = await fetch('http://localhost:40000/mcp/memory/read-graph', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify( )
+						method: 'POST',;
+						headers: { 'Content-Type': 'application/json' },;
+						body: JSON.stringify( );
 					});
 					return response.ok;
 				}
 			},
 			{
-				name: 'Context7 Documentation',
+				name: 'Context7 Documentation',;
 				test: async () => {
 					const response = await fetch('http://localhost:40000/mcp/context7/resolve-library-id', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
+						method: 'POST',;
+						headers: { 'Content-Type': 'application/json' },;
 						body: JSON.stringify({ libraryName: 'sveltekit' })
 					});
 					return response.ok;
@@ -496,7 +495,7 @@ let passedTests = $state(0);
 
 	.controls-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 		gap: 1rem;
 		margin-bottom: 1rem;
 	}
@@ -633,7 +632,7 @@ let passedTests = $state(0);
 
 	.features-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr);
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 		gap: 1rem;
 	}
 

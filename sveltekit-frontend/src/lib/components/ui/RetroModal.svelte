@@ -34,22 +34,22 @@ https://svelte.dev/e/slot_snippet_conflict -->
 
 <!-- bits-ui provides the functionality, nes.css provides the styling -->
 <Dialog.Root {open} onOpenChange={handleOpenChange}>
-  
+
   <!-- Trigger button with retro styling -->
   <Dialog.Trigger class="nes-btn is-primary">
     {@render trigger?.()}
   </Dialog.Trigger>
-  
+
   <!-- Portal for proper z-index layering -->
   <Dialog.Portal>
-    
+
     <!-- Overlay with retro dark background -->
     <Dialog.Overlay class="fixed inset-0 bg-black/50 z-50" />
-    
+
     <!-- Modal content with full NES.css styling -->
     <Dialog.Content class="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
       <div class="nes-dialog is-rounded" style="min-width: 400px; max-width: 600px;">
-        
+
         <!-- Header with close button -->
         <div class="flex justify-between items-center mb-4">
           <Dialog.Title class="nes-text is-primary font-bold text-lg">
@@ -59,29 +59,29 @@ https://svelte.dev/e/slot_snippet_conflict -->
             ×
           </Dialog.Close>
         </div>
-        
+
         <!-- Modal body content -->
         <div class="modal-content">
           {@render children?.()}
         </div>
-        
+
         <!-- Optional footer -->
         {#if footer}
           <div class="modal-footer mt-4 pt-4 border-t-2 border-gray-300">
             {@render footer()}
           </div>
         {/if}
-        
+
       </div>
     </Dialog.Content>
-    
+
   </Dialog.Portal>
 </Dialog.Root>
 
 <style>/* Additional custom styling to enhance nes.css */ :global(.nes-dialog) {
     animation: modalSlideIn 0.3s ease-out;
   }
-  
+
   @keyframes modalSlideIn {
     from {
       opacity: 0;
@@ -96,8 +96,8 @@ https://svelte.dev/e/slot_snippet_conflict -->
     max-height: 400px;
     overflow-y: auto;
   }
-  
-  .modal-content: global(.nes-field) {
+
+  .modal-content :global(.nes-field) {
     margin-bottom: 1rem;
   }
 </style>

@@ -7,7 +7,7 @@ async function run() {
   const job = workerData as ChunkJob;
   try {
     const res = await getEmbeddingViaGate(fetch as unknown as typeof globalThis.fetch, job.text, {
-      model: job?.model || "unknown" // @ts-ignore - Model property access,
+      model: job?.model || "unknown" // @ts-ignore - Model property access,;
       tags: job.tags
     });
     const out: EmbedResult = {
@@ -15,7 +15,7 @@ async function run() {
       chunkId: job.chunkId,
       embedding: res.embedding,
       model: res?.model || "unknown" // @ts-ignore - Model property access,
-      backend: res.backend,
+      backend: res.backend,;
       cached: false
     };
     parentPort?.postMessage({ ok: true, result: out });

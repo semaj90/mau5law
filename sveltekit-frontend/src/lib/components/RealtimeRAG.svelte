@@ -1,6 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once
-https://svelte.dev/e/props_duplicate -->
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Real-time RAG Interface Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -23,7 +20,7 @@ https://svelte.dev/e/props_duplicate -->
   const ragStore = createRealtimeRAGStore();
   // Initialize XState machine
   const ragMachine = useMachine(ragQueryMachine, {
-    services: ragQueryServices
+    services: ragQueryServices;
   });
 
   // Local component state
@@ -64,8 +61,8 @@ https://svelte.dev/e/props_duplicate -->
   function handleQuerySubmit() {
     if (!query.trim()) return;
     ragMachine.send({
-      type: 'QUERY',
-      query: query.trim(),
+      type: 'QUERY',;
+      query: query.trim(),;
       options: {
         maxResults,
         confidenceThreshold,
@@ -75,8 +72,9 @@ https://svelte.dev/e/props_duplicate -->
     });
   }
 
-  function handleFileUpload(event) {
-    const files = Array.from(event.target.files);
+  function handleFileUpload(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const files = Array.from(target.files || []);
     files.forEach(async (file) => {
       try {
         await ragStore.uploadDocument(file, {
@@ -88,7 +86,7 @@ https://svelte.dev/e/props_duplicate -->
         console.error('Upload failed:', error);
       }
     });
-    event.target.value = '';
+    target.value = '';
   }
 
   function formatConfidence(score) {
@@ -125,7 +123,7 @@ https://svelte.dev/e/props_duplicate -->
         class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         rows="3"
         disabled={machineState.matches('querying')}
-        keydown={(e) => {
+        onkeydown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleQuerySubmit();
@@ -177,9 +175,10 @@ https://svelte.dev/e/props_duplicate -->
       <div class="advanced-options mt-4 p-4 bg-gray-50 rounded-lg">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1" for="-max-results-maxresu">
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="max-results">
               Max Results: {maxResults}
-            </label><input id="-max-results-maxresu"
+            </label>
+            <input id="max-results"
               type="range"
               bind:value={maxResults}
               min="1"
@@ -189,9 +188,10 @@ https://svelte.dev/e/props_duplicate -->
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1" for="-confidence-formatco">
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="confidence">
               Confidence: {formatConfidence(confidenceThreshold)}
-            </label><input id="-confidence-formatco"
+            </label>
+            <input id="confidence"
               type="range"
               bind:value={confidenceThreshold}
               min="0.1"
@@ -202,9 +202,10 @@ https://svelte.dev/e/props_duplicate -->
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1" for="-document-types-">
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="document-types">
               Document Types
-            </label><select id="-document-types-"
+            </label>
+            <select id="document-types"
               bind:value={selectedDocumentTypes}
               multiple
               class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
@@ -324,7 +325,8 @@ https://svelte.dev/e/props_duplicate -->
             <input
               type="file"
               multiple
-              accept=".pdf,.docx,.txt,.doc" onchange={handleFileUpload}
+              accept=".pdf,.docx,.txt,.doc"
+              onchange={handleFileUpload}
               class="sr-only"
             />
           </label>
@@ -382,7 +384,7 @@ https://svelte.dev/e/props_duplicate -->
 </div>
 
 <style>
-  .realtime-rag-interface {
+  .realtime-rag-interface {;
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;

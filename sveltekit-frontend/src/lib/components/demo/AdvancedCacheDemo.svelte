@@ -27,8 +27,9 @@
   		'Evaluate litigation risk for breach of contract',
   		'Examine patent infringement claims'
   	];
-  	$effect(async () => {
-  		// Load cache stats
+  	$effect(() => {
+    (async () => {
+// Load cache stats
   		loadCacheStats();
   		// Generate sample user activity
   		generateSampleActivity();
@@ -37,7 +38,8 @@
   		// Set up periodic updates
   		const interval = setInterval(loadCacheStats, 2000);
   		return () => clearInterval(interval);
-  	});
+    })();
+  });
   	async function loadCacheStats() {
   		const stats = advancedCache.getStats();
   		cacheStats = { ...(await new Promise(resolve => stats.subscribe(resolve))) };
@@ -58,7 +60,7 @@
   				userQuery: demoQuery,
   				legalDomain: 'contract',
   				userRole: 'legal_analyst',
-  				priority: 'high'
+  				priority: 'high';
   			});
   			// Simulate AI response
   			aiResponse = `Based on my analysis of "${demoQuery}", I've identified several key considerations:\n\n1. **Liability Limitations**: Review indemnification clauses for scope and mutual obligations.\n2. **Risk Assessment**: Evaluate consequential damages exclusions and caps.\n3. **Jurisdiction**: Ensure governing law aligns with business operations.\n4. **Termination**: Assess notice periods and post-termination obligations.`;
@@ -84,9 +86,9 @@
   		const testData = { message: 'Cached legal document', timestamp: Date.now() };
   		// Set cache item
   		await advancedCache.set(testKey, testData, {
-  			priority: 'high',
-  			ttl: 30000,
-  			tags: ['demo', 'legal-doc']
+  			priority: 'high',;
+  			ttl: 30000,;
+  			tags: ['demo', 'legal-doc'];
   		});
   		// Get cache item (should be a hit)
   		const retrieved = await advancedCache.get(testKey);
@@ -100,11 +102,11 @@
   			await new Promise(resolve => setTimeout(resolve, 1000));
   			return {
   				title: 'Legal Document Analysis',
-  				content: 'This document has been analyzed for compliance and risk factors.',
+  				content: 'This document has been analyzed for compliance and risk factors.',;
   				analysis: {
   					risk_level: 'medium',
-  					compliance_score: 85,
-  					recommendations: ['Review clause 4.2', 'Update termination notice']
+  					compliance_score: 85,;
+  					recommendations: ['Review clause 4.2', 'Update termination notice'];
   				}
   			};
   		};
@@ -338,7 +340,7 @@
 				<div class="grid gap-4">
 					{#each bestPractices as practice, i}
 						<div 
-							class="context7-enhancement performance-optimized"
+							class="context7-enhancement performance-optimized";
 							in:fly={{ y: 30, duration: 400, delay: i * 150 }}
 						>
 							<div class="flex items-start justify-between mb-2">
@@ -428,7 +430,7 @@
 		transform: translateX(2px);
 	}
 	
-	.code-example summary:hover {
+	.code-example summary:hover {;
 		text-decoration: underline;
 	}
 	

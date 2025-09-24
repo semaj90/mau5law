@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import { langExtractService, type LegalExtractionRequest } from "$lib/services/langextract-ollama-service";
-import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit'
+import { langExtractService, type LegalExtractionRequest } from "$lib/services/langextract-ollama-service"
+import type { RequestHandler } from './$types'
 
 
 /*
@@ -11,64 +11,64 @@ import type { RequestHandler } from './$types';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json() as LegalExtractionRequest & {
-      action?: 'extract' | 'contract_terms' | 'case_citations' | 'dates' | 'summary' | 'risks' | 'batch';
-      requests?: LegalExtractionRequest[];
-    };
+      action?: 'extract' | 'contract_terms' | 'case_citations' | 'dates' | 'summary' | 'risks' | 'batch'
+      requests?: LegalExtractionRequest[]
+    }
 
-    // Validate required fields;
+    // Validate required fields
     if (!body.text && !body.requests) {
       return json({
         success: false,
         error: 'Missing required field: text or requests'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Check if Ollama is available
-    const isAvailable = await langExtractService.isOllamaAvailable();
+    const isAvailable = await langExtractService.isOllamaAvailable()
     if (!isAvailable) {
       return json({
         success: false,
         error: 'Ollama service not available. Please ensure Ollama is running on http://localhost:11434'
-      }, { status: 503 });
+      }, { status: 503 })
     }
 
-    let result;
+    let result
 
     switch (body.action) {
       case 'contract_terms':
-        result = await langExtractService.extractContractTerms(body.text, body?.model || "unknown" // @ts-ignore - Model property access);
-        break;
+        result = await langExtractService.extractContractTerms(body.text, body?.model || "unknown" // @ts-ignore - Model property access)
+        break
 
       case 'case_citations':
-        result = await langExtractService.extractCaseLawCitations(body.text, body?.model || "unknown" // @ts-ignore - Model property access);
-        break;
+        result = await langExtractService.extractCaseLawCitations(body.text, body?.model || "unknown" // @ts-ignore - Model property access)
+        break
 
       case 'dates':
-        result = await langExtractService.extractLegalDates(body.text, body.documentType, body?.model || "unknown" // @ts-ignore - Model property access);
-        break;
+        result = await langExtractService.extractLegalDates(body.text, body.documentType, body?.model || "unknown" // @ts-ignore - Model property access)
+        break
 
       case 'summary':
-        result = await langExtractService.generateLegalSummary(body.text, body.documentType || 'contract', body?.model || "unknown" // @ts-ignore - Model property access);
-        break;
+        result = await langExtractService.generateLegalSummary(body.text, body.documentType || 'contract', body?.model || "unknown" // @ts-ignore - Model property access)
+        break
 
       case 'risks':
-        result = await langExtractService.extractRiskFactors(body.text, body.documentType, body?.model || "unknown" // @ts-ignore - Model property access);
-        break;
+        result = await langExtractService.extractRiskFactors(body.text, body.documentType, body?.model || "unknown" // @ts-ignore - Model property access)
+        break
 
-      case 'batch':;
+      case 'batch':
         if (!body.requests || !Array.isArray(body.requests)) {
           return json({
             success: false,
             error: 'Batch processing requires requests array'
-          }, { status: 400 });
+          }, { status: 400 })
         }
-        result = await langExtractService.batchExtract(body.requests);
-        break;
+        result = await langExtractService.batchExtract(body.requests)
+        break
 
       case 'extract':
       default:
-        result = await langExtractService.extractLegalEntities(body);
-        break;
+        result = await langExtractService.extractLegalEntities(body)
+        break
     }
 
     return json({
@@ -76,24 +76,24 @@ export const POST: RequestHandler = async ({ request }) => {
       data: result,
       timestamp: new Date().toISOString(),
       service: 'langextract-ollama'
-    });
+    })
 
   } catch (error: any) {
-    console.error('LangExtract API error:', error);
+    console.error('LangExtract API error:', error)
     
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error occurred',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async () => {
   try {
     // Check service status
-    const isAvailable = await langExtractService.isOllamaAvailable();
-    const models = await langExtractService.listAvailableModels();
+    const isAvailable = await langExtractService.isOllamaAvailable()
+    const models = await langExtractService.listAvailableModels()
 
     return json({
       success: true,
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async () => {
           url: '/api/legal-ai/langextract',
           body: {
             action: 'batch',
-            requests: [;
+            requests: [
               {
                 text: 'Contract text...',
                 documentType: 'contract',
@@ -148,12 +148,12 @@ export const GET: RequestHandler = async () => {
           }
         }
       }
-    });
+    })
   } catch (error: any) {
     return json({
       success: false,
       error: 'Failed to get service status',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

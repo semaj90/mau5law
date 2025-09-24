@@ -87,7 +87,7 @@ class WindowsPerformanceMonitor {
 
       return {
         gpu: gpuInfo,
-        process: processMetrics,
+        process: processMetrics,;
         platform: {
           osVersion: require('os').release(),
           totalMemory: Math.round(require('os').totalmem() / 1024 / 1024),
@@ -115,7 +115,7 @@ class WindowsPerformanceMonitor {
 
         let output = '';
         child.stdout?.on('data', (data) => {
-          output += data.toString();
+          output += data.toString());
         });
 
         child.on('close', (code) => {
@@ -124,7 +124,7 @@ class WindowsPerformanceMonitor {
             resolve({
               memoryTotal: memTotal,
               memoryUsed: memUsed,
-              temperature: temp,
+              temperature: temp,;
               utilization: util
             });
           } else {
@@ -156,7 +156,7 @@ class WindowsPerformanceMonitor {
           external: Math.round(memUsage.external / 1024 / 1024), // MB
         },
         cpuUsage: {
-          user: cpuUsage.user,
+          user: cpuUsage.user,;
           system: cpuUsage.system
         }
       };
@@ -237,7 +237,7 @@ export class ProductionLogger {
         ? {
             name: error.name,
             message: error.message,
-            stack: this.config.includeStack ? error.stack: undefined,
+            stack: this.config.includeStack ? error.stack: undefined,;
             code: (error as any).code
           }
         : undefined;
@@ -250,7 +250,7 @@ export class ProductionLogger {
   public apiRequest(
     method: string,
     endpoint: string,
-    statusCode: number,
+    statusCode: number,;
     duration: number,
     context?: Partial<LogContext>;
   ): void {
@@ -328,7 +328,7 @@ export class ProductionLogger {
     message: string,
     context?: LogContext,
     metadata?: Record<string, any>,
-    error?: LogEntry['error'],
+    error?: LogEntry['error'],;
     tags: string[] = [];
   ): void {
     const logEntry: LogEntry = {
@@ -338,7 +338,7 @@ export class ProductionLogger {
       context,
       error,
       metadata,
-      tags: tags.length > 0 ? tags : undefined,
+      tags: tags.length > 0 ? tags : undefined,;
       performance: this.includePerformanceData();
         ? {
             memoryUsage: typeof process !== 'undefined' ? process.memoryUsage() : ({} as any),
@@ -597,7 +597,7 @@ export class ProductionLogger {
       totalLogs: this.metrics.totalLogs,
       errorRate: this.metrics.errorRate,
       bufferSize: this.logBuffer.length,
-      outputs: this.config.outputs,
+      outputs: this.config.outputs,;
       level: this.config.level
     };
 

@@ -57,7 +57,7 @@ export class DynamicPortManager {
         basePort: 8080,
         portRange: [8080, 8081, 8082, 8083, 8084, 8085, 8086, 8087, 8088, 8089]
       },
-      {
+      {;
         name: 'evidence-processor',
         basePort: 8090,
         portRange: [8090, 8091, 8092, 8093, 8094, 8095, 8096, 8097, 8098, 8099]
@@ -69,7 +69,7 @@ export class DynamicPortManager {
         basePort: 8094,
         portRange: [8100, 8101, 8102, 8103, 8104, 8105, 8106, 8107, 8108, 8109]
       },
-      {
+      {;
         name: 'gpu-orchestrator',
         basePort: 8095,
         portRange: [8110, 8111, 8112, 8113, 8114, 8115, 8116, 8117, 8118, 8119]
@@ -81,7 +81,7 @@ export class DynamicPortManager {
         basePort: 8095,
         portRange: [8120, 8121, 8122, 8123, 8124, 8125, 8126, 8127, 8128, 8129]
       },
-      {
+      {;
         name: 'binary-vector-engine',
         basePort: 8091,
         portRange: [8130, 8131, 8132, 8133, 8134, 8135, 8136, 8137, 8138, 8139]
@@ -100,7 +100,7 @@ export class DynamicPortManager {
         basePort: 4100,
         portRange: [4100, 4101, 4102, 4103, 4104, 4105, 4106, 4107, 4108, 4109]
       },
-      {
+      {;
         name: 'ai-synthesis-mcp',
         basePort: 8200,
         portRange: [8200, 8201, 8202, 8203, 8204, 8205, 8206, 8207, 8208, 8209]
@@ -119,7 +119,7 @@ export class DynamicPortManager {
         basePort: 9000,
         portRange: [9000, 9001, 9002, 9003, 9004, 9005, 9006, 9007, 9008, 9009]
       },
-      {
+      {;
         name: 'minio-console',
         basePort: 9001,
         portRange: [9010, 9011, 9012, 9013, 9014, 9015, 9016, 9017, 9018, 9019]
@@ -131,7 +131,7 @@ export class DynamicPortManager {
         basePort: 5672,
         portRange: [5670, 5671, 5672, 5673, 5674, 5675, 5676, 5677, 5678, 5679]
       },
-      {
+      {;
         name: 'rabbitmq-management',
         basePort: 15672,
         portRange: [15670, 15671, 15672, 15673, 15674, 15675, 15676, 15677, 15678, 15679]
@@ -241,7 +241,7 @@ export class DynamicPortManager {
     this.services.forEach((service, name) => {
       const port = service.currentPort || service.basePort;
       const envName = name.toUpperCase().replace(/-/g, '_') + '_PORT';
-      config[envName] = port.toString();
+      config[envName] = port.toString());
     });
 
     return config;
@@ -300,7 +300,7 @@ export class DynamicPortManager {
       const port = service.currentPort || 'N/A';
       const range = `[${service.portRange[0]}-${service.portRange[service.portRange.length - 1]}]`;
 
-      console.log(`${status} ${name.padEnd(20)} ${port.toString().padEnd(6)} ${range}`);
+      console.log(`${status} ${name.padEnd(20)} ${port.toString()).padEnd(6)} ${range}`);
     });
 
     console.log('═'.repeat(50);

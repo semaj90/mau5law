@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -44,10 +44,12 @@ https://svelte.dev/e/js_parse_error -->
   let reconnectTimeout: ReturnType<typeof setTimeout> | undefined = $state(undefined);
 
   // Lifecycle management
-  $effect(async () => {
-    mounted = true;
+  $effect(() => {
+    (async () => {
+mounted = true;
     await initializeCanvas();
     initializeWebSocket();
+    })();
   });
 
   onDestroy(() => {
@@ -57,9 +59,9 @@ https://svelte.dev/e/js_parse_error -->
   async function initializeCanvas() {
     if (!canvasElement) return;
     ctx = canvasElement.getContext('2d')!;
-    canvas.set.toString(),
-      nodes: [],
-      connections: []
+    canvas.set(toString)(),
+      nodes: [],;
+      connections: [];
     });
     renderCanvas();
   }
@@ -75,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
         isOnline.set(true);
         if (canvasId) {
           ws?.send(JSON.stringify({
-            type: 'JOIN_ROOM',
+            type: 'JOIN_ROOM',;
             room: `canvas:${canvasId}`,
             userId
           }));
@@ -173,9 +175,9 @@ https://svelte.dev/e/js_parse_error -->
       x,
       y,
       width: 200,
-      height: 80,
-      content: 'New Node',
-      type: 'text'
+      height: 80,;
+      content: 'New Node',;
+      type: 'text';
     };
 
     canvas.update(c => {
@@ -191,9 +193,9 @@ https://svelte.dev/e/js_parse_error -->
     // Broadcast to collaborators
     if (ws?.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
-        type: 'NODE_CREATED',
+        type: 'NODE_CREATED',;
         node: newNode,
-        canvasId
+        canvasId;
       }));
     }
   }
@@ -217,8 +219,8 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch('/api/evidence/upload', {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
 
       if (!(response as { ok?: any; status?: any; json?: any }).ok) {
@@ -260,9 +262,9 @@ https://svelte.dev/e/js_parse_error -->
 
   function resetCanvas() {
     if (readonly) return;
-    canvas.set.toString(),
-      nodes: [],
-      connections: []
+    canvas.set(toString)(),
+      nodes: [],;
+      connections: [];
     });
     renderCanvas();
   }
@@ -297,7 +299,7 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
   <div class="canvas-workspace">
-    <canvas
+    <canvas;
       bind:this={canvasElement}
       width="800"
       height="600"
@@ -369,7 +371,7 @@ https://svelte.dev/e/js_parse_error -->
     background: white;
   }
 
-  canvas:focus-visible {
+  canvas:focus-visible {;
     outline: 2px solid hsl(220 100% 50%);
     outline-offset: -2px;
   }
@@ -441,7 +443,7 @@ https://svelte.dev/e/js_parse_error -->
     color: hsl(0 84% 60%);
   }
 
-  .status: :before {
+  .status::before {
     content: '';
     width: 8px;
     height: 8px;
@@ -469,16 +471,16 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.2s ease;
   }
 
-  button:hover:not(:disabled) {
+  button:hover:not(:disabled) {;
     background: hsl(220 13% 98%);
     border-color: hsl(220 13% 85%);
   }
 
-  button:active:not(:disabled) {
+  button:active:not(:disabled) {;
     background: hsl(220 13% 95%);
   }
 
-  button:disabled {
+  button:disabled {;
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -532,7 +534,7 @@ https://svelte.dev/e/js_parse_error -->
       color: hsl(220 15% 85%);
     }
     
-    button:hover:not(:disabled) {
+    button:hover:not(:disabled) {;
       background: hsl(220 15% 20%);
     }
     

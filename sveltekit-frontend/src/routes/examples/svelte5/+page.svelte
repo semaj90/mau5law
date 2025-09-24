@@ -97,7 +97,7 @@ let layout = $derived(mobile.matches ? 'mobile' : 'desktop');`}</code></pre>
 </Svelte5Examples>
 
 <style>
-  .custom-header {
+  .custom-header {;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -178,7 +178,7 @@ let layout = $derived(mobile.matches ? 'mobile' : 'desktop');`}</code></pre>
     transition: background-color 0.2s;
   }
   
-  nav a:hover {
+  nav a:hover {;
     background: #dbeafe;
   }
 </style>

@@ -1,16 +1,20 @@
 <!-- App-wide layout with session management and global sidebar -->
 <script lang="ts">
 	import '../app.css';
-	import { page } from '$app/stores';
 	import SessionInitializer from '$lib/components/SessionInitializer.svelte';
 	import GlobalSidebar from '$lib/components/GlobalSidebar.svelte';
 	import CSSActivator from '$lib/components/ui/CSSActivator.svelte';
-	import { isAuthenticated, sessionActions } from '$lib/stores/sessionStore.svelte';
+	import { sessionStore, sessionActions } from '$lib/stores/sessionStore.svelte';
 
 	// Use Svelte 5 runes pattern for reactive state
-	let showSidebar = $derived(isAuthenticated);
+	let showSidebar = $derived($sessionStore.isAuthenticated);
 
-	let { children, data } = $props();
+	interface Props {
+		children: any;
+		data?: any;
+	}
+
+	let { children, data }: Props = $props();
 
 	// Initialize session with page data on mount
 	$effect(() => {

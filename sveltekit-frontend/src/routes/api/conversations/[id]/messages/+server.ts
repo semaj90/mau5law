@@ -2,14 +2,14 @@
  * Conversation Messages API - POST new messages to conversation
  */
 
-import type { RequestHandler } from './$types.js';
-import { conversationService } from '$lib/server/services/conversation-service';
-import { getRequestId, apiSuccess, apiError, withErrorHandling } from '$lib/server/api/standard-response';
+import type { RequestHandler } from './$types.js'
+import { conversationService } from '$lib/server/services/conversation-service'
+import { getRequestId, apiSuccess, apiError, withErrorHandling } from '$lib/server/api/standard-response'
 
-// POST /api/conversations/[id]/messages - Add message to conversation;
+// POST /api/conversations/[id]/messages - Add message to conversation
 export const POST: RequestHandler = withErrorHandling(async (event) => {
-  const requestId = getRequestId(event);
-  const conversationId = event.params.id;
+  const requestId = getRequestId(event)
+  const conversationId = event.params.id
 
   if (!conversationId) {
     return apiError(
@@ -18,11 +18,11 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
       'INVALID_INPUT',
       undefined,
       requestId
-    );
+    )
   }
 
   try {
-    const body = await event.request.json();
+    const body = await event.request.json()
     const { 
       role, 
       content, 
@@ -32,7 +32,7 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
       confidence, 
       vectorSearchResults,
       metadata 
-    } = body;
+    } = body
 
     if (!role || !content) {
       return apiError(
@@ -41,7 +41,7 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
         'INVALID_INPUT',
         undefined,
         requestId
-      );
+      )
     }
 
     if (role !== 'user' && role !== 'assistant') {
@@ -51,7 +51,7 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
         'INVALID_INPUT',
         undefined,
         requestId
-      );
+      )
     }
 
     const message = await conversationService.addMessage({
@@ -64,13 +64,13 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
       confidence,
       vectorSearchResults,
       metadata
-    });
+    })
 
     return apiSuccess(
       { message },
       'Message added successfully',
       requestId
-    );
+    )
   } catch (err: any) {
     return apiError(
       'Failed to add message',
@@ -78,6 +78,6 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
       'DATABASE_ERROR',
       err,
       requestId
-    );
+    )
   }
-});
+})

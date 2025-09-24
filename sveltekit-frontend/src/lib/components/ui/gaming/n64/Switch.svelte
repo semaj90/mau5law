@@ -103,10 +103,10 @@
 
     ondispatch,
 
-    class: className = ''
+    class: className = '';
   }: Props = $props();
 
-  
+
 
   let isFocused = $state(false);
   let isHovered = $state(false);
@@ -289,28 +289,28 @@
   // Get material styles based on state and variant
   const getMaterialStyles = (variant: string, material: string, isOn: boolean) => {
     const baseColors = {
-      primary: { 
+      primary: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
         on: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' }
       },
-      secondary: { 
+      secondary: {
         off: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
         on: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }
       },
-      success: { 
+      success: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
         on: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' }
       },
-      warning: { 
+      warning: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
         on: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
       },
-      error: { 
+      error: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
         on: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }
       },
-      info: { 
-        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
+      info: {
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },;
         on: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
       }
     };
@@ -333,7 +333,7 @@
           inset 0 -2px 0 rgba(0,0,0,0.4),
           0 4px 8px rgba(0,0,0,0.4)
         `
-      },
+      },;
       pbr: {
         trackBackground: `
           linear-gradient(145deg, ${isOn ? stateColors.highlight : '#2d3748'} 0%, ${isOn ? stateColors.base : '#1a202c'} 50%, ${isOn ? stateColors.shadow : '#0d1117'} 100%),
@@ -360,7 +360,7 @@
     const sizeMap = {
       small: { width: 44, height: 24, knobSize: 18, fontSize: '12px' },
       medium: { width: 56, height: 32, knobSize: 24, fontSize: '14px' },
-      large: { width: 68, height: 40, knobSize: 30, fontSize: '16px' },
+      large: { width: 68, height: 40, knobSize: 30, fontSize: '16px' },;
       xl: { width: 80, height: 48, knobSize: 36, fontSize: '18px' }
     };
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
@@ -438,14 +438,14 @@
   <div
     bind:this={switchElement}
     class="n64-switch {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}"
-    class:checked
+    class:checked;
     class:focused={isFocused}
     class:hovered={isHovered}
     class:pressed={isPressed}
     class:animating={isAnimating}
-    class:disabled
+    class:disabled;
     class:readonly
-    style="
+    style=";
       --track-bg: {materialStyles.trackBackground};
       --knob-bg: {materialStyles.knobBackground};
       --knob-shadow: {materialStyles.knobShadow};
@@ -518,8 +518,8 @@
   {#if label || description}
     <div class="switch-content">
       {#if label}
-        <label 
-          id="switch-label" 
+        <label
+          id="switch-label"
           class="switch-label"
           for={id}
         >
@@ -528,7 +528,7 @@
       {/if}
 
       {#if description}
-        <div 
+        <div
           id="switch-description"
           class="switch-description"
         >
@@ -583,13 +583,13 @@
     background: var(--track-bg);
     border-radius: calc(var(--switch-height) / 2);
     overflow: hidden;
-    
+
     /* 3D track styling */
-    box-shadow: 
+    box-shadow:
       inset 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
       inset 0 2px 0 rgba(0, 0, 0, 0.6),
       0 2px 4px rgba(0, 0, 0, 0.3);
-    
+
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
@@ -600,15 +600,15 @@
     height: var(--knob-size);
     background: var(--knob-bg);
     border-radius: 50%;
-    
+
     /* 3D knob styling */
     box-shadow: var(--knob-shadow);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    
+
     /* Smooth mechanical animation */
     transform: var(--knob-transform);
     transition: transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    
+
     /* Performance optimization */
     will-change: transform;
     transform-style: preserve-3d;
@@ -708,11 +708,11 @@
   }
 
   @keyframes toggleGlowPulse {
-    0%, 100% { 
+    0%, 100% {
       opacity: var(--glow-intensity);
       transform: scale(1);
     }
-    50% { 
+    50% {
       opacity: calc(var(--glow-intensity) * 1.5);
       transform: scale(1.1);
     }
@@ -748,8 +748,8 @@
     outline-offset: 2px;
   }
 
-  .n64-switch.hovered: not(.disabled) .switch-track {
-    box-shadow: 
+  .n64-switch.hovered:not(.disabled) .switch-track {
+    box-shadow:
       inset 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
       inset 0 2px 0 rgba(0, 0, 0, 0.6),
       0 2px 4px rgba(0, 0, 0, 0.3),
@@ -825,7 +825,7 @@
   }
 
   /* Spring physics animation for enabled switches */
-  .n64-switch: not(.disabled).animating .switch-knob {
+  .n64-switch:not(.disabled).animating .switch-knob {
     transition: transform var(--animation-duration) cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 

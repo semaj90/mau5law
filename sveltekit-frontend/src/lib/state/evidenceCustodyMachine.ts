@@ -142,7 +142,7 @@ const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCus
       },
       signature: await generateEventSignature({
         evidenceId: input.evidenceId,
-        userId: input.userId,
+        userId: input.userId,;
         timestamp: new Date().toISOString(),
         eventType: "intake"
       })
@@ -182,7 +182,7 @@ const integrityVerificationService = fromPromise(async ({ input }: { input: Evid
           analysisType: "integrity",
           verificationContext: {
             originalHash: input.originalHash,
-            currentHash: input.currentHash,
+            currentHash: input.currentHash,;
             metadata: input.evidenceData?.metadata
           }
         })
@@ -225,7 +225,7 @@ const integrityVerificationService = fromPromise(async ({ input }: { input: Evid
       },
       signature: await generateEventSignature({
         evidenceId: input.evidenceId,
-        userId: input.userId,
+        userId: input.userId,;
         timestamp: new Date().toISOString(),
         eventType: "verification"
       })
@@ -251,7 +251,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
       body: JSON.stringify({
         evidenceId: input.evidenceId,
         caseId: input.caseId,
-        analysisType: "custody-workflow",
+        analysisType: "custody-workflow",;
         context: {
           custodyChain: input.custodyEvents,
           integrityStatus: input.integrityStatus,
@@ -271,7 +271,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
       authenticity: analysisResult.authenticityScore || 0.8,
       completeness: analysisResult.completenessScore || 0.9,
       relevance: analysisResult.relevanceScore || 0.85,
-      riskLevel: analysisResult.riskLevel || "medium",
+      riskLevel: analysisResult.riskLevel || "medium",;
       recommendations: analysisResult.recommendations || [],
       flaggedAnomalies: analysisResult.anomalies || []
     };
@@ -292,7 +292,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
       },
       signature: await generateEventSignature({
         evidenceId: input.evidenceId,
-        userId: input.userId,
+        userId: input.userId,;
         timestamp: new Date().toISOString(),
         eventType: "analysis"
       })
@@ -329,7 +329,7 @@ const collaborationService = fromPromise(async ({ input }: { input: EvidenceCust
           joinedAt: new Date().toISOString()
         }
       ],
-      chatHistory: input.collaborationSession?.chatHistory || [],
+      chatHistory: input.collaborationSession?.chatHistory || [],;
       annotations: input.collaborationSession?.annotations || []
     };
 
@@ -337,7 +337,7 @@ const collaborationService = fromPromise(async ({ input }: { input: EvidenceCust
     await notifyCollaborators(sessionId, {
       type: "user-joined",
       userId: input.userId,
-      evidenceId: input.evidenceId,
+      evidenceId: input.evidenceId,;
       timestamp: new Date().toISOString()
     });
 
@@ -372,7 +372,7 @@ const custodyTransferService = fromPromise(async ({ input }: { input: EvidenceCu
       },
       signature: await generateEventSignature({
         evidenceId: input.evidenceId,
-        userId: input.userId,
+        userId: input.userId,;
         timestamp: new Date().toISOString(),
         eventType: "transfer"
       })
@@ -425,7 +425,7 @@ const custodyFinalizationService = fromPromise(async ({ input }: { input: Eviden
       },
       signature: await generateEventSignature({
         evidenceId: input.evidenceId,
-        userId: input.userId,
+        userId: input.userId,;
         timestamp: new Date().toISOString(),
         eventType: "finalization"
       })
@@ -652,7 +652,7 @@ export const evidenceCustodyMachine = createMachine();
           })
         },
         on: {
-          JOIN_COLLABORATION: {
+          JOIN_COLLABORATION: {;
             actions: assign({
               activeCollaborators: ({ context, event }) => [
                 ...context.activeCollaborators.filter(
@@ -678,7 +678,7 @@ export const evidenceCustodyMachine = createMachine();
                   : undefined
             })
           },
-          LEAVE_COLLABORATION: {
+          LEAVE_COLLABORATION: {;
             actions: assign({
               activeCollaborators: ({ context, event }) =>
                 context.activeCollaborators.filter(
@@ -696,7 +696,7 @@ export const evidenceCustodyMachine = createMachine();
                   : undefined
             })
           },
-          ADD_ANNOTATION: {
+          ADD_ANNOTATION: {;
             actions: assign({
               collaborationSession: ({ context, event }) =>
                 context.collaborationSession;
@@ -813,7 +813,7 @@ export const evidenceCustodyMachine = createMachine();
       },
 
       completed: {
-        type: "final",
+        type: "final",;
         entry: () => {
           console.log(
             "Evidence Chain of Custody workflow completed successfully"
@@ -821,7 +821,7 @@ export const evidenceCustodyMachine = createMachine();
         }
       },
 
-      error: {
+      error: {;
         on: {
           RETRY: [;
             {
@@ -842,7 +842,7 @@ export const evidenceCustodyMachine = createMachine();
       },
 
       failed: {
-        type: "final",
+        type: "final",;
         entry: ({ context }) => {
           console.error(
             `Evidence custody workflow failed after ${context.retryCount} retries: ${context.error}`
@@ -851,14 +851,14 @@ export const evidenceCustodyMachine = createMachine();
       },
 
       rejected: {
-        type: "final",
+        type: "final",;
         entry: ({ context }) => {
           console.log(`Evidence custody workflow rejected: ${context.error}`);
         }
       },
 
       cancelled: {
-        type: "final",
+        type: "final",;
         entry: () => {
           console.log("Evidence custody workflow cancelled by user");
         }
@@ -881,7 +881,7 @@ async function generateEvidenceHash(evidence: Evidence): Promise<string> {
   // Implementation for generating evidence hash;
   const data = JSON.stringify({
     id: evidence.id,
-    content: evidence.content,
+    content: evidence.content,;
     metadata: evidence.metadata,
     createdAt: evidence.createdAt
   });
@@ -961,7 +961,7 @@ export const createEvidenceCustodyActor = (
   return evidenceCustodyMachine.provide({
     actions: {
       // Custom actions can be added here
-    },
+    },;
     guards: {
       // Custom guards can be added here
     }

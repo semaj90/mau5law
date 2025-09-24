@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Current User API Endpoint
@@ -7,31 +7,31 @@ import type { RequestHandler } from './$types.js';
  * Optimized for SSR with Bits UI compatibility
  */
 
-import { json } from '@sveltejs/kit';
-import { createSSRResponse, createSSRErrorResponse, withSSRHandler } from '$lib/server/api-ssr-helpers';
-import { getTypedLocals } from '$lib/types/locals-unify';
-import { db } from '$lib/server/db';
-import { users, cases, evidence } from '$lib/server/db/schema-postgres';
-import { eq, sql, count } from 'drizzle-orm';
-import { cognitiveCache } from '$lib/services/cognitive-cache-integration';
-import { dev } from '$app/environment';
+import { json } from '@sveltejs/kit'
+import { createSSRResponse, createSSRErrorResponse, withSSRHandler } from '$lib/server/api-ssr-helpers'
+import { getTypedLocals } from '$lib/types/locals-unify'
+import { db } from '$lib/server/db'
+import { users, cases, evidence } from '$lib/server/db/schema-postgres'
+import { eq, sql, count } from 'drizzle-orm'
+import { cognitiveCache } from '$lib/services/cognitive-cache-integration'
+import { dev } from '$app/environment'
 
 export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) => {
   // Use typed locals for consistent session/user access
-  const typedLocals = getTypedLocals(locals);
-  const session = typedLocals.session;
-  const user = typedLocals.user;
+  const typedLocals = getTypedLocals(locals)
+  const session = typedLocals.session
+  const user = typedLocals.user
   
-  // For development, create a mock user if no session exists;
+  // For development, create a mock user if no session exists
   if (!session || !user) {
-    // Set a development session cookie for consistency;
+    // Set a development session cookie for consistency
     cookies.set('dev_session', 'dev_user_session_' + Date.now(), {
       path: '/',
       httpOnly: false,
       secure: false,
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7 // 7 days
-    });
+    })
 
     const mockUser = {
       user: {
@@ -63,15 +63,15 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
       },
       authenticated: true,
       loadSource: 'development'
-    };
+    }
 
-    return createSSRResponse(mockUser);
+    return createSSRResponse(mockUser)
   }
 
-    const userId = user.id;
+    const userId = user.id
 
     // Check cognitive cache for user profile data
-    const cacheKey = `current_user_${userId}`;
+    const cacheKey = `current_user_${userId}`
     const cacheRequest = {
       key: cacheKey,
       type: 'legal-data' as const,
@@ -82,20 +82,20 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         priority: 'high' as const,
         semanticTags: ['auth', 'current-user', 'profile']
       }
-    };
+    }
 
     // Try cognitive cache first
-    const cachedUserData = await cognitiveCache.retrieveJsonbDocument(cacheKey);
+    const cachedUserData = await cognitiveCache.retrieveJsonbDocument(cacheKey)
     if (cachedUserData && cachedUserData.metadata.accessCount >= 0) {
       return createSSRResponse({
         ...cachedUserData.content,
         authenticated: true,
         loadSource: 'cache'
-      }, { cached: true });
+      }, { cached: true })
     }
 
     // Get comprehensive user data from database
-    const [userProfile, userStats] = await Promise.all([;
+    const [userProfile, userStats] = await Promise.all([
       db.select({
         id: users.id,
         email: users.email,
@@ -124,13 +124,13 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         activeCases: (sql<number>`COUNT(CASE WHEN ${cases.status} IN ('open', 'active') THEN 1 END)` as any),
         totalEvidence: (sql<number>`(SELECT COUNT(*) FROM ${evidence} WHERE ${evidence.created_by} = ${userId})` as any)
       }).from(cases).where(eq(cases.created_by, userId)
-    ]);
+    ])
 
-    const profile = userProfile[0];
-    const stats = userStats[0];
+    const profile = userProfile[0]
+    const stats = userStats[0]
 
     if (!profile) {
-      return createSSRErrorResponse('User not found', 404, { user: null });
+      return createSSRErrorResponse('User not found', 404, { user: null })
     }
 
     const userData = {
@@ -163,15 +163,15 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
       },
       authenticated: true,
       loadSource: 'database'
-    };
+    }
 
-    // Cache the user data for future requests;
+    // Cache the user data for future requests
     await cognitiveCache.storeJsonbDocument(cacheKey, userData, {
       documentType: 'user-profile',
       cached: true
-    });
+    })
 
-    return createSSRResponse(userData);
+    return createSSRResponse(userData)
 
   // Error handling is now handled by withSSRHandler wrapper
-});
+})

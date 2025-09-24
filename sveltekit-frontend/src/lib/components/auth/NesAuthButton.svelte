@@ -86,7 +86,7 @@
 
 <style>
   /* Custom button size classes */
-  :global(.nes-btn-small) {
+  :global(.nes-btn-small) {;
     font-size: 0.6rem;
     padding: 0.5rem 1rem;
   }

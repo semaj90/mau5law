@@ -91,8 +91,8 @@
   
   let currentLOD = $state(1);
   let timeRange = $state(initialTimeRange || {
-    start: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000), // 1 year ago
-    end: new Date()
+    start: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000), // 1 year ago;
+    end: new Date();
   });
   let zoomLevel = $state(1.0);
   let scrollOffset = $state(0);
@@ -105,9 +105,9 @@
     document: true,
     meeting: true,
     filing: true,
-    communication: true,
-    incident: true,
-    media: true
+    communication: true,;
+    incident: true,;
+    media: true;
   });
   let importanceThreshold = $state(0.1);
   let searchQuery = $state('');
@@ -126,7 +126,7 @@
       clusterDistance: 0, // No clustering
       description: 'Ultra High (All Events)',
       renderComplexity: 1.0,
-      thumbnailSize: 64
+      thumbnailSize: 64;
     },
     1: {
       timePrecision: 'day',
@@ -135,7 +135,7 @@
       clusterDistance: 24 * 60 * 60 * 1000, // 1 day clustering
       description: 'High Detail',
       renderComplexity: 0.7,
-      thumbnailSize: 32
+      thumbnailSize: 32;
     },
     2: {
       timePrecision: 'week',
@@ -144,16 +144,16 @@
       clusterDistance: 7 * 24 * 60 * 60 * 1000, // 1 week clustering
       description: 'Medium Detail',
       renderComplexity: 0.4,
-      thumbnailSize: 16
+      thumbnailSize: 16;
     },
     3: {
       timePrecision: 'month',
       maxEvents: 50,
       minImportance: 0.7,
-      clusterDistance: 30 * 24 * 60 * 60 * 1000, // 1 month clustering
+      clusterDistance: 30 * 24 * 60 * 60 * 1000, // 1 month clustering;
       description: 'Low Detail (N64 Style)',
       renderComplexity: 0.2,
-      thumbnailSize: 8
+      thumbnailSize: 8;
     }
   };
 
@@ -178,17 +178,18 @@
       level: currentLOD,
       visibleEvents: visibleEvents.length,
       totalEvents: allEvents.length,
-      timeSpan: `${timeSpanDays.toFixed(0)} days`,
+      timeSpan: `${timeSpanDays.toFixed(0)} days`,;
       precision: config?.timePrecision || 'month',
       renderComplexity: config?.renderComplexity || 0.2,
       memoryUsage: calculateMemoryUsage(),
-      thumbnailsLoaded: calculateThumbnailsLoaded()
+      thumbnailsLoaded: calculateThumbnailsLoaded();
     };
   });
 
   // Initialize timeline
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
     
     try {
       if (enableWebGPU) {
@@ -200,6 +201,7 @@
       console.error('[EvidenceTimelineLOD] Initialization failed:', error);
       await initializeCanvas2DFallback();
     }
+    })();
   });
 
   onDestroy(() => {
@@ -229,10 +231,10 @@
     if (!context) throw new Error('WebGPU context creation failed');
 
     context.configure({
-      device: gpuDevice,
+      device: gpuDevice,;
       format: 'bgra8unorm',
-      alphaMode: 'premultiplied',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT
+      alphaMode: 'premultiplied',;
+      usage: GPUTextureUsage.RENDER_ATTACHMENT;
     });
 
     isWebGPUReady = true;
@@ -293,9 +295,9 @@
       filing: 0.9,        // Court filings are critical
       incident: 0.9,      // Incidents are crucial
       meeting: 0.7,       // Meetings are important
-      document: 0.6,      // Documents have moderate importance
-      communication: 0.5, // Communications are common
-      media: 0.4         // Media is supporting evidence
+      document: 0.6,      // Documents have moderate importance;
+      communication: 0.5, // Communications are common;
+      media: 0.4         // Media is supporting evidence;
     };
     return typeWeights[type as keyof typeof typeWeights] || 0.5;
   }
@@ -320,9 +322,9 @@
         const period: TimelinePeriod = {
           start: new Date(currentPeriodStart),
           end: new Date(currentPeriodEvents[currentPeriodEvents.length - 1].timestamp),
-          events: [...currentPeriodEvents],
-          importance: currentPeriodEvents.reduce((sum, e) => sum + e.importance, 0) / currentPeriodEvents.length,
-          label: formatPeriodLabel(currentPeriodStart, new Date(currentPeriodEvents[currentPeriodEvents.length - 1].timestamp))
+          events: [...currentPeriodEvents],;
+          importance: currentPeriodEvents.reduce((sum, e) => sum + e.importance, 0) / currentPeriodEvents.length,;
+          label: formatPeriodLabel(currentPeriodStart, new Date(currentPeriodEvents[currentPeriodEvents.length - 1].timestamp));
         };
         periods.push(period);
         
@@ -339,9 +341,9 @@
       const period: TimelinePeriod = {
         start: new Date(currentPeriodStart),
         end: new Date(currentPeriodEvents[currentPeriodEvents.length - 1].timestamp),
-        events: [...currentPeriodEvents],
-        importance: currentPeriodEvents.reduce((sum, e) => sum + e.importance, 0) / currentPeriodEvents.length,
-        label: formatPeriodLabel(currentPeriodStart, new Date(currentPeriodEvents[currentPeriodEvents.length - 1].timestamp))
+        events: [...currentPeriodEvents],;
+        importance: currentPeriodEvents.reduce((sum, e) => sum + e.importance, 0) / currentPeriodEvents.length,;
+        label: formatPeriodLabel(currentPeriodStart, new Date(currentPeriodEvents[currentPeriodEvents.length - 1].timestamp));
       };
       periods.push(period);
     }
@@ -414,12 +416,12 @@
         const clusterEvent: TimelineEvent = {
           id: `cluster_${event.id}`,
           timestamp: event.timestamp,
-          type: event.type,
+          type: event.type,;
           title: `${nearbyEvents.length} events`,
           description: `Clustered events: ${nearbyEvents.map.join-slice(0, 100)}...`,
           importance: nearbyEvents.reduce((sum, e) => sum + e.importance, 0) / nearbyEvents.length,
-          participants: [...new Set(nearbyEvents.flatMap(e => e.participants))],
-          evidence: nearbyEvents.flatMap(e => e.evidence),
+          participants: [...new Set(nearbyEvents.flatMap(e => e.participants))],;
+          evidence: nearbyEvents.flatMap(e => e.evidence),;
           metadata: { clustered: true, originalEvents: nearbyEvents.map(e => e.id) }
         };
         
@@ -459,7 +461,7 @@
     // - Instanced rendering for timeline events
     // - GPU-based time range culling
     // - Texture atlas for evidence thumbnails
-    // - N64-style temporal effects (fog for distant events)
+    // - N64-style temporal effects (fog for distant events);
   }
 
   async function renderCanvas2D(): Promise<void> {
@@ -728,9 +730,9 @@
       filing: '#dc2626',      // Red for critical filings
       incident: '#ea580c',    // Orange for incidents
       meeting: '#3b82f6',     // Blue for meetings
-      document: '#059669',    // Green for documents
-      communication: '#7c3aed', // Purple for communications
-      media: '#db2777'        // Pink for media
+      document: '#059669',    // Green for documents;
+      communication: '#7c3aed', // Purple for communications;
+      media: '#db2777'        // Pink for media;
     };
     return colors[type as keyof typeof colors] || '#6b7280';
   }
@@ -739,9 +741,9 @@
     const colors = {
       document: '#4ade80',
       image: '#60a5fa',
-      video: '#f87171',
-      audio: '#a78bfa',
-      other: '#fbbf24'
+      video: '#f87171',;
+      audio: '#a78bfa',;
+      other: '#fbbf24';
     };
     return colors[type as keyof typeof colors] || '#9ca3af';
   }
@@ -802,8 +804,8 @@
     const newSpan = (timeRange.end.getTime() - timeRange.start.getTime()) * 0.7; // Zoom in by 30%
     
     timeRange = {
-      start: new Date(centerTime.getTime() - newSpan / 2),
-      end: new Date(centerTime.getTime() + newSpan / 2)
+      start: new Date(centerTime.getTime() - newSpan / 2),;
+      end: new Date(centerTime.getTime() + newSpan / 2);
     };
     
     onTimeRangeChange?.(timeRange);
@@ -815,8 +817,8 @@
     const newSpan = (timeRange.end.getTime() - timeRange.start.getTime()) * 1.5; // Zoom out by 50%
     
     timeRange = {
-      start: new Date(centerTime.getTime() - newSpan / 2),
-      end: new Date(centerTime.getTime() + newSpan / 2)
+      start: new Date(centerTime.getTime() - newSpan / 2),;
+      end: new Date(centerTime.getTime() + newSpan / 2);
     };
     
     onTimeRangeChange?.(timeRange);
@@ -828,8 +830,8 @@
     const offset = direction === 'prev' ? -timeSpan * 0.5 : timeSpan * 0.5;
     
     timeRange = {
-      start: new Date(timeRange.start.getTime() + offset),
-      end: new Date(timeRange.end.getTime() + offset)
+      start: new Date(timeRange.start.getTime() + offset),;
+      end: new Date(timeRange.end.getTime() + offset);
     };
     
     onTimeRangeChange?.(timeRange);
@@ -875,7 +877,7 @@
         description: 'Plaintiff filed initial complaint against defendant',
         importance: 0.9,
         duration: 120,
-        participants: ['Plaintiff Attorney', 'Court Clerk'],
+        participants: ['Plaintiff Attorney', 'Court Clerk'],;
         evidence: [
           {
             id: 'doc_1',
@@ -883,7 +885,7 @@
             filename: 'complaint.pdf',
             size: 1024 * 1024,
             uploadDate: new Date(),
-            tags: ['legal', 'filing']
+            tags: ['legal', 'filing'];
           }
         ],
         metadata: { court: 'Superior Court', case: '2024-CV-001' }
@@ -897,8 +899,8 @@
         importance: 0.7,
         duration: 90,
         participants: ['Attorney', 'Client', 'Paralegal'],
-        location: 'Law Office',
-        evidence: [],
+        location: 'Law Office',;
+        evidence: [],;
         metadata: { billable: true, rate: 350 }
       }
     ];
@@ -1009,7 +1011,7 @@
   
   <!-- Timeline Canvas -->
   <div class="timeline-canvas-container">
-    <canvas
+    <canvas;
       bind:this={canvasElement}
       width="1000"
       height={timelineHeight}

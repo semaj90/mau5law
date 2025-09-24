@@ -36,7 +36,7 @@ const meta = {
       control: 'boolean'
     },
     loading: {
-      control: 'boolean',
+      control: 'boolean',;
       description: 'Show loading state with spinner'
     }
   }
@@ -46,7 +46,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {
+  args: {;
     children: 'Button'
   }
 };
@@ -58,7 +58,7 @@ export const Legal: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Legal-themed button variant for law-related actions'
       }
     }
@@ -72,7 +72,7 @@ export const Evidence: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Evidence-themed button for evidence management actions'
       }
     }
@@ -86,7 +86,7 @@ export const Case: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Case-themed button for case management actions'
       }
     }
@@ -100,7 +100,7 @@ export const Destructive: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Destructive actions like deletion with warning styling'
       }
     }
@@ -114,7 +114,7 @@ export const Outline: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Outline variant for secondary actions'
       }
     }
@@ -123,21 +123,21 @@ export const Outline: Story = {
 
 export const Small: Story = {
   args: {
-    size: 'sm',
+    size: 'sm',;
     children: 'Small Button'
   }
 };
 
 export const Large: Story = {
   args: {
-    size: 'lg',
+    size: 'lg',;
     children: 'Large Button'
   }
 };
 
 export const Disabled: Story = {
   args: {
-    disabled: true,
+    disabled: true,;
     children: 'Disabled Button'
   }
 };
@@ -149,7 +149,7 @@ export const Loading: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Button with loading state and spinner animation'
       }
     }

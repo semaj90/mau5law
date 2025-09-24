@@ -62,7 +62,7 @@ export class WebASMRankingCache {
   private cache = new Map<string, WASMRankingEntry>();
   private pendingRequests = new Map<string, Promise<RankingResponse>();
   private metrics: CacheMetrics = {
-    hits: 0,
+    hits: 0,;
     misses: 0,
     totalRequests: 0,
     hitRatio: 0,
@@ -115,7 +115,7 @@ export class WebASMRankingCache {
           this.updateMetrics();
           return {
             id: request.id,
-            rankings: this.deserializeRankings(cached.rankings, cached.summary),
+            rankings: this.deserializeRankings(cached.rankings, cached.summary),;
             cached: true,
             processingTime: performance.now() - startTime
           };
@@ -193,7 +193,7 @@ export class WebASMRankingCache {
           'Content-Type': 'application/octet-stream',
           'X-Cache-Key': hash,
           'X-Rankings-Count': rankings.rankings.length.toString()
-        },
+        },;
         body: payload
       });
 
@@ -245,7 +245,7 @@ export class WebASMRankingCache {
       
       this.wasmModule = await WebAssembly.compile(wasmBytes);
       this.wasmInstance = await WebAssembly.instantiate(this.wasmModule, {
-        env: {
+        env: {;
           memory: new WebAssembly.Memory({ initial: 256, maximum: 1024 }),
           __wbindgen_throw: (a: number, b: number) => {
             throw new Error(`WASM error: ${a}, ${b}`);
@@ -315,7 +315,7 @@ export class WebASMRankingCache {
     if (rankings.length > 0) {
       const response: RankingResponse = {
         id: request.id,
-        rankings,
+        rankings,;
         cached: false,
         processingTime: performance.now() - startTime,
         wasmTime
@@ -329,7 +329,7 @@ export class WebASMRankingCache {
 
     return {
       id: request.id,
-      rankings,
+      rankings,;
       cached: false,
       processingTime: performance.now() - startTime,
       wasmTime
@@ -368,7 +368,7 @@ export class WebASMRankingCache {
         type: 'batch-ranking-request',
         data: {
           requests,
-          wasmModule: this.wasmModule,
+          wasmModule: this.wasmModule,;
           config: this.config
         }
       }, [channel.port2]);
@@ -414,7 +414,7 @@ export class WebASMRankingCache {
 
       for (let i = 0; i < resultCount; i++) {
         results.push({
-          index: Math.floor(resultData[i * 2]),
+          index: Math.floor(resultData[i * 2]),;
           score: resultData[i * 2 + 1]
         });
       }
@@ -480,7 +480,7 @@ export class WebASMRankingCache {
   }
 
   private createCacheEntry(
-    key: string,
+    key: string,;
     rankings: Array<any>,
     vectorData: Float32Array;
   ): WASMRankingEntry {
@@ -499,7 +499,7 @@ export class WebASMRankingCache {
       hash: key,
       summary,
       rankings: rankingsArray,
-      confidence: rankings.length > 0 ? rankings[0].score: 0,
+      confidence: rankings.length > 0 ? rankings[0].score: 0,;
       timestamp: Date.now(),
       crc32: this.calculateCRC32(rankingsArray.buffer)
     };
@@ -537,14 +537,14 @@ export class WebASMRankingCache {
   }
 
   private deserializeRankings(
-    rankings: Uint16Array,
+    rankings: Uint16Array,;
     summary: Float32Array;
   ): Array< {
     const results: Array<any> = [];
     
     for (let i = 0; i < rankings.length; i += 2) {
       results.push({
-        index: rankings[i],
+        index: rankings[i],;
         score: rankings[i + 1] / 10000
       });
     }
@@ -592,7 +592,7 @@ export class WebASMRankingCache {
     const rankings: Array<any> = [];
     for (let i = 0; i < rankingsCount; i++) {
       rankings.push({
-        index: Math.floor(rankingDataView[i * 2]),
+        index: Math.floor(rankingDataView[i * 2]),;
         score: rankingDataView[i * 2 + 1]
       });
     }
@@ -651,7 +651,7 @@ export class WebASMRankingCache {
       const testRequest: RankingRequest = {
         id: 'warmup',
         vectors: testVectors,
-        topK: 2,
+        topK: 2,;
         threshold: 0.0,
         useCache: false
       };

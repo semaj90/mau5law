@@ -40,7 +40,7 @@ const initialState: AuthState = {
   user: null,
   session: null,
   isLoading: true,
-  isAuthenticated: false,
+  isAuthenticated: false,;
   permissions: [],
   lastActivity: null
 };
@@ -102,7 +102,7 @@ export class AuthStore {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, password, rememberMe }),
+        body: JSON.stringify({ email, password, rememberMe }),;
         credentials: 'include'
       });
 
@@ -118,7 +118,7 @@ export class AuthStore {
         return { success: true };
       } else {
         return { 
-          success: false, 
+          success: false, ;
           error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Login failed',
           requiresMFA: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).requiresMFA 
         };
@@ -149,7 +149,7 @@ export class AuthStore {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify(userData),;
         credentials: 'include'
       });
 
@@ -167,7 +167,7 @@ export class AuthStore {
         };
       } else {
         return { 
-          success: false, 
+          success: false, ;
           error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Registration failed' 
         };
       }
@@ -187,7 +187,7 @@ export class AuthStore {
 
     try {
       await fetch('/api/auth/logout', {
-        method: 'POST',
+        method: 'POST',;
         credentials: 'include'
       });
     } catch (error: any) {
@@ -245,7 +245,7 @@ export class AuthStore {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(updates),
+        body: JSON.stringify(updates),;
         credentials: 'include'
       });
 
@@ -278,7 +278,7 @@ export class AuthStore {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ currentPassword, newPassword }),
+        body: JSON.stringify({ currentPassword, newPassword }),;
         credentials: 'include'
       });
 
@@ -454,7 +454,7 @@ export class AuthStore {
       fetch('/api/auth/activity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, timestamp: new Date() }),
+        body: JSON.stringify({ type, timestamp: new Date() }),;
         credentials: 'include'
       }).catch(() => {}); // Silently fail
     }

@@ -125,7 +125,7 @@
   ondragover={handleDragOver}
   ondragleave={handleDragLeave}
   ondrop={handleDrop}
-  role="button" 
+  role="button"
   tabindex="0"
   aria-label="Drop zone or click to upload files"
   onclick={openFileDialog}

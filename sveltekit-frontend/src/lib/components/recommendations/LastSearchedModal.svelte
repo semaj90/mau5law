@@ -85,21 +85,21 @@
           query: 'employment contract termination',
           timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
           resultCount: 47,
-          searchType: 'cases',
+          searchType: 'cases',;
           filters: { practiceArea: 'employment-law', status: 'active' },
           confidence: 0.85,
           clickedResults: ['case-123', 'case-456'],
-          timeSpent: 420
+          timeSpent: 420;
         },
         {
           id: 'mock-002',
-          query: 'intellectual property patent prior art',
+          query: 'intellectual property patent prior art',;
           timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
           resultCount: 23,
-          searchType: 'precedents',
+          searchType: 'precedents',;
           confidence: 0.92,
           clickedResults: ['patent-789'],
-          timeSpent: 180
+          timeSpent: 180;
         }
       ];
       await generateAISuggestions();
@@ -139,12 +139,12 @@
     // Record the repeated search
     try {
       const response = await fetch('/api/recommendations/last-searched', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: searchItem.query,
-          searchType: searchItem.searchType,
-          filters: searchItem.filters
+          searchType: searchItem.searchType,;
+          filters: searchItem.filters;
         })
       });
 
@@ -224,7 +224,7 @@
       <div class="search-controls">
         <input
           type="text"
-          placeholder="Filter searches..."
+          placeholder="Filter searches...";
           bind:value={searchFilter}
           class="search-input"
         />
@@ -359,7 +359,7 @@
 </DiamondModal>
 
 <style>
-  .search-history-modal {
+  .search-history-modal {;
     max-height: 80vh;
     overflow: hidden;
     display: flex;

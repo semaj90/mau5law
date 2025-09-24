@@ -34,7 +34,7 @@ export const agentShellMachine = createMachine({
   id: "agentShell",
   initial: "idle",
   context: { input: "", response: "" },
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: AgentShellContext;
     events: AgentShellEvent;
   },
@@ -132,7 +132,7 @@ export const agentShellMachine = createMachine({
       invoke: {
         src: "checkServiceHealth",
         onDone: {
-          target: "idle",
+          target: "idle",;
           actions: assign({
             serviceHealth: (_, e) => (e && "data" in e ? (e as any).data : null)
           })
@@ -208,7 +208,7 @@ export const agentShellServices = {
       // Check production service health
       const productionHealth = await productionServiceClient.checkAllServicesHealth();
       return {
-        production: productionHealth,
+        production: productionHealth,;
         legacy: await goServiceClient.checkServiceHealth()
       };
     } catch (error: any) {
@@ -245,7 +245,7 @@ export const agentShellActions = {
       const result = await goServiceClient.rateSuggestion({
         jobId: event.jobId,
         rating: event.rating,
-        userId: event.userId,
+        userId: event.userId,;
         feedback: event.feedback
       });
       console.log("Rating submitted:", result);

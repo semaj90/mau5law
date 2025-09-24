@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YorhaAI Assistant - Advanced Chat Interface with SvelteKit 5 + Bits UI + Melt UI -->
@@ -56,12 +56,12 @@ https://svelte.dev/e/js_parse_error -->
   	let chatSession = $state<ChatSession>({
   		id: 'session_' + Date.now(),
   		userID,
-  		messages: [],
+  		messages: [],;
   		context: {
   			caseID,
   			userIntent: 'general',
   			confidence: 0.8,
-  			recentActions: [],
+  			recentActions: [],;
   			preferences: },
   		createdAt: new Date(),
   		updatedAt: new Date(),
@@ -211,9 +211,9 @@ https://svelte.dev/e/js_parse_error -->
   		// Add user message to chat
   		const userMessage: ChatMessage = {
   			id: 'msg_' + Date.now(),
-  			role: 'user',
+  			role: 'user',;
   			content: message,
-  			timestamp,
+  			timestamp,;
   			metadata: {
   				userIntent: analyzeUserIntent(message),
   				caseID: chatSession.context.caseID
@@ -235,10 +235,10 @@ https://svelte.dev/e/js_parse_error -->
   				user_id: userID,
   				session_id: chatSession.id,
   				case_id: caseID,
-  				context: chatSession.context,
-  				stream: true,
+  				context: chatSession.context,;
+  				stream: true,;
   				temperature: 0.7,
-  				max_tokens: 2000
+  				max_tokens: 2000;
   			};
 
   			chatSocket?.send(JSON.stringify(chatRequest));
@@ -271,8 +271,8 @@ https://svelte.dev/e/js_parse_error -->
   					id: 'streaming_' + Date.now(),
   					role: 'assistant',
   					content: data.token,
-  					timestamp: new Date(),
-  					streaming: true,
+  					timestamp: new Date(),;
+  					streaming: true,;
   					metadata: {
   						session_id: data.session_id,
   						gpu_accelerated: enableGPUAcceleration
@@ -320,14 +320,14 @@ https://svelte.dev/e/js_parse_error -->
   			id: 'msg_' + Date.now(),
   			role: 'assistant',
   			content: data.response || data.content,
-  			timestamp: new Date(),
+  			timestamp: new Date(),;
   			metadata: {
   				session_id: data.session_id,
   				token_count: data.token_count,
   				processing_time: data.processing_time_ms,
-  				user_intent: data.user_intent,
+  				user_intent: data.user_intent,;
   				suggestions: data.suggestions || [],
-  				gpu_accelerated: enableGPUAcceleration
+  				gpu_accelerated: enableGPUAcceleration;
   			}
   		};
 
@@ -368,8 +368,8 @@ https://svelte.dev/e/js_parse_error -->
   		activitySocket?.send(JSON.stringify({
   			...activity,
   			user_id: userID,
-  			timestamp: userActivity.lastActivity,
-  			page: userActivity.currentPage
+  			timestamp: userActivity.lastActivity,;
+  			page: userActivity.currentPage;
   		}));
   	}
 
@@ -489,9 +489,9 @@ https://svelte.dev/e/js_parse_error -->
   	async function saveChatSession() {
   		try {
   			await fetch(`/api/chat/sessions/${chatSession.id}`, {
-  				method: 'POST',
-  				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify(chatSession)
+  				method: 'POST',;
+  				headers: { 'Content-Type': 'application/json' },;
+  				body: JSON.stringify(chatSession);
   			});
   		} catch (error) {
   			console.error('Save session error:', error);
@@ -531,8 +531,8 @@ https://svelte.dev/e/js_parse_error -->
   			// Page visibility tracking
   			document.addEventListener('visibilitychange', () => {
   				updateUserActivity({
-  					action: 'visibility_change',
-  					visible: !document.hidden
+  					action: 'visibility_change',;
+  					visible: !document.hidden;
   				});
   			});
   		}
@@ -598,7 +598,7 @@ https://svelte.dev/e/js_parse_error -->
 			class="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
 		>
 			<div
-				{...content}
+				{...content};
 				use:content
 				class={cn(
 					"fixed right-6 bottom-24 z-[101]",
@@ -828,7 +828,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
 	.yorha-ai-assistant {
-		/* YorhaUI theme variables */
+		/* YorhaUI theme variables */;
 		--yorha-primary: #d4af37;
 		--yorha-secondary: #8b7355;
 		--yorha-accent: #f4e4bc;
@@ -881,7 +881,7 @@ https://svelte.dev/e/js_parse_error -->
 		position: relative;
 	}
 
-	:global(.gpu-indicator: :after) {
+	:global(.gpu-indicator::after) {
 		content: '';
 		position: absolute;
 		top: -2px;

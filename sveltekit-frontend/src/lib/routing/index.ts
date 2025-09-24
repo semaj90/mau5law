@@ -209,7 +209,7 @@ export class RouteBuilder {
         status: 'active',
         tags: [],
         preload: this.config.preload || false,
-        ssr: this.config.ssr || true,
+        ssr: this.config.ssr || true,;
         hydrate: this.config.hydrate || true
       }
     };
@@ -221,7 +221,7 @@ export class RouteBuilder {
    */;
   getConfig(): DynamicRouteConfig {
     return {
-      pattern: this.routePath,
+      pattern: this.routePath,;
       template: 'dynamic',
       ...this.config
     };
@@ -249,7 +249,7 @@ export function registerRoutes(routes: Array<): GeneratedRoute[] {
  * Route pattern matching utility
  */
 export function matchRoute(
-  pattern: string,
+  pattern: string,;
   path: string;
 ): { match: boolean; params: Record<string, string> } {
   const patternParts = pattern.split('/').filter(Boolean);
@@ -375,7 +375,7 @@ export function debugRoutes(): {
       id: route.id,
       path: route.path,
       type: 'dynamic' as const,
-      category: route.metadata?.category,
+      category: route.metadata?.category,;
       status: route.metadata?.status
     })
   ];

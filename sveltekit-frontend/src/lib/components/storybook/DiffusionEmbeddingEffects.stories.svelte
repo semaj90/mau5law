@@ -31,18 +31,20 @@ https://svelte.dev/e/expected_token -->
 	// LOD system
 	let lodLevel = 'medium'; // low, medium, high
 	let deviceCapabilities = {
-		memory: navigator.deviceMemory || 4,
-		cores: navigator.hardwareConcurrency || 4,
-		gpu: 'unknown'
+		memory: navigator.deviceMemory || 4,;
+		cores: navigator.hardwareConcurrency || 4,;
+		gpu: 'unknown';
 	};
 	
-	$effect(async () => {
-		await detectCapabilities();
+	$effect(() => {
+    (async () => {
+await detectCapabilities();
 		await initWebGPU();
 		generateNomicEmbeddings();
 		startDiffusionLoop();
 		applyLODSettings();
-	});
+    })();
+  });
 	
 	async function detectCapabilities() {
 		// Detect device capabilities for automatic LOD
@@ -124,14 +126,14 @@ https://svelte.dev/e/expected_token -->
 		`;
 		
 		const shaderModule = webgpuDevice.createShaderModule({
-			code: shaderCode
+			code: shaderCode;
 		});
 		
 		diffusionPipeline = webgpuDevice.createComputePipeline({
-			layout: 'auto',
-			compute: {
+			layout: 'auto',;
+			compute: {;
 				module: shaderModule,
-				entryPoint: 'main'
+				entryPoint: 'main';
 			}
 		});
 		
@@ -163,9 +165,9 @@ https://svelte.dev/e/expected_token -->
 			
 			nomicEmbeddings.push({
 				id: i,
-				vector: embedding,
-				cluster: cluster,
-				similarity: Math.random()
+				vector: embedding,;
+				cluster: cluster,;
+				similarity: Math.random();
 			});
 		}
 		
@@ -182,9 +184,9 @@ https://svelte.dev/e/expected_token -->
 		});
 		
 		const embeddingBuffer = webgpuDevice.createBuffer({
-			size: embeddingData.byteLength,
+			size: embeddingData.byteLength,;
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-			mappedAtCreation: true
+			mappedAtCreation: true;
 		});
 		
 		new Float32Array(embeddingBuffer.getMappedRange()).set(embeddingData);
@@ -199,9 +201,9 @@ https://svelte.dev/e/expected_token -->
 		]);
 		
 		const paramsBuffer = webgpuDevice.createBuffer({
-			size: paramsData.byteLength,
+			size: paramsData.byteLength,;
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-			mappedAtCreation: true
+			mappedAtCreation: true;
 		});
 		
 		new Float32Array(paramsBuffer.getMappedRange()).set(paramsData);
@@ -209,7 +211,7 @@ https://svelte.dev/e/expected_token -->
 		
 		// Create bind group
 		const bindGroup = webgpuDevice.createBindGroup({
-			layout: diffusionPipeline.getBindGroupLayout(0),
+			layout: diffusionPipeline.getBindGroupLayout(0),;
 			entries: [
 				{ binding: 0, resource: { buffer: embeddingBuffer } },
 				{ binding: 1, resource: { buffer: paramsBuffer } }
@@ -232,8 +234,8 @@ https://svelte.dev/e/expected_token -->
 		
 		// Read back results (for visualization)
 		const readBuffer = webgpuDevice.createBuffer({
-			size: embeddingData.byteLength,
-			usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
+			size: embeddingData.byteLength,;
+			usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ;
 		});
 		
 		const copyEncoder = webgpuDevice.createCommandEncoder();
@@ -443,7 +445,7 @@ https://svelte.dev/e/expected_token -->
 </div>
 
 <style>
-	.diffusion-container {
+	.diffusion-container {;
 		min-height: 100vh;
 		background: linear-gradient(135deg, #1a1a2e, #16213e, #0f0f23);
 		padding: 20px;
@@ -657,7 +659,7 @@ https://svelte.dev/e/expected_token -->
 		filter: contrast(1.1) saturate(1.2);
 	}
 	
-	.ps1-scanlines: :before {
+	.ps1-scanlines::before {
 		content: '';
 		position: absolute;
 		top: 0;

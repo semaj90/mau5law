@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (onclick) and new syntaxes for event handling is not allowed. Use only the onclick syntax
+<!-- @migration-task Error while migrating Svelte code: Mixing old (onclick) and new syntaxes for event handling is not allowed. Use only the onclick syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!--
 Vector Search Widget
@@ -8,7 +8,7 @@ Compact searchable component for embedding in other interfaces
   // Svelte 5 runes are auto-imported
 
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Badge } from "$lib/components/ui/badge";
   import {
     Search,
@@ -71,10 +71,10 @@ Compact searchable component for embedding in other interfaces
     try {
       const results = await vectorIntelligenceService.semanticSearch({
         query: searchQuery,
-        threshold,
+        threshold,;
         limit: maxResults,
         includeMetadata: true,
-        contextFilter
+        contextFilter;
       });
 
       searchResults = results;
@@ -145,7 +145,7 @@ Compact searchable component for embedding in other interfaces
     </div>
 
     <input
-      bind:this={inputElement}
+      bind:this={inputElement};
       bind:value={searchQuery}
       type="text"
       {placeholder}

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -71,25 +71,25 @@ https://svelte.dev/e/js_parse_error -->
       id: "professional",
       label: "Professional",
       icon: Scale,
-      description: "Formal legal analysis",
+      description: "Formal legal analysis",;
     },
     {
       id: "investigative",
       label: "Investigative",
       icon: Brain,
-      description: "Deep case analysis",
+      description: "Deep case analysis",;
     },
     {
       id: "evidence",
       label: "Evidence Focus",
       icon: FileText,
-      description: "Evidence-centered responses",
+      description: "Evidence-centered responses",;
     },
     {
       id: "strategic",
-      label: "Strategic",
-      icon: Zap,
-      description: "Case strategy planning",
+      label: "Strategic",;
+      icon: Zap,;
+      description: "Case strategy planning",;
     },
   ]);
 
@@ -124,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
       if ((response as { ok?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; json?: any }).json();
         if ((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).success && (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).conversation) {
-          messages.set.conversation);
+          messages.set(conversation));
         }
       }
     } catch (error) {
@@ -168,9 +168,9 @@ https://svelte.dev/e/js_parse_error -->
 
     const userMessage = {
       id: crypto.randomUUID(),
-      role: "user" as const,
-      content: currentMessage.trim(),
-      timestamp: new Date(),
+      role: "user" as const,;
+      content: currentMessage.trim(),;
+      timestamp: new Date(),;
     };
 
     // Add user message immediately
@@ -182,26 +182,26 @@ https://svelte.dev/e/js_parse_error -->
     // Add typing indicator
     const typingMessage = {
       id: "typing-" + Date.now(),
-      role: "assistant" as const,
-      content: "",
+      role: "assistant" as const,;
+      content: "",;
       timestamp: new Date(),
-      isTyping: true,
+      isTyping: true,;
     };
     messages.update((msgs) => [...msgs, typingMessage]);
 
     try {
       // Send to enhanced chat API with vector context
       const response = await fetch("/api/chat", {
-        method: "POST",
+        method: "POST",;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: messageContent,
           conversationId,
           userId,
-          caseId,
+          caseId,;
           mode: selectedMode,
           useContext: true,
-          maxTokens: 1000,
+          maxTokens: 1000,;
         }),
       });
 
@@ -246,11 +246,11 @@ https://svelte.dev/e/js_parse_error -->
 
       const errorMessage = {
         id: crypto.randomUUID(),
-        role: "assistant" as const,
+        role: "assistant" as const,;
         content:
-          "Sorry, I encountered an error while processing your request. Please try again.",
+          "Sorry, I encountered an error while processing your request. Please try again.",;
         timestamp: new Date(),
-        isError: true,
+        isError: true,;
       };
       messages.update((msgs) => [...msgs, errorMessage]);
     } finally {
@@ -261,22 +261,22 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   async function storeMessageEmbedding(
-    content: string,
+    content: string,;
     role: "user" | "assistant"
   ) {
     try {
       await fetch("/api/embed", {
-        method: "POST",
+        method: "POST",;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text: content,
-          type: "chat_message",
+          type: "chat_message",;
           metadata: {
             userId,
             caseId,
             conversationId,
-            role,
-            mode: selectedMode,
+            role,;
+            mode: selectedMode,;
           },
         }),
       });
@@ -368,7 +368,7 @@ https://svelte.dev/e/js_parse_error -->
               >
                 {#each aiModes as mode}
                   <button
-                    class="mode-option"
+                    class="mode-option";
                     class:selected={mode.id === selectedMode}
                     onclick={() => {
                       selectedMode = mode.id;
@@ -543,7 +543,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 
 <style>
-  .error-boundary {
+  .error-boundary {;
     background: #fef2f2;
     border: 1px solid #fecaca;
     border-radius: 8px;
@@ -831,11 +831,11 @@ https://svelte.dev/e/js_parse_error -->
     animation: typing 1.4s infinite;
   }
 
-  .typing-dots span:nth-child(2) {
+  .typing-dots span:nth-child(2) {;
     animation-delay: 0.2s;
   }
 
-  .typing-dots span:nth-child(3) {
+  .typing-dots span:nth-child(3) {;
     animation-delay: 0.4s;
   }
 

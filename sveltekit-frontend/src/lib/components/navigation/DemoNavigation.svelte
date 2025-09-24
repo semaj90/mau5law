@@ -17,33 +17,33 @@
       label: 'AI Document Demo',
       href: '/demo/document-ai',
       description: 'Document upload with AI processing',
-      icon: '🤖'
+      icon: '🤖';
     },
     {
       label: 'AI Service Test',
       href: 'http://localhost:8081/test',
       description: 'Go microservice test interface',
       icon: '🧪',
-      external: true
+      external: true;
     },
     {
       label: 'Service Health',
       href: 'http://localhost:8081/api/health',
       description: 'System health API endpoint',
       icon: '💚',
-      external: true
+      external: true;
     },
     {
       label: 'Dev Tools',
       href: '/dev/mcp-tools',
       description: 'MCP and development tools',
-      icon: '🛠️'
+      icon: '🛠️';
     },
     {
       label: 'Legal AI Cases',
-      href: '/cases',
-      description: 'Case management interface',
-      icon: '⚖️'
+      href: '/cases',;
+      description: 'Case management interface',;
+      icon: '⚖️';
     }
   ];
 
@@ -86,7 +86,7 @@
       <div class="space-y-3">
         {#each navItems as item}
           <button
-            class="nav-item w-full text-left p-3 rounded-lg transition-all duration-200 border border-transparent hover:border-green-500 hover:bg-green-500/10"
+            class="nav-item w-full text-left p-3 rounded-lg transition-all duration-200 border border-transparent hover:border-green-500 hover:bg-green-500/10";
             class:active={isCurrentPage((item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).href)}
             onclick={() => navigateTo(item)}
           >
@@ -173,7 +173,7 @@
   {/if}
 
 <style>
-  .nav-toggle {
+  .nav-toggle {;
     backdrop-filter: blur(10px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
@@ -183,7 +183,7 @@
     box-shadow: 0 20px 64px rgba(0, 0, 0, 0.4);
   }
 
-  .nav-.active {
+  .nav-item.active {
     background: rgba(34, 197, 94, 0.1);
     border-color: rgb(34, 197, 94);
   }

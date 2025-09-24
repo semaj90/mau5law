@@ -44,7 +44,7 @@
   		'aria-labelledby': ariaLabelledBy,
   		'aria-describedby': ariaDescribedBy,
   		'data-testid': testId,
-  		onCheckedChange
+  		onCheckedChange;
   	}: Props = $props();
   	
 

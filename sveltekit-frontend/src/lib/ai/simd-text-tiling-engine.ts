@@ -70,7 +70,7 @@ export class SIMDTextTilingEngine {
       semanticClustering: true,
       vectorDimensions: 384, // Matches nomic-embed-text
       preserveSemantics: true,
-      ...config
+      ...config,
     };
 
     console.log('🔧 SIMD Text Tiling Engine initialized:', this.config);
@@ -81,7 +81,7 @@ export class SIMDTextTilingEngine {
    */
   async processText(
     text: string,
-    metadata: {
+    metadata: {;
       type: 'legal' | 'ocr' | 'ui' | 'general';
       context?: string;
       uiTarget?: 'component' | 'layout' | 'animation';
@@ -108,8 +108,7 @@ export class SIMDTextTilingEngine {
 
     const processingTime = Date.now() - startTime;
     const totalCompressionRatio =
-      (text.length * 4) /
-      compressedTiles.reduce((sum, tile) => sum + tile.compressedData.length, 0);
+      (text.length * 4) / compressedTiles.reduce((sum, tile) => sum + tile.compressedData.length, 0);
 
     return {
       originalText: text,
@@ -122,47 +121,42 @@ export class SIMDTextTilingEngine {
         totalCompressionRatio,
         gpuUtilization: this.config.enableGPUAcceleration ? 0.85 : 0,
         cacheHits: this.calculateCacheHits(compressedTiles),
-        semanticPreservationScore: await this.calculateSemanticPreservation(text, compressedTiles)
-      }
+        semanticPreservationScore: await this.calculateSemanticPreservation(text, compressedTiles),
+      },
     };
   }
 
   /**
    * Generate base embeddings using LangChain Ollama integration
-   */;
-  private async generateBaseEmbeddings(text: string, metadata: any): Promise<Float32Array[]> {
+   */ private async generateBaseEmbeddings(text: string, metadata: any): Promise<Float32Array[]> {
     try {
       // Use existing WebGPU LangChain bridge for optimized embedding generation;
       const result = await webgpuLangChainBridge.processLegalDocument(text, {
         useWebGPUCache: true,
         compressVectors: true,
-        documentType: metadata.type === 'legal' ? 'general' : metadata.type
+        documentType: metadata.type === 'legal' ? 'general' : metadata.type,
       });
 
       // Convert embeddings to Float32Array format for SIMD processing
       const embeddings = (result as { embeddings?: any }).embeddings.sectionEmbeddings || [
-        (result as { embeddings?: any }).embeddings.documentEmbedding
+        (result as { embeddings?: any }).embeddings.documentEmbedding,
       ];
 
-      return embeddings.map((embedding) =>
-        embedding instanceof Float32Array ? embedding : new Float32Array(embedding)
-      );
+      return embeddings.map(embedding => (embedding instanceof Float32Array ? embedding : new Float32Array(embedding)));
     } catch (error) {
       console.warn('WebGPU embedding failed, using fallback:', error);
 
       // Fallback to direct LangChain Ollama service
       const chunks = text.match(/.{1,500}/g) || [text];
-      const embeddings = await Promise.all(chunks.map(async (chunk) => {
+      const embeddings = await Promise.all(
+        chunks.map(async chunk => {
           try {
             const result = await langChainOllamaService.processDocument(chunk);
             return new Float32Array(
-              (result as { embeddings?: any }).embeddings[0] ||
-                new Array(this.config.vectorDimensions).fill(0.1)
+              (result as { embeddings?: any }).embeddings[0] || new Array(this.config.vectorDimensions).fill(0.1)
             );
           } catch {
-            return new Float32Array(
-              new Array(this.config.vectorDimensions).fill(Math.random() * 0.1)
-            );
+            return new Float32Array(new Array(this.config.vectorDimensions).fill(Math.random() * 0.1));
           }
         })
       );
@@ -174,10 +168,7 @@ export class SIMDTextTilingEngine {
   /**
    * Apply SIMD GPU tiling to embedding vectors using existing engine
    */
-  private async applySIMDTiling(
-    embeddings: Float32Array[],
-    originalText: string
-  ): Promise<Float32Array> {
+  private async applySIMDTiling(embeddings: Float32Array[], originalText: string): Promise<Float32Array> {
     try {
       // Concatenate all embeddings into a single array for tiling
       const totalLength = embeddings.reduce((sum, emb) => sum + emb.length, 0);
@@ -198,7 +189,7 @@ export class SIMDTextTilingEngine {
         {
           tileSize: this.config.tileSize,
           enableCompression: true,
-          priority: 'medium'
+          priority: 'medium',
         }
       );
 
@@ -207,9 +198,7 @@ export class SIMDTextTilingEngine {
       );
 
       // Extract compressed data from chunks
-      const compressedData = new Float32Array(
-        tilingResult.chunks.reduce((acc, chunk) => acc + chunk.data.length, 0)
-      );
+      const compressedData = new Float32Array(tilingResult.chunks.reduce((acc, chunk) => acc + chunk.data.length, 0));
       let compressedOffset = 0;
       for (const chunk of tilingResult.chunks) {
         compressedData.set(chunk.data, compressedOffset);
@@ -238,10 +227,7 @@ export class SIMDTextTilingEngine {
   /**
    * Compress tiled embeddings to 7-bit NES-style representation
    */
-  private async compressToNESBits(
-    tiledData: Float32Array,
-    originalText: string
-  ): Promise<CompressedTextTile[]> {
+  private async compressToNESBits(tiledData: Float32Array, originalText: string): Promise<CompressedTextTile[]> {
     const tiles: CompressedTextTile[] = [];
     const tileSize = this.config.tileSize;
 
@@ -266,9 +252,9 @@ export class SIMDTextTilingEngine {
           tokenCount: tileText.split(/\s+/).length,
           semanticDensity: this.calculateSemanticDensity(tileData),
           patternId: this.identifyPattern(tileData),
-          frequency: this.calculateFrequency(tileText),
-          categories: this.categorizeContent(tileText)
-        }
+          frequency: this.calculateFrequency(tileText),;
+          categories: this.categorizeContent(tileText),
+        },
       };
 
       tiles.push(tile);
@@ -287,10 +273,7 @@ export class SIMDTextTilingEngine {
   /**
    * Compress tile data to exactly 7 bytes using NES-style encoding
    */
-  private async compressToSevenBytes(
-    tileData: Float32Array,
-    tileText: string
-  ): Promise<Uint8Array> {
+  private async compressToSevenBytes(tileData: Float32Array, tileText: string): Promise<Uint8Array> {
     const compressed = new Uint8Array(7); // Exactly 7 bytes
 
     // Byte 0: Pattern ID (based on semantic content)
@@ -316,8 +299,7 @@ export class SIMDTextTilingEngine {
 
   /**
    * Generate GPU vertex buffer for instantaneous rendering
-   */;
-  private async generateVertexBuffer(tiles: CompressedTextTile[]): Promise<ArrayBuffer> {
+   */ private async generateVertexBuffer(tiles: CompressedTextTile[]): Promise<ArrayBuffer> {
     const vertexData = new Float32Array(tiles.length * 8); // 8 floats per tile vertex
 
     tiles.forEach((tile, index) => {
@@ -345,12 +327,11 @@ export class SIMDTextTilingEngine {
 
   /**
    * Generate UI components for zero-latency interaction
-   */;
-  private async generateUIComponents(tiles: CompressedTextTile[], metadata: any): Promise<any> {
+   */ private async generateUIComponents(tiles: CompressedTextTile[], metadata: any): Promise<any> {
     const componentMap = new Map<string, any>();
 
     // Generate component data from tiles;
-    tiles.forEach((tile) => {
+    tiles.forEach(tile => {
       const componentType = this.inferComponentType(tile);
       componentMap.set(componentType, tile.compressedData);
     });
@@ -380,7 +361,7 @@ export class SIMDTextTilingEngine {
       instantRender: tiles.length < 100, // Instant for < 100 tiles
       componentData,
       renderingInstructions,
-      cssOptimized
+      cssOptimized,
     };
   }
 
@@ -388,17 +369,13 @@ export class SIMDTextTilingEngine {
 
   private getPatternID(text: string): number {
     const patterns = ['legal', 'technical', 'narrative', 'numeric', 'mixed'];
-    const scores = patterns.map((pattern) => this.calculatePatternScore(text, pattern));
+    const scores = patterns.map(pattern => this.calculatePatternScore(text, pattern));
     return scores.indexOf(Math.max(...scores));
   }
 
   private calculateSemanticValue(data: Float32Array): number {
     const sum = Array.from(data).reduce((a, b) => a + Math.abs(b), 0);
-    return (
-      Math.floor(
-        (sum / data.length) * 16383
-      ) % 16383
-    ); // 14-bit value
+    return Math.floor((sum / data.length) * 16383) % 16383; // 14-bit value
   }
 
   private encodeFrequency(text: string): number {
@@ -420,15 +397,14 @@ export class SIMDTextTilingEngine {
   }
 
   private identifyPattern(data: Float32Array): string {
-    const mean =
-      Array.from(data).reduce((a, b) => a + b, 0) / data.length;
+    const mean = Array.from(data).reduce((a, b) => a + b, 0) / data.length;
     if (mean > 0.5) return 'high-semantic';
     if (mean < -0.5) return 'low-semantic';
     return 'neutral';
   }
 
   private calculateFrequency(text: string): number {
-    return text.split('').filter((item) => item.length).length / text.length;
+    return text.split('').filter(item => item.length).length / text.length;
   }
 
   private categorizeContent(text: string): string[] {
@@ -444,15 +420,15 @@ export class SIMDTextTilingEngine {
     const encoder = new TextEncoder();
     const data = encoder.encode(text);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(hashBuffer)
-      .map((b) => b.toString(16).padStart(2, '0')
+    return Array.from(new Uint8Array(hashBuffer))
+      .map(b => b.toString(16).padStart(2, '0'))
       .join('')
       .substring(0, 16);
   }
 
   private calculateVariance(values: number[]): number {
     const mean = values.reduce((a, b) => a + b, 0) / values.length;
-    const squareDiffs = values.map((value) => Math.pow(value - mean, 2);
+    const squareDiffs = values.map(value => Math.pow(value - mean, 2));
     return squareDiffs.reduce((a, b) => a + b, 0) / values.length;
   }
 
@@ -461,23 +437,20 @@ export class SIMDTextTilingEngine {
       legal: ['contract', 'agreement', 'clause', 'party', 'liable'],
       technical: ['system', 'process', 'function', 'algorithm', 'data'],
       narrative: ['story', 'character', 'plot', 'narrative', 'describes'],
-      numeric: ['number', 'count', 'amount', 'total', 'sum'],
-      mixed: ['and', 'or', 'but', 'however', 'therefore']
+      numeric: ['number', 'count', 'amount', 'total', 'sum'],;
+      mixed: ['and', 'or', 'but', 'however', 'therefore'],
     };
 
     const patternWords = keywords[pattern as keyof typeof keywords] || [];
-    const matches = patternWords.filter((word) => text.toLowerCase().includes(word)).length;
+    const matches = patternWords.filter(word => text.toLowerCase().includes(word)).length;
     return matches / patternWords.length;
   }
 
   private calculateCacheHits(tiles: CompressedTextTile[]): number {
-    return tiles.filter((tile) => this.tileCache.has(tile.semanticHash)).length;
+    return tiles.filter(tile => this.tileCache.has(tile.semanticHash)).length;
   }
 
-  private async calculateSemanticPreservation(
-    originalText: string,
-    tiles: CompressedTextTile[];
-  ): Promise<number> {
+  private async calculateSemanticPreservation(originalText: string, tiles: CompressedTextTile[]): Promise<number> {
     // Simplified semantic preservation score
     const originalWords = originalText.split(/\s+/).length;
     const preservedTokens = tiles.reduce((sum, tile) => sum + tile.tileMetadata.tokenCount, 0);
@@ -491,8 +464,8 @@ export class SIMDTextTilingEngine {
     return 'standard-text';
   }
 
-  private generateRenderingInstructions(tiles: CompressedTextTile[], metadata: any): string {
-    const instructions = tiles;
+  private generateRenderingInstructions(tiles: CompressedTextTile[], _metadata: unknown): string {
+    const instructions = tiles
       .map((tile, index) => {
         return `tile[${index}]: render(${tile.id}, pattern=${tile.tileMetadata.patternId}, density=${tile.tileMetadata.semanticDensity.toFixed(2)})`;
       })
@@ -502,7 +475,7 @@ export class SIMDTextTilingEngine {
   }
 
   private generateOptimizedCSS(tiles: CompressedTextTile[]): string {
-    const cssRules = tiles;
+    const cssRules = tiles
       .map((tile, index) => {
         const hue = (tile.compressedData[0] / 127) * 360;
         const brightness = (tile.compressedData[2] / 127) * 100;
@@ -523,14 +496,15 @@ export class SIMDTextTilingEngine {
    * Batch process multiple texts for UI component generation
    */
   async processBatchTexts(
-    texts: Array<any>,
+    texts: Array<{ text: string; metadata?: Record<string, unknown> }>,
     options: Partial<TextTileConfig> = {}
   ): Promise<TextEmbeddingResult[]> {
-    const config = { ...this.config, ...options };
+    const _config = { ...this.config, ...options };
 
     console.log(`🚀 Batch processing ${texts.length} texts for SIMD tiling`);
 
-    const results = await Promise.all(texts.map(async ({ text, metadata = {} }) => {
+    const results = await Promise.all(
+      texts.map(async ({ text, metadata = {} }) => {
         try {
           return await this.processText(text, { type: 'general', ...metadata });
         } catch (error) {
@@ -546,19 +520,19 @@ export class SIMDTextTilingEngine {
 
   /**
    * Get processing statistics
-   */;
+   */
   getStats() {
     return {
       config: this.config,
       cacheSize: this.tileCache.size,
       semanticPatterns: this.semanticPatterns.size,
-      gpuBufferPoolSize: this.gpuBufferPool.length,
+      gpuBufferPoolSize: this.gpuBufferPool.length,;
       capabilities: {
         sevenBitCompression: true,
         gpuAcceleration: this.config.enableGPUAcceleration,
         semanticPreservation: this.config.preserveSemantics,
-        instantUIGeneration: true
-      }
+        instantUIGeneration: true,
+      },
     };
   }
 }

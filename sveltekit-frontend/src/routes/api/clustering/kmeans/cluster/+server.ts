@@ -1,58 +1,58 @@
 /// <reference types="vite/client" />
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * SvelteKit 2 API Route: K-Means Clustering
  * POST /api/clustering/kmeans/cluster
  */
 
-import { json } from "@sveltejs/kit";
-import { LegalKMeansClusterer } from "$lib/services/kmeans-clustering";
-import type { Redis } from 'ioredis';
-import { createRedisInstance } from '$lib/server/redis';
-import { db } from "$lib/server/db";
-import { inArray } from "drizzle-orm";
-import { URL } from "url";
+import { json } from "@sveltejs/kit"
+import { LegalKMeansClusterer } from "$lib/services/kmeans-clustering"
+import type { Redis } from 'ioredis'
+import { createRedisInstance } from '$lib/server/redis'
+import { db } from "$lib/server/db"
+import { inArray } from "drizzle-orm"
+import { URL } from "url"
 // Optional amqp for message queue integration
 
 // Initialize connections
-let redis: ReturnType<typeof createRedisInstance> | null = null;
+let redis: ReturnType<typeof createRedisInstance> | null = null
 try { redis = createRedisInstance(); } catch {
-  const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
+  const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any)
   redis = new RedisCtor({
     host: import.meta.env.REDIS_HOST || 'localhost',
     port: parseInt(import.meta.env.REDIS_PORT || '6379')
-  });
+  })
 }
 
 const qdrant = new QdrantClient({
   url: import.meta.env.QDRANT_URL || "http://localhost:6333"
-});
+})
 
-let rabbitConnection: any | null = null;
+let rabbitConnection: any | null = null
 async function getRabbitConnection(): Promise<any> {
   if (!rabbitConnection) {
     try {
-      // const amqp = await import('amqplib').catch(() => null);
+      // const amqp = await import('amqplib').catch(() => null)
       // if (amqp) {
-      //   rabbitConnection = await amqp.connect(import.meta.env.RABBITMQ_URL || 'amqp://localhost');
+      //   rabbitConnection = await amqp.connect(import.meta.env.RABBITMQ_URL || 'amqp://localhost')
       // }
     } catch (error: any) {
-      console.warn("RabbitMQ not available:", error);
+      console.warn("RabbitMQ not available:", error)
     }
   }
-  return rabbitConnection;
+  return rabbitConnection
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = Date.now();
+  const startTime = Date.now()
 
   try {
-    const { documentIds, k, config } = await request.json();
+    const { documentIds, k, config } = await request.json()
 
     if (!documentIds || !Array.isArray(documentIds)) {
-      return json();
+      return json()
         {
           success: false,
           error: "Document IDs array is required",
@@ -62,14 +62,14 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         },
         { status: 400 },
-      );
+      )
     }
 
     // Validate k parameter
     const clusterCount =
-      k || Math.min(Math.ceil(Math.sqrt(documentIds.length / 2)), 10);
+      k || Math.min(Math.ceil(Math.sqrt(documentIds.length / 2)), 10)
     if (clusterCount < 2 || clusterCount > documentIds.length) {
-      return json();
+      return json()
         {
           success: false,
           error: `Invalid cluster count: ${clusterCount}. Must be between 2 and ${documentIds.length}`,
@@ -79,16 +79,16 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         },
         { status: 400 },
-      );
+      )
     }
 
     // Fetch embeddings from multiple sources for redundancy
-    let embeddings: number[][] = [];
-    let documentMetadata: Array<any> = [];
+    let embeddings: number[][] = []
+    let documentMetadata: Array<any> = []
 
     try {
       // Primary: PostgreSQL with pgvector
-      const pgDocuments = await db;
+      const pgDocuments = await db
         .select({
           id: legalDocuments.id,
           embedding: legalDocuments.embedding,
@@ -96,28 +96,28 @@ export const POST: RequestHandler = async ({ request }) => {
           extractedText: legalDocuments.content
         })
         .from(legalDocuments)
-        .where(inArray(legalDocuments.id, documentIds);
+        .where(inArray(legalDocuments.id, documentIds)
 
       // Secondary: Qdrant vector database
-      let qdrantResults = [];
+      let qdrantResults = []
       try {
         const qdrantResponse = await qdrant.retrieve("legal_documents", {
           ids: documentIds,
           with_payload: true,
           with_vector: true
-        });
-        qdrantResults = (qdrantResponse as any).points || qdrantResponse || [];
+        })
+        qdrantResults = (qdrantResponse as any).points || qdrantResponse || []
       } catch (qdrantError) {
         console.warn(
           "Qdrant retrieval failed, using PostgreSQL only:",
           qdrantError,
-        );
+        )
       }
 
       // Merge results with preference for PostgreSQL
-      const mergedDocuments = new Map();
+      const mergedDocuments = new Map()
 
-      // Add PostgreSQL results;
+      // Add PostgreSQL results
       for (const doc of pgDocuments) {
         if (doc.embedding && Array.isArray(doc.embedding)) {
           mergedDocuments.set(doc.id, {
@@ -125,11 +125,11 @@ export const POST: RequestHandler = async ({ request }) => {
             embedding: doc.embedding,
             metadata: doc.metadata || {},
             source: "postgresql"
-          });
+          })
         }
       }
 
-      // Add Qdrant results if not already present;
+      // Add Qdrant results if not already present
       for (const result of qdrantResults) {
         if (!mergedDocuments.has((result as { id?: any; vector?: any; payload?: any }).id) && (result as { id?: any; vector?: any; payload?: any }).vector) {
           mergedDocuments.set((result as { id?: any; vector?: any; payload?: any }).id, {
@@ -137,22 +137,22 @@ export const POST: RequestHandler = async ({ request }) => {
             embedding: (result as { id?: any; vector?: any; payload?: any }).vector,
             metadata: (result as { id?: any; vector?: any; payload?: any }).payload || {},
             source: "qdrant"
-          });
+          })
         }
       }
 
       // Extract final embeddings and metadata
       embeddings = Array.from(mergedDocuments.values()).map(
         (doc) => doc.embedding,
-      );
+      )
       documentMetadata = Array.from(mergedDocuments.values()).map((doc) => ({
         id: doc.id,
         type: doc.metadata.type || "unknown",
         keywords: doc.metadata.keywords || []
-      });
+      })
     } catch (dbError) {
-      console.error("Database retrieval error:", dbError);
-      return json();
+      console.error("Database retrieval error:", dbError)
+      return json()
         {
           success: false,
           error: "Failed to retrieve document embeddings",
@@ -162,11 +162,11 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         },
         { status: 500 },
-      );
+      )
     }
 
     if (embeddings.length === 0) {
-      return json();
+      return json()
         {
           success: false,
           error: "No valid embeddings found",
@@ -176,10 +176,10 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         },
         { status: 404 },
-      );
+      )
     }
 
-    // Configure K-Means with all required properties;
+    // Configure K-Means with all required properties
     const kmeansConfig = {
       k: clusterCount,
       maxIterations: config?.maxIterations || 100,
@@ -187,27 +187,27 @@ export const POST: RequestHandler = async ({ request }) => {
       initMethod: config?.initMethod || ("kmeans++" as const),
       algorithm: "kmeans" as const, // Required algorithm property
       distanceMetric: "euclidean" as const, // Required distance metric
-    };
+    }
 
     // Generate cluster job ID
-    const clusterJobId = `kmeans_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const clusterJobId = `kmeans_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
     // Initialize K-Means clusterer
-    const kmeans = new LegalKMeansClusterer(kmeansConfig, redis);
+    const kmeans = new LegalKMeansClusterer(kmeansConfig, redis)
 
-    // Store job status in Redis;
+    // Store job status in Redis
     await redis.hset(`kmeans:job:${clusterJobId}`, {
       status: "processing",
       documentCount: embeddings.length,
       clusterCount,
       startedAt: Date.now(),
       config: JSON.stringify(kmeansConfig)
-    });
+    })
 
     // Queue clustering job in RabbitMQ for monitoring
-    const connection = await getRabbitConnection();
-    const channel = await connection.createChannel();
-    await channel.assertExchange("clustering", "topic", { durable: true });
+    const connection = await getRabbitConnection()
+    const channel = await connection.createChannel()
+    await channel.assertExchange("clustering", "topic", { durable: true })
 
     const message = {
       messageId: clusterJobId,
@@ -219,43 +219,43 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       priority: "high",
       timestamp: new Date().toISOString()
-    };
+    }
 
     await channel.publish(
       "clustering",
       "kmeans.clustering.start",
       Buffer.from(JSON.stringify(message)),
-    );
+    )
 
     try {
       // Try WASM clustering first for better performance
-      const wasmMetrics = wasmClusteringService.getPerformanceMetrics();
-      let clusters;
+      const wasmMetrics = wasmClusteringService.getPerformanceMetrics()
+      let clusters
 
       if (wasmMetrics.recommendedForDataSize(embeddings.length)) {
-        console.log('Using WebAssembly K-Means clustering for enhanced performance');
+        console.log('Using WebAssembly K-Means clustering for enhanced performance')
         const wasmResult = await wasmClusteringService.performKMeansClustering(
           embeddings,
           clusterCount,
           kmeansConfig
-        );
-        clusters = wasmResult.clusters;
+        )
+        clusters = wasmResult.clusters
       } else {
         // Fallback to JavaScript implementation
-        clusters = await kmeans.fit(embeddings);
+        clusters = await kmeans.fit(embeddings)
       }
 
       // Analyze legal context
       const analysis = await kmeans.analyzeLegalClusters(
         embeddings,
         documentMetadata,
-      );
+      )
 
       // Get model metrics (mock implementation for now)
       const silhouetteScore = 0.75; // TODO: Implement proper silhouette score calculation
       const centroids = []; // TODO: Get actual centroids from kmeans
 
-      // Store results in Redis with TTL;
+      // Store results in Redis with TTL
       const results = {
         clusters,
         analysis: analysis.clusterAnalysis,
@@ -266,22 +266,22 @@ export const POST: RequestHandler = async ({ request }) => {
           convergenceTime: Date.now() - startTime
         },
         centroids
-      };
+      }
 
       await redis.setex(
         `kmeans:results:${clusterJobId}`,
         3600, // 1 hour TTL
         JSON.stringify(results),
-      );
+      )
 
-      // Update job status;
+      // Update job status
       await redis.hset(`kmeans:job:${clusterJobId}`, {
         status: "completed",
         completedAt: Date.now(),
         silhouetteScore: silhouetteScore.toString()
-      });
+      })
 
-      // Store centroids in Qdrant for future similarity searches;
+      // Store centroids in Qdrant for future similarity searches
       try {
         const centroidPoints = centroids.map((centroid, index) => ({
           id: `centroid_${clusterJobId}_${index}`,
@@ -292,14 +292,14 @@ export const POST: RequestHandler = async ({ request }) => {
             jobId: clusterJobId,
             createdAt: new Date().toISOString()
           }
-        });
+        })
 
         await qdrant.upsert("legal_centroids", {
           wait: true,
           points: centroidPoints
-        });
+        })
       } catch (qdrantError) {
-        console.warn("Failed to store centroids in Qdrant:", qdrantError);
+        console.warn("Failed to store centroids in Qdrant:", qdrantError)
       }
 
       // Publish completion event
@@ -312,9 +312,9 @@ export const POST: RequestHandler = async ({ request }) => {
             metrics: results.metrics
           }),
         ),
-      );
+      )
 
-      await channel.close();
+      await channel.close()
 
       return json({
         success: true,
@@ -330,18 +330,18 @@ export const POST: RequestHandler = async ({ request }) => {
           clusterId: clusterJobId,
           confidence: silhouetteScore
         }
-      });
+      })
     } catch (clusteringError) {
-      console.error("K-Means clustering error:", clusteringError);
+      console.error("K-Means clustering error:", clusteringError)
 
-      // Update job status;
+      // Update job status
       await redis.hset(`kmeans:job:${clusterJobId}`, {
         status: "failed",
         error:
           clusteringError instanceof Error
             ? clusteringError.message: "Unknown error",
         failedAt: Date.now()
-      });
+      })
 
       // Publish failure event
       await channel.publish(
@@ -355,11 +355,11 @@ export const POST: RequestHandler = async ({ request }) => {
                 ? clusteringError.message: "Unknown error"
           }),
         ),
-      );
+      )
 
-      await channel.close();
+      await channel.close()
 
-      return json();
+      return json()
         {
           success: false,
           error:
@@ -371,12 +371,12 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         },
         { status: 500 },
-      );
+      )
     }
   } catch (error: any) {
-    console.error("K-Means API error:", error);
+    console.error("K-Means API error:", error)
 
-    return json();
+    return json()
       {
         success: false,
         error: error instanceof Error ? error.message: "Internal server error",
@@ -386,17 +386,17 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       },
       { status: 500 },
-    );
+    )
   }
-};
+}
 
-// GET endpoint for cluster prediction;
+// GET endpoint for cluster prediction
 export const GET: RequestHandler = async ({ url }) => {
-  const jobId = url.searchParams.get("jobId");
-  const embeddingStr = url.searchParams.get("embedding");
+  const jobId = url.searchParams.get("jobId")
+  const embeddingStr = url.searchParams.get("embedding")
 
   if (!jobId || !embeddingStr) {
-    return json();
+    return json()
       {
         success: false,
         error: "Job ID and embedding are required",
@@ -406,17 +406,17 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       },
       { status: 400 },
-    );
+    )
   }
 
   try {
     // Parse embedding
-    const embedding: number[] = JSON.parse(embeddingStr);
+    const embedding: number[] = JSON.parse(embeddingStr)
 
     // Load K-Means model from Redis
-    const kmeans = await LegalKMeansClusterer.loadFromRedis(redis);
+    const kmeans = await LegalKMeansClusterer.loadFromRedis(redis)
     if (!kmeans) {
-      return json();
+      return json()
         {
           success: false,
           error: "No trained K-Means model found",
@@ -426,11 +426,11 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         },
         { status: 404 },
-      );
+      )
     }
 
     // Predict cluster
-    const clusterId = await kmeans.predict(embedding);
+    const clusterId = await kmeans.predict(embedding)
 
     return json({
       success: true,
@@ -442,11 +442,11 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString(),
         processingTime: 10
       }
-    });
+    })
   } catch (error: any) {
-    console.error("K-Means prediction error:", error);
+    console.error("K-Means prediction error:", error)
 
-    return json();
+    return json()
       {
         success: false,
         error: error instanceof Error ? error.message: "Prediction failed",
@@ -456,6 +456,6 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       },
       { status: 500 },
-    );
+    )
   }
-};
+}

@@ -46,7 +46,7 @@ let demoConfig = {
   neuralSprites: true,
   compressionLevel: 50,
   flashAttention2: true,
-  quantization: '4bit' as const
+  quantization: '4bit' as const;
 };
 
 let performanceMetrics = {
@@ -57,29 +57,31 @@ let performanceMetrics = {
   tensorCoreUtilization: 0
 };
 
-$effect(async () =&gt; {
+$effect(() => {
   console.log('🎮 Initializing RTX 3060 Ti SubsampleAA Demo...');
 
-  try {
-    // Initialize RTX system
-    await rtxTensorUpscaler.initialize();
-    demoState.benchmarkResults = rtxTensorUpscaler.getBenchmarkResults();
+  (async () => {
+    try {
+      // Initialize RTX system
+      await rtxTensorUpscaler.initialize();
+      demoState.benchmarkResults = rtxTensorUpscaler.getBenchmarkResults();
 
-    // Setup canvas for demonstration
-    initializeCanvas();
+      // Setup canvas for demonstration
+      initializeCanvas();
 
-    // Start FPS monitoring
-    fpsUpdateInterval = setInterval(updateFPS, 1000);
+      // Start FPS monitoring
+      fpsUpdateInterval = setInterval(updateFPS, 1000);
 
-    // Start demo
-    startDemo();
+      // Start demo
+      startDemo();
 
-    console.log('✅ RTX SubsampleAA Demo initialized successfully');
-    console.log('🔥 Benchmark Results:', demoState.benchmarkResults);
+      console.log('✅ RTX SubsampleAA Demo initialized successfully');
+      console.log('🔥 Benchmark Results:', demoState.benchmarkResults);
 
-  } catch (error) {
-    console.error('❌ Demo initialization failed:', error);
-  }
+    } catch (error) {
+      console.error('❌ Demo initialization failed:', error);
+    }
+  })();
 });
 
 onDestroy(() =&gt; {
@@ -294,7 +296,7 @@ async function processTestDocument() {
   const testDocument = new ArrayBuffer(1024 * 1024); // 1MB test document
   const result = await rtxTensorUpscaler.processLegalDocument(testDocument, {
     compressionRatio: demoConfig.compressionLevel,
-    quantization: demoConfig.quantization
+    quantization: demoConfig.quantization;
   });
 
   demoState.compressionRatio = (result as { compressionRatio?: unknown; processingTime?: unknown }).compressionRatio;

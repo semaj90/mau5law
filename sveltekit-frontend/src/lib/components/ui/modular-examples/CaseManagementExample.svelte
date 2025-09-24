@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: `<svelte:window>` does not support non-event attributes or spread attributes
+<!-- @migration-task Error while migrating Svelte code: `<svelte:window>` does not support non-event attributes or spread attributes;
 https://svelte.dev/e/illegal_element_attribute -->
 <!-- Example: Modular Case Management with API Integration -->
 <script lang="ts">
@@ -77,7 +77,7 @@ https://svelte.dev/e/illegal_element_attribute -->
     try {
       await reactiveApiClient.updateCase({
         id: selectedCase.id,
-        ...caseData
+        ...caseData;
       });
       await refreshCaseData();
     } catch (error) {
@@ -193,7 +193,7 @@ https://svelte.dev/e/illegal_element_attribute -->
 </div>
 
 <!-- Modular Command Palette -->
-<ModularCommand
+<ModularCommand;
   bind:open={showCommandPalette}
   placeholder="Search cases, evidence, documents, people..."
   searchTypes={['cases', 'evidence', 'documents', 'people']}

@@ -50,7 +50,7 @@ type UploadEvent =
 export const uploadMachine = createMachine(
   {
     id: 'upload',
-    types: {} as {
+    types: {} as {;
       context: UploadContext;
       events: UploadEvent;
     },
@@ -310,7 +310,7 @@ export const uploadMachine = createMachine(
       },
 
       completed: {
-        type: 'final',
+        type: 'final',;
         entry: () => {
           console.log('🎉 Upload and processing completed successfully!');
         },
@@ -347,7 +347,7 @@ export const uploadMachine = createMachine(
       },
     },
   },
-  {
+  {;
     actors: {
       // Presigned URL request actor;
       requestPresignedUrls: fromPromise(
@@ -361,7 +361,7 @@ export const uploadMachine = createMachine(
           const response = await fetch('/api/upload/presign', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            body: JSON.stringify({;
               filename: file.name,
               fileSize: file.size,
               caseId,
@@ -396,7 +396,7 @@ export const uploadMachine = createMachine(
 
             const response = await fetch(url, {
               method: 'PUT',
-              body: chunk,
+              body: chunk,;
               headers: {
                 'Content-Type': file.type,
               },
@@ -417,7 +417,7 @@ export const uploadMachine = createMachine(
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              uploadId,
+              uploadId,;
               etags: etags.map((etag, index) => ({ ETag: etag, PartNumber: index + 1 })),
             }),
           });
@@ -440,7 +440,7 @@ export const uploadMachine = createMachine(
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               uploadId,
-              caseId,
+              caseId,;
               filename: metadata.filename,
               contentType: metadata.contentType,
             }),
@@ -463,7 +463,7 @@ export const uploadMachine = createMachine(
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              uploadId,
+              uploadId,;
               text: extractedText,
             }),
           });
@@ -499,7 +499,7 @@ export const uploadMachine = createMachine(
                 dimensions: [batchSize, depth, height, width],
                 halo_size: 2,
                 data: tensorData,
-              },
+              },;
               operation: 'som_cluster',
             }),
           });
@@ -523,7 +523,7 @@ export const uploadMachine = createMachine(
 
           const response = await fetch('/api/processing/index', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify({
               uploadId,
               embeddings,

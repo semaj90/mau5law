@@ -3,15 +3,17 @@
 
   import { goto, invalidateAll } from '$app/navigation';
   import { onMount } from 'svelte';
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       // Call logout API endpoint
       const response = await fetch('/api/auth/logout', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
   }
-      });
+    })();
+  });
       if (response.ok) {
         // Invalidate all data and redirect to home
         await invalidateAll();

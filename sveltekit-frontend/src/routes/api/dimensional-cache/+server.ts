@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Dimensional Cache API
@@ -6,50 +6,50 @@ import type { RequestHandler } from './$types.js';
  * Supports embeddings, attention weights, and metadata
  */
 
-import { dimensionalCache } from '$lib/ai/dimensional-cache-engine';
-import type { DimensionalArray, CacheMetadata } from '$lib/ai/dimensional-cache-engine';
-import { URL } from "url";
+import { dimensionalCache } from '$lib/ai/dimensional-cache-engine'
+import type { DimensionalArray, CacheMetadata } from '$lib/ai/dimensional-cache-engine'
+import { URL } from "url"
 
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
-    const action = url.searchParams.get('action') || 'store';
-    const body = await request.json();
+    const action = url.searchParams.get('action') || 'store'
+    const body = await request.json()
 
     switch (action) {
       case 'store': {
-        const { key, embeddings, attentionWeights, metadata } = body;
+        const { key, embeddings, attentionWeights, metadata } = body
         
         if (!key || !embeddings) {
           return json({
             success: false,
             error: 'Key and embeddings are required'
-          }, { status: 400 });
+          }, { status: 400 })
         }
 
         const result = await dimensionalCache.store(key, {
           embeddings: new Float32Array(embeddings),
           attentionWeights: attentionWeights ? new Float32Array(attentionWeights) : undefined,
           metadata: metadata || {}
-        });
+        })
 
         return json({
           success: true,
           cached: result,
           timestamp: Date.now()
-        });
+        })
       }
 
       case 'get': {
-        const { key } = body;
+        const { key } = body
         
         if (!key) {
           return json({
             success: false,
             error: 'Key is required'
-          }, { status: 400 });
+          }, { status: 400 })
         }
 
-        const cached = await dimensionalCache.get(key);
+        const cached = await dimensionalCache.get(key)
         
         return json({
           success: true,
@@ -60,26 +60,26 @@ export const POST: RequestHandler = async ({ request, url }) => {
             metadata: cached.metadata
           } : null,
           timestamp: Date.now()
-        });
+        })
       }
 
       case 'clear': {
-        const { pattern } = body;
+        const { pattern } = body
         
-        const cleared = await dimensionalCache.clear(pattern);
+        const cleared = await dimensionalCache.clear(pattern)
         
         return json({
           success: true,
           cleared,
           timestamp: Date.now()
-        });
+        })
       }
 
-      default:;
+      default:
         return json({
           success: false,
           error: `Unknown action: ${action}`
-        }, { status: 400 });
+        }, { status: 400 })
     }
 
   } catch (error: any) {
@@ -87,13 +87,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
       success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const stats = await dimensionalCache.getStats();
+    const stats = await dimensionalCache.getStats()
     
     return json({
       service: 'dimensional-cache',
@@ -119,13 +119,13 @@ export const GET: RequestHandler = async ({ url }) => {
         'Pattern-based clearing'
       ],
       timestamp: Date.now()
-    });
+    })
 
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

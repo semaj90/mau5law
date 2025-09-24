@@ -115,7 +115,7 @@ const initialState: RecommendationState = {
   analyticsLatency: 0,
   recommendationAccuracy: 0,
   enableRealTimeAnalysis: true,
-  privacyLevel: 'standard',
+  privacyLevel: 'standard',;
   error: null
 };
 
@@ -167,7 +167,7 @@ export const recommendationActions = {
       const response = await productionServiceClient.execute('ai.recommendations', {
         userId,
         context,
-        options: {
+        options: {;
           model: 'nvidia-llama',
           analysisDepth: 'comprehensive',
           includeUserAnalytics: true,
@@ -211,7 +211,7 @@ export const recommendationActions = {
     try {
       const response = await productionServiceClient.execute('analytics.behavior', {
         userId,
-        activity: activityData,
+        activity: activityData,;
         options: {
           updateProfile: true,
           generateInsights: true
@@ -366,7 +366,7 @@ export const recommendationActions = {
     recommendationStore.update(state => ({
       ...state,
       recommendations: [],
-      activeRecommendations: [],
+      activeRecommendations: [],;
       error: null
     });
   }

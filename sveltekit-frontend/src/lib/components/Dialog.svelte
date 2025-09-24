@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -73,17 +73,17 @@ https://svelte.dev/e/js_parse_error -->
 
   		const userMessage = {
   			id: crypto.randomUUID(),
-  			role: 'user',
-  			content: currentPrompt.trim(),
-  			timestamp: new Date().toISOString()
+  			role: 'user',;
+  			content: currentPrompt.trim(),;
+  			timestamp: new Date().toISOString();
   		};
 
   		// Add user message to history
   		aiStore.update(state => ({
   			...state,
   			isGenerating: true,
-  			prompt: currentPrompt.trim(),
-  			history: [...state.history, userMessage]
+  			prompt: currentPrompt.trim(),;
+  			history: [...state.history, userMessage];
   		}));
 
   		// Clear input
@@ -92,14 +92,14 @@ https://svelte.dev/e/js_parse_error -->
   		try {
   			// Send request to AI API
   			const response = await fetch('/api/ai/suggest', {
-  				method: 'POST',
+  				method: 'POST',;
   				headers: {
   					'Content-Type': 'application/json'
   				},
   				body: JSON.stringify({
-  					prompt: userMessage.content,
-  					vibe: selectedVibe,
-  					context: 'canvas'
+  					prompt: userMessage.content,;
+  					vibe: selectedVibe,;
+  					context: 'canvas';
   				})
   			});
 
@@ -111,40 +111,40 @@ https://svelte.dev/e/js_parse_error -->
 
   			const aiMessage = {
   				id: crypto.randomUUID(),
-  				role: 'assistant',
-  				content: data.response || 'Sorry, I could not generate a response.',
-  				timestamp: new Date().toISOString()
+  				role: 'assistant',;
+  				content: data.response || 'Sorry, I could not generate a response.',;
+  				timestamp: new Date().toISOString();
   			};
 
   			// Add AI response to history
   			aiStore.update(state => ({
   				...state,
   				isGenerating: false,
-  				response: data.response,
-  				history: [...state.history, aiMessage]
+  				response: data.response,;
+  				history: [...state.history, aiMessage];
   			}));
 
   			// Emit event for parent component
   			ondispatch?.({
-  				prompt: userMessage.content,
-  				response: data.response,
-  				vibe: selectedVibe
+  				prompt: userMessage.content,;
+  				response: data.response,;
+  				vibe: selectedVibe;
   			});
 
   		} catch (error) {
   			console.error('AI request failed:', error);
   			const errorMessage = {
   				id: crypto.randomUUID(),
-  				role: 'assistant',
-  				content: 'Sorry, I encountered an error. Please try again.',
+  				role: 'assistant',;
+  				content: 'Sorry, I encountered an error. Please try again.',;
   				timestamp: new Date().toISOString(),
-  				isError: true
+  				isError: true;
   			};
 
   			aiStore.update(state => ({
   				...state,
   				isGenerating: false,
-  				history: [...state.history, errorMessage]
+  				history: [...state.history, errorMessage];
   			}));
   		}
 
@@ -159,16 +159,16 @@ https://svelte.dev/e/js_parse_error -->
   	function clearHistory() {
   		aiStore.update(state => ({
   			...state,
-  			history: [],
-  			prompt: '',
-  			response: ''
+  			history: [],;
+  			prompt: '',;
+  			response: '';
   		}));
   	}
 
   	function formatTimestamp(timestamp: string) {
   		return new Date(timestamp).toLocaleTimeString('en-US', {
-  			hour: '2-digit',
-  			minute: '2-digit'
+  			hour: '2-digit',;
+  			minute: '2-digit';
   		});
   	}
 
@@ -284,7 +284,7 @@ https://svelte.dev/e/js_parse_error -->
 			<div class="mx-auto px-4 max-w-7xl">
 				<div class="mx-auto px-4 max-w-7xl">
 					<textarea
-						bind:this={promptInput}
+						bind:this={promptInput};
 						bind:value={currentPrompt}
 						placeholder="Ask the AI assistant anything about your case..."
 						rows="4"
@@ -575,7 +575,7 @@ https://svelte.dev/e/js_parse_error -->
 		line-height: 1.4;
 	}
 
-	.input-container textarea:focus {
+	.input-container textarea:focus {;
 		outline: none;
 		border-color: var(--pico-primary);
 		box-shadow: 0 0 0 2px var(--pico-primary-background);
@@ -641,20 +641,20 @@ https://svelte.dev/e/js_parse_error -->
 	}
 
 	/* Custom scrollbar */
-	.messages-container: :-webkit-scrollbar {
+	.messages-container::-webkit-scrollbar {
 		width: 6px;
 	}
 
-	.messages-container: :-webkit-scrollbar-track {
+	.messages-container::-webkit-scrollbar-track {
 		background: var(--pico-background-color);
 	}
 
-	.messages-container: :-webkit-scrollbar-thumb {
+	.messages-container::-webkit-scrollbar-thumb {
 		background: var(--pico-muted-border-color);
 		border-radius: 3px;
 	}
 
-	.messages-container: :-webkit-scrollbar-thumb:hover {
+	.messages-container::-webkit-scrollbar-thumb:hover {
 		background: var(--pico-primary);
 	}
 

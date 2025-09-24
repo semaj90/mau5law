@@ -1,10 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Textarea } from "$lib/components/ui/textarea/index";
   import {
     aiPersonality,
@@ -77,20 +77,20 @@ https://svelte.dev/e/js_parse_error -->
       if (isAnalysisRequest && (caseId || thinkingStyleEnabled)) {
         // Use the enhanced analysis endpoint
   response = await fetch("/api/analyze", {
-          method: "POST",
+          method: "POST",;
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+          body: JSON.stringify({;
             text: userMessage,
             caseId,
             useThinkingStyle: thinkingStyleEnabled,
             analysisType: 'reasoning',
-            documentType: 'legal_document'
+            documentType: 'legal_document';
           }),
   });
       } else {
         // Use the regular chat endpoint
         const requestBody: ChatRequest = {
-          messages: $currentConversation?.messages || [],
+          messages: $currentConversation?.messages || [],;
           context: {
             caseId,
             currentPage: window.location.pathname,
@@ -99,9 +99,9 @@ https://svelte.dev/e/js_parse_error -->
         };
 
         response = await fetch("/api/ai/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
+          method: "POST",;
+          headers: { "Content-Type": "application/json" },;
+          body: JSON.stringify(requestBody),;
         });
       }
 
@@ -141,9 +141,9 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error("Chat error:", error);
       notifications.add({
-        type: "error",
-        title: "Chat Error",
-        message: "Failed to get response from AI assistant"
+        type: "error",;
+        title: "Chat Error",;
+        message: "Failed to get response from AI assistant";
       });
 
       errorMessage = error instanceof Error ? error.message: 'An error occurred';
@@ -226,7 +226,7 @@ https://svelte.dev/e/js_parse_error -->
       showProactivePrompt.set(false);
 
       const requestBody: ChatRequest = {
-        messages: $currentConversation.messages,
+        messages: $currentConversation.messages,;
         context: {
           caseId,
           currentPage: window.location.pathname,
@@ -236,9 +236,9 @@ https://svelte.dev/e/js_parse_error -->
       };
 
       const response = await fetch("/api/ai/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
+        method: "POST",;
+        headers: { "Content-Type": "application/json" },;
+        body: JSON.stringify(requestBody),;
       });
 
       if (!response.ok) throw new Error("Failed to get proactive response");
@@ -251,7 +251,7 @@ https://svelte.dev/e/js_parse_error -->
 
       chatActions.addMessage(apiResponse.data.content, "assistant", {
         ...apiResponse.data.metadata,
-        proactive: true,
+        proactive: true,;
       });
 
       setTimeout(scrollToBottom, 100);
@@ -273,18 +273,18 @@ https://svelte.dev/e/js_parse_error -->
       : "⚡ Quick Mode enabled. AI will provide concise responses.";
 
     notifications.add({
-      type: "info",
+      type: "info",;
       title: "AI Mode Changed",
-      message,
+      message,;
     });
   }
 
   async function quickAnalyzeEvidence() {
     if (!caseId) {
       notifications.add({
-        type: "warning",
-        title: "No Case Selected",
-        message: "Please select a case to analyze evidence.",
+        type: "warning",;
+        title: "No Case Selected",;
+        message: "Please select a case to analyze evidence.",;
       });
       return;
     }
@@ -306,8 +306,8 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error("Quick analysis error:", error);
       notifications.add({
-        type: "error",
-        title: "Analysis Failed",
+        type: "error",;
+        title: "Analysis Failed",;
         message: "Failed to analyze case evidence.",
 
     errorMessage = error instanceof Error ? error.message: 'An error occurred';});
@@ -365,7 +365,6 @@ https://svelte.dev/e/js_parse_error -->
   });
 
 // Reactive scroll to bottom when new messages arrive
-    // TODO: Convert to $derived when possible
     $effect(() => {
       if ($currentConversation?.messages) {
         tick().then(scrollToBottom);
@@ -409,7 +408,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
   <!-- Messages Container -->
-  <div
+  <div;
     bind:this={messagesContainer}
     class="mx-auto px-4 max-w-7xl"
     style="height: calc({height} - 140px);"
@@ -540,11 +539,11 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  :global(.message-content p) {
+  :global(.message-content p) {;
     margin-bottom: 0.5rem;
   }
 
-  :global(.message-content p:last-child) {
+  :global(.message-content p:last-child) {;
     margin-bottom: 0;
   }
 

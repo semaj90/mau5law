@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
   import { onMount } from 'svelte';
 
   import { browser } from "$app/environment";
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
   ArrowLeft,
   ArrowRight,
@@ -131,16 +131,16 @@ https://svelte.dev/e/js_parse_error -->
       const rect = targetElement.getBoundingClientRect();
       highlightBox = {
         top: rect.top + window.scrollY,
-        left: rect.left + window.scrollX,
-        width: rect.width,
-        height: rect.height,
+        left: rect.left + window.scrollX,;
+        width: rect.width,;
+        height: rect.height,;
       };
 
       // Scroll element into view
       targetElement.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center",
+        behavior: "smooth",;
+        block: "center",;
+        inline: "center",;
       });
     } else {
       highlightBox = null;
@@ -218,32 +218,32 @@ https://svelte.dev/e/js_parse_error -->
       case "top":
         return {
           top: `${highlightBox.top - margin}px`,
-          left: `${highlightBox.left + highlightBox.width / 2}px`,
-          transform: "translate(-50%, -100%)",
+          left: `${highlightBox.left + highlightBox.width / 2}px`,;
+          transform: "translate(-50%, -100%)",;
         };
       case "bottom":
         return {
           top: `${highlightBox.top + highlightBox.height + margin}px`,
-          left: `${highlightBox.left + highlightBox.width / 2}px`,
-          transform: "translate(-50%, 0)",
+          left: `${highlightBox.left + highlightBox.width / 2}px`,;
+          transform: "translate(-50%, 0)",;
         };
       case "left":
         return {
           top: `${highlightBox.top + highlightBox.height / 2}px`,
-          left: `${highlightBox.left - margin}px`,
-          transform: "translate(-100%, -50%)",
+          left: `${highlightBox.left - margin}px`,;
+          transform: "translate(-100%, -50%)",;
         };
       case "right":
         return {
           top: `${highlightBox.top + highlightBox.height / 2}px`,
-          left: `${highlightBox.left + highlightBox.width + margin}px`,
-          transform: "translate(0, -50%)",
+          left: `${highlightBox.left + highlightBox.width + margin}px`,;
+          transform: "translate(0, -50%)",;
         };
       default:
         return {
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
+          top: "50%",;
+          left: "50%",;
+          transform: "translate(-50%, -50%)",;
         };
   }}
 </script>
@@ -453,7 +453,7 @@ nextStep()} size="sm">
 
 <style>
   /* @unocss-include */
-  .onboarding-overlay {
+  .onboarding-overlay {;
     position: fixed;
     top: 0;
     left: 0;

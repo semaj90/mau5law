@@ -87,7 +87,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     };
 
     return {
-      user: locals.user,
+      user: locals.user,;
       session: locals.session,
       userStats,
       profileForm, // Add the SuperForm
@@ -97,7 +97,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
     // Return basic data if stats fail;
     return {
-      user: locals.user,
+      user: locals.user,;
       session: locals.session,
       userStats: {
         totalCases: 0,

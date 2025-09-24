@@ -70,7 +70,7 @@ export class OptimizationTestSuite {
     large_json: JSON.stringify({ 
       data: Array(1000).fill({ 
         id: Math.random().toString(36), 
-        content: 'large test data '.repeat(10),
+        content: 'large test data '.repeat(10),;
         nested: { deep: { value: Math.random() } }
       })
     }),
@@ -93,7 +93,7 @@ export class OptimizationTestSuite {
         await this.suite.vscode?.initialize();
         
         tests.push({
-          name: 'VS Code Extension Initialization',
+          name: 'VS Code Extension Initialization',;
           passed: true,
           duration_ms: performance.now() - start
         });
@@ -101,7 +101,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'VS Code Extension Initialization',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -134,7 +134,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Command Execution Performance',
           passed: success_rate >= 0.8, // 80% success rate required
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           details: {
             tested_commands: commands_to_test.length,
             successful_commands,
@@ -145,7 +145,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Command Execution Performance',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -161,7 +161,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Memory Usage Monitoring',
           passed: memory_efficient,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           details: {
             cache_utilization: stats.cache.utilization,
             commands_registered: stats.commands
@@ -171,7 +171,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Memory Usage Monitoring',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -209,14 +209,14 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Basic Cache Operations',
           passed: retrieved === 'test_value',
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           details: { retrieved_value: retrieved }
         });
       } catch (error: any) {
         tests.push({
           name: 'Basic Cache Operations',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -231,7 +231,7 @@ export class OptimizationTestSuite {
           await (this.suite.cache as any)?.set?.(`som_test_${i}`, {
             data: `test_data_${i}`,
             type: i % 3 === 0 ? 'frequent' : i % 3 === 1 ? 'burst' : 'random'
-          }, {
+          }, {;
             metadata: {
               access_pattern: i % 3 === 0 ? 'frequent' : i % 3 === 1 ? 'burst' : 'random',
               ai_relevance: Math.random()
@@ -244,7 +244,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Self-Organizing Map Clustering',
           passed: clusters.length > 0 && recommendations.length > 0,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           details: {
             clusters_found: clusters.length,
             recommendations_generated: recommendations.length
@@ -254,7 +254,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Self-Organizing Map Clustering',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -278,7 +278,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Memory Pressure Handling',
           passed: handled_pressure,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           details: {
             before_utilization: before_stats.memory.utilization,
             after_utilization: after_stats.memory.utilization,
@@ -289,7 +289,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Memory Pressure Handling',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -329,7 +329,7 @@ export class OptimizationTestSuite {
           name: 'Container Resource Monitoring',
           passed: has_containers && valid_metrics,
           duration_ms: performance.now() - start,
-          details: {
+          details: {;
             containers: stats.containers.length,
             efficiency_score: stats.efficiency_score,
             memory_allocated_gb: Math.round(stats.total_memory_allocated / (1024 * 1024 * 1024)
@@ -339,7 +339,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Container Resource Monitoring',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -359,7 +359,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Optimization Preset Application',
           passed: efficiency_maintained,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           details: {
             before_efficiency: before_stats.efficiency_score,
             after_efficiency: after_stats.efficiency_score,
@@ -370,7 +370,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Optimization Preset Application',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -388,7 +388,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Docker Compose Generation',
           passed: is_valid_yaml,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           details: {
             compose_length: dockerCompose.length,
             has_resource_limits: dockerCompose.includes('resources:')
@@ -398,7 +398,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Docker Compose Generation',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -445,7 +445,7 @@ export class OptimizationTestSuite {
           },
           performance_impact: {
             before: this.test_data.large_json.length,
-            after: stats.parse_time_ms,
+            after: stats.parse_time_ms,;
             improvement: this.test_data.large_json.length / stats.parse_time_ms // chars per ms
           }
         });
@@ -453,7 +453,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'JSON Parsing Performance',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -472,7 +472,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'JSON Compression',
           passed: compression_effective && compressed_is_smaller,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           details: {
             original_size: stats.original_size,
             compressed_size: stats.compressed_size,
@@ -484,7 +484,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'JSON Compression',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -501,7 +501,7 @@ export class OptimizationTestSuite {
           passed: true, // WASM initialization is optional
           duration_ms: performance.now() - start,
           details: {
-            wasm_available: wasm_initialized,
+            wasm_available: wasm_initialized,;
             note: wasm_initialized ? 'WebAssembly acceleration available' : 'Using JavaScript fallback'
           }
         });
@@ -509,7 +509,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'WebAssembly Initialization',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -548,7 +548,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Stack Analysis with Optimization',
           passed: response.success && has_recommendations,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           details: {
             recommendations_count: response.optimization_recommendations?.length || 0,
             context7_success: response.success
@@ -558,7 +558,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Stack Analysis with Optimization',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -574,7 +574,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Best Practices Generation',
           passed: response.success && has_impact_estimate,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           details: {
             has_performance_impact: has_impact_estimate,
             expected_improvement: response.performance_impact?.expected_improvement || 0
@@ -584,7 +584,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Best Practices Generation',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -602,7 +602,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Comprehensive Analysis',
           passed: has_metrics && has_recommendations && has_plan,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           details: {
             metrics_available: has_metrics,
             recommendations_count: analysis.recommendations.length,
@@ -613,7 +613,7 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'Comprehensive Analysis',
           passed: false,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start,;
           error: error instanceof Error ? error.message: String(error)
         });
       }
@@ -749,7 +749,7 @@ export class OptimizationTestSuite {
     const recommendations = this.generateRecommendations(test_suites, performance_benchmarks);
     
     const report: ValidationReport = {
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(),;
       environment: {
         node_version: process.version || 'unknown',
         memory_limit: `${Math.round(performance_benchmarks.memory_usage_mb)}MB`,
@@ -857,7 +857,7 @@ export async function runQuickValidation(): Promise<any> {
   
   return {
     passed: report.overall_results.success_rate >= 80,
-    summary: `${report.overall_results.passed_tests}/${report.overall_results.total_tests} tests passed (${report.overall_results.success_rate.toFixed(1)}%)`,
+    summary: `${report.overall_results.passed_tests}/${report.overall_results.total_tests} tests passed (${report.overall_results.success_rate.toFixed(1)}%)`,;
     details: report
   };
 }

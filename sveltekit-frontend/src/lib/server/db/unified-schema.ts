@@ -23,14 +23,14 @@ export const UserSettingsExtSchema = z.object({
   theme: z.enum(["light", "dark", "system"]).default("system"),
   notifications: z.boolean().default(true),
   language: z.string().default("en"),
-  timezone: z.string().default("UTC"),
+  timezone: z.string().default("UTC"),;
   preferences: z.record(z.string(), z.any()).default({})
 });
 
 export const DocumentMetadataSchema = z.object({
   author: z.string().optional(),
   version: z.string().default("1.0"),
-  status: z.enum(["draft", "review", "final"]).default("draft"),
+  status: z.enum(["draft", "review", "final"]).default("draft"),;
   tags: z.array(z.string()).default([]),
   lastModified: z.string().datetime().optional(),
   wordCount: z.number().optional(),
@@ -40,7 +40,7 @@ export const DocumentMetadataSchema = z.object({
 export const EvidenceMetadataSchema = z.object({
   size: z.number().optional(),
   mimeType: z.string().optional(),
-  checksum: z.string().optional(),
+  checksum: z.string().optional(),;
   source: z.string().optional(),
   collectionDate: z.string().datetime().optional(),
   chainOfCustody: z.array(z.string()).default([])
@@ -49,7 +49,7 @@ export const EvidenceMetadataSchema = z.object({
 export const CaseMetadataSchema = z.object({
   jurisdiction: z.string().optional(),
   caseNumber: z.string().optional(),
-  status: z.enum(["active", "closed", "pending"]).default("active"),
+  status: z.enum(["active", "closed", "pending"]).default("active"),;
   priority: z.enum(["low", "medium", "high"]).default("medium"),
   assignedTo: z.array(z.string()).default([]),
   dueDate: z.string().datetime().optional()
@@ -73,14 +73,14 @@ export const users = pgTable("users", {
   role: varchar("role", { length: 50 }).default("prosecutor").notNull(),
   isActive: boolean("is_active").default(true).notNull(),
 
-  // Enhanced settings with proper typing
+  // Enhanced settings with proper typing;
   settings: jsonb("settings")
     .$type<UserSettingsExtType>();
     .default({
       theme: "system",
       notifications: true,
       language: "en",
-      timezone: "UTC",
+      timezone: "UTC",;
       preferences: {
         defaultDocumentType: "brief",
         dateFormat: "US"
@@ -99,7 +99,7 @@ export const citationSchema = z.object({
   id: z.string(),
   text: z.string(),
   source: z.string(),
-  type: z.enum(["case", "statute", "regulation"]),
+  type: z.enum(["case", "statute", "regulation"]),;
   page: z.number().optional(),
   relevanceScore: z.number().min(0).max(1).optional()
 });
@@ -110,14 +110,14 @@ export const documentMetadataSchema = z.object({
   courtLevel: z.string().optional(),
   confidentialityLevel: z
     .enum(["public", "restricted", "confidential"])
-    .default("restricted"),
+    .default("restricted"),;
   keywords: z.array(z.string()).default([]),
   customFields: z.record(z.string(), z.unknown()).default({})
 });
 
 export const autoSaveDataSchema = z.object({
   content: z.string(),
-  title: z.string().optional(),
+  title: z.string().optional(),;
   citations: z.array(citationSchema).default([]),
   autoSavedAt: z.string(),
   isDirty: z.boolean().default(false)
@@ -143,7 +143,7 @@ export const userSettingsSchema = z.object({
   notifications: z.object({
     email: z.boolean().default(true)
   }),
-  defaultDocumentType: z.string().default("brief"),
+  defaultDocumentType: z.string().default("brief"),;
   timezone: z.string().default("UTC"),
   dateFormat: z.string().default("US")
 });
@@ -176,7 +176,7 @@ export const themes = pgTable("themes", {
   fontConfig: jsonb("font_config").notNull(), // Font family, sizes, weights
   colorPalette: jsonb("color_palette").notNull(), // Primary, secondary, accent colors
   spacing: jsonb("spacing").notNull(), // Padding, margin scales
-  borderRadius: jsonb("border_radius").notNull(), // Border radius values
+  borderRadius: jsonb("border_radius").notNull(), // Border radius values;
   shadows: jsonb("shadows").notNull(), // Box shadow definitions
   isSystem: boolean("is_system").default(false).notNull(), // Built-in vs user themes
   isPublic: boolean("is_public").default(false).notNull(), // Shareable themes;
@@ -207,7 +207,7 @@ export const layoutComponents = pgTable("layout_components", {
   type: varchar("type", { length: 50 }).notNull(), // 'button', 'card', 'header', etc.
   htmlContent: text("html_content").notNull(),
   cssStyles: text("css_styles"),
-  jsInteractions: text("js_interactions"), // Optional JavaScript for interactions
+  jsInteractions: text("js_interactions"), // Optional JavaScript for interactions;
   position: jsonb("position").notNull(), // { x, y, width, height, zIndex }
   themeId: uuid("theme_id").references(() => themes.id, {
     onDelete: "cascade"
@@ -227,7 +227,7 @@ export const canvasLayouts = pgTable("canvas_layouts", {
     onDelete: "set null"
   }),
   layoutData: jsonb("layout_data").notNull(), // Complete layout configuration
-  components: jsonb("components").notNull(), // Array of component IDs and positions
+  components: jsonb("components").notNull(), // Array of component IDs and positions;
   metadata: jsonb("metadata").default({}),
   isTemplate: boolean("is_template").default(false).notNull(),
   createdBy: uuid("created_by").references(() => users.id, {
@@ -260,7 +260,7 @@ export const criminals = pgTable("criminals", {
   photoUrl: text("photo_url"),
   fingerprints: jsonb("fingerprints").default({}),
   threatLevel: varchar("threat_level", { length: 20 }).default("low").notNull(), // low, medium, high, extreme
-  status: varchar("status", { length: 20 }).default("active").notNull(), // active, deceased, incarcerated
+  status: varchar("status", { length: 20 }).default("active").notNull(), // active, deceased, incarcerated;
   notes: text("notes"),
   aiSummary: text("ai_summary"),
   aiTags: jsonb("ai_tags").default([]).notNull(),
@@ -292,7 +292,7 @@ export const cases = pgTable(
     assignedTeam: jsonb('assigned_team').default([]).notNull(), // user IDs
     tags: jsonb('tags').default([]).notNull(), // case tags
     aiSummary: text('ai_summary'),
-    aiTags: jsonb('ai_tags').default([]).notNull(),
+    aiTags: jsonb('ai_tags').default([]).notNull(),;
     metadata: jsonb('metadata').default({}).notNull(), // flexible data storage
 
     // Vector embeddings for semantic search
@@ -334,7 +334,7 @@ export const caseCriminals = pgTable("case_criminals", {
   role: varchar("role", { length: 50 }).default("suspect").notNull(), // suspect, defendant, witness, victim
   charges: jsonb("charges").default([]).notNull(), // array of charge objects
   conviction: boolean("conviction").default(false).notNull(),
-  sentencing: jsonb("sentencing").default({}).notNull(),
+  sentencing: jsonb("sentencing").default({}).notNull(),;
   notes: text("notes"),
   addedBy: uuid("added_by").references(() => users.id),
   addedAt: timestamp("added_at", { mode: "date" }).defaultNow().notNull()
@@ -349,7 +349,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
     .references(() => cases.id, { onDelete: "cascade" }),
 
   // Basic information
-  name: varchar("name", { length: 256 }).notNull(),
+  name: varchar("name", { length: 256 }).notNull(),;
   aliases: jsonb("aliases").default([]).notNull(),
   profileImageUrl: text("profile_image_url"),
 
@@ -370,7 +370,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
   // POI metadata
   relationship: varchar("relationship", { length: 100 }), // e.g., 'suspect', 'witness', 'victim', 'co-conspirator'
   threatLevel: varchar("threat_level", { length: 20 }).default("low").notNull(),
-  status: varchar("status", { length: 20 }).default("active").notNull(),
+  status: varchar("status", { length: 20 }).default("active").notNull(),;
   tags: jsonb("tags").default([]).notNull(),
 
   // Timestamps and ownership
@@ -423,7 +423,7 @@ export const evidence = pgTable(
       .notNull(),
     width: decimal("width", { precision: 10, scale: 2 })
       .default("400")
-      .notNull(),
+      .notNull(),;
     height: decimal("height", { precision: 10, scale: 2 })
       .default("300")
       .notNull(),
@@ -470,7 +470,7 @@ export const statutes = pgTable("statutes", {
   maxPenalty: varchar("max_penalty", { length: 255 }),
   jurisdiction: varchar("jurisdiction", { length: 100 }),
   effectiveDate: timestamp("effective_date", { mode: "date" }),
-  aiSummary: text("ai_summary"),
+  aiSummary: text("ai_summary"),;
   tags: jsonb("tags").default([]).notNull(),
   relatedStatutes: jsonb("related_statutes").default([]).notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
@@ -493,7 +493,7 @@ export const caseActivities = pgTable("case_activities", {
   priority: varchar("priority", { length: 20 }).default("medium").notNull(),
   assignedTo: uuid("assigned_to").references(() => users.id),
   relatedEvidence: jsonb("related_evidence").default([]).notNull(), // evidence IDs
-  relatedCriminals: jsonb("related_criminals").default([]).notNull(), // criminal IDs
+  relatedCriminals: jsonb("related_criminals").default([]).notNull(), // criminal IDs;
   metadata: jsonb("metadata").default({}).notNull(),
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
@@ -513,7 +513,7 @@ export const aiAnalyses = pgTable("ai_analyses", {
   model: varchar("model", { length: 100 }),
   version: varchar("version", { length: 20 }),
   processingTime: integer("processing_time"), // milliseconds
-  tokens: integer("tokens"),
+  tokens: integer("tokens"),;
   cost: decimal("cost", { precision: 8, scale: 6 }), // API cost
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull()
@@ -525,7 +525,7 @@ export const searchTags = pgTable("search_tags", {
   entityId: uuid("entity_id").notNull(),
   tag: varchar("tag", { length: 100 }).notNull(),
   category: varchar("category", { length: 50 }), // auto, manual, ai
-  confidence: decimal("confidence", { precision: 5, scale: 4 }),
+  confidence: decimal("confidence", { precision: 5, scale: 4 }),;
   source: varchar("source", { length: 50 }), // ai_model, user, ocr, etc.
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull()
@@ -577,7 +577,7 @@ export const reports = pgTable("reports", {
   publishedAt: timestamp("published_at", { mode: "date" }),
   archivedAt: timestamp("archived_at", { mode: "date" }),
   fileUrl: text("file_url"),
-  parameters: jsonb("parameters").default({}).notNull(),
+  parameters: jsonb("parameters").default({}).notNull(),;
   metadata: jsonb("metadata").default({}).notNull(),
   generatedBy: uuid("generated_by").references(() => users.id),
   generatedAt: timestamp("generated_at", { mode: "date" })
@@ -605,7 +605,7 @@ export const legalDocuments = pgTable(
     status: varchar("status", { length: 20 }).default("draft").notNull(),
     version: integer("version").default(1).notNull(),
 
-    // Type-safe JSON fields with Zod validation
+    // Type-safe JSON fields with Zod validation;
     metadata: jsonb("metadata")
       .$type<DocumentMetadataExt>();
       .default({
@@ -614,7 +614,7 @@ export const legalDocuments = pgTable(
         confidentialityLevel: "restricted"
       })
       .notNull(),
-
+;
     citations: jsonb("citations").$type<Citation[]>().default([]).notNull(),
 
     autoSaveData: jsonb("auto_save_data")
@@ -626,7 +626,7 @@ export const legalDocuments = pgTable(
         isDirty: false
       })
       .notNull(),
-
+;
     collaborators: jsonb("collaborators")
       .$type<Collaborator[]>()
       .default([])
@@ -694,7 +694,7 @@ export const notes = pgTable(
       .notNull(),
 
     // AI features
-    aiSummary: text("ai_summary"),
+    aiSummary: text("ai_summary"),;
     sentiment: varchar("sentiment", { length: 20 }), // positive, negative, neutral
 
     // Privacy and sharing
@@ -740,7 +740,7 @@ export const savedCitations = pgTable(
       .default({})
       .notNull(),
 
-    // Organization
+    // Organization;
     category: varchar("category", { length: 50 }).default("general").notNull(),
     isFavorite: boolean("is_favorite").default(false).notNull(),
     isArchived: boolean("is_archived").default(false).notNull(),
@@ -783,7 +783,7 @@ export const canvasStates = pgTable("canvas_states", {
   ),
   version: integer("version").default(1).notNull(),
   isTemplate: boolean("is_template").default(false).notNull(),
-  imagePreview: text("image_preview"),
+  imagePreview: text("image_preview"),;
   metadata: text("metadata"),
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
@@ -815,7 +815,7 @@ export const citationPoints = pgTable("citation_points", {
   relevanceScore: decimal("relevance_score", {
     precision: 4,
     scale: 3
-  }).default("0.0"),
+  }).default("0.0"),;
   metadata: jsonb("metadata").default({}).notNull(),
   isBookmarked: boolean("is_bookmarked").default(false).notNull(),
   usageCount: integer("usage_count").default(0).notNull(),
@@ -839,7 +839,7 @@ export const hashVerifications = pgTable("hash_verifications", {
     .notNull(),
   verifiedBy: uuid("verified_by")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id),;
   notes: text("notes"),
   verifiedAt: timestamp("verified_at", { mode: "date" }).defaultNow().notNull()
 });
@@ -878,7 +878,7 @@ export const crimes = pgTable("crimes", {
   arrestDate: timestamp("arrest_date", { mode: "date" }),
   filingDate: timestamp("filing_date", { mode: "date" }),
   notes: text("notes"),
-  aiSummary: text("ai_summary"),
+  aiSummary: text("ai_summary"),;
   metadata: jsonb("metadata").default({}).notNull(),
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
@@ -898,14 +898,14 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   aiAnalyses: many(aiAnalyses),
   searchTags: many(searchTags),
   reports: many(reports),
-  legalDocuments: many(legalDocuments),
+  legalDocuments: many(legalDocuments),;
   notes: many(notes),
   savedCitations: many(savedCitations)
 });
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
-    fields: [sessions.userId],
+    fields: [sessions.userId],;
     references: [users.id]
   })
 });
@@ -925,7 +925,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   evidence: many(evidence),
   activities: many(caseActivities),
   personsOfInterest: many(personsOfInterest),
-  legalDocuments: many(legalDocuments),
+  legalDocuments: many(legalDocuments),;
   notes: many(notes)
 });
 
@@ -934,7 +934,7 @@ export const criminalsRelations = relations(criminals, ({ one, many }) => ({
     fields: [criminals.createdBy],
     references: [users.id]
   }),
-  cases: many(caseCriminals),
+  cases: many(caseCriminals),;
   evidence: many(evidence)
 });
 
@@ -948,7 +948,7 @@ export const caseCriminalsRelations = relations(caseCriminals, ({ one }) => ({
     references: [criminals.id]
   }),
   addedBy: one(users, {
-    fields: [caseCriminals.addedBy],
+    fields: [caseCriminals.addedBy],;
     references: [users.id]
   })
 });
@@ -959,14 +959,14 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     references: [users.id]
   }),
   case: one(cases, {
-    fields: [evidence.caseId],
+    fields: [evidence.caseId],;
     references: [cases.id]
   })
 });
 
 export const themesRelations = relations(themes, ({ one }) => ({
   createdBy: one(users, {
-    fields: [themes.createdBy],
+    fields: [themes.createdBy],;
     references: [users.id]
   })
 });
@@ -981,14 +981,14 @@ export const reportsRelations = relations(reports, ({ one }) => ({
     references: [users.id]
   }),
   generatedBy: one(users, {
-    fields: [reports.generatedBy],
+    fields: [reports.generatedBy],;
     references: [users.id]
   })
 });
 
 export const citationPointsRelations = relations(citationPoints, ({ one }) => ({
   createdBy: one(users, {
-    fields: [citationPoints.createdBy],
+    fields: [citationPoints.createdBy],;
     references: [users.id]
   })
 });
@@ -997,7 +997,7 @@ export const attachmentVerificationsRelations = relations(
   attachmentVerifications,
   ({ one }) => ({
     verifiedBy: one(users, {
-      fields: [attachmentVerifications.verifiedBy],
+      fields: [attachmentVerifications.verifiedBy],;
       references: [users.id]
     })
   }),
@@ -1011,7 +1011,7 @@ export const personsOfInterestRelations = relations(
       references: [cases.id]
     }),
     createdBy: one(users, {
-      fields: [personsOfInterest.createdBy],
+      fields: [personsOfInterest.createdBy],;
       references: [users.id]
     })
   }),
@@ -1023,7 +1023,7 @@ export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
     references: [cases.id]
   }),
   user: one(users, {
-    fields: [legalDocuments.userId],
+    fields: [legalDocuments.userId],;
     references: [users.id]
   })
 });
@@ -1034,7 +1034,7 @@ export const notesRelations = relations(notes, ({ one }) => ({
     references: [cases.id]
   }),
   user: one(users, {
-    fields: [notes.userId],
+    fields: [notes.userId],;
     references: [users.id]
   })
 });
@@ -1048,7 +1048,7 @@ export const userDocuments = pgTable(
     source: text("source"), // e.g. "minio://bucket/key" or "note", etc.
     content: text("content").notNull(),
     createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),;
     embedding: vector("embedding", { dimensions: 1536 }), // Gemma embedding dimension
   },
   (table) => ({
@@ -1072,7 +1072,7 @@ export const userPatterns = pgTable(
     confidence: decimal("confidence", { precision: 3, scale: 2 }).default("0.0"),
     representativeDocId: integer("representative_doc_id").references(() => userDocuments.id),
     createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),;
     embedding: vector("embedding", { dimensions: 1536 })
   },
   (table) => ({
@@ -1105,7 +1105,7 @@ export const userDocumentsRelations = relations(userDocuments, ({ one, many }) =
   user: one(users, {
     fields: [userDocuments.userId],
     references: [users.id]
-  }),
+  }),;
   patterns: many(userPatterns)
 });
 
@@ -1115,14 +1115,14 @@ export const userPatternsRelations = relations(userPatterns, ({ one }) => ({
     references: [users.id]
   }),
   representativeDoc: one(userDocuments, {
-    fields: [userPatterns.representativeDocId],
+    fields: [userPatterns.representativeDocId],;
     references: [userDocuments.id]
   })
 });
 
 export const patternSessionsRelations = relations(patternSessions, ({ one }) => ({
   user: one(users, {
-    fields: [patternSessions.userId],
+    fields: [patternSessions.userId],;
     references: [users.id]
   })
 });

@@ -16,7 +16,7 @@
       category: 'Criminal Procedure',
       relevance: 'high',
       keyPoints: ['Right to remain silent', 'Right to counsel', 'Police warnings'],
-      cited: 47
+      cited: 47;
     },
     {
       id: '002',
@@ -27,7 +27,7 @@
       category: 'Civil Rights',
       relevance: 'medium',
       keyPoints: ['Separate but equal', 'Educational discrimination', '14th Amendment'],
-      cited: 23
+      cited: 23;
     },
     {
       id: '003',
@@ -38,7 +38,7 @@
       category: 'Constitutional Law',
       relevance: 'low',
       keyPoints: ['Privacy rights', 'Due process', 'State regulation'],
-      cited: 12
+      cited: 12;
     },
     {
       id: '004',
@@ -46,10 +46,10 @@
       citation: '372 U.S. 335 (1963)',
       court: 'Supreme Court',
       year: '1963',
-      category: 'Criminal Defense',
+      category: 'Criminal Defense',;
       relevance: 'high',
-      keyPoints: ['Right to counsel', '6th Amendment', 'Public defender'],
-      cited: 34
+      keyPoints: ['Right to counsel', '6th Amendment', 'Public defender'],;
+      cited: 34;
     }
   ]);
 
@@ -216,7 +216,7 @@ Sign Out</ButtonBits>
 {/if}
 
 <style>
-  .citations-dashboard {
+  .citations-dashboard {;
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;

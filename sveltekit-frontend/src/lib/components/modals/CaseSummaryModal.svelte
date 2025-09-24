@@ -1,11 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {   } from "svelte";
   // Badge replaced with span - not available in enhanced-bits
   import * as Dialog from '$lib/components/ui/dialog';
@@ -48,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
         factors: string[];
       };
       timeline: Array;
-      evidence: {
+      evidence: {;
         total: number;
         admissible: number;
         questionable: number;
@@ -77,8 +77,8 @@ https://svelte.dev/e/js_parse_error -->
     isGeneratingSummary = true;
     try {
       const response = await fetch("/api/cases/summary", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST",;
+        headers: { "Content-Type": "application/json" },;
         body: JSON.stringify({
           caseId: caseData.id,
           includeEvidence: true,

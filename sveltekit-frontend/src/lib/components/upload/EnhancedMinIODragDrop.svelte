@@ -78,7 +78,7 @@
   async function testCudaWorkerAvailability() {
     try {
       const response = await fetch('/api/v1/gpu/cuda/health', {
-        method: 'GET',
+        method: 'GET',;
         headers: { 'Content-Type': 'application/json' }
       });
       if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
@@ -150,8 +150,8 @@
     const uploadFiles: UploadFile[] = validFiles.map(file => ({
       id: `${Date.now()}-${Math.random()}`,
       file,
-      progress: 0,
-      status: 'pending'
+      progress: 0,;
+      status: 'pending';
     }));
 
     files = uploadFiles;
@@ -172,7 +172,7 @@
         uploadFile.status = 'uploading';
         ondispatch?.({
           progress: (i / uploadFiles.length) * 100,
-          currentFile: uploadFile.file.name
+          currentFile: uploadFile.file.name;
         });
 
         // CUDA preprocessing for supported file types
@@ -243,8 +243,8 @@
       }));
 
       const response = await fetch('/api/v1/gpu/cuda/preprocess', {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
 
       if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
@@ -254,7 +254,7 @@
       const result = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
       return {
         success: true,
-        processedFile: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile ? new File([(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile], file.name, { type: file.type }) : undefined,
+        processedFile: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile ? new File([(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).processedFile], file.name, { type: file.type }) : undefined,;
         metadata: (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).metadata
       };
 
@@ -270,7 +270,7 @@
     formData.append('file', file);
     formData.append('uploadData', JSON.stringify({
       caseId,
-      title: file.name,
+      title: file.name,;
       description: `Uploaded via enhanced drag-and-drop: ${file.name}`,
       evidenceType: getEvidenceType(file),
       enableAiAnalysis: true,
@@ -282,15 +282,15 @@
 
     const startTime = Date.now();
     const response = await fetch('/api/evidence/upload', {
-      method: 'POST',
-      body: formData
+      method: 'POST',;
+      body: formData;
     });
 
     if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
       const errorData = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
       return {
-        success: false,
-        error: errorData.error?.message || 'Upload failed'
+        success: false,;
+        error: errorData.error?.message || 'Upload failed';
       };
     }
 
@@ -298,7 +298,7 @@
     const processingTime = Date.now() - startTime;
     if ((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).success && (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data?.[0]) {
       return {
-        success: true,
+        success: true,;
         data: {
           ...result.data[0],
           cudaOptimized: cudaProcessed,
@@ -308,17 +308,17 @@
     }
 
     return {
-      success: false,
-      error: 'Invalid response from upload service'
+      success: false,;
+      error: 'Invalid response from upload service';
     };
   }
 
   async function publishMinIOSyncEvent(uploadResult: UploadResult, caseId: string) {
     try {
       await fetch('/api/v1/redis/publish', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify.toISOString()
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(toISOString)();
           }
         })
       });
@@ -392,7 +392,7 @@
     class="drop-zone {dragOver ? 'drag-over' : ''} {disabled ? 'disabled' : ''} {uploading ? 'uploading' : ''}"
     class:border-blue-400={dragOver}
     class:bg-blue-50={dragOver}
-    class:border-gray-300={!dragOver}
+    class:border-gray-300={!dragOver};
     class:bg-gray-50={!dragOver}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}

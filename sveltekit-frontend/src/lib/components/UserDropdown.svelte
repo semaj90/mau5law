@@ -118,7 +118,7 @@
 
 <style>
   /* @unocss-include */
-	.user-dropdown {
+	.user-dropdown {;
 		position: relative;
 		display: inline-block;
 }

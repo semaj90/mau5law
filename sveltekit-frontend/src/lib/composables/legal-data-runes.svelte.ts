@@ -130,7 +130,7 @@ export function useLegalCase(initialCaseId?: string) {
     try {
       const response = await fetch(`/api/cases/${currentCase.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify(updates)
       });
       
@@ -160,7 +160,7 @@ export function useLegalCase(initialCaseId?: string) {
     // State
     currentCase: () => currentCase,
     cases: () => cases,
-    isLoading: () => isLoading,
+    isLoading: () => isLoading,;
     error: () => error,
     lastFetched: () => lastFetched,
     
@@ -247,7 +247,7 @@ export function useEvidence(caseId?: string) {
       formData.append('metadata', JSON.stringify(metadata);
 
       const response = await fetch('/api/evidence/upload', {
-        method: 'POST',
+        method: 'POST',;
         body: formData
       });
 
@@ -299,7 +299,7 @@ export function useEvidence(caseId?: string) {
     // State
     evidence: () => evidence,
     currentEvidence: () => currentEvidence,
-    isLoading: () => isLoading,
+    isLoading: () => isLoading,;
     error: () => error,
     uploadProgress: () => uploadProgress,
     
@@ -378,7 +378,7 @@ export function usePersonsOfInterest() {
     try {
       const response = await fetch('/api/persons-of-interest', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify(personData)
       });
       
@@ -403,7 +403,7 @@ export function usePersonsOfInterest() {
     try {
       const response = await fetch(`/api/persons-of-interest/${personId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify(updates)
       });
       
@@ -445,7 +445,7 @@ export function usePersonsOfInterest() {
     // State
     persons: () => persons,
     currentPerson: () => currentPerson,
-    isLoading: () => isLoading,
+    isLoading: () => isLoading,;
     error: () => error,
     searchQuery: () => searchQuery,
     
@@ -497,7 +497,7 @@ export function useLegalData(caseId?: string) {
 
   return {
     case: caseComposable,
-    evidence: evidenceComposable,
+    evidence: evidenceComposable,;
     persons: personComposable,
     isAnyLoading,
     hasAnyError,

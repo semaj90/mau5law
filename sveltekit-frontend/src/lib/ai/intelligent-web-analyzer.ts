@@ -19,7 +19,7 @@ export interface WebElement {
   innerHTML: string;
   boundingBox: DOMRect;
   attributes: Record<string, string>;
-  metadata: {
+  metadata: {;
     importance: 'high' | 'medium' | 'low';
     elementType: 'text' | 'image' | 'input' | 'button' | 'link' | 'container';
     interactionCount: number;
@@ -169,7 +169,7 @@ export class IntelligentWebAnalyzer {
     this.mutationObserver.observe(document.body, {
       childList: true,
       subtree: true,
-      characterData: true,
+      characterData: true,;
       attributes: false // Skip attribute changes for performance
     });
   }
@@ -205,7 +205,7 @@ export class IntelligentWebAnalyzer {
     document.addEventListener('click', (e) => {
       this.userAnalytics.interactionPatterns.clickHeatmap.push({
         x: e.clientX,
-        y: e.clientY,
+        y: e.clientY,;
         count: 1
       });
       
@@ -236,7 +236,7 @@ export class IntelligentWebAnalyzer {
       if (lastScrollTime > 0) {
         const scrollSpeed = Math.abs(window.scrollY) / (currentTime - lastScrollTime);
         this.userAnalytics.interactionPatterns.scrollBehavior = {
-          depth: Math.max(this.userAnalytics.interactionPatterns.scrollBehavior.depth, scrollDepth),
+          depth: Math.max(this.userAnalytics.interactionPatterns.scrollBehavior.depth, scrollDepth),;
           speed: scrollSpeed
         };
       }
@@ -304,7 +304,7 @@ export class IntelligentWebAnalyzer {
         innerHTML: el.innerHTML.slice(0, 1000), // Limit size
         boundingBox: rect,
         attributes: this.getElementAttributes(el),
-        metadata: {
+        metadata: {;
           importance: this.calculateImportance(el, textContent),
           elementType: this.getElementType(el),
           interactionCount: 0
@@ -372,7 +372,7 @@ export class IntelligentWebAnalyzer {
           id: `chunk_${chunks.length}`,
           content: currentChunk.trim(),
           elements: [...currentElements],
-          position: { start: chunkStart, end: chunkStart + currentChunk.length },
+          position: { start: chunkStart, end: chunkStart + currentChunk.length },;
           confidence: this.calculateChunkConfidence(currentElements)
         });
         
@@ -392,7 +392,7 @@ export class IntelligentWebAnalyzer {
         id: `chunk_${chunks.length}`,
         content: currentChunk.trim(),
         elements: currentElements,
-        position: { start: chunkStart, end: chunkStart + currentChunk.length },
+        position: { start: chunkStart, end: chunkStart + currentChunk.length },;
         confidence: this.calculateChunkConfidence(currentElements)
       });
     }
@@ -424,7 +424,7 @@ export class IntelligentWebAnalyzer {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 text: chunk.content,
-                model: 'nomic-text',
+                model: 'nomic-text',;
                 source: 'web-analysis'
               })
             });
@@ -468,7 +468,7 @@ export class IntelligentWebAnalyzer {
   private prepareQLoRATrainingData(chunks: PageChunk[]): QLoRATrainingData {
     const trainingChunks = chunks.map(chunk => ({
       input_text: chunk.content,
-      embeddings: chunk.embeddings ? Array.from(chunk.embeddings) : [],
+      embeddings: chunk.embeddings ? Array.from(chunk.embeddings) : [],;
       context: this.userAnalytics,
       importance_weight: this.calculateImportanceWeight(chunk),
       created_at: Date.now()
@@ -476,7 +476,7 @@ export class IntelligentWebAnalyzer {
 
     return {
       user_id: this.userAnalytics.userId,
-      chunks: trainingChunks,
+      chunks: trainingChunks,;
       metadata: {
         page_url: window.location.href,
         session_data: this.userAnalytics,
@@ -508,7 +508,7 @@ export class IntelligentWebAnalyzer {
           })),
           metadata: {
             processed_at: Date.now(),
-            batch_size: qloraData.chunks.length,
+            batch_size: qloraData.chunks.length,;
             source: 'web_analysis',
             user_id: this.userAnalytics.userId,
             session_id: this.userAnalytics.sessionId

@@ -1,9 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  interface Props {
+  interface Props {;
     message: any;
   }
   let {
@@ -25,9 +25,9 @@ https://svelte.dev/e/js_parse_error -->
   function copyToClipboard() {
     navigator.clipboard.writeText(message.content);
     notifications.add({
-      type: "success",
-      title: "Copied",
-      message: "Message copied to clipboard",
+      type: "success",;
+      title: "Copied",;
+      message: "Message copied to clipboard",;
     });
   }
   function toggleSaved() {
@@ -200,7 +200,7 @@ toggleSaved()}
   :global(.message-content p) {
     margin-bottom: 0.5rem;
 }
-  :global(.message-content p:last-child) {
+  :global(.message-content p:last-child) {;
     margin-bottom: 0;
 }
   :global(.message-content ul, .message-content ol) {

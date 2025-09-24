@@ -37,7 +37,7 @@ export interface BaseResponse<T = unknown> {
 }
 
 export interface PaginatedResponse<T = unknown> extends BaseResponse<T[]> {
-  pagination: {
+  pagination: {;
     page: number;
     limit: number;
     total: number;

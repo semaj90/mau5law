@@ -56,8 +56,10 @@
   let citationQuery = $state('');
   let citationResults = $state<Array() >([]);
 
-  $effect(async () => {
-    await initializeEditor();
+  $effect(() => {
+    (async () => {
+await initializeEditor();
+    })();
   });
 
   async function initializeEditor() {
@@ -71,7 +73,7 @@
         setContent: (newContent: string) => content = newContent,
         destroy: () => ,
         on: () => ,
-        off: () => ,
+        off: () => ,;
         ui: {
           registry: {
             addButton: () => ,
@@ -88,14 +90,14 @@
             'autosave', 'save', 'directionality', 'emoticons', 'template',
             'textpattern', 'nonbreaking', 'pagebreak', 'permanentpen', 'powerpaste',
             'advtable', 'tinymcespellchecker', 'mentions', 'linkchecker'
-          ],
+          ],;
           toolbar: [
             'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify',
             'outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save print',
             'insertfile image media template link anchor codesample | ltr rtl | ai-assistant citation-helper'
           ],
           content_style: `
-            body {
+            body {;
               font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
               font-size: 14px;
               line-height: 1.6;
@@ -128,16 +130,16 @@
           setup: (editor: unknown) => {
             // Custom AI Assistant button
             editor.ui.registry.addButton('ai-assistant', {
-              text: '🤖 AI',
+              text: '🤖 AI',;
               tooltip: 'AI Assistant',
-              onAction: () => openAIAssistant(editor.selection.getContent())
+              onAction: () => openAIAssistant(editor.selection.getContent());
             });
 
             // Custom Citation Helper button
             editor.ui.registry.addButton('citation-helper', {
-              text: '📚 Cite',
+              text: '📚 Cite',;
               tooltip: 'Citation Helper',
-              onAction: () => openCitationHelper(editor.selection.getContent())
+              onAction: () => openCitationHelper(editor.selection.getContent());
             });
 
             // Auto-save functionality
@@ -185,7 +187,7 @@
   }
   function updateCounts(text: string) {
     const plainText = text.replace(/<[^>]*>/g, '');
-    wordCount.set.split-filter.length);
+    wordCount.set(split)-filter.length);
     charCount.set(plainText.length);
   }
   function openAIAssistant(text: string) {
@@ -205,15 +207,15 @@
     isProcessingAI = true;
     try {
       const response = await fetch('/api/ai/ask', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: aiQuery,
+          query: aiQuery,;
           context: selectedText ? [{ role: 'user', content: `Selected text: ${selectedText}` }] : [],
           options: {
-            maxSources: 5,
+            maxSources: 5,;
             provider: 'auto',
-            enableLegalClassification: true
+            enableLegalClassification: true;
   }
         })
       });
@@ -236,20 +238,20 @@
 
     try {
       const response = await fetch('/api/search/citations', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: citationQuery,
-          limit: 10
+          query: citationQuery,;
+          limit: 10;
         })
       });
 
       const data = await response.json();
       if (data.success) {
         citationResults = data.results.map((r: unknown) => ({
-          title: r.title,
-          citation: r.citation,
-          relevance: r.similarity
+          title: r.title,;
+          citation: r.citation,;
+          relevance: r.similarity;
         }));
   }
     } catch (error) {
@@ -377,7 +379,7 @@
       <div class="space-y-4">
         <label for="cite-query">Search for citations:</label>
         <input
-          id="cite-query"
+          id="cite-query";
           bind:value={citationQuery}
           placeholder="Enter legal concept, case name, or statute..."
           class="space-y-4"
@@ -420,7 +422,7 @@
 
 <style>
   /* @unocss-include */
-  .wysiwyg-container {
+  .wysiwyg-container {;
     border: 1px solid #d1d5db;
     border-radius: 0.5rem;
     overflow: hidden;

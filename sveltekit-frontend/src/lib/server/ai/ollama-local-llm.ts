@@ -173,7 +173,7 @@ TEMPLATE """{{ if .System }}<|system|>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: targetName,
+          name: targetName,;
           modelfile: modelfile
         })
       });
@@ -202,7 +202,7 @@ TEMPLATE """{{ if .System }}<|system|>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...options,
-          model,
+          model,;
           stream: false
         })
       });
@@ -245,7 +245,7 @@ TEMPLATE """{{ if .System }}<|system|>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...options,
-          model,
+          model,;
           stream: true
         })
       });
@@ -297,7 +297,7 @@ TEMPLATE """{{ if .System }}<|system|>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: embeddingModel,
+          model: embeddingModel,;
           prompt: text
         })
       });
@@ -327,7 +327,7 @@ TEMPLATE """{{ if .System }}<|system|>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: selectedModel,
-          messages,
+          messages,;
           stream: false
         })
       });
@@ -349,7 +349,7 @@ TEMPLATE """{{ if .System }}<|system|>
    * Process legal document with specialized prompting
    */
   async processLegalDocument(
-    document: string,
+    document: string,;
     task: 'summarize' | 'extract' | 'analyze' | 'classify',
     options?: unknown;
   ): Promise<any> {
@@ -401,7 +401,7 @@ Document:\n${document}`;
         model: this.defaultModel,
         prompt,
         system: systemPrompt,
-        options: {
+        options: {;
           temperature: 0.3,
           top_p: 0.9,
           num_predict: 2000
@@ -482,7 +482,7 @@ Document:\n${document}`;
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model,
+          model,;
           prompt: '',
           keep_alive: 0
         })
@@ -502,7 +502,7 @@ Document:\n${document}`;
     try {
       const response = await fetch(`${this.baseUrl}/api/show`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ name: model })
       });
 
@@ -526,7 +526,7 @@ Document:\n${document}`;
       
       const response = await fetch(`${this.baseUrl}/api/pull`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ name: model })
       });
 
@@ -575,7 +575,7 @@ Document:\n${document}`;
     return {
       status: available ? 'healthy' : 'unavailable',
       available,
-      models: Array.from(this.availableModels.keys()),
+      models: Array.from(this.availableModels.keys()),;
       loaded: Array.from(this.modelCache.keys()).filter(
         model => this.modelCache.get(model)?.loaded
       )

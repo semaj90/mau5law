@@ -44,7 +44,7 @@
       items: 8,
       timeAgo: "2 hours ago",
       priority: "high",
-      status: "active"
+      status: "active";
     },
     {
       id: 2,
@@ -52,15 +52,15 @@
       items: 15,
       timeAgo: "4 hours ago",
       priority: "high",
-      status: "active"
+      status: "active";
     },
     {
       id: 3,
       title: "FINANCIAL FRAUD ANALYSIS",
       items: 4,
-      timeAgo: "1 day ago",
-      priority: "medium",
-      status: "pending"
+      timeAgo: "1 day ago",;
+      priority: "medium",;
+      status: "pending";
     }
   ]);
 
@@ -68,17 +68,17 @@
     {
       message: "System backup completed successfully",
       time: "10 minutes ago",
-      type: "success"
+      type: "success";
     },
     {
       message: "Evidence analysis queue processing slowly",
       time: "1 hour ago",
-      type: "warning"
+      type: "warning";
     },
     {
-      message: "New facial recognition matches found",
-      time: "2 hours ago",
-      type: "success"
+      message: "New facial recognition matches found",;
+      time: "2 hours ago",;
+      type: "success";
     }
   ]);
 
@@ -363,7 +363,7 @@
 
 <style>
   /* Additional component-specific styles */
-  .col-span-2 {
+  .col-span-2 {;
     grid-column: span 2;
   }
 

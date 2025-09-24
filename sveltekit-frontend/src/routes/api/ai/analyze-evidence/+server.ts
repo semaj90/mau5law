@@ -17,56 +17,56 @@
  */
 
 
-import { aiService } from "$lib/server/services/ai-service.js";
-import { evidence } from "$lib/server/db/schema.js";
-import { z } from "zod";
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { aiService } from "$lib/server/services/ai-service.js"
+import { evidence } from "$lib/server/db/schema.js"
+import { z } from "zod"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 
 
 const analysisSchema = z.object({
   evidenceId: z.string().uuid(),
   content: z.string().min(1).max(10000).optional(),
   forceReanalyze: z.boolean().optional()
-});
+})
 
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication;
+    // Check authentication
     if (!locals.user) {
-      return json({ error: 'Authentication required' }, { status: 401 });
+      return json({ error: 'Authentication required' }, { status: 401 })
     }
 
     // Parse and validate request
-    const body = await request.json();
-    const { evidenceId, content, forceReanalyze = false } = analysisSchema.parse(body);
+    const body = await request.json()
+    const { evidenceId, content, forceReanalyze = false } = analysisSchema.parse(body)
 
-    // Get evidence from database;
+    // Get evidence from database
     const evidenceRecord = await db.query.evidence.findFirst({
       where: eq(evidence.id, evidenceId)
-    });
+    })
 
     if (!evidenceRecord) {
-      return json({ error: 'Evidence not found' }, { status: 404 });
+      return json({ error: 'Evidence not found' }, { status: 404 })
     }
 
     // Check if user has access to this evidence (same case)
     // This is a simplified check - in production you'd want more robust authorization
     const userHasAccess = evidenceRecord.uploadedBy === locals.user.id || 
-                         locals.user.role === 'admin';
+                         locals.user.role === 'admin'
 
     if (!userHasAccess) {
-      return json({ error: 'Insufficient permissions' }, { status: 403 });
+      return json({ error: 'Insufficient permissions' }, { status: 403 })
     }
 
     // Use provided content or extract from evidence record
-    const analysisContent = content || evidenceRecord.description || '';
+    const analysisContent = content || evidenceRecord.description || ''
     
     if (!analysisContent) {
-      return json({ error: 'No content available for analysis' }, { status: 400 });
+      return json({ error: 'No content available for analysis' }, { status: 400 })
     }
 
-    // Check if analysis already exists and not forcing reanalysis;
+    // Check if analysis already exists and not forcing reanalysis
     if (evidenceRecord.aiSummary && !forceReanalyze) {
       return json({
         success: true,
@@ -79,7 +79,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
             recommendations: []
           }
         }
-      });
+      })
     }
 
     // Perform AI analysis
@@ -87,10 +87,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       evidenceId,
       analysisContent,
       evidenceRecord.evidenceType
-    );
+    )
 
     // Update evidence record with AI analysis
-    await db.update(evidence);
+    await db.update(evidence)
       .set({
         aiSummary: analysis.summary,
         aiTags: analysis.tags,
@@ -103,7 +103,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           model: 'gemma3-legal'
         }
       })
-      .where(eq(evidence.id, evidenceId);
+      .where(eq(evidence.id, evidenceId)
 
     return json({
       success: true,
@@ -118,18 +118,18 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           recommendations: analysis.recommendations
         }
       }
-    });
+    })
 
   } catch (error: any) {
-    console.error('Evidence analysis API error:', error);
+    console.error('Evidence analysis API error:', error)
 
     if (error instanceof z.ZodError) {
       return json({ 
-          error: 'Validation failed', 
+          error: 'Validation failed',
           details: error.errors 
         }, )
         { status: 400 }
-      );
+      )
     }
 
     return json({ 
@@ -137,8 +137,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         message: error instanceof Error ? error.message: 'Unknown error'
       }, )
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

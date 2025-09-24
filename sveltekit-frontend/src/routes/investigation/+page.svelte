@@ -12,14 +12,14 @@
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
   import EnhancedAIAssistant from '$lib/components/ai/EnhancedAIAssistant.svelte';
   import CitationsManager from '$lib/components/citations/CitationsManager.svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import * as Card from '$lib/components/ui/card';
   import * as Tabs from '$lib/components/ui/tabs';
   import * as Dialog from '$lib/components/ui/dialog';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
   import {
@@ -96,11 +96,11 @@
       id: `case-${Date.now()}`,
       title,
       description,
-      status: 'active',
+      status: 'active',;
       priority: 'medium',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      assignedTo: 'current-user'
+      assignedTo: 'current-user';
     };
 
     cases = [newCase, ...cases];
@@ -122,10 +122,10 @@
       caseId: currentCase?.id || 'unknown',
       title: file.name,
       type: getEvidenceType(file.type),
-      status: 'analyzing',
+      status: 'analyzing',;
       tags: [],
-      uploadedAt: new Date().toISOString(),
-      size: file.size
+      uploadedAt: new Date().toISOString(),;
+      size: file.size;
     };
 
     evidence = [newEvidence, ...evidence];
@@ -142,9 +142,9 @@
         return {
           ...item,
           status: 'analyzed',
-          aiAnalysis: analysis.summary || 'Analysis completed',
-          confidence: confidence || 0.85,
-          tags: analysis.tags || ['analyzed']
+          aiAnalysis: analysis.summary || 'Analysis completed',;
+          confidence: confidence || 0.85,;
+          tags: analysis.tags || ['analyzed'];
         };
       }
       return item;
@@ -171,10 +171,10 @@
     const message: ChatMessage = {
       id: `msg-${Date.now()}`,
       role,
-      content,
+      content,;
       timestamp: new Date().toISOString(),
       context,
-      relatedId
+      relatedId;
     };
 
     chatMessages = [...chatMessages, message];
@@ -198,12 +198,12 @@
       };
 
       const response = await fetch('/api/ai/chat', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({;
           message: userMessage,
           context,
-          conversationHistory: chatMessages.slice(-10) // Last 10 messages for context
+          conversationHistory: chatMessages.slice(-10) // Last 10 messages for context;
         })
       });
 
@@ -272,16 +272,16 @@
         priority: 'high',
         createdAt: '2024-01-15T10:00:00Z',
         updatedAt: '2024-01-20T14:30:00Z',
-        description: 'Investigation into alleged financial irregularities'
+        description: 'Investigation into alleged financial irregularities';
       },
       {
         id: 'case-002',
         title: 'Contract Dispute Analysis',
-        status: 'active',
+        status: 'active',;
         priority: 'medium',
         createdAt: '2024-01-18T09:00:00Z',
-        updatedAt: '2024-01-18T09:00:00Z',
-        description: 'Breach of contract claim requiring evidence analysis'
+        updatedAt: '2024-01-18T09:00:00Z',;
+        description: 'Breach of contract claim requiring evidence analysis';
       }
     ];
 
@@ -309,18 +309,18 @@
     try {
       const investigationData = {
         caseId: currentCase.id,
-        notes: investigationNotes,
+        notes: investigationNotes,;
         evidence: evidence.filter(e => e.caseId === currentCase.id),
         citations,
         chatHistory: chatMessages,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString();
       };
 
       // Save to backend
       const response = await fetch(`/api/cases/${currentCase.id}/investigation`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(investigationData)
+        method: 'PUT',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(investigationData);
       });
 
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -579,7 +579,7 @@
 </div>
 
 <style>
-  .investigation-workspace {
+  .investigation-workspace {;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -839,11 +839,11 @@
     animation: thinking 1.5s ease-in-out infinite;
   }
 
-  .thinking-indicator span:nth-child(2) {
+  .thinking-indicator span:nth-child(2) {;
     animation-delay: 0.3s;
   }
 
-  .thinking-indicator span:nth-child(3) {
+  .thinking-indicator span:nth-child(3) {;
     animation-delay: 0.6s;
   }
 

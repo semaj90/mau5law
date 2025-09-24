@@ -39,7 +39,7 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     maxTokens: 2048,
     latency: 95,
     accuracy: 0.91,
-    specialized: true,
+    specialized: true,;
     capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding']
   },
 
@@ -52,7 +52,7 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     maxTokens: 2048,
     latency: 120,
     accuracy: 0.85,
-    specialized: false,
+    specialized: false,;
     capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text']
   },
 
@@ -65,7 +65,7 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     maxTokens: 512,
     latency: 50,
     accuracy: 0.90,
-    specialized: true,
+    specialized: true,;
     capabilities: ['legal-text', 'case-law', 'legal-entity-extraction']
   }
 };

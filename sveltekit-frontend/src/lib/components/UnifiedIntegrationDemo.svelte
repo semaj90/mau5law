@@ -36,26 +36,26 @@
 
   Both parties acknowledge they have read and agree to these terms.`,
     performInference: JSON.stringify([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]),
-    processCanvas: JSON.stringify.fill-map((_, i) => {
+    processCanvas: JSON.stringify(fill)-map((_, i) => {
         const pixel = Math.floor(i / 4);
         const component = i % 4;
         if (component === 3) return 255; // Alpha
         return (pixel % 256); // RGB pattern
       }),
-      format: 'RGBA'
+      format: 'RGBA';
     }),
     matmul: JSON.stringify({
       a: [1, 2, 3, 4, 5, 6],
       b: [7, 8, 9, 10, 11, 12],
       m: 2,
       n: 3,
-      k: 3
+      k: 3;
     }),
-    attention: JSON.stringify.fill-map(() => Math.random()),
-      key: Array(64).fill.map(() => Math.random()),
+    attention: JSON.stringify(fill)-map(() => Math.random()),
+      key: Array(64).fill.map(() => Math.random()),;
       value: Array(64).fill.map(() => Math.random()),
-      seq_len: 8,
-      dim: 8
+      seq_len: 8,;
+      dim: 8;
     })
   };
 
@@ -76,7 +76,7 @@
       const response = await fetch('/api/v1/orchestrator?endpoint=health');
       const data = await (response as { json?: unknown }).json();
       if ((data as { success?: unknown; data?: unknown }).success) {
-        systemHealth.set.data);
+        systemHealth.set(data));
       }
     } catch (error) {
       console.error('Failed to fetch system health:', error);
@@ -88,7 +88,7 @@
       const response = await fetch('/api/v1/orchestrator?endpoint=metrics');
       const data = await (response as { json?: unknown }).json();
       if ((data as { success?: unknown; data?: unknown }).success) {
-        metrics.set.data);
+        metrics.set(data));
       }
     } catch (error) {
       console.error('Failed to fetch metrics:', error);
@@ -104,39 +104,39 @@
       switch (selectedOperation) {
         case 'processDocument':
           requestData = {
-            operation: 'processDocument',
+            operation: 'processDocument',;
             data: {
               document: testInput,
-              analysisType: 'comprehensive'
+              analysisType: 'comprehensive';
             },
-            options: {
+            options: {;
               priority: 'HIGH',
-              maxTokens: 1024
+              maxTokens: 1024;
             }
           };
           break;
         case 'performInference':
           requestData = {
-            operation: 'performInference',
+            operation: 'performInference',;
             data: {
-              input: JSON.parse(testInput)
+              input: JSON.parse(testInput);
             },
-            options: {
+            options: {;
               priority: 'HIGH',
-              modelType: 'transformer'
+              modelType: 'transformer';
             }
           };
           break;
         case 'processCanvas':
           const canvasData = JSON.parse(testInput);
           requestData = {
-            operation: 'processCanvas',
+            operation: 'processCanvas',;
             data: {
               canvasState: canvasData
             },
-            options: {
+            options: {;
               priority: 'NORMAL',
-              targetBitDepth: 24
+              targetBitDepth: 24;
             }
           };
           break;
@@ -144,9 +144,9 @@
           const matrixData = JSON.parse(testInput);
           requestData = {
             operation: 'matmul',
-            data: matrixData,
-            options: {
-              priority: 'HIGH'
+            data: matrixData,;
+            options: {;
+              priority: 'HIGH';
             }
           };
           break;
@@ -154,27 +154,27 @@
           const attentionData = JSON.parse(testInput);
           requestData = {
             operation: 'attention',
-            data: attentionData,
-            options: {
-              priority: 'HIGH'
+            data: attentionData,;
+            options: {;
+              priority: 'HIGH';
             }
           };
           break;
       }
       const response = await fetch('/api/v1/orchestrator', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
+        },;
+        body: JSON.stringify(requestData);
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).success) {
         results.update(prev => [
           {
             id: Date.now(),
-            operation: selectedOperation,
-            timestamp: new Date(),
+            operation: selectedOperation,;
+            timestamp: new Date(),;
             data: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data,
             metadata: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata,
             processingTime: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).totalProcessingTime
@@ -303,7 +303,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2" for="-input-data-">
               Input Data
-            </label><textarea id="-input-data-"
+            </label><textarea id="-input-data-";
               bind:value={testInput}
               rows="8"
               class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"

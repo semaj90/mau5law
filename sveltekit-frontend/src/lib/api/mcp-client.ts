@@ -26,7 +26,7 @@ export class MCPApiClient {
         status: 'error',
         uptime: 0,
         workers: 0,
-        version: 'unknown',
+        version: 'unknown',;
         timestamp: new Date().toISOString()
       };
     }
@@ -47,7 +47,7 @@ export class MCPApiClient {
         completedJobs: 0,
         errorCount: 0,
         avgProcessingTime: 0,
-        throughput: 0,
+        throughput: 0,;
         timestamp: new Date().toISOString()
       };
     }
@@ -78,7 +78,7 @@ export class MCPApiClient {
       formData.append('options', JSON.stringify(options);
 
       const response = await fetch(`${this.baseUrl}/process`, {
-        method: 'POST',
+        method: 'POST',;
         body: formData
       });
 
@@ -184,7 +184,7 @@ export class MCPApiClient {
   async restartServer(): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/admin/restart`, {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
         }
@@ -223,7 +223,7 @@ export class MCPApiClient {
         memoryUsed: 0,
         memoryTotal: 0,
         powerUsage: 0,
-        utilization: 0,
+        utilization: 0,;
         name: 'Unknown'
       };
     }
@@ -292,7 +292,7 @@ export interface MCPJob {
 export interface MCPJobResult {
   jobId: string;
   filename: string;
-  results: {
+  results: {;
     summary: string;
     entities: LegalEntity[];
     riskAssessment: RiskAssessment;
@@ -318,7 +318,7 @@ export interface LegalEntity {
 
 export interface RiskAssessment {
   overall: number;
-  categories: {
+  categories: {;
     financial: number;
     legal: number;
     operational: number;

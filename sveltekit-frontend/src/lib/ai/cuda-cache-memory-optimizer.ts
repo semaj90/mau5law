@@ -149,7 +149,7 @@ class CUDACacheMemoryOptimizer {
           queryText: query,
           intentCategory: 'unknown',
           confidence: 0.3,
-          urgency: 'medium',
+          urgency: 'medium',;
           complexity: 0.5,
           domainSpecificity: 0.5,
           contextualSimilarity: 0.0,
@@ -362,7 +362,7 @@ class CUDACacheMemoryOptimizer {
     this.somNeurons = Array(this.somHeight).fill(null).map((_, y) =>;
       Array(this.somWidth).fill(null).map((_, x) => ({
         id: `som_${x}_${y}`,
-        position: [x, y] as [number, number],
+        position: [x, y] as [number, number],;
         weights: new Float32Array(this.latentSize).fill(0).map(() => Math.random() * 0.1 - 0.05),
         learningRate: this.globalLearningRate,
         lastActivation: 0,
@@ -392,7 +392,7 @@ class CUDACacheMemoryOptimizer {
         b1: new Float32Array(this.hiddenSize).fill(0.01),
         w2: initWeight(this.hiddenSize * this.latentSize),
         b2: new Float32Array(this.latentSize).fill(0.01)
-      },
+      },;
       decoder: {
         w3: initWeight(this.latentSize * this.hiddenSize),
         b3: new Float32Array(this.hiddenSize).fill(0.01),
@@ -690,7 +690,7 @@ class CUDACacheMemoryOptimizer {
         switchCost: 30
       },
       {
-        modelId: 'llama-rl',
+        modelId: 'llama-rl',;
         architecture: 'llama',
         avgResponseTime: 300,
         accuracyScore: 0.95,

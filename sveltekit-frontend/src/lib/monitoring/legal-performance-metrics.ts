@@ -109,7 +109,7 @@ export const ALERT_THRESHOLDS: AlertThreshold[] = [;
   {
     metric: 'throughput.queries_per_second',
     threshold: 10,
-    severity: 'info',
+    severity: 'info',;
     message: 'Throughput below target (10 QPS)'
   }
 ];
@@ -251,7 +251,7 @@ export class LegalPerformanceMonitor {
         gemma3_inference_time: 200 + Math.random() * 300,
         webgpu_processing_time: 50 + Math.random() * 100,
         legal_confidence_score: 0.8 + Math.random() * 0.15
-      },
+      },;
       throughput: {
         queries_per_second: timeElapsed > 0 ? this.queryCount / timeElapsed : 0,
         embeddings_per_second: timeElapsed > 0 ? (this.queryCount * 2) / timeElapsed : 0,
@@ -364,7 +364,7 @@ export class LegalPerformanceMonitor {
     
     return {
       hits: totalHits,
-      misses: totalMisses,
+      misses: totalMisses,;
       efficiency: total > 0 ? totalHits / total : 0
     };
   }

@@ -139,7 +139,7 @@ class ObservabilityClient {
   /**
    * Track API call performance
    */;
-  trackAPICall(endpoint: string, method: string = 'GET'): {
+  trackAPICall(endpoint: string, method: string = 'GET'): {;
     start: () => void;
     end: (response?: Response) => void;
   } {
@@ -170,7 +170,7 @@ class ObservabilityClient {
           console.log(`✅ API call completed: ${method} ${endpoint}`, {
             clientDuration: `${Math.round(duration * 100) / 100}ms`,
             serverTiming,
-            requestId: (serverRequestId || requestId).slice(0, 8),
+            requestId: (serverRequestId || requestId).slice(0, 8),;
             status: response?.status
           });
         }
@@ -206,7 +206,7 @@ class ObservabilityClient {
       } : undefined,
       connection: (navigator as any).connection ? {
         effectiveType: (navigator as any).connection.effectiveType,
-        downlink: (navigator as any).connection.downlink,
+        downlink: (navigator as any).connection.downlink,;
         rtt: (navigator as any).connection.rtt
       } : undefined
     };
@@ -232,7 +232,7 @@ class ObservabilityClient {
         body: JSON.stringify({
           metrics: metricsToSend,
           timestamp: Date.now(),
-          userAgent: navigator.userAgent,
+          userAgent: navigator.userAgent,;
           url: window.location.href
         })
       });
@@ -268,7 +268,7 @@ class ObservabilityClient {
     const webVitals = this.config.enableWebVitals ? {
       lcp: timingMetrics.getMetrics().largestContentfulPaint,
       fid: timingMetrics.getMetrics().firstInputDelay,
-      cls: timingMetrics.getMetrics().cumulativeLayoutShift,
+      cls: timingMetrics.getMetrics().cumulativeLayoutShift,;
       fcp: timingMetrics.getMetrics().firstContentfulPaint
     } : undefined;
 
@@ -351,7 +351,7 @@ export function trackAPI(endpoint: string, method?: string) {
     return observabilityClient.trackAPICall(endpoint, method);
   }
   return {
-    start: () => {},
+    start: () => {},;
     end: () => {}
   };
 }

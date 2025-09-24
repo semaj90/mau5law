@@ -120,7 +120,7 @@
   let redisChannels = {
     canvas: `legal:canvas:${caseId}`,
     collaboration: `legal:canvas:${caseId}:collab`,
-    cursors: `legal:canvas:${caseId}:cursors`,
+    cursors: `legal:canvas:${caseId}:cursors`,;
     ai: `legal:canvas:${caseId}:ai`
   };
 
@@ -170,11 +170,11 @@
     fabricCanvas = new fabricInstance.Canvas(canvasElement, {
       width: canvasWidth,
       height: canvasHeight,
-      backgroundColor: '#1a1a1a',
-      selection: !readOnly,
+      backgroundColor: '#1a1a1a',;
+      selection: !readOnly,;
       interactive: !readOnly,
       preserveObjectStacking: true,
-      enablePointerEvents: true
+      enablePointerEvents: true;
     });
 
     // Configure canvas settings
@@ -199,10 +199,10 @@
     for (let i = 0; i <= canvasWidth / gridSize; i++) {
       const line = new fabricInstance.Line([i * gridSize, 0, i * gridSize, canvasHeight], {
         stroke: '#333',
-        strokeWidth: 1,
-        selectable: false,
+        strokeWidth: 1,;
+        selectable: false,;
         evented: false,
-        excludeFromExport: true
+        excludeFromExport: true;
       });
       grid.push(line);
     }
@@ -211,10 +211,10 @@
     for (let i = 0; i <= canvasHeight / gridSize; i++) {
       const line = new fabricInstance.Line([0, i * gridSize, canvasWidth, i * gridSize], {
         stroke: '#333',
-        strokeWidth: 1,
-        selectable: false,
+        strokeWidth: 1,;
+        selectable: false,;
         evented: false,
-        excludeFromExport: true
+        excludeFromExport: true;
       });
       grid.push(line);
     }
@@ -319,8 +319,8 @@
       const evidence = evidenceData[index];
       if (!evidenceNodes.has(evidence.id)) {
         const node = await createEvidenceNode(evidence, {
-          x: 100 + (index % 5) * 200,
-          y: 100 + Math.floor(index / 5) * 150
+          x: 100 + (index % 5) * 200,;
+          y: 100 + Math.floor(index / 5) * 150;
         });
 
         evidenceNodes.set(evidence.id, node);
@@ -334,12 +334,12 @@
   async function createEvidenceNode(evidence: any, position: { x: number; y: number }) {
     const fabricInstance = await getFabric();
     const nodeGroup = new fabricInstance.Group([], {
-      left: position.x,
-      top: position.y,
+      left: position.x,;
+      top: position.y,;
       selectable: !readOnly,
       hasControls: !readOnly,
       hasBorders: !readOnly,
-      lockScalingFlip: true
+      lockScalingFlip: true;
     });
 
     // Background card
@@ -350,12 +350,12 @@
       stroke: '#fff',
       strokeWidth: 2,
       rx: 8,
-      ry: 8,
+      ry: 8,;
       shadow: new fabricInstance.Shadow({
-        color: 'rgba(0,0,0,0.3)',
+        color: 'rgba(0,0,0,0.3)',;
         blur: 10,
         offsetX: 2,
-        offsetY: 2
+        offsetY: 2;
       })
     });
 
@@ -365,22 +365,22 @@
       fill: '#fff',
       fontFamily: 'Arial',
       textAlign: 'center',
-      top: 10,
+      top: 10,;
       left: 90,
       originX: 'center',
-      originY: 'top',
-      width: 160
+      originY: 'top',;
+      width: 160;
     });
 
     // Type indicator
     const typeIcon = new fabricInstance.Text(getEvidenceIcon(evidence.type), {
       fontSize: 20,
       fill: '#fff',
-      fontFamily: 'FontAwesome',
-      top: 40,
+      fontFamily: 'FontAwesome',;
+      top: 40,;
       left: 90,
       originX: 'center',
-      originY: 'center'
+      originY: 'center';
     });
 
     // Status indicators
@@ -388,18 +388,18 @@
     if (evidence.aiSummary) {
       indicators.push(new fabricInstance.Circle({
         radius: 6,
-        fill: '#4CAF50',
-        top: 100,
-        left: 20 + indicators.length * 20
+        fill: '#4CAF50',;
+        top: 100,;
+        left: 20 + indicators.length * 20;
       }));
     }
 
     if (evidence.analyzed) {
       indicators.push(new fabricInstance.Circle({
         radius: 6,
-        fill: '#2196F3',
-        top: 100,
-        left: 20 + indicators.length * 20
+        fill: '#2196F3',;
+        top: 100,;
+        left: 20 + indicators.length * 20;
       }));
     }
 
@@ -436,10 +436,10 @@
       selectable: !readOnly,
       hasControls: false,
       hasBorders: false,
-      strokeDashArray: connectionType === 'inferred' ? [10, 5] : undefined,
+      strokeDashArray: connectionType === 'inferred' ? [10, 5] : undefined,;
       shadow: new fabricInstance.Shadow({
-        color: 'rgba(0,0,0,0.2)',
-        blur: 5
+        color: 'rgba(0,0,0,0.2)',;
+        blur: 5;
       })
     });
 
@@ -450,15 +450,15 @@
       fill: getConnectionColor(connectionType),
       left: toCenter.x,
       top: toCenter.y,
-      angle: Math.atan2(toCenter.y - fromCenter.y, toCenter.x - fromCenter.x) * 180 / Math.PI + 90,
-      selectable: false,
-      evented: false
+      angle: Math.atan2(toCenter.y - fromCenter.y, toCenter.x - fromCenter.x) * 180 / Math.PI + 90,;
+      selectable: false,;
+      evented: false;
     });
 
     const connectionGroup = new fabricInstance.Group([connection, arrowhead], {
       selectable: !readOnly,
       hasControls: false,
-      hasBorders: false
+      hasBorders: false;
     });
 
     connectionGroup.set({
@@ -474,10 +474,10 @@
   async function createAnnotation(position: { x: number; y: number }, text: string, type: string = 'note') {
     const fabricInstance = await getFabric();
     const annotation = new fabricInstance.Group([], {
-      left: position.x,
-      top: position.y,
+      left: position.x,;
+      top: position.y,;
       selectable: !readOnly,
-      hasControls: !readOnly
+      hasControls: !readOnly;
     });
 
     // Background
@@ -486,9 +486,9 @@
       height: 60,
       fill: 'rgba(255, 255, 255, 0.95)',
       stroke: '#ddd',
-      strokeWidth: 1,
-      rx: 4,
-      ry: 4
+      strokeWidth: 1,;
+      rx: 4,;
+      ry: 4;
     });
 
     // Text
@@ -496,9 +496,9 @@
       fontSize: 12,
       fill: '#333',
       fontFamily: 'Arial',
-      width: 180,
-      top: 10,
-      left: 10
+      width: 180,;
+      top: 10,;
+      left: 10;
     });
 
     annotation.addWithUpdate(background);
@@ -562,8 +562,8 @@
   function selectNode(node: any) {
     fabricCanvas.setActiveObject(node);
     propertiesPanel = {
-      type: node.nodeType,
-      data: node.nodeType === 'evidence' ? node.evidenceData: node,
+      type: node.nodeType,;
+      data: node.nodeType === 'evidence' ? node.evidenceData: node,;
       position: { x: node.left, y: node.top }
     };
   }
@@ -723,8 +723,8 @@
     contextMenu = {
       x,
       y,
-      target,
-      actions: getContextActions(target)
+      target,;
+      actions: getContextActions(target);
     };
   }
 
@@ -760,8 +760,8 @@
   async function analyzeEvidence(evidenceId: string) {
     try {
       const response = await fetch('/api/v1/evidence/advanced-analysis', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           evidenceId,
           analysisTypes: ['summary', 'entities', 'sentiment'],
@@ -787,10 +787,10 @@
       const indicator = new fabricInstance.Circle({
         radius: 8,
         fill: '#4CAF50',
-        top: -10,
-        left: -10,
+        top: -10,;
+        left: -10,;
         stroke: '#fff',
-        strokeWidth: 2
+        strokeWidth: 2;
       });
 
       node.addWithUpdate(indicator);
@@ -804,7 +804,7 @@
       pubSubController = createPubSubHelper({
         channels: Object.values(redisChannels),
         onMessage: handleRedisMessage,
-        autoStart: true
+        autoStart: true;
       });
 
       // WebSocket fallback for real-time collaboration
@@ -881,10 +881,10 @@
         radius: 8,
         fill: cursorData.color || '#FF5722',
         left: cursorData.x,
-        top: cursorData.y,
-        selectable: false,
+        top: cursorData.y,;
+        selectable: false,;
         evented: false,
-        excludeFromExport: true
+        excludeFromExport: true;
       });
 
       collaboratorCursors.set(userId, cursor);
@@ -920,8 +920,8 @@
 
     try {
       const response = await fetch('/api/v1/ai/canvas-suggestions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           caseId,
           evidenceData,
@@ -943,8 +943,8 @@
 
     try {
       const response = await fetch('/api/v1/ai/generate-layout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           caseId,
           evidenceData,
@@ -1002,16 +1002,16 @@
         caseId,
         canvasData,
         evidenceNodes: Array.from(evidenceNodes.entries()),
-        connections: Array.from(connections.entries()),
-        annotations: Array.from(annotations.entries()),
-        timestamp: new Date().toISOString()
+        connections: Array.from(connections.entries()),;
+        annotations: Array.from(annotations.entries()),;
+        timestamp: new Date().toISOString();
       };
 
       // Save to database via API
       const response = await fetch('/api/v1/evidence/canvas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(savePayload)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(savePayload);
       });
 
       if (response.ok) {
@@ -1022,9 +1022,9 @@
         if (pubSubController && collaborative) {
           await pubSubController.publish(redisChannels.canvas, {
             action: 'canvas_saved',
-            caseId,
-            timestamp: savePayload.timestamp,
-            user: 'current_user' // Replace with actual user ID
+            caseId,;
+            timestamp: savePayload.timestamp,;
+            user: 'current_user' // Replace with actual user ID;
           });
         }
 
@@ -1039,12 +1039,12 @@
   async function saveToRedisCache(canvasPayload: any) {
     try {
       const response = await fetch('/api/v1/redis/cache', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          key: KEY_PATTERNS.DOCUMENT_CACHE(caseId),
-          value: canvasPayload,
-          ttl: CACHE_TTL.DOCUMENT_ANALYSIS
+          key: KEY_PATTERNS.DOCUMENT_CACHE(caseId),;
+          value: canvasPayload,;
+          ttl: CACHE_TTL.DOCUMENT_ANALYSIS;
         })
       });
 
@@ -1097,8 +1097,8 @@
       await pubSubController.publish(redisChannels.collaboration, {
         action,
         caseId,
-        timestamp: new Date().toISOString(),
-        user: 'current_user' // Replace with actual user ID
+        timestamp: new Date().toISOString(),;
+        user: 'current_user' // Replace with actual user ID;
       });
     } catch (error) {
       console.error('Failed to publish canvas change:', error);
@@ -1153,9 +1153,9 @@
       ], {
         stroke: '#4CAF50',
         strokeWidth: 3,
-        strokeDashArray: [10, 5],
-        selectable: false,
-        evented: false
+        strokeDashArray: [10, 5],;
+        selectable: false,;
+        evented: false;
       });
 
       fabricCanvas.add(highlight);
@@ -1519,7 +1519,7 @@
                   placeholder="X"
                 />
                 <Input
-                  type="number"
+                  type="number";
                   bind:value={propertiesPanel.position.y}
                   placeholder="Y"
                 />

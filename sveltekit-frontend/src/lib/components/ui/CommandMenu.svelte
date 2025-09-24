@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses
+<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses;
 https://svelte.dev/e/rune_missing_parentheses -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses -->
 <script lang="ts">
@@ -58,64 +58,64 @@ https://svelte.dev/e/rune_missing_parentheses -->
       label: "Search Cases",
       icon: Search,
       action: () => goto("/search"),
-      category: "Navigation",
+      category: "Navigation",;
     },
     {
       id: "new-case",
       label: "New Case",
       icon: FileText,
       action: () => goto("/cases/new"),
-      category: "Actions",
+      category: "Actions",;
     },
     {
       id: "recent-cases",
       label: "Recent Cases",
       icon: Calendar,
       action: () => goto("/cases"),
-      category: "Navigation",
+      category: "Navigation",;
     },
     {
       id: "evidence",
       label: "Evidence Library",
       icon: FileText,
       action: () => goto("/evidence"),
-      category: "Navigation",
+      category: "Navigation",;
     },
     {
       id: "ai-assistant",
       label: "AI Assistant",
       icon: Zap,
       action: () => goto("/ai-assistant"),
-      category: "AI",
+      category: "AI",;
     },
     {
       id: "settings",
       label: "Settings",
       icon: Settings,
       action: () => goto("/settings"),
-      category: "System",
+      category: "System",;
     },
     {
       id: "insert-date",
       label: "Insert Current Date",
       icon: Calendar,
       action: () => insertText(new Date().toLocaleDateString()),
-      category: "Text",
+      category: "Text",;
     },
     {
       id: "insert-timestamp",
       label: "Insert Timestamp",
       icon: Calendar,
       action: () => insertText(new Date().toISOString()),
-      category: "Text",
+      category: "Text",;
     },
     // Add recent citations as commands
     ...recentCitations.map((citation) => ({
       id: `citation-${citation.id}`,
       label: `Insert: ${citation.title}`,
-      icon: Hash,
-      action: () => insertCitation(citation),
-      category: "Citations",
+      icon: Hash,;
+      action: () => insertCitation(citation),;
+      category: "Citations",;
     })),
   ]);
 
@@ -286,7 +286,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
 
 <style>
   /* @unocss-include */
-  .command-menu {
+  .command-menu {;
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 0.75rem;
@@ -316,7 +316,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     font-size: 1rem;
     color: #111827;
 }
-  .command-input: :placeholder {
+  .command-input::placeholder {
     color: #6b7280;
 }
   .command-results {
@@ -396,17 +396,17 @@ https://svelte.dev/e/rune_missing_parentheses -->
     font-size: 0.875rem;
 }
   /* Scrollbar styling */
-  .command-results: :-webkit-scrollbar {
+  .command-results::-webkit-scrollbar {
     width: 6px;
 }
-  .command-results: :-webkit-scrollbar-track {
+  .command-results::-webkit-scrollbar-track {
     background: transparent;
 }
-  .command-results: :-webkit-scrollbar-thumb {
+  .command-results::-webkit-scrollbar-thumb {
     background: #e5e7eb;
     border-radius: 3px;
 }
-  .command-results: :-webkit-scrollbar-thumb:hover {
+  .command-results::-webkit-scrollbar-thumb:hover {
     background: #6b7280;
 }
 </style>

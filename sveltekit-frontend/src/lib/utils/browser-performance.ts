@@ -124,7 +124,7 @@ export class BrowserErrorHandler {
         message: event.message,
         source: event.filename || 'unknown',
         line: event.lineno || 0,
-        column: event.colno || 0,
+        column: event.colno || 0,;
         timestamp: Date.now()
       });
     });
@@ -135,7 +135,7 @@ export class BrowserErrorHandler {
         message: `Unhandled Promise Rejection: ${event.reason}`,
         source: 'promise',
         line: 0,
-        column: 0,
+        column: 0,;
         timestamp: Date.now()
       });
     });
@@ -188,7 +188,7 @@ export class BrowserErrorHandler {
     return {
       browser: navigator.userAgent,
       gpuSupport: supportsGPUAcceleration(),
-      hardwareAcceleration: isChromeWindows(),
+      hardwareAcceleration: isChromeWindows(),;
       errors: this.errors.length,
       recommendations
     };

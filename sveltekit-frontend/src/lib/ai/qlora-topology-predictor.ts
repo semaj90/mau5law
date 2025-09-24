@@ -1,4 +1,3 @@
-// @ts-nocheck - Critical TypeScript error suppression
 /**
  * QLoRA Topology Reinforcement Learning Predictor
  *
@@ -45,7 +44,7 @@ class HiddenMarkovModel {
     console.log(`🧠 HMM initialized with ${this.stateCount} states, ${this.observationCount} observations`);
   }
 
-  async predictNext(sequence: QLoRATopologyState[]): Promise<any> {
+  async predictNext(sequence: QLoRATopologyState[]): Promise<{ nextState: number; probability: number; confidence: number }> {
     if (sequence.length === 0) {
       return { nextState: 0, probability: 1.0 / this.stateCount, confidence: 0.1 };
     }
@@ -78,7 +77,7 @@ class HiddenMarkovModel {
 
     return {
       nextState: maxState,
-      probability: maxProb,
+      probability: maxProb,;
       confidence: Math.min(0.9, 0.4 + (sequence.length / 20)) // Confidence increases with more data
     };
   }
@@ -421,7 +420,7 @@ export class QLoRATopologyPredictor {
         confidenceLevel: 0.8,
         riskLevel: 'medium',
         lastAccessed: Date.now(),
-        compressed: true,
+        compressed: true,;
         metadata: {} as Record<string, any>
       };
 
@@ -488,7 +487,7 @@ export class QLoRATopologyPredictor {
 
     const state: QLoRATopologyState = {
       id: `state_${document.id}_${Date.now()}`,
-      documentType: document.type,
+      documentType: document.type,;
       complexity: this.calculateComplexity(document),
       userPattern: userContext,
       contextEmbedding,
@@ -517,7 +516,7 @@ export class QLoRATopologyPredictor {
   }
 
   private async enhanceWithLocalLLM(
-    state: QLoRATopologyState,
+    state: QLoRATopologyState,;
     requirements: any
   ): Promise<any> {
     const prompt = `
@@ -541,7 +540,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
 
   private async generateTopologyPrediction(
     state: QLoRATopologyState,
-    gpuOptimization: any,
+    gpuOptimization: any,;
     requirements: any
   ): Promise<TopologyPrediction> {
     // Combine all optimization sources
@@ -552,7 +551,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
       dropout: gpuOptimization.optimalDropout || baseConfig.dropout,
       targetModules: gpuOptimization.optimalModules || baseConfig.targetModules,
       learningRate: gpuOptimization.optimalLearningRate || baseConfig.learningRate,
-      batchSize: gpuOptimization.optimalBatchSize || baseConfig.batchSize,
+      batchSize: gpuOptimization.optimalBatchSize || baseConfig.batchSize,;
       epochs: gpuOptimization.optimalEpochs || baseConfig.epochs,
       quantizationBits: gpuOptimization.optimalQuantization || baseConfig.quantizationBits
     };
@@ -566,7 +565,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
 
     // Estimate performance;
     const expectedPerformance = {
-      accuracy: Math.min(0.98, this.predictionAccuracy + (confidence * 0.2)),
+      accuracy: Math.min(0.98, this.predictionAccuracy + (confidence * 0.2)),;
       throughput: this.estimateThroughput(optimizedConfig),
       convergenceEpochs: this.estimateConvergence(optimizedConfig, state.complexity)
     };
@@ -585,7 +584,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
   }
 
   private async updatePredictionModels(
-    state: QLoRATopologyState,
+    state: QLoRATopologyState,;
     prediction: TopologyPrediction
   ): Promise<void> {
     // Update SOM with new prediction pattern
@@ -595,7 +594,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
       Array.from(predictionVector),
       {
         confidence: prediction.confidence,
-        documentType: state.documentType,
+        documentType: state.documentType,;
         timestamp: Date.now()
       }
     );
@@ -642,7 +641,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
         rank: 8, alpha: 16, dropout: 0.01, targetModules: ['q_proj'],
         learningRate: 1e-4, batchSize: 8, epochs: 2, quantizationBits: 4
       },
-      precedent: {
+      precedent: {;
         rank: 24, alpha: 48, dropout: 0.08, targetModules: ['q_proj', 'v_proj', 'o_proj', 'gate_proj'],
         learningRate: 2.5e-4, batchSize: 3, epochs: 6, quantizationBits: 8
       }
@@ -805,7 +804,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
     const ragEntry = {
       documentType,
       config,
-      performance,
+      performance,;
       timestamp: Date.now()
     };
 
@@ -893,17 +892,17 @@ class WebGPUTopologyAccelerator {
 
   private async runOptimizationShader(inputData: Float32Array): Promise<Float32Array> {
     const inputBuffer = this.device!.createBuffer({
-      size: inputData.byteLength,
+      size: inputData.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const outputBuffer = this.device!.createBuffer({
-      size: 32 * Float32Array.BYTES_PER_ELEMENT, // 8 outputs * 4 bytes
+      size: 32 * Float32Array.BYTES_PER_ELEMENT, // 8 outputs * 4 bytes;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     const readBuffer = this.device!.createBuffer({
-      size: outputBuffer.size,
+      size: outputBuffer.size,;
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
@@ -920,7 +919,7 @@ class WebGPUTopologyAccelerator {
 
     // Create bind group
     const bindGroup = this.device!.createBindGroup({
-      layout: bindGroupLayout,
+      layout: bindGroupLayout,;
       entries: [
         { binding: 0, resource: { buffer: inputBuffer } },
         { binding: 1, resource: { buffer: outputBuffer } }
@@ -929,7 +928,7 @@ class WebGPUTopologyAccelerator {
 
     // Create compute pipeline
     const pipeline = this.device!.createComputePipeline({
-      layout: this.device!.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
+      layout: this.device!.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),;
       compute: { module: this.computeShader!, entryPoint: 'main' }
     });
 
@@ -959,10 +958,21 @@ class WebGPUTopologyAccelerator {
 
   private optimizeTopologyCPU(
     state: QLoRATopologyState,
-    hmmPrediction: any,
-    similarPatterns: any[],
-    llmEnhancement: any
-  ): any {
+    hmmPrediction: { probability?: number },
+    similarPatterns: unknown[],
+    llmEnhancement: unknown
+  ): {
+    optimalRank: number;
+    optimalAlpha: number;
+    optimalDropout: number;
+    optimalModules: string[];
+    optimalLearningRate: number;
+    optimalBatchSize: number;
+    optimalEpochs: number;
+    optimalQuantization: 4 | 8;
+    confidence: number;
+    reason: string;
+  } {
     // CPU fallback optimization
     const complexity = state.complexity;
     const userExpectation = state.userPattern.qualityExpectation;
@@ -977,7 +987,7 @@ class WebGPUTopologyAccelerator {
       optimalBatchSize: Math.floor(4 * timeConstraints + 2),
       optimalEpochs: Math.floor(3 * complexity + 2),
       optimalQuantization: complexity > 0.7 ? 8 : 4 as 4 | 8,
-      confidence: 0.8 + complexity * 0.15,
+      confidence: 0.8 + complexity * 0.15,;
       reason: 'CPU-optimized configuration based on document complexity'
     };
   }
@@ -985,7 +995,7 @@ class WebGPUTopologyAccelerator {
   private prepareOptimizationData(
     state: QLoRATopologyState,
     hmmPrediction: any,
-    similarPatterns: any[];
+    similarPatterns: any[]
   ): Float32Array {
     const data = new Float32Array(16);
     data[0] = state.complexity;
@@ -1015,7 +1025,7 @@ class WebGPUTopologyAccelerator {
       optimalBatchSize: Math.max(2, Math.min(16, Math.floor(result[3]))),
       optimalEpochs: Math.max(2, Math.min(10, Math.floor(result[4]))),
       optimalQuantization: result[5] > 6 ? 8 : 4 as 4 | 8,
-      confidence: Math.max(0.5, Math.min(1.0, result[7] + (llmEnhancement.confidenceBoost || 0))),
+      confidence: Math.max(0.5, Math.min(1.0, result[7] + (llmEnhancement.confidenceBoost || 0))),;
       reason: 'WebGPU-accelerated optimization with HMM and SOM integration'
     };
   }
@@ -1043,7 +1053,7 @@ class LocalLLMConnector {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: fastStringify({
-          model: 'nomic-embed-text',
+          model: 'nomic-embed-text',;
           prompt: text
         })
       });
@@ -1065,7 +1075,7 @@ class LocalLLMConnector {
           model: 'gemma3-legal:latest',
           prompt: prompt,
           stream: false,
-          options: {
+          options: {;
             temperature: 0.1,
             top_p: 0.9,
             max_tokens: 200

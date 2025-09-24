@@ -23,7 +23,7 @@ const sessionMachine = createMachine({
       }
     },
     initializing: {
-      invoke: {
+      invoke: {;
         src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           const session = await mockServices.createLegalSession(input.userId, input.caseId);
@@ -33,7 +33,7 @@ const sessionMachine = createMachine({
             ...session,
             performanceMetrics: {
               responseTime: duration,
-              protocol: 'HTTP',
+              protocol: 'HTTP',;
               operation: 'session_creation'
             }
           };
@@ -84,7 +84,7 @@ const sessionMachine = createMachine({
       }
     },
     updating: {
-      invoke: {
+      invoke: {;
         src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
 
@@ -95,7 +95,7 @@ const sessionMachine = createMachine({
               ...result,
               performanceMetrics: {
                 responseTime: duration,
-                protocol: 'HTTP',
+                protocol: 'HTTP',;
                 operation: 'add_collaborator'
               }
             };
@@ -106,7 +106,7 @@ const sessionMachine = createMachine({
               ...result,
               performanceMetrics: {
                 responseTime: duration,
-                protocol: 'HTTP',
+                protocol: 'HTTP',;
                 operation: 'update_case'
               }
             };
@@ -138,7 +138,7 @@ const sessionMachine = createMachine({
       }
     },
     terminating: {
-      invoke: {
+      invoke: {;
         src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           await mockServices.endLegalSession(input.sessionId);
@@ -148,7 +148,7 @@ const sessionMachine = createMachine({
             success: true,
             performanceMetrics: {
               responseTime: duration,
-              protocol: 'HTTP',
+              protocol: 'HTTP',;
               operation: 'session_termination'
             }
           };
@@ -158,7 +158,7 @@ const sessionMachine = createMachine({
         onError: 'inactive'
       }
     },
-    error: {
+    error: {;
       on: {
         RETRY: 'initializing',
         RESET: 'inactive'
@@ -223,7 +223,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
         type: 'ADD_COLLABORATOR',
         collaborator: {
           userId: 'paralegal-789',
-          role: 'paralegal',
+          role: 'paralegal',;
           permissions: ['read', 'comment']
         }
       });

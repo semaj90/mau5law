@@ -17,7 +17,7 @@ export interface EnhancedEmbeddingOptions {
 
 export interface EmbeddingResult {
   embedding: number[];
-  metadata: {
+  metadata: {;
     provider: string;
     model: string;
     textLength: number;
@@ -41,7 +41,7 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: model,
+          model: model,;
           prompt: text
         })
       });
@@ -75,7 +75,7 @@ async function extractDocumentStructure(text: string): Promise<any> {
     parties: /(?:party|plaintiff|defendant|client):\s*([^.\n]+)/gi,
     dates: /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/g,
     amounts: /\$[\d]+(?:\.\d{2})?/g,
-    caseNumbers: /(?:case|docket)\s*(?:no\.?|#)?\s*([a-z0-9\-]+)/gi,
+    caseNumbers: /(?:case|docket)\s*(?:no\.?|#)?\s*([a-z0-9\-]+)/gi,;
     sections: /(?:section|§)\s*(\d+(?:\.\d+)*)/gi
   };
 
@@ -83,7 +83,7 @@ async function extractDocumentStructure(text: string): Promise<any> {
     parties: [],
     dates: [],
     amounts: [],
-    caseNumbers: [],
+    caseNumbers: [],;
     sections: [],
     documentType: detectDocumentType(text),
     keyPhrases: extractKeyPhrases(text)
@@ -137,7 +137,7 @@ function extractKeyPhrases(text: string): string[] {
  * Main embedding generation function with langchain-style processing
  */
 export async function generateEnhancedEmbedding(
-  text: string | string[],
+  text: string | string[],;
   options: EnhancedEmbeddingOptions = {},
 ): Promise<number[] | number[][]> {
   const {
@@ -205,7 +205,7 @@ export async function generateEnhancedEmbedding(
  * Batch embedding generation with progress tracking
  */
 export async function generateBatchEmbeddingsEnhanced(
-  texts: string[],
+  texts: string[],;
   options: EnhancedEmbeddingOptions = {},
   onProgress?: (completed: number, total: number) => void,
 ): Promise<number[][]> {
@@ -273,7 +273,7 @@ export async function generateLegalEmbedding(
       model: "nomic-embed-text",
       documentLength: documentText.length,
       dimensions: 384
-    },
+    },;
     confidence: 0.85, // Default confidence for nomic-embed
     extracted
   };
@@ -323,7 +323,7 @@ export async function generateEmbedding(
   text: string,
   model?: string,
 ): Promise<number[]> {
-  const result = await generateEnhancedEmbedding(text, {
+  const result = await generateEnhancedEmbedding(text, {;
     provider: "nomic-embed",
     legalDomain: true
   });
@@ -338,7 +338,7 @@ export async function generateBatchEmbeddings(
   model?: string,
   batchSize: number = 10,
 ): Promise<number[][]> {
-  return generateBatchEmbeddingsEnhanced(texts, {
+  return generateBatchEmbeddingsEnhanced(texts, {;
     provider: "nomic-embed",
     legalDomain: true,
     batchSize
@@ -369,7 +369,7 @@ export async function processDocumentWithChunking(
       metadata: {
         chunkIndex: Math.floor(i / (chunkSize - chunkOverlap)),
         startIndex: i,
-        endIndex: Math.min(i + chunkSize, document.length),
+        endIndex: Math.min(i + chunkSize, document.length),;
         length: chunk.length
       }
     });

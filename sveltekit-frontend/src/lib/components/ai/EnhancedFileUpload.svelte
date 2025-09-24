@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced File Upload with Real OCR, Embeddings, and Database Integration -->
@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
     enableOCR = true,
     enableEmbedding = true,
     enableRAG = true,
-    class: className = '',
+    class: className = '',;
   }: Props = $props();
 
   // State variables
@@ -44,9 +44,9 @@ https://svelte.dev/e/js_parse_error -->
 
   // === MCP INTEGRATION LAYER ===
   const MCP_ENDPOINTS = {
-    process: '/rag/process',
-    status: '/rag/status',
-    search: '/rag/search',
+    process: '/rag/process',;
+    status: '/rag/status',;
+    search: '/rag/search',;
   } as const;
   let statusSocket = $state<WebSocket | null >(null);
 
@@ -66,10 +66,10 @@ https://svelte.dev/e/js_parse_error -->
             const current = fileStates.get(entryId);
             fileStates.set(entryId, {
               ...current,
-              progress: typeof msg.progress === 'number' ? msg.progress: current.progress,
-              status: msg.status || current.status,
+              progress: typeof msg.progress === 'number' ? msg.progress: current.progress,;
+              status: msg.status || current.status,;
               error: msg.error || current.error,
-              documentId: msg.documentId || current.documentId,
+              documentId: msg.documentId || current.documentId,;
             });
             fileStates = new Map(fileStates);
           }
@@ -127,16 +127,16 @@ https://svelte.dev/e/js_parse_error -->
       enabled: enableOCR,
       webgpuEnabled: false,
       accelerateOCR: true,
-      accelerateEmbedding: true,
+      accelerateEmbedding: true,;
     },
     rag: {
       enabled: enableRAG,
       extractText: true,
       generateEmbeddings: true,
       storeVectors: true,
-      updateIndex: true,
+      updateIndex: true,;
     },
-    ocr: { enabled: enableOCR, engines: ['tesseract'], languages: ['eng'] },
+    ocr: { enabled: enableOCR, engines: ['tesseract'], languages: ['eng'] },;
     yolo: { enabled: false },
   } as any;
   const uploadMachineActor = createActor(createUploadMachine(basePipeline));
@@ -176,16 +176,16 @@ https://svelte.dev/e/js_parse_error -->
         const fileId = `${file.name}-${Date.now()}`;
         fileStates.set(fileId, {
           name: file.name,
-          size: file.size,
-          progress: 0,
-          status: 'uploading'
+          size: file.size,;
+          progress: 0,;
+          status: 'uploading';
         });
       });
       fileStates = new Map(fileStates);
 
       const response = await fetch('/api/rag/process', {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
 
       if ((response as { ok?: any; json?: any }).ok) {
@@ -200,10 +200,10 @@ https://svelte.dev/e/js_parse_error -->
           if (fileId) {
             fileStates.set(fileId, {
               ...fileStates.get(fileId),
-              progress: fileResult.status === 'processed' ? 100 : -1,
+              progress: fileResult.status === 'processed' ? 100 : -1,;
               status: fileResult.status,
-              documentId: fileResult.documentId,
-              error: fileResult.error
+              documentId: fileResult.documentId,;
+              error: fileResult.error;
             });
           }
         });
@@ -223,9 +223,9 @@ https://svelte.dev/e/js_parse_error -->
           if (fileId) {
             fileStates.set(fileId, {
               ...fileStates.get(fileId),
-              progress: -1,
-              status: 'error',
-              error: error.error
+              progress: -1,;
+              status: 'error',;
+              error: error.error;
             });
           }
         });
@@ -256,13 +256,13 @@ https://svelte.dev/e/js_parse_error -->
     isSearching = true;
     try {
       const searchResponse = await fetch(MCP_ENDPOINTS.search, {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: searchQuery,
-          searchType: 'hybrid',
-          limit: 10,
-          threshold: 0.7,
+          searchType: 'hybrid',;
+          limit: 10,;
+          threshold: 0.7,;
         }),
       });
 
@@ -320,9 +320,11 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Mount lifecycle: connect WebSocket + initial status
-  $effect(async () => {
-    connectStatusSocket();
+  $effect(() => {
+    (async () => {
+connectStatusSocket();
     await checkSystemStatus();
+    })();
   });
 
   const machineState = $state<any>(uploadMachineActor.getSnapshot());
@@ -432,7 +434,7 @@ https://svelte.dev/e/js_parse_error -->
       <h3 class="text-lg font-semibold mb-4">Semantic Document Search</h3>
       <div class="flex space-x-2">
         <input
-          type="text"
+          type="text";
           bind:value={searchQuery}
           placeholder="Search uploaded documents with AI..."
           class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
@@ -484,7 +486,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .enhanced-file-upload {
+  .enhanced-file-upload {;
     padding: 1.5rem;
     background: #fff;
     border-radius: 0.5rem;

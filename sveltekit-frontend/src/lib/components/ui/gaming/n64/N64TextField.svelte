@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -41,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
 />
 
 <style>
-  .n64-textfield {
+  .n64-textfield {;
 	box-sizing: border-box;
 	padding: 0.5rem 0.75rem;
 	border: 2px solid #3b3b3b;

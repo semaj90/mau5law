@@ -43,7 +43,7 @@ export interface CaseAIContext {
     lastActivity: number;
     activeEvidenceId?: string;
   };
-  insights: Array<{
+  insights: Array<{;
     id: string;
     type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
     description: string;
@@ -93,7 +93,7 @@ function createAIAssistantStore() {
             currentSession: {
               isActive: false,
               lastActivity: Date.now()
-            },
+            },;
             insights: []
           };
         }
@@ -125,14 +125,14 @@ function createAIAssistantStore() {
             currentSession: {
               isActive: true,
               lastActivity: Date.now()
-            },
+            },;
             insights: []
           };
         }
 
         const newMessage: AIMessage = {
           ...message,
-          id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,;
           timestamp: Date.now()
         };
 
@@ -144,7 +144,7 @@ function createAIAssistantStore() {
     },
 
     // Add evidence to case context;
-    addEvidence: (caseId: string, evidence: {
+    addEvidence: (caseId: string, evidence: {;
       id: string;
       title: string;
       annotations?: string[];
@@ -156,7 +156,7 @@ function createAIAssistantStore() {
 
         state.cases[caseId].evidenceMap[evidence.id] = {
           ...evidence,
-          annotations: evidence.annotations || [],
+          annotations: evidence.annotations || [],;
           connections: evidence.connections || []
         };
 
@@ -171,7 +171,7 @@ function createAIAssistantStore() {
 
         const newInsight = {
           ...insight,
-          id: `insight-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          id: `insight-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,;
           timestamp: Date.now()
         };
 

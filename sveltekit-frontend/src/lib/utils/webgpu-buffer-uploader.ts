@@ -70,7 +70,7 @@ export class WebGPUBufferUploader {
    * Upload data to GPU with automatic quantization and alignment
    */
   async uploadBuffer(
-    data: BufferLike | number[],
+    data: BufferLike | number[],;
     options: WebGPUBufferUploadOptions;
   ): Promise<WebGPUBufferUploadResult> {
     const startTime = performance.now();
@@ -95,7 +95,7 @@ export class WebGPUBufferUploader {
       quantized = quantizeForLegalAI(data, options.quantization as LegalAIProfile);
     } else {
       quantized = quantizeForWebGPU(data, {
-        mode: quantMode,
+        mode: quantMode,;
         alignment: options.alignment || 4,
         debugLabel: options.label
       });
@@ -117,7 +117,7 @@ export class WebGPUBufferUploader {
     // Create GPU buffer;
     const buffer = this.device.createBuffer({
       size: quantized.alignedByteLength,
-      usage: options.usage,
+      usage: options.usage,;
       label: options.label,
       mappedAtCreation: options.mappedAtCreation || false
     });
@@ -155,7 +155,7 @@ export class WebGPUBufferUploader {
     }
 
     if (options.debugMode) {
-      console.log(`🚀 WebGPU buffer uploaded:`, {
+      console.log(`🚀 WebGPU buffer uploaded:`, {;
         label: options.label,
         originalSize: `${(originalSize / 1024).toFixed(2)} KB`,
         uploadedSize: `${(quantized.alignedByteLength / 1024).toFixed(2)} KB`,
@@ -181,7 +181,7 @@ export class WebGPUBufferUploader {
     // Create staging buffer for reading;
     const stagingBuffer = this.device.createBuffer({
       size: quantizedData.byteLength,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,;
       label: 'webgpu-downloader-staging'
     });
 
@@ -207,7 +207,7 @@ export class WebGPUBufferUploader {
     // Reconstruct the quantized data structure for dequantization;
     const reconstructedQuantized: QuantizedData = {
       data: this.reconstructTypedArrayFromDownload(downloadedData, quantizedData.originalType),
-      originalType: quantizedData.originalType,
+      originalType: quantizedData.originalType,;
       params: quantizedData.params,
       byteLength: quantizedData.byteLength,
       compressionRatio: quantizedData.compressionRatio
@@ -221,7 +221,7 @@ export class WebGPUBufferUploader {
     // Cleanup
     stagingBuffer.destroy();
 
-    const result: WebGPUBufferDownloadResult = {
+    const result: WebGPUBufferDownloadResult = {;
       data: dequantizedData,
       downloadStats: {
         downloadTime,
@@ -231,7 +231,7 @@ export class WebGPUBufferUploader {
     };
 
     if (debugMode) {
-      console.log(`📥 WebGPU buffer downloaded:`, {
+      console.log(`📥 WebGPU buffer downloaded:`, {;
         size: `${(quantizedData.byteLength / 1024).toFixed(2)} KB`,
         downloadTime: `${downloadTime.toFixed(2)}ms`,
         dequantizationTime: `${dequantizationTime.toFixed(2)}ms`,
@@ -250,7 +250,7 @@ export class WebGPUBufferUploader {
     options: Omit<WebGPUBufferUploadOptions, 'usage'> = {}
   ): Promise<WebGPUBufferUploadResult> {
     return this.uploadBuffer(data, {
-      ...options,
+      ...options,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC
     });
   }
@@ -265,7 +265,7 @@ export class WebGPUBufferUploader {
     return this.uploadBuffer(data, {
       ...options,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      alignment: 16, // Uniform buffers require 16-byte alignment
+      alignment: 16, // Uniform buffers require 16-byte alignment;
       quantization: 'fp32' // Uniforms typically need full precision
     });
   }
@@ -304,18 +304,18 @@ export class WebGPUBufferUploader {
    * Legal AI specific buffer creation methods
    */
   async createLegalAnalysisBuffer(
-    data: BufferLike | number[],
+    data: BufferLike | number[],;
     priority: 'critical' | 'standard' | 'compressed' | 'storage' = 'standard';
   ): Promise<WebGPUBufferUploadResult> {
     const profileMap = {
       critical: 'legal_critical' as LegalAIProfile,
       standard: 'legal_standard' as LegalAIProfile,
-      compressed: 'legal_compressed' as LegalAIProfile,
+      compressed: 'legal_compressed' as LegalAIProfile,;
       storage: 'legal_storage' as LegalAIProfile
     };
 
     return this.createComputeBuffer(data, {
-      quantization: profileMap[priority],
+      quantization: profileMap[priority],;
       label: `legal-analysis-${priority}`,
       debugMode: true
     });
@@ -435,7 +435,7 @@ export namespace WebGPUBufferUtils_Extended {
    */
   export async function uploadForCompute(
     device: GPUDevice,
-    data: BufferLike | number[],
+    data: BufferLike | number[],;
     options: Partial<WebGPUBufferUploadOptions> = {}
   ): Promise<GPUBuffer> {
     const uploader = new WebGPUBufferUploader(device, false);
@@ -448,7 +448,7 @@ export namespace WebGPUBufferUtils_Extended {
    */
   export async function uploadForLegalAI(
     device: GPUDevice,
-    data: BufferLike | number[],
+    data: BufferLike | number[],;
     priority: 'critical' | 'standard' | 'compressed' | 'storage' = 'standard';
   ): Promise<GPUBuffer> {
     const uploader = new WebGPUBufferUploader(device, false);
@@ -460,7 +460,7 @@ export namespace WebGPUBufferUtils_Extended {
    * Create buffer with automatic quantization based on data size
    */
   export async function uploadWithAutoQuantization(
-    device: GPUDevice,
+    device: GPUDevice,;
     data: BufferLike | number[],
     sizeThresholds = { fp16: 1024 * 1024, int8: 10 * 1024 * 1024 } // 1MB, 10MB;
   ): Promise<GPUBuffer> {

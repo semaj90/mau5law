@@ -22,60 +22,60 @@
  * Optimized for legal research queries and case law searches
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { getVectorCache, setVectorCache, getEmbeddingCache, setEmbeddingCache } from '$lib/server/vector-cache';
-import { cachedJson, CACHE_STRATEGIES } from '$lib/server/http-cache-headers';
-import { redisService } from '$lib/server/redis-service';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { getVectorCache, setVectorCache, getEmbeddingCache, setEmbeddingCache } from '$lib/server/vector-cache'
+import { cachedJson, CACHE_STRATEGIES } from '$lib/server/http-cache-headers'
+import { redisService } from '$lib/server/redis-service'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
 // Legal search specialization cache keys
-const LEGAL_CACHE_PREFIX = 'legal-search:';
-const CASE_LAW_CACHE_PREFIX = 'case-law:';
-const LEGAL_ANALYSIS_CACHE_PREFIX = 'legal-analysis:';
+const LEGAL_CACHE_PREFIX = 'legal-search:'
+const CASE_LAW_CACHE_PREFIX = 'case-law:'
+const LEGAL_ANALYSIS_CACHE_PREFIX = 'legal-analysis:'
 
 interface LegalSearchRequest {
-  query: string;
-  searchType: 'general' | 'case-law' | 'contracts' | 'regulations' | 'precedents';
-  jurisdiction?: string;
-  practiceArea?: string;
+  query: string
+  searchType: 'general' | 'case-law' | 'contracts' | 'regulations' | 'precedents'
+  jurisdiction?: string
+  practiceArea?: string
   dateRange?: {
-    start?: string;
-    end?: string;
-  };
+    start?: string
+    end?: string
+  }
   options?: {
-    limit?: number;
-    includeAnalysis?: boolean;
-    includeSimilarCases?: boolean;
-    confidenceThreshold?: number;
-  };
+    limit?: number
+    includeAnalysis?: boolean
+    includeSimilarCases?: boolean
+    confidenceThreshold?: number
+  }
 }
 
-// POST: Cached legal search;
+// POST: Cached legal search
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
-  const startTime = performance.now();
+  const startTime = performance.now()
 
   try {
-    const searchRequest: LegalSearchRequest = await request.json();
-    const { query, searchType, jurisdiction, practiceArea, dateRange, options = {} } = searchRequest;
+    const searchRequest: LegalSearchRequest = await request.json()
+    const { query, searchType, jurisdiction, practiceArea, dateRange, options = {} } = searchRequest
 
     if (!query) {
       return json({
         success: false,
         error: 'Search query is required'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Generate specialized cache key based on legal search context
-    const cacheKey = await generateLegalSearchKey(searchRequest);
-    const embeddingCacheKey = `${searchType}:${query.toLowerCase().trim()}`;
+    const cacheKey = await generateLegalSearchKey(searchRequest)
+    const embeddingCacheKey = `${searchType}:${query.toLowerCase().trim()}`
 
     // Check cache first
-    const cachedResults = await redisService.get(cacheKey);
+    const cachedResults = await redisService.get(cacheKey)
     if (cachedResults) {
-      console.log('[LegalSearchCached] Cache hit for legal search');
+      console.log('[LegalSearchCached] Cache hit for legal search')
       
-      return cachedJson();
+      return cachedJson()
         {
           success: true,
           ...cachedResults,
@@ -87,24 +87,24 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           }
         },
         'VECTOR_SEARCH'
-      );
+      )
     }
 
     // Get or generate embedding
-    let embedding: number[];
-    let embeddingFromCache = false;
+    let embedding: number[]
+    let embeddingFromCache = false
 
-    const cachedEmbedding = await getEmbeddingCache(embeddingCacheKey, 'legal-nomic-embed');
+    const cachedEmbedding = await getEmbeddingCache(embeddingCacheKey, 'legal-nomic-embed')
     if (cachedEmbedding.entry) {
-      embedding = cachedEmbedding.entry.embedding;
-      embeddingFromCache = true;
+      embedding = cachedEmbedding.entry.embedding
+      embeddingFromCache = true
     } else {
       // Generate legal-specific embedding
-      embedding = await generateLegalEmbedding(query, searchType, practiceArea);
-      await setEmbeddingCache(embeddingCacheKey, embedding, 'legal-nomic-embed');
+      embedding = await generateLegalEmbedding(query, searchType, practiceArea)
+      await setEmbeddingCache(embeddingCacheKey, embedding, 'legal-nomic-embed')
     }
 
-    // Perform specialized legal search;
+    // Perform specialized legal search
     const searchResults = await performLegalSearch({
       query,
       embedding,
@@ -113,9 +113,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       practiceArea,
       dateRange,
       options
-    });
+    })
 
-    const totalTime = performance.now() - startTime;
+    const totalTime = performance.now() - startTime
 
     const response = {
       success: true,
@@ -134,38 +134,38 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       legalContext: searchResults.legalContext,
       relatedCases: searchResults.relatedCases,
       practiceAreaInsights: searchResults.practiceAreaInsights
-    };
+    }
 
     // Cache the results with legal-specific TTL
-    const cacheTTL = getLegalCacheTTL(searchType);
-    await redisService.set(cacheKey, response, cacheTTL);
+    const cacheTTL = getLegalCacheTTL(searchType)
+    await redisService.set(cacheKey, response, cacheTTL)
 
-    return cachedJson(response, 'VECTOR_SEARCH');
+    return cachedJson(response, 'VECTOR_SEARCH')
 
   } catch (error: any) {
-    const totalTime = performance.now() - startTime;
+    const totalTime = performance.now() - startTime
     
     return json({
       success: false,
       error: error.message,
       responseTime: `${totalTime.toFixed(2)}ms`,
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-// GET: Legal search statistics and health;
+// GET: Legal search statistics and health
 const originalGETHandler: RequestHandler = async ({ url }) => {
-  const action = url.searchParams.get('action') || 'stats';
+  const action = url.searchParams.get('action') || 'stats'
 
   switch (action) {
     case 'stats':
-      const redisStats = redisService.getStats();
-      const redisInfo = await redisService.getRedisInfo();
+      const redisStats = redisService.getStats()
+      const redisInfo = await redisService.getRedisInfo()
       
       // Get legal search cache statistics
-      const legalCacheKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX}*`);
-      const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX}*`);
+      const legalCacheKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX}*`)
+      const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX}*`)
       
       return cachedJson({
         success: true,
@@ -178,10 +178,10 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         redisMemory: redisInfo?.memory,
         keyspace: redisInfo?.keyspace,
         timestamp: new Date().toISOString()
-      }, 'REALTIME');
+      }, 'REALTIME')
 
     case 'health':
-      const isRedisHealthy = redisService.isHealthy();
+      const isRedisHealthy = redisService.isHealthy()
       
       return json({
         success: true,
@@ -191,34 +191,34 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           legalSearchOptimized: true
         },
         timestamp: new Date().toISOString()
-      });
+      })
 
-    case 'clear-cache':;
+    case 'clear-cache':
       try {
-        const legalKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX}*`);
-        const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX}*`);
-        const analysisKeys = await redisService.keys(`${LEGAL_ANALYSIS_CACHE_PREFIX}*`);
+        const legalKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX}*`)
+        const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX}*`)
+        const analysisKeys = await redisService.keys(`${LEGAL_ANALYSIS_CACHE_PREFIX}*`)
         
-        const allKeys = [...legalKeys, ...caseLawKeys, ...analysisKeys];
+        const allKeys = [...legalKeys, ...caseLawKeys, ...analysisKeys]
         
         for (const key of allKeys) {
-          await redisService.del(key);
+          await redisService.del(key)
         }
         
         return json({
           success: true,
           message: `Cleared ${allKeys.length} legal search cache entries`,
           timestamp: new Date().toISOString()
-        });
+        })
         
       } catch (error: any) {
         return json({
           success: false,
           error: error.message
-        }, { status: 500 });
+        }, { status: 500 })
       }
 
-    default:;
+    default:
       return json({
         error: 'Invalid action',
         availableActions: ['stats', 'health', 'clear-cache'],
@@ -228,13 +228,13 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           health: 'GET /api/ai/legal-search-cached?action=health',
           clearCache: 'GET /api/ai/legal-search-cached?action=clear-cache'
         }
-      }, { status: 400 });
+      }, { status: 400 })
   }
-};
+}
 
 /**
  * Generate cache key for legal search requests
- */;
+ */
 async function generateLegalSearchKey(request: LegalSearchRequest): Promise<string> {
   const keyData = {
     query: request.query.toLowerCase().trim(),
@@ -248,11 +248,11 @@ async function generateLegalSearchKey(request: LegalSearchRequest): Promise<stri
       includeSimilarCases: request.options?.includeSimilarCases || false,
       confidenceThreshold: request.options?.confidenceThreshold || 0.7
     }
-  };
+  }
   
-  const crypto = await import('crypto');
-  const hash = crypto.createHash('sha256').update(JSON.stringify(keyData)).digest('hex');
-  return `${LEGAL_CACHE_PREFIX}${request.searchType}:${hash.substring(0, 16)}`;
+  const crypto = await import('crypto')
+  const hash = crypto.createHash('sha256').update(JSON.stringify(keyData)).digest('hex')
+  return `${LEGAL_CACHE_PREFIX}${request.searchType}:${hash.substring(0, 16)}`
 }
 
 /**
@@ -261,10 +261,10 @@ async function generateLegalSearchKey(request: LegalSearchRequest): Promise<stri
 async function generateLegalEmbedding(
   query: string, 
   searchType: string, 
-  practiceArea?: string;
+  practiceArea?: string
 ): Promise<number[]> {
   // Enhance query with legal context
-  const legalContextPrompt = buildLegalContextPrompt(query, searchType, practiceArea);
+  const legalContextPrompt = buildLegalContextPrompt(query, searchType, practiceArea)
   
   const response = await fetch('http://localhost:11434/api/embeddings', {
     method: 'POST',
@@ -273,19 +273,19 @@ async function generateLegalEmbedding(
       model: 'nomic-embed-text',
       prompt: legalContextPrompt
     })
-  });
+  })
 
   if (!response.ok) {
-    throw new Error('Failed to generate legal embedding');
+    throw new Error('Failed to generate legal embedding')
   }
 
-  const data = await response.json();
-  return data.embedding;
+  const data = await response.json()
+  return data.embedding
 }
 
 /**
  * Build legal context-aware prompt for better embeddings
- */;
+ */
 function buildLegalContextPrompt(query: string, searchType: string, practiceArea?: string): string {
   const contextPrefixes = {
     'case-law': 'Legal case law and judicial precedent: ',
@@ -293,34 +293,34 @@ function buildLegalContextPrompt(query: string, searchType: string, practiceArea
     'regulations': 'Legal regulations and compliance requirements: ',
     'precedents': 'Legal precedents and court decisions: ',
     'general': 'Legal research query: '
-  };
+  }
 
-  let prompt = contextPrefixes[searchType as keyof typeof contextPrefixes] || contextPrefixes.general;
-  prompt += query;
+  let prompt = contextPrefixes[searchType as keyof typeof contextPrefixes] || contextPrefixes.general
+  prompt += query
   
   if (practiceArea) {
-    prompt += ` (Practice area: ${practiceArea})`;
+    prompt += ` (Practice area: ${practiceArea})`
   }
   
-  return prompt;
+  return prompt
 }
 
 /**
  * Perform specialized legal search
- */;
+ */
 async function performLegalSearch(params: {
-  query: string;
-  embedding: number[];
-  searchType: string;
-  jurisdiction?: string;
-  practiceArea?: string;
-  dateRange?: any;
-  options: any;
+  query: string
+  embedding: number[]
+  searchType: string
+  jurisdiction?: string
+  practiceArea?: string
+  dateRange?: any
+  options: any
 }): Promise<any> {
   // Simulate legal search with specialized logic
   // In production, this would integrate with your legal database and AI services
   
-  const mockResults = [;
+  const mockResults = [
     {
       id: 'case-001',
       title: 'Employment Contract Dispute - Smith v. TechCorp',
@@ -352,7 +352,7 @@ async function performLegalSearch(params: {
         'Employer obligations for equipment and workspace'
       ]
     }
-  ];
+  ]
 
   return {
     results: mockResults,
@@ -368,12 +368,12 @@ async function performLegalSearch(params: {
       trendingIssues: ['Remote work disputes', 'Digital privacy rights'],
       recentDevelopments: 'Increased focus on hybrid work arrangements'
     }
-  };
+  }
 }
 
 /**
  * Get cache TTL based on search type
- */;
+ */
 function getLegalCacheTTL(searchType: string): number {
   const ttlMap = {
     'case-law': 3600,      // 1 hour - case law changes slowly
@@ -381,10 +381,10 @@ function getLegalCacheTTL(searchType: string): number {
     'regulations': 7200,   // 2 hours - regulations change infrequently
     'precedents': 3600,    // 1 hour - precedents are stable
     'general': 1800        // 30 minutes - general searches vary more
-  };
+  }
 
-  return ttlMap[searchType as keyof typeof ttlMap] || 1800;
+  return ttlMap[searchType as keyof typeof ttlMap] || 1800
 }
 
-export const POST = redisOptimized.aiSearch(originalPOSTHandler);
-export const GET = redisOptimized.aiSearch(originalGETHandler);
+export const POST = redisOptimized.aiSearch(originalPOSTHandler)
+export const GET = redisOptimized.aiSearch(originalGETHandler)

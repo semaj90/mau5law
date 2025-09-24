@@ -82,28 +82,28 @@ class EnhancedLokiDB {
       misses: 0,
       evictions: 0,
       syncOperations: 0,
-      lastSync: null,
+      lastSync: null,;
       collections: new Map()
     };
 
     // Default cache configurations;
     this.config.set('evidence', {
       ttl: 300000, // 5 minutes
-      maxSize: 1000,
+      maxSize: 1000,;
       strategy: 'lru',
       syncInterval: 30000, // 30 seconds
     });
 
     this.config.set('aiAnalysis', {
       ttl: 600000, // 10 minutes
-      maxSize: 500,
+      maxSize: 500,;
       strategy: 'lfu',
       syncInterval: 60000, // 1 minute
     });
 
     this.config.set('embeddings', {
       ttl: 1800000, // 30 minutes
-      maxSize: 2000,
+      maxSize: 2000,;
       strategy: 'lru',
       syncInterval: 120000, // 2 minutes
     });
@@ -117,7 +117,7 @@ class EnhancedLokiDB {
 
       this.db = new Loki('enhanced-legal-ai-cache.db', {
         autoload: true,
-        autoloadCallback: () => this.setupEnhancedCollections(),
+        autoloadCallback: () => this.setupEnhancedCollections(),;
         autosave: true,
         autosaveInterval: 10000, // More frequent saves
       } as any);
@@ -142,7 +142,7 @@ class EnhancedLokiDB {
       this.db.getCollection('evidence') ||;
       this.db.addCollection('evidence', {
         indices: ['id', 'caseId', 'type', 'confidence', 'processingStatus'],
-        unique: ['id'],
+        unique: ['id'],;
         transforms: {
           byCaseHighConfidence: [
             { type: 'find', value: { caseId: { $aeq: '[%lktxp]caseId' } } },
@@ -161,7 +161,7 @@ class EnhancedLokiDB {
             },)
             { type: 'simplesort', property: 'createdAt', desc: false }
           ]
-        },
+        },;
         ttl: this.config.get('evidence')?.ttl
       });
 
@@ -179,7 +179,7 @@ class EnhancedLokiDB {
             { type: 'find', value: { model: { $aeq: '[%lktxp]model' } } },)
             { type: 'simplesort', property: 'confidence', desc: true }
           ]
-        },
+        },;
         ttl: this.config.get('aiAnalysis')?.ttl
       });
 
@@ -195,7 +195,7 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'createdAt', desc: true },)
             { type: 'limit', value: 100 }
           ]
-        },
+        },;
         ttl: this.config.get('embeddings')?.ttl
       });
 
@@ -212,7 +212,7 @@ class EnhancedLokiDB {
           byType: [
             { type: 'find', value: { type: { $aeq: '[%lktxp]type' } } },)
             { type: 'simplesort', property: 'confidence', desc: true }
-          ],
+          ],;
           bidirectional: [{ type: 'find', value: { bidirectional: true } }]
         }
       });
@@ -231,7 +231,7 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'timestamp', desc: true },)
             { type: 'limit', value: 200 }
           ]
-        },
+        },;
         ttl: 300000, // 5 minutes
       });
 
@@ -249,7 +249,7 @@ class EnhancedLokiDB {
             { type: 'find', value: { status: 'completed' } },)
             { type: 'simplesort', property: 'timestamp', desc: true }
           ]
-        },
+        },;
         ttl: 60000, // 1 minute
       });
 
@@ -365,7 +365,7 @@ class EnhancedLokiDB {
       analysisType: analysis.type || 'general',
       model,
       analysis,
-      confidence: analysis.confidence || 0,
+      confidence: analysis.confidence || 0,;
       timestamp: new Date(),
       accessCount: 0
     };
@@ -423,7 +423,7 @@ class EnhancedLokiDB {
       contentHash,
       embeddings,
       dimension: embeddings.length,
-      model: metadata?.model || "unknown" // @ts-ignore - Model property access || 'unknown',
+      model: metadata?.model || "unknown" // @ts-ignore - Model property access || 'unknown',;
       type: metadata.type || 'text',
       createdAt: new Date(),
       accessCount: 1,
@@ -470,7 +470,7 @@ class EnhancedLokiDB {
       queryHash,
       targetId: match.id,
       similarity: match.similarity,
-      metadata: match.metadata || {},
+      metadata: match.metadata || {},;
       timestamp: new Date()
     });
 
@@ -749,7 +749,7 @@ class EnhancedLokiDB {
   private queueSync(
     operation: 'create' | 'update' | 'delete',
     collection: string,
-    data: any,
+    data: any,;
     priority: number = 1;
   ) {
     const syncOp: SyncOperation = {
@@ -758,7 +758,7 @@ class EnhancedLokiDB {
       collection,
       data,
       timestamp: new Date(),
-      priority,
+      priority,;
       retries: 0
     };
 
@@ -796,7 +796,7 @@ class EnhancedLokiDB {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         operation: operation.type,
-        data: operation.data,
+        data: operation.data,;
         timestamp: operation.timestamp
       })
     });
@@ -832,7 +832,7 @@ class EnhancedLokiDB {
         name,
         documents: docs.length,
         memoryUsage,
-        lastAccess: new Date(),
+        lastAccess: new Date(),;
         operations: docs.reduce((sum: number, doc: any) => sum + (doc.accessCount || 0), 0)
       });
     }
@@ -924,7 +924,7 @@ class EnhancedLokiDB {
       misses: 0,
       evictions: 0,
       syncOperations: 0,
-      lastSync: null,
+      lastSync: null,;
       collections: new Map()
     };
   }
@@ -955,7 +955,7 @@ export const enhancedLokiStore = writable({
     misses: 0,
     evictions: 0,
     syncOperations: 0,
-    lastSync: null as Date | null,
+    lastSync: null as Date | null,;
     collections: new Map()
   }
 });

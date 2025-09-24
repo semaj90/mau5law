@@ -149,7 +149,7 @@ export function formatPriority(priority: string): {
     critical: {
       label: 'Critical',
       color: 'text-red-600',
-      bgColor: 'bg-red-100',
+      bgColor: 'bg-red-100',;
       icon: '●'
     }
   };
@@ -158,7 +158,7 @@ export function formatPriority(priority: string): {
 }
 
 // Status formatting
-export function formatStatus(status: string, type: 'case' | 'evidence' | 'report' | 'citation' = 'case'): {
+export function formatStatus(status: string, type: 'case' | 'evidence' | 'report' | 'citation' = 'case'): {;
   label: string;
   color: string;
   bgColor: string;
@@ -185,7 +185,7 @@ export function formatStatus(status: string, type: 'case' | 'evidence' | 'report
     },
     citation: {
       relevant: { label: 'Relevant', color: 'text-green-600', bgColor: 'bg-green-100', icon: '⭐' },
-      referenced: { label: 'Referenced', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '🔗' },
+      referenced: { label: 'Referenced', color: 'text-blue-600', bgColor: 'bg-blue-100', icon: '🔗' },;
       archived: { label: 'Archived', color: 'text-gray-400', bgColor: 'bg-gray-50', icon: '📚' }
     }
   };
@@ -194,7 +194,7 @@ export function formatStatus(status: string, type: 'case' | 'evidence' | 'report
   return map[status as keyof typeof map] || {
     label: status.replace('_', ' '),
     color: 'text-gray-500',
-    bgColor: 'bg-gray-100',
+    bgColor: 'bg-gray-100',;
     icon: '○'
   };
 }
@@ -214,13 +214,13 @@ export function formatEntityType(type: string): {
     photo: { label: 'Photo', icon: '📸', color: 'text-pink-600' },
     video: { label: 'Video', icon: '🎥', color: 'text-red-600' },
     audio: { label: 'Audio', icon: '🎵', color: 'text-indigo-600' },
-    physical: { label: 'Physical', icon: '📦', color: 'text-orange-600' },
+    physical: { label: 'Physical', icon: '📦', color: 'text-orange-600' },;
     digital: { label: 'Digital', icon: '💾', color: 'text-cyan-600' }
   };
 
   return typeMap[type as keyof typeof typeMap] || {
     label: type.charAt(0).toUpperCase() + type.slice(1),
-    icon: '📄',
+    icon: '📄',;
     color: 'text-gray-600'
   };
 }
@@ -234,7 +234,7 @@ export function highlightSearchTerm(text: string, searchTerm: string): string {
 }
 
 // Progress calculation
-export function calculateProgress(completed: number, total: number): {
+export function calculateProgress(completed: number, total: number): {;
   percentage: number;
   label: string;
   color: string;
@@ -292,7 +292,7 @@ export function formatUserRole(role: string): {
     viewer: {
       label: 'Viewer',
       color: 'text-gray-600',
-      bgColor: 'bg-gray-100',
+      bgColor: 'bg-gray-100',;
       icon: '👁️'
     }
   };
@@ -300,7 +300,7 @@ export function formatUserRole(role: string): {
   return roleMap[role as keyof typeof roleMap] || {
     label: role.charAt(0).toUpperCase() + role.slice(1),
     color: 'text-gray-600',
-    bgColor: 'bg-gray-100',
+    bgColor: 'bg-gray-100',;
     icon: '👤'
   };
 }
@@ -324,7 +324,7 @@ export function formatActivityType(type: string): {
 
   return activityMap[type as keyof typeof activityMap] || {
     label: type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-    icon: '📝',
+    icon: '📝',;
     color: 'text-gray-600'
   };
 }
@@ -381,7 +381,7 @@ export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
 
 // Debounce function for search
 export function debounce<T extends (...args: any[]) => any>(
-  func: T,
+  func: T,;
   wait: number
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;

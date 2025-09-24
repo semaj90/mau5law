@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -30,18 +30,18 @@ https://svelte.dev/e/js_parse_error -->
     modelName = $bindable('gemma3-legal:latest'),
     gpuMemoryUsage = $bindable('7.3GB'),
     children,
-    class: className = ''
+    class: className = '';
   }: Props = $props();
 
   // Animated progress value
   const progressValue = tweened(0, {
-    duration: 800,
-    easing: cubicInOut
+    duration: 800,;
+    easing: cubicInOut;
   });
 
   const opacity = tweened(0, {
-    duration: 400,
-    easing: cubicInOut
+    duration: 400,;
+    easing: cubicInOut;
   });
 
   // Auto-update progress and text based on status
@@ -112,8 +112,8 @@ https://svelte.dev/e/js_parse_error -->
   // GPU utilization animation dots
   let dotAnimations = $derived(() => {
     return Array.from({ length: 8 }, (_, i) => ({
-      delay: i * 150,
-      opacity: status === 'model-loading' || status === 'inference' ? 1 : 0.3
+      delay: i * 150,;
+      opacity: status === 'model-loading' || status === 'inference' ? 1 : 0.3;
     }));
   });
 </script>
@@ -239,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 
 <style>
-  .gpu-progress-container {
+  .gpu-progress-container {;
     transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 

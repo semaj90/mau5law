@@ -9,7 +9,7 @@ import path from 'path';
 
 // Load test environment variables;
 config({
-  path: path.join(process.cwd(), '.env.test'),
+  path: path.join(process.cwd(), '.env.test'),;
   override: false
 });
 

@@ -54,7 +54,7 @@ export const GEMMA3_MODELS: Gemma3ModelConfig[] = [;
 `,
     ollamaModel: "gemma3-legal:latest",
     fallbackModel: "gemma3-legal:latest",
-    format: "gguf",
+    format: "gguf",;
     size: "8B"
 }
 ];
@@ -119,7 +119,7 @@ export const GEMMA3_INFERENCE_SETTINGS = {
     repeatPenalty: 1.15,
     maxTokens: 2048
 },
-  precise: {
+  precise: {;
     temperature: 0.1,
     topP: 0.7,
     topK: 10,

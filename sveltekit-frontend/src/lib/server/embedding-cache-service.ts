@@ -25,17 +25,17 @@ interface QueryCacheEntry {
 }
 
 interface CacheStats {
-  embeddings: {
+  embeddings: {;
     hits: number;
     misses: number;
     size: number;
   };
-  queries: {
+  queries: {;
     hits: number;
     misses: number;
     size: number;
   };
-  sessions: {
+  sessions: {;
     active: number;
     total: number;
   };
@@ -64,7 +64,7 @@ class EmbeddingCacheService {
    */
   async cacheEmbedding(
     text: string,
-    embedding: number[],
+    embedding: number[],;
     model: string = 'nomic-embed-text';
   ): Promise<void> {
     if (!redisService.isHealthy() || !text || !embedding.length) return;
@@ -74,7 +74,7 @@ class EmbeddingCacheService {
       const entry: EmbeddingCacheEntry = {
         text,
         embedding,
-        model,
+        model,;
         timestamp: Date.now(),
         accessCount: 0,
         lastAccessed: Date.now()
@@ -84,7 +84,7 @@ class EmbeddingCacheService {
       const compressed = this.compressEmbedding(embedding);
       const cacheData = {
         ...entry,
-        embedding: compressed,
+        embedding: compressed,;
         compressed: true
       };
 
@@ -160,7 +160,7 @@ class EmbeddingCacheService {
    */
   async cacheQuery(
     query: string,
-    results: any[],
+    results: any[],;
     metadata: any = {},
     customTTL?: number;
   ): Promise<void> {
@@ -177,7 +177,7 @@ class EmbeddingCacheService {
           ...metadata,
           resultCount: results.length,
           queryComplexity: this.calculateQueryComplexity(query)
-        },
+        },;
         timestamp: Date.now(),
         ttl
       };
@@ -253,13 +253,13 @@ class EmbeddingCacheService {
 
       for (const item of items) {
         const key = this.generateEmbeddingKey((item as { text?: any; embedding?: any }).text, item?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text');
-        const entry: EmbeddingCacheEntry = {
+        const entry: EmbeddingCacheEntry = {;
           text: (item as { text?: any; embedding?: any }).text,
           embedding: this.compressEmbedding((item as { text?: any; embedding?: any }).embedding),
           model: item?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text',
           timestamp: Date.now(),
           accessCount: 0,
-          lastAccessed: Date.now(),
+          lastAccessed: Date.now(),;
           compressed: true
         };
 
@@ -282,7 +282,7 @@ class EmbeddingCacheService {
    * Invalidate cache patterns
    */
   async invalidate(
-    pattern: string,
+    pattern: string,;
     type: 'embeddings' | 'queries' | 'sessions' | 'all' = 'all';
   ): Promise<void> {
     if (!redisService.isHealthy()) return;
@@ -320,7 +320,7 @@ class EmbeddingCacheService {
   async getStats(): Promise<CacheStats> {
     const defaultStats: CacheStats = {
       embeddings: { hits: 0, misses: 0, size: 0 },
-      queries: { hits: 0, misses: 0, size: 0 },
+      queries: { hits: 0, misses: 0, size: 0 },;
       sessions: { active: 0, total: 0 }
     };
 
@@ -340,7 +340,7 @@ class EmbeddingCacheService {
           size: await this.getCacheSize('queries')
         },
         sessions: {
-          active: parseInt(stats['session_active'] || '0'),
+          active: parseInt(stats['session_active'] || '0'),;
           total: parseInt(stats['session_total'] || '0')
         }
       };
@@ -380,7 +380,7 @@ class EmbeddingCacheService {
    */;
   private decompressEmbedding(compressed: string): number[] {
     try {
-      const data = Buffer.from(compressed, 'base64').toString();
+      const data = Buffer.from(compressed, 'base64').toString());
       return JSON.parse(data);
     } catch {
       return [];

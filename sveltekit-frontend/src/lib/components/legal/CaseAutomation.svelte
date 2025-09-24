@@ -79,14 +79,14 @@
       // Create automation configuration
       const automationConfig = {
         id: `automation_${Date.now()}_${Math.random.toString-substr(2, 9)}`,
-        type: selectedAutomationType,
+        type: selectedAutomationType,;
         source: selectedSource,
         autoProcessing: enableAutoProcessing,
         gpuAcceleration: enableGPUAcceleration,
         batchSize: batchSize,
         confidenceThreshold: confidenceThreshold,
         processingOptions: Array.from(selectedProcessingOptions),
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString();
       };
 
       // Initialize tensor service if GPU acceleration is enabled
@@ -108,9 +108,9 @@
 
       // Save configuration (in real app, this would call your API)
       const response = await fetch('/api/legal/automation/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(automationConfig)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(automationConfig);
       });
 
       if (!response.ok) {
@@ -119,9 +119,9 @@
 
       processingStats.processingTime = Date.now() - startTime;
       ondispatch?.({
-        type: selectedAutomationType,
-        source: selectedSource,
-        config: automationConfig
+        type: selectedAutomationType,;
+        source: selectedSource,;
+        config: automationConfig;
       });
 
       // Reset form
@@ -167,9 +167,9 @@
   // Generate mock legal documents for testing
   function generateMockLegalDocuments(count: number) {
     return Array.from({ length: count }, (_, i) => ({
-      id: `doc_${i + 1}`,
+      id: `doc_${i + 1}`,;
       type: ['contract', 'evidence', 'brief', 'motion', 'discovery'][Math.floor(Math.random() * 5)],
-      vectorData: new Float32Array(768).map(() => Math.random() * 2 - 1)
+      vectorData: new Float32Array(768).map(() => Math.random() * 2 - 1);
     }));
   }
 
@@ -210,7 +210,7 @@
           Document Source
         </label>
         <Dropdown 
-          id="sourceSelect" 
+          id="sourceSelect" ;
           bind:selected={selectedSource} 
           options={sourceOptions}
           placeholder="Select document source..."
@@ -276,7 +276,7 @@
             </label>
             <input 
               id="confidence"
-              type="number" 
+              type="number" ;
               bind:value={confidenceThreshold}
               min="0.1" 
               max="1" 
@@ -372,21 +372,21 @@
 
 <style>
   /* Custom scrollbar for processing options */
-  .overflow-y-auto: :-webkit-scrollbar {
+  .overflow-y-auto::-webkit-scrollbar {;
     width: 4px;
   }
   
-  .overflow-y-auto: :-webkit-scrollbar-track {
+  .overflow-y-auto::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 2px;
   }
   
-  .overflow-y-auto: :-webkit-scrollbar-thumb {
+  .overflow-y-auto::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 2px;
   }
   
-  .overflow-y-auto: :-webkit-scrollbar-thumb:hover {
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
 </style>

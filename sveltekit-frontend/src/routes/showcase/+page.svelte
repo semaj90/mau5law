@@ -59,7 +59,7 @@
 
   // Demo data
   let layoutData = $state({
-    user: { name: 'James', email: 'james@example.com' },
+    user: { name: 'James', email: 'james@example.com' },;
     stats: { totalCases: 12, openCases: 5, closedCases: 7, evidenceCount: 142 },
     recentActivity: [
       { action: 'Uploaded Evidence', details: 'witness_statement_01.pdf', time: '2m ago' },
@@ -75,10 +75,10 @@
     isSearching = true;
     try {
       const response = await fetch('/api/vector/search', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: searchQuery,
+          query: searchQuery,;
           options: { limit: 5, threshold: 0.7 },
         }),
       });
@@ -87,16 +87,16 @@
       vectorResults = (data as { results?: unknown }).results || [];
 
       notifications.add({
-        type: 'success',
-        title: 'Search Complete',
+        type: 'success',;
+        title: 'Search Complete',;
         message: `Found ${vectorResults.length} results`,
       });
     } catch (error) {
       console.error('Vector search failed:', error);
       notifications.add({
-        type: 'error',
-        title: 'Search Failed',
-        message: 'Vector search service unavailable',
+        type: 'error',;
+        title: 'Search Failed',;
+        message: 'Vector search service unavailable',;
       });
     } finally {
       isSearching = false;
@@ -235,22 +235,22 @@ Delete Action
       {@render StatusCard({
         title: 'Svelte 5 Runes',
         status: 'active',
-        description: 'Using $state and $props',
+        description: 'Using $state and $props',;
       })}
       {@render StatusCard({
         title: 'Bits UI',
         status: 'active',
-        description: 'Headless components integrated',
+        description: 'Headless components integrated',;
       })}
       {@render StatusCard({
         title: 'Vector Search',
         status: 'active',
-        description: 'Qdrant + PostgreSQL ready',
+        description: 'Qdrant + PostgreSQL ready',;
       })}
       {@render StatusCard({
-        title: 'UnoCSS',
-        status: 'active',
-        description: 'Utility classes configured',
+        title: 'UnoCSS',;
+        status: 'active',;
+        description: 'Utility classes configured',;
       })}
     </div>
   </section>
@@ -344,7 +344,7 @@ Delete Action
   </div>
 {/snippet}
 
-<style>/* Enhanced Nier theme styles */ :global(:root) {
+<style>/* Enhanced Nier theme styles */ :global(:root) {;
     --nier-bg: #0a0a0a;
     --nier-surface: #1a1a1a;
     --nier-surface-light: #2a2a2a;

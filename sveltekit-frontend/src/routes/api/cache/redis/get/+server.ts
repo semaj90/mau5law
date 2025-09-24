@@ -3,26 +3,26 @@
  * Retrieve values from Redis distributed cache
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 // Import the same memory cache from set endpoint
 // In production, this would be actual Redis
-const memoryCache = new Map<string, { value: any; expires: number }>();
+const memoryCache = new Map<string, { value: any; expires: number }>()
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { key } = await request.json();
+    const { key } = await request.json()
     
     if (!key) {
       return json({
         success: false,
         error: 'Key is required'
-      }, { status: 400 });
+      }, { status: 400 })
     }
     
     // Get from memory cache (Redis simulation)
-    const cached = memoryCache.get(key);
+    const cached = memoryCache.get(key)
     
     if (!cached) {
       return json({
@@ -30,18 +30,18 @@ export const POST: RequestHandler = async ({ request }) => {
         key,
         value: null,
         message: 'Key not found in cache'
-      });
+      })
     }
     
-    // Check if expired;
+    // Check if expired
     if (cached.expires < Date.now()) {
-      memoryCache.delete(key);
+      memoryCache.delete(key)
       return json({
         success: true,
         key,
         value: null,
         message: 'Key expired and removed from cache'
-      });
+      })
     }
     
     return json({
@@ -49,12 +49,12 @@ export const POST: RequestHandler = async ({ request }) => {
       key,
       value: cached.value,
       message: 'Value retrieved from Redis cache'
-    });
+    })
     
   } catch (error: any) {
     return json({
       success: false,
       error: error.message
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

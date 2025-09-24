@@ -131,7 +131,7 @@
   		const newZoom = Math.max(10, Math.min(500, zoom + delta));
   		toolbarStore.update(state => ({
   			...state,
-  			zoom: newZoom
+  			zoom: newZoom;
   		}));
   		ondispatch?.({ zoom: newZoom });
   }
@@ -320,7 +320,7 @@
 
 <style>
   /* @unocss-include */
-	.toolbar-container {
+	.toolbar-container {;
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;

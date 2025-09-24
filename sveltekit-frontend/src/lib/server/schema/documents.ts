@@ -39,7 +39,7 @@ export const documents = pgTable('documents', {
   checksum: varchar('checksum', { length: 64 }),
 
   // Legal context
-  case_id: uuid('case_id').references(() => cases.id, { onDelete: 'set null' }),
+  case_id: uuid('case_id').references(() => cases.id, { onDelete: 'set null' }),;
   jurisdiction: varchar('jurisdiction', { length: 200 }),
   practice_area: varchar('practice_area', { length: 200 }),
 
@@ -70,7 +70,7 @@ export const document_chunks = pgTable('document_chunks', {
   chunk_text: text('chunk_text').notNull(),
   chunk_size: integer('chunk_size').notNull(),
 
-  // Vector embedding for the chunk
+  // Vector embedding for the chunk;
   embedding: customVector('embedding', { dimensions: 384 }).notNull(),
 
   // Chunk metadata
@@ -100,7 +100,7 @@ export const cases = pgTable('cases', {
   // Case details
   status: varchar('status', { length: 50 }).default('active'),
   priority: varchar('priority', { length: 20 }).default('medium'),
-  case_type: varchar('case_type', { length: 100 }),
+  case_type: varchar('case_type', { length: 100 }),;
   jurisdiction: varchar('jurisdiction', { length: 200 }),
 
   // Dates
@@ -122,7 +122,7 @@ export const users = pgTable('users', {
 
   // User preferences embedding for personalization
   profile_embedding: customVector('profile_embedding', { dimensions: 384 }),
-
+;
   role: varchar('role', { length: 50 }).default('user'),
   is_active: boolean('is_active').default(true).notNull(),
 
@@ -136,7 +136,7 @@ export const vectors = pgTable('vectors', {
   entity_type: varchar('entity_type', { length: 50 }).notNull(), // 'document', 'chunk', 'case', 'user'
   entity_id: uuid('entity_id').notNull(),
   vector_type: varchar('vector_type', { length: 50 }).notNull(), // 'content', 'title', 'summary'
-
+;
   embedding: customVector('embedding', { dimensions: 384 }).notNull(),
 
   // Metadata for vector
@@ -155,13 +155,13 @@ export const documentsRelations = relations(documents, ({ one, many }) => ({
   creator: one(users, {
     fields: [documents.created_by],
     references: [users.id]
-  }),
+  }),;
   chunks: many(document_chunks)
 });
 
 export const documentChunksRelations = relations(document_chunks, ({ one }) => ({
   document: one(documents, {
-    fields: [document_chunks.document_id],
+    fields: [document_chunks.document_id],;
     references: [documents.id]
   })
 });
@@ -174,12 +174,12 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   assignee: one(users, {
     fields: [cases.assigned_to],
     references: [users.id]
-  }),
+  }),;
   documents: many(documents)
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
-  cases: many(cases),
+  cases: many(cases),;
   documents: many(documents)
 });
 

@@ -59,7 +59,7 @@ class FeedbackStore {
         page: window.location.pathname,
         userAgent: navigator.userAgent,
         viewport: {
-          width: window.innerWidth,
+          width: window.innerWidth,;
           height: window.innerHeight
         }
       }
@@ -91,7 +91,7 @@ class FeedbackStore {
       type,
       timestamp: new Date(),
       context: {
-        ...context,
+        ...context,;
         page: window.location.pathname,
         sessionTime: Date.now() - this.state.activeSession.startTime.getTime()
       }
@@ -106,7 +106,7 @@ class FeedbackStore {
         interactionId: interaction.id,
         type: this.getFeedbackTypeForInteraction(type),
         priority: options.priority || 'medium',
-        delay: options.delay || this.getDefaultDelay(type),
+        delay: options.delay || this.getDefaultDelay(type),;
         context: interaction.context
       });
     }
@@ -179,7 +179,7 @@ class FeedbackStore {
             viewport: { width: window.innerWidth, height: window.innerHeight }
           },
           metadata: {
-            platform: navigator.platform,
+            platform: navigator.platform,;
             language: navigator.language,
             featureUsed: ratingType,
             deviceType: this.state.userContext.deviceType

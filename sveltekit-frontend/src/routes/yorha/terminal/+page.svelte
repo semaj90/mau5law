@@ -37,42 +37,42 @@
     help: {
       description: 'Show available commands',
       usage: 'help [command]',
-      execute: (args) => showHelp(args)
+      execute: (args) => showHelp(args);
     },
     status: {
       description: 'Show system status',
       usage: 'status',
-      execute: () => getSystemStatus()
+      execute: () => getSystemStatus();
     },
     rag: {
       description: 'Execute RAG query',
       usage: 'rag <query>',
-      execute: (args) => executeRAG(args.join(' '))
+      execute: (args) => executeRAG(args.join(' '));
     },
     search: {
       description: 'Search legal database',
       usage: 'search <term>',
-      execute: (args) => searchDatabase(args.join(' '))
+      execute: (args) => searchDatabase(args.join(' '));
     },
     cluster: {
       description: 'Cluster management',
       usage: 'cluster <health|status|restart>',
-      execute: (args) => clusterCommand(args[0])
+      execute: (args) => clusterCommand(args[0]);
     },
     clear: {
       description: 'Clear terminal',
       usage: 'clear',
-      execute: () => clearTerminal()
+      execute: () => clearTerminal();
     },
     echo: {
       description: 'Echo text',
       usage: 'echo <text>',
-      execute: (args) => echoText(args.join(' '))
+      execute: (args) => echoText(args.join(' '));
     },
     version: {
-      description: 'Show system version',
-      usage: 'version',
-      execute: () => showVersion()
+      description: 'Show system version',;
+      usage: 'version',;
+      execute: () => showVersion();
     }
   };
 
@@ -89,7 +89,7 @@
       id: Date.now() + Math.random(),
       timestamp,
       text,
-      type
+      type;
     }];
   }
 
@@ -166,8 +166,8 @@
     try {
       addOutput(`Executing RAG query: "${query}"`, 'info');
       const response = await fetch('/api/yorha/enhanced-rag', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ query, context: 'terminal' })
       });
 

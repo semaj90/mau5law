@@ -95,7 +95,7 @@ export class MCPMultiCoreClient {
             status: coreData.status || 'online',
             capabilities: coreData.capabilities || [],
             currentLoad: coreData.currentLoad || 0,
-            maxLoad: coreData.maxLoad || 10,
+            maxLoad: coreData.maxLoad || 10,;
             models: coreData.models || [],
             lastHeartbeat: Date.now(),
             processingQueue: coreData.processingQueue || 0,
@@ -133,7 +133,7 @@ export class MCPMultiCoreClient {
     const healthPromises = Array.from(this.cores.values()).map(async (core) => {
       try {
         const response = await fetch(`${this.baseUrl}/api/cores/${core.id}/health`, {
-          method: 'GET',
+          method: 'GET',;
           signal: AbortSignal.timeout(5000), // 5 second timeout
         });
 
@@ -182,7 +182,7 @@ export class MCPMultiCoreClient {
         body: JSON.stringify({
           taskId: task.id,
           type: task.type,
-          priority: task.priority,
+          priority: task.priority,;
           payload: task.payload
         })
       });
@@ -205,11 +205,11 @@ export class MCPMultiCoreClient {
       const mcpResponse: MCPResponse = {
         success: true,
         taskId: task.id,
-        coreId: selectedCore.id,
+        coreId: selectedCore.id,;
         result: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).data || (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).result || result,
         processingTime,
         metadata: {
-          model: result?.model || "unknown" // @ts-ignore - Model property access || 'unknown',
+          model: result?.model || "unknown" // @ts-ignore - Model property access || 'unknown',;
           tokens: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).tokens || 0,
           cacheHit: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).cacheHit || false,
           gpuAccelerated: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).gpuAccelerated || false
@@ -229,7 +229,7 @@ export class MCPMultiCoreClient {
         taskId: task.id,
         coreId: task.assignedCore || 'unknown',
         result: null,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime,;
         error: error instanceof Error ? error.message: 'Unknown error'
       };
     }
@@ -304,7 +304,7 @@ export class MCPMultiCoreClient {
           taskId: tasks[index].id,
           coreId: 'unknown',
           result: null,
-          processingTime: 0,
+          processingTime: 0,;
           error: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason.message: 'Parallel task failed'
         };
       }

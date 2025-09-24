@@ -10,14 +10,14 @@ const browser = false; // Server-side config
 
 // Configuration interfaces for type safety
 export interface DatabaseConfig {
-  postgres: {
+  postgres: {;
     url: string;
     maxConnections: number;
     ssl: boolean;
     timeout: number;
     retryAttempts: number;
   };
-  redis: {
+  redis: {;
     url: string;
     fallbackUrl?: string;
     maxRetries: number;
@@ -32,7 +32,7 @@ export interface DatabaseConfig {
     maxConnectionPoolSize: number;
     connectionTimeout: number;
   };
-  qdrant: {
+  qdrant: {;
     url: string;
     apiKey?: string;
     timeout: number;
@@ -44,7 +44,7 @@ export interface DatabaseConfig {
 export interface AIConfig {
   ollama: {
     baseUrl: string;
-    models: {
+    models: {;
       legal: string;
       embedding: string;
       chat: string;
@@ -58,7 +58,7 @@ export interface AIConfig {
     model: string;
     maxTokens: number;
   };
-  embedding: {
+  embedding: {;
     dimensions: number;
     batchSize: number;
     cacheEnabled: boolean;
@@ -80,7 +80,7 @@ export interface ServiceConfig {
   };
   clusterManager: {
     url: string;
-    workers: {
+    workers: {;
       legal: number;
       ai: number;
       vector: number;
@@ -115,13 +115,13 @@ export interface WindowsConfig {
 }
 
 export interface SecurityConfig {
-  cors: {
+  cors: {;
     origins: string[];
     credentials: boolean;
   };
   rateLimit: {
     windowSec: number;
-    limits: {
+    limits: {;
       free: number;
       premium: number;
       enterprise: number;
@@ -159,11 +159,11 @@ export interface UnifiedConfig {
   windows: WindowsConfig;
   security: SecurityConfig;
   logging: LoggingConfig;
-  monitoring: {
+  monitoring: {;
     enabled: boolean;
     metricsPort: number;
     healthCheckInterval: number;
-    alerting: {
+    alerting: {;
       enabled: boolean;
       webhookUrl?: string;
       channels: string[];
@@ -339,7 +339,7 @@ class ConfigManager {
         healthCheckInterval: parseInt(env.HEALTH_CHECK_INTERVAL) || 30000,
         alerting: {
           enabled: env.ALERTING_ENABLED === 'true',
-          webhookUrl: env.ALERTING_WEBHOOK_URL,
+          webhookUrl: env.ALERTING_WEBHOOK_URL,;
           channels: (env.ALERTING_CHANNELS || '').split(',').filter(Boolean)
         }
       }
@@ -542,7 +542,7 @@ class ConfigManager {
     } catch (error: any) {
       return {
         status: 'unhealthy',
-        checks,
+        checks,;
         timestamp: new Date().toISOString()
       };
     }

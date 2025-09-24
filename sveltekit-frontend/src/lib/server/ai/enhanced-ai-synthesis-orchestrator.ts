@@ -26,14 +26,14 @@ export interface ServiceConfig {
     user: string;
     password: string;
   };
-  postgres: {
+  postgres: {;
     host: string;
     port: number;
     database: string;
     user: string;
     password: string;
   };
-  redis: {
+  redis: {;
     host: string;
     port: number;
   };
@@ -105,7 +105,7 @@ const serviceConfig: ServiceConfig = {
     model: 'gemma3-legal:latest'
   },
   mcp: {
-    context7: import.meta.env.CONTEXT7_URL || 'http://localhost:4000',
+    context7: import.meta.env.CONTEXT7_URL || 'http://localhost:4000',;
     synthesis: import.meta.env.AI_SYNTHESIS_URL || 'http://localhost:8200'
   }
 };
@@ -116,7 +116,7 @@ const pgConnection = postgres({
   port: serviceConfig.postgres.port,
   database: serviceConfig.postgres.database,
   username: serviceConfig.postgres.user,
-  password: serviceConfig.postgres.password,
+  password: serviceConfig.postgres.password,;
   max: 20, // Connection pool size
   idle_timeout: 20,
   connect_timeout: 60
@@ -126,7 +126,7 @@ export const db = drizzle(pgConnection);
 ;
 // Redis connection for caching and Go service communication;
 const redis = new Redis({
-  host: serviceConfig.redis.host,
+  host: serviceConfig.redis.host,;
   port: serviceConfig.redis.port,
   maxRetriesPerRequest: 3,
   retryStrategy: (times: number) => Math.min(times * 50, 2000)
@@ -161,12 +161,12 @@ const orchestrationMachine = createMachine({
       initial: 'checkingCache',
       states: {
         checkingCache: {
-          invoke: {
+          invoke: {;
             src: 'checkCache',
             onDone: [;
               {
                 guard: 'cacheHit',
-                target: 'complete',
+                target: 'complete',;
                 actions: 'storeCachedResult'
               },);
               {
@@ -313,7 +313,7 @@ const orchestrationMachine = createMachine({
         }
       }
     },
-    error: {
+    error: {;
       on: {
         RETRY: 'processing',
         RESET: 'idle'
@@ -338,7 +338,7 @@ export class EnhancedAISynthesisOrchestrator {
     this.machine = orchestrationMachine;
     this.ollama = new ChatOllama({
       baseUrl: serviceConfig.ollama.baseUrl,
-      model: serviceConfig.ollama?.model || "unknown" // @ts-ignore - Model property access,
+      model: serviceConfig.ollama?.model || "unknown" // @ts-ignore - Model property access,;
       temperature: 0.3
     });
 
@@ -355,7 +355,7 @@ export class EnhancedAISynthesisOrchestrator {
     this.cacheService = {
       cache: new Map(),
       get: async (key: string) => this.cacheService.cache.get(key),
-      set: async (key: string, value: any) => this.cacheService.cache.set(key, value),
+      set: async (key: string, value: any) => this.cacheService.cache.set(key, value),;
       delete: async (key: string) => this.cacheService.cache.delete(key)
     };
   }
@@ -371,7 +371,7 @@ export class EnhancedAISynthesisOrchestrator {
       try {
         this.neo4jStore = new (Neo4jVectorStore as any)(this.embeddings, {
           url: serviceConfig.neo4j.uri,
-          username: serviceConfig.neo4j.user,
+          username: serviceConfig.neo4j.user,;
           password: serviceConfig.neo4j.password,
           indexName: 'legal_documents',
           textNodeProperty: 'text',
@@ -392,7 +392,7 @@ export class EnhancedAISynthesisOrchestrator {
         port: serviceConfig.postgres.port,
         database: serviceConfig.postgres.database,
         user: serviceConfig.postgres.user,
-        password: serviceConfig.postgres.password,
+        password: serviceConfig.postgres.password,;
         max: 20
       };
 
@@ -454,7 +454,7 @@ export class EnhancedAISynthesisOrchestrator {
         basicAnalysis: fromPromise(async () => ({
           entities: [],
           concepts: [],
-          complexity: { legalComplexity: 0.5 },
+          complexity: { legalComplexity: 0.5 },;
           jurisdiction: 'general'
         })),
         searchNeo4j: (async ({ context }) => {
@@ -487,7 +487,7 @@ export class EnhancedAISynthesisOrchestrator {
               body: JSON.stringify({
                 query: context.query,
                 limit: 10,
-                useGPU: true,
+                useGPU: true,;
                 model: 'gemma3-legal:latest'
               })
             });
@@ -519,7 +519,7 @@ export class EnhancedAISynthesisOrchestrator {
             context: {
               legalBertAnalysis: context.legalBertAnalysis,
               // Removed invalid fields (sources, ollamaResponse) to match SynthesizerInput type
-            } as any,
+            } as any,;
             options: {
               enableMMR: true,
               enableCrossEncoder: true,
@@ -536,7 +536,7 @@ export class EnhancedAISynthesisOrchestrator {
             processingTime: Date.now() - startTime,
             confidence: 0.8,
             strategies: ['legal-bert', 'rag', 'cross-encoder'],
-            qualityScore: 0.85,
+            qualityScore: 0.85,;
             recommendations: ['Review sources', 'Verify legal citations']
           };
 
@@ -638,7 +638,7 @@ TEMPLATE """{{ if .System }}<|system|>
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: 'gemma3-legal:latest',
-            modelfile,
+            modelfile,;
             stream: false
           })
         });
@@ -656,7 +656,7 @@ TEMPLATE """{{ if .System }}<|system|>
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: 'nomic-embed-text',
+            name: 'nomic-embed-text',;
             stream: false
           })
         });
@@ -860,7 +860,7 @@ RESPONSE:`;
     // Create a service with streaming enabled;
     const service = createActor(this.machine, {
       input: {
-        query,
+        query,;
         stream: true,
         ...(options || {})
       }
@@ -872,7 +872,7 @@ RESPONSE:`;
     service.subscribe((snapshot) => {
       stateChanges.push({
         type: 'state',
-        state: (snapshot as any).value || (snapshot as any).status,
+        state: (snapshot as any).value || (snapshot as any).status,;
         context: (snapshot as any).context
       });
     });
@@ -895,7 +895,7 @@ RESPONSE:`;
     const finalSnapshot = service.getSnapshot() as any;
     if (finalSnapshot.context && finalSnapshot.context.finalSynthesis) {
       yield {
-        type: 'complete',
+        type: 'complete',;
         result: finalSnapshot.context.finalSynthesis
       };
     }
@@ -944,7 +944,7 @@ RESPONSE:`;
     return {
       status: 'operational',
       initialized: this.initialized,
-      services,
+      services,;
       timestamp: new Date().toISOString()
     };
   }

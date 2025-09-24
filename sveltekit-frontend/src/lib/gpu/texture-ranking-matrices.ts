@@ -73,7 +73,7 @@ export class TextureRankingMatrices {
       workgroupSize: [8, 8, 1]
     },
     {
-      name: 'citation_network',
+      name: 'citation_network',;
       weight: 0.15,
       computeShader: this.getCitationNetworkShader(),
       textureFormat: 'r32float',
@@ -162,7 +162,7 @@ export class TextureRankingMatrices {
               binding: 1,
               visibility: GPUShaderStage.COMPUTE,
               storageTexture: {
-                access: 'write-only',
+                access: 'write-only',;
                 format: dimension.textureFormat,
                 viewDimension: '2d'
               }
@@ -170,7 +170,7 @@ export class TextureRankingMatrices {
             {
               binding: 2,
               visibility: GPUShaderStage.COMPUTE,
-              buffer: {
+              buffer: {;
                 type: 'storage'
               }
             }
@@ -182,7 +182,7 @@ export class TextureRankingMatrices {
           layout: this.device.createPipelineLayout({
             bindGroupLayouts: [bindGroupLayout]
           }),
-          compute: {
+          compute: {;
             module: shaderModule,
             entryPoint: 'main'
           }
@@ -192,7 +192,7 @@ export class TextureRankingMatrices {
           pipeline: nativePipeline,
           bindGroupLayout,
           bindGroup: this.device.createBindGroup({
-            layout: bindGroupLayout,
+            layout: bindGroupLayout,;
             entries: []
           }),
           workgroupCount: dimension.workgroupSize
@@ -331,13 +331,13 @@ export class TextureRankingMatrices {
       // Create output texture for results;
       const outputTexture = this.device.createTexture({
         size: { width: paddedSize, height: paddedSize },
-        format: dimension.textureFormat,
+        format: dimension.textureFormat,;
         usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC
       });
 
       // Create query buffer;
       const queryBuffer = this.device.createBuffer({
-        size: queryEmbedding.byteLength,
+        size: queryEmbedding.byteLength,;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
         mappedAtCreation: true
       });
@@ -347,7 +347,7 @@ export class TextureRankingMatrices {
 
       // Create bind group;
       const bindGroup = this.device.createBindGroup({
-        layout: pipeline.bindGroupLayout,
+        layout: pipeline.bindGroupLayout,;
         entries: [)
           { binding: 0, resource: inputTexture.createView() },
           { binding: 1, resource: outputTexture.createView() },
@@ -371,7 +371,7 @@ export class TextureRankingMatrices {
 
       // Copy result to staging buffer;
       const stagingBuffer = this.device.createBuffer({
-        size: paddedSize * paddedSize * 4, // R32F = 4 bytes
+        size: paddedSize * paddedSize * 4, // R32F = 4 bytes;
         usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
@@ -419,7 +419,7 @@ export class TextureRankingMatrices {
     const embeddingDim = 384; // Assumed embedding dimension;
     const texture = this.device.createTexture({
       size: { width: textureSize, height: textureSize },
-      format: 'rgba32float',
+      format: 'rgba32float',;
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
 
@@ -528,7 +528,7 @@ export class TextureRankingMatrices {
         nodeId: node.id,
         scores: new Map([['semantic_similarity', similarity]]),
         combinedScore: similarity,
-        rank: 0,
+        rank: 0,;
         metadata: {
           processingTime: 0,
           cacheHit: false,
@@ -564,7 +564,7 @@ export class TextureRankingMatrices {
     }
 
     this.rankingCache.set(key, {
-      result: results,
+      result: results,;
       timestamp: Date.now(),
       priority
     });
@@ -765,7 +765,7 @@ export class NESSGPUBinaryRankingPipeline {
    */
   async processLegalDocumentsBinary(
     documents: any[], // Raw legal documents
-    queryText: string,
+    queryText: string,;
     options: {
       maxResults?: number;
       dimensions?: string[];
@@ -905,13 +905,13 @@ export class NESSGPUBinaryRankingPipeline {
       id: index,
       embedding: doc.embedding || new Float32Array(384),
       priority: doc.priority || 128,
-      bankId: this.getBankIdForDocument(doc),
+      bankId: this.getBankIdForDocument(doc),;
       metadata: doc
     });
 
     return {
       nodes,
-      edges: [], // Could add citation relationships
+      edges: [], // Could add citation relationships;
       checksum: this.calculateChecksum(documents)
     };
   }
@@ -988,7 +988,7 @@ export class NESSGPUBinaryRankingPipeline {
         nodeId: i,
         scores: new Map([['semantic_similarity', similarity]]),
         combinedScore: similarity,
-        rank: 0,
+        rank: 0,;
         metadata: {
           processingTime: 0,
           cacheHit: false,

@@ -25,14 +25,14 @@
     provider: 'ollama' | 'autogen' | 'crewai' | 'langchain'
     size: string
     specialization: 'general' | 'legal' | 'code' | 'reasoning' | 'embedding'
-    status: 'online' | 'offline' | 'loading' | 'error'
+    status: 'online' | 'offline' | 'loading' | 'error';
     performance: {
       tokensPerSecond: number
       memoryUsage: string
       responseTime: number
     }
     capabilities: string[]
-    endpoint: string
+    endpoint: string;
   }
   interface Props {
     selectedModel?: LLMModel
@@ -57,14 +57,14 @@
       provider: 'ollama',
       size: '7.3GB',
       specialization: 'legal',
-      status: 'online',
+      status: 'online',;
       performance: {
         tokensPerSecond: 25,
         memoryUsage: '6.8GB',
         responseTime: 1200
       },
       capabilities: ['legal-analysis', 'case-research', 'document-review'],
-      endpoint: 'http://localhost:11434'
+      endpoint: 'http://localhost:11434';
     },
     {
       id: 'llama3-instruct',
@@ -73,14 +73,14 @@
       provider: 'ollama', 
       size: '4.7GB',
       specialization: 'general',
-      status: 'online',
+      status: 'online',;
       performance: {
         tokensPerSecond: 35,
         memoryUsage: '4.2GB',
         responseTime: 800
       },
       capabilities: ['general-chat', 'reasoning', 'summarization'],
-      endpoint: 'http://localhost:11434'
+      endpoint: 'http://localhost:11434';
     },
     {
       id: 'codellama-code',
@@ -89,14 +89,14 @@
       provider: 'ollama',
       size: '3.8GB', 
       specialization: 'code',
-      status: 'offline',
+      status: 'offline',;
       performance: {
         tokensPerSecond: 40,
         memoryUsage: '3.5GB',
         responseTime: 600
       },
       capabilities: ['code-generation', 'debugging', 'refactoring'],
-      endpoint: 'http://localhost:11434'
+      endpoint: 'http://localhost:11434';
     },
     {
       id: 'nomic-embed',
@@ -105,14 +105,14 @@
       provider: 'ollama',
       size: '274MB',
       specialization: 'embedding',
-      status: 'online',
+      status: 'online',;
       performance: {
         tokensPerSecond: 500,
         memoryUsage: '512MB',
         responseTime: 100
       },
-      capabilities: ['text-embedding', 'similarity-search', 'vector-generation'],
-      endpoint: 'http://localhost:11434'
+      capabilities: ['text-embedding', 'similarity-search', 'vector-generation'],;
+      endpoint: 'http://localhost:11434';
     }
   ])
   // Filter models based on criteria
@@ -149,7 +149,7 @@
       case 'autogen': return Brain
       case 'crewai': return Database
       case 'langchain': return Globe
-      default: return Settings
+      default: return Settings;
     }
   }
   // Status Colors
@@ -159,7 +159,7 @@
       case 'offline': return 'text-red-400' 
       case 'loading': return 'text-yellow-400'
       case 'error': return 'text-red-500'
-      default: return 'text-gray-400'
+      default: return 'text-gray-400';
     }
   }
   // Status Icons
@@ -168,8 +168,8 @@
       case 'online': return CheckCircle
       case 'offline': return AlertCircle
       case 'loading': return Loader2
-      case 'error': return AlertCircle
-      default: return AlertCircle
+      case 'error': return AlertCircle;
+      default: return AlertCircle;
     }
   }
   // State for dropdown
@@ -182,19 +182,19 @@
     isOpen = false;
   }
   // Load model statuses on mount
-  $effect(async () => {
-    await refreshModelStatuses()
+  $effect(() => {
+    refreshModelStatuses();
     // Auto-refresh every 10 seconds
-    const interval = setInterval(refreshModelStatuses, 10000)
-    return () => clearInterval(interval)
-  })
+    const interval = setInterval(refreshModelStatuses, 10000);
+    return () => clearInterval(interval);
+  });
   async function refreshModelStatuses() {
     // Check each model's health
     for (const model of availableModels) {
       try {
         const response = await fetch(`${model.endpoint}/api/tags`, {
           method: 'GET',
-          signal: AbortSignal.timeout(2000)
+          signal: AbortSignal.timeout(2000);
         })
         if (response.ok) {
           const data = await response.json()
@@ -216,7 +216,7 @@
     availableModels = [...availableModels]
     try {
       const response = await fetch(`${model.endpoint}/api/pull`, {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: model.name })
       })
@@ -245,7 +245,7 @@
     class="flex h-12 w-full items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600
            bg-white dark:bg-gray-800 px-3 py-2 text-sm
            hover:bg-gray-50 dark:hover:bg-gray-700
-           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
            disabled:cursor-not-allowed disabled:opacity-50
            transition-colors duration-200"
     aria-label="Select AI Model"
@@ -281,7 +281,7 @@
     <div
       class="z-50 mt-1 w-full rounded-lg border border-gray-200 dark:border-gray-700 
              bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5
-             max-h-96 overflow-auto"
+             max-h-96 overflow-auto";
       in:fade={{ duration: 150 }}
       out:fade={{ duration: 100 }}
     >
@@ -292,7 +292,7 @@
           <button
             onclick={() => selectModel(model)}
             class="flex w-full items-center justify-between px-4 py-3 text-sm
-                   hover:bg-gray-100 dark:hover:bg-gray-700
+                   hover:bg-gray-100 dark:hover:bg-gray-700;
                    focus:bg-gray-100 dark:focus:bg-gray-700 focus:outline-none
                    {selectedModel?.id === model.id ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-gray-100'}"
           >
@@ -352,7 +352,7 @@
                       e.stopPropagation()
                       loadModel(model)
                     }}
-                    class="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 
+                    class="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 ;
                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
                            transition-colors duration-200"
                   >
@@ -382,7 +382,7 @@
         <div class="flex items-center justify-between">
           <button
             onclick={refreshModelStatuses}
-            class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300
+            class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300;
                    focus:outline-none focus:underline"
           >
             Refresh Status

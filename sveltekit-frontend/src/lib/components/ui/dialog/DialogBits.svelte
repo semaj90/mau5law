@@ -28,15 +28,15 @@
     children,
     trigger,
     title,
-    description
+    description;
    }: Props = $props();
 
   const sizeClasses = {
     sm: "max-w-md",
     md: "max-w-lg",
-    lg: "max-w-2xl",
-    xl: "max-w-4xl",
-    full: "max-w-[95vw] max-h-[95vh]"
+    lg: "max-w-2xl",;
+    xl: "max-w-4xl",;
+    full: "max-w-[95vw] max-h-[95vh]";
   };
 
   let dialogClasses = $derived(cn(
@@ -108,7 +108,7 @@
 </DialogPrimitive.Root>
 
 <style>
-  :global(.legal-ai-dialog) {
+  :global(.legal-ai-dialog) {;
     font-family: var(--legal-ai-font-family-sans);
   }
 

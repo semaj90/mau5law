@@ -154,7 +154,7 @@ class DocumentProcessingWorker {
       caseId: document.case_id,
       userId: document.user_id,
       processingType: 'full_analysis',
-      priority: 5,
+      priority: 5,;
       timestamp: new Date().toISOString()
     };
 
@@ -296,7 +296,7 @@ class DocumentProcessingWorker {
 
       chunks.push({
         id: chunkId,
-        content: chunkContent,
+        content: chunkContent,;
         metadata: {
           chunkIndex: chunks.length,
           startPosition: i,
@@ -326,7 +326,7 @@ class DocumentProcessingWorker {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            model: 'nomic-embed-text',
+            model: 'nomic-embed-text',;
             prompt: chunk.content
           })
         });
@@ -340,7 +340,7 @@ class DocumentProcessingWorker {
 
         embeddings.push({
           chunkId: chunk.id,
-          embedding: embeddingResult.embedding,
+          embedding: embeddingResult.embedding,;
           model: 'nomic-embed-text'
         });
       } catch (err) {
@@ -367,7 +367,7 @@ class DocumentProcessingWorker {
         content: chunk.content,
         start_position: chunk.metadata.startPosition,
         end_position: chunk.metadata.endPosition,
-        word_count: chunk.metadata.wordCount,
+        word_count: chunk.metadata.wordCount,;
         embedding: embedding ? embedding.embedding: null,
         embedding_model: embedding ? embedding?.model || "unknown" // @ts-ignore - Model property access : null,
         created_at: new Date(),
@@ -400,7 +400,7 @@ class DocumentProcessingWorker {
           model: 'gemma3-legal',
           prompt: `Please provide a comprehensive legal analysis and summary of the following document:\n\n${extractedText.slice(0, 4000)}`,
           stream: false,
-          options: {
+          options: {;
             temperature: 0.3,
             top_p: 0.9,
             max_tokens: 1000

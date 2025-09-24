@@ -39,7 +39,7 @@ export interface CaseAIContext {
     lastActivity: number;
     activeEvidenceId?: string;
   };
-  insights: Array<{
+  insights: Array<{;
     id: string;
     type: 'pattern' | 'connection' | 'anomaly' | 'recommendation';
     description: string;
@@ -75,7 +75,7 @@ class AIAssistantGlobalStore {
   availableBackends = $state<Backend[]>(['vllm', 'ollama', 'webasm', 'go-micro']);
   backendHealth = $state<Record<Backend, number>({
     vllm: 0.8,
-    ollama: 0.9,
+    ollama: 0.9,;
     webasm: 0.7,
     'go-micro': 0.6
   });
@@ -83,7 +83,7 @@ class AIAssistantGlobalStore {
   // Configuration;
   config = $state<AssistantConfig>({
     temperature: 0.2,
-    maxTokens: 2048,
+    maxTokens: 2048,;
     model: 'gemma3-legal',
     systemPrompt: 'You are a specialized legal AI assistant focusing on deeds, contracts, and legal analysis.',
     autoSwitchBackend: true,
@@ -97,7 +97,7 @@ class AIAssistantGlobalStore {
     averageResponseTime: 0,
     backendLatency: {
       vllm: 0,
-      ollama: 0,
+      ollama: 0,;
       webasm: 0,
       'go-micro': 0
     } as Record<Backend, number>
@@ -142,7 +142,7 @@ class AIAssistantGlobalStore {
         currentSession: {
           isActive: false,
           lastActivity: Date.now()
-        },
+        },;
         insights: []
       };
     }
@@ -163,7 +163,7 @@ class AIAssistantGlobalStore {
 
     const newMessage: AIMessage = {
       ...message,
-      id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,;
       timestamp: Date.now()
     };
 
@@ -202,7 +202,7 @@ class AIAssistantGlobalStore {
       await this.addMessage(caseId, {
         role: 'user',
         content,
-        evidenceIds,
+        evidenceIds,;
         metadata: {
           legalContext: options?.legalContext
         }
@@ -235,7 +235,7 @@ class AIAssistantGlobalStore {
           backend,
           model: response.model || this.config.model,
           tokenCount: response.tokenCount,
-          processingTime: performance.now() - startTime,
+          processingTime: performance.now() - startTime,;
           confidence: response.confidence
         }
       };
@@ -301,7 +301,7 @@ class AIAssistantGlobalStore {
   }
 
   private calculateBackendScore(
-    backend: Backend,
+    backend: Backend,;
     complexity: string,
     hasLegalContext: boolean,
     requiresSpeed: boolean;
@@ -373,7 +373,7 @@ class AIAssistantGlobalStore {
 
     const result = await browserLocalAI.generateText({
       prompt: content,
-      maxTokens: 512,
+      maxTokens: 512,;
       temperature: 0.3,
       systemPrompt: `You are a legal AI assistant. Context:\n${conversationContext}`
     });
@@ -385,7 +385,7 @@ class AIAssistantGlobalStore {
       tokenCount: result.tokensGenerated,
       accelerationMetrics: {
         totalProcessingTime: result.processingTime,
-        accelerationUsed: 'browser-local',
+        accelerationUsed: 'browser-local',;
         device: result.device,
         fromCache: result.fromCache
       }
@@ -414,7 +414,7 @@ class AIAssistantGlobalStore {
       legalContext: {
         jurisdiction: 'general',
         practiceArea: 'legal_assistance',
-        documentType: 'conversation',
+        documentType: 'conversation',;
         confidentiality: 'attorney-client'
       }
     });
@@ -428,7 +428,7 @@ class AIAssistantGlobalStore {
         totalProcessingTime: result.processingTime,
         queueTime: result.queueTime,
         accelerationUsed: 'cuda-tensorrt',
-        gpuUtilization: result.gpuUtilization,
+        gpuUtilization: result.gpuUtilization,;
         precision: result.precision,
         tensorrtVersion: result.metadata.tensorrtVersion
       }
@@ -443,14 +443,14 @@ class AIAssistantGlobalStore {
     const mockCaseDocuments = Array.from({ length: 5 }, (_, i) => ({
       id: `case_${i}`,
       title: `Case Document ${i + 1}`,
-      content: `Mock case content`,
+      content: `Mock case content`,;
       embedding: new Float32Array(768).map(() => Math.random()
     });
 
     const mockEvidenceDocuments = Array.from({ length: 10 }, (_, i) => ({
       id: `evidence_${i}`,
       title: `Evidence Document ${i + 1}`,
-      content: `Mock evidence content`,
+      content: `Mock evidence content`,;
       embedding: new Float32Array(768).map(() => Math.random()
     });
 
@@ -469,7 +469,7 @@ class AIAssistantGlobalStore {
 
     return {
       text: acceleratedResult.enhancedResponse,
-      model: 'simd-webgpu-accelerated',
+      model: 'simd-webgpu-accelerated',;
       confidence: 0.9,
       tokenCount: acceleratedResult.enhancedResponse.length / 4, // Rough estimate
       accelerationMetrics: acceleratedResult.acceleratedResults.processingMetrics
@@ -523,7 +523,7 @@ class AIAssistantGlobalStore {
 
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify(payload)
     });
 
@@ -548,7 +548,7 @@ class AIAssistantGlobalStore {
   private formatBackendPayload(backend: Backend, messages: AIMessage[]) {
     const basePayload = {
       messages: messages.map(msg => ({ role: msg.role, content: msg.content })),
-      temperature: this.config.temperature,
+      temperature: this.config.temperature,;
       model: this.config.model
     };
 
@@ -568,7 +568,7 @@ class AIAssistantGlobalStore {
     return {
       text: data.text || data.response || data.choices?.[0]?.message?.content || '',
       model: data.model || this.config.model,
-      tokenCount: data.tokenCount || data.usage?.total_tokens,
+      tokenCount: data.tokenCount || data.usage?.total_tokens,;
       confidence: data.confidence,
       backend
     };
@@ -644,7 +644,7 @@ class AIAssistantGlobalStore {
       const stateToSave = {
         cases: this.cases,
         currentCaseId: this.currentCaseId,
-        config: this.config,
+        config: this.config,;
         metrics: this.metrics
       };
       localStorage.setItem('ai-assistant-unified-state', JSON.stringify(stateToSave);
@@ -698,7 +698,7 @@ class AIAssistantGlobalStore {
     const conversation = {
       caseId,
       title: caseData.title,
-      messages: caseData.messages,
+      messages: caseData.messages,;
       insights: caseData.insights,
       exportedAt: new Date().toISOString(),
       totalMessages: caseData.messages.length

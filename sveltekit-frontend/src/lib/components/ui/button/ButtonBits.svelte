@@ -26,7 +26,7 @@
     class: className = '',
     to = undefined,
     children,
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   // Professional Legal AI Button Classes using CSS variables
@@ -38,17 +38,17 @@
     ghost: "legal-ai-btn-ghost",
     outline: "legal-ai-btn-secondary",
     destructive: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
-    success: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500",
-    warning: "bg-yellow-600 text-black hover:bg-yellow-700 focus:ring-yellow-500",
-    info: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
+    success: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500",;
+    warning: "bg-yellow-600 text-black hover:bg-yellow-700 focus:ring-yellow-500",;
+    info: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500";
   };
 
   const sizeClasses = {
     xs: "text-xs px-2 py-1 rounded-md",
     sm: "text-sm px-3 py-1.5 rounded-md",
-    md: "text-base px-4 py-2 rounded-lg",
-    lg: "text-lg px-6 py-3 rounded-lg",
-    xl: "text-xl px-8 py-4 rounded-xl"
+    md: "text-base px-4 py-2 rounded-lg",;
+    lg: "text-lg px-6 py-3 rounded-lg",;
+    xl: "text-xl px-8 py-4 rounded-xl";
   };
 
   let computedClasses = $derived(cn(

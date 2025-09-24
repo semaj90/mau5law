@@ -36,13 +36,13 @@
 
 		try {
 			const response = await fetch(`${cudaServiceUrl}/api/v1/search`, {
-				method: 'POST',
+				method: 'POST',;
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					q: trimmedQuery,
-					limit: limit
+					q: trimmedQuery,;
+					limit: limit;
 				})
 			});
 
@@ -126,7 +126,7 @@
 		<label class="nes-text">
 			Results limit:
 			<input
-				type="number"
+				type="number";
 				bind:value={limit}
 				min="1"
 				max="50"
@@ -203,7 +203,7 @@
 </div>
 
 <style>
-	.search-container {
+	.search-container {;
 		max-width: 800px;
 		margin: 20px auto;
 		padding: 20px;
@@ -310,7 +310,7 @@
 		font-size: 0.9em;
 	}
 
-	.metadata-content td:first-child {
+	.metadata-content td:first-child {;
 		font-weight: bold;
 		background-color: #e0e0e0;
 		width: 30%;

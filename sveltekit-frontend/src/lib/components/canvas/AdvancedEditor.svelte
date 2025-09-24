@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level
+<!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -86,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
         const text = line.replace(/^#+\s*/, '');
         nodes.push({
           type: 'heading',
-          level,
+          level,;
           children: [{ type: 'text', text }]
         });
         continue;
@@ -95,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
       if (line.startsWith('- ') || line.startsWith('* ')) {
         const text = line.replace(/^[-*]\s*/, '');
         nodes.push({
-          type: 'list-item',
+          type: 'list-item',;
           children: [{ type: 'text', text }]
         });
         continue;
@@ -104,7 +104,7 @@ https://svelte.dev/e/js_parse_error -->
       if (line.startsWith('> ')) {
         const text = line.replace(/^>\s*/, '');
         nodes.push({
-          type: 'blockquote',
+          type: 'blockquote',;
           children: [{ type: 'text', text }]
         });
         continue;
@@ -112,8 +112,8 @@ https://svelte.dev/e/js_parse_error -->
       // Regular paragraph
       if (!currentParagraph) {
         currentParagraph = {
-          type: 'paragraph',
-          children: []
+          type: 'paragraph',;
+          children: [];
         };
   }
       // Basic inline formatting
@@ -145,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
       initialValue: contentToMarkdown(content),
       previewStyle: 'vertical',
       height: height,
-      initialEditType: 'markdown',
+      initialEditType: 'markdown',;
       placeholder: placeholder,
       usageStatistics: false,
       toolbarItems: [
@@ -155,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
         ['table', 'image', 'link'],
         ['code', 'codeblock'],
         ['scrollSync']
-      ],
+      ],;
       hooks: {
         addImageBlobHook: (blob: Blob, callback: (url: string, alt?: string) => void) => {
           // Handle image upload
@@ -284,7 +284,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* @unocss-include */
-  .advanced-editor {
+  .advanced-editor {;
     width: 100%;
     height: 100%;
 }

@@ -36,7 +36,7 @@ export async function validateSessionToken(
     if (payload && payload.userId) {
       const user = await getUserById(payload.userId);
       if (user) {
-        const session: Session = {
+        const session: Session = {;
           id: token,
           userId: user.id,
           expiresAt: new Date(payload.exp * 1000)
@@ -44,7 +44,7 @@ export async function validateSessionToken(
         return {
           session,
           user: {
-            ...user,
+            ...user,;
             name: user.name || user.firstName || user.email || 'Unknown User'
           } as User
         };
@@ -67,7 +67,7 @@ export function setSessionTokenCookie(
   event.cookies.set("session", token, {
     path: "/",
     expires: expiresAt,
-    httpOnly: true,
+    httpOnly: true,;
     secure: import.meta.env.NODE_ENV === "production",
     sameSite: "lax"
   });
@@ -75,7 +75,7 @@ export function setSessionTokenCookie(
 export function deleteSessionTokenCookie(event: RequestEvent): void {
   event.cookies.delete("session", {
     path: "/",
-    httpOnly: true,
+    httpOnly: true,;
     secure: import.meta.env.NODE_ENV === "production",
     sameSite: "lax"
   });

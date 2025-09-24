@@ -1,28 +1,23 @@
-<!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression
-https://svelte.dev/e/tag_invalid_name -->
-<!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression -->
 <!-- Simple Working Chat Component for CUDA AI Backend -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-
-</script>
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Separator } from '$lib/components/ui/separator';
   import { ScrollArea } from '$lib/components/ui/scroll-area';
 
   // Svelte 5 runes for state management
-  let messages = $state<any[]>([]) => []);
+  let messages = $state<any[]>([]);
 
   let inputMessage = $state('');
   let isLoading = $state(false);
@@ -30,17 +25,17 @@ https://svelte.dev/e/tag_invalid_name -->
   let lastResponse = $state<any>(null);
 
   // Test connection to CUDA service on mount
-  $effect(async () => {
-    await testConnection();
+  $effect(() => {
+    testConnection();
   });
 
   async function testConnection() {
     connectionStatus = 'testing';
     try {
       const response = await fetch('/api/chat-test', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({;
           messages: [{ role: 'user', content: 'Connection test' }]
         })
       });
@@ -62,9 +57,9 @@ https://svelte.dev/e/tag_invalid_name -->
     if (!inputMessage.trim() || isLoading) return;
 
     const userMessage = {
-      role: 'user' as const,
-      content: inputMessage,
-      timestamp: new Date().toLocaleTimeString()
+      role: 'user' as const,;
+      content: inputMessage,;
+      timestamp: new Date().toLocaleTimeString();
     };
 
     // Add user message immediately
@@ -77,9 +72,9 @@ https://svelte.dev/e/tag_invalid_name -->
       console.log('🚀 Sending to CUDA AI:', currentInput);
       
       const response = await fetch('/api/chat-test', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify({;
           messages: [{ role: 'user', content: currentInput }]
         })
       });
@@ -92,29 +87,29 @@ https://svelte.dev/e/tag_invalid_name -->
       if (response.ok && data.message) {
         const assistantMessage = {
           role: 'assistant' as const,
-          content: data.message,
-          timestamp: new Date().toLocaleTimeString(),
+          content: data.message,;
+          timestamp: new Date().toLocaleTimeString(),;
           confidence: data.confidence,
           tokensPerSecond: data.tokensPerSecond,
-          taskId: data.taskId
+          taskId: data.taskId;
         };
 
         messages = [...messages, assistantMessage];
       } else {
         // Error response
         const errorMessage = {
-          role: 'assistant' as const,
-          content: `Error: ${data.error || 'Unknown error'}`,
-          timestamp: new Date().toLocaleTimeString()
+          role: 'assistant' as const,;
+          content: `Error: ${data.error || 'Unknown error'}`,;
+          timestamp: new Date().toLocaleTimeString();
         };
         messages = [...messages, errorMessage];
       }
     } catch (error) {
       console.error('❌ Chat error:', error);
       const errorMessage = {
-        role: 'assistant' as const,
-        content: `Network error: ${error.message}`,
-        timestamp: new Date().toLocaleTimeString()
+        role: 'assistant' as const,;
+        content: `Network error: ${error.message}`,;
+        timestamp: new Date().toLocaleTimeString();
       };
       messages = [...messages, errorMessage];
     } finally {
@@ -163,8 +158,8 @@ https://svelte.dev/e/tag_invalid_name -->
         </Badge>
       </h3>
       <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>
-Clear Chat
-</Button>
+        Clear Chat
+      </Button>
     </div>
   </div>
   
@@ -229,12 +224,12 @@ Clear Chat
         disabled={isLoading || connectionStatus !== 'connected'}
         class="flex-1"
       />
-      <Button class="bits-btn" 
+      <Button class="bits-btn"
         onclick={sendMessage}
         disabled={!inputMessage.trim() || isLoading || connectionStatus !== 'connected'}
       >
-{isLoading ? '⏳' : '📤'} Send
-</Button>
+        {isLoading ? '⏳' : '📤'} Send
+      </Button>
     </div>
 
     <!-- Status Info -->
@@ -258,7 +253,7 @@ Clear Chat
 {/if}
 
 <style>
-  .animate-bounce {
+  .animate-bounce {;
     animation: bounce 1s infinite;
   }
 

@@ -9,7 +9,7 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   // Using Svelte 4 store pattern instead of conflicting $state runes
   let machineState = $vectorPipelineState;
 
@@ -50,9 +50,12 @@
     vectorPipelineActions.retryFailedJobs();
   }
 
-  // Get status indicators (using derived values from Svelte 4 store)
-  // TODO: Convert to $derived: pipelineStatus = machineState.context?.pipeline || // TODO: Convert to $derived: batchInfo = machineState.context?.batch || // TODO: Convert to $derived: metrics = machineState.context?.metrics || // TODO: Convert to $derived: currentState = typeof machineState.value === 'string' ? machineState.value: 'unknown'
-  // TODO: Convert to $derived: errors = machineState.context?.errors || []
+  // Get status indicators using derived values
+  let pipelineStatus = $derived(machineState.context?.pipeline || null);
+  let batchInfo = $derived(machineState.context?.batch || null);
+  let metrics = $derived(machineState.context?.metrics || null);
+  let currentState = $derived(typeof machineState.value === 'string' ? machineState.value : 'unknown');
+  let errors = $derived(machineState.context?.errors || []);
 
   function getStatusColor(status: boolean): string {
     return status ? 'text-green-600' : 'text-red-600';

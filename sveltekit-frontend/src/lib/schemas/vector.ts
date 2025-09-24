@@ -5,7 +5,7 @@ export const vectorSearchRequestSchema = z.object({
   query: z.string().min(1),
   userId: z.string().min(1),
   caseId: z.string().optional(),
-  limit: z.number().int().positive().max(100).default(10),
+  limit: z.number().int().positive().max(100).default(10),;
   threshold: z.number().min(0).max(1).default(0.7)
 });
 
@@ -13,7 +13,7 @@ export const vectorSearchResponseSchema = z.object({
   results: z.array(z.object({
     id: z.string().optional(),
     score: z.number().optional(),
-    content: z.string().optional(),
+    content: z.string().optional(),;
     metadata: z.record(z.any()).optional()
   })).default([])
 });
@@ -22,12 +22,12 @@ export const ragRequestSchema = z.object({
   query: z.string().min(1),
   userId: z.string().min(1),
   caseId: z.string().optional(),
-  useContext: z.boolean().default(true),
+  useContext: z.boolean().default(true),;
   model: z.string().default('gemma3-legal')
 });
 
 export const ragResponseSchema = z.object({
-  response: z.string().nullable(),
+  response: z.string().nullable(),;
   context: vectorSearchResponseSchema.shape.results.optional()
 });
 
@@ -44,7 +44,7 @@ export const similarCasesResponseSchema = z.object({
     caseNumber: z.string().optional(),
     title: z.string().optional(),
     description: z.string().optional(),
-    score: z.number().optional(),
+    score: z.number().optional(),;
     metadata: z.record(z.any()).optional()
   })).default([])
 });

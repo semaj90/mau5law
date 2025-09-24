@@ -1,36 +1,36 @@
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Vector Intelligence Semantic Analysis API
  * Provides advanced semantic analysis of legal documents and content
  */
 
-import { json, error } from "@sveltejs/kit";
-import { vectorIntelligenceService } from "$lib/services/vector-intelligence-service.js";
+import { json, error } from "@sveltejs/kit"
+import { vectorIntelligenceService } from "$lib/services/vector-intelligence-service.js"
 
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
-    const body = await request.json();
-    const { content, options = {} } = body;
+    const body = await request.json()
+    const { content, options = {} } = body
 
     if (!content || typeof content !== "string") {
-      throw error(400, "Content is required and must be a string");
+      throw error(400, "Content is required and must be a string")
     }
 
     if (content.length > 50000) {
-      throw error(400, "Content too large. Maximum 50,000 characters allowed");
+      throw error(400, "Content too large. Maximum 50,000 characters allowed")
     }
 
     console.log(
       `🔬 Performing semantic analysis on ${content.length} characters...`,
-    );
+    )
 
     // Perform comprehensive semantic analysis
-    const analysis = await vectorIntelligenceService.analyzeSemantics(content);
+    const analysis = await vectorIntelligenceService.analyzeSemantics(content)
 
     // Get system health for metadata
-    const systemHealth = await vectorIntelligenceService.getSystemHealth();
+    const systemHealth = await vectorIntelligenceService.getSystemHealth()
 
     return json({
       success: true,
@@ -43,18 +43,18 @@ export const POST: RequestHandler = async ({ request, url }) => {
           confidence: systemHealth.modelConfidence
         }
       }
-    });
+    })
   } catch (err: any) {
-    console.error("❌ Semantic analysis API error:", err);
+    console.error("❌ Semantic analysis API error:", err)
 
-    const errorMessage = err instanceof Error ? err.message: "Unknown error";
+    const errorMessage = err instanceof Error ? err.message: "Unknown error"
     const statusCode =
       err && typeof err === "object" && "status" in err
-        ? (err as any).status: 500;
+        ? (err as any).status: 500
 
-    throw error(statusCode, errorMessage);
+    throw error(statusCode, errorMessage)
   }
-};
+}
 
 export const GET: RequestHandler = async ({ url }) => {
   return json({
@@ -98,5 +98,5 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       }
     }
-  });
-};
+  })
+}

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -107,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
     aaQuality: 0,
     pixelThroughput: 0,
     cacheEfficiency: 0,
-    adaptiveAdjustments: 0
+    adaptiveAdjustments: 0;
   });
 
   // Anti-aliasing state
@@ -388,9 +388,9 @@ https://svelte.dev/e/js_parse_error -->
         gpuContext = canvasElement.getContext('webgpu');
         if (gpuContext) {
           gpuContext.configure({
-            device: gpuDevice,
-            format: 'bgra8unorm',
-            size: canvasSize
+            device: gpuDevice,;
+            format: 'bgra8unorm',;
+            size: canvasSize;
           });
         }
       }
@@ -479,7 +479,7 @@ https://svelte.dev/e/js_parse_error -->
       const shaderSource = getShaderSource(aaConfig.type);
 
       const shaderModule = gpuDevice.createShaderModule({
-        code: shaderSource,
+        code: shaderSource,;
         label: `${shaderId}_${aaConfig.type}_shader`
       });
 
@@ -495,10 +495,10 @@ https://svelte.dev/e/js_parse_error -->
         compiledModule: shaderModule,
         compilationTime,
         validationErrors: [],
-        bindGroupLayouts: [],
+        bindGroupLayouts: [],;
         uniforms: ,
         lastCompiled: Date.now(),
-        useCount: 1
+        useCount: 1;
       };
 
       currentAAType = aaConfig.type;
@@ -727,10 +727,12 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Component lifecycle
    */
-  $effect(async () => {
-    if (preloadShaders) {
+  $effect(() => {
+    (async () => {
+if (preloadShaders) {
       await initializeShaderCache();
     }
+    })();
   });
 
   onDestroy(() => {
@@ -906,7 +908,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .yorha-aa-cache-container {
+  .yorha-aa-cache-container {;
     position: relative;
     display: inline-block;
     font-family: 'Rajdhani', 'Courier New', monospace;

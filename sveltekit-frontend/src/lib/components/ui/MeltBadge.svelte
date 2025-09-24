@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -21,18 +21,18 @@ https://svelte.dev/e/js_parse_error -->
   					legal: 'border-transparent bg-blue-500 text-gray-50 hover:bg-blue-500/80',
   					evidence: 'border-transparent bg-red-600 text-gray-50 hover:bg-red-600/80',
   					caseItem: 'border-transparent bg-green-600 text-gray-50 hover:bg-green-600/80',
-  					yorha: 'border-yellow-400 bg-black/90 text-yellow-400 hover:bg-black'
+  					yorha: 'border-yellow-400 bg-black/90 text-yellow-400 hover:bg-black';
   				},
   				size: {
   					default: 'px-2.5 py-0.5 text-xs',
   					sm: 'px-2 py-0.5 text-xs',
   					lg: 'px-3 py-1 text-sm',
-  					xl: 'px-4 py-1.5 text-base'
+  					xl: 'px-4 py-1.5 text-base';
   				}
   			},
   			defaultVariants: {
-  				variant: 'default',
-  				size: 'default'
+  				variant: 'default',;
+  				size: 'default';
   			}
   		}
   	);
@@ -58,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
   		role,
   		'aria-label': ariaLabel,
   		'data-testid': testId,
-  		children
+  		children;
   	}: Props = $props();
 
   	let badgeClass = $derived(cn(badgeVariants({ variant, size }), class));

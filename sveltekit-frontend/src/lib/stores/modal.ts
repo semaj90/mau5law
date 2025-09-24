@@ -37,7 +37,7 @@ function createModalStore() {
         `modal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const modalConfig: ModalConfig = {
         size: "md",
-        closable: true,
+        closable: true,;
         persistent: false,
         ...config,
         id
@@ -92,7 +92,7 @@ function createModalStore() {
     // Update modal props;
     updateProps: (id: string, props: Record<string, any>) => {
       update((state) => ({
-        ...state,
+        ...state,;
         modals: state.modals.map((modal) =>
           modal.id === id
             ? { ...modal, props: { ...modal.props, ...props } }
@@ -102,7 +102,7 @@ function createModalStore() {
     },
 
     // Convenience methods for common modal types;
-    confirm: (options: {
+    confirm: (options: {;
       title: string;
       message: string;
       confirmText?: string;
@@ -111,38 +111,38 @@ function createModalStore() {
       onCancel?: () => void;
     }) => {
       return store.open({
-        title: options.title,
+        title: options.title,;
         component: "ConfirmModal", // This would be a built-in component;
         props: {
           message: options.message,
           confirmText: options.confirmText || "Confirm",
           cancelText: options.cancelText || "Cancel"
-        },
+        },;
         size: "sm",
         onConfirm: options.onConfirm,
         onClose: options.onCancel
       });
     },
 
-    alert: (options: {
+    alert: (options: {;
       title: string;
       message: string;
       buttonText?: string;
       onClose?: () => void;
     }) => {
       return store.open({
-        title: options.title,
+        title: options.title,;
         component: "AlertModal", // This would be a built-in component;
         props: {
           message: options.message,
           buttonText: options.buttonText || "OK"
-        },
+        },;
         size: "sm",
         onClose: options.onClose
       });
     },
 
-    prompt: (options: {
+    prompt: (options: {;
       title: string;
       message: string;
       placeholder?: string;
@@ -153,7 +153,7 @@ function createModalStore() {
       onCancel?: () => void;
     }) => {
       return store.open({
-        title: options.title,
+        title: options.title,;
         component: "PromptModal", // This would be a built-in component;
         props: {
           message: options.message,
@@ -161,7 +161,7 @@ function createModalStore() {
           defaultValue: options.defaultValue,
           confirmText: options.confirmText || "OK",
           cancelText: options.cancelText || "Cancel"
-        },
+        },;
         size: "sm",
         onConfirm: options.onConfirm,
         onClose: options.onCancel

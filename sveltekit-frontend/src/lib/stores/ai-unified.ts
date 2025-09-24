@@ -20,7 +20,7 @@ export const aiStore = writable<AIState>({
   current: "",
   history: [],
   isProcessing: false,
-  lastResult: null,
+  lastResult: null,;
   error: null
 });
 
@@ -49,7 +49,7 @@ export async function parseAICommand(command: string): Promise<any> {
       target,
       priority,
       type,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(),;
       processed: true
     };
 
@@ -70,7 +70,7 @@ export async function parseAICommand(command: string): Promise<any> {
  * Apply AI-controlled classes to elements
  */
 export function applyAIClasses(
-  element: HTMLElement,
+  element: HTMLElement,;
   config: {
     add?: string[];
     remove?: string[];
@@ -92,7 +92,7 @@ export const addCommand = (command: string, result: any = null) => {
       ...store.history,
       {
         command,
-        result,
+        result,;
         timestamp: new Date().toISOString()
       }
     ],
@@ -117,7 +117,7 @@ export const clearHistory = () => {
     ...store,
     history: [],
     current: "",
-    lastResult: null,
+    lastResult: null,;
     error: null
   });
 };
@@ -126,7 +126,7 @@ export const clearHistory = () => {
 export const aiCommandService = {
   state: writable("idle"),
   context: writable({}),
-
+;
   send: function (event: any) {
     console.log("Processing event:", event);
     this.state.set("processing");

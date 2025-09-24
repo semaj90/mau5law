@@ -20,10 +20,10 @@
       { value: 'family', label: 'Family Law' },
       { value: 'corporate', label: 'Corporate Law' }
     ],
-    useLibrary = 'melt-ui',
+    useLibrary = 'melt-ui',;
     class: className = '',
     id,
-    'data-testid': testId
+    'data-testid': testId;
   }: BitsDemoProps = $props();
 
   // Component selection based on library choice
@@ -57,13 +57,13 @@
   async function showSuccessNotification() {
     try {
       const response = await fetch('/api/cases', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: 'Demo Case ' + Date.now(),
-          description: 'Demonstration case created from BitsDemo component',
-          priority: 'medium',
-          status: 'open'
+          description: 'Demonstration case created from BitsDemo component',;
+          priority: 'medium',;
+          status: 'open';
         })
       });
 
@@ -71,9 +71,9 @@
         const result = await (response as { ok?: any; json?: any }).json();
         addToast({
           data: {
-            title: 'Case Created Successfully',
+            title: 'Case Created Successfully',;
             description: `Case ${(result as { case?: any; system_overview?: any; p99?: any }).case?.caseNumber} created and saved to database.`,
-            color: 'success',
+            color: 'success',;
           },
         });
       } else {
@@ -82,9 +82,9 @@
     } catch (error) {
       addToast({
         data: {
-          title: 'Case Creation Failed',
-          description: 'Unable to create case via API. Check backend connection.',
-          color: 'error',
+          title: 'Case Creation Failed',;
+          description: 'Unable to create case via API. Check backend connection.',;
+          color: 'error',;
         },
       });
     }
@@ -93,16 +93,16 @@
   async function showWarningNotification() {
     try {
       const response = await fetch('/api/comprehensive-integration', {
-        method: 'GET'
+        method: 'GET';
       });
 
       if ((response as { ok?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; json?: any }).json();
         addToast({
           data: {
-            title: 'System Status Check',
+            title: 'System Status Check',;
             description: `Services: ${(result as { case?: any; system_overview?: any; p99?: any }).system_overview?.healthy_services || 0}/${(result as { case?: any; system_overview?: any; p99?: any }).system_overview?.total_services || 0} healthy`,
-            color: 'warning',
+            color: 'warning',;
           },
         });
       } else {
@@ -111,9 +111,9 @@
     } catch (error) {
       addToast({
         data: {
-          title: 'Health Check Failed',
-          description: 'Unable to check system health. Backend may be down.',
-          color: 'error',
+          title: 'Health Check Failed',;
+          description: 'Unable to check system health. Backend may be down.',;
+          color: 'error',;
         },
       });
     }
@@ -126,9 +126,9 @@
       if ((response as { ok?: any; json?: any }).ok) {
         addToast({
           data: {
-            title: 'Upload Service Test',
-            description: 'Upload service is healthy and responding.',
-            color: 'success',
+            title: 'Upload Service Test',;
+            description: 'Upload service is healthy and responding.',;
+            color: 'success',;
           },
         });
       } else {
@@ -137,9 +137,9 @@
     } catch (error) {
       addToast({
         data: {
-          title: 'Upload Service Error',
-          description: 'Upload service is not responding. Check backend services.',
-          color: 'error',
+          title: 'Upload Service Error',;
+          description: 'Upload service is not responding. Check backend services.',;
+          color: 'error',;
         },
       });
     }
@@ -148,33 +148,33 @@
   async function showInfoNotification() {
     try {
       const response = await fetch('/api/v1/quic/metrics', {
-        method: 'GET'
+        method: 'GET';
       });
 
       if ((response as { ok?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; json?: any }).json();
         addToast({
           data: {
-            title: 'Multi-Protocol Check',
+            title: 'Multi-Protocol Check',;
             description: `QUIC metrics available. P99: ${(result as { case?: any; system_overview?: any; p99?: any }).p99 || 'N/A'}ms`,
-            color: 'info',
+            color: 'info',;
           },
         });
       } else {
         addToast({
           data: {
-            title: 'Multi-Protocol Test',
-            description: 'Testing REST, gRPC, QUIC protocol integration.',
-            color: 'info',
+            title: 'Multi-Protocol Test',;
+            description: 'Testing REST, gRPC, QUIC protocol integration.',;
+            color: 'info',;
           },
         });
       }
     } catch (error) {
       addToast({
         data: {
-          title: 'Protocol Integration Test',
-          description: 'Testing multi-protocol backend integration.',
-          color: 'info',
+          title: 'Protocol Integration Test',;
+          description: 'Testing multi-protocol backend integration.',;
+          color: 'info',;
         },
       });
     }
@@ -311,7 +311,7 @@ Create New Case
     <div
       class="toast toast-{(data as { color?: any; title?: any; description?: any }).color}"
       animate:flip={{ duration: 500 }}
-      in:fly={{ duration: 150, x: '100%' }}
+      in:fly={{ duration: 150, x: '100%' }};
       out:fly={{ duration: 150, x: '100%' }}
     >
       <div class="toast-header">

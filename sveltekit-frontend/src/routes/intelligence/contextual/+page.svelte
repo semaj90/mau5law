@@ -76,7 +76,7 @@
       value: 94.7,
       trend: 'up',
       confidence: 0.92,
-      lastUpdate: new Date()
+      lastUpdate: new Date();
     },
     {
       id: 'context_relevance',
@@ -84,7 +84,7 @@
       value: 87.3,
       trend: 'up',
       confidence: 0.88,
-      lastUpdate: new Date()
+      lastUpdate: new Date();
     },
     {
       id: 'reasoning_depth',
@@ -92,15 +92,15 @@
       value: 78.9,
       trend: 'stable',
       confidence: 0.85,
-      lastUpdate: new Date()
+      lastUpdate: new Date();
     },
     {
       id: 'predictive_accuracy',
       name: 'Predictive Accuracy',
-      value: 82.1,
-      trend: 'up',
+      value: 82.1,;
+      trend: 'up',;
       confidence: 0.79,
-      lastUpdate: new Date()
+      lastUpdate: new Date();
     }
   ]);
   
@@ -113,7 +113,7 @@
       confidence: 0.91,
       relevance: 0.87,
       timestamp: new Date(Date.now() - 1000 * 60 * 5),
-      sources: ['case-analysis', 'vector-search', 'gemma-embeddings']
+      sources: ['case-analysis', 'vector-search', 'gemma-embeddings'];
     },
     {
       id: '2', 
@@ -123,7 +123,7 @@
       confidence: 0.84,
       relevance: 0.95,
       timestamp: new Date(Date.now() - 1000 * 60 * 12),
-      sources: ['timeline-analysis', 'evidence-tracking']
+      sources: ['timeline-analysis', 'evidence-tracking'];
     },
     {
       id: '3',
@@ -131,9 +131,9 @@
       title: 'Case Outcome Prediction',
       description: 'Based on similar precedents, 73% likelihood of favorable settlement',
       confidence: 0.73,
-      relevance: 0.92,
-      timestamp: new Date(Date.now() - 1000 * 60 * 18),
-      sources: ['precedent-analysis', 'ml-prediction', 'outcome-modeling']
+      relevance: 0.92,;
+      timestamp: new Date(Date.now() - 1000 * 60 * 18),;
+      sources: ['precedent-analysis', 'ml-prediction', 'outcome-modeling'];
     }
   ]);
   
@@ -143,14 +143,14 @@
       name: 'Document Embedding Generation',
       status: 'processing',
       progress: 67,
-      estimatedTime: 180,
+      estimatedTime: 180,;
       context: { documents: 23, model: 'gemma-embeddings' }
     },
     {
       id: 'task_2',
       name: 'Legal Entity Extraction',
-      status: 'completed',
-      progress: 100,
+      status: 'completed',;
+      progress: 100,;
       context: { entities: 156, precision: 0.94 }
     }
   ]);
@@ -189,7 +189,7 @@
     intelligenceMetrics = intelligenceMetrics.map(metric => ({
       ...metric,
       value: Math.max(0, Math.min(100, metric.value + (Math.random() - 0.5) * 2)),
-      lastUpdate: new Date()
+      lastUpdate: new Date();
     }));
   }
   
@@ -240,13 +240,13 @@
       __optimistic: true,
       data: {
         id: `insight_${Date.now()}`,
-        type: 'recommendation',
+        type: 'recommendation',;
         title: `Analysis: "${analysisQuery.slice(0, 50)}..."`,
         description: 'Processing contextual analysis...',
         confidence: 0.85,
-        relevance: 0.90,
-        timestamp: new Date(),
-        sources: ['contextual-ai', 'user-query']
+        relevance: 0.90,;
+        timestamp: new Date(),;
+        sources: ['contextual-ai', 'user-query'];
       }
     };
     
@@ -260,12 +260,12 @@
       const realInsight: ContextualInsight = {
         id: `insight_${Date.now()}`,
         type: 'recommendation',
-        title: `Contextual Analysis Complete`,
+        title: `Contextual Analysis Complete`,;
         description: `Found 3 relevant patterns and 2 potential recommendations for: "${analysisQuery}"`,
         confidence: 0.91,
-        relevance: 0.88,
-        timestamp: new Date(),
-        sources: ['contextual-ai', 'gemma-embeddings', 'legal-reasoning']
+        relevance: 0.88,;
+        timestamp: new Date(),;
+        sources: ['contextual-ai', 'gemma-embeddings', 'legal-reasoning'];
       };
       
       contextualInsights = [realInsight, ...contextualInsights];
@@ -429,7 +429,7 @@
           >
             {#snippet item({ item, isOptimistic })}
               <div 
-                class="insight-item"
+                class="insight-item";
                 class:optimistic={isOptimistic}
                 role="button"
                 tabindex="0"
@@ -560,13 +560,13 @@
               __optimistic: true,
               data: {
                 id: `doc_insight_${file.id}`,
-                type: 'pattern',
+                type: 'pattern',;
                 title: `Document Analyzed: ${file.filename}`,
                 description: 'Processing document for contextual patterns and insights...',
                 confidence: 0.80,
-                relevance: 0.85,
-                timestamp: new Date(),
-                sources: ['document-upload', 'text-extraction', 'gemma-embeddings']
+                relevance: 0.85,;
+                timestamp: new Date(),;
+                sources: ['document-upload', 'text-extraction', 'gemma-embeddings'];
               }
             };
             optimisticInsights = [documentInsight, ...optimisticInsights];
@@ -663,7 +663,7 @@
 </HeadlessDialog>
 
 <style>
-  .contextual-intelligence-dashboard {
+  .contextual-intelligence-dashboard {;
     min-height: 100vh;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     padding: 2rem;

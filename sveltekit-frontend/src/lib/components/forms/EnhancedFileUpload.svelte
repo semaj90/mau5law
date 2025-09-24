@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Expected token >
+<!-- @migration-task Error while migrating Svelte code: Expected token >;
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token > -->
 <!--
@@ -15,16 +15,16 @@ export default ;
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Label } from "$lib/components/ui/label";
   // Badge replaced with span - not available in enhanced-bits
   import {
@@ -95,18 +95,18 @@ export default ;
   // Local form state (no $form store)
   let formState = $state({
     title: '',
-    description: '',
+    description: '',;
     tags: [] as string[],
     caseId: caseId || '',
     evidenceType: '',
     confidentialityLevel: '',
-    collectedBy: '',
+    collectedBy: '',;
     location: '',
     enableAiAnalysis: false,
     enableOcr: false,
     enableEmbeddings: false,
     enableSummarization: false,
-    isAdmissible: false,
+    isAdmissible: false,;
   });
   let errors = $state<Record<string, string[]>([]) >( );
 
@@ -312,10 +312,10 @@ export default ;
   <div class="yorha-panel-content space-y-6">
     <!-- Drop Zone -->
     <div
-      class="border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer border-muted-foreground border-opacity-25 hover:border-primary hover:border-opacity-50"
+      class="border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer border-muted-foreground border-opacity-25 hover:border-primary hover:border-opacity-50";
       class:border-primary={isDragOver}
       class:bg-primary/5={isDragOver}
-      class:opacity-50={disabled}
+      class:opacity-50={disabled};
       class:cursor-not-allowed={disabled}
       ondragover={handleDragOver}
       ondragleave={handleDragLeave}
@@ -491,7 +491,7 @@ Add
 oncancel?.()} disabled={isUploading}>Cancel
 </Button>
 
-        <button class="nes-btn" onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys.length > 0} class="min-w-24">
+        <button class="nes-btn" onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
           {#if isUploading}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />Uploading...
           {:else}
@@ -501,7 +501,7 @@ oncancel?.()} disabled={isUploading}>Cancel
       </div>
     </div>
 
-    {#if Object.keys.length > 0 && selectedFiles.length > 0}
+    {#if Object.keys(errors).length > 0 && selectedFiles.length > 0}
       <div class="border border-destructive bg-destructive/10 rounded p-3 flex items-start gap-3">
         <AlertCircle class="h-4 w-4" />
         <div>

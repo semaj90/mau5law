@@ -4,16 +4,16 @@
 
   import TokenUsageManager from "$lib/components/TokenUsageManager.svelte";
   import { Badge } from "$lib/components/ui/badge";
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { ScrollArea } from "$lib/components/ui/scroll-area";
   import type { ChatRequest, ChatResponse } from "$routes/api/ai/chat/+server";
   import {
@@ -73,14 +73,16 @@
   );
 
   // Initialize component
-  $effect(async () => {
-    await checkOllamaHealth();
+  $effect(() => {
+    (async () => {
+await checkOllamaHealth();
     await loadAvailableModels();
 
     // Auto-scroll setup
     return () => {
       // Cleanup if needed
     };
+    })();
   });
 
   // Health check function
@@ -114,9 +116,9 @@
     // Add user message to history
     chatHistory.push({
       id: messageId,
-      type: "user",
-      content: userMessage,
-      timestamp: new Date(),
+      type: "user",;
+      content: userMessage,;
+      timestamp: new Date(),;
     });
 
     // Clear input and set loading
@@ -128,20 +130,20 @@
       const chatRequest: ChatRequest = {
         message: userMessage,
         model,
-        temperature,
+        temperature,;
         stream: streamMode,
         caseId,
-        useRAG,
+        useRAG,;
       };
 
       const response = await fetch("/api/chat", {
-        method: "POST",
+        method: "POST",;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: [{ role: "user", content: userMessage }],
-          model,
+          model,;
           stream: streamMode,
-          sessionId: caseId
+          sessionId: caseId;
         }),
       });
 
@@ -165,9 +167,9 @@
 
       // Add error message to chat
       chatHistory.push.toString(),
-        type: "assistant",
-        content: `❌ Error: ${errorMessage}`,
-        timestamp: new Date(),
+        type: "assistant",;
+        content: `❌ Error: ${errorMessage}`,;
+        timestamp: new Date(),;
       });
     } finally {
       isLoading = false;
@@ -181,10 +183,10 @@
       id: messageId + "_response",
       type: "assistant",
       content: data.response,
-      timestamp: new Date(),
-      performance: data.performance,
+      timestamp: new Date(),;
+      performance: data.performance,;
       suggestions: data.suggestions,
-      relatedCases: data.relatedCases,
+      relatedCases: data.relatedCases,;
     });
 
     // Record token usage in TokenUsageManager
@@ -192,10 +194,10 @@
       tokenManager.recordTokenUsage({
         promptTokens: data.performance.promptTokens || 0,
         responseTokens: data.performance.tokens || 0,
-        model: model,
-        prompt: chatHistory[chatHistory.length - 2]?.content || "",
+        model: model,;
+        prompt: chatHistory[chatHistory.length - 2]?.content || "",;
         response: data.response,
-        processingTime: data.performance.duration || 0,
+        processingTime: data.performance.duration || 0,;
       });
     }
   }
@@ -212,9 +214,9 @@
     // Add placeholder message
     chatHistory.push({
       id: messageId + "_response",
-      type: "assistant",
-      content: "",
-      timestamp: new Date(),
+      type: "assistant",;
+      content: "",;
+      timestamp: new Date(),;
     });
 
     try {
@@ -261,12 +263,12 @@
     const chatData = {
       timestamp: new Date().toISOString(),
       model,
-      caseId,
-      messages: chatHistory,
+      caseId,;
+      messages: chatHistory,;
     };
 
     const blob = new Blob([JSON.stringify(chatData, null, 2)], {
-      type: "application/json",
+      type: "application/json",;
     });
 
     const url = URL.createObjectURL(blob);
@@ -422,7 +424,7 @@
             <div class="text-xs nes-text is-disabled mb-2 px-2 {msg.type === 'user' ? 'text-right' : 'text-left'}">
               {msg.timestamp.toLocaleTimeString()} • {msg.timestamp.toLocaleDateString()}
             </div>
-            
+
             <div
               class="inline-block max-w-[85%] {msg.type === 'user'
                 ? 'bg-blue-600 text-white rounded-2xl rounded-br-md shadow-md'
@@ -436,8 +438,8 @@
               <!-- Performance Info for Assistant Messages -->
               {#if msg.type === "assistant" && msg.performance}
                 <div class="text-xs opacity-60 mt-3 pt-2 border-t border-gray-300">
-                  <span class="font-mono">{msg.performance.duration}ms</span> • 
-                  <span class="font-mono">{msg.performance.tokens} tokens</span> • 
+                  <span class="font-mono">{msg.performance.duration}ms</span> •
+                  <span class="font-mono">{msg.performance.tokens} tokens</span> •
                   <span class="font-mono">{msg.performance.tokensPerSecond?.toFixed(1)} tok/s</span>
                 </div>
               {/if}
@@ -447,7 +449,7 @@
             {#if msg.suggestions && msg.suggestions.length > 0}
               <div class="mt-3 flex flex-wrap gap-2">
                 {#each msg.suggestions as suggestion}
-                  <Button 
+                  <Button
                     class="bits-btn text-xs"
                     variant="ghost"
                     size="sm"
@@ -542,7 +544,7 @@ Export
 </div>
 
 <style>
-  .ollama-chat-interface {
+  .ollama-chat-interface {;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -553,26 +555,26 @@ Export
     padding: 1rem;
   }
 
-  .ollama-chat-interface: global(.scroll-area) {
+  .ollama-chat-interface :global(.scroll-area) {
     max-height: 24rem;
     overflow-y: auto;
   }
 
   /* Custom scrollbar */
-  .ollama-chat-interface: global(.scroll-area::-webkit-scrollbar) {
+  .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar) {
     width: 0.5rem;
   }
 
-  .ollama-chat-interface: global(.scroll-area::-webkit-scrollbar-track) {
+  .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar-track) {
     background-color: #f5f5f5;
   }
 
-  .ollama-chat-interface: global(.scroll-area::-webkit-scrollbar-thumb) {
+  .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar-thumb) {
     background-color: #d1d5db;
     border-radius: 0.25rem;
   }
 
-  .ollama-chat-interface: global(.scroll-area::-webkit-scrollbar-thumb:hover) {
+  .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar-thumb:hover) {
     background-color: #9ca3af;
   }
 </style>

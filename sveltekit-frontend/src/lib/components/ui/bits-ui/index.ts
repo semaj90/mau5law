@@ -22,7 +22,7 @@ export const LEGAL_AI_VARIANTS = {
   card: ['default', 'elevated', 'outlined', 'filled'] as const,
   input: ['default', 'filled', 'outlined'] as const,
   dialog: ['sm', 'md', 'lg', 'xl', 'full'] as const,
-  select: ['default', 'filled', 'outlined'] as const,
+  select: ['default', 'filled', 'outlined'] as const,;
   tabs: ['default', 'pills', 'underline'] as const
 } as const;
 
@@ -30,7 +30,7 @@ export const LEGAL_AI_SIZES = {
   button: ['xs', 'sm', 'md', 'lg', 'xl'] as const,
   input: ['sm', 'md', 'lg'] as const,
   card: ['none', 'sm', 'md', 'lg', 'xl'] as const,
-  select: ['sm', 'md', 'lg'] as const,
+  select: ['sm', 'md', 'lg'] as const,;
   tabs: ['sm', 'md', 'lg'] as const
 } as const;
 

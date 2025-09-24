@@ -37,7 +37,7 @@ export const aiAnalysisMachine = createMachine({
   id: 'aiAnalysis',
   initial: 'idle',
   types: {
-    context: Record<string, any> as AIAnalysisContext,
+    context: Record<string, any> as AIAnalysisContext,;
     events: Record<string, any> as
       | { type: 'START_ANALYSIS'; data: any }
       | { type: 'UPDATE_PROMPT'; prompt: string }
@@ -88,7 +88,7 @@ export const aiAnalysisMachine = createMachine({
     validating: {
       invoke: {
         id: 'validateAnalysisRequest',
-        input: ({ context }) => context,
+        input: ({ context }) => context,;
         src: fromPromise(async ({ input }) => {
           const errors: Record<string, string[]> = {};
 
@@ -127,7 +127,7 @@ export const aiAnalysisMachine = createMachine({
           })
         },
         onError: {
-          target: 'idle',
+          target: 'idle',;
           actions: assign({
             validationErrors: ({ event }) => {
               const error = event.error as any;
@@ -146,7 +146,7 @@ export const aiAnalysisMachine = createMachine({
       }),
       invoke: {
         id: 'performAIAnalysis',
-        input: ({ context }) => context,
+        input: ({ context }) => context,;
         src: fromPromise(async ({ input }) => {
           const context = input as AIAnalysisContext;
           const startTime = Date.now();
@@ -155,7 +155,7 @@ export const aiAnalysisMachine = createMachine({
           const analysisRequest = {
             prompt: context.prompt,
             context: context.context,
-            options: context.options,
+            options: context.options,;
             streaming: true
           };
 
@@ -164,7 +164,7 @@ export const aiAnalysisMachine = createMachine({
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
-            },
+            },;
             body: JSON.stringify(analysisRequest)
           });
 
@@ -229,7 +229,7 @@ export const aiAnalysisMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({
+          actions: assign({;
             error: ({ event }) => {
               const error = event.error as any;
               return error?.message || 'Analysis failed';
@@ -239,7 +239,7 @@ export const aiAnalysisMachine = createMachine({
         }
       },
       on: {
-        STREAM_CHUNK: {
+        STREAM_CHUNK: {;
           actions: assign({
             // Handle streaming chunks if needed;
             analysisResults: ({ context, event }) => ({
@@ -274,7 +274,7 @@ export const aiAnalysisMachine = createMachine({
         RETRY: 'analyzing',
         RESET: {
           target: 'idle',
-          actions: assign({
+          actions: assign({;
             error: null
           })
         }

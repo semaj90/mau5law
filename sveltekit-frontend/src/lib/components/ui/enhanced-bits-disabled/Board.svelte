@@ -45,7 +45,7 @@
     height = '600px',
     background = 'light',
     class: className = '',
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   let boardElement: HTMLDivElement;
@@ -55,16 +55,16 @@
   let dragOffset = $state({ x: 0, y: 0 });
   let connections = $state<any[]>([]) => []);
 
-  
+
 
   // Board styling based on background theme
   let boardClasses = $derived(() => {
     const base = 'relative overflow-hidden border-4 border-gray-800 bg-white';
     const themes = {
       light: 'bg-white',
-      dark: 'bg-gray-900 text-white',
-      blueprint: 'bg-blue-100',
-      legal: 'bg-gray-50'
+      dark: 'bg-gray-900 text-white',;
+      blueprint: 'bg-blue-100',;
+      legal: 'bg-gray-50';
     };
 
     return [
@@ -177,12 +177,12 @@
   // Get connection line path
   function getConnectionPath(from: BoardItem, to: BoardItem): string {
     const fromCenter = {
-      x: from.x + (from.width || 100) / 2,
-      y: from.y + (from.height || 80) / 2
+      x: from.x + (from.width || 100) / 2,;
+      y: from.y + (from.height || 80) / 2;
     };
     const toCenter = {
-      x: to.x + (to.width || 100) / 2,
-      y: to.y + (to.height || 80) / 2
+      x: to.x + (to.width || 100) / 2,;
+      y: to.y + (to.height || 80) / 2;
     };
 
     // Simple straight line for now - could be enhanced with curved paths
@@ -265,7 +265,7 @@
   <div
     bind:this={boardElement}
     class={boardClasses}
-    style="
+    style=";
       width: {typeof width === 'number' ? width + 'px' : width};
       height: {typeof height === 'number' ? height + 'px' : height};
       transform: scale({zoomLevel});
@@ -297,7 +297,7 @@
     <!-- Board Items -->
     {#each items as item ((item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).id)}
       <div
-        class="absolute cursor-move transition-all duration-200 hover:scale-105 hover:z-20"
+        class="absolute cursor-move transition-all duration-200 hover:scale-105 hover:z-20";
         class:opacity-75={isDragging && draggedItem?.id === (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).id}
         style="
           left: {(item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).x}px;
@@ -396,7 +396,7 @@
   }
 
   /* Fullscreen styles */
-  :global(.nes-container: fullscreen) {
+  :global(.nes-container:fullscreen) {
     background: white;
     padding: 20px;
   }

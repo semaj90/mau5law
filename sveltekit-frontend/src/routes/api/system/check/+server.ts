@@ -1,10 +1,10 @@
 /// <reference types="vite/client" />
-import { healthCheck } from "$lib/server/db/index.js";
-import type { RequestHandler } from './$types.js';
+import { healthCheck } from "$lib/server/db/index.js"
+import type { RequestHandler } from './$types.js'
 
 
 // Environment variables for Ollama configuration
-const OLLAMA_URL = import.meta.env.OLLAMA_URL || 'http://localhost:11434';
+const OLLAMA_URL = import.meta.env.OLLAMA_URL || 'http://localhost:11434'
 const OLLAMA_TIMEOUT = 5000; // 5 seconds
 
 export const GET: RequestHandler = async () => {
@@ -18,12 +18,12 @@ export const GET: RequestHandler = async () => {
         ollamaUrl: OLLAMA_URL
       },
       timestamp: new Date().toISOString()
-    };
+    }
 
-    return json(systemStatus);
+    return json(systemStatus)
   } catch (error: any) {
-    console.error('System status check failed:', error);
-    return json();
+    console.error('System status check failed:', error)
+    return json()
       {
         services: {
           ollama: { status: 'error', error: 'System check failed' },
@@ -33,46 +33,46 @@ export const GET: RequestHandler = async () => {
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 async function checkOllamaStatus(): Promise<any> {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), OLLAMA_TIMEOUT);
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), OLLAMA_TIMEOUT)
 
     const response = await fetch(`${OLLAMA_URL}/api/version`, {
       signal: controller.signal,
       headers: {
         'Content-Type': 'application/json'
       }
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-      throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+      throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`)
     }
 
-    const data = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+    const data = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json()
     
     return {
       status: 'connected',
       version: (data as { version?: any }).version || 'unknown',
       url: OLLAMA_URL
-    };
+    }
   } catch (error: any) {
-    console.error('Ollama connection failed:', error);
+    console.error('Ollama connection failed:', error)
     
-    let errorMessage = 'Connection failed';
+    let errorMessage = 'Connection failed'
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        errorMessage = 'Connection timeout';
+        errorMessage = 'Connection timeout'
       } else if (error.message.includes('fetch')) {
-        errorMessage = 'Service unavailable';
+        errorMessage = 'Service unavailable'
       } else {
-        errorMessage = error.message;
+        errorMessage = error.message
       }
     }
 
@@ -80,37 +80,37 @@ async function checkOllamaStatus(): Promise<any> {
       status: 'error',
       error: errorMessage,
       url: OLLAMA_URL
-    };
+    }
   }
 }
 
 async function checkDatabaseStatus(): Promise<any> {
   try {
-    const result = await healthCheck();
+    const result = await healthCheck()
     
     if ((result as { status?: any; error?: any }).status === 'healthy') {
       return {
         status: 'connected',
         type: 'PostgreSQL',
         tablesAccessible: (result as any).tablesAccessible
-      };
+      }
     } else {
       return {
         status: 'error',
         error: (result as { status?: any; error?: any }).error,
         type: 'PostgreSQL'
-      };
+      }
     }
   } catch (error: any) {
-    console.error('Database health check failed:', error);
+    console.error('Database health check failed:', error)
     
     return {
       status: 'error',
       error: error instanceof Error ? error.message: 'Unknown error',
       type: 'PostgreSQL'
-    };
+    }
   }
 }
 
 // Also support POST for triggering system checks
-export const POST = GET;
+export const POST = GET

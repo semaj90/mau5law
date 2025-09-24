@@ -125,7 +125,7 @@ export interface ErrorStats {
   last24Hours: number;
   last7Days: number;
   last30Days: number;
-  trends: {
+  trends: {;
     increasing: ErrorCategory[];
     decreasing: ErrorCategory[];
     stable: ErrorCategory[];
@@ -262,7 +262,7 @@ class EnhancedErrorHandler {
   ): UserFriendlyError {
     const compliance: ComplianceViolation = {
       regulation: 'Chain of Custody Protocol',
-      violation_type: 'procedural_violation',
+      violation_type: 'procedural_violation',;
       severity: 'high',
       required_actions: [
         'Document the custody break',
@@ -313,7 +313,7 @@ class EnhancedErrorHandler {
   ): UserFriendlyError {
     const compliance: ComplianceViolation = {
       regulation: 'Attorney-Client Privilege Protection',
-      violation_type: 'disclosure_violation',
+      violation_type: 'disclosure_violation',;
       severity: 'critical',
       required_actions: [
         'Immediate content quarantine',
@@ -361,7 +361,7 @@ class EnhancedErrorHandler {
   handleCourtFilingError(
     error: any,
     filingType: string,
-    docketNumber: string,
+    docketNumber: string,;
     deadline: Date,
     context?: Record<string, any>,
     retryFn?: () => Promise<void>;
@@ -380,7 +380,7 @@ class EnhancedErrorHandler {
       filing_type: filingType,
       docket_number: docketNumber,
       deadline: deadline,
-      is_urgent: isUrgent,
+      is_urgent: isUrgent,;
       category: 'court_filing' as ErrorCategory
     };
 
@@ -403,7 +403,7 @@ class EnhancedErrorHandler {
       severity: this.mapHttpStatusToSeverity(response.status),
       category: 'network',
       context: {
-        url: response.url,
+        url: response.url,;
         status: response.status,
         ...context
       }
@@ -430,7 +430,7 @@ class EnhancedErrorHandler {
       timestamp: new Date(),
       severity: 'error',
       category: 'network',
-      context: {
+      context: {;
         type: "network",
         ...context
       }
@@ -443,7 +443,7 @@ class EnhancedErrorHandler {
       suggestion: "Try refreshing the page or check your network connection.",
       canRetry: !!retryFn,
       severity: 'error',
-      category: 'network',
+      category: 'network',;
       timestamp: new Date()
     };
 
@@ -461,7 +461,7 @@ class EnhancedErrorHandler {
     const errorDetails: ErrorDetails = {
       id: this.generateErrorId(),
       code: "VALIDATION_ERROR",
-      message: "Validation failed",
+      message: "Validation failed",;
       details: Array.isArray(errors)
         ? errors.join(", ")
         : Object.entries(errors)
@@ -470,7 +470,7 @@ class EnhancedErrorHandler {
       timestamp: new Date(),
       severity: 'warning',
       category: 'validation',
-      context: {
+      context: {;
         type: "validation",
         errors,
         ...context
@@ -484,7 +484,7 @@ class EnhancedErrorHandler {
       suggestion: errorDetails.details,
       canRetry: false,
       severity: 'warning',
-      category: 'validation',
+      category: 'validation',;
       timestamp: new Date()
     };
 
@@ -504,7 +504,7 @@ class EnhancedErrorHandler {
       timestamp: new Date(),
       severity: 'warning',
       category: 'authentication',
-      context: {
+      context: {;
         type: "authentication",
         ...context
       }
@@ -517,7 +517,7 @@ class EnhancedErrorHandler {
       suggestion: "Click to redirect to login page.",
       canRetry: false,
       severity: 'warning',
-      category: 'authentication',
+      category: 'authentication',;
       timestamp: new Date()
     };
 
@@ -562,7 +562,7 @@ class EnhancedErrorHandler {
       generated: new Date().toISOString(),
       stats,
       errors: errors.map(error => ({
-        ...error,
+        ...error,;
         timestamp: error.timestamp.toISOString()
       })),
       compliance_summary: {
@@ -615,7 +615,7 @@ class EnhancedErrorHandler {
       id: this.generateErrorId(),
       message,
       details,
-      stack,
+      stack,;
       timestamp: new Date(),
       context,
       severity,
@@ -649,7 +649,7 @@ class EnhancedErrorHandler {
         legalGuidance: "This error may affect evidence admissibility. Document all actions taken.",
         complianceAlert: true,
         requiresLegalReview: true,
-        timestamp: errorDetails.timestamp,
+        timestamp: errorDetails.timestamp,;
         actions: [;
           {
             label: "Contact Attorney",
@@ -659,7 +659,7 @@ class EnhancedErrorHandler {
           },
           {
             label: "Document Incident",
-            action: () => this.documentCustodyIncident(errorDetails),
+            action: () => this.documentCustodyIncident(errorDetails),;
             type: 'primary'
           }
         ]
@@ -678,11 +678,11 @@ class EnhancedErrorHandler {
         legalGuidance: "Potential privilege waiver. Emergency protective measures activated.",
         complianceAlert: true,
         requiresLegalReview: true,
-        timestamp: errorDetails.timestamp,
+        timestamp: errorDetails.timestamp,;
         actions: [;
           {
             label: "Emergency Protocol",
-            action: () => this.activatePrivilegeProtectionProtocol(errorDetails),
+            action: () => this.activatePrivilegeProtectionProtocol(errorDetails),;
             type: 'danger',
             requiresConfirmation: true
           }
@@ -699,7 +699,7 @@ class EnhancedErrorHandler {
         suggestion: "Please check your internet connection and try again.",
         canRetry: !!retryFn,
         severity: 'error',
-        category: 'network',
+        category: 'network',;
         timestamp: errorDetails.timestamp
       };
     }
@@ -712,7 +712,7 @@ class EnhancedErrorHandler {
       suggestion: "Please try again. If the problem persists, contact support.",
       canRetry: !!retryFn,
       severity: errorDetails.severity,
-      category,
+      category,;
       timestamp: errorDetails.timestamp,
       showDetails: errorDetails.severity === 'critical',
       legalGuidance: legalContext ? this.generateLegalGuidance(legalContext, compliance) : undefined,
@@ -755,7 +755,7 @@ class EnhancedErrorHandler {
       last30Days: 0,
       trends: {
         increasing: [],
-        decreasing: [],
+        decreasing: [],;
         stable: []
       }
     };
@@ -808,7 +808,7 @@ class EnhancedErrorHandler {
       last30Days: 0,
       trends: {
         increasing: [],
-        decreasing: [],
+        decreasing: [],;
         stable: []
       }
     };
@@ -864,7 +864,7 @@ class EnhancedErrorHandler {
       court_filing: 'Court Filing Error',
       client_communication: 'Client Communication Error',
       database: 'Database Error',
-      ai_processing: 'AI Processing Error',
+      ai_processing: 'AI Processing Error',;
       system: 'System Error'
     };
 
@@ -963,7 +963,7 @@ class EnhancedErrorHandler {
     // Trigger appropriate notifications;
     if (browser && 'Notification' in window && Notification.permission === 'granted') {
       new Notification(userError.title, {
-        body: userError.message,
+        body: userError.message,;
         icon: this.getNotificationIcon(errorDetails.severity)
       });
     }
@@ -973,7 +973,7 @@ class EnhancedErrorHandler {
     console.error('🚨 COMPLIANCE ALERT 🚨', {
       id: errorDetails.id,
       violation: errorDetails.compliance,
-      timestamp: errorDetails.timestamp,
+      timestamp: errorDetails.timestamp,;
       context: errorDetails.context
     });
 
@@ -987,7 +987,7 @@ class EnhancedErrorHandler {
   private triggerPrivilegeViolationProtocol(errorDetails: ErrorDetails): void {
     console.error('🚨 PRIVILEGE VIOLATION - EMERGENCY PROTOCOL ACTIVATED 🚨', {
       id: errorDetails.id,
-      timestamp: errorDetails.timestamp,
+      timestamp: errorDetails.timestamp,;
       context: errorDetails.context
     });
 
@@ -1019,7 +1019,7 @@ class EnhancedErrorHandler {
       warning: '/icons/warning.png',
       error: '/icons/error.png',
       critical: '/icons/critical.png',
-      security: '/icons/security.png',
+      security: '/icons/security.png',;
       compliance: '/icons/compliance.png'
     };
     return icons[severity] || '/icons/error.png';
@@ -1232,7 +1232,7 @@ export function handlePrivilegeViolation(
 export function handleCourtFilingError(
   error: any,
   filingType: string,
-  docketNumber: string,
+  docketNumber: string,;
   deadline: Date,
   context?: Record<string, any>,
   retryFn?: () => Promise<void>;

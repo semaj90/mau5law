@@ -17,7 +17,7 @@
 
 
 <style>
-  .theme-provider {
+  .theme-provider {;
 	min-height: 100%;
 	display: block;
   }

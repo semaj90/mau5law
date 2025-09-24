@@ -53,7 +53,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
       // Create WebAssembly module
       const module = await WebAssembly.compile(wasmBytes);
       const instance = await WebAssembly.instantiate(module, {
-        env: {
+        env: {;
           malloc: (size: number) => {
             // Simple malloc implementation for WASM
             return size * 4; // Placeholder
@@ -610,7 +610,7 @@ export async function optimizeJSONForTransport(data: any): Promise<any> {
     
     if (compressStats.compression_ratio > 1.5) {
       return {
-        optimized: compressed,
+        optimized: compressed,;
         stats: compressStats,
         useCompression: true
       };
@@ -618,7 +618,7 @@ export async function optimizeJSONForTransport(data: any): Promise<any> {
   }
   
   return {
-    optimized: json,
+    optimized: json,;
     stats: stringifyStats,
     useCompression: false
   };

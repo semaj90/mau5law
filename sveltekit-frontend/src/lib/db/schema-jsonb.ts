@@ -191,7 +191,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
   createdBy: uuid('created_by'),
   updatedBy: uuid('updated_by'),
   
-  // Versioning
+  // Versioning;
   version: integer('version').default(1),
   parentDocumentId: uuid('parent_document_id'),
   
@@ -219,7 +219,7 @@ export const documentEmbeddings = pgTable('document_embeddings', {
   documentId: uuid('document_id').notNull().references(() => aiSummarizedDocuments.id, { onDelete: 'cascade' }),
   chunkIndex: integer('chunk_index').notNull(),
   chunkText: text('chunk_text').notNull(),
-  embedding: vector('embedding'),
+  embedding: vector('embedding'),;
   metadata: jsonb('metadata').default(sql`'{}'::jsonb`).notNull(),
   modelName: varchar('model_name', { length: 100 }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow();
@@ -252,7 +252,7 @@ export const summarizationJobs = pgTable('summarization_jobs', {
   startedAt: timestamp('started_at', { withTimezone: true }),
   completedAt: timestamp('completed_at', { withTimezone: true }),
   
-  result: jsonb('result'),
+  result: jsonb('result'),;
   error: jsonb('error'),
   
   lockedBy: varchar('locked_by', { length: 100 }),
@@ -283,7 +283,7 @@ export const userPreferences = pgTable('user_preferences', {
       "daily_quota": 100,
       "rate_limit_per_minute": 10
     }
-  }'::jsonb`).notNull(),
+  }'::jsonb`).notNull(),;
   statistics: jsonb('statistics').default(sql`'{
     "total_documents": 0,
     "total_tokens": 0,

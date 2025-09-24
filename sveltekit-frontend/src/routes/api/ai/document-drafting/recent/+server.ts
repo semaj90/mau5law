@@ -21,16 +21,16 @@
  * GET /api/ai/document-drafting/recent - Get recently created/modified documents
  */
 
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
-    const limit = parseInt(url.searchParams.get('limit') || '10');
+    const limit = parseInt(url.searchParams.get('limit') || '10')
     
     // Mock recent documents data - in production this would query the database
-    const recentDocuments = [;
+    const recentDocuments = [
       {
         id: 'doc_recent_001',
         template: 'Motion to Suppress Evidence',
@@ -141,14 +141,14 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         caseId: 'case_66666',
         lastModified: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days ago
       }
-    ];
+    ]
 
     // Sort by lastModified (most recent first) and apply limit
     const sortedDocuments = recentDocuments
       .sort((a, b) => new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
-      .slice(0, limit);
+      .slice(0, limit)
 
-    // Calculate summary statistics;
+    // Calculate summary statistics
     const stats = {
       totalDocuments: recentDocuments.length,
       avgQualityScore: Math.round(
@@ -161,8 +161,8 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         finalized: recentDocuments.filter(item => item.length)
       },
       documentsByCategory: recentDocuments.reduce((acc, doc) => {
-        acc[doc.category] = (acc[doc.category] || 0) + 1;
-        return acc;
+        acc[doc.category] = (acc[doc.category] || 0) + 1
+        return acc
       }, {} as Record<string, number>),
       recentActivity: {
         last24Hours: recentDocuments.filter(item => item.getTime() > Date.now() - 24 * 60 * 60 * 1000
@@ -170,7 +170,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         lastWeek: recentDocuments.filter(item => item.getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000
         ).length
       }
-    };
+    }
 
     return json({
       success: true,
@@ -183,15 +183,15 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         timestamp: new Date().toISOString(),
         version: '1.0'
       }
-    });
+    })
 
   } catch (error) {
-    console.error('Error fetching recent documents:', error);
+    console.error('Error fetching recent documents:', error)
     return json(
       { success: false, message: 'Failed to fetch recent documents' },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-export const GET = redisOptimized.documentProcessing(originalGETHandler);
+export const GET = redisOptimized.documentProcessing(originalGETHandler)

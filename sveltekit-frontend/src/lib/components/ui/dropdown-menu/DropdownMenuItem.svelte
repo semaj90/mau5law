@@ -20,7 +20,7 @@
     disabled = false,
     destructive = false,
     onclick,
-    onselect
+    onselect;
   }: Props = $props();
 
   let itemClasses = $derived(cn(

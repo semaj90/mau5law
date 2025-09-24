@@ -22,7 +22,7 @@ export interface InteractiveCanvasState {
   id?: string;
   nodes: CanvasNode[];
   connections: CanvasConnection[];
-  viewport: {
+  viewport: {;
     x: number;
     y: number;
     zoom: number;

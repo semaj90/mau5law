@@ -180,7 +180,7 @@ export async function searchSimilarMessages(
     return results.map((row: any) => ({
       id: row.id,
       content: row.content,
-      similarity: row.similarity,
+      similarity: row.similarity,;
       metadata: includeMetadata ? row.metadata: undefined,
       documentType: 'chat_message'
     });
@@ -221,7 +221,7 @@ export async function searchSimilarEvidence(
       id: row.id,
       content: row.description || row.title || '',
       similarity: row.similarity,
-      metadata: includeMetadata ? {
+      metadata: includeMetadata ? {;
         title: row.title,
         evidenceType: row.evidence_type,
         caseId: row.case_id,
@@ -400,7 +400,7 @@ export async function pgvectorHealthCheck(): Promise<any> {
     if (!extensionCheck[0]?.has_vector) {
       return {
         available: false,
-        functions: [],
+        functions: [],;
         error: 'pgvector extension not installed'
       };
     }
@@ -421,13 +421,13 @@ export async function pgvectorHealthCheck(): Promise<any> {
 
     return {
       available: true,
-      version: (extensionCheck[0]?.version as string) || 'unknown',
+      version: (extensionCheck[0]?.version as string) || 'unknown',;
       functions: availableFunctions
     };
   } catch (error: any) {
     return {
       available: false,
-      functions: [],
+      functions: [],;
       error: error instanceof Error ? error.message: 'Unknown error'
     };
   }

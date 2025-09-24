@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -40,13 +40,13 @@ and AI-powered verification features.
   import IntegrityVerification from './IntegrityVerification.svelte';
   import CollaborationPanel from './CollaborationPanel.svelte';
   import WorkflowProgress from './WorkflowProgress.svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert';
   import { AlertTriangle, CheckCircle, Clock, Users, FileCheck, Shield } from 'lucide-svelte';
@@ -109,7 +109,7 @@ and AI-powered verification features.
       evidenceId,
       caseId,
       userId,
-      originalHash
+      originalHash;
     });
   }
 
@@ -138,8 +138,8 @@ and AI-powered verification features.
     if (transferReason.trim()) {
       custodyActor.send({ 
         type: 'TRANSFER_CUSTODY',
-        newCustodian: userId,
-        reason: transferReason
+        newCustodian: userId,;
+        reason: transferReason;
       });
       showTransferDialog = false;
       transferReason = '';
@@ -149,8 +149,8 @@ and AI-powered verification features.
   function joinCollaboration() {
     custodyActor.send({
       type: 'JOIN_COLLABORATION',
-      userId,
-      role: 'investigator'
+      userId,;
+      role: 'investigator';
     });
     isCollaborationExpanded = true;
   }
@@ -158,7 +158,7 @@ and AI-powered verification features.
   function leaveCollaboration() {
     custodyActor.send({
       type: 'LEAVE_COLLABORATION',
-      userId
+      userId;
     });
   }
 
@@ -448,11 +448,11 @@ Cancel Workflow
           {evidenceId}
           {wsConnection}
           onAddAnnotation={(content, position) => {
-            custodyActor.send({
+            custodyActor.send({;
               type: 'ADD_ANNOTATION',
               userId,
               content,
-              position
+              position;
             });
           }}
         />
@@ -496,7 +496,7 @@ showTransferDialog = false}
 </div>
 
 <style>
-  .evidence-custody-flow {
+  .evidence-custody-flow {;
     min-height: 100vh;
   }
   

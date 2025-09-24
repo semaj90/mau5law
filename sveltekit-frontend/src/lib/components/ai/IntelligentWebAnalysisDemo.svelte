@@ -53,7 +53,7 @@
     keystrokes: 0,
     scrollDistance: 0,
     focusChanges: 0,
-    lastActivity: Date.now()
+    lastActivity: Date.now();
   });
 
   // Settings
@@ -71,11 +71,12 @@
     currentStep: '',
     progress: 0,
     elementsProcessed: 0,
-    chunksProcessed: 0
+    chunksProcessed: 0;
   });
 
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
 
     try {
       addLog('🚀 Initializing Intelligent Web Analyzer...');
@@ -93,6 +94,7 @@
     } catch (error: any) {
       addLog(`❌ Initialization failed: ${error.message}`);
     }
+    })();
   });
 
   onDestroy(() => {
@@ -152,7 +154,7 @@
     userAnalytics.typingPatterns = {
       avgSpeed: 65 + Math.random() * 20, // 65-85 WPM
       commonWords: ['contract', 'legal', 'case', 'document', 'evidence', 'court', 'plaintiff', 'defendant'],
-      specialization: ['legal', 'litigation', 'document_review']
+      specialization: ['legal', 'litigation', 'document_review'];
     };
     intelligentWebAnalyzer.updateUserContext(userAnalytics);
     addLog('📝 Updated typing patterns for legal specialization');
@@ -190,9 +192,9 @@
       liveInteractions.lastActivity = Date.now();
       // Update user analytics heatmap
       userAnalytics.interactionPatterns.clickHeatmap.push({
-        x: e.clientX,
-        y: e.clientY,
-        count: 1
+        x: e.clientX,;
+        y: e.clientY,;
+        count: 1;
       });
       // Limit heatmap size
       if (userAnalytics.interactionPatterns.clickHeatmap.length > 100) {
@@ -245,7 +247,7 @@
       keystrokes: 0,
       scrollDistance: 0,
       focusChanges: 0,
-      lastActivity: Date.now()
+      lastActivity: Date.now();
     };
     addLog('🗑️ Cleared all analysis data');
   }
@@ -258,7 +260,7 @@
 
     try {
       const dataBlob = new Blob([JSON.stringify(analysisResults, null, 2)], {
-        type: 'application/json'
+        type: 'application/json';
       });
       const url = URL.createObjectURL(dataBlob);
       const a = document.createElement('a');
@@ -289,12 +291,12 @@
       const startTime = performance.now();
       // Simulate batch embedding generation
       const response = await fetch('/api/embeddings', {
-        method: 'PUT',
+        method: 'PUT',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          texts: testTexts,
-          model: 'nomic-text',
-          source: 'batch_test'
+          texts: testTexts,;
+          model: 'nomic-text',;
+          source: 'batch_test';
         })
       });
 
@@ -315,7 +317,7 @@
   }
 
   function estimateMemoryUsage(results: QLoRATrainingData): number {
-    return JSON.stringify.length;
+    return JSON.stringify(length);
   }
 
   // Computed values
@@ -548,7 +550,7 @@
 </div>
 
 <style>
-  .intelligent-analysis-demo {
+  .intelligent-analysis-demo {;
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
@@ -642,7 +644,7 @@
     transition: all 0.2s;
   }
 
-  .controls button:disabled {
+  .controls button:disabled {;
     opacity: 0.6;
     cursor: not-allowed;
   }
@@ -661,12 +663,12 @@
     color: white;
   }
 
-  .controls button:not(.primary):not(.export) {
+  .controls button:not(.primary):not(.export) {;
     background: #f3f4f6;
     color: #374151;
   }
 
-  .controls button:not(.primary):not(.export):hover:not(:disabled) {
+  .controls button:not(.primary):not(.export):hover:not(:disabled) {;
     background: #e5e7eb;
   }
 

@@ -74,9 +74,9 @@ Production-ready with native Windows support
         height,
         steps,
         cfgScale,
-        seed: seed === -1 ? undefined : seed,
-        style: selectedStyle,
-        provider: selectedProvider
+        seed: seed === -1 ? undefined : seed,;
+        style: selectedStyle,;
+        provider: selectedProvider;
       };
 
       const result = await imageGenerationService.generateImage(request);
@@ -101,7 +101,7 @@ Production-ready with native Windows support
         evidenceType: 'image',
         fileUrl: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).imageUrl,
         metadata: {
-          aiGenerated: true,
+          aiGenerated: true,;
           provider: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).provider,
           parameters: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).parameters,
           generatedAt: (result as { id?: any; prompt?: any; imageUrl?: any; provider?: any; parameters?: any; timestamp?: any; metadata?: any }).timestamp
@@ -220,7 +220,7 @@ Production-ready with native Windows support
       <div class="advanced-controls nes-container is-dark">
         <div class="input-group">
           <label class="nes-text" for="negative-prompt">Negative Prompt:</label><textarea id="negative-prompt" 
-            class="nes-textarea" 
+            class="nes-textarea" ;
             bind:value={negativePrompt} 
             placeholder="What to avoid in the image..."
             rows="2"

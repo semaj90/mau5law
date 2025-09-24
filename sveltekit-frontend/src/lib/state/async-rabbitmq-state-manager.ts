@@ -251,7 +251,7 @@ export interface StateHistoryEntry {
 
 export interface StateSubscription {
   id: string;
-  pattern: string; // job:*, queue:legal.*, global
+  pattern: string; // job:*, queue:legal.*, global;
   callback: (event: StateEvent) => void;
   filters?: StateFilter[];
   qos?: QualityOfService;
@@ -413,7 +413,7 @@ const asyncStateMachine = createMachine();
       },
 
       connected: {
-        entry: 'startStateSyncLoop',
+        entry: 'startStateSyncLoop',;
         invoke: [;
           {
             id: 'stateSyncMonitor',
@@ -482,7 +482,7 @@ const asyncStateMachine = createMachine();
       }
     }
   },
-  {
+  {;
     actions: {
       initializeStateSync: () => {
         console.log('🔄 Initializing async state management...');
@@ -500,7 +500,7 @@ const asyncStateMachine = createMachine();
 
       markDisconnected: assign({
         syncStatus: (context) => ({
-          ...context.syncStatus,
+          ...context.syncStatus,;
           connected: false,
           syncHealth: 'failed' as const
         })
@@ -534,7 +534,7 @@ const asyncStateMachine = createMachine();
                   tags: []
                 },
                 dependencies: event.state.dependencies || [],
-                dependents: event.state.dependents || [],
+                dependents: event.state.dependents || [],;
                 timeline: event.state.timeline || [],
                 stateVersion: 1,
                 lastUpdated: Date.now()
@@ -576,7 +576,7 @@ const asyncStateMachine = createMachine();
                   issues: [],
                   lastHealthCheck: Date.now()
                 },
-                configuration: {
+                configuration: {;
                   durable: true,
                   autoDelete: false
                 },
@@ -608,7 +608,7 @@ const asyncStateMachine = createMachine();
           const stateEvent: StateEvent = {
             type: event.type,
             data: event,
-            timestamp: Date.now(),
+            timestamp: Date.now(),;
             source: 'state_manager',
             stateVersion: 1
           };
@@ -635,7 +635,7 @@ const asyncStateMachine = createMachine();
             timestamp: Date.now(),
             event: event.type,
             previousState: null, // Would store actual previous state
-            newState: event,
+            newState: event,;
             source: 'state_manager',
             stateVersion: 1
           };
@@ -685,7 +685,7 @@ const asyncStateMachine = createMachine();
             lockId,
             owner: 'state_manager',
             acquiredAt: Date.now(),
-            expiresAt: Date.now() + 60000, // 1 minute
+            expiresAt: Date.now() + 60000, // 1 minute;
             renewable: true,
             lockType: (event as any).lockType
           };
@@ -802,7 +802,7 @@ export class AsyncRabbitMQStateManager {
         errorRate: 0,
         resourceUtilization: { cpu: 0, memory: 0, network: 0, storage: 0 },
         bottlenecks: []
-      },
+      },;
       alerts: [],
       maintenanceMode: false,
       lastSyncAt: 0
@@ -849,7 +849,7 @@ export class AsyncRabbitMQStateManager {
     // Subscribe to orchestrator events;
     const orchestratorSubscription: StateSubscription = {
       id: 'orchestrator-integration',
-      pattern: 'job:*',
+      pattern: 'job:*',;
       callback: (event) => this.handleOrchestratorEvent(event)
     };
 
@@ -858,7 +858,7 @@ export class AsyncRabbitMQStateManager {
     // Subscribe to auto-attach manager events;
     const autoAttachSubscription: StateSubscription = {
       id: 'auto-attach-integration',
-      pattern: 'queue:*',
+      pattern: 'queue:*',;
       callback: (event) => this.handleAutoAttachEvent(event)
     };
 
@@ -886,7 +886,7 @@ export class AsyncRabbitMQStateManager {
   }
 
   updateJobState(jobId: string, state: Partial<JobState>): void {
-    this.stateService.send({
+    this.stateService.send({;
       type: 'JOB_STATE_UPDATE',
       jobId,
       state
@@ -894,7 +894,7 @@ export class AsyncRabbitMQStateManager {
   }
 
   updateQueueState(queueName: string, state: Partial<QueueState>): void {
-    this.stateService.send({
+    this.stateService.send({;
       type: 'QUEUE_STATE_UPDATE',
       queueName,
       state

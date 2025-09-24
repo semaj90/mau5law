@@ -105,7 +105,7 @@
 <div class="flex flex-wrap gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border">
   <div class="flex items-center gap-2 flex-1 min-w-[200px]">
     <Search class="w-4 h-4 text-gray-500" />
-    <Input
+    <Input;
       bind:value={searchQuery}
       placeholder="Search cases..."
       class="flex-1"
@@ -158,13 +158,13 @@
 
 <style>
   /* @unocss-include */
-  .case-filters {
+  .case-filters {;
     margin-bottom: 1rem;
 }
   .filter-row {
-    display: flex
+    display: flex;
     gap: 1rem;
-    align-items: center
+    align-items: center;
 }
   .search-input {
     flex: 1;

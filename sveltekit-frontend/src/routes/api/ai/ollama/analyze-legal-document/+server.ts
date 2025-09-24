@@ -19,55 +19,55 @@
 // Production API endpoints for Enhanced Legal Upload Analytics
 // Integrates with Ollama, Drizzle ORM, Lucia Auth, and pgvector
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/database';
-import { documents, cases, users, embeddings } from '$lib/server/database/schema';
-import { validateAuthSession } from '$lib/server/auth';
-import { nanoid } from 'nanoid';
-import { createHash } from 'crypto';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { db } from '$lib/server/database'
+import { documents, cases, users, embeddings } from '$lib/server/database/schema'
+import { validateAuthSession } from '$lib/server/auth'
+import { nanoid } from 'nanoid'
+import { createHash } from 'crypto'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
-// Ollama AI Analysis Endpoint;
+// Ollama AI Analysis Endpoint
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
     // Validate authentication
-    const session = await validateAuthSession(request);
+    const session = await validateAuthSession(request)
     if (!session) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
+      return json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const formData = await request.formData();
-    const file = formData.get('file') as File;
-    const caseId = formData.get('caseId') as string;
-    const legalContext = JSON.parse(formData.get('legalContext') as string || '{}');
-    const model = formData.get('model') as string || 'gemma3:270m';
-    const analysisType = formData.get('analysisType') as string || 'comprehensive_legal';
+    const formData = await request.formData()
+    const file = formData.get('file') as File
+    const caseId = formData.get('caseId') as string
+    const legalContext = JSON.parse(formData.get('legalContext') as string || '{}')
+    const model = formData.get('model') as string || 'gemma3:270m'
+    const analysisType = formData.get('analysisType') as string || 'comprehensive_legal'
 
     if (!file) {
-      return json({ error: 'No file provided' }, { status: 400 });
+      return json({ error: 'No file provided' }, { status: 400 })
     }
 
     // Generate unique document ID and hash
-    const documentId = nanoid();
-    const buffer = await file.arrayBuffer();
-    const hash = createHash('sha256').update(Buffer.from(buffer)).digest('hex');
+    const documentId = nanoid()
+    const buffer = await file.arrayBuffer()
+    const hash = createHash('sha256').update(Buffer.from(buffer)).digest('hex')
 
     // Extract text content based on file type
-    let textContent = '';
+    let textContent = ''
     try {
       if (file.type === 'application/pdf') {
         // PDF text extraction (you'd implement this with pdf-parse or similar)
-        textContent = await extractPDFText(buffer);
+        textContent = await extractPDFText(buffer)
       } else if (file.type.startsWith('text/')) {
-        textContent = new TextDecoder().decode(buffer);
+        textContent = new TextDecoder().decode(buffer)
       } else if (file.type.startsWith('image/')) {
         // OCR for images (implement with Tesseract.js or similar)
-        textContent = await performOCR(buffer);
+        textContent = await performOCR(buffer)
       }
     } catch (error) {
-      console.warn('Text extraction failed:', error);
-      textContent = `[Unable to extract text from ${file.type}]`;
+      console.warn('Text extraction failed:', error)
+      textContent = `[Unable to extract text from ${file.type}]`
     }
 
     // Enhanced legal analysis prompt
@@ -93,7 +93,7 @@ Please analyze this document and provide:
 Document content:
 ${textContent.slice(0, 8000)} ${textContent.length > 8000 ? '...[truncated]' : ''}
 
-Respond in JSON format with the following structure:;
+Respond in JSON format with the following structure:
 {
   "summary": "string",
   "entities": [{"type": "person|organization|date|money|legal_term", "value": "string", "confidence": 0.0-1.0}],
@@ -105,9 +105,9 @@ Respond in JSON format with the following structure:;
   "riskFactors": ["string"],
   "suggestedTags": ["string"],
   "confidence": 0.0-1.0
-}`;
+}`
 
-    // Call Ollama API;
+    // Call Ollama API
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
@@ -124,19 +124,19 @@ Respond in JSON format with the following structure:;
           num_ctx: 4096
         }
       })
-    });
+    })
 
     if (!ollamaResponse.ok) {
-      throw new Error(`Ollama API error: ${ollamaResponse.statusText}`);
+      throw new Error(`Ollama API error: ${ollamaResponse.statusText}`)
     }
 
-    const ollamaResult = await ollamaResponse.json();
-    let analysisResult;
+    const ollamaResult = await ollamaResponse.json()
+    let analysisResult
 
     try {
-      analysisResult = JSON.parse(ollamaResult.response);
+      analysisResult = JSON.parse(ollamaResult.response)
     } catch (error) {
-      // Fallback if JSON parsing fails;
+      // Fallback if JSON parsing fails
       analysisResult = {
         summary: ollamaResult.response.slice(0, 500),
         entities: [],
@@ -148,10 +148,10 @@ Respond in JSON format with the following structure:;
         riskFactors: [],
         suggestedTags: ['legal_document'],
         confidence: 0.6
-      };
+      }
     }
 
-    // Store document in database;
+    // Store document in database
     await db.insert(documents).values({
       id: documentId,
       fileName: file.name,
@@ -174,9 +174,9 @@ Respond in JSON format with the following structure:;
           details: `Analyzed with ${model} at ${analysisResult.confidence * 100}% confidence`
         }]
       }
-    });
+    })
 
-    // Generate and store vector embeddings for semantic search;
+    // Generate and store vector embeddings for semantic search
     if (textContent.length > 0) {
       try {
         const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
@@ -188,10 +188,10 @@ Respond in JSON format with the following structure:;
             model: 'mxbai-embed-large', // Use a good embedding model
             prompt: textContent.slice(0, 2000) // Truncate for embedding
           })
-        });
+        })
 
         if (embeddingResponse.ok) {
-          const embeddingResult = await embeddingResponse.json();
+          const embeddingResult = await embeddingResponse.json()
 
           await db.insert(embeddings).values({
             id: nanoid(),
@@ -202,10 +202,10 @@ Respond in JSON format with the following structure:;
               model: 'mxbai-embed-large',
               createdAt: new Date().toISOString()
             }
-          });
+          })
         }
       } catch (embeddingError) {
-        console.warn('Failed to generate embeddings:', embeddingError);
+        console.warn('Failed to generate embeddings:', embeddingError)
       }
     }
 
@@ -222,26 +222,26 @@ Respond in JSON format with the following structure:;
       riskFactors: analysisResult.riskFactors,
       tags: analysisResult.suggestedTags,
       confidence: analysisResult.confidence
-    });
+    })
 
   } catch (error) {
-    console.error('Legal document analysis error:', error);
-    return json({ error: 'Analysis failed' }, { status: 500 });
+    console.error('Legal document analysis error:', error)
+    return json({ error: 'Analysis failed' }, { status: 500 })
   }
-};
+}
 
-// Helper functions (you would implement these based on your needs);
+// Helper functions (you would implement these based on your needs)
 async function extractPDFText(buffer: ArrayBuffer): Promise<string> {
   // Implement PDF text extraction
   // You could use pdf-parse, pdf2pic, or similar libraries
-  return '[PDF text extraction not implemented]';
+  return '[PDF text extraction not implemented]'
 }
 
 async function performOCR(buffer: ArrayBuffer): Promise<string> {
   // Implement OCR for images
   // You could use Tesseract.js or similar
-  return '[OCR not implemented]';
+  return '[OCR not implemented]'
 }
 
 
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

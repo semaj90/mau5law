@@ -22,8 +22,8 @@
     
     // Show success notification
     const notification = {
-      type: 'success',
-      title: 'Upload Successful',
+      type: 'success',;
+      title: 'Upload Successful',;
       message: `Document "${(result as { objectName?: unknown; documentId?: unknown; url?: unknown }).objectName}" has been uploaded and is being processed.`,
       documentId: (result as { objectName?: unknown; documentId?: unknown; url?: unknown }).documentId,
       url: (result as { objectName?: unknown; documentId?: unknown; url?: unknown }).url
@@ -45,9 +45,9 @@
     
     // Show error notification
     const notification = {
-      type: 'error',
-      title: 'Upload Failed',
-      message: error
+      type: 'error',;
+      title: 'Upload Failed',;
+      message: error;
     };
     
     sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
@@ -203,7 +203,7 @@
 </div>
 
 <style>
-  .upload-page {
+  .upload-page {;
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;

@@ -21,13 +21,13 @@
  * GET /api/ai/document-drafting/types - Get available document types
  */
 
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
-    const documentTypes = [;
+    const documentTypes = [
       {
         id: 'motion_to_suppress',
         name: 'Motion to Suppress Evidence',
@@ -117,7 +117,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           { name: 'arguments', type: 'textarea', required: true, label: 'Main Arguments' }
         ]
       }
-    ];
+    ]
 
     return json({
       success: true,
@@ -127,15 +127,15 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         categories: Array.from(new Set(documentTypes.map(dt => dt.category))),
         complexityLevels: Array.from(new Set(documentTypes.map(dt => dt.complexity))
       }
-    });
+    })
 
   } catch (error) {
-    console.error('Error fetching document types:', error);
+    console.error('Error fetching document types:', error)
     return json(
       { success: false, message: 'Failed to fetch document types' },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-export const GET = redisOptimized.documentProcessing(originalGETHandler);
+export const GET = redisOptimized.documentProcessing(originalGETHandler)

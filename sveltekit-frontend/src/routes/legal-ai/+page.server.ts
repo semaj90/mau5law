@@ -65,7 +65,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
     const recentDocumentsQuery = db
       .select({
         id: legalDocuments.id,
-        title: legalDocuments.title,
+        title: legalDocuments.title,;
         summary: legalDocuments.summary,
         documentType: legalDocuments.documentType,
         createdAt: legalDocuments.createdAt,
@@ -150,7 +150,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
           redis: redisAvailable,
           lastChecked: new Date().toISOString()
         }
-      },
+      },;
       meta: {
         totalDocuments,
         totalSessions,
@@ -179,7 +179,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
           redis: false,
           lastChecked: new Date().toISOString()
         }
-      },
+      },;
       meta: {
         totalDocuments: 0,
         totalSessions: 0,

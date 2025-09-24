@@ -31,7 +31,7 @@
     children,
     docKey,
     docCategory,
-    showDocumentation = false
+    showDocumentation = false;
   }: Props = $props();
 
   let tooltipClasses = $derived(cn(
@@ -113,4 +113,4 @@
     {/if}
     <TooltipPrimitive.Arrow class={showDocumentation ? "fill-slate-800" : "fill-amber-400"} />
   </TooltipPrimitive.Content>
-</TooltipPrimitive.Root>
+</TooltipPrimitive.Root>;

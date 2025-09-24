@@ -115,7 +115,7 @@ export const documentWorkflowMachine = setup({
     extractingText: {
       on: {
         TEXT_EXTRACTION_COMPLETED: {
-          target: 'generatingEmbeddings',
+          target: 'generatingEmbeddings',;
           actions: 'setExtractedText'
         },
         TEXT_EXTRACTION_FAILED: [;
@@ -134,7 +134,7 @@ export const documentWorkflowMachine = setup({
     generatingEmbeddings: {
       on: {
         EMBEDDING_COMPLETED: {
-          target: 'indexing',
+          target: 'indexing',;
           actions: 'setEmbeddings'
         },
         EMBEDDING_FAILED: [;
@@ -153,7 +153,7 @@ export const documentWorkflowMachine = setup({
     indexing: {
       on: {
         INDEXING_COMPLETED: {
-          target: 'completed',
+          target: 'completed',;
           actions: 'resetRetries'
         },
         INDEXING_FAILED: [;
@@ -182,7 +182,7 @@ export const documentWorkflowMachine = setup({
       on: {
         RETRY: {
           target: 'extractingText',
-          guard: 'canRetry',
+          guard: 'canRetry',;
           actions: 'incrementRetry'
         }
       }
@@ -329,7 +329,7 @@ export const caseWorkflowMachine = setup({
         }
       }
     },
-    under_review: {
+    under_review: {;
       on: {
         APPROVE: [;
           {
@@ -366,7 +366,7 @@ export const caseWorkflowMachine = setup({
     archived: {
       on: {
         REOPEN_CASE: {
-          target: 'active',
+          target: 'active',;
           actions: 'updateActivity'
         }
       }
@@ -388,7 +388,7 @@ export interface RAGContext {
   sources: string[];
   cached: boolean;
   processingTime: number;
-  tokens: {
+  tokens: {;
     input: number;
     output: number;
   };
@@ -509,7 +509,7 @@ export const ragWorkflowMachine = setup({
     completed: {
       type: 'final'
     },
-    failed: {
+    failed: {;
       on: {
         RETRY: 'searching'
       }

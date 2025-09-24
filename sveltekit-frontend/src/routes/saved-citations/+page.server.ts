@@ -5,7 +5,7 @@ import type { PageServerLoad } from './$types.js';
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {
     return {
-      savedCitations: [],
+      savedCitations: [],;
       user: null
     };
   }
@@ -37,7 +37,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         source: "Miranda v. Arizona, 384 U.S. 436 (1966)",
         tags: ["miranda", "interrogation", "rights"],
         category: "case-law",
-        isFavorite: false,
+        isFavorite: false,;
         notes: "Must be read before custodial interrogation",
         savedAt: new Date("2024-01-10"),
         contextData: { reportId: "report-124", caseId: "case-456" }
@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     console.error("Error loading saved citations:", error);
     return {
       savedCitations: [],
-      user: locals.user,
+      user: locals.user,;
       error: "Failed to load saved citations"
     };
   }

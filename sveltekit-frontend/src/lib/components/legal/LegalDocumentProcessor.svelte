@@ -45,11 +45,11 @@
     if (isCompleted && onComplete) {
       onComplete({
         documentId: $context.documentId,
-        summary: $context.summary,
+        summary: $context.summary,;
         entities: $context.entities,
         riskScore: $context.riskScore,
         aiAnalysis: $context.aiAnalysis,
-        processingDuration: $context.processingDuration
+        processingDuration: $context.processingDuration;
       });
     }
     if (isFailed && onError && $context.errors.length > 0) {
@@ -62,7 +62,7 @@
     if (!document) return;
     send({
       type: 'START_PROCESSING',
-      document,
+      document,;
       options: {
         extractEntities: true,
         generateSummary: true,
@@ -346,7 +346,7 @@ Context: {JSON.stringify($context, null, 2)}
 
 <style>
   .legal-document-processor {
-    /* Component-specific styles if needed */
+    /* Component-specific styles if needed */;
     max-width: 800px;
   }
 </style>

@@ -29,7 +29,7 @@ export const documents = pgTable(
     extractedText: text('extracted_text'), // OCR/PDF extraction result
     processingStatus: varchar('processing_status', { length: 50 }).notNull().default('pending'), // pending, processing, completed, failed
     caseId: uuid('case_id'), // Optional association with legal case
-    uploadedBy: uuid('uploaded_by').notNull(),
+    uploadedBy: uuid('uploaded_by').notNull(),;
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -61,7 +61,7 @@ export const documentChunks = pgTable(
     // pgvector embeddings - supports different model dimensions
     embedding: vector('embedding', { dimensions: 384 }), // nomic-embed-text default
     embeddingModel: varchar('embedding_model', { length: 100 }).default('nomic-embed-text'),
-    confidence: real('confidence'), // Extraction/chunking confidence
+    confidence: real('confidence'), // Extraction/chunking confidence;
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull()
@@ -84,12 +84,12 @@ export const searchQueries = pgTable(
     sessionId: varchar('session_id', { length: 100 }), // For session grouping
     queryText: text('query_text').notNull(),
     queryEmbedding: vector('query_embedding', { dimensions: 384 }),
-    searchType: varchar('search_type', { length: 50 }).notNull().default('semantic'), // semantic, keyword, hybrid, rag
+    searchType: varchar('search_type', { length: 50 }).notNull().default('semantic'), // semantic, keyword, hybrid, rag;
     filters: jsonb('filters').default({}),
     resultsCount: integer('results_count').default(0),
     searchTime: real('search_time'), // Search duration in ms;
     results: jsonb('results').default({
-      chunks: [],
+      chunks: [],;
       documents: [],
       totalFound: 0,
       searchStrategy: 'semantic'
@@ -115,7 +115,7 @@ export const embeddingModels = pgTable(
     dimensions: integer('dimensions').notNull(), // Vector dimensions
     contextLength: integer('context_length'),
     tokenizer: varchar('tokenizer', { length: 100 }),
-    config: jsonb('config').default({}),
+    config: jsonb('config').default({}),;
     performance: jsonb('performance').default({}),
     isActive: boolean('is_active').notNull().default(true),
     isDefault: boolean('is_default').notNull().default(false),
@@ -138,7 +138,7 @@ export const processingJobs = pgTable(
     status: varchar('status', { length: 20 }).notNull().default('pending'), // pending, processing, completed, failed, retrying
     priority: integer('priority').default(5), // 1-10, higher = more priority
     documentId: uuid('document_id'),
-    chunkId: uuid('chunk_id'),
+    chunkId: uuid('chunk_id'),;
     payload: jsonb('payload').default({}),
     workerNode: varchar('worker_node', { length: 100 }), // Which worker is processing
     startedAt: timestamp('started_at'),
@@ -168,7 +168,7 @@ export const entityNodes = pgTable(
     normalizedName: varchar('normalized_name', { length: 500 }), // For deduplication
     description: text('description'),
     confidence: real('confidence'),
-    properties: jsonb('properties').default({}),
+    properties: jsonb('properties').default({}),;
     embedding: vector('embedding', { dimensions: 384 }), // Entity embedding for similarity
     documentIds: jsonb('document_ids').default([]),
     chunkIds: jsonb('chunk_ids').default([]),
@@ -186,7 +186,7 @@ export const entityNodes = pgTable(
 
 // Relations;
 export const documentsRelations = relations(documents, ({ many }) => ({
-  chunks: many(documentChunks),
+  chunks: many(documentChunks),;
   jobs: many(processingJobs)
 });
 
@@ -198,7 +198,7 @@ export const documentChunksRelations = relations(documentChunks, ({ one, many })
   parent: one(documentChunks, {
     fields: [documentChunks.parentChunkId],
     references: [documentChunks.id]
-  }),
+  }),;
   children: many(documentChunks)
 });
 
@@ -208,7 +208,7 @@ export const processingJobsRelations = relations(processingJobs, ({ one }) => ({
     references: [documents.id]
   }),
   chunk: one(documentChunks, {
-    fields: [processingJobs.chunkId],
+    fields: [processingJobs.chunkId],;
     references: [documentChunks.id]
   })
 });

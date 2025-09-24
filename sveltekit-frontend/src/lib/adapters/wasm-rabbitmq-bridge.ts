@@ -214,7 +214,7 @@ async function enhanceMessageWithWASM(
 export async function computeVectorSimilarityWASM(
   queryVector: number[], 
   targetVectors: number[][], 
-  algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine';
+  algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine'
 ): Promise<number[]> {
   if (!wasmModule || !wasmReady) {
     throw new Error('WASM module not ready for similarity computation');
@@ -291,13 +291,13 @@ export function registerWASMAcceleratedHandlers(worker: typeof rabbitmqServiceWo
       console.log('✅ Embeddings processed with WASM normalization');
       
       // Store in vector database (simulated)
-      await new Promise(resolve => setTimeout(resolve, 100);
+      await new Promise(resolve => setTimeout(resolve, 100));
       
       // Publish to next stage;
       await worker.publishMessage('legal.chunks.store', {
         ...message,
         embeddings: message.embeddings,
-        wasmAccelerated: true,
+        wasmAccelerated: true,;
         stage: 'ready_for_storage'
       });
     }
@@ -337,7 +337,7 @@ export function getBridgeStatus() {
   return {
     wasmReady,
     moduleLoaded: wasmModule !== null,
-    timestamp: Date.now(),
+    timestamp: Date.now(),;
     capabilities: wasmReady ? [
       'vector_normalization',
       'batch_processing', 

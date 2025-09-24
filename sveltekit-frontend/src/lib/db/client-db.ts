@@ -127,7 +127,7 @@ export interface GraphVisualizationData {
   graphType: 'document-similarity' | 'legal-entities' | 'case-relationships' | 'citation-network';
   nodes: Array<any>;
   edges: Array<any>;
-  layout: {
+  layout: {;
     algorithm: string;
     parameters: any;
     dimensions: 2 | 3;
@@ -154,7 +154,7 @@ export interface AIAnalysisCache {
 export interface UserPreferences {
   id?: number;
   userId?: string;
-  preferences: {
+  preferences: {;
     theme: 'light' | 'dark' | 'yorha';
     layout: 'grid' | 'list' | 'graph';
     defaultSearchType: 'vector' | 'hybrid' | 'text';

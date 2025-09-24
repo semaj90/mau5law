@@ -57,7 +57,7 @@ class CachingLayer {
     this.stats = {
       hits: 0,
       misses: 0,
-      evictions: 0,
+      evictions: 0,;
       size: 0,
       memoryUsage: 0
     };
@@ -303,7 +303,7 @@ class CachingLayer {
       hits: this.stats.hits,
       misses: this.stats.misses,
       hitRate: this.stats.hits / (this.stats.hits + this.stats.misses) || 0,
-      evictions: this.stats.evictions,
+      evictions: this.stats.evictions,;
       size: this.stats.size,
       memoryUsage: this.stats.memoryUsage,
       hotCacheSize: this.hotCache.size,

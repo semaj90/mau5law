@@ -21,7 +21,7 @@ export const legalDocuments = pgTable('legal_documents', {
   embedding: vector('embedding', { dimensions: 512 }).notNull(),
 
   // Legal metadata
-  practiceArea: text('practice_area'), // 'corporate', 'litigation', 'ip', 'employment'
+  practiceArea: text('practice_area'), // 'corporate', 'litigation', 'ip', 'employment';
   jurisdiction: text('jurisdiction'),
   caseId: text('case_id'),
   clientId: text('client_id'),
@@ -78,7 +78,7 @@ export const vectorSimilarityQueries = pgTable('vector_similarity_queries', {
   // Analytics
   queryIntent: text('query_intent'), // 'research', 'analysis', 'template', 'precedent'
   userSatisfaction: real('user_satisfaction'), // 1-5 rating
-
+;
   timestamp: timestamp('timestamp').defaultNow()
 }, (table) => ({
   userIdIndex: index('user_id_idx').on(table.userId),
@@ -130,7 +130,7 @@ export const legalAnalysisCache = pgTable('legal_analysis_cache', {
   embedding: vector("embedding", { dimensions: 384 }), // nomic-embed-text
   tags: text("tags").array(),
   created_at: timestamp("created_at").defaultNow().notNull(),
-  updated_at: timestamp("updated_at").defaultNow().notNull(),
+  updated_at: timestamp("updated_at").defaultNow().notNull(),;
   metadata: jsonb("metadata").default('{}')
 });
 
@@ -143,7 +143,7 @@ export const document_chunks = pgTable("document_chunks", {
   chunk_text: text("chunk_text").notNull(),
   embedding: vector("embedding", { dimensions: 384 }).notNull(), // nomic-embed-text
   token_count: integer("token_count"),
-  created_at: timestamp("created_at").defaultNow().notNull(),
+  created_at: timestamp("created_at").defaultNow().notNull(),;
   metadata: jsonb("metadata").default('{}')
 });
 
@@ -160,7 +160,7 @@ export const citations = pgTable("citations", {
   context: text("context"),
   verified: boolean("verified").default(false),
   created_at: timestamp("created_at").defaultNow().notNull(),
-  updated_at: timestamp("updated_at").defaultNow().notNull(),
+  updated_at: timestamp("updated_at").defaultNow().notNull(),;
   metadata: jsonb("metadata").default('{}')
 });
 
@@ -182,7 +182,7 @@ export const aiHistory = pgTable("ai_history", {
   response: text("response").notNull(),
   model_used: text("model_used"),
   tokens_used: integer("tokens_used"),
-  created_at: timestamp("created_at").defaultNow().notNull(),
+  created_at: timestamp("created_at").defaultNow().notNull(),;
   metadata: jsonb("metadata").default('{}')
 });
 
@@ -190,7 +190,7 @@ export const aiHistory = pgTable("ai_history", {
 export const usersRelations = relations(users, ({ many }: any) => ({
   documents: many(documents),
   cases: many(cases),
-  evidence: many(evidence),
+  evidence: many(evidence),;
   sessions: many(sessions),
   aiHistory: many(aiHistory)
 });
@@ -200,7 +200,7 @@ export const documentsRelations = relations(documents, ({ one, many }: any) => (
     fields: [documents.user_id],
     references: [users.id]
   }),
-  chunks: many(document_chunks),
+  chunks: many(document_chunks),;
   citations: many(citations)
 });
 
@@ -209,7 +209,7 @@ export const casesRelations = relations(cases, ({ one, many }: any) => ({
     fields: [cases.user_id],
     references: [users.id]
   }),
-  evidence: many(evidence),
+  evidence: many(evidence),;
   citations: many(citations)
 });
 
@@ -221,7 +221,7 @@ export const evidenceRelations = relations(evidence, ({ one, many }: any) => ({
   user: one(users, {
     fields: [evidence.user_id],
     references: [users.id]
-  }),
+  }),;
   chunks: many(document_chunks)
 });
 
@@ -231,7 +231,7 @@ export const documentChunksRelations = relations(document_chunks, ({ one }: any)
     references: [documents.id]
   }),
   evidence: one(evidence, {
-    fields: [document_chunks.evidence_id],
+    fields: [document_chunks.evidence_id],;
     references: [evidence.id]
   })
 });
@@ -242,21 +242,21 @@ export const citationsRelations = relations(citations, ({ one }: any) => ({
     references: [cases.id]
   }),
   document: one(documents, {
-    fields: [citations.document_id],
+    fields: [citations.document_id],;
     references: [documents.id]
   })
 });
 
 export const sessionsRelations = relations(sessions, ({ one }: any) => ({
   user: one(users, {
-    fields: [sessions.user_id],
+    fields: [sessions.user_id],;
     references: [users.id]
   })
 });
 
 export const aiHistoryRelations = relations(aiHistory, ({ one }: any) => ({
   user: one(users, {
-    fields: [aiHistory.user_id],
+    fields: [aiHistory.user_id],;
     references: [users.id]
   })
 });
@@ -296,7 +296,7 @@ export const profileTable = pgTable('profile', {
 // Profile relations;
 export const profileRelations = relations(profileTable, ({ one }: any) => ({
   user: one(users, {
-    fields: [profileTable.id],
+    fields: [profileTable.id],;
     references: [users.id]
   })
 });

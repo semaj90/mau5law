@@ -59,7 +59,7 @@ class GraphSpatialLayout {
    * Connected nodes will be adjacent in memory
    */
   async computeBFSLayout(
-    nodes: GraphNode[], 
+    nodes: GraphNode[], ;
     edges: GraphEdge[];
   ): Promise<Map<string, number> {
     // Build adjacency map
@@ -95,7 +95,7 @@ class GraphSpatialLayout {
       const unvisitedNeighbors = neighbors
         .filter(neighbor => !visited.has(neighbor);
         .map(neighbor => ({
-          id: neighbor,
+          id: neighbor,;
           confidence: nodes.find(n => n.nodeId === neighbor)?.metadata.confidence || 0
         })
         .sort((a, b) => b.confidence - a.confidence) // High confidence first
@@ -132,7 +132,7 @@ class GraphSpatialLayout {
    * Uses Fruchterman-Reingold algorithm
    */
   async computeForceDirectedLayout(
-    nodes: GraphNode[], 
+    nodes: GraphNode[], ;
     edges: GraphEdge[],
     iterations = 500;
   ): Promise<void> {
@@ -145,7 +145,7 @@ class GraphSpatialLayout {
     for (const node of nodes) {
       this.nodePositions.set(node.nodeId, {
         x: Math.random() * width,
-        y: Math.random() * height,
+        y: Math.random() * height,;
         z: 0
       });
     }
@@ -292,7 +292,7 @@ export class GraphTextureManager {
     const lodLevel: LODLevel = {
       level: 0,
       bounds: bounds || { x: 0, y: 0, width: 1000, height: 1000 },
-      nodeCount: nodes.length,
+      nodeCount: nodes.length,;
       loaded: true,
       gpuData
     };
@@ -306,7 +306,7 @@ export class GraphTextureManager {
    * Create GPU data structures with spatial locality
    */
   private async createGPUDataStructures(
-    nodes: GraphNode[],
+    nodes: GraphNode[],;
     edges: GraphEdge[],
     memoryLayout: Map<string, number>;
   ): Promise<GPUTextureData> {
@@ -348,7 +348,7 @@ export class GraphTextureManager {
     }
     
     const nodeDataBuffer = this.device.createBuffer({
-      size: nodeDataArray.byteLength,
+      size: nodeDataArray.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true
     });
@@ -378,7 +378,7 @@ export class GraphTextureManager {
     
     const adjacencyData = new Uint32Array(adjacencyList);
     const adjacencyBuffer = this.device.createBuffer({
-      size: adjacencyData.byteLength,
+      size: adjacencyData.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true
     });
@@ -420,7 +420,7 @@ export class GraphTextureManager {
     
     const rankingTexture = this.device.createTexture({
       size: { width: matrixTextureSize, height: matrixTextureSize },
-      format: 'rgba32float',
+      format: 'rgba32float',;
       usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
     });
     
@@ -461,7 +461,7 @@ export class GraphTextureManager {
     
     const varianceTexture = this.device.createTexture({
       size: { width: matrixTextureSize, height: matrixTextureSize },
-      format: 'rgba32float',
+      format: 'rgba32float',;
       usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
     });
     
@@ -510,7 +510,7 @@ export class GraphTextureManager {
         metadata: vec4<f32>,
         matrix_index: f32,
         neighbor_offset: f32,
-        neighbor_count: f32,
+        neighbor_count: f32,;
         padding: f32
       }
 

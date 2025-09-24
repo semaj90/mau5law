@@ -102,7 +102,7 @@ class FAISSGPUEngine {
               const topK = similarities.slice(0, k);
 
               return {
-                distances: new Float32Array(topK.map(s => s.distance)),
+                distances: new Float32Array(topK.map(s => s.distance)),;
                 indices: new Int32Array(topK.map(s => s.index)
               };
             }
@@ -174,7 +174,7 @@ class FAISSGPUEngine {
               const topK = candidates.slice(0, k);
 
               return {
-                distances: new Float32Array(topK.map(c => c.distance)),
+                distances: new Float32Array(topK.map(c => c.distance)),;
                 indices: new Int32Array(topK.map(c => c.index)
               };
             }
@@ -219,7 +219,7 @@ class FAISSGPUEngine {
       }
 
       return {
-        dimension: this.dimension,
+        dimension: this.dimension,;
         ntotal: 0,
         is_trained: indexType === 'flat',
         metric_type: metricType,
@@ -261,7 +261,7 @@ class FAISSGPUEngine {
       return {
         indices: [],
         distances: [],
-        scores: [],
+        scores: [],;
         metadata: [],
         search_time_ms: performance.now() - startTime,
         gpu_accelerated: false
@@ -279,7 +279,7 @@ class FAISSGPUEngine {
       return {
         indices: Array.from(result.indices),
         distances: Array.from(result.distances),
-        scores: Array.from(result.distances).map(d => Math.max(0, d)), // Normalize scores
+        scores: Array.from(result.distances).map(d => Math.max(0, d)), // Normalize scores;
         metadata: [], // Will be filled by pgvector bridge
         search_time_ms: performance.now() - startTime,
         gpu_accelerated: true
@@ -289,7 +289,7 @@ class FAISSGPUEngine {
       return {
         indices: [],
         distances: [],
-        scores: [],
+        scores: [],;
         metadata: [],
         search_time_ms: performance.now() - startTime,
         gpu_accelerated: false
@@ -317,7 +317,7 @@ class PgVectorBridge {
       // Store in pgvector using the existing indexer;
       const result = await indexPgVector({
         id: document.id,
-        text: document.content,
+        text: document.content,;
         embedding: document.embedding
       });
 
@@ -341,7 +341,7 @@ class PgVectorBridge {
       return ids.map(id => ({
         id: `doc_${id}`,
         content: `Document content for ID ${id}`,
-        embedding: Array.from({ length: 768 }, () => Math.random() * 2 - 1),
+        embedding: Array.from({ length: 768 }, () => Math.random() * 2 - 1),;
         metadata: { type: 'legal_document', id },
         created_at: new Date(),
         updated_at: new Date()
@@ -354,7 +354,7 @@ class PgVectorBridge {
 
   async searchSimilar(
     queryEmbedding: number[],
-    limit: number = 10,
+    limit: number = 10,;
     threshold: number = 0.7;
   ): Promise<PgVectorDocument[]> {
     try {
@@ -368,7 +368,7 @@ class PgVectorBridge {
             id: `pgvector_result_${i}`,
             content: `Similar document found via pgvector search with score ${score.toFixed(3)}`,
             embedding: Array.from({ length: 768 }, () => Math.random() * 2 - 1),
-            metadata: {
+            metadata: {;
               type: 'legal_document',
               similarity_score: score,
               search_method: 'pgvector'
@@ -502,7 +502,7 @@ export class PgVectorFAISSBridge {
     query: string,
     queryEmbedding: number[],
     config: Partial<HybridSearchConfig> = {}
-  ): Promise<{
+  ): Promise<{;
     results: PgVectorDocument[];
     performance: {
       total_time_ms: number;
@@ -596,7 +596,7 @@ export class PgVectorFAISSBridge {
           pgvector_time_ms: pgvectorTime,
           fusion_time_ms: fusionTime,
           gpu_accelerated: faissResults?.gpu_accelerated || false
-        },
+        },;
         explanation: this.generateSearchExplanation(
           faissResults,
           pgvectorResults.length,
@@ -623,7 +623,7 @@ export class PgVectorFAISSBridge {
           pgvector_time_ms: 0,
           fusion_time_ms: 0,
           gpu_accelerated: false
-        },
+        },;
         explanation: `Search failed: ${error}`
       };
     }
@@ -646,7 +646,7 @@ export class PgVectorFAISSBridge {
           ...faissResults.map((doc, i) => ({ ...doc, fusionScore: faissScores[i] || 0, source: 'faiss' })),
           ...pgvectorResults.map(doc => ({
             ...doc,
-            fusionScore: (doc.metadata?.similarity_score || 0.8),
+            fusionScore: (doc.metadata?.similarity_score || 0.8),;
             source: 'pgvector'
           })
         ];

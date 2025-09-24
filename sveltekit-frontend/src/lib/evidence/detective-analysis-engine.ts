@@ -42,7 +42,7 @@ export interface EvidenceItem {
     contextualClues: string[];
     suggestedActions: string[];
   };
-  metadata: {
+  metadata: {;
     timestamp: number;
     caseId?: string;
     userId: string;
@@ -111,7 +111,7 @@ export class DetectiveAnalysisEngine {
   /**
    * Analyze evidence item with complete pipeline
    */;
-  async analyzeEvidence(evidenceData: Blob | File | string, metadata: {
+  async analyzeEvidence(evidenceData: Blob | File | string, metadata: {;
     type: EvidenceItem['type'];
     caseId?: string;
     userId: string;
@@ -169,7 +169,7 @@ export class DetectiveAnalysisEngine {
         ocrResults,
         embeddings,
         analysis,
-        metadata: {
+        metadata: {;
           timestamp: Date.now(),
           caseId: metadata.caseId,
           userId: metadata.userId,
@@ -191,7 +191,7 @@ export class DetectiveAnalysisEngine {
    * Enhance evidence using WebAssembly ImageMagick-style processing
    */
   private async enhanceEvidence(
-    data: Blob | File | string, 
+    data: Blob | File | string, ;
     type: EvidenceItem['type'];
   ): Promise<Blob | null> {
     if (type !== 'screenshot' && type !== 'image') {
@@ -261,7 +261,7 @@ export class DetectiveAnalysisEngine {
       // Create texture from canvas;
       const sourceTexture = this.webGPUDevice.createTexture({
         size: [canvas.width, canvas.height],
-        format: 'rgba8unorm',
+        format: 'rgba8unorm',;
         usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.STORAGE_BINDING
       });
 
@@ -279,7 +279,7 @@ export class DetectiveAnalysisEngine {
       // Create output texture;
       const outputTexture = this.webGPUDevice.createTexture({
         size: [canvas.width, canvas.height],
-        format: 'rgba8unorm',
+        format: 'rgba8unorm',;
         usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC
       });
 
@@ -290,7 +290,7 @@ export class DetectiveAnalysisEngine {
       computePass.setPipeline(enhancementShader.pipeline as GPUComputePipeline);
       
       const bindGroup = this.webGPUDevice.createBindGroup({
-        layout: enhancementShader.bindGroupLayout!,
+        layout: enhancementShader.bindGroupLayout!,;
         entries: [)
           { binding: 0, resource: sourceTexture.createView() },
           { binding: 1, resource: outputTexture.createView() }
@@ -440,7 +440,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         totalTime: tilingResults.totalProcessingTime.toFixed(2) + 'ms',
         simdTime: tilingResults.simdMetrics.totalSIMDTime.toFixed(2) + 'ms',
         gpuTime: tilingResults.simdMetrics.totalGPUTime.toFixed(2) + 'ms',
-        throughput: tilingResults.simdMetrics.throughputMBps.toFixed(2) + ' MB/s',
+        throughput: tilingResults.simdMetrics.throughputMBps.toFixed(2) + ' MB/s',;
         compression: tilingResults.tensorCompressionRatio.toFixed(2) + 'x',
         memoryUsage: tilingResults.memoryUsage
       });
@@ -459,7 +459,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
             .filter(chunk => chunk.metadata.confidence > 0.8);
             .map(chunk => ({
               id: chunk.id,
-              position: { x: chunk.tileX, y: chunk.tileY },
+              position: { x: chunk.tileX, y: chunk.tileY },;
               confidence: chunk.metadata.confidence,
               evidenceType: chunk.metadata.evidenceType
             })
@@ -500,7 +500,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         const enhancedText = await this.processHandwriting(data);
         
         return {
-          text: enhancedText.text || ocrResult.text,
+          text: enhancedText.text || ocrResult.text,;
           confidence: enhancedText.confidence || ocrResult.confidence || 0,
           boundingBoxes: enhancedText.boundingBoxes || [],
           handwritingDetected: true
@@ -508,7 +508,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       }
 
       return {
-        text: ocrResult.text,
+        text: ocrResult.text,;
         confidence: ocrResult.confidence || 0,
         boundingBoxes: [], // Would be populated by actual OCR engine
         handwritingDetected: false
@@ -517,7 +517,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     } catch (error) {
       console.error('Advanced OCR failed:', error);
       return {
-        text: '',
+        text: '',;
         confidence: 0,
         boundingBoxes: [],
         handwritingDetected: false
@@ -541,7 +541,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       // Perform analysis (mock implementation);
       const result = {
         detected: Math.random() > 0.7, // 30% chance for demo
-        confidence: 0.6 + Math.random() * 0.3,
+        confidence: 0.6 + Math.random() * 0.3,;
         regions: [
           { x: 10, y: 20, width: 200, height: 50 },
           { x: 50, y: 100, width: 150, height: 40 }
@@ -565,12 +565,12 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   private async processHandwriting(data: Blob | File | string): Promise<any> {
     // Mock handwriting processing - would integrate with specialized ML models;
     return {
-      text: "Handwritten note detected: Meeting at 3pm tomorrow",
+      text: "Handwritten note detected: Meeting at 3pm tomorrow",;
       confidence: 0.75,
       boundingBoxes: [;
         {
           text: "Meeting at 3pm tomorrow",
-          bbox: { x: 10, y: 20, width: 200, height: 30 },
+          bbox: { x: 10, y: 20, width: 200, height: 30 },;
           confidence: 0.75
         }
       ]
@@ -602,7 +602,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               text,
-              model: 'nomic-text',
+              model: 'nomic-text',;
               source: 'evidence_analysis'
             })
           });
@@ -651,7 +651,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
    */
   private async performDetectiveAnalysis(
     ocrResults: EvidenceItem['ocrResults'],
-    embeddings: EvidenceItem['embeddings'],
+    embeddings: EvidenceItem['embeddings'],;
     metadata: any,
     tilingResults?: any;
   ): Promise<EvidenceItem['analysis']> {
@@ -669,7 +669,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         times: /\b\d{1,2}:\d{2}(?::\d{2})?\s*(?:am|pm)?\b/gi,
         phones: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g,
         emails: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2}\b/g,
-        addresses: /\b\d+\s+[A-Za-z0-9\s]+(?:street|st|avenue|ave|road|rd|drive|dr|lane|ln|way|court|ct)\b/gi,
+        addresses: /\b\d+\s+[A-Za-z0-9\s]+(?:street|st|avenue|ave|road|rd|drive|dr|lane|ln|way|court|ct)\b/gi,;
         amounts: /\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?\b/g,
         legal_terms: /\b(?:contract|agreement|plaintiff|defendant|witness|testimony|evidence|exhibit|court|judge|jury|verdict|settlement)\b/gi
       };
@@ -773,7 +773,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
    * Detect conflicts using reinforcement learning cache
    */
   private async detectConflicts(
-    text: string,
+    text: string,;
     embeddings: EvidenceItem['embeddings'],
     caseId?: string;
   ): Promise<ConflictAnalysis[]> {
@@ -802,7 +802,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
             severity: similarity > 0.9 ? 'critical' : 'high',
             description: `Conflicting information detected with existing evidence`,
             affectedEvidence: [pattern.evidenceId],
-            suggestedResolution: 'Review both evidence items for accuracy',
+            suggestedResolution: 'Review both evidence items for accuracy',;
             confidence: similarity,
             llmResponse
           });
@@ -813,7 +813,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       existingPatterns.push({
         text,
         embedding: embeddings.semanticEmbedding,
-        evidenceId: `evidence_${Date.now()}`,
+        evidenceId: `evidence_${Date.now()}`,;
         timestamp: Date.now()
       });
       this.reinforcementCache.set(rlCacheKey, existingPatterns);
@@ -932,7 +932,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
 
   private estimateMemoryFootprint(
-    data: Blob | File | string,
+    data: Blob | File | string,;
     embeddings: EvidenceItem['embeddings'];
   ): number {
     let size = 0;
@@ -999,7 +999,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     // Mock LLM response - would integrate with local LLM;
     return {
       summary: 'Potential factual inconsistency detected between evidence items',
-      reasoning: 'The two pieces of evidence contain contradictory information that requires investigation',
+      reasoning: 'The two pieces of evidence contain contradictory information that requires investigation',;
       recommendations: [
         'Verify the accuracy of both evidence sources',
         'Check timestamps for temporal context',
@@ -1010,7 +1010,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   }
 
   private generateSuggestedActions(
-    patterns: string[],
+    patterns: string[],;
     relevance: string,
     hasHandwriting: boolean;
   ): string[] {
@@ -1041,7 +1041,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       {
         query: query + 's',
         score: 0.9,
-        type: 'spelling',
+        type: 'spelling',;
         explanation: 'Plural form'
       }
     ];
@@ -1053,7 +1053,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       {
         query: 'related term',
         score: 0.8,
-        type: 'semantic',
+        type: 'semantic',;
         explanation: 'Semantically related'
       }
     ];
@@ -1065,7 +1065,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       {
         query: 'contextual match',
         score: 0.7,
-        type: 'contextual',
+        type: 'contextual',;
         explanation: 'Related to current case context'
       }
     ];
@@ -1077,7 +1077,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       {
         query: 'pattern match',
         score: 0.6,
-        type: 'pattern',
+        type: 'pattern',;
         explanation: 'Similar pattern detected'
       }
     ];

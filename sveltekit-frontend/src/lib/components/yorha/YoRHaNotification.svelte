@@ -101,9 +101,9 @@
   const iconMap = {
     info: '■',
     success: '✓',
-    warning: '⚠',
-    error: '✕',
-    system: '◆'
+    warning: '⚠',;
+    error: '✕',;
+    system: '◆';
   };
 
   const notificationIcon = $derived(icon || iconMap[type])
@@ -167,7 +167,7 @@
 {/if}
 
 <style>
-  .yorha-notification {
+  .yorha-notification {;
     min-width: 300px;
     max-width: 450px;
     background: var(--yorha-bg-secondary, #1a1a1a);
@@ -176,19 +176,19 @@
     box-shadow:
       0 0 0 1px var(--yorha-bg-primary, #0a0a0a),
       0 8px 32px rgba(0, 0, 0, 0.8);
-    overflow: hidden
+    overflow: hidden;
   }
 
   /* Positioning is handled by the manager */
 
   /* Progress Bar */
-  .notification-progress {
+  .notification-progress {;
     height: 3px;
     background: var(--yorha-bg-primary, #0a0a0a);
-    overflow: hidden
+    overflow: hidden;
   }
 
-  .progress-fill {
+  .progress-fill {;
     height: 100%;
     background: var(--yorha-secondary, #ffd700);
     transition: width 0.1s linear;
@@ -197,20 +197,20 @@
 
   /* Content Layout */
   .notification-content {
-    display: flex
+    display: flex;
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
-    position: relative
+    position: relative;
   }
 
-  .notification-icon {
+  .notification-icon {;
     flex-shrink: 0;
     width: 20px;
     height: 20px;
     display: flex
-    align-items: center
-    justify-content: center
+    align-items: center;
+    justify-content: center;
     font-size: 16px;
     font-weight: 700;
     color: var(--yorha-secondary, #ffd700);
@@ -227,7 +227,7 @@
     font-size: 12px;
     font-weight: 700;
     color: var(--yorha-secondary, #ffd700);
-    text-transform: uppercase
+    text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 4px;
   }
@@ -240,19 +240,19 @@
   }
 
   .notification-close {
-    position: absolute
+    position: absolute;
     top: 8px;
     right: 8px;
     width: 20px;
     height: 20px;
-    background: transparent
+    background: transparent;
     border: 1px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-muted, #808080);
     font-size: 10px;
     cursor: pointer
     display: flex
-    align-items: center
-    justify-content: center
+    align-items: center;
+    justify-content: center;
     transition: all 0.2s ease;
   }
 
@@ -313,7 +313,7 @@
 
   /* System Status Indicator */
   .system-indicator {
-    position: absolute
+    position: absolute;
     top: 8px;
     left: 8px;
     width: 8px;

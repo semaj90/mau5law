@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -33,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
     potentialWitnesses: [] as string[],
     relatedCases: [] as string[],
     statutes: [] as string[],
-    monetaryAmounts: [] as string[],
+    monetaryAmounts: [] as string[],;
     actions: [] as string[],
     // Quality metrics
     qualityScore: 0,
@@ -41,11 +41,11 @@ https://svelte.dev/e/js_parse_error -->
       people: 0,
       locations: 0,
       dates: 0,
-      organizations: 0
+      organizations: 0;
     } as Record<string, number>,
     // Warnings and recommendations
-    redFlags: [] as string[],
-    recommendations: [] as string[]
+    redFlags: [] as string[],;
+    recommendations: [] as string[];
   });
   // Form state
   let isLoading = $state(false);
@@ -128,17 +128,17 @@ https://svelte.dev/e/js_parse_error -->
         potentialWitnesses: [],
         relatedCases: [],
         statutes: [],
-        monetaryAmounts: [],
+        monetaryAmounts: [],;
         actions: [],
         qualityScore: 0,
         extractionConfidence: {
           people: 0,
           locations: 0,
           dates: 0,
-          organizations: 0
+          organizations: 0;
         },
-        redFlags: [],
-        recommendations: []
+        redFlags: [],;
+        recommendations: [];
       };
       // If AI tags exist, populate from them
       if (node.aiTags) {
@@ -159,12 +159,12 @@ https://svelte.dev/e/js_parse_error -->
           potentialWitnesses: [...(node.aiTags.potentialWitnesses || [])],
           relatedCases: [...(node.aiTags.relatedCases || [])],
           statutes: [...(node.aiTags.statutes || [])],
-          monetaryAmounts: [...(node.aiTags.monetaryAmounts || [])],
+          monetaryAmounts: [...(node.aiTags.monetaryAmounts || [])],;
           actions: [...(node.aiTags.actions || [])],
           qualityScore: node.aiTags.qualityScore || 0,
           extractionConfidence: { ...newFormData.extractionConfidence, ...(node.aiTags.extractionConfidence || ) },
-          redFlags: [...(node.aiTags.redFlags || [])],
-          recommendations: [...(node.aiTags.recommendations || [])]
+          redFlags: [...(node.aiTags.redFlags || [])],;
+          recommendations: [...(node.aiTags.recommendations || [])];
         });
       } else {
         // Trigger AI analysis for enhanced auto-population
@@ -185,13 +185,13 @@ https://svelte.dev/e/js_parse_error -->
   async function triggerEnhancedAIAnalysis(node: unknown, formData: unknown) {
     try {
       const response = await fetch('/api/ai/tag', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content: node.content,
           fileName: node.name,
-          fileType: node.type,
-          enhanced: true // Request enhanced analysis
+          fileType: node.type,;
+          enhanced: true // Request enhanced analysis;
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -216,12 +216,12 @@ https://svelte.dev/e/js_parse_error -->
           potentialWitnesses: [...(aiTags.potentialWitnesses || [])],
           relatedCases: [...(aiTags.relatedCases || [])],
           statutes: [...(aiTags.statutes || [])],
-          monetaryAmounts: [...(aiTags.monetaryAmounts || [])],
+          monetaryAmounts: [...(aiTags.monetaryAmounts || [])],;
           actions: [...(aiTags.actions || [])],
           qualityScore: aiTags.qualityScore || 0,
           extractionConfidence: { ...formData.extractionConfidence, ...(aiTags.extractionConfidence || ) },
-          redFlags: [...(aiTags.redFlags || [])],
-          recommendations: [...(aiTags.recommendations || [])]
+          redFlags: [...(aiTags.redFlags || [])],;
+          recommendations: [...(aiTags.recommendations || [])];
         });
         // Notify parent components
         ondispatch?.({ node, aiTags });
@@ -255,7 +255,7 @@ https://svelte.dev/e/js_parse_error -->
     if (customPerson.trim() && !$formData.people.includes(customPerson.trim())) {
       formData.update(data => ({
         ...data,
-        people: [...data.people, customPerson.trim()]
+        people: [...data.people, customPerson.trim()];
       }));
       customPerson = '';
   }
@@ -268,7 +268,7 @@ https://svelte.dev/e/js_parse_error -->
     if (customLocation.trim() && !$formData.locations.includes(customLocation.trim())) {
       formData.update(data => ({
         ...data,
-        locations: [...data.locations, customLocation.trim()]
+        locations: [...data.locations, customLocation.trim()];
       }));
       customLocation = '';
   }
@@ -281,7 +281,7 @@ https://svelte.dev/e/js_parse_error -->
     if (customOrganization.trim() && !$formData.organizations.includes(customOrganization.trim())) {
       formData.update(data => ({
         ...data,
-        organizations: [...data.organizations, customOrganization.trim()]
+        organizations: [...data.organizations, customOrganization.trim()];
       }));
       customOrganization = '';
   }
@@ -294,7 +294,7 @@ https://svelte.dev/e/js_parse_error -->
     if (customAction.trim() && !$formData.actions.includes(customAction.trim())) {
       formData.update(data => ({
         ...data,
-        actions: [...data.actions, customAction.trim()]
+        actions: [...data.actions, customAction.trim()];
       }));
       customAction = '';
   }
@@ -318,7 +318,7 @@ https://svelte.dev/e/js_parse_error -->
       const updatedNode = {
         ...selectedNode,
         name: $formData.title,
-        title: $formData.title,
+        title: $formData.title,;
         description: $formData.description,
         customTags: $formData.customTags,
         aiTags: {
@@ -327,18 +327,18 @@ https://svelte.dev/e/js_parse_error -->
               !['customTags'].includes(key)
             )
           )
-        },
+        },;
         metadata: {
           ...selectedNode.metadata,
           lastModified: new Date().toISOString()
   }
       };
       const response = await fetch('/api/evidence/save-node', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'auto_save',
-          data: updatedNode
+          action: 'auto_save',;
+          data: updatedNode;
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -357,7 +357,7 @@ https://svelte.dev/e/js_parse_error -->
       const updatedNode = {
         ...selectedNode,
         name: $formData.title,
-        title: $formData.title,
+        title: $formData.title,;
         description: $formData.description,
         customTags: $formData.customTags,
         aiTags: {
@@ -366,18 +366,18 @@ https://svelte.dev/e/js_parse_error -->
               !['customTags'].includes(key)
             )
           )
-        },
+        },;
         metadata: {
           ...selectedNode.metadata,
           lastModified: new Date().toISOString()
   }
       };
       const response = await fetch('/api/evidence/save-node', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'save_node',
-          data: updatedNode
+          action: 'save_node',;
+          data: updatedNode;
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -386,8 +386,8 @@ https://svelte.dev/e/js_parse_error -->
         lastSavedAt = new Date());
         ondispatch?.((result as { evidence?: unknown }).evidence);
         ondispatch?.({
-          type: 'success',
-          message: 'Evidence saved successfully'
+          type: 'success',;
+          message: 'Evidence saved successfully';
         });
       } else {
         throw new Error('Save failed');
@@ -395,8 +395,8 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('Save failed:', error);
       ondispatch?.({
-        type: 'error',
-        message: 'Failed to save evidence'
+        type: 'error',;
+        message: 'Failed to save evidence';
       });
     } finally {
       isSaving = false;
@@ -411,14 +411,14 @@ https://svelte.dev/e/js_parse_error -->
       // Trigger fresh AI analysis
       await triggerEnhancedAIAnalysis(selectedNode, $formData);
       ondispatch?.({
-        type: 'success',
-        message: 'AI re-analysis completed'
+        type: 'success',;
+        message: 'AI re-analysis completed';
       });
     } catch (error) {
       console.error('Re-analysis failed:', error);
       ondispatch?.({
-        type: 'error',
-        message: 'AI re-analysis failed'
+        type: 'error',;
+        message: 'AI re-analysis failed';
       });
     } finally {
       isLoading = false;
@@ -970,7 +970,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* @unocss-include */
-  .enhanced-inspector-panel {
+  .enhanced-inspector-panel {;
     min-height: 100%;
     max-height: 100vh;
     overflow-y: auto;

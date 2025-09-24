@@ -3,12 +3,12 @@
  * POST /api/v1/detective/patterns - Detect suspicious patterns in case data
  */
 
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from '@sveltejs/kit'
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
+import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud'
+import { z } from 'zod'
 
-// Pattern detection request schema;
+// Pattern detection request schema
 const PatternDetectionSchema = z.object({
   caseId: z.string().uuid(),
   evidenceIds: z.array(z.string().uuid()).optional(),
@@ -20,54 +20,54 @@ const PatternDetectionSchema = z.object({
     minOccurrences: z.number().min(1).default(2),
     timeWindow: z.string().optional(), // e.g., '30d', '7d', '24h'
   }).optional()
-});
+})
 
 /*
  * POST /api/v1/detective/patterns
  * Detect suspicious patterns in case evidence and data
- */;
+ */
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication;
+    // Check authentication
     if (!locals.session || !locals.user) {
       return error(
         401,
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
-      );
+      )
     }
 
     // Parse request body
-    const body = await request.json();
-    const { caseId, evidenceIds, patternTypes, sensitivity, options = {} } = PatternDetectionSchema.parse(body);
+    const body = await request.json()
+    const { caseId, evidenceIds, patternTypes, sensitivity, options = {} } = PatternDetectionSchema.parse(body)
 
     // Create service instances
-    const casesService = new CasesCRUDService(locals.user.id);
-    const evidenceService = new EvidenceCRUDService(locals.user.id);
+    const casesService = new CasesCRUDService(locals.user.id)
+    const evidenceService = new EvidenceCRUDService(locals.user.id)
 
     // Verify case exists and user has access
-    const caseData = await casesService.getById(caseId);
+    const caseData = await casesService.getById(caseId)
     if (!caseData) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
-      );
+      )
     }
 
     // Get evidence data for pattern analysis
-    let evidence;
+    let evidence
     if (evidenceIds && evidenceIds.length > 0) {
       // Get specific evidence items
       evidence = await Promise.all(
         evidenceIds.map(id => evidenceService.getById(id)
-      );
-      evidence = evidence.filter(Boolean); // Remove null results;
+      )
+      evidence = evidence.filter(Boolean); // Remove null results
     } else {
       // Get all case evidence
-      const evidenceResult = await evidenceService.listByCase(caseId, { page: 1, limit: 100 });
-      evidence = evidenceResult.data;
+      const evidenceResult = await evidenceService.listByCase(caseId, { page: 1, limit: 100 })
+      evidence = evidenceResult.data
     }
 
-    console.log(`Detecting patterns for case ${caseId} with ${evidence.length} evidence items`);
+    console.log(`Detecting patterns for case ${caseId} with ${evidence.length} evidence items`)
 
     // Perform pattern detection
     const patternResults = await detectSuspiciousPatterns(
@@ -76,9 +76,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       patternTypes,
       sensitivity,
       options
-    );
+    )
 
-    // Update case metadata with pattern analysis;
+    // Update case metadata with pattern analysis
     await casesService.update(caseId, {
       metadata: {
         ...caseData.metadata,
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           anomaliesFound: patternResults.anomalies.length
         }
       }
-    });
+    })
 
     return json({
       success: true,
@@ -110,10 +110,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         timestamp: new Date().toISOString(),
         action: 'pattern_detection_completed'
       }
-    });
+    })
 
   } catch (err: any) {
-    console.error('Error in pattern detection:', err);
+    console.error('Error in pattern detection:', err)
 
     if (err instanceof z.ZodError) {
       return error(
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           code: 'INVALID_DATA',
           details: err.errors
         })
-      );
+      )
     }
 
     return error(
@@ -133,9 +133,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         code: 'PATTERN_DETECTION_FAILED',
         details: err.message
       })
-    );
+    )
   }
-};
+}
 
 /*
  * Detect suspicious patterns in case data
@@ -153,83 +153,83 @@ async function detectSuspiciousPatterns(
     insights: [] as string[],
     confidence: 0,
     summary: ''
-  };
+  }
 
   try {
-    const detectionTypes = patternTypes || ['temporal', 'location', 'behavior', 'communication', 'financial', 'digital'];
+    const detectionTypes = patternTypes || ['temporal', 'location', 'behavior', 'communication', 'financial', 'digital']
 
-    // Temporal Pattern Detection;
+    // Temporal Pattern Detection
     if (detectionTypes.includes('temporal')) {
-      const temporalPatterns = await detectTemporalPatterns(evidence, sensitivity, options);
-      results.patterns.push(...temporalPatterns.patterns);
-      results.anomalies.push(...temporalPatterns.anomalies);
-      results.confidence = Math.max(results.confidence, temporalPatterns.confidence);
+      const temporalPatterns = await detectTemporalPatterns(evidence, sensitivity, options)
+      results.patterns.push(...temporalPatterns.patterns)
+      results.anomalies.push(...temporalPatterns.anomalies)
+      results.confidence = Math.max(results.confidence, temporalPatterns.confidence)
     }
 
-    // Location Pattern Detection;
+    // Location Pattern Detection
     if (detectionTypes.includes('location')) {
-      const locationPatterns = await detectLocationPatterns(evidence, sensitivity, options);
-      results.patterns.push(...locationPatterns.patterns);
-      results.anomalies.push(...locationPatterns.anomalies);
-      results.confidence = Math.max(results.confidence, locationPatterns.confidence);
+      const locationPatterns = await detectLocationPatterns(evidence, sensitivity, options)
+      results.patterns.push(...locationPatterns.patterns)
+      results.anomalies.push(...locationPatterns.anomalies)
+      results.confidence = Math.max(results.confidence, locationPatterns.confidence)
     }
 
-    // Behavioral Pattern Detection;
+    // Behavioral Pattern Detection
     if (detectionTypes.includes('behavior')) {
-      const behaviorPatterns = await detectBehavioralPatterns(evidence, sensitivity, options);
-      results.patterns.push(...behaviorPatterns.patterns);
-      results.anomalies.push(...behaviorPatterns.anomalies);
-      results.confidence = Math.max(results.confidence, behaviorPatterns.confidence);
+      const behaviorPatterns = await detectBehavioralPatterns(evidence, sensitivity, options)
+      results.patterns.push(...behaviorPatterns.patterns)
+      results.anomalies.push(...behaviorPatterns.anomalies)
+      results.confidence = Math.max(results.confidence, behaviorPatterns.confidence)
     }
 
-    // Communication Pattern Detection;
+    // Communication Pattern Detection
     if (detectionTypes.includes('communication')) {
-      const commPatterns = await detectCommunicationPatterns(evidence, sensitivity, options);
-      results.patterns.push(...commPatterns.patterns);
-      results.anomalies.push(...commPatterns.anomalies);
-      results.confidence = Math.max(results.confidence, commPatterns.confidence);
+      const commPatterns = await detectCommunicationPatterns(evidence, sensitivity, options)
+      results.patterns.push(...commPatterns.patterns)
+      results.anomalies.push(...commPatterns.anomalies)
+      results.confidence = Math.max(results.confidence, commPatterns.confidence)
     }
 
-    // Financial Pattern Detection;
+    // Financial Pattern Detection
     if (detectionTypes.includes('financial')) {
-      const financialPatterns = await detectFinancialPatterns(evidence, sensitivity, options);
-      results.patterns.push(...financialPatterns.patterns);
-      results.anomalies.push(...financialPatterns.anomalies);
-      results.confidence = Math.max(results.confidence, financialPatterns.confidence);
+      const financialPatterns = await detectFinancialPatterns(evidence, sensitivity, options)
+      results.patterns.push(...financialPatterns.patterns)
+      results.anomalies.push(...financialPatterns.anomalies)
+      results.confidence = Math.max(results.confidence, financialPatterns.confidence)
     }
 
-    // Digital Pattern Detection;
+    // Digital Pattern Detection
     if (detectionTypes.includes('digital')) {
-      const digitalPatterns = await detectDigitalPatterns(evidence, sensitivity, options);
-      results.patterns.push(...digitalPatterns.patterns);
-      results.anomalies.push(...digitalPatterns.anomalies);
-      results.confidence = Math.max(results.confidence, digitalPatterns.confidence);
+      const digitalPatterns = await detectDigitalPatterns(evidence, sensitivity, options)
+      results.patterns.push(...digitalPatterns.patterns)
+      results.anomalies.push(...digitalPatterns.anomalies)
+      results.confidence = Math.max(results.confidence, digitalPatterns.confidence)
     }
 
     // Generate insights based on detected patterns
-    results.insights = generatePatternInsights(results.patterns, results.anomalies);
-    results.summary = generatePatternSummary(results);
+    results.insights = generatePatternInsights(results.patterns, results.anomalies)
+    results.summary = generatePatternSummary(results)
 
-    return results;
+    return results
 
   } catch (error) {
-    console.error('Pattern detection error:', error);
+    console.error('Pattern detection error:', error)
     return {
       ...results,
       error: 'Pattern detection failed',
       details: error instanceof Error ? error.message: 'Unknown error'
-    };
+    }
   }
 }
 
 /*
  * Detect temporal patterns and anomalies
- */;
+ */
 async function detectTemporalPatterns(evidence: any[], sensitivity: number, options: any): Promise<any> {
-  const patterns = [];
-  const anomalies = [];
+  const patterns = []
+  const anomalies = []
 
-  // Mock temporal pattern detection;
+  // Mock temporal pattern detection
   patterns.push({
     id: `temporal_${Date.now()}`,
     type: 'temporal',
@@ -243,9 +243,9 @@ async function detectTemporalPatterns(evidence: any[], sensitivity: number, opti
     ],
     significance: 'high',
     implications: ['Coordinated activity', 'Time-based planning']
-  });
+  })
 
-  // Detect temporal anomalies;
+  // Detect temporal anomalies
   if (options.includeAnomalies) {
     anomalies.push({
       id: `temporal_anomaly_${Date.now()}`,
@@ -256,22 +256,22 @@ async function detectTemporalPatterns(evidence: any[], sensitivity: number, opti
       timestamp: '2024-01-03T03:30:00Z',
       severity: 'medium',
       context: 'Activity at unusual hour'
-    });
+    })
   }
 
   return {
     patterns,
     anomalies,
     confidence: 0.82
-  };
+  }
 }
 
 /*
  * Detect location-based patterns
- */;
+ */
 async function detectLocationPatterns(evidence: any[], sensitivity: number, options: any): Promise<any> {
   return {
-    patterns: [;
+    patterns: [
       {
         id: `location_${Date.now()}`,
         type: 'location',
@@ -286,7 +286,7 @@ async function detectLocationPatterns(evidence: any[], sensitivity: number, opti
         significance: 'high'
       }
     ],
-    anomalies: [;
+    anomalies: [
       {
         id: `location_anomaly_${Date.now()}`,
         type: 'location',
@@ -299,15 +299,15 @@ async function detectLocationPatterns(evidence: any[], sensitivity: number, opti
       }
     ],
     confidence: 0.73
-  };
+  }
 }
 
 /*
  * Detect behavioral patterns
- */;
+ */
 async function detectBehavioralPatterns(evidence: any[], sensitivity: number, options: any): Promise<any> {
   return {
-    patterns: [;
+    patterns: [
       {
         id: `behavior_${Date.now()}`,
         type: 'behavior',
@@ -323,7 +323,7 @@ async function detectBehavioralPatterns(evidence: any[], sensitivity: number, op
         significance: 'very_high'
       }
     ],
-    anomalies: [;
+    anomalies: [
       {
         id: `behavior_anomaly_${Date.now()}`,
         type: 'behavior',
@@ -335,15 +335,15 @@ async function detectBehavioralPatterns(evidence: any[], sensitivity: number, op
       }
     ],
     confidence: 0.88
-  };
+  }
 }
 
 /*
  * Detect communication patterns
- */;
+ */
 async function detectCommunicationPatterns(evidence: any[], sensitivity: number, options: any): Promise<any> {
   return {
-    patterns: [;
+    patterns: [
       {
         id: `comm_${Date.now()}`,
         type: 'communication',
@@ -355,7 +355,7 @@ async function detectCommunicationPatterns(evidence: any[], sensitivity: number,
         significance: 'medium'
       }
     ],
-    anomalies: [;
+    anomalies: [
       {
         id: `comm_anomaly_${Date.now()}`,
         type: 'communication',
@@ -368,15 +368,15 @@ async function detectCommunicationPatterns(evidence: any[], sensitivity: number,
       }
     ],
     confidence: 0.69
-  };
+  }
 }
 
 /*
  * Detect financial patterns
- */;
+ */
 async function detectFinancialPatterns(evidence: any[], sensitivity: number, options: any): Promise<any> {
   return {
-    patterns: [;
+    patterns: [
       {
         id: `financial_${Date.now()}`,
         type: 'financial',
@@ -389,7 +389,7 @@ async function detectFinancialPatterns(evidence: any[], sensitivity: number, opt
         significance: 'high'
       }
     ],
-    anomalies: [;
+    anomalies: [
       {
         id: `financial_anomaly_${Date.now()}`,
         type: 'financial',
@@ -402,15 +402,15 @@ async function detectFinancialPatterns(evidence: any[], sensitivity: number, opt
       }
     ],
     confidence: 0.81
-  };
+  }
 }
 
 /*
  * Detect digital forensics patterns
- */;
+ */
 async function detectDigitalPatterns(evidence: any[], sensitivity: number, options: any): Promise<any> {
   return {
-    patterns: [;
+    patterns: [
       {
         id: `digital_${Date.now()}`,
         type: 'digital',
@@ -423,7 +423,7 @@ async function detectDigitalPatterns(evidence: any[], sensitivity: number, optio
         significance: 'high'
       }
     ],
-    anomalies: [;
+    anomalies: [
       {
         id: `digital_anomaly_${Date.now()}`,
         type: 'digital',
@@ -437,60 +437,60 @@ async function detectDigitalPatterns(evidence: any[], sensitivity: number, optio
       }
     ],
     confidence: 0.89
-  };
+  }
 }
 
 /*
  * Generate insights from detected patterns
- */;
+ */
 function generatePatternInsights(patterns: any[], anomalies: any[]): string[] {
-  const insights = [];
+  const insights = []
 
   if (patterns.length > 0) {
-    insights.push(`${patterns.length} significant patterns detected indicating systematic behavior`);
+    insights.push(`${patterns.length} significant patterns detected indicating systematic behavior`)
   }
 
   if (anomalies.length > 0) {
-    insights.push(`${anomalies.length} anomalies found that warrant further investigation`);
+    insights.push(`${anomalies.length} anomalies found that warrant further investigation`)
   }
 
-  const highConfidencePatterns = patterns.filter(p => p.confidence > 0.8);
+  const highConfidencePatterns = patterns.filter(p => p.confidence > 0.8)
   if (highConfidencePatterns.length > 0) {
-    insights.push(`${highConfidencePatterns.length} high-confidence patterns suggest coordinated activity`);
+    insights.push(`${highConfidencePatterns.length} high-confidence patterns suggest coordinated activity`)
   }
 
-  const criticalAnomalies = anomalies.filter(a => a.severity === 'high' || a.severity === 'very_high');
+  const criticalAnomalies = anomalies.filter(a => a.severity === 'high' || a.severity === 'very_high')
   if (criticalAnomalies.length > 0) {
-    insights.push(`${criticalAnomalies.length} critical anomalies require immediate attention`);
+    insights.push(`${criticalAnomalies.length} critical anomalies require immediate attention`)
   }
 
-  return insights;
+  return insights
 }
 
 /*
  * Generate pattern analysis summary
- */;
+ */
 function generatePatternSummary(results: any): string {
-  const { patterns, anomalies, confidence } = results;
+  const { patterns, anomalies, confidence } = results
 
-  let summary = `Pattern analysis completed with ${confidence.toFixed(2)} confidence. `;
-  summary += `Found ${patterns.length} patterns and ${anomalies.length} anomalies. `;
+  let summary = `Pattern analysis completed with ${confidence.toFixed(2)} confidence. `
+  summary += `Found ${patterns.length} patterns and ${anomalies.length} anomalies. `
 
   if (patterns.length > 0) {
-    summary += `Detected patterns suggest systematic behavior across multiple evidence items. `;
+    summary += `Detected patterns suggest systematic behavior across multiple evidence items. `
   }
 
   if (anomalies.length > 0) {
-    summary += `Anomalies indicate deviations from expected patterns that may be significant. `;
+    summary += `Anomalies indicate deviations from expected patterns that may be significant. `
   }
 
   if (confidence > 0.8) {
-    summary += `High confidence analysis indicates reliable pattern detection.`;
+    summary += `High confidence analysis indicates reliable pattern detection.`
   } else if (confidence > 0.6) {
-    summary += `Moderate confidence suggests patterns are likely but need verification.`;
+    summary += `Moderate confidence suggests patterns are likely but need verification.`
   } else {
-    summary += `Low confidence indicates patterns may need additional evidence for confirmation.`;
+    summary += `Low confidence indicates patterns may need additional evidence for confirmation.`
   }
 
-  return summary;
+  return summary
 }

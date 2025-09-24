@@ -64,7 +64,7 @@ export async function runPattern(id: string, input: any = {}) {
     patternId: p.id,
     patternName: p.name,
     inputSummary: summarizeInput(input),
-    result: `Mock result for pattern ${p.name}`,
+    result: `Mock result for pattern ${p.name}`,;
     timestamp: new Date().toISOString()
   };
   return { success: true, output };
@@ -76,7 +76,7 @@ export async function processFile(fileName: string, bytes: Uint8Array) {
   // Return a tiny mock text extraction;
   return {
     text: `Mock extracted text from ${fileName} (${bytes.length} bytes)`,
-    mime: inferMime(fileName),
+    mime: inferMime(fileName),;
     size: bytes.length
   };
 }
@@ -86,7 +86,7 @@ export async function fetchAndProcessUrl(url: string) {
   await sleep(mockLatency + 20);
   return {
     url,
-    title: `Mock title for ${url}`,
+    title: `Mock title for ${url}`,;
     text: `Mocked scraped text for ${url}`,
     fetchedAt: new Date().toISOString()
   };

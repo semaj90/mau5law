@@ -2,7 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 /// <reference types="vite/client" />
-<!-- @migration-task Error while migrating Svelte code: Identifier 'caseId' has already been declared
+<!-- @migration-task Error while migrating Svelte code: Identifier 'caseId' has already been declared;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -75,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
       jurisdiction: '',
       priority: 'medium',
       description: '',
-      key_dates: []
+      key_dates: [];
     },
     documents: {
       uploaded_files: [],
@@ -86,15 +86,15 @@ https://svelte.dev/e/js_parse_error -->
       extracted_entities: [],
       key_facts: [],
       legal_issues: [],
-      precedents: []
+      precedents: [];
     },
     ai_analysis: {
       case_strength_score: 0,
       predicted_outcome: '',
       risk_factors: [],
       recommendations: [],
-      similar_cases: []
-    },
+      similar_cases: [];
+    },;
     review: {
       final_review: '',
       quality_score: 0,
@@ -179,8 +179,8 @@ https://svelte.dev/e/js_parse_error -->
         formData_upload.append('file', file);
 
         const uploadResponse = await fetch('/api/upload-temp', {
-          method: 'POST',
-          body: formData_upload
+          method: 'POST',;
+          body: formData_upload;
         });
 
         if (!uploadResponse.ok) {
@@ -195,8 +195,8 @@ https://svelte.dev/e/js_parse_error -->
 
         // Clean up temp file
         await fetch('/api/cleanup-temp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST',;
+          headers: { 'Content-Type': 'application/json' },;
           body: JSON.stringify({ filePath })
         });
       }
@@ -239,8 +239,8 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch('/api/evidence/extract', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           ocr_results: $formData.documents.ocr_results,
           case_context: $formData.caseInfo
@@ -255,7 +255,7 @@ https://svelte.dev/e/js_parse_error -->
 
       formData.update(data => ({
         ...data,
-        evidence: evidenceData
+        evidence: evidenceData;
       }));
 
       console.log('✅ Evidence extraction completed');
@@ -275,12 +275,12 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch('/api/ai/analyze-case', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           case_info: $formData.caseInfo,
-          evidence: $formData.evidence,
-          documents: $formData.documents.ocr_results
+          evidence: $formData.evidence,;
+          documents: $formData.documents.ocr_results;
         })
       });
 
@@ -331,9 +331,9 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch('/api/cases/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify($formData)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify($formData);
       });
 
       if (!(response as { ok?: unknown; json?: unknown }).ok) {
@@ -460,7 +460,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .legal-case-manager {
+  .legal-case-manager {;
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;

@@ -53,15 +53,15 @@
     const base = 'modern-card transition-all duration-200';
     const variants = {
       default: 'bg-yorha-bg-card border border-yorha-border-primary',
-      elevated: 'bg-yorha-bg-card border border-yorha-border-primary shadow-lg',
-      outline: 'bg-transparent border border-yorha-border-accent',
-      ghost: 'bg-transparent border-transparent hover:bg-yorha-bg-hover'
+      elevated: 'bg-yorha-bg-card border border-yorha-border-primary shadow-lg',;
+      outline: 'bg-transparent border border-yorha-border-accent',;
+      ghost: 'bg-transparent border-transparent hover:bg-yorha-bg-hover';
     };
     const sizes = {
       sm: 'p-golden-md',
-      md: 'p-golden-lg',
-      lg: 'p-golden-xl',
-      xl: 'p-golden-2xl'
+      md: 'p-golden-lg',;
+      lg: 'p-golden-xl',;
+      xl: 'p-golden-2xl';
     };
     const interactive = hoverable ? 'hover:border-yorha-border-accent hover:shadow-md' : '';
     const cursor = clickable ? 'cursor-pointer' : '';

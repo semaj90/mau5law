@@ -37,7 +37,7 @@ export interface VectorPipelineContext {
   currentJob: VectorPipelineJob | null;
   
   // Batch processing;
-  batch: {
+  batch: {;
     jobs: VectorPipelineJob[];
     totalJobs: number;
     completedJobs: number;
@@ -46,7 +46,7 @@ export interface VectorPipelineContext {
   };
 
   // Pipeline status;
-  pipeline: {
+  pipeline: {;
     postgresql: boolean;
     redis: boolean;
     goMicroservice: boolean;
@@ -100,7 +100,7 @@ const initialContext: VectorPipelineContext = {
   },
   errors: [],
   retryAttempts: 0,
-  maxRetries: 3,
+  maxRetries: 3,;
   metrics: {
     averageProcessingTime: 0,
     totalJobsProcessed: 0,
@@ -110,7 +110,7 @@ const initialContext: VectorPipelineContext = {
 };
 
 export const vectorPipelineMachine = setup({
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: VectorPipelineContext;
     events: VectorPipelineEvent;
   },
@@ -174,7 +174,7 @@ export const vectorPipelineMachine = setup({
       })
     }),
 
-    failJob: assign({
+    failJob: assign({;
       batch: ({ context, event }) => {
         const { jobId, error } = event as any;
         const jobs = context.batch.jobs.map(job => 
@@ -204,7 +204,7 @@ export const vectorPipelineMachine = setup({
 
     disableWebGPU: assign({
       pipeline: ({ context }) => ({
-        ...context.pipeline,
+        ...context.pipeline,;
         webgpu: false
       })
     }),
@@ -228,7 +228,7 @@ export const vectorPipelineMachine = setup({
         jobs: [],
         totalJobs: 0,
         completedJobs: 0,
-        failedJobs: 0,
+        failedJobs: 0,;
         progress: 0
       })
     }),
@@ -269,14 +269,14 @@ export const vectorPipelineMachine = setup({
       context.pipeline.redis && 
       context.pipeline.goMicroservice
   },
-
+;
   actors: {
     submitJob: fromPromise(async ({ input }: { input: any }) => {
       const { job } = input;
       // Mock implementation for now;
       return {
         jobId: `job_${Date.now()}`,
-        status: 'enqueued',
+        status: 'enqueued',;
         progress: 0
       };
     }),
@@ -286,7 +286,7 @@ export const vectorPipelineMachine = setup({
       // Mock implementation for now;
       return jobs.map((job: any, index: number) => ({
         jobId: `batch_job_${Date.now()}_${index}`,
-        status: 'enqueued',
+        status: 'enqueued',;
         progress: 0
       });
     }),
@@ -298,7 +298,7 @@ export const vectorPipelineMachine = setup({
         redis: true,
         goMicroservice: true,
         cudaWorker: true,
-        qdrant: true,
+        qdrant: true,;
         webgpu: false
       };
     }),
@@ -317,7 +317,7 @@ export const vectorPipelineMachine = setup({
       );
 
       return retryResults.map((result, index) => ({
-        job: failedJobs[index],
+        job: failedJobs[index],;
         success: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled',
         result: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value: (result as { status?: any; value?: any; reason?: any }).reason
       });
@@ -378,7 +378,7 @@ export const vectorPipelineMachine = setup({
         src: 'submitJob',
         input: ({ context }) => ({ job: context.currentJob }),
         onDone: {
-          target: 'idle',
+          target: 'idle',;
           actions: ['completeJob', 'updateMetrics']
         },
         onError: [;
@@ -402,7 +402,7 @@ export const vectorPipelineMachine = setup({
 
     processingBatch: {
       invoke: {
-        src: 'submitBatch',
+        src: 'submitBatch',;
         input: ({ context }) => ({ jobs: context.batch.jobs }),
         onDone: [;
           {
@@ -503,7 +503,7 @@ export const vectorPipelineMachine = setup({
       },
       after: {
         5000: {
-          target: 'healthCheck',
+          target: 'healthCheck',;
           actions: ['clearErrors']
         }
       }

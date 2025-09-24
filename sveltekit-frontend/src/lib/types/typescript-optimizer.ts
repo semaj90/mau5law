@@ -309,7 +309,7 @@ export interface WebSocketEvent {
 
 export interface ProgressEvent extends WebSocketEvent {
 	type: 'progress';
-	data: {
+	data: {;
 		processed: number;
 		total: number;
 		current_file: string;

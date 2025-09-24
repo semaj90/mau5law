@@ -144,14 +144,14 @@
       imageSmoothingEnabled: true,
       allowTouchScrolling: false,
       moveCursor: 'grab',
-      hoverCursor: 'pointer'
+      hoverCursor: 'pointer';
     });
 
     // Enable high DPI support
     const devicePixelRatio = window.devicePixelRatio || 1;
     fabricCanvas.setDimensions({
-      width: width * devicePixelRatio,
-      height: height * devicePixelRatio
+      width: width * devicePixelRatio,;
+      height: height * devicePixelRatio;
     }, {
       cssOnly: false,
       backstoreOnly: true
@@ -178,10 +178,10 @@
     const gridSize = 40;
     const gridOptions = {
       stroke: '#e2e8f0',
-      strokeWidth: 1,
-      selectable: false,
+      strokeWidth: 1,;
+      selectable: false,;
       evented: false,
-      excludeFromExport: true
+      excludeFromExport: true;
     };
 
     // Vertical lines
@@ -308,8 +308,8 @@
     if (!rect) return;
 
     const canvasPos = {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      x: e.clientX - rect.left,;
+      y: e.clientY - rect.top;
     };
 
     // Convert to fabric canvas coordinates
@@ -333,10 +333,10 @@
       stroke: '#3b82f6',
       strokeWidth: 4,
       strokeDashArray: [10, 10],
-      selectable: false,
+      selectable: false,;
       evented: false,
-      excludeFromExport: true,
-      opacity: 0.8
+      excludeFromExport: true,;
+      opacity: 0.8;
     });
 
     const dropText = new fabric.Text('Drop Evidence Here', {
@@ -347,10 +347,10 @@
       fontWeight: 'bold',
       textAlign: 'center',
       originX: 'center',
-      originY: 'center',
-      selectable: false,
+      originY: 'center',;
+      selectable: false,;
       evented: false,
-      excludeFromExport: true
+      excludeFromExport: true;
     });
 
     overlay.set('dropOverlay', true);
@@ -389,7 +389,7 @@
             {
               caseId: 'current-case', // You can get this from context
               tags: ['uploaded', 'evidence'],
-              processingStatus: 'pending'
+              processingStatus: 'pending';
             },
             position
           );
@@ -411,10 +411,10 @@
     
     // Trigger the parent's drop zone handler with processed evidence
     onDropZone?.({ 
-      x: position.x, 
-      y: position.y, 
+      x: position.x, ;
+      y: position.y, ;
       files: processedFiles.filter(Boolean),
-      processingMethod: 'minio-webgpu-concurrent'
+      processingMethod: 'minio-webgpu-concurrent';
     });
   }
 
@@ -463,7 +463,7 @@
             const result = wasmParser.parseForCanvas(bytes, {
               maxChunkSize: 3000,
               overlap: 200,
-              enableEntityExtraction: true
+              enableEntityExtraction: true;
             });
 
             // Create enhanced file object
@@ -542,11 +542,11 @@
           cornerStrokeColor: '#1d4ed8',
           borderColor: '#3b82f6',
           cornerSize: 12,
-          padding: 10,
+          padding: 10,;
           data: {
-            evidenceId: evidence.id,
+            evidenceId: evidence.id,;
             type: 'evidence',
-            originalEvidence: evidence
+            originalEvidence: evidence;
           }
         });
 
@@ -554,11 +554,11 @@
         const label = createEvidenceLabel(evidence);
         const group = new fabric.Group([img, label], {
           left: evidence.position.x,
-          top: evidence.position.y,
+          top: evidence.position.y,;
           data: {
-            evidenceId: evidence.id,
+            evidenceId: evidence.id,;
             type: 'evidence',
-            originalEvidence: evidence
+            originalEvidence: evidence;
           }
         });
 
@@ -586,46 +586,46 @@
       height: cardHeight,
       fill: getEvidenceColor(evidence),
       stroke: evidence.status === 'ready' ? '#10b981' : '#6b7280',
-      strokeWidth: 2,
-      rx: 8,
-      ry: 8
+      strokeWidth: 2,;
+      rx: 8,;
+      ry: 8;
     });
 
     // File icon
     const iconText = getEvidenceIcon(evidence.type);
     const icon = new fabric.Text(iconText, {
       fontSize: 32,
-      fill: 'white',
-      left: 15,
+      fill: 'white',;
+      left: 15,;
       top: 15,
-      fontFamily: 'Arial'
+      fontFamily: 'Arial';
     });
 
     // Status indicator
     const statusIcon = new fabric.Text(getStatusIcon(evidence.status), {
       fontSize: 16,
-      left: cardWidth - 25,
+      left: cardWidth - 25,;
       top: 10,
-      fontFamily: 'Arial'
+      fontFamily: 'Arial';
     });
 
     // File name
     const fileName = new fabric.Text(truncateFileName(evidence.filename, 18), {
       fontSize: 12,
-      fill: 'white',
-      left: 15,
+      fill: 'white',;
+      left: 15,;
       top: 55,
       fontFamily: 'Arial',
-      fontWeight: 'bold'
+      fontWeight: 'bold';
     });
 
     // File size
     const fileSize = new fabric.Text.toFixed(1)} KB`, {
       fontSize: 10,
-      fill: 'rgba(255, 255, 255, 0.8)',
-      left: 15,
+      fill: 'rgba(255, 255, 255, 0.8)',;
+      left: 15,;
       top: 75,
-      fontFamily: 'Arial'
+      fontFamily: 'Arial';
     });
 
     // AI confidence score (if available)
@@ -634,11 +634,11 @@
       const confidence = Math.round(evidence.aiAnalysis.confidence * 100);
       confidenceText = new fabric.Text(`AI: ${confidence}%`, {
         fontSize: 10,
-        fill: confidence > 80 ? '#10b981' : confidence > 60 ? '#f59e0b' : '#ef4444',
-        left: 15,
+        fill: confidence > 80 ? '#10b981' : confidence > 60 ? '#f59e0b' : '#ef4444',;
+        left: 15,;
         top: 90,
         fontFamily: 'Arial',
-        fontWeight: 'bold'
+        fontWeight: 'bold';
       });
     }
 
@@ -655,11 +655,11 @@
       cornerStrokeColor: '#1d4ed8',
       borderColor: '#3b82f6',
       cornerSize: 12,
-      padding: 10,
+      padding: 10,;
       data: {
-        evidenceId: evidence.id,
+        evidenceId: evidence.id,;
         type: 'evidence',
-        originalEvidence: evidence
+        originalEvidence: evidence;
       }
     });
   }
@@ -669,11 +669,11 @@
       fontSize: 12,
       fill: '#1f2937',
       backgroundColor: 'rgba(255, 255, 255, 0.9)',
-      padding: 4,
-      top: 160,
+      padding: 4,;
+      top: 160,;
       left: 0,
       fontFamily: 'Arial',
-      textAlign: 'center'
+      textAlign: 'center';
     });
   }
 
@@ -684,8 +684,8 @@
     // Update position if changed
     if (obj.left !== evidence.position.x || obj.top !== evidence.position.y) {
       obj.set({
-        left: evidence.position.x,
-        top: evidence.position.y
+        left: evidence.position.x,;
+        top: evidence.position.y;
       });
     }
 
@@ -700,9 +700,9 @@
     const colors = {
       document: '#4f46e5',
       image: '#059669',
-      video: '#dc2626',
-      audio: '#7c3aed',
-      other: '#6b7280'
+      video: '#dc2626',;
+      audio: '#7c3aed',;
+      other: '#6b7280';
     };
     
     return colors[evidence.type] || colors.other;
@@ -712,9 +712,9 @@
     const icons = {
       document: '📄',
       image: '🖼️',
-      video: '🎥',
-      audio: '🎵',
-      other: '📎'
+      video: '🎥',;
+      audio: '🎵',;
+      other: '📎';
     };
     return icons[type] || icons.other;
   }
@@ -722,9 +722,9 @@
   function getStatusIcon(status: EvidenceItem['status']): string {
     const icons = {
       uploading: '⬆️',
-      processing: '🔄',
-      ready: '✅',
-      error: '❌'
+      processing: '🔄',;
+      ready: '✅',;
+      error: '❌';
     };
     return icons[status] || '❓';
   }
@@ -752,9 +752,9 @@
         const objBounds = obj.getBoundingRect();
         return {
           left: Math.min(acc.left, objBounds.left),
-          top: Math.min(acc.top, objBounds.top),
-          right: Math.max(acc.right, objBounds.left + objBounds.width),
-          bottom: Math.max(acc.bottom, objBounds.top + objBounds.height)
+          top: Math.min(acc.top, objBounds.top),;
+          right: Math.max(acc.right, objBounds.left + objBounds.width),;
+          bottom: Math.max(acc.bottom, objBounds.top + objBounds.height);
         };
       }, { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity });
 
@@ -765,8 +765,8 @@
       const canvasCenterY = height / 2;
       
       fabricCanvas.relativePan({
-        x: canvasCenterX - centerX,
-        y: canvasCenterY - centerY
+        x: canvasCenterX - centerX,;
+        y: canvasCenterY - centerY;
       });
     }
   }
@@ -834,7 +834,7 @@
         stroke: '#d1d5db',
         strokeWidth: 2,
         rx: 8,
-        ry: 8
+        ry: 8;
       }),
       new fabric.Text(evidenceFile.name.length > 20 ? evidenceFile.name.substring(0, 17) + '...' : evidenceFile.name, {
         left: 100,
@@ -843,7 +843,7 @@
         fontWeight: 'bold',
         textAlign: 'center',
         originX: 'center',
-        fill: '#374151'
+        fill: '#374151';
       }),
       new fabric.Text('Processing...', {
         left: 100,
@@ -851,7 +851,7 @@
         fontSize: 12,
         textAlign: 'center',
         originX: 'center',
-        fill: '#6b7280'
+        fill: '#6b7280';
       }),
       new fabric.Rect({
         width: 160,
@@ -861,7 +861,7 @@
         originX: 'center',
         fill: '#e5e7eb',
         rx: 3,
-        ry: 3
+        ry: 3;
       }),
       new fabric.Rect({
         width: 32, // 20% progress initially
@@ -870,18 +870,18 @@
         top: 90,
         fill: '#3b82f6',
         rx: 3,
-        ry: 3
+        ry: 3;
       })
     ], {
       left: position.x,
       top: position.y,
       selectable: true,
       hasControls: true,
-      hasBorders: true,
+      hasBorders: true,;
       data: {
-        evidenceId: evidenceFile.id,
+        evidenceId: evidenceFile.id,;
         type: 'processing-evidence',
-        originalEvidence: evidenceFile
+        originalEvidence: evidenceFile;
       }
     });
 
@@ -914,7 +914,7 @@
 
       // Update progress
       processingProgress.set(jobId, { 
-        progress: job.progress, 
+        progress: job.progress, ;
         status: job.status === 'processing' ? `Processing (${job.progress}%)...` : job.status 
       });
 
@@ -968,8 +968,8 @@
 
     // Create final evidence card based on processing results
     const finalCard = createFinalEvidenceCard((data as { evidenceId?: any; originalEvidence?: any }).originalEvidence, result, {
-      left: obj.left,
-      top: obj.top
+      left: obj.left,;
+      top: obj.top;
     });
 
     fabricCanvas.add(finalCard);
@@ -993,12 +993,12 @@
         stroke: methodColor,
         strokeWidth: 3,
         rx: 12,
-        ry: 12,
+        ry: 12,;
         shadow: new fabric.Shadow({
           color: 'rgba(0,0,0,0.1)',
           blur: 10,
           offsetX: 2,
-          offsetY: 2
+          offsetY: 2;
         })
       }),
       // Title
@@ -1009,7 +1009,7 @@
         fontWeight: 'bold',
         textAlign: 'center',
         originX: 'center',
-        fill: '#1f2937'
+        fill: '#1f2937';
       }),
       // Processing method badge
       new fabric.Rect({
@@ -1020,7 +1020,7 @@
         originX: 'center',
         fill: methodColor,
         rx: 10,
-        ry: 10
+        ry: 10;
       }),
       new fabric.Text(processingResult.processingMethod.toUpperCase(), {
         left: cardWidth / 2,
@@ -1030,7 +1030,7 @@
         textAlign: 'center',
         originX: 'center',
         originY: 'center',
-        fill: '#ffffff'
+        fill: '#ffffff';
       }),
       // Stats
       new fabric.Text.toFixed(1)}KB • ⏱️ ${processingResult.processingTime || 0}ms`, {
@@ -1039,7 +1039,7 @@
         fontSize: 11,
         textAlign: 'center',
         originX: 'center',
-        fill: '#6b7280'
+        fill: '#6b7280';
       }),
       // Quantization info if available
       processingResult.quantizationApplied ? new fabric.Text(
@@ -1050,7 +1050,7 @@
           fontSize: 10,
           textAlign: 'center',
           originX: 'center',
-          fill: '#059669'
+          fill: '#059669';
         }
       ) : null,
       // Ready indicator
@@ -1060,7 +1060,7 @@
         radius: 8,
         fill: '#10b981',
         originX: 'center',
-        originY: 'center'
+        originY: 'center';
       }),
       new fabric.Text('✓', {
         left: cardWidth - 25,
@@ -1070,19 +1070,19 @@
         textAlign: 'center',
         originX: 'center',
         originY: 'center',
-        fill: '#ffffff'
+        fill: '#ffffff';
       })
     ].filter(Boolean), {
       left: position.left,
       top: position.top,
       selectable: true,
       hasControls: true,
-      hasBorders: true,
+      hasBorders: true,;
       data: {
-        evidenceId: evidenceFile.id,
+        evidenceId: evidenceFile.id,;
         type: 'completed-evidence',
         originalEvidence: evidenceFile,
-        processingResult
+        processingResult;
       }
     });
   }

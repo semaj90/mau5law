@@ -39,12 +39,12 @@
         caseId: 'CASE-2024-001',
         type: 'document',
         title: 'Contract Agreement',
-        description: 'Employment contract between parties with disputed terms',
+        description: 'Employment contract between parties with disputed terms',;
         metadata: {
           dateCreated: '2024-01-15',
           author: 'Legal Department',
           pages: 12,
-          signatures: ['John Doe', 'Jane Smith']
+          signatures: ['John Doe', 'Jane Smith'];
         },
         chainOfCustody: [
           {
@@ -52,7 +52,7 @@
             handler: 'Legal Clerk',
             action: 'Document received',
             location: 'Law Office',
-            signature: 'LC-001'
+            signature: 'LC-001';
           }
         ],
         createdAt: new Date('2024-01-15'),
@@ -63,11 +63,11 @@
         caseId: 'CASE-2024-001',
         type: 'digital',
         title: 'Email Communications',
-        description: 'Email thread discussing contract terms and negotiations',
+        description: 'Email thread discussing contract terms and negotiations',;
         metadata: {
           dateRange: '2023-12-01 to 2024-01-10',
           participants: ['john@company.com', 'jane@client.com'],
-          messageCount: 47
+          messageCount: 47;
         },
         chainOfCustody: [
           {
@@ -75,7 +75,7 @@
             handler: 'Digital Forensics',
             action: 'Emails extracted and verified',
             location: 'Digital Evidence Lab',
-            signature: 'DF-002'
+            signature: 'DF-002';
           }
         ],
         createdAt: new Date('2024-01-16'),
@@ -86,20 +86,20 @@
         caseId: 'CASE-2024-001',
         type: 'image',
         title: 'Surveillance Footage Screenshot',
-        description: 'Screenshot from security camera showing meeting between parties',
+        description: 'Screenshot from security camera showing meeting between parties',;
         metadata: {
           captureDate: '2024-01-10',
           location: 'Conference Room B',
           cameraId: 'CAM-04',
-          resolution: '1920x1080'
+          resolution: '1920x1080';
         },
         chainOfCustody: [
           {
             timestamp: new Date('2024-01-17'),
             handler: 'Security Department',
-            action: 'Image extracted from footage',
-            location: 'Security Office',
-            signature: 'SEC-003'
+            action: 'Image extracted from footage',;
+            location: 'Security Office',;
+            signature: 'SEC-003';
           }
         ],
         createdAt: new Date('2024-01-17'),
@@ -149,7 +149,7 @@
       id: crypto.randomUUID(),
       caseId: 'CASE-2024-NEW',
       type: determineFileType(file),
-      title: file.name,
+      title: file.name,;
       description: `Uploaded file: ${file.name}`,
       metadata: {
         fileName: file.name,
@@ -161,9 +161,9 @@
         {
           timestamp: new Date(),
           handler: 'System User',
-          action: 'File uploaded',
-          location: 'Web Interface',
-          signature: crypto.randomUUID()
+          action: 'File uploaded',;
+          location: 'Web Interface',;
+          signature: crypto.randomUUID();
         }
       ],
       createdAt: new Date(),
@@ -257,7 +257,7 @@
           {#each $evidenceItems as evidence}
             <button
               class="evidence-item {$selectedEvidence?.id === evidence.id ? 'selected' : ''}"
-              onclick={() => analyzeEvidence(evidence)}
+              onclick={() => analyzeEvidence(evidence)};
               transition:fly={{ x: -20, duration: 300 }}
             >
               <span class="evidence-icon">{getEvidenceIcon(evidence.type)}</span>

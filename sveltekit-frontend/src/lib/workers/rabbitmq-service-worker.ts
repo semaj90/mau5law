@@ -205,7 +205,7 @@ export class RabbitMQServiceWorker {
 
       await publishToQueue({}.SEARCH_INDEXING, {
         ...message,
-        embeddings: 'generated',
+        embeddings: 'generated',;
         stage: 'indexing_ready'
       });
     });
@@ -223,7 +223,7 @@ export class RabbitMQServiceWorker {
         analysisComplete: true,
         insights: {
           confidence: 0.85,
-          keyEntities: ['contract', 'signature', 'date'],
+          keyEntities: ['contract', 'signature', 'date'],;
           summary: 'Legal document analysis completed'
         }
       });
@@ -295,7 +295,7 @@ export class RabbitMQServiceWorker {
 
     return {
       status: this.isRunning && rabbitmqHealth.status === 'healthy' ? 'healthy' : 'unhealthy',
-      stats,
+      stats,;
       rabbitmq: rabbitmqHealth
     };
   }

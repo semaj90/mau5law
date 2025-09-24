@@ -48,7 +48,7 @@ export class EmbeddingService {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: options?.model || "unknown" // @ts-ignore - Model property access || this?.model || "unknown" // @ts-ignore - Model property access,
+          model: options?.model || "unknown" // @ts-ignore - Model property access || this?.model || "unknown" // @ts-ignore - Model property access,;
           prompt: text
         })
       });
@@ -86,7 +86,7 @@ export class EmbeddingService {
    * Generate embeddings for multiple texts in batch
    */
   async generateBatchEmbeddings(
-    texts: string[],
+    texts: string[],;
     options: EmbeddingOptions = {}
   ): Promise<number[][]> {
     const embeddings = await Promise.all(
@@ -202,7 +202,7 @@ export class EmbeddingService {
    * Generate document embedding and store in database
    */
   async generateDocumentEmbedding(
-    content: string,
+    content: string,;
     metadata: {
       documentId?: string;
       evidenceId?: string;
@@ -225,7 +225,7 @@ export class EmbeddingService {
         chunkText: metadata.chunkText || content,
         chunkSize: content.length,
         parentChunkId: metadata.parentChunkId || null,
-        embeddingModel: this?.model || "unknown" // @ts-ignore - Model property access,
+        embeddingModel: this?.model || "unknown" // @ts-ignore - Model property access,;
         metadata: Record<string, any>
       });
 
@@ -248,7 +248,7 @@ export class EmbeddingService {
       await db.insert(caseEmbeddings).values({
         caseId,
         content,
-        embedding: `[${embedding.join(',')}]`, // Store as vector string
+        embedding: `[${embedding.join(',')}]`, // Store as vector string;
         metadata: Record<string, any>
       });
 
@@ -304,7 +304,7 @@ export class EmbeddingService {
    */
   chunkText(
     text: string, 
-    chunkSize: number = 600, 
+    chunkSize: number = 600, ;
     overlap: number = 60;
   ): { text: string; index: number }[] {
     const chunks = [];
@@ -316,7 +316,7 @@ export class EmbeddingService {
       const chunk = text.slice(start, end);
       
       chunks.push({
-        text: chunk,
+        text: chunk,;
         index: index++
       });
 

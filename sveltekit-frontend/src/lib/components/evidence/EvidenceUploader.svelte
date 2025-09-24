@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
@@ -149,7 +149,7 @@ export default ;
   on:drop|preventDefault={onDrop}
   on:dragover|preventDefault={onDragOver}
 >
-  <input
+  <input;
 	bind:this={inputEl}
 	type="file"
 	{accept}

@@ -84,7 +84,7 @@ class UserIntentPredictionSystem {
   /**
    * Main prediction method: Analyze user query and predict intentions
    */
-  async predictUserIntent(
+  async predictUserIntent(;
     query: string,
     userContext: {
       userId: string;
@@ -244,7 +244,7 @@ class UserIntentPredictionSystem {
           originalQuery: query,
           suggestedQuery: correction.correctedText,
           suggestionType: 'spelling',
-          confidence: correction.confidence,
+          confidence: correction.confidence,;
           reason: `Corrected potential spelling: "${correction.originalWord}" → "${correction.correctedWord}"`,
           expectedImprovement: {
             clarityGain: 0.8,
@@ -261,7 +261,7 @@ class UserIntentPredictionSystem {
           originalQuery: query,
           suggestedQuery: expansion.expandedText,
           suggestionType: 'synonym',
-          confidence: expansion.confidence,
+          confidence: expansion.confidence,;
           reason: `Enhanced with legal terminology: "${expansion.originalTerm}" → "${expansion.legalTerm}"`,
           expectedImprovement: {
             clarityGain: 0.6,
@@ -278,7 +278,7 @@ class UserIntentPredictionSystem {
           originalQuery: query,
           suggestedQuery: completion.completedQuery,
           suggestionType: 'completion',
-          confidence: completion.confidence,
+          confidence: completion.confidence,;
           reason: `Added context for better results: "${completion.addedContext}"`,
           expectedImprovement: {
             clarityGain: 0.4,
@@ -296,7 +296,7 @@ class UserIntentPredictionSystem {
             originalQuery: query,
             suggestedQuery: clarification.clarifiedQuery,
             suggestionType: 'clarification',
-            confidence: clarification.confidence,
+            confidence: clarification.confidence,;
             reason: `Added clarification: ${clarification.clarificationReason}`,
             expectedImprovement: {
               clarityGain: 0.9,
@@ -315,7 +315,7 @@ class UserIntentPredictionSystem {
             originalQuery: query,
             suggestedQuery: expansion.expandedQuery,
             suggestionType: 'expansion',
-            confidence: expansion.confidence,
+            confidence: expansion.confidence,;
             reason: `Expanded for more comprehensive results: ${expansion.expansionType}`,
             expectedImprovement: {
               clarityGain: 0.5,
@@ -334,7 +334,7 @@ class UserIntentPredictionSystem {
             originalQuery: query,
             suggestedQuery: simplification.simplifiedQuery,
             suggestionType: 'simplification',
-            confidence: simplification.confidence,
+            confidence: simplification.confidence,;
             reason: `Simplified for clearer focus: ${simplification.simplificationType}`,
             expectedImprovement: {
               clarityGain: 0.8,
@@ -383,7 +383,7 @@ class UserIntentPredictionSystem {
       search: ['find', 'search', 'look for', 'locate'],
       analysis: ['analyze', 'review', 'examine', 'evaluate'],
       creation: ['create', 'write', 'draft', 'generate'],
-      explanation: ['explain', 'what is', 'how does', 'why'],
+      explanation: ['explain', 'what is', 'how does', 'why'],;
       comparison: ['compare', 'versus', 'difference', 'better']
     };
 
@@ -422,7 +422,7 @@ class UserIntentPredictionSystem {
 
     if (query.toLowerCase().includes('contract')) {
       actions.push({
-        action: 'analyze_contract',
+        action: 'analyze_contract',;
         description: 'Analyze contract terms and conditions',
         oneClickExecute: true,
         estimatedTime: '2-3 minutes'
@@ -431,7 +431,7 @@ class UserIntentPredictionSystem {
 
     if (query.toLowerCase().includes('search') || query.toLowerCase().includes('find')) {
       actions.push({
-        action: 'smart_search',
+        action: 'smart_search',;
         description: 'Perform enhanced legal search',
         oneClickExecute: true,
         estimatedTime: '1-2 minutes'

@@ -37,7 +37,7 @@ export const cases = pgTable(
     leadProsecutor: text("lead_prosecutor"),
     assignedTeam: jsonb("assigned_team").default([]),
     tags: jsonb("tags").default([]),
-    aiSummary: text("ai_summary"),
+    aiSummary: text("ai_summary"),;
     metadata: jsonb("metadata").default({}),
 
     // Vector embeddings
@@ -88,7 +88,7 @@ export const evidence = pgTable(
     // Analysis
     aiAnalysis: jsonb("ai_analysis").default({}),
     aiTags: jsonb("ai_tags").default([]),
-    aiSummary: text("ai_summary"),
+    aiSummary: text("ai_summary"),;
     summary: text("summary"),
 
     // Vector embeddings
@@ -149,7 +149,7 @@ export const criminals = pgTable(
 
     // Case association
     associatedCases: jsonb("associated_cases").default([]),
-    notes: text("notes"),
+    notes: text("notes"),;
     metadata: jsonb("metadata").default({}),
 
     // Vector embeddings
@@ -180,7 +180,7 @@ export const evidenceConnections = pgTable(
     }),
     connectionType: text("connection_type").notNull().default("related"), // related, contradicts, supports, timeline
     strength: real("strength").default(0.5), // 0-1 confidence
-    description: text("description"),
+    description: text("description"),;
     metadata: jsonb("metadata").default({}),
     createdBy: uuid("created_by").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull()
@@ -201,7 +201,7 @@ export const vectorMetadata = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     documentId: uuid("document_id").notNull().unique(),
     documentType: text("document_type").notNull(), // case, evidence, criminal
-    collectionName: text("collection_name").notNull(),
+    collectionName: text("collection_name").notNull(),;
     metadata: jsonb("metadata").default({}),
     contentHash: text("content_hash").notNull(),
     embeddingModel: text("embedding_model").default("nomic-embed-text"),
@@ -227,7 +227,7 @@ export const embeddingCache = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     textHash: text("text_hash").notNull().unique(),
-    embedding: vector("embedding", { dimensions: 768 }).notNull(),
+    embedding: vector("embedding", { dimensions: 768 }).notNull(),;
     model: text("model").notNull().default("nomic-embed-text"),
     createdAt: timestamp("created_at").defaultNow().notNull()
   },
@@ -244,7 +244,7 @@ export const conversations = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id").notNull(),
     title: text("title").notNull(),
-    type: text("type").notNull().default("general"), // case_analysis, evidence_review, legal_research, general
+    type: text("type").notNull().default("general"), // case_analysis, evidence_review, legal_research, general;
     metadata: jsonb("metadata").default({}),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -263,7 +263,7 @@ export const messages = pgTable(
       onDelete: "cascade"
     }),
     role: text("role").notNull(), // user, assistant, system
-    content: text("content").notNull(),
+    content: text("content").notNull(),;
     metadata: jsonb("metadata").default({}),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -284,7 +284,7 @@ export const userActivity = pgTable(
     userId: uuid("user_id").notNull(),
     action: text("action").notNull(), // create, update, delete, view, search
     resourceType: text("resource_type").notNull(), // case, evidence, criminal
-    resourceId: uuid("resource_id"),
+    resourceId: uuid("resource_id"),;
     details: jsonb("details").default({}),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
@@ -307,7 +307,7 @@ export const systemConfig = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     key: text("key").notNull().unique(),
     value: jsonb("value").notNull(),
-    description: text("description"),
+    description: text("description"),;
     category: text("category").default("general"),
     isEncrypted: boolean("is_encrypted").default(false),
     updatedBy: uuid("updated_by").notNull(),
@@ -322,13 +322,13 @@ export const systemConfig = pgTable(
 
 // Relations;
 export const casesRelations = relations(cases, ({ many }) => ({
-  evidence: many(evidence),
+  evidence: many(evidence),;
   connections: many(evidenceConnections)
 });
 
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   case: one(cases, {
-    fields: [evidence.caseId],
+    fields: [evidence.caseId],;
     references: [cases.id]
   }),
   connectionsFrom: many(evidenceConnections, { relationName: "from" }),
@@ -348,7 +348,7 @@ export const evidenceConnectionsRelations = relations(
       relationName: "from"
     }),
     toEvidence: one(evidence, {
-      fields: [evidenceConnections.toEvidenceId],
+      fields: [evidenceConnections.toEvidenceId],;
       references: [evidence.id],
       relationName: "to"
     })
@@ -361,7 +361,7 @@ export const conversationsRelations = relations(conversations, ({ many }) => ({
 
 export const messagesRelations = relations(messages, ({ one }) => ({
   conversation: one(conversations, {
-    fields: [messages.conversationId],
+    fields: [messages.conversationId],;
     references: [conversations.id]
   })
 });

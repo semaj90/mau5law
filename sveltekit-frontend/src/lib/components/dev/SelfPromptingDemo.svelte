@@ -41,7 +41,7 @@
       id: 'legal-evidence-analysis',
       name: 'Legal Evidence Analysis',
       description: 'Multi-agent analysis of evidence with case building and recommendation generation',
-      agents: ['autogen', 'crewai', 'claude'],
+      agents: ['autogen', 'crewai', 'claude'],;
       options: {
         useSemanticSearch: true,
         useMemory: true,
@@ -54,7 +54,7 @@
       id: 'development-guidance',
       name: 'Development Guidance',
       description: 'Context7 MCP integration for stack analysis and best practices',
-      agents: ['context7', 'copilot', 'claude'],
+      agents: ['context7', 'copilot', 'claude'],;
       options: {
         useSemanticSearch: true,
         useCodebase: true,
@@ -64,8 +64,8 @@
     {
       id: 'self-improving-workflow',
       name: 'Self-Improving Workflow',
-      description: 'Agents analyze their own outputs and generate follow-up prompts',
-      agents: ['autogen', 'crewai', 'vllm', 'claude'],
+      description: 'Agents analyze their own outputs and generate follow-up prompts',;
+      agents: ['autogen', 'crewai', 'vllm', 'claude'],;
       options: {
         useMultiAgent: true,
         synthesizeOutputs: true,
@@ -137,12 +137,12 @@
       currentPhase.set('agent-coordination');
       const orchestrationOptions: OrchestrationOptions = {
         ...workflow.options,
-        agents: workflow.agents,
-        context: {
+        agents: workflow.agents,;
+        context: {;
           iteration: i + 1,
           previousResults: i > 0 ? $agentResults : [],
           searchResults,
-          memoryResults
+          memoryResults;
         }
       };
 
@@ -163,7 +163,7 @@
           currentPrompt = selfPromptResult.nextPrompt;
           addLogEntry('self-prompt-generated', '', 'Generated new prompt for next iteration', {
             nextPrompt: currentPrompt,
-            reasoning: selfPromptResult.reasoning
+            reasoning: selfPromptResult.reasoning;
           });
         }
       }
@@ -198,19 +198,19 @@
     await new Promise(resolve => setTimeout(resolve, 800));
 
     const searchResults = {
-      query: prompt,
+      query: prompt,;
       results: [
         {
           document: 'Legal Precedent DB',
           relevance: 0.89,
           snippet: 'Evidence analysis protocols for criminal cases...',
-          caseId: 'PRECEDENT-2023-045'
+          caseId: 'PRECEDENT-2023-045';
         },
         {
-          document: 'Prosecution Guidelines',
-          relevance: 0.76,
+          document: 'Prosecution Guidelines',;
+          relevance: 0.76,;
           snippet: 'Multi-agent coordination in evidence processing...',
-          caseId: 'GUIDELINE-PROC-001'
+          caseId: 'GUIDELINE-PROC-001';
         }
       ]
     };
@@ -237,20 +237,20 @@
           id: 'case-CASE-2024-001',
           type: 'legal-case',
           relations: ['evidence-items', 'legal-precedents', 'witness-statements'],
-          strength: 0.92
+          strength: 0.92;
         },
         {
           id: 'evidence-chain',
           type: 'evidence-network',
           relations: ['physical-evidence', 'digital-evidence', 'testimonial-evidence'],
-          strength: 0.85
+          strength: 0.85;
         }
-      ],
+      ],;
       insights: [
         'Strong evidence chain established for case CASE-2024-001',
         'Multiple precedent cases support prosecution strategy',
         'Key witness testimony patterns identified'
-      ]
+      ];
     };
 
     updateAgentStatus('memory-server', 'completed', 'Memory analysis completed');
@@ -273,13 +273,13 @@
         'Strong legal precedent identification',
         'Comprehensive evidence mapping',
         'Multi-agent coordination successful'
-      ],
+      ],;
       weaknesses: [
         'Need deeper witness testimony analysis',
         'Missing timeline correlation analysis',
         'Insufficient defendant background research'
       ],
-      nextFocus: 'Investigate temporal relationships between evidence items and witness statements'
+      nextFocus: 'Investigate temporal relationships between evidence items and witness statements';
     };
 
     const nextPrompt = `Based on previous analysis, focus on: ${analysis.nextFocus}.
@@ -289,8 +289,8 @@
     const selfPromptResult = {
       analysis,
       nextPrompt,
-      reasoning: 'Previous iteration showed strong evidence foundation but lacked temporal analysis. Next iteration should focus on timeline correlation to strengthen legal argument.',
-      confidence: 0.87
+      reasoning: 'Previous iteration showed strong evidence foundation but lacked temporal analysis. Next iteration should focus on timeline correlation to strengthen legal argument.',;
+      confidence: 0.87;
     };
 
     addLogEntry('self-prompting', 'meta-agent', 'Self-prompt generated', selfPromptResult);
@@ -313,7 +313,7 @@
       ],
       agentPerformance: workflow.agents.map(agent => ({
         agent,
-        performance: Math.random() * 0.3 + 0.7, // Simulate performance metric
+        performance: Math.random() * 0.3 + 0.7, // Simulate performance metric;
         contribution: `Agent ${agent} contributed specialized analysis`
       })),
       nextSteps: iteration < maxIterations ? ['Continue with refined focus', 'Apply self-prompting insights'] : ['Prepare final report']
@@ -351,7 +351,7 @@
         'Legal precedents strongly support prosecution strategy',
         'Witness testimony patterns show high consistency',
         'Self-prompting improved analysis depth by 40%'
-      ],
+      ],;
       recommendations: [
         'Proceed with prosecution based on strong evidence foundation',
         'Focus on temporal evidence correlation in court presentation',
@@ -359,7 +359,7 @@
         'Consider additional witness testimony for case strengthening'
       ],
       confidenceScore: 0.91,
-      generatedAt: new Date().toISOString()
+      generatedAt: new Date().toISOString();
     };
 
     addLogEntry('final-report', 'orchestrator', 'Final report generated', finalReport);
@@ -384,13 +384,13 @@
       await new Promise(resolve => setTimeout(resolve, 300));
 
       const mockResult = {
-        tool: query.tool,
-        result: `Context7 analysis completed for ${query.component || query.area || query.feature}`,
+        tool: query.tool,;
+        result: `Context7 analysis completed for ${query.component || query.area || query.feature}`,;
         recommendations: [
           'Follow SvelteKit best practices for legal applications',
           'Implement proper security measures for sensitive data',
           'Optimize performance for large document processing'
-        ]
+        ];
       };
 
       addLogEntry('context7-demo', 'context7', `Result: ${formatMCPResponse(mockResult)}`, mockResult);
@@ -481,7 +481,7 @@
         <div>
           <label for="workflow" class="block text-sm font-medium mb-2">Select Workflow</label>
           <select
-            id="workflow"
+            id="workflow";
             bind:value={selectedWorkflow}
             disabled={$isRunning}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
@@ -511,7 +511,7 @@
           <div>
             <label class="flex items-center">
               <input
-                type="checkbox"
+                type="checkbox";
                 bind:checked={enableSelfPrompting}
                 disabled={$isRunning}
                 class="mr-2"
@@ -536,7 +536,7 @@
           <label for="iterations" class="block text-sm font-medium mb-2">Max Iterations</label>
           <input
             id="iterations"
-            type="number"
+            type="number";
             bind:value={maxIterations}
             disabled={$isRunning}
             min="1"
@@ -641,7 +641,7 @@
             </span>
           </div>
           <div class="text-sm text-gray-700 mb-1">{entry.prompt}</div>
-          {#if entry.result && Object.keys.length > 0}
+          {#if entry.result && Object.keys(errors).length > 0}
             <details class="text-xs">
               <summary class="cursor-pointer text-blue-600 hover:text-blue-800">View Details</summary>
               <pre class="mt-2 p-2 bg-white rounded text-gray-600 overflow-x-auto">{JSON.stringify(entry.result, null, 2)}</pre>
@@ -778,21 +778,21 @@
 
 <style>
   /* Custom scrollbar for log panels */
-  .max-h-96::-webkit-scrollbar {
+  .max-h-96::-webkit-scrollbar {;
     width: 6px;
   }
 
-  .max-h-96: :-webkit-scrollbar-track {
+  .max-h-96::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 3px;
   }
 
-  .max-h-96: :-webkit-scrollbar-thumb {
+  .max-h-96::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
   }
 
-  .max-h-96: :-webkit-scrollbar-thumb:hover {
+  .max-h-96::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
 </style>

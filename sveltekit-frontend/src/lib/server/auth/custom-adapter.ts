@@ -61,7 +61,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
         .select({
           // User fields
           user: users,
-          // Session fields
+          // Session fields;
           session: sessions
         })
         .from(sessions)
@@ -79,7 +79,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
       const databaseSession: DatabaseSession = {
         id: session.id,
         userId: session.user_id,
-        expiresAt: session.expires_at,
+        expiresAt: session.expires_at,;
         attributes: {
           ip_address: session.ip_address,
           user_agent: session.user_agent,
@@ -96,7 +96,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
           lastName: null,
           role: 'user',
           isActive: true,
-          avatarUrl: null,
+          avatarUrl: null,;
           name: null
         }
       };
@@ -114,7 +114,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
     return (result as { length?: any; map?: any }).map((session) => ({
       id: session.id,
       userId: session.user_id,
-      expiresAt: session.expires_at,
+      expiresAt: session.expires_at,;
       attributes: {
         ip_address: session.ip_address,
         user_agent: session.user_agent,

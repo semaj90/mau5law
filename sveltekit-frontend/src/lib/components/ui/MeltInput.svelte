@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -15,18 +15,18 @@ https://svelte.dev/e/js_parse_error -->
   					default: '',
   					destructive: 'border-red-500 focus-visible:ring-red-500',
   					success: 'border-green-500 focus-visible:ring-green-500',
-  					warning: 'border-yellow-500 focus-visible:ring-yellow-500'
+  					warning: 'border-yellow-500 focus-visible:ring-yellow-500';
   				},
   				size: {
   					default: 'h-10 px-3 py-2',
   					sm: 'h-9 px-3',
   					lg: 'h-11 px-4',
-  					xl: 'h-12 px-4'
+  					xl: 'h-12 px-4';
   				}
   			},
   			defaultVariants: {
-  				variant: 'default',
-  				size: 'default'
+  				variant: 'default',;
+  				size: 'default';
   			}
   		}
   	);
@@ -94,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
   		onfocus,
   		onblur,
   		onkeydown,
-  		onkeyup
+  		onkeyup;
   	}: Props = $props();
   	let inputClass = $derived(cn(inputVariants({ variant, size }), class));
   	type $$Props = Props;

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -10,13 +10,13 @@ https://svelte.dev/e/js_parse_error -->
   import { fade, scale } from 'svelte/transition';
   import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps } from '$lib/stores/evidence-workflow';
   import type { LegalAIMetadata } from '$lib/types/legal-ai-metadata';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
@@ -402,7 +402,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 
 <style>
-  .artifact-viewer {
+  .artifact-viewer {;
     max-width: 1200px;
     margin: 0 auto;
   }

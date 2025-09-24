@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -259,7 +259,7 @@ https://svelte.dev/e/js_parse_error -->
           <Input
             id="caseNumber"
             name="caseNumber"
-            placeholder="ABC-2024-123456"
+            placeholder="ABC-2024-123456";
             bind:value={$form.caseNumber}
             aria-invalid={$errors.caseNumber ? 'true' : undefined}
             class={$errors.caseNumber ? 'border-destructive' : ''}
@@ -415,7 +415,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="flex items-center space-x-2">
                 <Checkbox
                   id="notifyAssignee"
-                  name="notifyAssignee"
+                  name="notifyAssignee";
                   bind:checked={$form.notifyAssignee}
                 />
                 <Label for="notifyAssignee">Notify assignee when case is updated</Label>

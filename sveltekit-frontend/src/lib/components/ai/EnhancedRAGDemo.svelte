@@ -100,11 +100,11 @@
 
     try {
       const query: RAGQuery = {
-        query: queryText,
+        query: queryText,;
         filters: {
           entityTypes: selectedEntityTypes,
           confidenceThreshold,
-        },
+        },;
         semantic: {
           useEmbeddings: true,
           expandConcepts: useSemanticExpansion,
@@ -398,7 +398,7 @@
 
               <div>
                 <label class="block text-sm text-gray-600 mb-1" for="entity-types">Entity Types</label><select id="entity-types"
-                  multiple
+                  multiple;
                   bind:value={selectedEntityTypes}
                   class="w-full p-1 border border-gray-300 rounded text-sm">
                   <option value="LEGAL_CONCEPT">Legal Concepts</option>

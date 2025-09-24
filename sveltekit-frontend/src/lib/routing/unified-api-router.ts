@@ -143,7 +143,7 @@ export class UnifiedAPIRouter {
         params: event.params,
         query: event.url.searchParams,
         startTime,
-        requestId,
+        requestId,;
         encoding: this.detectEncoding(event)
       };
 
@@ -196,7 +196,7 @@ export class UnifiedAPIRouter {
 
   private async executeMiddleware(
     middleware: Middleware[],
-    event: RequestEvent,
+    event: RequestEvent,;
     context: RouteContext,
     finalHandler: () => Promise<Response>;
   ): Promise<Response> {
@@ -313,7 +313,7 @@ export class UnifiedAPIRouter {
 
     if (cached && Date.now() < cached.expiresAt) {
       return new Response(cached.body, {
-        status: cached.status,
+        status: cached.status,;
         headers: {
           ...cached.headers,
           'x-cache': 'HIT',
@@ -334,7 +334,7 @@ export class UnifiedAPIRouter {
     response.clone().arrayBuffer().then(buffer => {
       this.cache.set(cacheKey, {
         body: buffer,
-        status: response.status,
+        status: response.status,;
         headers: Object.fromEntries(response.headers.entries()),
         expiresAt: Date.now() + (config.ttl * 1000)
       });
@@ -349,7 +349,7 @@ export class UnifiedAPIRouter {
         requestId: context.requestId || 'unknown',
         timestamp: new Date().toISOString(),
         processingTime: context.startTime ? Date.now() - context.startTime: 0,
-        encoding: context.encoding || 'json',
+        encoding: context.encoding || 'json',;
         version: '2.0.0'
       }
     };
@@ -381,7 +381,7 @@ export class UnifiedAPIRouter {
       
       if (event.request.method === 'OPTIONS') {
         return new Response(null, {
-          status: 200,
+          status: 200,;
           headers: {
             'access-control-allow-origin': '*',
             'access-control-allow-methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
@@ -424,7 +424,7 @@ export class UnifiedAPIRouter {
         const health = {
           status: 'healthy',
           timestamp: new Date().toISOString(),
-          services: await this.services.getHealthStatus(),
+          services: await this.services.getHealthStatus(),;
           version: '2.0.0'
         };
 
@@ -435,7 +435,7 @@ export class UnifiedAPIRouter {
     // Service discovery;
     this.register({
       path: '/api/services',
-      method: 'GET',
+      method: 'GET',;
       handler: async (event, context) => {
         const services = await this.services.getAllServices();
         return json({ success: true, data: services });
@@ -453,7 +453,7 @@ export class UnifiedAPIRouter {
             path: config.path,
             method: config.method,
             auth: config.auth || false,
-            rateLimit: !!config.rateLimit,
+            rateLimit: !!config.rateLimit,;
             cache: !!config.cache
           });
 
@@ -538,7 +538,7 @@ export const unifiedAPIRouter = new UnifiedAPIRouter({
  * Create a standardized API response
  */
 export function createAPIResponse<T>(
-  data: T,
+  data: T,;
   success: boolean = true,
   message?: string,
   meta?: Partial<ResponseMetadata>;
@@ -552,7 +552,7 @@ export function createAPIResponse<T>(
       requestId: 'unknown',
       timestamp: new Date().toISOString(),
       processingTime: 0,
-      encoding: 'json',
+      encoding: 'json',;
       version: '2.0.0',
       ...meta
     }

@@ -129,7 +129,7 @@ const createUserDataStore = () => {
   let userDataState = $state<UserDataState>({
     cases: [],
     evidence: [],
-    citations: [],
+    citations: [],;
     reports: [],
     aiConversations: [],
     recentActivity: [],
@@ -150,7 +150,7 @@ const createUserDataStore = () => {
         userDataState = {
           cases: [],
           evidence: [],
-          citations: [],
+          citations: [],;
           reports: [],
           aiConversations: [],
           recentActivity: [],
@@ -324,7 +324,7 @@ const createUserDataStore = () => {
       userDataState = {
         cases: [],
         evidence: [],
-        citations: [],
+        citations: [],;
         reports: [],
         aiConversations: [],
         recentActivity: [],

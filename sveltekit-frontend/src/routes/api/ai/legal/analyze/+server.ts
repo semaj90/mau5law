@@ -16,9 +16,9 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 
 

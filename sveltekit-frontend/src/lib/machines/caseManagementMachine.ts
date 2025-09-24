@@ -28,7 +28,7 @@ export interface CaseManagementContext {
   error: string | null;
 
   // Pagination;
-  pagination: {
+  pagination: {;
     page: number;
     limit: number;
     totalCount: number;
@@ -64,7 +64,7 @@ const caseManagementServices = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        tool: 'cases.loadCase',
+        tool: 'cases.loadCase',;
         args: { caseId }
       })
     });
@@ -82,7 +82,7 @@ const caseManagementServices = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        tool: 'cases.createCase',
+        tool: 'cases.createCase',;
         args: {
           caseData: {
             ...event.caseData,
@@ -107,7 +107,7 @@ const caseManagementServices = {
       body: JSON.stringify({
         tool: 'cases.updateCase',
         args: {
-          caseId: event.caseId,
+          caseId: event.caseId,;
           updates: event.updates
         }
       })
@@ -128,7 +128,7 @@ const caseManagementServices = {
       body: JSON.stringify({
         tool: 'cases.addEvidence',
         args: {
-          caseId: event.caseId,
+          caseId: event.caseId,;
           evidence: event.evidence
         }
       })
@@ -150,7 +150,7 @@ const caseManagementServices = {
         tool: 'cases.searchCases',
         args: {
           query: event.query || context.searchQuery,
-          userId: context.userId,
+          userId: context.userId,;
           filters: context.filters
         }
       })
@@ -174,7 +174,7 @@ const caseManagementServices = {
           userId: event.userId || context.userId,
           options: {
             limit: context.pagination.limit,
-            offset: (context.pagination.page - 1) * context.pagination.limit,
+            offset: (context.pagination.page - 1) * context.pagination.limit,;
             status: context.filters.status
           }
         }
@@ -275,7 +275,7 @@ export const caseManagementMachine = createMachine({
     creatingCase: {
       entry: assign({ isLoading: true, error: null }),
       invoke: {
-        src: 'createCase',
+        src: 'createCase',;
         input: ({ context, event }) => ({ context, event }),
         onDone: [;
           {
@@ -307,7 +307,7 @@ export const caseManagementMachine = createMachine({
     updatingCase: {
       entry: assign({ isLoading: true, error: null }),
       invoke: {
-        src: 'updateCase',
+        src: 'updateCase',;
         input: ({ context, event }) => ({ context, event }),
         onDone: [;
           {
@@ -336,7 +336,7 @@ export const caseManagementMachine = createMachine({
     addingEvidence: {
       entry: assign({ isLoading: true, error: null }),
       invoke: {
-        src: 'addEvidence',
+        src: 'addEvidence',;
         input: ({ context, event }) => ({ context, event }),
         onDone: [;
           {
@@ -430,7 +430,7 @@ export const caseManagementMachine = createMachine({
       }
     }
   }
-}).provide({
+}).provide({;
   actors: {
     loadCase: fromPromise(caseManagementServices.loadCase),
     createCase: fromPromise(caseManagementServices.createCase),

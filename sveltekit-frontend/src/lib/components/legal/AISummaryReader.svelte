@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -9,7 +9,7 @@ https://svelte.dev/e/js_parse_error -->
     caseId: string | null ;
     initialContent: string
     documentType:  | "evidence";
-    compact: boolean
+    compact: boolean;
   }
   let { documentId = null,
     caseId = null,
@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function toggleVoice() {
     send({
-      type: "UPDATE_PREFERENCES",
+      type: "UPDATE_PREFERENCES",;
       preferences: { voiceEnabled: !$state.context.voiceEnabled },
     });
   }
@@ -213,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Voice Toggle -->
         <button
           onclick={toggleVoice}
-          class="p-2 rounded-md hover:bg-gray-100 transition-colors"
+          class="p-2 rounded-md hover:bg-gray-100 transition-colors";
           class:text-blue-600={$state.context.voiceEnabled}
           class:text-gray-400={!$state.context.voiceEnabled}
           title={$state.context.voiceEnabled ? "Disable voice" : "Enable voice"}
@@ -374,7 +374,7 @@ https://svelte.dev/e/js_parse_error -->
             {#each $state.context.sections as section, index}
               <button
                 onclick={() => jumpToSection(index)}
-                class="text-left p-3 border rounded-lg transition-all hover:shadow-md"
+                class="text-left p-3 border rounded-lg transition-all hover:shadow-md";
                 class:border-blue-500={index === $state.context.currentSection}
                 class:bg-blue-50={index === $state.context.currentSection}
                 class:shadow-sm={index === $state.context.currentSection}
@@ -453,7 +453,7 @@ https://svelte.dev/e/js_parse_error -->
                           "person",
                           "date",
                           "organization",
-                        ].includes(entity.type)}
+                        ].includes(entity.type)};
                         class:text-gray-800={![
                           "legal_term",
                           "person",
@@ -671,14 +671,14 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .ai-summary-reader {
+  .ai-summary-reader {;
     width: 100%;
     max-width: 72rem;
     margin-left: auto
-    margin-right: auto
+    margin-right: auto;
   }
 
-  .ai-summary-reader.compact {
+  .ai-summary-reader.compact {;
     max-width: 32rem;
   }
 
@@ -686,14 +686,14 @@ https://svelte.dev/e/js_parse_error -->
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical
-    overflow: hidden
+    overflow: hidden;
   }
 
-  .prose p {
+  .prose p {;
     margin-bottom: 1rem;
   }
 
-  .prose p:last-child {
+  .prose p:last-child {;
     margin-bottom: 0;
   }
 </style>

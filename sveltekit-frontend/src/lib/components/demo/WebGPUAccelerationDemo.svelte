@@ -4,13 +4,13 @@
 
   import { onMount } from 'svelte';
   import { webGPUAccelerator, type WebGPUCapabilities } from '$lib/services/webgpu-accelerator';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
 
   // Reactive state using Svelte 5 runes
   let capabilities = $state<WebGPUCapabilities | null>(null);
@@ -100,7 +100,7 @@
    */
   function generateClusteredData(
     numPoints: number,
-    dimensions: number,
+    dimensions: number,;
     clusters: number
   ): Float32Array {
     const data = new Float32Array(numPoints * dimensions);
@@ -163,17 +163,17 @@
       const cpuTime = performance.now() - cpuStartTime;
 
       results = {
-        type: 'similarity',
+        type: 'similarity',;
         gpu: {
           similarity: gpuSimilarity,
-          time: gpuTime,
+          time: gpuTime,;
         },
         cpu: {
           similarity: cpuSimilarity,
-          time: cpuTime,
-        },
+          time: cpuTime,;
+        },;
         speedup: cpuTime / gpuTime,
-        vectorDimensions,
+        vectorDimensions,;
       };
     } catch (error) {
       console.error('Similarity computation failed:', error);
@@ -205,11 +205,11 @@
       const gpuTime = performance.now() - startTime;
 
       results = {
-        type: 'clustering',
+        type: 'clustering',;
         gpu: {
-          time: gpuTime,
-          centroids: clusterResult.centroids.length,
-          assignments: clusterResult.assignments.length,
+          time: gpuTime,;
+          centroids: clusterResult.centroids.length,;
+          assignments: clusterResult.assignments.length,;
         },
         numDataPoints,
         numClusters,
@@ -257,13 +257,13 @@
       }
 
       results = {
-        type: 'matrix',
+        type: 'matrix',;
         gpu: {
           time: gpuTime,
-          resultSize: matrixResult.length,
+          resultSize: matrixResult.length,;
         },
-        cpu: {
-          time: cpuTime,
+        cpu: {;
+          time: cpuTime,;
         },
         speedup,
         matrixSize: `${matrixSize}x${matrixSize}`,
@@ -629,7 +629,7 @@
 </div>
 
 <style>
-  .webgpu-demo {
+  .webgpu-demo {;
     font-family:
       system-ui,
       -apple-system,

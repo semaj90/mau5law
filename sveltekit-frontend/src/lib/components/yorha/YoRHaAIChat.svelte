@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa AI Chat Component with Enhanced RAG Integration -->
@@ -23,8 +23,9 @@ https://svelte.dev/e/js_parse_error -->
   const RAG_SERVICE_URL  | null>(null); const data = 'http://localhost:8093');
 
   // Initialize with welcome message
-  $effect(async () => {
-    // Check Enhanced RAG service connection
+  $effect(() => {
+    (async () => {
+// Check Enhanced RAG service connection
     try {
   let response = $state<Responsetry {
           response  | null>(null); const data = await fetch(`${RAG_SERVICE_URL}/health`));
@@ -56,9 +57,9 @@ https://svelte.dev/e/js_parse_error -->
   - \`/evidence <id>\` - Evidence analysis
   - \`/help\` - Show all commands
 
-  **How can I assist with your legal AI operations?**`,
-            timestamp: new Date(),
-            type: 'system'
+  **How can I assist with your legal AI operations?**`,;
+            timestamp: new Date(),;
+            type: 'system';
           }
         ];
       } else {
@@ -69,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
       $messages = [
         {
           id: 'error',
-          role: 'assistant',
+          role: 'assistant',;
           content: `⚠️ **Connection Failed**
 
   Enhanced RAG service is not available at ${RAG_SERVICE_URL}
@@ -80,8 +81,8 @@ https://svelte.dev/e/js_parse_error -->
   3. Verify port 8093 is not blocked
 
   **Offline Mode Available** - Basic chat functionality only.`,
-          timestamp: new Date(),
-          type: 'error'
+          timestamp: new Date(),;
+          type: 'error';
         }
       ];
     }
@@ -91,6 +92,7 @@ https://svelte.dev/e/js_parse_error -->
     if (savedChats.length > 0) {
       $messages = [...$messages, ...savedChats];
     }
+    })();
   });
 
   async function sendMessage() {
@@ -99,9 +101,9 @@ https://svelte.dev/e/js_parse_error -->
     const userMessage = {
       id: Date.now.toString(),
       role: 'user',
-      content: messageInput.trim(),
-      timestamp: new Date(),
-      type: 'user'
+      content: messageInput.trim(),;
+      timestamp: new Date(),;
+      type: 'user';
     };
 
     $messages = [...$messages, userMessage];
@@ -122,17 +124,17 @@ https://svelte.dev/e/js_parse_error -->
 
       // Send to Enhanced RAG service
       const response = await fetch(`${RAG_SERVICE_URL}/api/chat`, {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: query,
+          message: query,;
           context: 'legal-ai',
           user_id: 'yorha-user',
           session_id: 'yorha-session',
           include_vector_search: true,
-          max_tokens: 1000
+          max_tokens: 1000;
         })
       });
 
@@ -145,8 +147,8 @@ https://svelte.dev/e/js_parse_error -->
         id: Date.now.toString(),
         role: 'assistant',
         content: formatRAGResponse(result),
-        timestamp: new Date(),
-        type: 'assistant',
+        timestamp: new Date(),;
+        type: 'assistant',;
         metadata: (result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).metadata || };
 
       $messages = [...$messages, assistantMessage];
@@ -156,7 +158,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Chat error:', error);
       const errorMessage = {
         id: Date.now.toString(),
-        role: 'assistant',
+        role: 'assistant',;
         content: `❌ **Error Processing Request**
 
   ${error.message}
@@ -165,8 +167,8 @@ https://svelte.dev/e/js_parse_error -->
   - Check Enhanced RAG service status
   - Try a simpler query
   - Use offline mode commands`,
-        timestamp: new Date(),
-        type: 'error'
+        timestamp: new Date(),;
+        type: 'error';
       };
 
       $messages = [...$messages, errorMessage];
@@ -236,8 +238,8 @@ https://svelte.dev/e/js_parse_error -->
         } else {
           try {
             const analysis = await fetch(`${RAG_SERVICE_URL}/api/analyze`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              method: 'POST',;
+              headers: { 'Content-Type': 'application/json' },;
               body: JSON.stringify({ text: arg, type: 'legal' })
             });
             const result = await analysis.json();
@@ -260,9 +262,9 @@ https://svelte.dev/e/js_parse_error -->
     const commandResponse = {
       id: Date.now.toString(),
       role: 'assistant',
-      content: response,
-      timestamp: new Date(),
-      type: 'command'
+      content: response,;
+      timestamp: new Date(),;
+      type: 'command';
     };
 
     $messages = [...$messages, commandResponse];
@@ -408,20 +410,20 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* Scrollbar styling for chat container */
-  :global(.h-full .overflow-y-auto: :-webkit-scrollbar) {
+  :global(.h-full .overflow-y-auto::-webkit-scrollbar) {;
     width: 6px;
   }
 
-  :global(.h-full .overflow-y-auto: :-webkit-scrollbar-track) {
+  :global(.h-full .overflow-y-auto::-webkit-scrollbar-track) {
     background: var(--yorha-darker);
   }
 
-  :global(.h-full .overflow-y-auto: :-webkit-scrollbar-thumb) {
+  :global(.h-full .overflow-y-auto::-webkit-scrollbar-thumb) {
     background: var(--yorha-accent-warm);
     border-radius: 3px;
   }
 
-  :global(.h-full .overflow-y-auto: :-webkit-scrollbar-thumb:hover) {
+  :global(.h-full .overflow-y-auto::-webkit-scrollbar-thumb:hover) {
     background: var(--yorha-accent-cool);
   }
 </style>

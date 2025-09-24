@@ -112,10 +112,10 @@
     performanceHistory = [
       ...performanceHistory.slice(-19), // Keep last 19 entries
       {
-        timestamp: now,
-        latency: { ...backendLatency },
+        timestamp: now,;
+        latency: { ...backendLatency },;
         requests: recentMessages.length,
-        errors
+        errors;
       }
     ];
   }
@@ -240,7 +240,7 @@
       performanceHistory,
       backendLatency,
       currentBackend,
-      totalMessages: messages.length
+      totalMessages: messages.length;
     };
 
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });

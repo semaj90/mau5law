@@ -113,7 +113,7 @@
 </div>
 
 <style>
-  .chat-message {
+  .chat-message {;
     display: flex;
     margin-bottom: 1rem;
     max-width: 80%;

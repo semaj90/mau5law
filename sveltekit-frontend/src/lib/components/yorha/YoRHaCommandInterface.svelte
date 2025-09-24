@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Advanced Command Interface - Complete 3D System -->
@@ -48,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
       power: 96.8,
       description: 'Advanced Legal Document Analysis',
       icon: 'gavel',
-      color: '#00ff88'
+      color: '#00ff88';
     },
     {
       id: 'evidence-processor',
@@ -57,7 +57,7 @@ https://svelte.dev/e/js_parse_error -->
       power: 78.2,
       description: 'Digital Evidence Processing Unit',
       icon: 'search',
-      color: '#ff6b35'
+      color: '#ff6b35';
     },
     {
       id: 'neural-network',
@@ -66,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
       power: 94.1,
       description: 'Machine Learning Core System',
       icon: 'brain',
-      color: '#3b82f6'
+      color: '#3b82f6';
     },
     {
       id: 'quantum-db',
@@ -75,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
       power: 89.7,
       description: 'High-Speed Data Storage Matrix',
       icon: 'database',
-      color: '#8b5cf6'
+      color: '#8b5cf6';
     },
     {
       id: 'security-grid',
@@ -84,16 +84,16 @@ https://svelte.dev/e/js_parse_error -->
       power: 99.2,
       description: 'Perimeter Defense System',
       icon: 'shield',
-      color: '#ef4444'
+      color: '#ef4444';
     },
     {
       id: 'comms-array',
       name: 'COMMUNICATIONS',
       status: 'ACTIVE',
       power: 87.4,
-      description: 'Multi-Protocol Communication Hub',
-      icon: 'radio',
-      color: '#06b6d4'
+      description: 'Multi-Protocol Communication Hub',;
+      icon: 'radio',;
+      color: '#06b6d4';
     }
   ];
   $effect(() => {
@@ -109,33 +109,33 @@ https://svelte.dev/e/js_parse_error -->
     const initialData: HolographicData[] = [
       {
         id: 'central-core',
-        type: 'sphere',
+        type: 'sphere',;
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#00ff88',
         opacity: 0.8,
-        animation: 'rotate'
+        animation: 'rotate';
       },
       {
         id: 'data-streams',
-        type: 'lines',
+        type: 'lines',;
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#3b82f6',
         opacity: 0.6,
-        animation: 'flow'
+        animation: 'flow';
       },
       {
         id: 'neural-nodes',
-        type: 'points',
+        type: 'points',;
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
         scale: 1.0,
-        color: '#8b5cf6',
-        opacity: 0.9,
-        animation: 'pulse'
+        color: '#8b5cf6',;
+        opacity: 0.9,;
+        animation: 'pulse';
       }
     ];
     holographicData.set(initialData);
@@ -238,9 +238,9 @@ https://svelte.dev/e/js_parse_error -->
       id: `cmd-${Date.now()}`,
       command,
       timestamp: new Date().toISOString(),
-      status: 'PROCESSING',
-      output: 'Executing command...',
-      module: 'YORHA-CORE'
+      status: 'PROCESSING',;
+      output: 'Executing command...',;
+      module: 'YORHA-CORE';
     };
     commandHistory.update(history => [result, ...history.slice(0, 9)]);
     try {
@@ -277,15 +277,15 @@ https://svelte.dev/e/js_parse_error -->
   async function executeLegalCommand(cmd: string): Promise<any> {
     // Integration with legal AI services
     const response = await fetch('/api/v1/legal-ai/query', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',;
+      headers: { 'Content-Type': 'application/json' },;
       body: JSON.stringify({ query: cmd, source: 'yorha-interface' })
     });
     if ((response as { output?: unknown; data?: unknown; ok?: unknown; json?: unknown }).ok) {
       const data = await (response as { output?: unknown; data?: unknown; ok?: unknown; json?: unknown }).json();
       return {
         output: `Legal analysis complete. ${(data as { map?: unknown; summary?: unknown }).summary || 'Analysis processed.'}`,
-        data: data
+        data: data;
       };
     } else {
       throw new Error('Legal AI system unavailable');
@@ -293,44 +293,44 @@ https://svelte.dev/e/js_parse_error -->
   }
   async function executeAnalysisCommand(cmd: string): Promise<any> {
     return {
-      output: `Analysis initiated: ${cmd.replace('analyze ', '')}`,
+      output: `Analysis initiated: ${cmd.replace('analyze ', '')}`,;
       data: { analysis_id: 'ANL-' + Date.now(), status: 'queued' }
     };
   }
   async function executeSearchCommand(cmd: string): Promise<any> {
     const query = cmd.replace('search ', '');
     return {
-      output: `Searching database for: "${query}"`,
+      output: `Searching database for: "${query}"`,;
       data: { query, results_count: Math.floor(Math.random() * 50) + 1 }
     };
   }
   function executeSystemCommand(cmd: string) {
     if (cmd.includes('status')) {
       return {
-        output: 'All systems operational. YoRHa interface running at optimal parameters.',
-        data: $metrics
+        output: 'All systems operational. YoRHa interface running at optimal parameters.',;
+        data: $metrics;
       };
     } else if (cmd.includes('modules')) {
       return {
-        output: `${$activeModules.length} modules active`,
-        data: $activeModules
+        output: `${$activeModules.length} modules active`,;
+        data: $activeModules;
       };
     } else {
       return {
-        output: 'System command processed',
+        output: 'System command processed',;
         data: { status: 'ok' }
       };
     }
   }
   async function executeNeuralCommand(cmd: string): Promise<any> {
     return {
-      output: 'Neural network processing initiated',
+      output: 'Neural network processing initiated',;
       data: { neural_activity: $metrics.neural_activity }
     };
   }
   function executeHelpCommand(cmd: string) {
     return {
-      output: `Available commands: LEGAL <query>, ANALYZE <target>, SEARCH <terms>, SYSTEM STATUS, NEURAL SCAN`,
+      output: `Available commands: LEGAL <query>, ANALYZE <target>, SEARCH <terms>, SYSTEM STATUS, NEURAL SCAN`,;
       data: { commands: ['legal', 'analyze', 'search', 'system', 'neural'] }
     };
   }
@@ -448,7 +448,7 @@ https://svelte.dev/e/js_parse_error -->
     width: 100%;
   }
   
-  .command-input: :placeholder {
+  .command-input::placeholder {
     color: rgba(0, 255, 136, 0.5);
   }
   
@@ -486,7 +486,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="scanlines" style="opacity: {scanlineOpacity}"></div>
   
   <!-- Background holographic canvas -->
-  <canvas 
+  <canvas ;
     bind:this={canvas3D}
     class="holographic-canvas"
     width="800" 
@@ -589,7 +589,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="command-terminal rounded-lg p-4 flex-1 flex flex-col">
         <div class="flex items-center mb-4">
           <span class="hologram-text text-sm mr-2">YORHA-CMD:</span>
-          <input
+          <input;
             bind:value={commandInput}
             onkeypress={handleKeyPress}
             class="command-input flex-1"

@@ -23,14 +23,14 @@
     onopen,
     onclose,
     children,
-    footer
+    footer;
    }: Props = $props();
   // Size mappings
   const sizeClasses = {
     sm: "max-w-sm",
-    md: "max-w-md", 
-    lg: "max-w-lg",
-    xl: "max-w-xl"
+    md: "max-w-md", ;
+    lg: "max-w-lg",;
+    xl: "max-w-xl";
   };
   function handleOpenChange(isOpen: boolean) {
     if (isOpen && !open) {

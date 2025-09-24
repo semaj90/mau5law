@@ -157,7 +157,7 @@ export class YoRHaMipmapShaders {
     const boxFilterShader = this.createBoxFilterShader();
     this.mipmapPipelines.set('box', this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: this.device.createShaderModule({ code: boxFilterShader }),
         entryPoint: 'main'
       }
@@ -167,7 +167,7 @@ export class YoRHaMipmapShaders {
     const bilinearFilterShader = this.createBilinearFilterShader();
     this.mipmapPipelines.set('bilinear', this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: this.device.createShaderModule({ code: bilinearFilterShader }),
         entryPoint: 'main'
       }
@@ -177,7 +177,7 @@ export class YoRHaMipmapShaders {
     const gaussianFilterShader = this.createGaussianFilterShader();
     this.mipmapPipelines.set('gaussian', this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: this.device.createShaderModule({ code: gaussianFilterShader }),
         entryPoint: 'main'
       }
@@ -187,7 +187,7 @@ export class YoRHaMipmapShaders {
     const rtxOptimizedShader = this.createRTXOptimizedShader();
     this.mipmapPipelines.set('rtx_optimized', this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: this.device.createShaderModule({ code: rtxOptimizedShader }),
         entryPoint: 'main'
       }
@@ -197,7 +197,7 @@ export class YoRHaMipmapShaders {
     const multiLevelShader = this.createMultiLevelBatchShader();
     this.mipmapPipelines.set('multi_level', this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: this.device.createShaderModule({ code: multiLevelShader }),
         entryPoint: 'main'
       }
@@ -315,7 +315,7 @@ export class YoRHaMipmapShaders {
 
       const mipTexture = this.device.createTexture({
         size: [levelWidth, levelHeight, 1],
-        format: 'rgba8unorm',
+        format: 'rgba8unorm',;
         usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
       });
 
@@ -377,7 +377,7 @@ export class YoRHaMipmapShaders {
       // Create target mip level texture;
       const mipTexture = this.device.createTexture({
         size: [targetWidth, targetHeight, 1],
-        format: 'rgba8unorm',
+        format: 'rgba8unorm',;
         usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
       });
 
@@ -425,7 +425,7 @@ export class YoRHaMipmapShaders {
 
       const mipTexture = this.device.createTexture({
         size: [targetWidth, targetHeight, 1],
-        format: 'rgba8unorm',
+        format: 'rgba8unorm',;
         usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
       });
 
@@ -443,7 +443,7 @@ export class YoRHaMipmapShaders {
   private async generateSingleMipLevel(
     sourceTexture: GPUTexture,
     targetTexture: GPUTexture,
-    pipeline: GPUComputePipeline,
+    pipeline: GPUComputePipeline,;
     config: MipmapConfig;
   ): Promise<void> {
     if (!this.device) return;
@@ -453,14 +453,14 @@ export class YoRHaMipmapShaders {
 
     // Create bind group for source and target textures;
     const bindGroup = this.device.createBindGroup({
-      layout: pipeline.getBindGroupLayout(0),
+      layout: pipeline.getBindGroupLayout(0),;
       entries: [;
         {
           binding: 0,
           resource: sourceTexture.createView()
         },
         {
-          binding: 1,
+          binding: 1,;
           resource: targetTexture.createView()
         }
       ]
@@ -487,7 +487,7 @@ export class YoRHaMipmapShaders {
   private async generateMipLevelWithStreaming(
     sourceTexture: GPUTexture,
     targetTexture: GPUTexture,
-    pipeline: GPUComputePipeline,
+    pipeline: GPUComputePipeline,;
     options: TextureStreamingOptions;
   ): Promise<void> {
     if (!this.device) return;
@@ -507,13 +507,13 @@ export class YoRHaMipmapShaders {
         // Create temporary textures for this chunk;
         const sourceChunk = this.device.createTexture({
           size: [chunkWidth, chunkHeight, 1],
-          format: 'rgba8unorm',
+          format: 'rgba8unorm',;
           usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING
         });
 
         const targetChunk = this.device.createTexture({
           size: [Math.ceil(chunkWidth / 2), Math.ceil(chunkHeight / 2), 1],
-          format: 'rgba8unorm',
+          format: 'rgba8unorm',;
           usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC
         });
 
@@ -528,7 +528,7 @@ export class YoRHaMipmapShaders {
         // Process chunk
         const computePass = commandEncoder.beginComputePass();
         const bindGroup = this.device.createBindGroup({
-          layout: pipeline.getBindGroupLayout(0),
+          layout: pipeline.getBindGroupLayout(0),;
           entries: [
             { binding: 0, resource: sourceChunk.createView() },
             { binding: 1, resource: targetChunk.createView() }

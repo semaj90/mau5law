@@ -57,7 +57,7 @@ const processContextualContent = fromPromise(async ({ input }: { input: { text: 
       body: JSON.stringify({
         text: input.text,
         userBehavior: input.context.userBehavior,
-        analytics: input.context.analytics,
+        analytics: input.context.analytics,;
         timestamp: Date.now()
       })
     });
@@ -78,7 +78,7 @@ const processContextualContent = fromPromise(async ({ input }: { input: { text: 
     return {
       contextualHints: ['Unable to process context'],
       suggestions: [],
-      userIntent: 'unknown',
+      userIntent: 'unknown',;
       confidence: 0
     };
   }
@@ -160,7 +160,7 @@ export const userTypingStateMachine = createMachine({
         mcpWorkerStatus: 'ready'
       }),
       on: {
-        USER_STARTED_TYPING: {
+        USER_STARTED_TYPING: {;
           actions: [;
             assign({
               currentText: ({ event }) => event.text,
@@ -186,7 +186,7 @@ export const userTypingStateMachine = createMachine({
           ]
         },
         USER_STOPPED_TYPING: {
-          target: 'not_typing',
+          target: 'not_typing',;
           actions: assign({
             typingEndTime: () => Date.now(),
             typingDuration: ({ context }) => Date.now() - context.typingStartTime,
@@ -251,11 +251,11 @@ export const userTypingStateMachine = createMachine({
         TYPING_TIMEOUT: {
           target: 'waiting_user'
         }
-      },
+      },;
       after: {
         // After 5 seconds of not typing, show contextual prompts;
         5000: {
-          target: 'waiting_user',
+          target: 'waiting_user',;
           actions: assign({
             contextualPrompts: ({ context }) => {
               // Generate contextual prompts based on current text
@@ -412,7 +412,7 @@ export const userTypingStateMachine = createMachine({
           })
         },
         onError: {
-          target: 'typing',
+          target: 'typing',;
           actions: assign({
             mcpWorkerStatus: 'ready'
           })

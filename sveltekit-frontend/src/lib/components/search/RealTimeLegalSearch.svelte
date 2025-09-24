@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <!--
@@ -207,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Search Input with Enhanced Styling -->
       <Combobox.Input
         class="flex h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm 
-               placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 
+               placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-2 ;
                focus:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-50
                {isStreaming ? 'pr-12' : 'pr-10'}"
         {placeholder}

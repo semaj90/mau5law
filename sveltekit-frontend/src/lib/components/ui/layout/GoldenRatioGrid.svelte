@@ -52,7 +52,7 @@
     sidebar,
     header,
     footer,
-    secondary
+    secondary;
   }: GoldenRatioGridProps = $props();
 
   // Golden ratio constant (φ ≈ 1.618)
@@ -96,13 +96,13 @@
   let goldenProportions = $derived(
     direction === 'horizontal' ? {
       primary: `${PHI}fr`,
-      secondary: '1fr'
+      secondary: '1fr';
     } : direction === 'vertical' ? {
       primary: `${PHI}fr`,
-      secondary: '1fr'
+      secondary: '1fr';
     } : {
       primary: `${PHI}fr`,
-      secondary: '1fr',
+      secondary: '1fr',;
       tertiary: `${INVERSE_PHI}fr`
     }
   );
@@ -247,7 +247,7 @@ background-image: linear-gradient(45deg, transparent 25%, rgba(0,0,0,0.02) 25%),
     position: relative;
   }
 
-  :global(.yorha-evidence-grid .golden-main: :before) {
+  :global(.yorha-evidence-grid .golden-main::before) {
     content: '';
     position: absolute;
     top: 0;

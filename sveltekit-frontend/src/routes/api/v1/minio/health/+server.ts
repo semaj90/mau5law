@@ -1,18 +1,18 @@
-import { minioService } from '$lib/server/storage/minio-service';
-import type { RequestHandler } from './$types.js';
+import { minioService } from '$lib/server/storage/minio-service'
+import type { RequestHandler } from './$types.js'
 
 
 export const GET: RequestHandler = async () => {
   try {
-    const health = await minioService.healthCheck();
+    const health = await minioService.healthCheck()
     
     return new Response(JSON.stringify({
       timestamp: new Date().toISOString(),
-      ...health;
+      ...health
     }), {
       headers: { 'Content-Type': 'application/json' },
       status: health.status === 'healthy' ? 200 : 503
-    });
+    })
   } catch (error) {
     return new Response(JSON.stringify({
       status: 'unhealthy',
@@ -21,16 +21,16 @@ export const GET: RequestHandler = async () => {
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action } = await request.json();
+    const { action } = await request.json()
     
     if (action === 'initialize') {
-      const initialized = await minioService.initialize();
+      const initialized = await minioService.initialize()
       
       return new Response(JSON.stringify({
         success: initialized,
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString()
       }), {
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
     
     return new Response(JSON.stringify({
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
     
   } catch (error) {
     return new Response(JSON.stringify({
@@ -55,6 +55,6 @@ export const POST: RequestHandler = async ({ request }) => {
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
   }
-};
+}

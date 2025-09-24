@@ -23,7 +23,7 @@ export const authUsers = pgTable(
     role: text("role").notNull().default("prosecutor"), // prosecutor, investigator, admin, analyst
     department: text("department"),
     permissions: jsonb("permissions").default([]),
-    badgeNumber: text("badge_number"),
+    badgeNumber: text("badge_number"),;
     jurisdiction: text("jurisdiction"),
     
     // Security
@@ -88,7 +88,7 @@ export const authPasswordResets = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id").references(() => authUsers.id, { onDelete: "cascade" }),
     token: text("token").notNull().unique(),
-    expiresAt: timestamp("expires_at").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),;
     used: boolean("used").default(false),
     createdAt: timestamp("created_at").defaultNow().notNull()
   },
@@ -106,7 +106,7 @@ export const authAuditLog = pgTable(
     action: text("action").notNull(), // login, logout, register, password_change, permission_change
     details: jsonb("details").default({}),
     ipAddress: text("ip_address"),
-    userAgent: text("user_agent"),
+    userAgent: text("user_agent"),;
     success: boolean("success").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull()
   },
@@ -119,7 +119,7 @@ export const authAuditLog = pgTable(
 
 // Relations;
 export const authUsersRelations = relations(authUsers, ({ many }) => ({
-  keys: many(authKeys),
+  keys: many(authKeys),;
   sessions: many(authSessions),
   passwordResets: many(authPasswordResets),
   auditLogs: many(authAuditLog)
@@ -127,14 +127,14 @@ export const authUsersRelations = relations(authUsers, ({ many }) => ({
 
 export const authKeysRelations = relations(authKeys, ({ one }) => ({
   user: one(authUsers, {
-    fields: [authKeys.userId],
+    fields: [authKeys.userId],;
     references: [authUsers.id]
   })
 });
 
 export const authSessionsRelations = relations(authSessions, ({ one }) => ({
   user: one(authUsers, {
-    fields: [authSessions.userId],
+    fields: [authSessions.userId],;
     references: [authUsers.id]
   })
 });

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Ollama Agent Shell - Real-time Terminal Modal with Streaming Support -->
@@ -28,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
     // Legacy props for compatibility
     open = $bindable(false),
     docId = null,
-    initialPrompt = "",
+    initialPrompt = "",;
    }: OllamaAgentShellProps & {
     open?: boolean;
     docId?: string | null;
@@ -57,13 +57,13 @@ https://svelte.dev/e/js_parse_error -->
   $effect(() => {
     // Initialize with system message
     messages.push({
-      role: "system",
+      role: "system",;
       content: `🚀 Ollama Agent Shell v1.0
   Connected to: nomic-embed-text, gemma:3b
   GPU: ${navigator.gpu ? "Enabled" : "Disabled"}
   Type /help for commands`,
-      timestamp: new Date(),
-      status: "complete",
+      timestamp: new Date(),;
+      status: "complete",;
     }));
 
     // Connect WebSocket if docId provided
@@ -93,9 +93,9 @@ https://svelte.dev/e/js_parse_error -->
       if (data.type === "status_update") {
         messages.push({
           role: "system",
-          content: data.message,
-          timestamp: new Date(),
-          status: "complete",
+          content: data.message,;
+          timestamp: new Date(),;
+          status: "complete",;
         });
       }
     };
@@ -103,9 +103,9 @@ https://svelte.dev/e/js_parse_error -->
     ws.onerror = () => {
       messages.push({
         role: "system",
-        content: "⚠️ WebSocket disconnected",
-        timestamp: new Date(),
-        status: "error",
+        content: "⚠️ WebSocket disconnected",;
+        timestamp: new Date(),;
+        status: "error",;
       });
     };
   }
@@ -115,9 +115,9 @@ https://svelte.dev/e/js_parse_error -->
 
     const userMessage: Message = {
       role: "user",
-      content: input,
-      timestamp: new Date(),
-      status: "complete",
+      content: input,;
+      timestamp: new Date(),;
+      status: "complete",;
     };
     messages.push(userMessage);
 
@@ -137,21 +137,21 @@ https://svelte.dev/e/js_parse_error -->
     // Add placeholder for response
     const assistantMessage: Message = {
       role: "assistant",
-      content: "",
-      timestamp: new Date(),
-      status: "pending",
+      content: "",;
+      timestamp: new Date(),;
+      status: "pending",;
     };
     messages.push(assistantMessage);
 
     try {
       // Get embeddings
       const embedResponse = await fetch("http://localhost:8081/batch-embed", {
-        method: "POST",
+        method: "POST",;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           docId: docId || "shell-" + Date.now(),
-          chunks: [userMessage.content],
-          model: "nomic-embed-text",
+          chunks: [userMessage.content],;
+          model: "nomic-embed-text",;
         }),
       });
 
@@ -162,12 +162,12 @@ https://svelte.dev/e/js_parse_error -->
 
       // Stream response from Ollama
       const response = await fetch("http://localhost:11434/api/generate", {
-        method: "POST",
+        method: "POST",;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "gemma:3b",
-          prompt: userMessage.content,
-          stream: true,
+          model: "gemma:3b",;
+          prompt: userMessage.content,;
+          stream: true,;
         }),
       });
 
@@ -225,9 +225,9 @@ https://svelte.dev/e/js_parse_error -->
   /clear - Clear chat
   /embed - Show embeddings
   /gpu - GPU status
-  /export - Export chat`,
-          timestamp: new Date(),
-          status: "complete",
+  /export - Export chat`,;
+          timestamp: new Date(),;
+          status: "complete",;
         });
         break;
 
@@ -235,9 +235,9 @@ https://svelte.dev/e/js_parse_error -->
         messages = [
           {
             role: "system",
-            content: "🧹 Cleared",
-            timestamp: new Date(),
-            status: "complete",
+            content: "🧹 Cleared",;
+            timestamp: new Date(),;
+            status: "complete",;
           },
         ];
         break;
@@ -246,12 +246,12 @@ https://svelte.dev/e/js_parse_error -->
         const lastEmbed = messages.findLast((m) => m.embeddings);
         if (lastEmbed?.embeddings) {
           messages.push({
-            role: "system",
+            role: "system",;
             content: `Embeddings (first 10): [${lastEmbed.embeddings
               .slice.map((e: number) => e.toFixed(3))
               .join(", ")}...]`,
-            timestamp: new Date(),
-            status: "complete",
+            timestamp: new Date(),;
+            status: "complete",;
           });
         }
         break;
@@ -266,10 +266,10 @@ https://svelte.dev/e/js_parse_error -->
 
       default:
         messages.push({
-          role: "system",
+          role: "system",;
           content: `Unknown command: ${cmd}`,
-          timestamp: new Date(),
-          status: "error",
+          timestamp: new Date(),;
+          status: "error",;
         });
     }
   }
@@ -278,17 +278,17 @@ https://svelte.dev/e/js_parse_error -->
     if (navigator.gpu) {
       const adapter = await navigator.gpu.requestAdapter();
       messages.push({
-        role: "system",
+        role: "system",;
         content: `🎮 GPU: ${adapter?.name || "Available"}`,
-        timestamp: new Date(),
-        status: "complete",
+        timestamp: new Date(),;
+        status: "complete",;
       });
     } else {
       messages.push({
         role: "system",
-        content: "❌ WebGPU not available",
-        timestamp: new Date(),
-        status: "error",
+        content: "❌ WebGPU not available",;
+        timestamp: new Date(),;
+        status: "error",;
       });
     }
   }
@@ -304,9 +304,9 @@ https://svelte.dev/e/js_parse_error -->
 
     messages.push({
       role: "system",
-      content: "✅ Exported",
-      timestamp: new Date(),
-      status: "complete",
+      content: "✅ Exported",;
+      timestamp: new Date(),;
+      status: "complete",;
     });
   }
 
@@ -365,7 +365,7 @@ https://svelte.dev/e/js_parse_error -->
         </Dialog.Close>
       </div>
 
-      <div
+      <div;
         bind:this={terminalElement}
         class="flex-1 overflow-y-auto p-4 space-y-4"
       >
@@ -443,7 +443,7 @@ https://svelte.dev/e/js_parse_error -->
 </Dialog.Root>
 
 <style>
-  pre {
+  pre {;
     font-family: "Cascadia Code", "SF Mono", Consolas, monospace;
   }
 </style>

@@ -95,7 +95,7 @@ export const graphCacheMachine = createMachine({
     },
 
     idle: {
-      entry: 'scheduleIdleCallback',
+      entry: 'scheduleIdleCallback',;
       on: {
         QUERY: 'querying',
         GET_TELEMETRY: { actions: 'provideTelemetry' },
@@ -129,7 +129,7 @@ export const graphCacheMachine = createMachine({
         },
 
         cacheHit: {
-          entry: ['notifyCacheHit', 'updateTelemetry'],
+          entry: ['notifyCacheHit', 'updateTelemetry'],;
           after: {
             100: [;
               {
@@ -165,7 +165,7 @@ export const graphCacheMachine = createMachine({
               entry: 'queryAuthoritativeSource',
               on: {
                 AUTHORITATIVE_RESULT: {
-                  target: '#graphCache.rehydrated',
+                  target: '#graphCache.rehydrated',;
                   actions: 'setAuthoritativeResult'
                 },
                 REFRESH_FAILED: [;
@@ -179,7 +179,7 @@ export const graphCacheMachine = createMachine({
                     actions: 'setError'
                   }
                 ]
-              },
+              },;
               after: {
                 10000: [;
                   {
@@ -233,7 +233,7 @@ export const graphCacheMachine = createMachine({
     },
 
     error: {
-      entry: 'notifyError',
+      entry: 'notifyError',;
       on: {
         RETRY: [);
           {
@@ -251,7 +251,7 @@ export const graphCacheMachine = createMachine({
   }
 }, {
   actions: {
-    initializeWorker: assign({
+    initializeWorker: assign({;
       worker: () => {
         if (typeof Worker !== 'undefined') {
           const worker = new Worker('/src/lib/workers/graph-worker.js');
@@ -285,7 +285,7 @@ export const graphCacheMachine = createMachine({
     }),
 
     setQuery: assign({
-      query: ({ event }) => event.type === 'QUERY' ? event.query: null,
+      query: ({ event }) => event.type === 'QUERY' ? event.query: null,;
       params: ({ event }) => event.type === 'QUERY' ? (event.params || {}) : Record<string, any>,
       queryHash: ({ event }) => {
         if (event.type === 'QUERY') {
@@ -328,7 +328,7 @@ export const graphCacheMachine = createMachine({
       latency: ({ event }) => event.type === 'WASM_RESULT' ? event.latency : 0
     }),
 
-    setAuthoritativeResult: assign({
+    setAuthoritativeResult: assign({;
       result: ({ event }) => {
         if (event.type === 'AUTHORITATIVE_RESULT') return event.result;
         if (event.type === 'REFRESH_COMPLETE') return event.result;
@@ -390,7 +390,7 @@ export const graphCacheMachine = createMachine({
         context.worker.postMessage({
           type: 'query',
           data: {
-            query: context.query,
+            query: context.query,;
             params: context.params
           }
         });
@@ -446,7 +446,7 @@ export const graphCacheMachine = createMachine({
     invalidateCache: ({ context, event }) => {
       if (context.worker) {
         context.worker.postMessage({
-          type: 'cache_clear',
+          type: 'cache_clear',;
           key: event.type === 'INVALIDATE_CACHE' ? event.key: undefined
         });
       }

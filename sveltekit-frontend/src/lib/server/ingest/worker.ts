@@ -82,7 +82,7 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
         throw new Error(`Unknown job type: ${jobData.type}`);
     }
 
-    const response: WorkerJobResult = {
+    const response: WorkerJobResult = {;
       success: true,
       result,
       processingTime: Date.now() - startTime,
@@ -92,7 +92,7 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
     parentPort!.postMessage(response);
   } catch (error) {
     const response: WorkerJobResult = {
-      success: false,
+      success: false,;
       error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime,
       workerId
@@ -178,7 +178,7 @@ async function handleImageProcessing(payload: {
         image = image.extract({
           left: operation.params?.left || 0,
           top: operation.params?.top || 0,
-          width: operation.params?.width,
+          width: operation.params?.width,;
           height: operation.params?.height
         });
         break;
@@ -205,11 +205,11 @@ async function handleImageProcessing(payload: {
   const processedBuffer = await image.toBuffer();
 
   return {
-    success: true,
+    success: true,;
     buffer: Array.from(processedBuffer), // Convert back to array for JSON transport;
     metadata: {
       originalSize: buffer.length,
-      processedSize: processedBuffer.length,
+      processedSize: processedBuffer.length,;
       operations: payload.operations.length
     }
   };
@@ -218,7 +218,7 @@ async function handleImageProcessing(payload: {
 // Error handling;
 process.on('uncaughtException', (error) => {
   const response: WorkerJobResult = {
-    success: false,
+    success: false,;
     error: `Uncaught exception: ${error.message}`,
     processingTime: 0,
     workerId
@@ -229,7 +229,7 @@ process.on('uncaughtException', (error) => {
 
 process.on('unhandledRejection', (reason) => {
   const response: WorkerJobResult = {
-    success: false,
+    success: false,;
     error: `Unhandled rejection: ${reason}`,
     processingTime: 0,
     workerId

@@ -21,15 +21,15 @@
  * GET /api/ai/document-drafting/templates - Get available document templates
  */
 
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
-    const documentType = url.searchParams.get('type');
+    const documentType = url.searchParams.get('type')
     
-    const allTemplates = [;
+    const allTemplates = [
       {
         id: 'motion_suppress_standard',
         name: 'Standard Motion to Suppress',
@@ -297,12 +297,12 @@ Respectfully submitted,
         lastUpdated: '2024-09-06T14:15:00Z',
         usage_count: 94
       }
-    ];
+    ]
 
     // Filter by document type if specified
     const templates = documentType 
       ? allTemplates.filter(template => template.documentTypeId === documentType)
-      : allTemplates;
+      : allTemplates
 
     return json({
       success: true,
@@ -315,15 +315,15 @@ Respectfully submitted,
           templates[0]?.lastUpdated || new Date().toISOString()
         )
       }
-    });
+    })
 
   } catch (error) {
-    console.error('Error fetching document templates:', error);
+    console.error('Error fetching document templates:', error)
     return json(
       { success: false, message: 'Failed to fetch document templates' },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-export const GET = redisOptimized.documentProcessing(originalGETHandler);
+export const GET = redisOptimized.documentProcessing(originalGETHandler)

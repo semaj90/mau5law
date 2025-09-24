@@ -75,7 +75,7 @@ type PredictiveTypingEvent =
 const predictiveAnalyticsActor = fromPromise(async ({ 
   input;
 }: { 
-  input: {
+  input: {;
     query: string;
     glyphContext: GlyphContext[];
     sessionData: any;
@@ -110,7 +110,7 @@ const predictiveAnalyticsActor = fromPromise(async ({
 const glyphContextActor = fromPromise(async ({ 
   input;
 }: { 
-  input: {
+  input: {;
     query: string;
     maxGlyphs: number;
     sessionData: any;
@@ -163,7 +163,7 @@ const queryCompletionActor = fromPromise(async ({
     
     return completions.map(comp => ({
       text: comp.completion,
-      confidence: comp.confidence,
+      confidence: comp.confidence,;
       intent: comp.predicted_intent,
       topology_score: comp.topology_support
     });
@@ -203,7 +203,7 @@ const feedbackLearningActor = fromPromise(async ({
 export const predictiveTypingMachine = setup({
   types: {
     context: Record<string, any> as PredictiveTypingContext,
-    events: Record<string, any> as PredictiveTypingEvent,
+    events: Record<string, any> as PredictiveTypingEvent,;
     input: Record<string, any> as {
       sessionId: string;
       userId?: string;
@@ -215,7 +215,7 @@ export const predictiveTypingMachine = setup({
     glyphContextActor,
     queryCompletionActor,
     feedbackLearningActor
-  },
+  },;
   guards: {
     shouldGeneratePredictions: ({ context }) => {
       return context.currentQuery.length >= context.config.minQueryLength &&
@@ -284,7 +284,7 @@ export const predictiveTypingMachine = setup({
         if (event.type === 'ANALYTICS_SUCCESS' && event.results.predicted_queries) {
           return event.results.predicted_queries.map(query => ({
             text: query.query,
-            confidence: query.confidence,
+            confidence: query.confidence,;
             intent: query.predicted_intent,
             topology_score: Math.random() * 0.3 + 0.7 // Would extract from topology data
           });
@@ -355,7 +355,7 @@ export const predictiveTypingMachine = setup({
           timestamp: Date.now(),
           eventType: event.type,
           query: context.currentQuery,
-          suggestionsAvailable: context.suggestions.length,
+          suggestionsAvailable: context.suggestions.length,;
           confidence: context.suggestions.length > 0 ? 
             context.suggestions[0].confidence : 0
         };
@@ -385,7 +385,7 @@ export const predictiveTypingMachine = setup({
     
     // Analytics results
     predictiveResults: null,
-    glyphContext: [],
+    glyphContext: [],;
     suggestions: [],
     
     // Performance metrics
@@ -464,7 +464,7 @@ export const predictiveTypingMachine = setup({
         
         debouncing: {
           description: 'Debouncing typing input before predictions',
-          
+          ;
           after: {
             200: [;
               {
@@ -511,7 +511,7 @@ export const predictiveTypingMachine = setup({
                 currentFocus: context.currentFocus
               }
             }),
-            onDone: {
+            onDone: {;
               actions: [;
                 assign({
                   glyphContext: ({ event }) => event.output
@@ -573,7 +573,7 @@ export const predictiveTypingMachine = setup({
               },
               maxCompletions: context.config.maxSuggestions
             }),
-            onDone: {
+            onDone: {;
               actions: [;
                 assign({
                   suggestions: ({ event }) => event.output,
@@ -590,7 +590,7 @@ export const predictiveTypingMachine = setup({
         
         suggestionsReady: {
           description: 'Predictions ready, displaying suggestions',
-          
+          ;
           entry: [;
             assign({
               cacheHitRate: ({ context }) => {
@@ -619,7 +619,7 @@ export const predictiveTypingMachine = setup({
               actions: ['submitQuery', 'recordInteractionPattern'],
               target: 'waiting'
             },
-            PROVIDE_FEEDBACK: {
+            PROVIDE_FEEDBACK: {;
               target: 'learningFromFeedback'
             }
           },
@@ -651,7 +651,7 @@ export const predictiveTypingMachine = setup({
                 session_quality: context.userSatisfactionScore
               }
             }),
-            onDone: {
+            onDone: {;
               actions: [;
                 assign({
                   userSatisfactionScore: ({ context, event }) => {
@@ -673,7 +673,7 @@ export const predictiveTypingMachine = setup({
         
         error: {
           description: 'Error state with retry capability',
-          
+          ;
           on: {
             RETRY: [;
               {
@@ -689,7 +689,7 @@ export const predictiveTypingMachine = setup({
               target: 'debouncing'
             },
             CLEAR: {
-              actions: ['resetState'],
+              actions: ['resetState'],;
               target: 'waiting'
             }
           },
@@ -714,7 +714,7 @@ export const predictiveTypingMachine = setup({
           actions: ['resetState'],
           target: '.waiting'
         },
-        SESSION_END: {
+        SESSION_END: {;
           target: 'idle'
         }
       }
@@ -724,7 +724,7 @@ export const predictiveTypingMachine = setup({
   // Global error recovery;
   on: {
     RESET: {
-      actions: ['resetState'],
+      actions: ['resetState'],;
       target: 'idle'
     }
   }

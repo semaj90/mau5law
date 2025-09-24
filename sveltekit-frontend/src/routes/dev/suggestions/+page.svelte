@@ -4,13 +4,16 @@
   import { onMount } from "svelte";
   let items: unknown[] = $state([]);
   let count = $state(0);
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       const res = await fetch("/logs/svelte-suggestions.json");
       const data = await res.json();
       count = data.count;
       items = data.items;
-    } catch });
+    } catch
+    })();
+  });
 </script>
 
 <h1>Svelte Suggestions</h1>
@@ -31,7 +34,7 @@
 </ul>
 
 <style>
-  li {
+  li {;
     margin: 8px 0;
   }
   strong {

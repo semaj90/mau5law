@@ -119,7 +119,7 @@ class TimingMetricsCollector {
       customMarks: { ...this.customMarks },
 
       // Metadata
-      timestamp: Date.now(),
+      timestamp: Date.now(),;
       url: window.location.href,
       userAgent: navigator.userAgent
     };
@@ -183,7 +183,7 @@ class TimingMetricsCollector {
         clientDuration,
         serverTiming,
         requestId: serverRequestId || requestId,
-        status: response.status,
+        status: response.status,;
         timestamp: Date.now()
       });
 
@@ -200,7 +200,7 @@ class TimingMetricsCollector {
         serverTiming: Record<string, any>,
         requestId,
         status: 0,
-        error: error instanceof Error ? error.message: 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',;
         timestamp: Date.now()
       });
 
@@ -219,7 +219,7 @@ class TimingMetricsCollector {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
+        },;
         body: JSON.stringify(metrics)
       });
     } catch (error) {
@@ -312,7 +312,7 @@ class TimingMetricsCollector {
         method: metrics.method,
         clientMs: Math.round(metrics.clientDuration * 100) / 100,
         serverTiming: metrics.serverTiming,
-        requestId: metrics.requestId.slice(0, 8),
+        requestId: metrics.requestId.slice(0, 8),;
         status: metrics.status
       });
     }

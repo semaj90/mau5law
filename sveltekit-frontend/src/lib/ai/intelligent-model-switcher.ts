@@ -78,7 +78,7 @@ class IntelligentModelSwitcher {
   /**
    * Main entry point: Determine if model should switch and execute if needed
    */
-  async executeIntelligentSwitch(
+  async executeIntelligentSwitch(;
     query: string,
     currentModel: string,
     userContext: {
@@ -165,7 +165,7 @@ class IntelligentModelSwitcher {
           shouldSwitch: false,
           targetModel: currentModel,
           currentModel,
-          confidence: 0,
+          confidence: 0,;
           reason: 'error_fallback',
           estimatedImprovement: { speedGain: 0, qualityGain: 0, userSatisfactionGain: 0 },
           switchCost: { timeMs: 0, memoryMB: 0, cpuUsage: 0 }
@@ -195,7 +195,7 @@ class IntelligentModelSwitcher {
         shouldSwitch: false,
         targetModel: currentModel,
         currentModel,
-        confidence: 1.0,
+        confidence: 1.0,;
         reason: 'already_optimal',
         estimatedImprovement: { speedGain: 0, qualityGain: 0, userSatisfactionGain: 0 },
         switchCost: { timeMs: 0, memoryMB: 0, cpuUsage: 0 }
@@ -260,7 +260,7 @@ class IntelligentModelSwitcher {
         toModel,);
         {
           text: userContext || '',
-          type: 'legal-analysis',
+          type: 'legal-analysis',;
           priority: 'normal'
         }
       );
@@ -280,7 +280,7 @@ class IntelligentModelSwitcher {
       console.error(`❌ Model switch failed: ${fromModel} -> ${toModel}`, error);
       return {
         success: false,
-        switchTime: performance.now() - startTime,
+        switchTime: performance.now() - startTime,;
         error: error?.message || 'Unknown error'
       };
     }
@@ -328,7 +328,7 @@ class IntelligentModelSwitcher {
       const cachedProfile = await parallelCacheOrchestrator.executeParallel({
         id: `user-profile:${profileKey}`,
         type: 'context',
-        priority: 'normal',
+        priority: 'normal',;
         keys: [`user_profile:${profileKey}`]
       });
       
@@ -348,7 +348,7 @@ class IntelligentModelSwitcher {
    * Update user learning based on interactions and feedback
    */
   private async updateUserLearning(
-    profile: UserLearningProfile,
+    profile: UserLearningProfile,;
     query: string,
     modelUsed: string,
     userIntent: any,
@@ -445,7 +445,7 @@ class IntelligentModelSwitcher {
         {
           tier: 'l2',
           ttl: 24 * 60 * 60 * 1000, // 24 hours
-          priority: 'normal',
+          priority: 'normal',;
           type: 'user_profile'
         }
       );
@@ -600,7 +600,7 @@ class IntelligentModelSwitcher {
     userId: string,
     fromModel: string,
     toModel: string,
-    reason: string,
+    reason: string,;
     performance: number;
   ): void {
     this.switchHistory.push({

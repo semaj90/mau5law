@@ -14,8 +14,8 @@
     result = null;
     try {
       const res = await fetch('/api/ai/wwwh', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ text: inputText })
       });
       const data = await res.json();

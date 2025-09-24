@@ -16,7 +16,7 @@
     rounded = false,
     centered = false,
     class: className = '',
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   let containerClass = $derived([

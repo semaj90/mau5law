@@ -57,7 +57,7 @@ class RateLimiter {
       this.limits.set(key, { count: 1, resetTime });
       return {
         allowed: true,
-        resetTime,
+        resetTime,;
         remaining: this.config.maxRequests - 1
       };
     }
@@ -66,7 +66,7 @@ class RateLimiter {
       // Rate limit exceeded;
       return {
         allowed: false,
-        resetTime: entry.resetTime,
+        resetTime: entry.resetTime,;
         remaining: 0
       };
     }
@@ -75,7 +75,7 @@ class RateLimiter {
     entry.count++;
     return {
       allowed: true,
-      resetTime: entry.resetTime,
+      resetTime: entry.resetTime,;
       remaining: this.config.maxRequests - entry.count
     };
   }
@@ -131,18 +131,18 @@ export function withRateLimit(
         const retryAfter = Math.ceil(((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime! - Date.now()) / 1000);
 
         return new Response(JSON.stringify({
-            success: false,
+            success: false,;
             error: errorMessage,
             retryAfter,
             resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString()
           }),
           {
-            status: 429,
+            status: 429,;
             headers: {
               'Content-Type': 'application/json',
-              'Retry-After': retryAfter.toString(),
+              'Retry-After': retryAfter.toString()),
               'X-RateLimit-Remaining': '0',
-              'X-RateLimit-Reset': (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString()
+              'X-RateLimit-Reset': (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString())
             }
           }
         );
@@ -152,8 +152,8 @@ export function withRateLimit(
       const response = await handler(request);
 
       if ((response as { headers?: any }).headers.get('Content-Type')?.includes('application/json')) {
-        (response as { headers?: any }).headers.set('X-RateLimit-Remaining', (result as { allowed?: any; resetTime?: any; remaining?: any }).remaining!.toString();
-        (response as { headers?: any }).headers.set('X-RateLimit-Reset', (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString();
+        (response as { headers?: any }).headers.set('X-RateLimit-Remaining', (result as { allowed?: any; resetTime?: any; remaining?: any }).remaining!.toString());
+        (response as { headers?: any }).headers.set('X-RateLimit-Reset', (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString());
       }
 
       return response;

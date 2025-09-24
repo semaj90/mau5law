@@ -31,7 +31,7 @@ export const documentEmbeddings = pgTable(
     documentType: text("document_type").notNull(), // 'case', 'evidence', 'note', 'report'
     chunkIndex: integer("chunk_index").notNull().default(0),
     chunkText: text("chunk_text").notNull(),
-    embedding: vector("embedding", { dimensions: 384 }), // For nomic-embed-text (optimized)
+    embedding: vector("embedding", { dimensions: 384 }), // For nomic-embed-text (optimized);
     metadata: jsonb("metadata")
       .$type()
       .default({}),
@@ -69,7 +69,7 @@ export const searchQueries = pgTable(
     queryText: text("query_text").notNull(),
     queryEmbedding: vector("query_embedding", { dimensions: 384 }),
     searchType: text("search_type").notNull().default("semantic"), // 'semantic', 'keyword', 'hybrid'
-    resultsCount: integer("results_count").default(0),
+    resultsCount: integer("results_count").default(0),;
     results: jsonb("results")
       .$type;
         totalFound: number;
@@ -103,7 +103,7 @@ export const aiModels = pgTable(
     provider: text("provider").notNull(), // 'ollama', 'openai', 'anthropic'
     modelType: text("model_type").notNull(), // 'embedding', 'chat', 'completion'
     embeddingDimensions: integer("embedding_dimensions"),
-    contextLength: integer("context_length"),
+    contextLength: integer("context_length"),;
     config: jsonb("config")
       .$type()
       .default({}),

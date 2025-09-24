@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -56,10 +56,10 @@ https://svelte.dev/e/js_parse_error -->
   		}
   		try {
   			const res = await fetch('/api/ai/vector-search', {
-  				method: 'POST',
+  				method: 'POST',;
   				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify(body),
-  				signal: controller.signal
+  				body: JSON.stringify(body),;
+  				signal: controller.signal;
   			});
   			if (!res.ok) {
   				errorMsg = `Request failed (${res.status})`;

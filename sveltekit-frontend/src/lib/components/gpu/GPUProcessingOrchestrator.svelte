@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -76,13 +76,13 @@ https://svelte.dev/e/js_parse_error -->
     const document: DocumentInput = {
       documentId: `doc_${Date.now()}_${Math.random.toString-substr(2, 9)}`,
       content: newDocumentContent,
-      title: newDocumentTitle || undefined,
+      title: newDocumentTitle || undefined,;
       options: {
         processType: processType as any,
         priority,
-        timeout: 30000,
+        timeout: 30000,;
         retries: 3,
-        batchSize: 1
+        batchSize: 1;
       }
     };
 
@@ -229,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
         <option value="vectorize">Vectorization Only</option>
       </select>
       <input 
-        type="range" 
+        type="range" ;
         bind:value={priority}
         min="1" 
         max="10" 

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
       documentId: docId,
       title: data.document.title,
       content: data.document.content,
-      documentType: data.document.document_type,
+      documentType: data.document.document_type,;
       metadata: {
         ...data.document.metadata,
         related_documents: data.related_documents,
@@ -93,10 +93,10 @@ https://svelte.dev/e/js_parse_error -->
         case_associations: data.case_associations,
         gpu_analysis: data.gpu_analysis,
         enhanced_metadata: data.enhanced_metadata
-      },
+      },;
       hash: data.document.content_hash || `hash_${Date.now()}`,
       lastAccessed: new Date(),
-      cacheSize: JSON.stringify.length
+      cacheSize: JSON.stringify(length)
     };
     // Store in IndexedDB with error handling
     try {
@@ -116,13 +116,13 @@ https://svelte.dev/e/js_parse_error -->
     const doc = data.document || data;
     const metadata = data.metadata || ;
     documentData.set({
-      id: doc.id || doc.documentId,
-      title: doc.title,
+      id: doc.id || doc.documentId,;
+      title: doc.title,;
       content: doc.content,
       document_type: doc.document_type || doc.documentType,
       file_path: doc.file_path,
       created_at: doc.created_at,
-      updated_at: doc.updated_at
+      updated_at: doc.updated_at;
     });
     relatedDocuments.set(data.related_documents || metadata.related_documents || []);
     graphConnections.set(data.graph_connections || metadata.graph_connections || []);
@@ -452,7 +452,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 
 <style>
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

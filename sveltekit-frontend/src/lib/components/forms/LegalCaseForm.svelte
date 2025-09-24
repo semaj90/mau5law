@@ -21,9 +21,9 @@
     priority: '',
     description: '',
     assignedAttorney: '',
-    estimatedHours: '',
-    budget: '',
-    deadline: ''
+    estimatedHours: '',;
+    budget: '',;
+    deadline: '';
   });
 
   let formErrors = $state<Record<string, string>('')>( );
@@ -54,7 +54,7 @@
     }
 
     formErrors = errors;
-    return Object.keys.length === 0;
+    return Object.keys(errors).length === 0;
   }
 
   // Form submission
@@ -81,9 +81,9 @@
         priority: '',
         description: '',
         assignedAttorney: '',
-        estimatedHours: '',
-        budget: '',
-        deadline: ''
+        estimatedHours: '',;
+        budget: '',;
+        deadline: '';
       };
 
       alert('✅ Legal case created successfully!');
@@ -399,9 +399,9 @@
                 priority: '',
                 description: '',
                 assignedAttorney: '',
-                estimatedHours: '',
-                budget: '',
-                deadline: ''
+                estimatedHours: '',;
+                budget: '',;
+                deadline: '';
               };
               formErrors = {};
             }
@@ -636,7 +636,7 @@
       justify-content: stretch;
     }
 
-    .action-buttons: global(button) {
+  .action-buttons :global(button) {
       flex: 1;
     }
   }

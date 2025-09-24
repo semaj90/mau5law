@@ -16,7 +16,7 @@ export interface ContextMenuState {
 const defaultContextMenuState: ContextMenuState = {
   show: false,
   x: 0,
-  y: 0,
+  y: 0,;
   item: null
 };
 
@@ -59,14 +59,14 @@ export const loading = writable({});
 
 export const sidebar = writable({
   isOpen: false,
-  width: 280,
+  width: 280,;
   collapsed: false
 });
 
 // Animation preferences;
 export const motion = writable({
   reduceMotion: false,
-  duration: "normal" as "fast" | "normal" | "slow",
+  duration: "normal" as "fast" | "normal" | "slow",;
   spring: true
 });
 

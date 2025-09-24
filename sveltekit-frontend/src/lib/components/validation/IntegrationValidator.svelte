@@ -31,7 +31,7 @@
   const suiteConfigs = [
     {
       name: 'Core UI Components',
-      description: 'Validate critical UI component functionality',
+      description: 'Validate critical UI component functionality',;
       tests: [
         { id: 'dropdown-test', name: 'Dropdown Component', description: 'Test dropdown rendering and interaction' },
         { id: 'checkbox-test', name: 'Checkbox Component', description: 'Test checkbox state management' },
@@ -40,7 +40,7 @@
     },
     {
       name: 'GPU Acceleration',
-      description: 'Validate GPU processing and tensor operations',
+      description: 'Validate GPU processing and tensor operations',;
       tests: [
         { id: 'tensor-service-test', name: 'Tensor Service Connection', description: 'Test Go tensor service connectivity' },
         { id: 'gpu-processing-test', name: 'GPU Processing Pipeline', description: 'Test batch GPU processing capabilities' },
@@ -49,7 +49,7 @@
     },
     {
       name: 'Legal AI Workflows',
-      description: 'Validate legal document processing workflows',
+      description: 'Validate legal document processing workflows',;
       tests: [
         { id: 'evidence-upload-test', name: 'Evidence Upload System', description: 'Test evidence upload and processing' },
         { id: 'case-automation-test', name: 'Case Automation Workflows', description: 'Test legal case automation pipeline' },
@@ -57,8 +57,8 @@
       ]
     },
     {
-      name: 'System Integration',
-      description: 'Validate system-wide integration and performance',
+      name: 'System Integration',;
+      description: 'Validate system-wide integration and performance',;
       tests: [
         { id: 'api-endpoints-test', name: 'API Endpoints', description: 'Test all API endpoint functionality' },
         { id: 'database-integration-test', name: 'Database Integration', description: 'Test database connectivity and operations' },
@@ -74,15 +74,15 @@
   function initializeValidationSuites() {
     validationSuites = suiteConfigs.map(config => ({
       name: config.name,
-      description: config.description,
+      description: config.description,;
       tests: config.tests.map(test => ({
         ...test,
-        status: 'pending'
+        status: 'pending';
       })),
-      passed: 0,
-      failed: 0,
+      passed: 0,;
+      failed: 0,;
       warnings: 0,
-      totalDuration: 0
+      totalDuration: 0;
     }));
   }
   // Run all validation tests
@@ -230,8 +230,8 @@
       const tensorRequest = {
         id: 'validation-test',
         documentId: 'test-doc',
-        data: testData,
-        operation: 'process' as const,
+        data: testData,;
+        operation: 'process' as const,;
         options: { timeout: 5000 }
       };
       const response = await goTensorService.processTensor(tensorRequest);
@@ -268,20 +268,20 @@
     // Test case automation API endpoint
     try {
       const testConfig = {
-        id: 'test-automation',
-        type: 'batch_upload',
+        id: 'test-automation',;
+        type: 'batch_upload',;
         source: 'test_source',
         autoProcessing: true,
         gpuAcceleration: true,
         batchSize: 10,
         confidenceThreshold: 0.8,
         processingOptions: ['entity_extraction'],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString();
       };
       const response = await fetch('/api/legal/automation/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(testConfig)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(testConfig);
       });
       if (response.ok) {
         test.status = 'passed';
@@ -580,7 +580,7 @@
 
 <style>
   /* Smooth animations for progress bars */
-  .transition-all {
+  .transition-all {;
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 300ms;

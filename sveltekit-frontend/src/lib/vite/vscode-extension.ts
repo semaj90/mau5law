@@ -80,14 +80,14 @@ export class VSCodeIntegration {
     if (errorCount > 0) {
       this.sendNotification({
         message: `Vite: ${errorCount} error(s) detected`,
-        type: 'error',
+        type: 'error',;
         actions: [;
           {
             title: 'View Errors',
             command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
           },
           {
-            title: 'Clear Log',
+            title: 'Clear Log',;
             command: { command: 'workbench.action.tasks.runTask', args: ['Clear Vite Error Log'] }
           }
         ]
@@ -95,10 +95,10 @@ export class VSCodeIntegration {
     } else if (warningCount > 0) {
       this.sendNotification({
         message: `Vite: ${warningCount} warning(s) detected`,
-        type: 'warning',
+        type: 'warning',;
         actions: [;
           {
-            title: 'View Warnings',
+            title: 'View Warnings',;
             command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
           }
         ]
@@ -144,7 +144,7 @@ export class VSCodeIntegration {
   static generateProblemMatcher() {
     return {
       owner: 'vite-error-logger',
-      fileLocation: ['relative', '${workspaceFolder}'],
+      fileLocation: ['relative', '${workspaceFolder}'],;
       pattern: [;
         {
           regexp: '^ERROR\\s+(.+):(\\d+):(\\d+)\\s+(.+)$',
@@ -159,7 +159,7 @@ export class VSCodeIntegration {
           file: 1,
           line: 2,
           column: 3,
-          message: 4,
+          message: 4,;
           severity: 'warning'
         }
       ]
@@ -199,7 +199,7 @@ export class VSCodeIntegration {
                     file: { type: 'string' },
                     line: { type: 'number' },
                     column: { type: 'number' },
-                    stack: { type: 'string' },
+                    stack: { type: 'string' },;
                     suggestion: { type: 'string' }
                   }
                 }
@@ -259,7 +259,7 @@ export class ErrorNavigator {
       errors: this.errors.filter((e: any) => e.level === 'error').length,
       warnings: this.errors.filter((e: any) => e.level === 'warn').length,
       info: this.errors.filter((e: any) => e.level === 'info').length,
-      files: Array.from(new Set(this.errors.filter((e: any) => e.file).map((e: any) => e.file))).length,
+      files: Array.from(new Set(this.errors.filter((e: any) => e.file).map((e: any) => e.file))).length,;
       recent: this.errors.filter((e: any) => {
         const errorTime = new Date(e.timestamp);
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
@@ -280,13 +280,13 @@ export class AutoFixSuggestions {
     if (message.includes('module not found') || message.includes('cannot resolve')) {
       suggestions.push({
         title: 'Install missing dependencies',
-        command: 'npm install',
+        command: 'npm install',;
         args: []
       });
       
       suggestions.push({
         title: 'Check import paths',
-        command: 'editor.action.quickFix',
+        command: 'editor.action.quickFix',;
         args: []
       });
     }
@@ -294,13 +294,13 @@ export class AutoFixSuggestions {
     if (message.includes('typescript') || message.includes('type')) {
       suggestions.push({
         title: 'Run TypeScript check',
-        command: 'workbench.action.tasks.runTask',
+        command: 'workbench.action.tasks.runTask',;
         args: ['npm: check']
       });
       
       suggestions.push({
         title: 'Generate missing types',
-        command: 'typescript.generateGettersAndSetters',
+        command: 'typescript.generateGettersAndSetters',;
         args: []
       });
     }
@@ -308,13 +308,13 @@ export class AutoFixSuggestions {
     if (message.includes('svelte')) {
       suggestions.push({
         title: 'Check Svelte syntax',
-        command: 'svelte.restartLanguageServer',
+        command: 'svelte.restartLanguageServer',;
         args: []
       });
       
       suggestions.push({
         title: 'Update to Svelte 5 patterns',
-        command: 'editor.action.codeAction',
+        command: 'editor.action.codeAction',;
         args: [{ kind: 'refactor.rewrite' }]
       });
     }
@@ -322,7 +322,7 @@ export class AutoFixSuggestions {
     if (message.includes('css') || message.includes('style')) {
       suggestions.push({
         title: 'Check UnoCSS configuration',
-        command: 'editor.action.formatDocument',
+        command: 'editor.action.formatDocument',;
         args: []
       });
     }

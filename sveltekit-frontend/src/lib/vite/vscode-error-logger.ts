@@ -31,7 +31,7 @@ export function vscodeErrorLogger(options: any = {}) {
           metadata: {
             lastUpdated: parsed?.metadata?.lastUpdated || new Date().toISOString(),
             version: parsed?.metadata?.version || 1
-          },
+          },;
           errors: Array.isArray(parsed?.errors) ? parsed.errors: []
         };
       }
@@ -71,7 +71,7 @@ export function vscodeErrorLogger(options: any = {}) {
       file: err?.id || err?.loc?.file || undefined,
       line: err?.loc?.line || err?.loc?.lineNumber || undefined,
       column: err?.loc?.column || undefined,
-      frame: err?.frame || undefined,
+      frame: err?.frame || undefined,;
       plugin: err?.plugin || undefined,
       buildPhase: 'vite'
     };

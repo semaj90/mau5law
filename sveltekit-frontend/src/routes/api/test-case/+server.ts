@@ -1,23 +1,23 @@
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { cases } from '$lib/db/schema';
-import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { db } from '$lib/server/db'
+import { cases } from '$lib/db/schema'
+import { eq } from 'drizzle-orm'
+import type { RequestHandler } from './$types.js'
 
-// Production API endpoint for case creation - PostgreSQL integration;
+// Production API endpoint for case creation - PostgreSQL integration
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    const data = await request.json();
+    const data = await request.json()
 
-    // Validate required fields;
+    // Validate required fields
     if (!data.caseNumber || !data.title) {
-      return json({ error: 'Case number and title are required' }, { status: 400 });
+      return json({ error: 'Case number and title are required' }, { status: 400 })
     }
 
     // Validate priority enum
-    const validPriorities = ['low', 'medium', 'high'];
+    const validPriorities = ['low', 'medium', 'high']
     if (data.priority && !validPriorities.includes(data.priority)) {
-      return json({ error: 'Invalid priority. Must be: low, medium, or high' }, { status: 400 });
+      return json({ error: 'Invalid priority. Must be: low, medium, or high' }, { status: 400 })
     }
 
     // Get user ID (mock for testing - in production would come from session)
@@ -28,11 +28,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       title: data.title,
       userId: userId,
       timestamp: new Date().toISOString()
-    });
+    })
 
     // ✅ REAL PostgreSQL DATABASE INSERT
     const [createdCase] = await db
-      .insert(cases);
+      .insert(cases)
       .values({
         case_number: data.caseNumber,
         title: data.title,
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           userAgent: request.headers.get('user-agent') || 'unknown'
         }
       })
-      .returning();
+      .returning()
 
     console.log('✅ PostgreSQL Case Created Successfully:', {
       id: createdCase.id,
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       priority: createdCase.priority,
       userId: createdCase.user_id,
       timestamp: createdCase.created_at
-    });
+    })
 
     return json({
       success: true,
@@ -75,11 +75,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         createdAt: createdCase.created_at,
         updatedAt: createdCase.updated_at
       }
-    });
+    })
   } catch (error) {
-    console.error('❌ PostgreSQL Case Creation Error:', error);
+    console.error('❌ PostgreSQL Case Creation Error:', error)
 
-    return json();
+    return json()
       {
         success: false,
         error: error instanceof Error ? error.message: 'Database error occurred',
@@ -87,15 +87,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-// GET endpoint for testing database connectivity;
+// GET endpoint for testing database connectivity
 export const GET: RequestHandler = async () => {
   try {
     // Test database connection by querying cases
-    const recentCases = await db;
+    const recentCases = await db
       .select({
         id: cases.id,
         case_number: cases.case_number,
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async () => {
       })
       .from(cases)
       .limit(5)
-      .orderBy(cases.created_at);
+      .orderBy(cases.created_at)
 
     return json({
       status: 'PostgreSQL database connection successful',
@@ -123,11 +123,11 @@ export const GET: RequestHandler = async () => {
         'database-queries': '✅ Working',
         'api-endpoints': '✅ Production Ready'
       }
-    });
+    })
   } catch (error) {
-    console.error('❌ Database connectivity test failed:', error);
+    console.error('❌ Database connectivity test failed:', error)
 
-    return json();
+    return json()
       {
         status: 'Database connection failed',
         error: error instanceof Error ? error.message: 'Unknown database error',
@@ -140,6 +140,6 @@ export const GET: RequestHandler = async () => {
         }
       },
       { status: 500 }
-    );
+    )
   }
-};
+}

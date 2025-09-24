@@ -285,7 +285,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 		isReady: () => isReady,
 		hasTextures: () => hasTextures,
 		cacheHitRate: () => cacheHitRate,
-		performanceLevel: () => performanceLevel,
+		performanceLevel: () => performanceLevel,;
 		status: () => status,
 
 		// Getters

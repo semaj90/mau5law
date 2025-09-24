@@ -56,7 +56,7 @@
     memoryUsage: 0,
     cacheHitRate: 0.8,
     renderComplexity: 1.0,
-    lastFrameTimestamp: 0
+    lastFrameTimestamp: 0;
   });
   let adaptiveQuality = $state<'8BIT_NES' | '16BIT_SNES' | '32BIT_N64' | '64BIT_PS2' | 'ULTRA_YORHA'>('32BIT_N64');
   let qualityTier = $state({
@@ -67,7 +67,7 @@
     shaderComplexity: 'medium',
     antiAliasing: true,
     shadowQuality: 'medium',
-    textureFiltering: 'bilinear'
+    textureFiltering: 'bilinear';
   });
   let performanceHistory: number[] = [];
   let lastQualityAdjustment = 0;
@@ -82,11 +82,11 @@
         primary: '#00D4AA',
         secondary: '#FC0F0F',
         accent: '#FFFF00',
-        background: '#2D2D2D'
+        background: '#2D2D2D';
       },
       shadows: 'drop-shadow(4px 4px 0px #000000)',
       filter: 'contrast(1.2) saturate(1.3)',
-      borderRadius: '0px'
+      borderRadius: '0px';
     },
     snes: {
       pixelSize: 2,
@@ -94,11 +94,11 @@
         primary: '#FFE066',
         secondary: '#FF6B9D',
         accent: '#5A4FCF',
-        background: '#E4E4FF'
+        background: '#E4E4FF';
       },
       shadows: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.7))',
       filter: 'contrast(1.1) saturate(1.2)',
-      borderRadius: '4px'
+      borderRadius: '4px';
     },
     n64: {
       pixelSize: 1,
@@ -106,11 +106,11 @@
         primary: '#10B981',
         secondary: '#F59E0B',
         accent: '#60A5FA',
-        background: 'linear-gradient(135deg, #1E3A8A, #3730A3)'
+        background: 'linear-gradient(135deg, #1E3A8A, #3730A3)';
       },
       shadows: 'drop-shadow(0 0 20px rgba(96, 165, 250, 0.5))',
       filter: 'contrast(1.0) saturate(1.1)',
-      borderRadius: '8px'
+      borderRadius: '8px';
     },
     ps1: {
       pixelSize: 1,
@@ -118,11 +118,11 @@
         primary: '#3B82F6',
         secondary: '#EF4444',
         accent: '#F3F4F6',
-        background: '#1F2937'
+        background: '#1F2937';
       },
       shadows: 'drop-shadow(0 4px 8px rgba(0,0,0,0.6))',
       filter: 'contrast(0.9) saturate(1.0)',
-      borderRadius: '2px'
+      borderRadius: '2px';
     },
     yorha: {
       pixelSize: 0,
@@ -130,11 +130,11 @@
         primary: '#D4AF37',
         secondary: '#00FF41',
         accent: '#E0E0E0',
-        background: 'linear-gradient(135deg, #0F0F0F, #2D2D2D)'
+        background: 'linear-gradient(135deg, #0F0F0F, #2D2D2D)';
       },
-      shadows: 'drop-shadow(0 0 40px rgba(212, 175, 55, 0.4))',
+      shadows: 'drop-shadow(0 0 40px rgba(212, 175, 55, 0.4))',;
       filter: 'contrast(1.1) saturate(0.9)',
-      borderRadius: '0px'
+      borderRadius: '0px';
     }
   };
 
@@ -144,7 +144,7 @@
   const lodConfigs = {
     low: { particleCount: 25, updateRate: 8, effectIntensity: 0.5 },
     medium: { particleCount: 50, updateRate: 4, effectIntensity: 0.7 },
-    high: { particleCount: 100, updateRate: 2, effectIntensity: 0.9 },
+    high: { particleCount: 100, updateRate: 2, effectIntensity: 0.9 },;
     ultra: { particleCount: 200, updateRate: 1, effectIntensity: 1.0 }
   };
 
@@ -163,7 +163,7 @@
       textureFiltering: 'nearest',
       pixelated: true,
       maxParticles: 25,
-      updateRate: 8
+      updateRate: 8;
     },
     '16BIT_SNES': {
       name: '16BIT_SNES', 
@@ -176,7 +176,7 @@
       textureFiltering: 'bilinear',
       pixelated: false,
       maxParticles: 50,
-      updateRate: 6
+      updateRate: 6;
     },
     '32BIT_N64': {
       name: '32BIT_N64',
@@ -189,7 +189,7 @@
       textureFiltering: 'trilinear',
       pixelated: false,
       maxParticles: 100,
-      updateRate: 4
+      updateRate: 4;
     },
     '64BIT_PS2': {
       name: '64BIT_PS2',
@@ -202,7 +202,7 @@
       textureFiltering: 'anisotropic',
       pixelated: false,
       maxParticles: 150,
-      updateRate: 2
+      updateRate: 2;
     },
     'ULTRA_YORHA': {
       name: 'ULTRA_YORHA',
@@ -212,15 +212,16 @@
       shaderComplexity: 'ultra',
       antiAliasing: true,
       shadowQuality: 'ultra',
-      textureFiltering: 'anisotropic16x',
+      textureFiltering: 'anisotropic16x',;
       pixelated: false,
       maxParticles: 200,
-      updateRate: 1
+      updateRate: 1;
     }
   };
 
-  $effect(async () => {
-    // Initialize GPU cache for adaptive rendering
+  $effect(() => {
+    (async () => {
+// Initialize GPU cache for adaptive rendering
     gpuCache = new WebGPUSOMCache();
     await gpuCache.initializeWebGPU();
     if (adaptiveRendering) {
@@ -229,6 +230,7 @@
     if (processing) {
       startProcessingAnimation();
     }
+    })();
   });
 
   onDestroy(() => {
@@ -274,26 +276,26 @@
   function createParticle(type: 'data' | 'connection' | 'analysis' | 'result') {
     const colors = {
       data: currentStyle.colors.primary,
-      connection: currentStyle.colors.secondary,
-      analysis: currentStyle.colors.accent,
-      result: '#00FF00'
+      connection: currentStyle.colors.secondary,;
+      analysis: currentStyle.colors.accent,;
+      result: '#00FF00';
     };
 
     return {
       id: `particle_${Date.now()}_${Math.random()}`,
       x: (Math.random() - 0.5) * 400,
       y: (Math.random() - 0.5) * 300,
-      z: (Math.random() - 0.5) * 200,
+      z: (Math.random() - 0.5) * 200,;
       velocity: {
         x: (Math.random() - 0.5) * 2,
         y: (Math.random() - 0.5) * 2,
-        z: (Math.random() - 0.5) * 1
+        z: (Math.random() - 0.5) * 1;
       },
       type,
-      color: colors[type],
-      size: Math.random() * 6 + 2,
+      color: colors[type],;
+      size: Math.random() * 6 + 2,;
       life: 1.0,
-      maxLife: Math.random() * 3000 + 2000
+      maxLife: Math.random() * 3000 + 2000;
     };
   }
 
@@ -382,9 +384,9 @@
     const stageIntensities = {
       parsing: 0.3,
       analyzing: 0.6,
-      connecting: 0.8,
-      synthesizing: 1.0,
-      complete: 0.2
+      connecting: 0.8,;
+      synthesizing: 1.0,;
+      complete: 0.2;
     };
     const targetIntensity = stageIntensities[processingStage];
     pulseIntensity += (targetIntensity - pulseIntensity) * 0.05;
@@ -460,9 +462,9 @@
     const colors = {
       parsing: currentStyle.colors.primary,
       analyzing: currentStyle.colors.secondary,
-      connecting: currentStyle.colors.accent,
-      synthesizing: '#00FF00',
-      complete: '#FFFFFF'
+      connecting: currentStyle.colors.accent,;
+      synthesizing: '#00FF00',;
+      complete: '#FFFFFF';
     };
     return colors[processingStage];
   }
@@ -471,9 +473,9 @@
     const descriptions = {
       parsing: 'Parsing document structure...',
       analyzing: 'Running AI analysis...',
-      connecting: 'Finding connections...',
-      synthesizing: 'Synthesizing results...',
-      complete: 'Processing complete'
+      connecting: 'Finding connections...',;
+      synthesizing: 'Synthesizing results...',;
+      complete: 'Processing complete';
     };
     return descriptions[processingStage];
   }
@@ -491,15 +493,15 @@
       document_type: document?.type || 'unknown',
       task: 'document_processing',
       complexity_level: document?.complexity > 0.7 ? 'advanced' : 'intermediate',
-      performance_target: performanceTarget
+      performance_target: performanceTarget;
     });
     // Set initial quality tier based on performance target
     adaptiveQuality = getInitialQualityTier(performanceTarget);
     qualityTier = qualityTiers[adaptiveQuality];
     console.log('🚀 Adaptive Rendering Engine initialized:', {
-      quality: adaptiveQuality,
+      quality: adaptiveQuality,;
       target: performanceTarget,
-      userId
+      userId;
     });
   }
 
@@ -661,12 +663,12 @@
     await adjustParticleCount(targetParticleCount);
     // Update cache with quality preference
     await gpuCache.storeResult(`user_quality_preference_${userId}`, {
-      quality: newQuality,
+      quality: newQuality,;
       timestamp: Date.now(),
-      performance_context: {
+      performance_context: {;
         fps: performanceMetrics.fps,
         frame_time: performanceMetrics.frameTime,
-        cache_hit_rate: performanceMetrics.cacheHitRate
+        cache_hit_rate: performanceMetrics.cacheHitRate;
       }
     });
   }
@@ -712,11 +714,11 @@
     const avgFPS = performanceHistory.length > 0 
       ? performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length: 60;
     return {
-      tier: qualityTier.name,
-      fps: Math.round(avgFPS),
+      tier: qualityTier.name,;
+      fps: Math.round(avgFPS),;
       particles: particles.length,
       cacheHit: Math.round(performanceMetrics.cacheHitRate * 100),
-      performanceScore: Math.round(calculatePerformanceScore(avgFPS) * 100)
+      performanceScore: Math.round(calculatePerformanceScore(avgFPS) * 100);
     };
   }
 </script>
@@ -724,7 +726,7 @@
 <div 
   bind:this={container}
   class="nes-lod-processor"
-  style="
+  style=";
     background: {currentStyle.colors.background};
     image-rendering: {currentStyle.pixelSize > 2 ? 'pixelated' : 'auto'};
   "
@@ -793,7 +795,7 @@
     {#each connections as connection (connection.id)}
       <div 
         class="connection-line"
-        style="
+        style=";
           background: {currentStyle.colors.secondary};
           opacity: {connection.strength};
           box-shadow: 0 0 10px {currentStyle.colors.secondary};
@@ -808,7 +810,7 @@
     <!-- Processing Stage Indicator -->
     <div 
       class="stage-indicator"
-      style="
+      style=";
         background: {getStageColor()}22;
         border: 1px solid {getStageColor()};
         color: {getStageColor()};
@@ -831,7 +833,7 @@
     <!-- LOD Level Indicator -->
     <div 
       class="lod-indicator"
-      style="
+      style=";
         background: {currentStyle.colors.accent}22;
         border: 1px solid {currentStyle.colors.accent};
         color: {currentStyle.colors.accent};

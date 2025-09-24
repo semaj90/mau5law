@@ -132,7 +132,7 @@ export const BITS_UI_STATUS = {
   },
   bitsUI: {
     version: '2.x',
-    primitives: ['Dialog', 'Select', 'Button', 'Input', 'Combobox', 'DatePicker', 'Toast'],
+    primitives: ['Dialog', 'Select', 'Button', 'Input', 'Combobox', 'DatePicker', 'Toast'],;
     accessibility: 'WCAG 2.1 AA compliant'
   }
 } as const;

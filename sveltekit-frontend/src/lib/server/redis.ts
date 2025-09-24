@@ -125,7 +125,7 @@ export async function getFromCache(key: string): Promise<string | null> {
   }
 }
 export async function setCache(
-  key: string,
+  key: string,;
   value: string,
   expireInSeconds?: number;
 ): Promise<boolean> {

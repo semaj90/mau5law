@@ -108,7 +108,7 @@ const documentProcessingService = fromPromise(async ({ input }: { input: Evidenc
       },
       metadata: {
         userId: input.userId,
-        caseId: input.caseId,
+        caseId: input.caseId,;
         filename: input.filename,
         ...input.metadata
       }
@@ -167,7 +167,7 @@ const embeddingGenerationService = fromPromise(async ({ input }: { input: Eviden
     await multiLayerCache.set(`embeddings:${input.evidenceId}`, result, {
       type: "embedding",
       userId: input.userId,
-      persistent: true,
+      persistent: true,;
       ttl: 86400, // 24 hours
     });
 
@@ -221,7 +221,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceProcess
     await multiLayerCache.set(`analysis:${input.evidenceId}`, analysis, {
       type: "document",
       userId: input.userId,
-      persistent: true,
+      persistent: true,;
       ttl: 43200, // 12 hours
     });
 
@@ -238,7 +238,7 @@ const cacheResultsService = fromPromise(async ({ input }: { input: EvidenceProce
       filename: input.filename,
       extractedText: input.extractedText,
       chunks: input.chunks,
-      embeddings: input.embeddings,
+      embeddings: input.embeddings,;
       analysis: input.analysis,
       processingTimes: input.processingTimes,
       completedAt: new Date().toISOString()
@@ -252,7 +252,7 @@ const cacheResultsService = fromPromise(async ({ input }: { input: EvidenceProce
         {
           type: "document",
           userId: input.userId,
-          persistent: true,
+          persistent: true,;
           ttl: 604800, // 7 days
         }
       ),
@@ -262,7 +262,7 @@ const cacheResultsService = fromPromise(async ({ input }: { input: EvidenceProce
         {
           type: "document",
           userId: input.userId,
-          persistent: true,
+          persistent: true,;
           ttl: 604800
         }
       )
@@ -271,7 +271,7 @@ const cacheResultsService = fromPromise(async ({ input }: { input: EvidenceProce
     // Invalidate related cache entries;
     await bullmqService.addCacheInvalidationJob({
       pattern: `case:${input.caseId}`,
-      userId: input.userId,
+      userId: input.userId,;
       type: "document"
     });
 
@@ -473,13 +473,13 @@ export const evidenceProcessingMachine = createMachine();
       },
 
       completed: {
-        type: "final",
+        type: "final",;
         entry: () => {
           console.log("Evidence processing completed successfully");
         }
       },
 
-      error: {
+      error: {;
         on: {
           RETRY: [;
             {
@@ -502,7 +502,7 @@ export const evidenceProcessingMachine = createMachine();
       },
 
       failed: {
-        type: "final",
+        type: "final",;
         entry: ({ context }) => {
           console.error(
             `Evidence processing failed after ${context.retryCount} retries: ${context.error}`
@@ -511,7 +511,7 @@ export const evidenceProcessingMachine = createMachine();
       },
 
       cancelled: {
-        type: "final",
+        type: "final",;
         entry: () => {
           console.log("Evidence processing cancelled by user");
         }
@@ -527,7 +527,7 @@ export const evidenceProcessingMachine = createMachine();
     // Actions;
     actions: {
       updateProgress: assign({
-        progress: ({ event }) => (event as any).progress,
+        progress: ({ event }) => (event as any).progress,;
         stage: ({ event }) => (event as any).stage
       })
     }
@@ -542,7 +542,7 @@ export const createEvidenceProcessingActor = (
   return evidenceProcessingMachine.provide({
     actions: {
       // Custom actions can be injected here
-    },
+    },;
     guards: {
       // Custom guards can be injected here
     }

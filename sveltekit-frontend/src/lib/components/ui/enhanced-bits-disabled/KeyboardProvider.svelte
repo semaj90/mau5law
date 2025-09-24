@@ -129,14 +129,14 @@
   shortcuts={currentShortcuts}
   {enableGlobalShortcuts}
   {enableDebugMode}
-  on:shortcutExecuted
+  on:shortcutExecuted;
   on:shortcutBlocked
 />
 
 <!-- Help Panel -->
 {#if enableHelpPanel}
   <KeyboardHelp
-    shortcuts={currentShortcuts}
+    shortcuts={currentShortcuts};
     bind:open={helpOpen}
   />
 {/if}

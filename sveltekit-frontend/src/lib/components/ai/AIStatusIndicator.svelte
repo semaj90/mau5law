@@ -29,16 +29,16 @@
 
   let statusText = $derived({
     ready: "AI Ready",
-    loading: "Loading...",
-    error: "AI Error",
-    unavailable: "AI Unavailable",
+    loading: "Loading...",;
+    error: "AI Error",;
+    unavailable: "AI Unavailable",;
   }[currentStatus]);
 
   let statusColor = $derived({
     ready: "var(--status-success, #10b981)",
-    loading: "var(--status-warning, #f59e0b)",
-    error: "var(--status-error, #ef4444)",
-    unavailable: "var(--status-muted, #94a3b8)",
+    loading: "var(--status-warning, #f59e0b)",;
+    error: "var(--status-error, #ef4444)",;
+    unavailable: "var(--status-muted, #94a3b8)",;
   }[currentStatus]);
 
   // Provider details
@@ -174,7 +174,7 @@
 </div>
 
 <style>
-  .ai-status-indicator {
+  .ai-status-indicator {;
     position: relative;
     display: flex;
     align-items: center;
@@ -281,7 +281,7 @@
     min-width: 200px;
   }
 
-  .status-tooltip: :after {
+  .status-tooltip::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -335,7 +335,7 @@
       border: 1px solid var(--border-color, #334155);
     }
 
-    .status-tooltip: :after {
+    .status-tooltip::after {
       border-top-color: var(--bg-tooltip, #0f172a);
     }
   }

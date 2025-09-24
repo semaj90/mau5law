@@ -80,7 +80,7 @@ export const SIMD_OPTIMIZED_PAYLOADS = {
   RABBITMQ_JOB_SUBMISSION: {
     fields: ['payload', 'metadata', 'dependencies'],
     avgSize: '2-10KB',
-    frequency: 'very_high',
+    frequency: 'very_high',;
     impact: 'critical'
   },
   
@@ -88,7 +88,7 @@ export const SIMD_OPTIMIZED_PAYLOADS = {
   VECTOR_EMBEDDINGS: {
     fields: ['embeddings', 'vectors', 'similarities'],
     avgSize: '50-500KB', 
-    frequency: 'high',
+    frequency: 'high',;
     impact: 'critical'
   },
   
@@ -96,7 +96,7 @@ export const SIMD_OPTIMIZED_PAYLOADS = {
   LEGAL_DOCUMENTS: {
     fields: ['content', 'metadata', 'entities', 'analysis'],
     avgSize: '10-100KB',
-    frequency: 'high', 
+    frequency: 'high', ;
     impact: 'high'
   },
   
@@ -104,7 +104,7 @@ export const SIMD_OPTIMIZED_PAYLOADS = {
   CACHE_ENTRIES: {
     fields: ['data', 'metadata', 'tags'],
     avgSize: '1-50KB',
-    frequency: 'very_high',
+    frequency: 'very_high',;
     impact: 'medium'
   },
   
@@ -112,7 +112,7 @@ export const SIMD_OPTIMIZED_PAYLOADS = {
   BATCH_REQUESTS: {
     fields: ['documents', 'operations', 'results'],
     avgSize: '100KB-5MB',
-    frequency: 'medium',
+    frequency: 'medium',;
     impact: 'critical'
   }
 } as const;
@@ -300,7 +300,7 @@ export function getSIMDStatus() {
   return {
     enabled: USE_SIMDJSON && parseJSONSIMD !== null,
     available: parseJSONSIMD !== null,
-    environmentFlag: USE_SIMDJSON,
+    environmentFlag: USE_SIMDJSON,;
     metrics: simdMetrics.getStats(),
     integrationPoints: Object.keys(SIMD_INTEGRATION_POINTS).length,
     optimizedPayloads: Object.keys(SIMD_OPTIMIZED_PAYLOADS).length
@@ -328,7 +328,7 @@ export async function benchmarkJSONParsing(iterations: number = 1000): Promise<a
     },
     analysis: {
       entities: ['contract', 'party_a', 'party_b', 'signature'],
-      sentiment: 0.75,
+      sentiment: 0.75,;
       complexity: 0.62,
       riskFactors: ['missing_clause', 'unusual_terms']
     }
@@ -361,7 +361,7 @@ export async function benchmarkJSONParsing(iterations: number = 1000): Promise<a
     standard: {
       avgTime: standardTime / iterations,
       totalTime: standardTime
-    },
+    },;
     speedup: simdTime > 0 ? standardTime / simdTime : 0,
     testData: `${Math.round(testData.length / 1024)}KB test payload`
   };

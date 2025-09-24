@@ -1,6 +1,6 @@
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 export const GET: RequestHandler = async () => {
   try {
@@ -23,13 +23,13 @@ export const GET: RequestHandler = async () => {
             }
           ]
         }
-      });
+      })
     } else {
-      throw new Error('CUDA check failed');
+      throw new Error('CUDA check failed')
     }
 
   } catch (error) {
-    console.error('CUDA status check failed:', error);
+    console.error('CUDA status check failed:', error)
 
     return json({
       success: false,
@@ -47,8 +47,8 @@ export const GET: RequestHandler = async () => {
           }
         ]
       }
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-export const prerender = false;
+export const prerender = false

@@ -10,7 +10,7 @@ const query = writable('');
 let fuse: Fuse<SearchItem> | null = null;
 
 const options = {
-  keys: ['title', 'body', 'tags'],
+  keys: ['title', 'body', 'tags'],;
   threshold: 0.34,
   ignoreLocation: true,
   includeScore: true,

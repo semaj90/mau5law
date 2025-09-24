@@ -149,7 +149,7 @@ export class RabbitMQManager extends EventEmitter {
     // Declare queues;
     for (const [name, queue] of Object.entries(this.queues)) {
       await this.channel.assertQueue(queue, {
-        durable: true,
+        durable: true,;
         arguments: {
           'x-message-ttl': 300000, // 5 minutes TTL
           'x-max-retries': 3
@@ -168,7 +168,7 @@ export class RabbitMQManager extends EventEmitter {
     const bindings = [
       // Cache invalidation;
       {
-        queue: this.queues.cache_invalidate,
+        queue: this.queues.cache_invalidate,;
         exchange: this.exchanges.cache_invalidation,
         routingKey: '*.invalidate'
       },
@@ -180,7 +180,7 @@ export class RabbitMQManager extends EventEmitter {
         routingKey: 'document.embed'
       },
       {
-        queue: this.queues.evidence_process,
+        queue: this.queues.evidence_process,;
         exchange: this.exchanges.document_processing,
         routingKey: 'evidence.*'
       },
@@ -192,14 +192,14 @@ export class RabbitMQManager extends EventEmitter {
         routingKey: 'vector.index.*'
       },
       {
-        queue: this.queues.chat_context,
+        queue: this.queues.chat_context,;
         exchange: this.exchanges.vector_updates,
         routingKey: 'chat.context.*'
       },
 
       // Analytics;
       {
-        queue: this.queues.analytics_track,
+        queue: this.queues.analytics_track,;
         exchange: this.exchanges.analytics,
         routingKey: 'analytics.*'
       }
@@ -256,7 +256,7 @@ export class RabbitMQManager extends EventEmitter {
 
     await this.publish(this.exchanges.document_processing, 'document.embed', {
       ...data,
-      timestamp: Date.now(),
+      timestamp: Date.now(),;
       priority: 'normal'
     });
   }
@@ -333,7 +333,7 @@ export class RabbitMQManager extends EventEmitter {
     try {
       const message = Buffer.from(JSON.stringify(data);
       const success = this.channel.publish(exchange, routingKey, message, {
-        persistent: true,
+        persistent: true,;
         timestamp: Date.now()
       });
 
@@ -387,7 +387,7 @@ export class RabbitMQManager extends EventEmitter {
 
       // Generate document data;
       const docData = {
-        id: document_id,
+        id: document_id,;
         title: title || `Document ${document_id}`,
         documentType: document_type,
         content,
@@ -424,7 +424,7 @@ export class RabbitMQManager extends EventEmitter {
           },
           cacheTimestamp: Date.now(),
           accessCount: 1,
-          cacheLocation: 'loki',
+          cacheLocation: 'loki',;
           compressed: false,
           syncStatus: 'synced'
         });
@@ -436,7 +436,7 @@ export class RabbitMQManager extends EventEmitter {
           id: document_id,
           title: docData.title,
           content,
-          type: document_type,
+          type: document_type,;
           metadata: {
             case_id,
             document_type,
@@ -448,7 +448,7 @@ export class RabbitMQManager extends EventEmitter {
       // Invalidate related caches;
       await this.publishCacheInvalidation({
         type: 'document',
-        id: document_id,
+        id: document_id,;
         keys: [`document:${document_id}`, `case:${case_id}:documents`, `search:*`]
       });
 
@@ -479,7 +479,7 @@ export class RabbitMQManager extends EventEmitter {
             .values({
               evidenceId: evidence_id,
               content,
-              embedding: `[${embedding.join(',')}]`,
+              embedding: `[${embedding.join(',')}]`,;
               metadata: {
                 evidence_type,
                 case_id,
@@ -491,7 +491,7 @@ export class RabbitMQManager extends EventEmitter {
               target: [this.schema.evidenceVectors.evidenceId],
               set: {
                 content,
-                embedding: `[${embedding.join(',')}]`,
+                embedding: `[${embedding.join(',')}]`,;
                 metadata: {
                   evidence_type,
                   case_id,
@@ -522,7 +522,7 @@ export class RabbitMQManager extends EventEmitter {
           },
           cacheTimestamp: Date.now(),
           accessCount: 1,
-          cacheLocation: 'loki',
+          cacheLocation: 'loki',;
           compressed: false,
           syncStatus: 'synced'
         });
@@ -553,7 +553,7 @@ export class RabbitMQManager extends EventEmitter {
                 cacheKey,);
                 {
                   embedding,
-                  metadata: data.metadata || {},
+                  metadata: data.metadata || {},;
                   timestamp: Date.now()
                 },
                 7200 // 2 hours
@@ -571,7 +571,7 @@ export class RabbitMQManager extends EventEmitter {
               cacheKey,);
               {
                 embedding: data.embedding,
-                metadata: data.metadata || {},
+                metadata: data.metadata || {},;
                 timestamp: Date.now()
               },
               data.type === 'similarity' ? 3600 : 7200
@@ -611,7 +611,7 @@ export class RabbitMQManager extends EventEmitter {
             messageId,
             content: message,
             embedding: `[${messageEmbedding.join(',')}]`,
-            role: context_type === 'user' ? 'user' : 'assistant',
+            role: context_type === 'user' ? 'user' : 'assistant',;
             metadata: {
               user_id,
               session_id,
@@ -634,7 +634,7 @@ export class RabbitMQManager extends EventEmitter {
             messageId: `${session_id}_${Date.now()}`,
             content: message,
             role: context_type,
-            timestamp: Date.now(),
+            timestamp: Date.now(),;
             embedding: messageEmbedding
           }
         ];
@@ -675,7 +675,7 @@ export class RabbitMQManager extends EventEmitter {
               contextUsed: event_data.contextUsed || [],
               metadata: {
                 cache_hit,
-                event_data,
+                event_data,;
                 timestamp: Date.now()
               },
               isSuccessful: event_data.success !== false,
@@ -693,7 +693,7 @@ export class RabbitMQManager extends EventEmitter {
         const currentStats = (await this.redisService.get(analyticsKey)) || {
           count: 0,
           totalResponseTime: 0,
-          cacheHits: 0,
+          cacheHits: 0,;
           errors: 0
         };
 
@@ -716,7 +716,7 @@ export class RabbitMQManager extends EventEmitter {
   // Helper methods;
   private parseMessage(msg: amqp.ConsumeMessage): any {
     try {
-      return JSON.parse(msg.content.toString();
+      return JSON.parse(msg.content.toString());
     } catch (error: any) {
       throw new Error(`Invalid message format: ${error.message}`);
     }
@@ -839,13 +839,13 @@ export class RabbitMQManager extends EventEmitter {
           lokiRedisCache: !!this.lokiRedisCache,
           enhancedRAGPipeline: !!this.enhancedRAGPipeline,
           instantSearchEngine: !!this.instantSearchEngine,
-          database: !!this.db,
+          database: !!this.db,;
           schema: !!this.schema
         }
       };
     } catch (error: any) {
       return {
-        status: 'unhealthy',
+        status: 'unhealthy',;
         error: error.message,
         reconnectAttempts: this.reconnectAttempts
       };

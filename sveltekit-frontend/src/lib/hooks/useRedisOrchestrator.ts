@@ -23,7 +23,7 @@ export function useRedisAI() {
   let error: string | null = $state(null);
 
   const query = async (
-    query: string,
+    query: string,;
     context: {
       endpoint?: string;
       caseId?: string;
@@ -48,7 +48,7 @@ export function useRedisAI() {
 
   const queueTask = async (
     taskType: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment',
-    query: string,
+    query: string,;
     metadata: any = {},
     priority = 100;
   ): Promise<string> => {
@@ -274,7 +274,7 @@ export function useRedisComponent(
 
   const getCacheStats = () => ({
     size: componentCache.size,
-    hits: cacheHits,
+    hits: cacheHits,;
     misses: cacheMisses,
     hitRate: cacheHits + cacheMisses > 0 ? (cacheHits / (cacheHits + cacheMisses)) * 100 : 0
   });
@@ -297,7 +297,7 @@ export function useRedisForm() {
 
   const submitForm = async (
     formData: any,
-    endpoint: string,
+    endpoint: string,;
     options: {
       useCache?: boolean;
       priority?: number;

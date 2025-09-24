@@ -3,46 +3,46 @@
  * Provides REST interface for migration operations
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { DatabaseMigrator, runMigrationCLI } from '$lib/database/migrations/migration-system';
-import { env } from '$env/dynamic/private';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types'
+import { DatabaseMigrator, runMigrationCLI } from '$lib/database/migrations/migration-system'
+import { env } from '$env/dynamic/private'
 
 const migrator = new DatabaseMigrator(
   env.DATABASE_URL || 'postgresql://localhost:5432/legal_ai'
-);
+)
 
 export const GET: RequestHandler = async ({ url }) => {
-  const action = url.searchParams.get('action') || 'status';
+  const action = url.searchParams.get('action') || 'status'
 
   try {
     switch (action) {
       case 'status': {
-        const status = await migrator.getStatus();
+        const status = await migrator.getStatus()
         return json({
           success: true,
           data: status
-        });
+        })
       }
 
       case 'validate': {
-        const validation = await migrator.validateIntegrity();
+        const validation = await migrator.validateIntegrity()
         return json({
           success: true,
           data: validation
-        });
+        })
       }
 
       case 'list': {
-        const appliedMigrations = await migrator.getAppliedMigrations();
-        const allMigrations = await migrator.loadMigrations();
+        const appliedMigrations = await migrator.getAppliedMigrations()
+        const allMigrations = await migrator.loadMigrations()
 
         const migrationList = allMigrations.map(migration => ({
           version: migration.version,
           name: migration.name,
           applied: appliedMigrations.includes(migration.version),
           hasRollback: !!migration.down
-        });
+        })
 
         return json({
           success: true,
@@ -52,35 +52,35 @@ export const GET: RequestHandler = async ({ url }) => {
             applied: appliedMigrations.length,
             pending: allMigrations.length - appliedMigrations.length
           }
-        });
+        })
       }
 
-      default:;
+      default:
         return json({
           success: false,
           error: 'Invalid action. Use: status, validate, or list'
-        }, { status: 400 });
+        }, { status: 400 })
     }
   } catch (error) {
-    console.error('Migration API error:', error);
+    console.error('Migration API error:', error)
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action, name, force = false } = await request.json();
+    const { action, name, force = false } = await request.json()
 
     switch (action) {
       case 'migrate': {
-        console.log('🚀 Starting migration via API...');
-        const results = await migrator.migrate();
+        console.log('🚀 Starting migration via API...')
+        const results = await migrator.migrate()
 
-        const successful = results.filter(r => r.success && r.applied);
-        const failed = results.filter(r => !r.success);
+        const successful = results.filter(r => r.success && r.applied)
+        const failed = results.filter(r => !r.success)
 
         return json({
           success: failed.length === 0,
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
               totalTime: results.reduce((sum, r) => sum + r.executionTime, 0)
             }
           }
-        });
+        })
       }
 
       case 'rollback': {
@@ -100,16 +100,16 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({
             success: false,
             error: 'Rollback requires force=true parameter for safety'
-          }, { status: 400 });
+          }, { status: 400 })
         }
 
-        console.log('🔙 Starting rollback via API...');
-        const result = await migrator.rollback();
+        console.log('🔙 Starting rollback via API...')
+        const result = await migrator.rollback()
 
         return json({
           success: result.success,
           data: result
-        });
+        })
       }
 
       case 'create': {
@@ -117,10 +117,10 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({
             success: false,
             error: 'Migration name is required'
-          }, { status: 400 });
+          }, { status: 400 })
         }
 
-        const filename = await migrator.createMigration(name);
+        const filename = await migrator.createMigration(name)
 
         return json({
           success: true,
@@ -128,31 +128,31 @@ export const POST: RequestHandler = async ({ request }) => {
             filename,
             message: `Migration ${filename} created successfully`
           }
-        });
+        })
       }
 
       case 'initialize': {
-        await migrator.initialize();
+        await migrator.initialize()
 
         return json({
           success: true,
           data: {
             message: 'Migration system initialized successfully'
           }
-        });
+        })
       }
 
-      default:;
+      default:
         return json({
           success: false,
           error: 'Invalid action. Use: migrate, rollback, create, or initialize'
-        }, { status: 400 });
+        }, { status: 400 })
     }
   } catch (error) {
-    console.error('Migration API POST error:', error);
+    console.error('Migration API POST error:', error)
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

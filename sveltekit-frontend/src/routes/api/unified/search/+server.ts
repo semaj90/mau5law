@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { legalAI } from '$lib/server/unified/legal-ai-service';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { legalAI } from '$lib/server/unified/legal-ai-service'
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json();
+    const body = await request.json()
     const {
       query,
       type = 'all',
@@ -13,13 +13,13 @@ export const POST: RequestHandler = async ({ request }) => {
       caseId,
       useRecommendations = true,
       cacheResults = true
-    } = body;
+    } = body
 
     if (!query || query.trim().length === 0) {
-      return json({ error: 'Query is required' }, { status: 400 });
+      return json({ error: 'Query is required' }, { status: 400 })
     }
 
-    // Use unified search across all systems;
+    // Use unified search across all systems
     const searchResults = await legalAI.searchDocuments({
       query: query.trim(),
       type,
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
       caseId,
       useRecommendations,
       cacheResults
-    });
+    })
 
     return json({
       success: true,
@@ -42,15 +42,15 @@ export const POST: RequestHandler = async ({ request }) => {
         caseId: caseId || null,
         timestamp: new Date().toISOString()
       }
-    });
+    })
 
   } catch (error) {
-    console.error('Unified search error:', error);
+    console.error('Unified search error:', error)
     return json({ 
         error: 'Search failed',
         details: error instanceof Error ? error.message: 'Unknown error'
       }, )
       { status: 500 }
-    );
+    )
   }
-};
+}

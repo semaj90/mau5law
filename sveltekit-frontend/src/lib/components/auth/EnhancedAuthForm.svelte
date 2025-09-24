@@ -3,10 +3,10 @@
 
   import { enhance } from '$app/forms';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Label } from '$lib/components/ui/label/index.js';
   import { Alert } from '$lib/components/ui/alert/index.js';
   import { Badge } from '$lib/components/ui/badge/index.js';
@@ -25,28 +25,28 @@
     loading = false,
     class: className = '',
     id,
-    'data-testid': testId
+    'data-testid': testId;
    }: EnhancedAuthFormProps = $props();
 
   // Enhanced Svelte 5 reactive state
   let formData = $state({
-    email: '',
+    email: '',;
     password: '',
     confirmPassword: '',
     firstName: '',
     lastName: '',
     acceptTerms: false,
-    rememberMe: false
+    rememberMe: false;
   });
   let formState = $state({
-    loading: false,
-    error: '',
+    loading: false,;
+    error: '',;
     success: '',
     passwordStrength: 0,
     showPassword: false,
     showConfirmPassword: false,
     emailExists: false,
-    verificationSent: false
+    verificationSent: false;
   });
 
   // Form element references for focus management
@@ -101,8 +101,8 @@
     if (!validation.hasValidEmail) return;
     try {
       const response = await fetch('/api/auth/check-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ email: formData.email })
       });
       const result = await (response as { json?: any; ok?: any }).json();
@@ -123,11 +123,11 @@
       // Security context for AI analysis
       const authContext = {
         mode,
-        email: formData.email,
+        email: formData.email,;
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent,
         ipAddress: await getClientIP(),
-        passwordStrength: passwordStrength
+        passwordStrength: passwordStrength;
       };
 
       // AI-powered security analysis
@@ -144,11 +144,11 @@
 
       const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
       const response = await fetch(endpoint, {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
-        },
+        },;
         body: JSON.stringify({
           ...formData,
           securityContext: authContext
@@ -203,7 +203,7 @@
         {
           includeRAG: false,
           includeGraph: true,
-          generateSummary: false,
+          generateSummary: false,;
           metadata: { context, result }
         }
       );
@@ -214,23 +214,23 @@
 
   function resetForm() {
     formData = {
-      email: '',
+      email: '',;
       password: '',
       confirmPassword: '',
       firstName: '',
       lastName: '',
       acceptTerms: false,
-      rememberMe: false
+      rememberMe: false;
     };
     formState = {
-      loading: false,
-      error: '',
+      loading: false,;
+      error: '',;
       success: '',
       passwordStrength: 0,
       showPassword: false,
       showConfirmPassword: false,
       emailExists: false,
-      verificationSent: false
+      verificationSent: false;
     };
   }
 
@@ -249,7 +249,7 @@
     formState.loading = true;
     try {
       const response = await fetch('/api/auth/guest', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' }
       });
       const result = await (response as { json?: any; ok?: any }).json();
@@ -585,7 +585,7 @@ Continue as Guest
 </Dialog.Root>
 
 <style>
-  :global(.animate-in) {
+  :global(.animate-in) {;
     animation-duration: 200ms;
     animation-fill-mode: both;
   }

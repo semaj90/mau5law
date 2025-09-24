@@ -30,7 +30,7 @@ const LegalMetadataSchema = z.object({
   
   // Legal Context
   courtLevel: z.enum(['federal', 'state', 'local', 'administrative']).optional(),
-  caseType: z.enum(['civil', 'criminal', 'administrative', 'appellate']).optional(),
+  caseType: z.enum(['civil', 'criminal', 'administrative', 'appellate']).optional(),;
   urgency: z.enum(['routine', 'priority', 'urgent', 'emergency']).default('routine'),
   
   // Document Properties
@@ -39,7 +39,7 @@ const LegalMetadataSchema = z.object({
   
   // Legal Entities;
   parties: z.array(z.object({
-    name: z.string(),
+    name: z.string(),;
     role: z.enum(['plaintiff', 'defendant', 'witness', 'counsel', 'judge', 'expert', 'third_party']),
     entityType: z.enum(['individual', 'corporation', 'government', 'organization']).optional()
   })).optional(),
@@ -48,7 +48,7 @@ const LegalMetadataSchema = z.object({
   citations: z.array(z.object({
     type: z.enum(['case_law', 'statute', 'regulation', 'treaty', 'secondary_source']),
     citation: z.string(),
-    relevance: z.number().min(0).max(1).optional(), // Semantic relevance score
+    relevance: z.number().min(0).max(1).optional(), // Semantic relevance score;
     pinpoint: z.string().optional() // Specific page/paragraph reference
   })).optional(),
   
@@ -59,7 +59,7 @@ const LegalMetadataSchema = z.object({
     precedentStrength: z.number().min(0).max(1).optional(),
     argumentStructure: z.array(z.object({
       type: z.enum(['premise', 'conclusion', 'evidence', 'counterargument']),
-      text: z.string(),
+      text: z.string(),;
       confidence: z.number().min(0).max(1)
     })).optional()
   }).optional(),
@@ -92,7 +92,7 @@ const CaseMetadataSchema = z.object({
     objectives: z.array(z.string()).optional(),
     risks: z.array(z.object({
       description: z.string(),
-      probability: z.number().min(0).max(1),
+      probability: z.number().min(0).max(1),;
       impact: z.enum(['low', 'medium', 'high', 'critical'])
     })).optional()
   }).optional()
@@ -121,7 +121,7 @@ const EvidenceMetadataSchema = z.object({
   }).optional(),
   admissibility: z.object({
     status: z.enum(['admissible', 'inadmissible', 'conditional', 'pending']),
-    basis: z.string().optional(),
+    basis: z.string().optional(),;
     objections: z.array(z.string()).optional()
   }).optional()
 });
@@ -143,7 +143,7 @@ export const legalDocumentsJsonb = pgTable('legal_documents_jsonb', {
   contentEmbedding: vector('content_embedding', { dimensions: 384 }),
   
   // Computed fields for fast access
-  documentType: text('document_type').generatedAlwaysAs(sql`(metadata->>'documentType')`),
+  documentType: text('document_type').generatedAlwaysAs(sql`(metadata->>'documentType')`),;
   jurisdiction: text('jurisdiction').generatedAlwaysAs(sql`(metadata->>'jurisdiction')`),
   practiceArea: text('practice_area').generatedAlwaysAs(sql`(metadata->>'practiceArea')`),
   confidentialityLevel: text('confidentiality_level').generatedAlwaysAs(sql`(metadata->>'confidentialityLevel')`),
@@ -165,7 +165,7 @@ export const casesJsonb = pgTable('cases_jsonb', {
   metadata: jsonb('metadata').notNull(),
   
   // Computed fields
-  caseNumber: text('case_number').generatedAlwaysAs(sql`(metadata->>'caseNumber')`),
+  caseNumber: text('case_number').generatedAlwaysAs(sql`(metadata->>'caseNumber')`),;
   status: text('status').generatedAlwaysAs(sql`(metadata->>'status')`),
   filingDate: timestamp('filing_date').generatedAlwaysAs(sql`(metadata->>'filingDate')::timestamp`),
   
@@ -195,7 +195,7 @@ export const evidenceJsonb = pgTable('evidence_jsonb', {
   embedding: vector('embedding', { dimensions: 384 }),
   
   // Computed fields for indexing
-  evidenceType: text('evidence_type').generatedAlwaysAs(sql`(metadata->>'evidenceType')`),
+  evidenceType: text('evidence_type').generatedAlwaysAs(sql`(metadata->>'evidenceType')`),;
   authenticated: boolean('authenticated').generatedAlwaysAs(sql`((metadata->'authenticity'->>'verified')::boolean)`),
   relevanceScore: real('relevance_score').generatedAlwaysAs(sql`((metadata->'relevance'->>'score')::real)`),
   
@@ -212,7 +212,7 @@ export const documentRelationshipsJsonb = pgTable('document_relationships_jsonb'
   relationshipMetadata: jsonb('relationship_metadata').notNull(),
   
   // Computed fields for fast queries
-  relationshipType: text('relationship_type').generatedAlwaysAs(sql`(relationship_metadata->>'type')`),
+  relationshipType: text('relationship_type').generatedAlwaysAs(sql`(relationship_metadata->>'type')`),;
   strength: real('strength').generatedAlwaysAs(sql`((relationship_metadata->>'strength')::real)`),
   
   createdAt: timestamp('created_at').defaultNow().notNull()

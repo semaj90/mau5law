@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save with Loki.js -->
@@ -64,7 +64,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Canvas state management
   const canvasState = writable({
-    tool: "select",
+    tool: "select",;
     zoom: 100,
     showGrid: true,
     showRulers: true,
@@ -75,8 +75,8 @@ https://svelte.dev/e/js_parse_error -->
     canRedo: false,
     isDrawing: false,
     objectCount: 0,
-    searchQuery: "",
-    layers: [],
+    searchQuery: "",;
+    layers: [],;
   });
 
   // History management
@@ -144,12 +144,12 @@ https://svelte.dev/e/js_parse_error -->
       autoloadCallback: () => {
         canvasCollection =
           lokiDb?.getCollection("canvas_data") ||
-          lokiDb?.addCollection("canvas_data", {
-            indices: ["id", "caseId", "timestamp", "type"],
+          lokiDb?.addCollection("canvas_data", {;
+            indices: ["id", "caseId", "timestamp", "type"],;
           });
       },
       autosave: true,
-      autosaveInterval: 4000,
+      autosaveInterval: 4000,;
     });
   }
 
@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
       selection: !readOnly,
       isDrawingMode: false,
       preserveObjectStacking: true,
-      enableRetinaScaling: true,
+      enableRetinaScaling: true,;
     });
 
     // Canvas event listeners
@@ -186,9 +186,9 @@ https://svelte.dev/e/js_parse_error -->
 
   function initializeSearch() {
     const searchOptions = {
-      keys: ["title", "description", "evidenceType", "tags"],
+      keys: ["title", "description", "evidenceType", "tags"],;
       threshold: 0.3,
-      includeMatches: true,
+      includeMatches: true,;
     };
     searchEngine = new Fuse(evidenceItems, searchOptions);
   }
@@ -292,9 +292,9 @@ https://svelte.dev/e/js_parse_error -->
       height: 80,
       fill: "transparent",
       stroke: "#3b82f6",
-      strokeWidth: 2,
-      rx: 5,
-      ry: 5,
+      strokeWidth: 2,;
+      rx: 5,;
+      ry: 5,;
     });
 
     canvas.add(rect);
@@ -307,10 +307,10 @@ https://svelte.dev/e/js_parse_error -->
     const circle = new fabric.Circle({
       left: pointer.x,
       top: pointer.y,
-      radius: 50,
-      fill: "transparent",
+      radius: 50,;
+      fill: "transparent",;
       stroke: "#10b981",
-      strokeWidth: 2,
+      strokeWidth: 2,;
     });
 
     canvas.add(circle);
@@ -321,11 +321,11 @@ https://svelte.dev/e/js_parse_error -->
     if (!canvas) return;
 
     const text = new fabric.IText("Click to edit text", {
-      left: pointer.x,
+      left: pointer.x,;
       top: pointer.y,
       fontFamily: "Inter",
-      fontSize: 16,
-      fill: "#374151",
+      fontSize: 16,;
+      fill: "#374151",;
     });
 
     canvas.add(text);
@@ -340,8 +340,8 @@ https://svelte.dev/e/js_parse_error -->
       [pointer.x, pointer.y, pointer.x + 100, pointer.y],
       {
         stroke: "#ef4444",
-        strokeWidth: 2,
-        selectable: true,
+        strokeWidth: 2,;
+        selectable: true,;
       }
     );
 
@@ -355,21 +355,21 @@ https://svelte.dev/e/js_parse_error -->
     // Create arrow using a group of line and triangle
     const line = new fabric.Line([0, 0, 100, 0], {
       stroke: "#8b5cf6",
-      strokeWidth: 2,
+      strokeWidth: 2,;
     });
 
     const triangle = new fabric.Triangle({
       left: 95,
       top: -5,
       width: 10,
-      height: 10,
-      fill: "#8b5cf6",
-      angle: 90,
+      height: 10,;
+      fill: "#8b5cf6",;
+      angle: 90,;
     });
 
     const arrow = new fabric.Group([line, triangle], {
-      left: pointer.x,
-      top: pointer.y,
+      left: pointer.x,;
+      top: pointer.y,;
     });
 
     canvas.add(arrow);
@@ -382,24 +382,24 @@ https://svelte.dev/e/js_parse_error -->
       height: 150,
       fill: "#fef3c7",
       stroke: "#f59e0b",
-      strokeWidth: 2,
-      rx: 8,
-      ry: 8,
+      strokeWidth: 2,;
+      rx: 8,;
+      ry: 8,;
     });
 
     const title = new fabric.Text(evidence.title, {
       fontSize: 14,
       fontWeight: "bold",
-      top: 10,
-      left: 10,
-      width: 180,
+      top: 10,;
+      left: 10,;
+      width: 180,;
     });
 
     const type = new fabric.Text(`Type: ${evidence.evidenceType}`, {
       fontSize: 12,
-      top: 30,
-      left: 10,
-      fill: "#6b7280",
+      top: 30,;
+      left: 10,;
+      fill: "#6b7280",;
     });
 
     const description = new fabric.Text(
@@ -407,9 +407,9 @@ https://svelte.dev/e/js_parse_error -->
       {
         fontSize: 10,
         top: 50,
-        left: 10,
-        width: 180,
-        fill: "#374151",
+        left: 10,;
+        width: 180,;
+        fill: "#374151",;
       }
     );
 
@@ -423,10 +423,10 @@ https://svelte.dev/e/js_parse_error -->
     if (thumbnail) elements.push(thumbnail);
 
     const group = new fabric.Group(elements, {
-      left: 100,
+      left: 100,;
       top: 100,
       hasControls: true,
-      hasBorders: true,
+      hasBorders: true,;
     });
 
     // Store evidence data
@@ -447,27 +447,27 @@ https://svelte.dev/e/js_parse_error -->
         height: 60,
         fill: "#e5e7eb",
         top: 80,
-        left: 130,
-        rx: 4,
-        ry: 4,
+        left: 130,;
+        rx: 4,;
+        ry: 4,;
       });
     } else if (fileType === "application/pdf") {
       // PDF icon
       return new fabric.Text("PDF", {
         fontSize: 12,
         fontWeight: "bold",
-        top: 100,
-        left: 140,
-        fill: "#dc2626",
+        top: 100,;
+        left: 140,;
+        fill: "#dc2626",;
       });
     } else if (fileType.startsWith("video/")) {
       // Video icon
       return new fabric.Text("VIDEO", {
         fontSize: 10,
         fontWeight: "bold",
-        top: 100,
-        left: 140,
-        fill: "#7c2d12",
+        top: 100,;
+        left: 140,;
+        fill: "#7c2d12",;
       });
     }
 
@@ -486,7 +486,7 @@ https://svelte.dev/e/js_parse_error -->
   function createTimelineVisualization(): fabric.Group {
     const line = new fabric.Line([0, 0, 400, 0], {
       stroke: "#374151",
-      strokeWidth: 3,
+      strokeWidth: 3,;
     });
 
     const elements: fabric.FabricObject[] = [line];
@@ -496,25 +496,25 @@ https://svelte.dev/e/js_parse_error -->
       const marker = new fabric.Circle({
         left: i * 100 - 5,
         top: -5,
-        radius: 5,
-        fill: "#3b82f6",
+        radius: 5,;
+        fill: "#3b82f6",;
         stroke: "#1e40af",
-        strokeWidth: 1,
+        strokeWidth: 1,;
       });
 
       const date = new fabric.Text(`Event ${i + 1}`, {
-        left: i * 100 - 25,
+        left: i * 100 - 25,;
         top: 15,
-        fontSize: 10,
-        fill: "#374151",
+        fontSize: 10,;
+        fill: "#374151",;
       });
 
       elements.push(marker, date);
     }
 
     const timeline = new fabric.Group(elements, {
-      left: 100,
-      top: 200,
+      left: 100,;
+      top: 200,;
     });
 
     timeline.set("objectType", "timeline");
@@ -531,31 +531,31 @@ https://svelte.dev/e/js_parse_error -->
 
   function createPersonVisualization(): fabric.Group {
     const circle = new fabric.Circle({
-      radius: 30,
-      fill: "#dbeafe",
+      radius: 30,;
+      fill: "#dbeafe",;
       stroke: "#3b82f6",
-      strokeWidth: 2,
+      strokeWidth: 2,;
     });
 
     const name = new fabric.Text("Person Name", {
       fontSize: 12,
       fontWeight: "bold",
-      top: 40,
+      top: 40,;
       left: -30,
-      textAlign: "center",
+      textAlign: "center",;
     });
 
     const role = new fabric.Text("Role/Title", {
       fontSize: 10,
-      top: 55,
-      left: -25,
+      top: 55,;
+      left: -25,;
       fill: "#6b7280",
-      textAlign: "center",
+      textAlign: "center",;
     });
 
     const person = new fabric.Group([circle, name, role], {
-      left: 200,
-      top: 200,
+      left: 200,;
+      top: 200,;
     });
 
     person.set("objectType", "person");
@@ -581,22 +581,22 @@ https://svelte.dev/e/js_parse_error -->
         { x: 10, y: 15 },
       ],
       {
-        fill: "#dc2626",
+        fill: "#dc2626",;
         stroke: "#991b1b",
-        strokeWidth: 1,
+        strokeWidth: 1,;
       }
     );
 
     const label = new fabric.Text("Location", {
       fontSize: 12,
-      top: 35,
-      left: -10,
-      fill: "#374151",
+      top: 35,;
+      left: -10,;
+      fill: "#374151",;
     });
 
     const location = new fabric.Group([marker, label], {
-      left: 300,
-      top: 200,
+      left: 300,;
+      top: 200,;
     });
 
     location.set("objectType", "location");
@@ -720,16 +720,16 @@ https://svelte.dev/e/js_parse_error -->
       const canvasData = {
         id: canvasId || crypto.randomUUID(),
         caseId,
-        data: canvas.toJSON(),
+        data: canvas.toJSON(),;
         thumbnail: canvas.toDataURL({ format: "png", multiplier: 0.1 }),
         metadata: {
           objectCount: canvas.getObjects.length,
           width: canvas.getWidth(),
           height: canvas.getHeight(),
-          zoom: get(canvasState).zoom,
+          zoom: get(canvasState).zoom,;
         },
-        timestamp: new Date(),
-        version: Date.now(),
+        timestamp: new Date(),;
+        version: Date.now(),;
       };
 
       // Save to Loki.js
@@ -742,9 +742,9 @@ https://svelte.dev/e/js_parse_error -->
 
       // Save to server
       await fetch("/api/canvas/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(canvasData),
+        method: "POST",;
+        headers: { "Content-Type": "application/json" },;
+        body: JSON.stringify(canvasData),;
       });
 
       isDirty = false;
@@ -892,8 +892,8 @@ https://svelte.dev/e/js_parse_error -->
     if (activeObject) {
       const cloned = await activeObject.clone();
       cloned.set({
-        left: (cloned.left || 0) + 10,
-        top: (cloned.top || 0) + 10,
+        left: (cloned.left || 0) + 10,;
+        top: (cloned.top || 0) + 10,;
       });
       canvas?.add(cloned);
       canvas?.setActiveObject(cloned);
@@ -938,9 +938,9 @@ https://svelte.dev/e/js_parse_error -->
   let filename = $state<stringswitch (format) {
       case "png":
         dataUrl  | null>(null); const data = canvas.toDataURL({
-          format: "png",
-          quality: 1,
-          multiplier: 1,
+          format: "png",;
+          quality: 1,;
+          multiplier: 1,;
         }));
         filename >(`canvas-${caseId}.png`);
         break;
@@ -1002,10 +1002,10 @@ https://svelte.dev/e/js_parse_error -->
           left: 50,
           top: 50,
           width: 300,
-          fontSize: 12,
+          fontSize: 12,;
           fill: "#374151",
-          backgroundColor: "#f0f9ff",
-          padding: 10,
+          backgroundColor: "#f0f9ff",;
+          padding: 10,;
         }
       );
 
@@ -1047,10 +1047,10 @@ https://svelte.dev/e/js_parse_error -->
         return createEvidenceObject(elementData);
       } else if (elementData.type === "text") {
         return new fabric.Text(elementData.text || "Text", {
-          left: elementData.left || 100,
+          left: elementData.left || 100,;
           top: elementData.top || 100,
-          fontSize: elementData.fontSize || 16,
-          fill: elementData.fill || "#333",
+          fontSize: elementData.fontSize || 16,;
+          fill: elementData.fill || "#333",;
         });
       }
       return null;
@@ -1258,7 +1258,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .canvas-editor-container {
+  .canvas-editor-container {;
     background: #f9fafb;
   }
 
@@ -1347,7 +1347,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
   }
 
-  .dropdown-menu button:hover {
+  .dropdown-menu button:hover {;
     background-color: #f3f4f6;
   }
 

@@ -34,8 +34,8 @@
 
 
   interface EvidenceReport {
-    id: string
-    title: string
+    id: string;
+    title: string;
     type:
       | "digital_forensics"
       | "dna_analysis"
@@ -48,26 +48,26 @@
     createdAt: string
     updatedAt: string
     analyst: {
-      name: string
-      credentials: string
-      department: string
+      name: string;
+      credentials: string;
+      department: string;
     };
     evidence: {
-      itemNumber: string
+      itemNumber: string;
       description: string
       chainOfCustody: string[];
       dateCollected: string
-      location: string
+      location: string;
     };
-    methodology: {
+    methodology: {;
       procedures: string[];
       tools: string[];
       standards: string[];
     };
-    findings: {
+    findings: {;
       summary: string
       keyPoints: string[];
-      confidence: number
+      confidence: number;
       limitations: string[];
     };
     legalImplications: {
@@ -77,9 +77,9 @@
     };
     attachments: {
       id: string
-      name: string
-      type: string
-      size: number
+      name: string;
+      type: string;
+      size: number;
     }[];
   }
 
@@ -555,10 +555,10 @@
 </div>
 
 <style>
-  .evidence-report-summary {
+  .evidence-report-summary {;
     max-width: 80rem;
     margin-left: auto
-    margin-right: auto
+    margin-right: auto;
   }
 </style>
 

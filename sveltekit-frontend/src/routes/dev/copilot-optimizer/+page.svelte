@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: Unterminated template
+<!-- @migration-task Error while migrating Svelte code: Unterminated template;
 https://svelte.dev/e/js_parse_error -->
 <!--
   Copilot Index Optimizer - Development Interface
@@ -45,8 +45,9 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Load initial data
-  $effect(async () => {
-    await loadCopilotContent();
+  $effect(() => {
+    (async () => {
+await loadCopilotContent();
     await loadSystemStatus();
 
     // Start real-time metrics polling
@@ -55,6 +56,7 @@ https://svelte.dev/e/js_parse_error -->
     return () => {
       clearInterval(metricsInterval);
     };
+    })();
   });
 
   /**
@@ -89,12 +91,12 @@ https://svelte.dev/e/js_parse_error -->
       errorMessage = '';
 
       const response = await fetch('/api/copilot/optimize', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'optimize_index',
-          content: copilotContent,
-          options: optimizationConfig,
+          action: 'optimize_index',;
+          content: copilotContent,;
+          options: optimizationConfig,;
         }),
       });
 
@@ -127,15 +129,15 @@ https://svelte.dev/e/js_parse_error -->
       isLoading = true;
 
       const response = await fetch('/api/copilot/optimize', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'semantic_search',
-          content: searchQuery,
-          options: {
+          content: searchQuery,;
+          options: {;
             limit: 10,
             includePatterns: true,
-            boostContext7: true,
+            boostContext7: true,;
           },
         }),
       });
@@ -206,14 +208,14 @@ https://svelte.dev/e/js_parse_error -->
       isLoading = true;
 
       const response = await fetch('/api/copilot/optimize', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'generate_suggestions',
+          action: 'generate_suggestions',;
           content: {
             currentCode: testCode,
-            cursor: { line: 5, character: 25 },
-            language: 'svelte',
+            cursor: { line: 5, character: 25 },;
+            language: 'svelte',;
           },
         }),
       });
@@ -227,9 +229,9 @@ https://svelte.dev/e/js_parse_error -->
         id: `suggestion_${index}`,
         document: {
           title: `Suggestion: ${suggestion.category}`,
-          content: suggestion.text,
+          content: suggestion.text,;
         },
-        score: suggestion.confidence,
+        score: suggestion.confidence,;
         explanation: `${suggestion.category} suggestion (Priority: ${suggestion.priority})`,
         context7Pattern: suggestion.context7Pattern,
       });
@@ -356,7 +358,7 @@ https://svelte.dev/e/js_parse_error -->
             class="px-4 py-2 rounded-md text-sm font-medium transition-all
               {selectedTab === tab.id
                 ? 'bg-purple-600 text-white'
-                : 'text-purple-300 hover:text-white hover:bg-purple-700/30'
+                : 'text-purple-300 hover:text-white hover:bg-purple-700/30';
               }"
           >
             {tab.label}
@@ -514,7 +516,7 @@ https://svelte.dev/e/js_parse_error -->
               </label>
               <div class="flex gap-2">
                 <input
-                  type="text"
+                  type="text";
                   bind:value={searchQuery}
                   placeholder="Enter search query (e.g., 'Svelte 5 props patterns')"
                   class="flex-1 px-4 py-2 bg-black/30 border border-purple-500/30 rounded-lg
@@ -821,7 +823,7 @@ https://svelte.dev/e/js_parse_error -->
                 type="range"
                 min="0.5"
                 max="1.0"
-                step="0.1"
+                step="0.1";
                 bind:value={optimizationConfig.compressionRatio}
                 class="w-full h-2 bg-black/30 rounded-lg appearance-none cursor-pointer slider"
               />
@@ -880,14 +882,14 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .line-clamp-3 {
+  .line-clamp-3 {;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  .slider: :-webkit-slider-thumb {
+  .slider::-webkit-slider-thumb {
     appearance: none;
     height: 20px;
     width: 20px;
@@ -897,7 +899,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid #a855f7;
   }
 
-  .slider: :-webkit-slider-thumb:hover {
+  .slider::-webkit-slider-thumb:hover {
     background: #8b5cf6;
   }
 </style>

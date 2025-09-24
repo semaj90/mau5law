@@ -13,7 +13,7 @@ import { legalCaseMachine } from './legal-case-machine.js';
 // Global application context;
 export interface AppContext {
   // User authentication;
-  user: {
+  user: {;
     id: string;
     name: string;
     email: string;
@@ -22,7 +22,7 @@ export interface AppContext {
   } | null;
 
   // Session management;
-  session: {
+  session: {;
     id: string;
     expiresAt: Date;
     isActive: boolean;
@@ -48,7 +48,7 @@ export interface AppContext {
   loadingMessage?: string;
 
   // Error handling;
-  error: {
+  error: {;
     code: string;
     message: string;
     details?: unknown;
@@ -82,7 +82,7 @@ export interface AppContext {
   offlineQueue: Array<any>;
 
   // WebSocket connection;
-  websocket: {
+  websocket: {;
     connected: boolean;
     connectionId: string | null;
     lastActivity: Date | null;
@@ -141,7 +141,7 @@ export type AppEvents =
 const loginService = fromPromise(async ({ input }: { input: { credentials: any } }) => {
   const response = await fetch('/api/auth/login', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify(input.credentials)
   });
 
@@ -154,7 +154,7 @@ const loginService = fromPromise(async ({ input }: { input: { credentials: any }
 
 const refreshSessionService = fromPromise(async () => {
   const response = await fetch('/api/auth/refresh', {
-    method: 'POST',
+    method: 'POST',;
     credentials: 'include'
   });
 
@@ -167,7 +167,7 @@ const refreshSessionService = fromPromise(async () => {
 
 const logoutService = fromPromise(async () => {
   const response = await fetch('/api/auth/logout', {
-    method: 'POST',
+    method: 'POST',;
     credentials: 'include'
   });
 
@@ -204,7 +204,7 @@ const isOnline = ({ context }: { context: AppContext }) => {
 // Actions;
 const setUser = assign({
   user: ({ event }: { event: any }) => event.output?.user,
-  session: ({ event }: { event: any }) => ({
+  session: ({ event }: { event: any }) => ({;
     id: event.output?.sessionId || crypto.randomUUID(),
     expiresAt: new Date(event.output?.expiresAt || Date.now() + 24 * 60 * 60 * 1000),
     isActive: true
@@ -212,7 +212,7 @@ const setUser = assign({
 });
 
 const clearUser = assign({
-  user: null,
+  user: null,;
   session: null
 });
 
@@ -233,7 +233,7 @@ const addNotification = assign({
       id: crypto.randomUUID(),
       timestamp: new Date(),
       type: 'info' as const,
-      title: '',
+      title: '',;
       message: '',
       ...('notification' in event ? event.notification: Record<string, any>)
     }
@@ -286,7 +286,7 @@ const setOffline = assign({
 });
 
 const connectWebSocket = assign({
-  websocket: ({ event }: { event: AppEvents }) => ({
+  websocket: ({ event }: { event: AppEvents }) => ({;
     connected: true,
     connectionId: 'connectionId' in event ? event.connectionId: null,
     lastActivity: new Date()
@@ -294,7 +294,7 @@ const connectWebSocket = assign({
 });
 
 const disconnectWebSocket = assign({
-  websocket: {
+  websocket: {;
     connected: false,
     connectionId: null,
     lastActivity: null
@@ -326,13 +326,13 @@ const destroyLegalCaseMachine = assign({
 
 const navigate = assign({
   currentRoute: ({ event }: { event: AppEvents }) =>
-    'path' in event ? event.path: '/',
+    'path' in event ? event.path: '/',;
   breadcrumbs: ({ event }: { event: AppEvents }) => {
     // Generate breadcrumbs based on path
     const path = 'path' in event ? event.path : '/';
     const segments = path.split('/').filter(Boolean);
     return segments.map((segment, index) => ({
-      label: segment.charAt(0).toUpperCase() + segment.slice(1),
+      label: segment.charAt(0).toUpperCase() + segment.slice(1),;
       path: '/' + segments.slice(0, index + 1).join('/')
     });
   }
@@ -361,7 +361,7 @@ export const appMachine = createMachine({
       apiResponseTimes: Record<string, any>,
       memoryUsage: 0,
       cacheHitRate: 0
-    },
+    },;
     features: Record<string, any>
     }); const settings = {
       autoSave: true,
@@ -558,7 +558,7 @@ export const appMachine = createMachine({
       }
     }
   },
-
+;
   on: {
     // Global event handlers;
     SET_THEME: {
@@ -616,7 +616,7 @@ export const appMachine = createMachine({
     },
 
     SHUTDOWN_APP: {
-      target: 'initializing',
+      target: 'initializing',;
       actions: [
         clearUser,
         destroyLegalCaseMachine,

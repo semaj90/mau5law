@@ -64,7 +64,7 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
     document_id: jobData.documentId,
     content: jobData.content,
     document_type: jobData.documentType,
-    case_id: jobData.caseId,
+    case_id: jobData.caseId,;
     options: {
       extract_entities: jobData.options?.extractEntities ?? true,
       generate_summary: jobData.options?.generateSummary ?? true,
@@ -83,7 +83,7 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(requestPayload),
-    // 5 minute timeout for complex processing
+    // 5 minute timeout for complex processing;
     signal: AbortSignal.timeout(300000)
   });
 
@@ -176,7 +176,7 @@ export function createLegalAIWorker(): Worker {
           success: true,
           documentId: (data as { documentId?: any }).documentId,
           processingTime: `${processingTime}ms`,
-          goServerResults: results,
+          goServerResults: results,;
           summary: {
             entitiesExtracted: results.entities?.length || 0,
             summaryGenerated: !!results.summary,
@@ -201,7 +201,7 @@ export function createLegalAIWorker(): Worker {
               aiAnalysis: {
                 error: error instanceof Error ? error.message: 'Unknown error',
                 processing_time: `${processingTime}ms`,
-                processed_at: new Date().toISOString(),
+                processed_at: new Date().toISOString(),;
                 success: false
               },
               updatedAt: new Date()
@@ -216,14 +216,14 @@ export function createLegalAIWorker(): Worker {
     },
     {
       connection: {
-        host: 'localhost',
+        host: 'localhost',;
         port: 6379,
         // Parse Redis URL if provided;
         ...(REDIS_URL.startsWith('redis://') && {
           host: new URL(REDIS_URL).hostname,
           port: parseInt(new URL(REDIS_URL).port) || 6379
         })
-      },
+      },;
       concurrency: 2, // Process 2 documents simultaneously
       removeOnComplete: { count: 50 }, // Keep last 50 completed jobs
       removeOnFail: { count: 25 }, // Keep last 25 failed jobs
@@ -273,7 +273,7 @@ export async function addLegalAIJob(
       host: 'localhost',
       port: 4005,
       ...(REDIS_URL.startsWith('redis://') && {
-        host: new URL(REDIS_URL).hostname,
+        host: new URL(REDIS_URL).hostname,;
         port: parseInt(new URL(REDIS_URL).port) || 4005
       })
     }
@@ -284,7 +284,7 @@ export async function addLegalAIJob(
     delay: options?.delay || 0,
     attempts: options?.attempts || 3,
     backoff: {
-      type: 'exponential',
+      type: 'exponential',;
       delay: 5000, // Start with 5 seconds
     },
     removeOnComplete: 50,
@@ -306,7 +306,7 @@ export async function getLegalAIJobStatus(jobId: string): Promise<any> {
       host: 'localhost',
       port: 4005,
       ...(REDIS_URL.startsWith('redis://') && {
-        host: new URL(REDIS_URL).hostname,
+        host: new URL(REDIS_URL).hostname,;
         port: parseInt(new URL(REDIS_URL).port) || 4005
       })
     }
@@ -324,7 +324,7 @@ export async function getLegalAIJobStatus(jobId: string): Promise<any> {
   return {
     status: state,
     progress: typeof progress === 'number' ? progress : 0,
-    result: job.returnvalue,
+    result: job.returnvalue,;
     error: job.failedReason
   };
 }

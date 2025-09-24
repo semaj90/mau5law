@@ -16,7 +16,7 @@ export interface GraphNode {
   label: string;
   properties: Record<string, any>;
   position: { x: number; y: number; z: number };
-  metadata: {
+  metadata: {;
     importance: number;
     confidence: number;
     lastAccessed: number;
@@ -32,7 +32,7 @@ export interface GraphEdge {
   type: 'CITES' | 'RELATED_TO' | 'CONFLICTS_WITH' | 'SUPPORTS' | 'MENTIONS' | 'PART_OF';
   weight: number;
   properties: Record<string, any>;
-  metadata: {
+  metadata: {;
     confidence: number;
     strength: number;
     bidirectional: boolean;
@@ -266,7 +266,7 @@ export class SoraGraphTraversal {
         visualizationData: {
           positions: new Float32Array(0),
           colors: new Float32Array(0),
-          connections: new Uint32Array(0),
+          connections: new Uint32Array(0),;
           metadata: Record<string, any>
         }
       };
@@ -327,7 +327,7 @@ export class SoraGraphTraversal {
         // Create path;
         paths.push({
           nodes: [startNodeId, similarNode.id],
-          totalWeight: similarNode.metadata.importance,
+          totalWeight: similarNode.metadata.importance,;
           confidence: similarNode.metadata.confidence
         });
 
@@ -380,7 +380,7 @@ export class SoraGraphTraversal {
         if (current.path.length > 1) {
           paths.push({
             nodes: [...current.path],
-            totalWeight: current.weight,
+            totalWeight: current.weight,;
             confidence: node.metadata.confidence
           });
         }
@@ -398,7 +398,7 @@ export class SoraGraphTraversal {
             queue.push({
               nodeId: neighborNode.id,
               depth: current.depth + 1,
-              path: [...current.path, neighborNode.id],
+              path: [...current.path, neighborNode.id],;
               weight: current.weight + edge.weight
             });
           }
@@ -420,7 +420,7 @@ export class SoraGraphTraversal {
       visualizationData: {
         positions: new Float32Array(0),
         colors: new Float32Array(0),
-        connections: new Uint32Array(0),
+        connections: new Uint32Array(0),;
         metadata: Record<string, any>
       }
     };
@@ -463,7 +463,7 @@ export class SoraGraphTraversal {
         if (current.path.length > 1) {
           paths.push({
             nodes: [...current.path],
-            totalWeight: current.weight,
+            totalWeight: current.weight,;
             confidence: node.metadata.confidence
           });
         }
@@ -483,7 +483,7 @@ export class SoraGraphTraversal {
             stack.push({
               nodeId: neighborNode.id,
               depth: current.depth + 1,
-              path: [...current.path, neighborNode.id],
+              path: [...current.path, neighborNode.id],;
               weight: current.weight + edge.weight
             });
           }
@@ -505,7 +505,7 @@ export class SoraGraphTraversal {
       visualizationData: {
         positions: new Float32Array(0),
         colors: new Float32Array(0),
-        connections: new Uint32Array(0),
+        connections: new Uint32Array(0),;
         metadata: Record<string, any>
       }
     };
@@ -562,7 +562,7 @@ export class SoraGraphTraversal {
         if (path.length > 1) {
           paths.push({
             nodes: path,
-            totalWeight: minDistance,
+            totalWeight: minDistance,;
             confidence: node.metadata.confidence
           });
         }
@@ -602,7 +602,7 @@ export class SoraGraphTraversal {
       visualizationData: {
         positions: new Float32Array(0),
         colors: new Float32Array(0),
-        connections: new Uint32Array(0),
+        connections: new Uint32Array(0),;
         metadata: Record<string, any>
       }
     };
@@ -660,7 +660,7 @@ export class SoraGraphTraversal {
     return {
       positions,
       colors,
-      connections: connections.slice(0, edgeIndex * 2),
+      connections: connections.slice(0, edgeIndex * 2),;
       metadata: {
         nodeCount,
         edgeCount: edgeIndex,
@@ -683,7 +683,7 @@ export class SoraGraphTraversal {
       this.wasmModule = {
         semanticTraversal: async (inputData: any) => ({
           nodes: [],
-          edges: [],
+          edges: [],;
           paths: [],
           nodesVisited: 0,
           edgesTraversed: 0
@@ -731,7 +731,7 @@ export class SoraGraphTraversal {
         properties: Record<string, any>,
         position: { x: Math.random() * 100, y: Math.random() * 100, z: Math.random() * 100 },
         metadata: {
-          importance: Math.random(),
+          importance: Math.random(),;
           confidence: Math.random() * 0.3 + 0.7,
           lastAccessed: Date.now(),
           vectorEmbedding: embedding
@@ -753,7 +753,7 @@ export class SoraGraphTraversal {
       properties: Record<string, any>,
       metadata: {
         confidence: Math.random() * 0.3 + 0.7,
-        strength: Math.random(),
+        strength: Math.random(),;
         bidirectional: true
       }
     }];
@@ -777,7 +777,7 @@ export class SoraGraphTraversal {
         z: Math.random() * 100
       },
       metadata: {
-        importance: Math.random(),
+        importance: Math.random(),;
         confidence: Math.random() * 0.3 + 0.7,
         lastAccessed: Date.now()
       }
@@ -805,7 +805,7 @@ export class SoraGraphTraversal {
           properties: Record<string, any>,
           metadata: {
             confidence: Math.random() * 0.3 + 0.7,
-            strength: Math.random(),
+            strength: Math.random(),;
             bidirectional: true
           }
         };
@@ -849,7 +849,7 @@ export class SoraGraphTraversal {
       precedent: { r: 0.8, g: 0.2, b: 0.2, a: 1.0 },
       statute: { r: 0.2, g: 0.8, b: 0.2, a: 1.0 },
       person: { r: 1.0, g: 0.6, b: 0.2, a: 1.0 },
-      organization: { r: 0.6, g: 0.2, b: 0.8, a: 1.0 },
+      organization: { r: 0.6, g: 0.2, b: 0.8, a: 1.0 },;
       concept: { r: 0.5, g: 0.5, b: 0.5, a: 1.0 }
     };
 
@@ -921,7 +921,7 @@ export class SoraGraphTraversal {
     return {
       query: JSON.stringify(query),
       embeddings: Array.from(embeddings.entries()).map(([id, emb]) => ({
-        id,
+        id,;
         embedding: Array.from(emb)
       })
     };

@@ -1,63 +1,63 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 // Legal AI Specific NATS Endpoints
 // High-level API for legal AI event publishing and management
 
-import { EnhancedNATSMessagingService } from '$lib/services/enhanced-nats-messaging';
+import { EnhancedNATSMessagingService } from '$lib/services/enhanced-nats-messaging'
 import type { 
 	CaseEventData,
 	DocumentEventData, 
 	AIAnalysisEventData,
 	ChatEventData,
 	SearchEventData 
-} from '$lib/types/nats-messaging';
+} from '$lib/types/nats-messaging'
 
-let natsService: EnhancedNATSMessagingService | null = null;
+let natsService: EnhancedNATSMessagingService | null = null
 
 function getNATSService(): EnhancedNATSMessagingService {
 	if (!natsService) {
-		natsService = new EnhancedNATSMessagingService();
-		natsService.connect().catch(console.error);
+		natsService = new EnhancedNATSMessagingService()
+		natsService.connect().catch(console.error)
 	}
-	return natsService;
+	return natsService
 }
 
-/* POST /api/v1/nats/legal - Publish legal AI events */;
+/* POST /api/v1/nats/legal - Publish legal AI events */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		const body = await request.json();
-		const nats = getNATSService();
+		const body = await request.json()
+		const nats = getNATSService()
 
 		switch (body.event_type) {
 			case 'case':
-				return await handleCaseEvent(nats, body);
+				return await handleCaseEvent(nats, body)
 			case 'document':
-				return await handleDocumentEvent(nats, body);
+				return await handleDocumentEvent(nats, body)
 			case 'ai_analysis':
-				return await handleAIAnalysisEvent(nats, body);
+				return await handleAIAnalysisEvent(nats, body)
 			case 'chat':
-				return await handleChatEvent(nats, body);
+				return await handleChatEvent(nats, body)
 			case 'search':
-				return await handleSearchEvent(nats, body);
+				return await handleSearchEvent(nats, body)
 			case 'system':
-				return await handleSystemEvent(nats, body);
-			default:;
+				return await handleSystemEvent(nats, body)
+			default:
 				return json({ 
-					success: false, 
+					success: false,
 					error: `Unsupported event type: ${body.event_type}` 
-				}, { status: 400 });
+				}, { status: 400 })
 		}
 	} catch (error: any) {
-		console.error('Legal NATS API Error:', error);
+		console.error('Legal NATS API Error:', error)
 		return json({
 			success: false,
 			error: 'Legal AI event processing failed',
 			details: error instanceof Error ? error.message: 'Unknown error'
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}
 
-/* GET /api/v1/nats/legal - Get legal AI event schemas and capabilities */;
+/* GET /api/v1/nats/legal - Get legal AI event schemas and capabilities */
 export const GET: RequestHandler = async () => {
 	return json({
 		service: 'Legal AI NATS Events',
@@ -145,21 +145,21 @@ export const GET: RequestHandler = async () => {
 			}
 		},
 		timestamp: new Date().toISOString()
-	});
-};
+	})
+}
 
 // Event Handlers
 
 async function handleCaseEvent(nats: EnhancedNATSMessagingService, body: any): Promise<any> {
-	const { action, data } = body;
+	const { action, data } = body
 	
 	if (!['created', 'updated', 'closed'].includes(action)) {
-		throw new Error(`Invalid case action: ${action}`);
+		throw new Error(`Invalid case action: ${action}`)
 	}
 	
-	validateCaseData(data);
+	validateCaseData(data)
 	
-	await nats.publishCaseEvent(action, data);
+	await nats.publishCaseEvent(action, data)
 	
 	return json({
 		success: true,
@@ -169,19 +169,19 @@ async function handleCaseEvent(nats: EnhancedNATSMessagingService, body: any): P
 		case_number: data.case_number,
 		subject: `legal.case.${action}`,
 		timestamp: new Date().toISOString()
-	});
+	})
 }
 
 async function handleDocumentEvent(nats: EnhancedNATSMessagingService, body: any): Promise<any> {
-	const { action, data } = body;
+	const { action, data } = body
 	
 	if (!['uploaded', 'processed', 'analyzed', 'indexed'].includes(action)) {
-		throw new Error(`Invalid document action: ${action}`);
+		throw new Error(`Invalid document action: ${action}`)
 	}
 	
-	validateDocumentData(data);
+	validateDocumentData(data)
 	
-	await nats.publishDocumentEvent(action, data);
+	await nats.publishDocumentEvent(action, data)
 	
 	return json({
 		success: true,
@@ -191,19 +191,19 @@ async function handleDocumentEvent(nats: EnhancedNATSMessagingService, body: any
 		filename: data.filename,
 		subject: `legal.document.${action}`,
 		timestamp: new Date().toISOString()
-	});
+	})
 }
 
 async function handleAIAnalysisEvent(nats: EnhancedNATSMessagingService, body: any): Promise<any> {
-	const { action, data } = body;
+	const { action, data } = body
 	
 	if (!['started', 'completed', 'failed'].includes(action)) {
-		throw new Error(`Invalid AI analysis action: ${action}`);
+		throw new Error(`Invalid AI analysis action: ${action}`)
 	}
 	
-	validateAIAnalysisData(data);
+	validateAIAnalysisData(data)
 	
-	await nats.publishAIAnalysisEvent(action, data);
+	await nats.publishAIAnalysisEvent(action, data)
 	
 	return json({
 		success: true,
@@ -213,20 +213,20 @@ async function handleAIAnalysisEvent(nats: EnhancedNATSMessagingService, body: a
 		analysis_type: data.analysis_type,
 		subject: `legal.ai.analysis.${action}`,
 		timestamp: new Date().toISOString()
-	});
+	})
 }
 
 async function handleChatEvent(nats: EnhancedNATSMessagingService, body: any): Promise<any> {
-	const { action, data } = body;
+	const { action, data } = body
 	
 	if (!['message', 'response', 'streaming'].includes(action)) {
-		throw new Error(`Invalid chat action: ${action}`);
+		throw new Error(`Invalid chat action: ${action}`)
 	}
 	
-	validateChatData(data);
+	validateChatData(data)
 	
-	const isStreaming = action === 'streaming';
-	await nats.publishChatMessage(data, isStreaming);
+	const isStreaming = action === 'streaming'
+	await nats.publishChatMessage(data, isStreaming)
 	
 	return json({
 		success: true,
@@ -236,23 +236,23 @@ async function handleChatEvent(nats: EnhancedNATSMessagingService, body: any): P
 		session_id: data.session_id,
 		subject: `legal.chat.${action}`,
 		timestamp: new Date().toISOString()
-	});
+	})
 }
 
 async function handleSearchEvent(nats: EnhancedNATSMessagingService, body: any): Promise<any> {
-	const { action, data } = body;
+	const { action, data } = body
 	
 	if (!['query', 'results'].includes(action)) {
-		throw new Error(`Invalid search action: ${action}`);
+		throw new Error(`Invalid search action: ${action}`)
 	}
 	
-	validateSearchData(data);
+	validateSearchData(data)
 	
 	if (action === 'query') {
-		await nats.publishSearchQuery(data);
+		await nats.publishSearchQuery(data)
 	} else {
 		// For search results, use generic publish
-		await nats.publish('legal.search.results', data);
+		await nats.publish('legal.search.results', data)
 	}
 	
 	return json({
@@ -262,22 +262,22 @@ async function handleSearchEvent(nats: EnhancedNATSMessagingService, body: any):
 		query_id: data.query_id,
 		subject: `legal.search.${action}`,
 		timestamp: new Date().toISOString()
-	});
+	})
 }
 
 async function handleSystemEvent(nats: EnhancedNATSMessagingService, body: any): Promise<any> {
-	const { action, data } = body;
+	const { action, data } = body
 	
 	if (!['health', 'metrics'].includes(action)) {
-		throw new Error(`Invalid system action: ${action}`);
+		throw new Error(`Invalid system action: ${action}`)
 	}
 	
-	validateSystemData(data);
+	validateSystemData(data)
 	
 	if (action === 'health') {
-		await nats.publishSystemHealth(data);
+		await nats.publishSystemHealth(data)
 	} else {
-		await nats.publish('system.metrics', data);
+		await nats.publish('system.metrics', data)
 	}
 	
 	return json({
@@ -287,94 +287,94 @@ async function handleSystemEvent(nats: EnhancedNATSMessagingService, body: any):
 		component: data.component,
 		subject: `system.${action}`,
 		timestamp: new Date().toISOString()
-	});
+	})
 }
 
 // Validation Functions
 
 function validateCaseData(data: any): void {
-	const required = ['case_id', 'case_number', 'title', 'status'];
+	const required = ['case_id', 'case_number', 'title', 'status']
 	for (const field of required) {
 		if (!data[field]) {
-			throw new Error(`Missing required field: ${field}`);
+			throw new Error(`Missing required field: ${field}`)
 		}
 	}
 	
-	const validStatuses = ['open', 'in_progress', 'closed', 'archived'];
+	const validStatuses = ['open', 'in_progress', 'closed', 'archived']
 	if (!validStatuses.includes(data.status)) {
-		throw new Error(`Invalid status: ${data.status}. Must be one of: ${validStatuses.join(', ')}`);
+		throw new Error(`Invalid status: ${data.status}. Must be one of: ${validStatuses.join(', ')}`)
 	}
 }
 
 function validateDocumentData(data: any): void {
-	const required = ['document_id', 'filename', 'file_type', 'processing_status'];
+	const required = ['document_id', 'filename', 'file_type', 'processing_status']
 	for (const field of required) {
 		if (!data[field]) {
-			throw new Error(`Missing required field: ${field}`);
+			throw new Error(`Missing required field: ${field}`)
 		}
 	}
 	
-	const validStatuses = ['uploaded', 'processing', 'processed', 'indexed', 'failed'];
+	const validStatuses = ['uploaded', 'processing', 'processed', 'indexed', 'failed']
 	if (!validStatuses.includes(data.processing_status)) {
-		throw new Error(`Invalid processing_status: ${data.processing_status}`);
+		throw new Error(`Invalid processing_status: ${data.processing_status}`)
 	}
 }
 
 function validateAIAnalysisData(data: any): void {
-	const required = ['analysis_id', 'analysis_type', 'model_used'];
+	const required = ['analysis_id', 'analysis_type', 'model_used']
 	for (const field of required) {
 		if (!data[field]) {
-			throw new Error(`Missing required field: ${field}`);
+			throw new Error(`Missing required field: ${field}`)
 		}
 	}
 	
-	const validTypes = ['summary', 'classification', 'entity_extraction', 'sentiment', 'risk_assessment'];
+	const validTypes = ['summary', 'classification', 'entity_extraction', 'sentiment', 'risk_assessment']
 	if (!validTypes.includes(data.analysis_type)) {
-		throw new Error(`Invalid analysis_type: ${data.analysis_type}`);
+		throw new Error(`Invalid analysis_type: ${data.analysis_type}`)
 	}
 }
 
 function validateChatData(data: any): void {
-	const required = ['message_id', 'session_id', 'user_id', 'content'];
+	const required = ['message_id', 'session_id', 'user_id', 'content']
 	for (const field of required) {
 		if (!data[field]) {
-			throw new Error(`Missing required field: ${field}`);
+			throw new Error(`Missing required field: ${field}`)
 		}
 	}
 	
 	if (data.message_type) {
-		const validTypes = ['user', 'assistant', 'system'];
+		const validTypes = ['user', 'assistant', 'system']
 		if (!validTypes.includes(data.message_type)) {
-			throw new Error(`Invalid message_type: ${data.message_type}`);
+			throw new Error(`Invalid message_type: ${data.message_type}`)
 		}
 	}
 }
 
 function validateSearchData(data: any): void {
-	const required = ['query_id', 'user_id', 'query_text', 'search_type'];
+	const required = ['query_id', 'user_id', 'query_text', 'search_type']
 	for (const field of required) {
 		if (!data[field]) {
-			throw new Error(`Missing required field: ${field}`);
+			throw new Error(`Missing required field: ${field}`)
 		}
 	}
 	
-	const validTypes = ['cases', 'documents', 'legal_precedents', 'full_text', 'semantic'];
+	const validTypes = ['cases', 'documents', 'legal_precedents', 'full_text', 'semantic']
 	if (!validTypes.includes(data.search_type)) {
-		throw new Error(`Invalid search_type: ${data.search_type}`);
+		throw new Error(`Invalid search_type: ${data.search_type}`)
 	}
 }
 
 function validateSystemData(data: any): void {
-	const required = ['component', 'status'];
+	const required = ['component', 'status']
 	for (const field of required) {
 		if (!data[field]) {
-			throw new Error(`Missing required field: ${field}`);
+			throw new Error(`Missing required field: ${field}`)
 		}
 	}
 	
-	const validStatuses = ['healthy', 'degraded', 'critical'];
+	const validStatuses = ['healthy', 'degraded', 'critical']
 	if (!validStatuses.includes(data.status)) {
-		throw new Error(`Invalid status: ${data.status}`);
+		throw new Error(`Invalid status: ${data.status}`)
 	}
 }
 
@@ -394,7 +394,7 @@ function getCaseEventSchema() {
 			metadata: { type: 'object' }
 		},
 		required: ['case_id', 'case_number', 'title', 'status']
-	};
+	}
 }
 
 function getDocumentEventSchema() {
@@ -411,7 +411,7 @@ function getDocumentEventSchema() {
 			metadata: { type: 'object' }
 		},
 		required: ['document_id', 'filename', 'file_type', 'processing_status']
-	};
+	}
 }
 
 function getAIAnalysisEventSchema() {
@@ -426,7 +426,7 @@ function getAIAnalysisEventSchema() {
 			results: { type: 'object' }
 		},
 		required: ['analysis_id', 'analysis_type', 'model_used']
-	};
+	}
 }
 
 function getChatEventSchema() {
@@ -441,7 +441,7 @@ function getChatEventSchema() {
 			is_streaming: { type: 'boolean' }
 		},
 		required: ['message_id', 'session_id', 'user_id', 'content']
-	};
+	}
 }
 
 function getSearchEventSchema() {
@@ -456,7 +456,7 @@ function getSearchEventSchema() {
 			results: { type: 'array' }
 		},
 		required: ['query_id', 'user_id', 'query_text', 'search_type']
-	};
+	}
 }
 
 function getSystemEventSchema() {
@@ -469,5 +469,5 @@ function getSystemEventSchema() {
 			uptime_seconds: { type: 'number' }
 		},
 		required: ['component', 'status']
-	};
+	}
 }

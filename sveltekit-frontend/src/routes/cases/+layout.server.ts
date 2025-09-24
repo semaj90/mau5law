@@ -7,7 +7,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
   // Temporarily bypass authentication for SuperForms testing;
   const user = locals.user || {
     id: 'test-user-id',
-    role: 'user' as const,
+    role: 'user' as const,;
     email: 'test@example.com'
   };
 
@@ -58,7 +58,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
       status: 'open',
       priority: 'high',
       createdAt: new Date(),
-      description: 'Test case for SuperForms',
+      description: 'Test case for SuperForms',;
       metadata: Record<string, any>
     }
   ];

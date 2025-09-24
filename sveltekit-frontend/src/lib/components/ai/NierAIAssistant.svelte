@@ -12,17 +12,17 @@
     if (!currentMessage.trim()) return;
     messages = [...messages, {
       id: Date.now(),
-      text: currentMessage,
-      sender: 'user',
-      timestamp: new Date()
+      text: currentMessage,;
+      sender: 'user',;
+      timestamp: new Date();
     }];
     // Mock AI response
     setTimeout(() => {
       messages = [...messages, {
         id: Date.now() + 1,
-        text: "I understand your request. Let me analyze that for you.",
-        sender: 'ai',
-        timestamp: new Date()
+        text: "I understand your request. Let me analyze that for you.",;
+        sender: 'ai',;
+        timestamp: new Date();
       }];
     }, 1000);
     currentMessage = '';
@@ -61,7 +61,7 @@
 </div>
 
 <style>
-  .nier-ai-assistant {
+  .nier-ai-assistant {;
     background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
     border: 1px solid #00ff00;
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
@@ -72,15 +72,15 @@
     scrollbar-color: #00ff00 #000000;
   }
   
-  .messages: :-webkit-scrollbar {
+  .messages::-webkit-scrollbar {
     width: 8px;
   }
   
-  .messages: :-webkit-scrollbar-track {
+  .messages::-webkit-scrollbar-track {
     background: #000000;
   }
   
-  .messages: :-webkit-scrollbar-thumb {
+  .messages::-webkit-scrollbar-thumb {
     background-color: #00ff00;
     border-radius: 4px;
   }

@@ -90,7 +90,7 @@ export class DetectiveWebSocketManager {
         caseId: this.caseId,
         userId: this.userId,
         sessionId: this.sessionId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString(),;
         data: { action: 'join', userInfo: { id: this.userId, name: 'Detective User' } }
       });
     };
@@ -166,7 +166,7 @@ export class DetectiveWebSocketManager {
         if (userInfo && message.userId) {
           const user: CollaborativeUser = {
             id: message.userId,
-            name: userInfo.name || 'Anonymous',
+            name: userInfo.name || 'Anonymous',;
             typing: false,
             lastActivity: message.timestamp,
             currentFocus: undefined
@@ -244,7 +244,7 @@ export class DetectiveWebSocketManager {
       caseId: this.caseId,
       userId: this.userId,
       sessionId: this.sessionId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(),;
       data: {
         isTyping: ['typing', 'contextual_processing'].includes(state),
         typingState: state,
@@ -262,7 +262,7 @@ export class DetectiveWebSocketManager {
       caseId: this.caseId,
       userId: this.userId,
       sessionId: this.sessionId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(),;
       data: { connectionMap, metadata, action: 'generated' }
     });
   }
@@ -276,7 +276,7 @@ export class DetectiveWebSocketManager {
       caseId: this.caseId,
       userId: this.userId,
       sessionId: this.sessionId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(),;
       data: { evidenceId, analysis, action: 'completed' }
     });
   }
@@ -290,7 +290,7 @@ export class DetectiveWebSocketManager {
       caseId: this.caseId,
       userId: this.userId,
       sessionId: this.sessionId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(),;
       data: { prompts, context, action: 'triggered' }
     });
   }
@@ -304,7 +304,7 @@ export class DetectiveWebSocketManager {
       caseId: this.caseId,
       userId: this.userId,
       sessionId: this.sessionId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(),;
       data: { action: 'focus_change', focus }
     });
   }
@@ -400,7 +400,7 @@ export class DetectiveWebSocketManager {
         caseId: this.caseId,
         userId: this.userId,
         sessionId: this.sessionId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString(),;
         data: { action: 'leave' }
       });
       
@@ -420,7 +420,7 @@ export class DetectiveWebSocketManager {
       lastActivity: Math.max(...Array.from(this.collaborativeUsers.values()).map(u => new Date(u.lastActivity).getTime())),
       focusDistribution: {
         evidence: Array.from(this.collaborativeUsers.values()).filter(item => item.length),
-        connections: Array.from(this.collaborativeUsers.values()).filter(item => item.length),
+        connections: Array.from(this.collaborativeUsers.values()).filter(item => item.length),;
         analysis: Array.from(this.collaborativeUsers.values()).filter(item => item.length)
       }
     };

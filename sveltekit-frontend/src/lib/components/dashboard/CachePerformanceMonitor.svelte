@@ -36,7 +36,7 @@
 </div>
 
 <style>
-  .cache-performance-monitor {
+  .cache-performance-monitor {;
     padding: 1rem;
     border: 1px solid #ddd;
     border-radius: 4px;

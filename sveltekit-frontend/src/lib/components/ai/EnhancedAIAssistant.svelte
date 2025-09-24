@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: `$effect()` can only be used as an expression statement
+<!-- @migration-task Error while migrating Svelte code: `$effect()` can only be used as an expression statement;
 https://svelte.dev/e/effect_invalid_placement -->
 <!-- @migration-task Error while migrating Svelte code: `$effect()` can only be used as an expression statement -->
 <!--
@@ -108,10 +108,10 @@ https://svelte.dev/e/effect_invalid_placement -->
       // Add error message to chat
       aiAssistant.messages.push({
         id: crypto.randomUUID(),
-        role: 'assistant',
+        role: 'assistant',;
         content: `❌ Sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`,
         timestamp: Date.now(),
-        sessionId: aiAssistant.sessionId,
+        sessionId: aiAssistant.sessionId,;
         metadata: { error: true }
       });
     }
@@ -142,8 +142,8 @@ https://svelte.dev/e/effect_invalid_placement -->
     try {
       const results = await pgVectorSearch.searchChatHistory({
         query: messageInput,
-        limit: 10,
-        threshold: 0.7,
+        limit: 10,;
+        threshold: 0.7,;
         filters: { legalDomain: legalContext }
       });
       searchResults = results;
@@ -305,7 +305,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       <div class="setting-group">
         <label>
           <input
-            type="checkbox"
+            type="checkbox";
             bind:checked={config.persistHistory}
           />
           Persist conversation history
@@ -546,7 +546,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     align-items: flex-start;
   }
 
-  .ai-title > span:first-of-type {
+  .ai-title > span:first-of-type {;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -903,7 +903,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     line-height: 1.5;
   }
 
-  .input-wrapper textarea:focus {
+  .input-wrapper textarea:focus {;
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);

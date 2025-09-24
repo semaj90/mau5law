@@ -31,7 +31,7 @@ export function getDatabaseConfig(): DatabaseConfig {
     port: parseInt(process.env.POSTGRES_PORT || '5432'),
     database: process.env.POSTGRES_DB || 'legal_ai_db',
     user: process.env.POSTGRES_USER || 'legal_admin',
-    password: process.env.POSTGRES_PASSWORD || '123456',
+    password: process.env.POSTGRES_PASSWORD || '123456',;
     ssl: process.env.NODE_ENV === 'production',
     maxConnections: parseInt(process.env.DB_MAX_CONNECTIONS || '20'),
     idleTimeoutMs: parseInt(process.env.DB_IDLE_TIMEOUT || '30000'),
@@ -105,7 +105,7 @@ export function getPoolConfig(environment: 'development' | 'production' | 'test'
       idleTimeoutMillis: config.idleTimeoutMs || 60000,
       connectionTimeoutMillis: config.connectionTimeoutMs || 5000
     },
-    test: {
+    test: {;
       max: 2,
       idleTimeoutMillis: 10000,
       connectionTimeoutMillis: 5000
@@ -144,7 +144,7 @@ export function getBrowserSafeDatabaseInfo() {
     database: config.database,
     user: config.user,
     // Never expose password in browser
-    ssl: config.ssl,
+    ssl: config.ssl,;
     connected: true // This would be updated by a connection test
   };
 }

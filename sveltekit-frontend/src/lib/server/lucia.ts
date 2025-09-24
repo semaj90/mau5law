@@ -64,7 +64,7 @@ export async function validateSession(sessionId: string): Promise<any> {
           id: true,
           email: true,
           first_name: true,
-          last_name: true,
+          last_name: true,;
           role: true
         }
       }
@@ -78,7 +78,7 @@ export async function validateSession(sessionId: string): Promise<any> {
         id: user.id,
         email: user.email,
         firstName: user.first_name,
-        lastName: user.last_name,
+        lastName: user.last_name,;
         role: user.role
       }
     };
@@ -107,7 +107,7 @@ export function setSessionCookie(
     path: "/",
     httpOnly: true,        // Prevents JavaScript access - server-side only
     secure: isProduction,  // HTTPS only in production, omitted for localhost
-    sameSite: "lax" as const,  // Use "strict" for critical applications
+    sameSite: "lax" as const,  // Use "strict" for critical applications;
     expires: expiresAt,    // Set expiration date
     maxAge: Math.floor((expiresAt.getTime() - Date.now()) / 1000) // Seconds until expiry
   };
@@ -131,7 +131,7 @@ export function deleteSessionCookie(cookies: any): void {
   // Options for clearing cookies (must match the original cookie attributes);
   const clearOptions = {
     path: "/",
-    httpOnly: true,
+    httpOnly: true,;
     secure: isProduction,
     sameSite: "lax" as const,
     maxAge: 0  // Immediately expire

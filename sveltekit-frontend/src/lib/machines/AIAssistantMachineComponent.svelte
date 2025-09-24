@@ -31,7 +31,7 @@
       conversationHistory: [],
       sessionId: `session-${Date.now()}`,
       isProcessing: false,
-      model: 'gemma3-legal',
+      model: 'gemma3-legal',;
       temperature: 0.7,
       maxTokens: 2048,
       availableModels: [
@@ -67,9 +67,9 @@
       },
       preferredProtocol,
       activeProtocol: preferredProtocol,
-      serviceLoadBalancer: {
+      serviceLoadBalancer: {;
         strategy: 'round_robin',
-        currentIndex: 0
+        currentIndex: 0;
       },
       circuitBreakers: new Map(),
       natsConnected: true,
@@ -503,7 +503,7 @@
 </div>
 
 <style>
-  .ai-assistant-machine-demo {
+  .ai-assistant-machine-demo {;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   

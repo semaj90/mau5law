@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
@@ -41,7 +41,7 @@ https://svelte.dev/e/attribute_duplicate -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
 
@@ -61,21 +61,21 @@ https://svelte.dev/e/attribute_duplicate -->
       fileName: 'witness-statement-1.txt',
       content: 'The defendant was seen leaving the building at approximately 11:30 PM on the night of the incident. The witness, Jane Doe, observed suspicious behavior including looking around nervously and carrying a large bag.',
       type: 'witness_statement',
-      caseId: selectedCaseId
+      caseId: selectedCaseId;
     },
     {
       id: 'evidence-002',
       fileName: 'security-footage-analysis.txt',
       content: 'Security camera footage shows an individual matching the defendant\'s description entering through the rear entrance at 11:15 PM. The timestamp corresponds with the security system breach recorded at 11:17 PM.',
       type: 'digital_evidence',
-      caseId: selectedCaseId
+      caseId: selectedCaseId;
     },
     {
       id: 'evidence-003',
-      fileName: 'forensic-report.txt',
-      content: 'DNA analysis of samples collected from the scene shows a 99.7% match with the defendant. Fingerprint analysis reveals partial prints on the door handle and window frame.',
+      fileName: 'forensic-report.txt',;
+      content: 'DNA analysis of samples collected from the scene shows a 99.7% match with the defendant. Fingerprint analysis reveals partial prints on the door handle and window frame.',;
       type: 'forensic_evidence',
-      caseId: selectedCaseId
+      caseId: selectedCaseId;
     }
   ];
 
@@ -97,8 +97,9 @@ https://svelte.dev/e/attribute_duplicate -->
   // INITIALIZATION
   // ======================================================================
 
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       // Initialize enhanced Loki database
       await enhancedLoki.init();
 
@@ -111,7 +112,8 @@ https://svelte.dev/e/attribute_duplicate -->
           if (state.context.messageQueue.length > realTimeUpdates.length) {
             realTimeUpdates = [...state.context.messageQueue];
           }
-        });
+    })();
+  });
       }
 
       console.log('Enhanced Legal AI system initialized successfully');
@@ -166,15 +168,15 @@ https://svelte.dev/e/attribute_duplicate -->
       uploadedBy: null,
       uploadedAt: new Date(),
       content: evidenceText.trim(),
-      type: 'custom',
+      type: 'custom',;
       confidence: 0,
-      relationships: []
+      relationships: [];
     };
 
     // Add to state machine for processing
     machines.evidenceActor.send({
       type: 'ADD_EVIDENCE',
-      evidence
+      evidence;
     });
 
     // Cache in Loki
@@ -188,8 +190,8 @@ https://svelte.dev/e/attribute_duplicate -->
     if (!machines?.evidenceActor) return;
 
     machines.evidenceActor.send({
-      type: 'ADD_EVIDENCE',
-      evidence: demoEvidence
+      type: 'ADD_EVIDENCE',;
+      evidence: demoEvidence;
     });
 
     await enhancedLoki.evidence.add(demoEvidence);
@@ -285,7 +287,7 @@ https://svelte.dev/e/attribute_duplicate -->
             <h3 class="nes-text is-primary">Add Evidence</h3>
           </div>
           <div class="yorha-panel-content space-y-4">
-            <Textarea
+            <Textarea;
               bind:value={evidenceText}
               placeholder="Enter evidence content..."
               rows={4}
@@ -547,7 +549,7 @@ https://svelte.dev/e/attribute_duplicate -->
           <div class="space-y-2 max-h-32 overflow-y-auto">
             {#each realTimeUpdates.slice(-5) as update}
               <div class="flex items-center justify-between text-sm bg-blue-50 rounded p-2">
-                <span>{update.type || 'Update'}: {JSON.stringify.slice(0, 50)}...</span>
+                <span>{update.type || 'Update'}: {JSON.stringify(slice)(0, 50)}...</span>
                 <span class="text-xs text-gray-500">
                   {formatTimestamp(update.timestamp || new Date())}
                 </span>
@@ -578,21 +580,21 @@ https://svelte.dev/e/attribute_duplicate -->
   }
 
   /* Custom scrollbar for better UX */
-  .overflow-y-auto: :-webkit-scrollbar {
+  .overflow-y-auto::-webkit-scrollbar {
     width: 4px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-track {
+  .overflow-y-auto::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 2px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-thumb {
+  .overflow-y-auto::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 2px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-thumb:hover {
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
 </style>

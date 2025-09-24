@@ -4,30 +4,30 @@
  * Target latency: <5ms for cache hits
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader.js';
-import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader.js'
+import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js'
 
-// GET: Single pattern retrieval (for URL-based access);
+// GET: Single pattern retrieval (for URL-based access)
 export const GET: RequestHandler = async ({ url }) => {
-  const startTime = performance.now();
+  const startTime = performance.now()
   
   try {
-    const docId = url.searchParams.get('docId');
-    const patternType = url.searchParams.get('type');
+    const docId = url.searchParams.get('docId')
+    const patternType = url.searchParams.get('type')
     
     if (!docId || !patternType) {
       return json({
         success: false,
         error: 'docId and type parameters required'
-      }, { status: 400 });
+      }, { status: 400 })
     }
     
     // Get pattern with zero-latency cache lookup
-    const result = await chrROMCacheReader.getPattern(docId, patternType);
+    const result = await chrROMCacheReader.getPattern(docId, patternType)
     
-    const totalLatency = performance.now() - startTime;
+    const totalLatency = performance.now() - startTime
     
     return json({
       success: true,
@@ -39,52 +39,52 @@ export const GET: RequestHandler = async ({ url }) => {
         pattern: (result as { pattern?: any; source?: any; latency?: any }).latency,
         total: totalLatency
       },
-      cached: (result as { pattern?: any; source?: any; latency?: any }).source === 'cache';
+      cached: (result as { pattern?: any; source?: any; latency?: any }).source === 'cache'
     }, {
       headers: {
         'Cache-Control': (result as { pattern?: any; source?: any; latency?: any }).source === 'cache' ? 'public, max-age=300' : 'no-cache',
         'X-CHR-ROM-Source': (result as { pattern?: any; source?: any; latency?: any }).source,
         'X-Response-Time': `${totalLatency.toFixed(2)}ms`
       }
-    });
+    })
     
   } catch (error: any) {
     return json({
       success: false,
       error: error.message,
       latency: performance.now() - startTime
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-// POST: Batch pattern retrieval and advanced operations;
+// POST: Batch pattern retrieval and advanced operations
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = performance.now();
+  const startTime = performance.now()
   
   try {
     // Use SIMD JSON parsing for maximum speed
-    const body = await readBodyFastWithMetrics(request);
-    const { operation, data } = body;
+    const body = await readBodyFastWithMetrics(request)
+    const { operation, data } = body
     
     switch (operation) {
       case 'get_pattern':
-        return await handleSinglePattern(data, startTime);
+        return await handleSinglePattern(data, startTime)
       
       case 'get_batch':
-        return await handleBatchPatterns(data, startTime);
+        return await handleBatchPatterns(data, startTime)
       
       case 'prefetch':
-        return await handlePrefetch(data, startTime);
+        return await handlePrefetch(data, startTime)
         
       case 'get_stats':
-        return await handleGetStats(startTime);
+        return await handleGetStats(startTime)
         
-      default:;
+      default:
         return json({
           success: false,
           error: `Unknown operation: ${operation}`,
           available_operations: ['get_pattern', 'get_batch', 'prefetch', 'get_stats']
-        }, { status: 400 });
+        }, { status: 400 })
     }
     
   } catch (error: any) {
@@ -92,24 +92,24 @@ export const POST: RequestHandler = async ({ request }) => {
       success: false,
       error: error.message,
       latency: performance.now() - startTime
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 /**
  * Handle single pattern retrieval
- */;
+ */
 async function handleSinglePattern(data: any, startTime: number) {
-  const { docId, patternType, generateOnMiss = true } = data;
+  const { docId, patternType, generateOnMiss = true } = data
   
   if (!docId || !patternType) {
     return json({
       success: false,
       error: 'docId and patternType required'
-    }, { status: 400 });
+    }, { status: 400 })
   }
   
-  const result = await chrROMCacheReader.getPattern(docId, patternType, generateOnMiss);
+  const result = await chrROMCacheReader.getPattern(docId, patternType, generateOnMiss)
   
   return json({
     success: true,
@@ -127,40 +127,40 @@ async function handleSinglePattern(data: any, startTime: number) {
       'X-CHR-ROM-Source': (result as { pattern?: any; source?: any; latency?: any }).source,
       'X-CHR-ROM-Latency': `${(result as { pattern?: any; source?: any; latency?: any }).latency.toFixed(2)}ms`
     }
-  });
+  })
 }
 
 /**
  * Handle batch pattern retrieval (optimized for lists/tables)
- */;
+ */
 async function handleBatchPatterns(data: any, startTime: number) {
-  const { requests, maxConcurrency = 10 } = data;
+  const { requests, maxConcurrency = 10 } = data
   
   if (!Array.isArray(requests) || requests.length === 0) {
     return json({
       success: false,
       error: 'requests array required'
-    }, { status: 400 });
+    }, { status: 400 })
   }
   
   // Validate request format
   const validRequests = requests.filter(req => 
     req && typeof req.docId === 'string' && typeof req.patternType === 'string'
-  );
+  )
   
   if (validRequests.length === 0) {
     return json({
       success: false,
       error: 'No valid requests found. Each request needs docId and patternType.'
-    }, { status: 400 });
+    }, { status: 400 })
   }
   
   // Execute batch retrieval with controlled concurrency
-  const batchResults = await chrROMCacheReader.getBatchPatterns(validRequests);
+  const batchResults = await chrROMCacheReader.getBatchPatterns(validRequests)
   
   // Calculate batch statistics
-  const cacheHits = batchResults.filter(item => item.length);
-  const avgLatency = batchResults.reduce((sum, r) => sum + r.latency, 0) / batchResults.length;
+  const cacheHits = batchResults.filter(item => item.length)
+  const avgLatency = batchResults.reduce((sum, r) => sum + r.latency, 0) / batchResults.length
   
   return json({
     success: true,
@@ -182,24 +182,24 @@ async function handleBatchPatterns(data: any, startTime: number) {
       'X-CHR-ROM-Batch-Size': batchResults.length.toString(),
       'X-CHR-ROM-Hit-Rate': `${((cacheHits / batchResults.length) * 100).toFixed(1)}%`
     }
-  });
+  })
 }
 
 /**
  * Handle prefetch operation
- */;
+ */
 async function handlePrefetch(data: any, startTime: number) {
-  const { docIds, patternTypes = ['summary_icon', 'category_color', 'status_indicator'] } = data;
+  const { docIds, patternTypes = ['summary_icon', 'category_color', 'status_indicator'] } = data
   
   if (!Array.isArray(docIds) || docIds.length === 0) {
     return json({
       success: false,
       error: 'docIds array required'
-    }, { status: 400 });
+    }, { status: 400 })
   }
   
   // Execute prefetch (fire-and-forget style)
-  chrROMCacheReader.prefetchPatterns(docIds, patternTypes);
+  chrROMCacheReader.prefetchPatterns(docIds, patternTypes)
   
   return json({
     success: true,
@@ -211,16 +211,16 @@ async function handlePrefetch(data: any, startTime: number) {
       totalPatterns: docIds.length * patternTypes.length
     },
     total_latency: performance.now() - startTime
-  });
+  })
 }
 
 /**
  * Handle statistics request
- */;
+ */
 async function handleGetStats(startTime: number) {
-  const stats = chrROMCacheReader.getStats();
+  const stats = chrROMCacheReader.getStats()
   
-  // Add some computed metrics;
+  // Add some computed metrics
   const enhancedStats = {
     ...stats,
     efficiency: {
@@ -229,37 +229,37 @@ async function handleGetStats(startTime: number) {
       latencyClass: stats.averageLatency < 5 ? 'sub_5ms' : stats.averageLatency < 20 ? 'sub_20ms' : 'needs_optimization'
     },
     recommendations: getPerformanceRecommendations(stats)
-  };
+  }
   
   return json({
     success: true,
     operation: 'get_stats',
     result: enhancedStats,
     total_latency: performance.now() - startTime
-  });
+  })
 }
 
 /**
  * Generate performance recommendations based on stats
- */;
+ */
 function getPerformanceRecommendations(stats: any): string[] {
-  const recommendations = [];
+  const recommendations = []
   
   if (stats.hitRate < 0.7) {
-    recommendations.push('Consider increasing cache warming frequency');
+    recommendations.push('Consider increasing cache warming frequency')
   }
   
   if (stats.averageLatency > 20) {
-    recommendations.push('Check Redis connection performance');
+    recommendations.push('Check Redis connection performance')
   }
   
   if (stats.totalRequests > 1000 && stats.hitRate > 0.9) {
-    recommendations.push('Excellent cache performance - system is optimally tuned');
+    recommendations.push('Excellent cache performance - system is optimally tuned')
   }
   
   if (stats.performance === 'poor') {
-    recommendations.push('Enable CHR-ROM pre-computation service');
+    recommendations.push('Enable CHR-ROM pre-computation service')
   }
   
-  return recommendations.length > 0 ? recommendations : ['System performing well'];
+  return recommendations.length > 0 ? recommendations : ['System performing well']
 }

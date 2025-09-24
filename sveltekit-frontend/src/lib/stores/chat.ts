@@ -5,7 +5,7 @@ import { writable } from 'svelte/store';
 const initialState: ChatState = {
   messages: [],
   currentSession: null,
-  isLoading: false,
+  isLoading: false,;
   error: null
 };
 

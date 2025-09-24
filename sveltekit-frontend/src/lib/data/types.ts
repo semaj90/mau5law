@@ -52,7 +52,7 @@ export interface ExtendedEvidence extends Evidence {
 export function extendEvidence(evidence: Evidence): ExtendedEvidence {
   return {
     ...evidence,
-    status: evidence.isAdmissible ? "approved" : "pending",
+    status: evidence.isAdmissible ? "approved" : "pending",;
     type: evidence.evidenceType,
     createdAt: evidence.collectedAt || evidence.uploadedAt
   };
@@ -119,7 +119,7 @@ export interface Book {
   caseId: string;
   reports: Report[];
   citationPoints: CitationPoint[];
-  metadata: {
+  metadata: {;
     tags: string[];
     category: string;
     priority: "low" | "medium" | "high" | "critical";
@@ -170,7 +170,7 @@ export interface AIAnalysis {
     | "sentiment"
     | "citation_suggestion"
     | "legal_precedent";
-  result: {
+  result: {;
     content: string;
     confidence: number;
     metadata: Record<string, any>;
@@ -202,11 +202,11 @@ export interface CanvasObject {
 export interface CanvasStateData {
   objects: CanvasObject[];
   background?: string;
-  dimensions: {
+  dimensions: {;
     width: number;
     height: number;
   };
-  viewport: {
+  viewport: {;
     zoom: number;
     panX: number;
     panY: number;
@@ -322,13 +322,13 @@ export interface CollaborationState {
     selection?: {
       reportId: string;
       sectionId: string;
-      range: {
+      range: {;
         start: number;
         end: number;
       };
     };
   }[];
-  changes: {
+  changes: {;
     id: string;
     userId: string;
     type: "text" | "canvas" | "citation";

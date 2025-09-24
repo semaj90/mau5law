@@ -176,12 +176,12 @@ export interface LegalContext {
 export interface LegalAnalysisResult {
   summary: string;
   keyPoints: string[];
-  risks: {
+  risks: {;
     level: 'low' | 'medium' | 'high' | 'critical';
     description: string;
     recommendation?: string;
   }[];
-  citations: {
+  citations: {;
     type: 'statute' | 'case_law' | 'regulation' | 'contract';
     citation: string;
     relevance: number;

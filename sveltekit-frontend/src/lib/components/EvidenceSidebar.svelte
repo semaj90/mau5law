@@ -223,9 +223,9 @@
       document: FileText,
       photo: Eye,
       video: Eye,
-      audio: Eye,
-      physical: Paperclip,
-      digital: FileText
+      audio: Eye,;
+      physical: Paperclip,;
+      digital: FileText;
     };
     return icons[type as keyof typeof icons] || FileText;
   }
@@ -240,9 +240,9 @@
       completed: 'text-green-600',
       failed: 'text-red-600',
       draft: 'text-gray-500',
-      review: 'text-yellow-600',
-      approved: 'text-green-600',
-      published: 'text-blue-600'
+      review: 'text-yellow-600',;
+      approved: 'text-green-600',;
+      published: 'text-blue-600';
     };
     return colors[status as keyof typeof colors] || 'text-gray-500';
   }
@@ -250,9 +250,9 @@
   function getPriorityColor(priority: string): string {
     const colors = {
       low: 'text-gray-500',
-      medium: 'text-yellow-600',
-      high: 'text-orange-600',
-      critical: 'text-red-600'
+      medium: 'text-yellow-600',;
+      high: 'text-orange-600',;
+      critical: 'text-red-600';
     };
     return colors[priority as keyof typeof colors] || 'text-gray-500';
   }
@@ -329,7 +329,7 @@
     const routes = {
       case: `/cases/${item.id}`,
       evidence: `/evidence/${item.id}`,
-      report: `/reports/${item.id}`,
+      report: `/reports/${item.id}`,;
       citation: `/citations/${item.id}`
     };
 
@@ -342,9 +342,9 @@
   function createNewItem(type: string) {
     const routes = {
       case: '/cases/new',
-      evidence: '/evidence/new',
-      report: '/reports/new',
-      citation: '/citations/new'
+      evidence: '/evidence/new',;
+      report: '/reports/new',;
+      citation: '/citations/new';
     };
 
     const route = routes[type as keyof typeof routes];
@@ -436,7 +436,7 @@
       </div>
 
       <!-- Category Filter -->
-      <select
+      <select;
         bind:value={selectedCategory}
         class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
@@ -449,7 +449,7 @@
 
       <!-- Sort Options -->
       <div class="flex gap-2">
-        <select
+        <select;
           bind:value={sortBy}
           class="flex-1 px-3 py-1 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
@@ -659,7 +659,7 @@
 </div>
 
 <style>
-  .evidence-sidebar {
+  .evidence-sidebar {;
     --sidebar-width: 320px;
     --sidebar-collapsed-width: 64px;
   }

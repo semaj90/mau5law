@@ -9,9 +9,9 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import Separator from '$lib/components/ui/separator/Separator.svelte';
 
   // Access props via Svelte runes $props()
@@ -43,27 +43,27 @@
     crime: {
       color: 'bg-red-100 text-red-800 border-red-200',
       icon: '🚨',
-      label: 'Crime Event'
+      label: 'Crime Event';
     },
     witness: {
       color: 'bg-blue-100 text-blue-800 border-blue-200',
       icon: '👁️',
-      label: 'Witness Account'
+      label: 'Witness Account';
     },
     discovery: {
       color: 'bg-green-100 text-green-800 border-green-200',
       icon: '🔍',
-      label: 'Evidence Discovery'
+      label: 'Evidence Discovery';
     },
     movement: {
       color: 'bg-purple-100 text-purple-800 border-purple-200',
       icon: '📍',
-      label: 'Movement/Location'
+      label: 'Movement/Location';
     },
     communication: {
-      color: 'bg-orange-100 text-orange-800 border-orange-200',
-      icon: '📞',
-      label: 'Communication'
+      color: 'bg-orange-100 text-orange-800 border-orange-200',;
+      icon: '📞',;
+      label: 'Communication';
     }
   };
 
@@ -72,9 +72,9 @@
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', {
       weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+      year: 'numeric',;
+      month: 'long',;
+      day: 'numeric';
     });
   }
 
@@ -85,9 +85,9 @@
     const date = new Date());
     date.setHours(parseInt(hours), parseInt(minutes));
     return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
+      hour: 'numeric',;
       minute: '2-digit',
-      hour12: true
+      hour12: true;
     });
   }
 
@@ -229,7 +229,7 @@
 
       <div class="flex items-center justify-between">
         <div class="text-sm text-gray-600">
-          {timelineEvents.length} events across {Object.keys.length} day{Object.keys.length !== 1 ? 's' : ''}
+          {timelineEvents.length} events across {Object.keys(errors).length} day{Object.keys(errors).length !== 1 ? 's' : ''}
         </div>
 
         <div class="flex gap-2">
@@ -250,7 +250,7 @@
 
 <style>
   /* Timeline custom styles */
-  .timeline-marker {
+  .timeline-marker {;
     position: absolute;
     left: -6px;
     top: 12px;

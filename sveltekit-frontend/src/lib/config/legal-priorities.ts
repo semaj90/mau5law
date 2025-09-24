@@ -63,7 +63,7 @@ export const LEGAL_PRIORITY_WEIGHTS: Record<DocumentType, number> = {
   case_law: 0.7,           // Legal precedents
   statutes: 0.65,          // Legal codes
   
-  // Administrative documents
+  // Administrative documents;
   correspondence: 0.5,      // Communications
   discovery_responses: 0.45, // Standard responses
 };
@@ -78,7 +78,7 @@ export const CATEGORY_MODIFIERS: Record<LegalCategory, number> = {
   employment: 1.05,        // Compliance-sensitive
   corporate: 1.0,          // Standard business
   transactional: 0.95,     // Routine business
-  compliance: 0.9,         // Regulatory
+  compliance: 0.9,         // Regulatory;
   regulatory: 0.85,        // Policy documents
   real_estate: 0.8,        // Property transactions
   family_law: 0.75,        // Personal matters
@@ -91,7 +91,7 @@ export const URGENCY_MULTIPLIERS: Record<UrgencyLevel, number> = {
   critical: 2.0,   // Court deadline today/tomorrow
   high: 1.5,       // Court deadline this week
   medium: 1.0,     // Normal workflow
-  low: 0.7,        // Background research
+  low: 0.7,        // Background research;
   archived: 0.3,   // Historical reference only
 };
 
@@ -101,7 +101,7 @@ export const URGENCY_MULTIPLIERS: Record<UrgencyLevel, number> = {
 export const COMPLEXITY_MULTIPLIERS: Record<ComplexityLevel, number> = {
   highly_complex: 1.3,  // Multi-party contracts, complex litigation
   complex: 1.15,        // Standard contracts, depositions
-  moderate: 1.0,        // Simple motions, correspondence
+  moderate: 1.0,        // Simple motions, correspondence;
   simple: 0.85,         // Form documents, basic responses
 };
 
@@ -113,7 +113,7 @@ export const NES_MEMORY_MAP = {
   // L1 Cache - Ultra-fast GPU memory (1MB);
   INTERNAL_RAM: {
     size: 1024 * 1024,      // 1MB
-    speed: 'fastest',
+    speed: 'fastest',;
     description: 'Active case documents and evidence',
     minPriority: 200,       // Only top 20% priority docs
     maxItems: 50,           // Limit number of documents
@@ -123,7 +123,7 @@ export const NES_MEMORY_MAP = {
   // L2 Cache - Fast pattern cache (2MB);
   CHR_ROM: {
     size: 2 * 1024 * 1024,  // 2MB
-    speed: 'fast',
+    speed: 'fast',;
     description: 'UI patterns and frequently accessed docs',
     minPriority: 150,       // Top 40% priority docs
     maxItems: 200,          // More documents allowed
@@ -133,7 +133,7 @@ export const NES_MEMORY_MAP = {
   // L3 Cache - Standard access (4MB);
   PRG_ROM: {
     size: 4 * 1024 * 1024,  // 4MB  
-    speed: 'medium',
+    speed: 'medium',;
     description: 'General documents and case law',
     minPriority: 100,       // Top 60% priority docs
     maxItems: 1000,         // Large document set
@@ -143,7 +143,7 @@ export const NES_MEMORY_MAP = {
   // Cold storage - Slow but unlimited;
   SAVE_RAM: {
     size: Infinity,         // No limit
-    speed: 'slow',
+    speed: 'slow',;
     description: 'Archived documents and references',
     minPriority: 0,         // All remaining docs
     maxItems: Infinity,     // No limit

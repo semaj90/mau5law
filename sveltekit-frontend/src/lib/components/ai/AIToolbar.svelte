@@ -9,11 +9,11 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
-  import Button from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Textarea } from '$lib/components/ui/textarea/index.js';
   import { Loader2, Bot, MessageSquare, FileText, Search, Sparkles, Zap } from 'lucide-svelte';
@@ -54,11 +54,11 @@
     try {
       try {
     const response = await fetch('/api/ai/enhanced-legal-search', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: aiSearchQuery,
-          jurisdiction: 'all',
+          query: aiSearchQuery,;
+          jurisdiction: 'all',;
           category: 'all',
           maxResults: 10,
           useAI: true,
@@ -107,13 +107,13 @@
     try {
       try {
     const response = await fetch('/api/ai/legal-search', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: aiSearchQuery,
-          jurisdiction: 'all',
+          query: aiSearchQuery,;
+          jurisdiction: 'all',;
           category: 'all',
-          useAI: true,
+          useAI: true,;
         }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -147,11 +147,11 @@
     try {
       try {
     const response = await fetch('/api/ai/chat', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: aiChatMessage,
-          temperature: 0.7,
+          message: aiChatMessage,;
+          temperature: 0.7,;
         }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -190,11 +190,11 @@
     try {
       try {
     const response = await fetch('/api/ai/summarize', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: summarizeText,
-          type: 'legal',
+          text: summarizeText,;
+          type: 'legal',;
           options: { max_tokens: 500 },
         }));
     if (!response.ok) {
@@ -360,7 +360,7 @@
       <div class="yorha-panel-content space-y-4">
         <div class="space-y-2">
           <Textarea
-            placeholder="Paste legal text to summarize..."
+            placeholder="Paste legal text to summarize...";
             bind:value={summarizeText}
             {disabled}
             rows="2"

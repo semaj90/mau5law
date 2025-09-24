@@ -79,12 +79,12 @@ https://svelte.dev/e/expected_token -->
   function buildRequest(): GlyphEmbedRequest {
     return {
       evidence_id: evidenceId.trim(),
-      prompt: prompt.trim(),
+      prompt: prompt.trim(),;
       style: useCustomStyle ? customStyle.trim() : GLYPH_PRESETS[selectedPreset].style,
-      dimensions,
+      dimensions,;
       seed: seed || undefined,
       simd_config: simdConfig,
-      neural_sprite_config: neuralSpriteConfig
+      neural_sprite_config: neuralSpriteConfig;
     };
   }
   
@@ -195,7 +195,7 @@ https://svelte.dev/e/expected_token -->
   <div class="space-y-4 mb-6">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-300 mb-2" for="evidence-id">Evidence ID</label><input id="evidence-id" 
+        <label class="block text-sm font-medium text-gray-300 mb-2" for="evidence-id">Evidence ID</label><input id="evidence-id" ;
           bind:value={evidenceId}
           class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="evidence_001"
@@ -206,7 +206,7 @@ https://svelte.dev/e/expected_token -->
       <div>
         <label class="block text-sm font-medium text-gray-300 mb-2">Dimensions</label>
         <div class="flex gap-2">
-          <input 
+          <input ;
             bind:value={dimensions[0]}
             type="number"
             min="64"
@@ -215,7 +215,7 @@ https://svelte.dev/e/expected_token -->
             class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <span class="text-gray-400 self-center">×</span>
-          <input 
+          <input ;
             bind:value={dimensions[1]}
             type="number"
             min="64"
@@ -228,7 +228,7 @@ https://svelte.dev/e/expected_token -->
     </div>
     
     <div>
-      <label class="block text-sm font-medium text-gray-300 mb-2" for="prompt">Prompt</label><textarea id="prompt" 
+      <label class="block text-sm font-medium text-gray-300 mb-2" for="prompt">Prompt</label><textarea id="prompt" ;
         bind:value={prompt}
         rows="3"
         class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -271,7 +271,7 @@ https://svelte.dev/e/expected_token -->
           class="mr-2"
         />
         <span>Custom style:</span>
-        <input 
+        <input ;
           bind:value={customStyle}
           disabled={!useCustomStyle}
           class="ml-2 px-2 py-1 bg-gray-700 border border-gray-600 rounded text-white disabled:opacity-50 text-sm"
@@ -289,7 +289,7 @@ https://svelte.dev/e/expected_token -->
       <div>
         <label class="flex items-center mb-3">
           <input 
-            type="checkbox" 
+            type="checkbox" ;
             bind:checked={simdConfig.enable_tiling}
             class="mr-2"
           />
@@ -335,7 +335,7 @@ https://svelte.dev/e/expected_token -->
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
       <div>
-        <label class="block text-sm text-gray-300 mb-1" for="shader-format">Shader Format</label><select id="shader-format" 
+        <label class="block text-sm text-gray-300 mb-1" for="shader-format">Shader Format</label><select id="shader-format" ;
           bind:value={simdConfig.shader_format}
           class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white"
         >
@@ -384,7 +384,7 @@ https://svelte.dev/e/expected_token -->
           <div>
             <label class="flex items-center mb-2">
               <input 
-                type="checkbox" 
+                type="checkbox" ;
                 bind:checked={neuralSpriteConfig.enable_compression}
                 class="mr-2"
               />
@@ -406,7 +406,7 @@ https://svelte.dev/e/expected_token -->
           
           <div>
             <label class="block text-sm text-gray-300 mb-1" for="predictive-frames-ne">Predictive Frames: {neuralSpriteConfig.predictive_frames}</label><input id="predictive-frames-ne" 
-              type="range" 
+              type="range" ;
               bind:value={neuralSpriteConfig.predictive_frames}
               min="0" 
               max="16" 

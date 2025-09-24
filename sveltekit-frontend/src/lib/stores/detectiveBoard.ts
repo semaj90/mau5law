@@ -102,7 +102,7 @@ export function initializeCaseAI(caseId: string, caseInfo: AIContext['caseInfo']
       evidenceItems: [],
       caseInfo,
       connections: []
-    },
+    },;
     insights: [],
     isProcessing: false
   };
@@ -163,7 +163,7 @@ export async function sendToAI(
   const userMessage: AIMessage = {
     id: crypto.randomUUID(),
     text: message,
-    type: 'user',
+    type: 'user',;
     timestamp: Date.now(),
     evidenceIds
   };
@@ -190,7 +190,7 @@ export async function sendToAI(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         caseId,
-        message: prompt,
+        message: prompt,;
         context: context,
         evidenceIds
       })
@@ -209,7 +209,7 @@ export async function sendToAI(
       type: 'assistant',
       timestamp: Date.now(),
       evidenceIds: aiResponse.referencedEvidence || [],
-      suggestions: aiResponse.suggestions || [],
+      suggestions: aiResponse.suggestions || [],;
       confidence: aiResponse.confidence || 0.8
     };
 
@@ -231,7 +231,7 @@ export async function sendToAI(
       id: crypto.randomUUID(),
       text: `I'm sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`,
       type: 'assistant',
-      timestamp: Date.now(),
+      timestamp: Date.now(),;
       confidence: 0
     };
 
@@ -269,7 +269,7 @@ export function addInsight(caseId: string, insight: Omit<AIInsight, 'id' | 'time
   const newInsight: AIInsight = {
     ...insight,
     id: crypto.randomUUID(),
-    timestamp: Date.now(),
+    timestamp: Date.now(),;
     acknowledged: false
   };
 

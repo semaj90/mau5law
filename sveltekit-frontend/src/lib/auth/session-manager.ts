@@ -96,7 +96,7 @@ export class SessionManager {
    * Create a new session
    */
   async createSession(
-    user: AuthUser, 
+    user: AuthUser, ;
     request: {
       ipAddress?: string;
       userAgent?: string;
@@ -126,7 +126,7 @@ export class SessionManager {
       lastActivity: now,
       ipAddress: request.ipAddress,
       userAgent: request.userAgent,
-      deviceFingerprint: request.deviceFingerprint,
+      deviceFingerprint: request.deviceFingerprint,;
       metadata: request.metadata || {}
     };
 

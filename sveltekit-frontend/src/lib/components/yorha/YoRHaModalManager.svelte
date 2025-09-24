@@ -43,7 +43,7 @@
   >
     {#snippet children()}
       {#if modal.component}
-        <!-- Note: Dynamic components deprecated in Svelte 5 - replace with explicit components -->
+        <!-- Dynamic components replaced with explicit component mapping -->
         <div class="modal-component-placeholder">
           <p>Dynamic component: {modal.component?.name || 'Unknown'}</p>
           {#if modal.props}

@@ -1,11 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
   import type { Evidence } from '$lib/types';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     evidenceActions,
     evidenceGrid,
@@ -215,7 +215,7 @@ https://svelte.dev/e/attribute_duplicate -->
       <div class="flex items-center gap-4 mb-4">
         <div class="relative flex-1">
           <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
+          <input;
             bind:this={searchInput}
             type="text"
             placeholder="Search evidence..."

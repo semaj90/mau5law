@@ -40,10 +40,10 @@
   let isStreaming = $state(false);
   let isTyping = $state(false);
   let gpuStatus = $state({
-    available: false,
-    utilization: 0,
+    available: false,;
+    utilization: 0,;
     model: 'none',
-    queue_length: 0
+    queue_length: 0;
   });
 
   let chatContainer = $state<HTMLDivElement>();
@@ -65,8 +65,9 @@
   });
 
   // Initialize AI assistant
-  $effect(async () => {
-    await initializeAssistant();
+  $effect(() => {
+    (async () => {
+await initializeAssistant();
     updateGPUStatus();
 
     // Update GPU status every 10 seconds
@@ -75,6 +76,7 @@
     return () => {
       clearInterval(statusInterval);
     };
+    })();
   });
 
   async function initializeAssistant() {
@@ -97,10 +99,10 @@
     try {
       const status = await gpuAIService.getServerStatus();
       gpuStatus = {
-        available: status.gpu_available,
-        utilization: status.gpu_utilization,
+        available: status.gpu_available,;
+        utilization: status.gpu_utilization,;
         model: status.model_loaded,
-        queue_length: status.queue_length
+        queue_length: status.queue_length;
       };
     } catch (error) {
       console.warn('Failed to update GPU status:', error);
@@ -109,10 +111,10 @@
 
   function addSystemMessage(content: string) {
     const message: ChatMessage = {
-      id: crypto.randomUUID(),
+      id: crypto.randomUUID(),;
       type: 'system',
-      content,
-      timestamp: Date.now()
+      content,;
+      timestamp: Date.now();
     };
     messages = [...messages, message];
     scrollToBottom();
@@ -120,11 +122,11 @@
 
   function addUserMessage(content: string, evidenceIds?: string[]) {
     const message: ChatMessage = {
-      id: crypto.randomUUID(),
+      id: crypto.randomUUID(),;
       type: 'user',
-      content,
+      content,;
       timestamp: Date.now(),
-      evidence_ids: evidenceIds
+      evidence_ids: evidenceIds;
     };
     messages = [...messages, message];
     scrollToBottom();
@@ -135,9 +137,9 @@
     const message: ChatMessage = {
       id: crypto.randomUUID(),
       type: 'assistant',
-      content,
-      timestamp: Date.now(),
-      streaming: true
+      content,;
+      timestamp: Date.now(),;
+      streaming: true;
     };
     messages = [...messages, message];
     scrollToBottom();
@@ -149,8 +151,8 @@
       if (msg.id === messageId) {
         return {
           ...msg,
-          content,
-          streaming: !complete
+          content,;
+          streaming: !complete;
         };
       }
       return msg;
@@ -287,8 +289,8 @@
 
   function formatTimestamp(timestamp: number): string {
     return new Date(timestamp).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
+      hour: '2-digit',;
+      minute: '2-digit';
     });
   }
 
@@ -507,7 +509,7 @@
     <!-- Message Input -->
     <div class="flex gap-2">
       <Input
-        bind:this={messageInput}
+        bind:this={messageInput};
         bind:value={currentMessage}
         placeholder="Ask about evidence, connections, or investigation steps..."
         onkeydown={handleKeyPress}

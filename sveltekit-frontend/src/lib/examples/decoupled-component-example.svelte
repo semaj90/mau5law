@@ -96,9 +96,9 @@
   // Computed ARIA state (derived from logic)
   let ariaProps = $derived({
     expanded: dialogOpen,
-    disabled: isProcessing || !langchainState.isAvailable,
-    label: isProcessing ? 'Processing document...' : 'Analyze document',
-    live: isProcessing ? 'polite' : 'off'
+    disabled: isProcessing || !langchainState.isAvailable,;
+    label: isProcessing ? 'Processing document...' : 'Analyze document',;
+    live: isProcessing ? 'polite' : 'off';
   });
   
   $effect(() => {
@@ -143,7 +143,7 @@
       use:accessibleClick={{
         handler: processDocument,
         label: ariaProps.label,
-        disabled: ariaProps.disabled
+        disabled: ariaProps.disabled;
       }}
       use:ariaState={ariaProps}
       disabled={isProcessing || !documentText.trim()}
@@ -198,7 +198,7 @@
     <button
       use:accessibleClick={{
         handler: handlers.openDialog,
-        label: 'Open AI chat assistant'
+        label: 'Open AI chat assistant';
       }}
       class="chat-toggle"
     >
@@ -212,7 +212,7 @@
         use:compositeActions.modal={{
           onClose: handlers.closeDialog,
           title: 'Legal AI Assistant',
-          description: 'Chat with the AI about your legal documents'
+          description: 'Chat with the AI about your legal documents';
         }}
       >
         <div class="chat-header">
@@ -220,7 +220,7 @@
           <button
             use:accessibleClick={{
               handler: handlers.closeDialog,
-              label: 'Close chat'
+              label: 'Close chat';
             }}
             class="close-btn"
             type="button"
@@ -260,7 +260,7 @@
             use:accessibleClick={{
               handler: sendMessage,
               label: 'Send message',
-              disabled: $chatState.data.isTyping || !$chatState.data.currentInput.trim()
+              disabled: $chatState.data.isTyping || !$chatState.data.currentInput.trim();
             }}
             disabled={$chatState.data.isTyping || !$chatState.data.currentInput.trim()}
           >
@@ -274,7 +274,7 @@
         class="dialog-overlay"
         use:accessibleClick={{
           handler: handlers.closeDialog,
-          label: 'Close dialog'
+          label: 'Close dialog';
         }}
         role="button"
         tabindex="0"
@@ -296,7 +296,7 @@
 </div>
 
 <style>
-  .legal-ai-demo {
+  .legal-ai-demo {;
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;

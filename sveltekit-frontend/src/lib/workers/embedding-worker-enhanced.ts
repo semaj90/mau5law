@@ -82,7 +82,7 @@ export class EnhancedEmbeddingWorker {
   }
 
   private async redisSetNXEX(key: string, value: string, exSeconds: number): Promise<string | null> {
-    const r = this.redis as unknown as {
+    const r = this.redis as unknown as {;
       set: (...args: unknown[]) => Promise<string | null>;
     };
     // Try modern options form first
@@ -274,7 +274,7 @@ export class EnhancedEmbeddingWorker {
    * Process jobs for a specific model
    */
   private async processModelBatch(
-    jobs: EmbeddingJob[],
+    jobs: EmbeddingJob[],;
     model: string,
     batchId: string
   ): Promise<void> {
@@ -315,7 +315,7 @@ export class EnhancedEmbeddingWorker {
           text: job.text.slice(0, 100) + '...',
           model: job.model || 'nomic-embed-text',
           textLength: job.text.length,
-          batchId,
+          batchId,;
           priority: job.priority || 1
         }
       });
@@ -371,7 +371,7 @@ export class EnhancedEmbeddingWorker {
         processingTimeMs: processingTime,
         model: job?.model || 'unknown',
         batchId,
-        efficiency: cached ? 'cache-hit' : 'computed',
+        efficiency: cached ? 'cache-hit' : 'computed',;
         throughput: job.text.length / processingTime // chars per ms
       });
 
@@ -437,7 +437,7 @@ export class EnhancedEmbeddingWorker {
    * Set cached embedding with compression
    */
   private async setCachedEmbedding(
-    text: string,
+    text: string,;
     embedding: number[],
     model?: string
   ): Promise<void> {
@@ -479,7 +479,7 @@ export class EnhancedEmbeddingWorker {
   private async upsertEmbeddingToDB(
     id: string,
     model: string,
-    embedding: number[],
+    embedding: number[],;
     meta: Record<string, unknown>
   ): Promise<void> {
     try {
@@ -630,7 +630,7 @@ export class EnhancedEmbeddingWorker {
       lokiStats: globalLoki.getStats(),
       performance: {
         avgBatchProcessingTime: 0, // TODO: Track this
-        cacheHitRate: 0, // TODO: Track this
+        cacheHitRate: 0, // TODO: Track this;
         throughput: 0, // TODO: Track jobs/second
       }
     };

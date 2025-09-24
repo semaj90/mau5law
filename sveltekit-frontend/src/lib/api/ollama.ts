@@ -69,7 +69,7 @@ async function jsonFetch<T>(path: string, body: unknown): Promise<T> {
   const host = getDefaultHost();
   const res = await fetch(`${host}${path}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify(body),
   });
   if (!res.ok) {
@@ -90,7 +90,7 @@ export async function* generateStream(
   const host = getDefaultHost();
   const res = await fetch(`${host}/api/generate`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify({ model: req.model, prompt: req.prompt, stream: true, options: req.options }),
   });
   if (!res.ok || !res.body) {
@@ -141,7 +141,7 @@ export async function* chatStream(
   const host = getDefaultHost();
   const res = await fetch(`${host}/api/chat`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify({ model: req.model, messages: req.messages, stream: true, options: req.options }),
   });
   if (!res.ok || !res.body) {

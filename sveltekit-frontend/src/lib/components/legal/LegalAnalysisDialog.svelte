@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -23,8 +23,8 @@ https://svelte.dev/e/js_parse_error -->
   import Dialog from '$lib/components/Dialog.svelte';
   interface LegalAnalysis {
     sessionId: string
-    analysis: string
-    confidence: number
+    analysis: string;
+    confidence: number;
     sources: Array;
     recommendations: string[];
     processingTime: number
@@ -53,7 +53,7 @@ https://svelte.dev/e/js_parse_error -->
     error = '';
     try {
       const response = await fetch('/api/legal/chat', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json',
         },
@@ -61,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
           prompt,
           caseId,
           userId: 'current-user', // This should come from auth context
-          sessionType: analysisType,
+          sessionType: analysisType,;
           context: {
             caseDetails: caseId ? { id: caseId } : undefined,
             evidenceIds: evidenceId ? [evidenceId] : undefined,

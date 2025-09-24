@@ -96,12 +96,12 @@
     try {
       const requestBody = {
         query: query.trim(),
-        mode: searchMode,
+        mode: searchMode,;
         filters: {
           document_types: Array.from(selectedTypes),
           similarity_threshold: similarityThreshold,
-          limit: 20
-        },
+          limit: 20;
+        },;
         options: {
           include_highlights: true,
           include_metadata: true,
@@ -110,9 +110,9 @@
       };
       console.log('Vector search request:', requestBody);
       const response = await fetch('/api/unified/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(requestBody);
       });
       if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
         throw new Error(`Search failed: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
@@ -270,7 +270,7 @@
           <div class="ml-auto flex items-center gap-2">
             <span class="text-xs text-nier-text-muted">Similarity:</span>
             <input
-              type="range"
+              type="range";
               bind:value={similarityThreshold}
               min="0.1"
               max="1"

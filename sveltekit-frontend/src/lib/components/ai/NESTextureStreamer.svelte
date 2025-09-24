@@ -71,8 +71,9 @@
     return descriptions[currentLOD] || 'Unknown';
   });
   
-  $effect(async () => {
-    lodManager = new N64LODManager();
+  $effect(() => {
+    (async () => {
+lodManager = new N64LODManager();
     
     // Generate sample legal document texture
     await generateSampleTexture();
@@ -88,6 +89,7 @@
     if (viewerElement) {
       setupScrollListener();
     }
+    })();
   });
   
   onDestroy(() => {
@@ -434,7 +436,7 @@
 </SSRWebGPULoader>
 
 <style>
-  .nes-texture-streamer {
+  .nes-texture-streamer {;
     background: #0f0f0f;
     color: #ffffff;
     font-family: 'Perfect DOS VGA 437', 'JetBrains Mono', monospace;
@@ -677,21 +679,21 @@
   }
   
   /* NES-style scrollbar */
-  .texture-viewer: :-webkit-scrollbar {
+  .texture-viewer::-webkit-scrollbar {
     width: 16px;
   }
   
-  .texture-viewer: :-webkit-scrollbar-track {
+  .texture-viewer::-webkit-scrollbar-track {
     background: #222;
     border: 1px solid #333;
   }
   
-  .texture-viewer: :-webkit-scrollbar-thumb {
+  .texture-viewer::-webkit-scrollbar-thumb {
     background: #555;
     border: 1px solid #666;
   }
   
-  .texture-viewer: :-webkit-scrollbar-thumb:hover {
+  .texture-viewer::-webkit-scrollbar-thumb:hover {
     background: #666;
   }
   

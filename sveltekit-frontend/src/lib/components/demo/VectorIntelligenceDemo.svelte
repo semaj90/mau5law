@@ -3,17 +3,17 @@
 
   import type { SearchResults } from "$lib/types/global";
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   // Badge replaced with span - not available in enhanced-bits
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Loader2, Search, Brain, Zap, Database } from 'lucide-svelte';
   import { context7Service, type VectorIntelligence } from '$lib/services/context7Service';
 
@@ -37,14 +37,16 @@
     'regulatory compliance for financial services'
   ];
 
-  $effect(async () => {
-    await context7Service.initialize();
+  $effect(() => {
+    (async () => {
+await context7Service.initialize();
 
     // Load search history from localStorage
     const saved = localStorage.getItem('vector-search-history');
     if (saved) {
       searchHistory = JSON.parse(saved);
     }
+    })();
   });
 
   // Subscribe to vector results from service
@@ -56,8 +58,8 @@
     if (!searchQuery.trim()) return;
 
     await context7Service.vectorSearch(searchQuery, {
-      filters: selectedFilters,
-      limit: 10
+      filters: selectedFilters,;
+      limit: 10;
     });
 
     // Add to search history
@@ -336,7 +338,7 @@ Clear
 </div>
 
 <style>
-  .line-clamp-3 {
+  .line-clamp-3 {;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;

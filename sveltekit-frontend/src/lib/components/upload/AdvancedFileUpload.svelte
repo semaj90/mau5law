@@ -143,8 +143,8 @@
     if (files.length > 0) {
       addFiles(files);
       notifications.add({
-        type: "info",
-        title: "Files Pasted",
+        type: "info",;
+        title: "Files Pasted",;
         message: `${files.length} file(s) added from clipboard`,
       });
   }}
@@ -154,8 +154,8 @@
     // Validate file count
     if (files.length + newFiles.length > maxFiles) {
       notifications.add({
-        type: "error",
-        title: "Too Many Files",
+        type: "error",;
+        title: "Too Many Files",;
         message: `Maximum ${maxFiles} files allowed`,
       });
       return;
@@ -170,8 +170,8 @@
         !allowedTypes.some((type) => file.type.startsWith(type))
       ) {
         notifications.add({
-          type: "error",
-          title: "Invalid File Type",
+          type: "error",;
+          title: "Invalid File Type",;
           message: `${file.name} is not a supported file type`,
         });
         continue;
@@ -179,8 +179,8 @@
       // Validate file size
       if (file.size > maxFileSize) {
         notifications.add({
-          type: "error",
-          title: "File Too Large",
+          type: "error",;
+          title: "File Too Large",;
           message: `${file.name} exceeds maximum size of ${formatFileSize(maxFileSize)}`,
         });
         continue;
@@ -191,9 +191,9 @@
         file: enableCompression ? await compressFile(file) : file,
         name: file.name,
         size: file.size,
-        type: file.type,
-        progress: 0,
-        status: "pending",
+        type: file.type,;
+        progress: 0,;
+        status: "pending",;
       };
 
       // Generate preview if enabled
@@ -209,8 +209,8 @@
     );
     if (totalSize > maxTotalSize) {
       notifications.add({
-        type: "error",
-        title: "Total Size Exceeded",
+        type: "error",;
+        title: "Total Size Exceeded",;
         message: `Total size cannot exceed ${formatFileSize(maxTotalSize)}`,
       });
       return;
@@ -257,7 +257,7 @@
             if (blob) {
               const compressedFile = new File([blob], file.name, {
                 type: file.type,
-                lastModified: file.lastModified,
+                lastModified: file.lastModified,;
               });
               resolve(compressedFile);
             } else {
@@ -312,8 +312,8 @@
       fileItem.progress = 100;
 
       notifications.add({
-        type: "success",
-        title: "Upload Complete",
+        type: "success",;
+        title: "Upload Complete",;
         message: `${fileItem.name} uploaded successfully`,
       });
     } catch (error) {
@@ -321,8 +321,8 @@
       fileItem.error = error instanceof Error ? error.message: "Upload failed";
 
       notifications.add({
-        type: "error",
-        title: "Upload Failed",
+        type: "error",;
+        title: "Upload Failed",;
         message: `Failed to upload ${fileItem.name}: ${fileItem.error}`,
       });
   }
@@ -334,8 +334,8 @@
     formData.append("filename", fileItem.name);
 
     const response = await fetch(uploadUrl, {
-      method: "POST",
-      body: formData,
+      method: "POST",;
+      body: formData,;
     });
 
     if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
@@ -363,8 +363,8 @@
       formData.append("fileId", fileItem.id);
 
       const response = await fetch(`${uploadUrl}/chunk`, {
-        method: "POST",
-        body: formData,
+        method: "POST",;
+        body: formData,;
       });
 
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
@@ -375,12 +375,12 @@
   }
     // Finalize chunked upload
     const finalizeResponse = await fetch(`${uploadUrl}/finalize`, {
-      method: "POST",
+      method: "POST",;
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        fileId: fileItem.id,
+        fileId: fileItem.id,;
         filename: fileItem.name,
-        totalChunks,
+        totalChunks,;
       }),
     });
 
@@ -432,8 +432,8 @@
   async function startCameraCapture() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false,
+        video: true,;
+        audio: false,;
       });
 
       // Create video element for camera feed
@@ -446,15 +446,15 @@
       stream.getTracks.forEach((track) => track.stop());
 
       notifications.add({
-        type: "info",
-        title: "Camera Access",
-        message: "Camera capture feature would be implemented here",
+        type: "info",;
+        title: "Camera Access",;
+        message: "Camera capture feature would be implemented here",;
       });
     } catch (error) {
       notifications.add({
-        type: "error",
-        title: "Camera Error",
-        message: "Could not access camera",
+        type: "error",;
+        title: "Camera Error",;
+        message: "Could not access camera",;
       });
   }}
   async function startAudioRecording() {
@@ -464,7 +464,7 @@
   }
     try {
       recordingStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
+        audio: true,;
       });
       mediaRecorder = new MediaRecorder(recordingStream);
 
@@ -476,7 +476,7 @@
       mediaRecorder.onstop = () => {
         const audioBlob = new Blob(chunks, { type: "audio/wav" });
         const audioFile = new File([audioBlob], `recording-${Date.now()}.wav`, {
-          type: "audio/wav",
+          type: "audio/wav",;
         });
         addFiles([audioFile]);
       };
@@ -485,15 +485,15 @@
       isRecording = true;
 
       notifications.add({
-        type: "info",
-        title: "Recording Started",
-        message: "Audio recording in progress...",
+        type: "info",;
+        title: "Recording Started",;
+        message: "Audio recording in progress...",;
       });
     } catch (error) {
       notifications.add({
-        type: "error",
-        title: "Recording Error",
-        message: "Could not start audio recording",
+        type: "error",;
+        title: "Recording Error",;
+        message: "Could not start audio recording",;
       });
   }}
   function stopAudioRecording() {
@@ -506,9 +506,9 @@
         recordingStream = null;
   }
       notifications.add({
-        type: "success",
-        title: "Recording Complete",
-        message: "Audio recording saved",
+        type: "success",;
+        title: "Recording Complete",;
+        message: "Audio recording saved",;
       });
   }}
   function formatFileSize(bytes: number): string {
@@ -543,10 +543,10 @@
 
 <div class="container mx-auto px-4" class:disabled>
   <!-- Drop zone -->
-  <div
+  <div;
     bind:this={dropZone}
     class="drop-zone-area"
-    class:drag-over={isDragOver}
+    class:drag-over={isDragOver};
     class:disabled
     ondrop={handleDrop}
     role="button" 
@@ -770,7 +770,7 @@ removeFile(file.id)}
 
 <style>
   /* @unocss-include */
-  .advanced-file-upload {
+  .advanced-file-upload {;
     width: 100%;
 }
   .drop-zone {

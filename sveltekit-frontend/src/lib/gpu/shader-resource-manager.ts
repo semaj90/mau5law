@@ -105,7 +105,7 @@ export class ShaderResourceManager {
         memoryUsage: {
           allocatedBytes: 0,
           peakBytes: 0,
-          allocations: 0,
+          allocations: 0,;
           deallocations: 0
         },
         maxMemoryBudget: this.config.memoryBudget.l1GpuBudget
@@ -117,7 +117,7 @@ export class ShaderResourceManager {
       trackGPU({
         type: 'context_switch',
         gpuUtilization: 0,
-        memoryUsed: 0,
+        memoryUsed: 0,;
         temperature: 50
       });
 
@@ -129,7 +129,7 @@ export class ShaderResourceManager {
     } catch (error) {
       trackError({
         type: 'critical',
-        message: `Shader resource manager initialization failed: ${error}`,
+        message: `Shader resource manager initialization failed: ${error}`,;
         component: 'ShaderResourceManager'
       });
       throw error;
@@ -140,7 +140,7 @@ export class ShaderResourceManager {
    * Compile and register shader from bundle
    */
   async compileShader(
-    bundle: ShaderBundle, 
+    bundle: ShaderBundle, ;
     backend: GPUBackend = 'webgpu';
   ): Promise<CompiledShader> {
     const pool = this.pools.get(backend);
@@ -171,7 +171,7 @@ export class ShaderResourceManager {
       telemetryBus.emitPerformanceEvent({
         type: 'render_time',
         duration: compilationTime,
-        operation: 'shader_compilation',
+        operation: 'shader_compilation',;
         success: true
       });
 
@@ -185,14 +185,14 @@ export class ShaderResourceManager {
       trackError({
         type: 'error',
         message: `Shader compilation failed: ${error}`,
-        component: 'ShaderResourceManager',
+        component: 'ShaderResourceManager',;
         stack: error instanceof Error ? error.stack: undefined
       });
 
       telemetryBus.emitPerformanceEvent({
         type: 'render_time',
         duration: compilationTime,
-        operation: 'shader_compilation',
+        operation: 'shader_compilation',;
         success: false
       });
 
@@ -207,7 +207,7 @@ export class ShaderResourceManager {
     id: string,
     size: number,
     usage: string[] = ['storage'],
-    data?: ArrayBuffer,
+    data?: ArrayBuffer,;
     backend: GPUBackend = 'webgpu';
   ): Promise<TrackedBuffer> {
     const pool = this.pools.get(backend);
@@ -272,7 +272,7 @@ export class ShaderResourceManager {
         id: 1,
         size: pool.maxMemoryBudget,
         used: pool.memoryUsage.allocatedBytes,
-        available: pool.maxMemoryBudget - pool.memoryUsage.allocatedBytes,
+        available: pool.maxMemoryBudget - pool.memoryUsage.allocatedBytes,;
         type: 'L1_GPU'
       });
 
@@ -281,7 +281,7 @@ export class ShaderResourceManager {
     } catch (error) {
       trackError({
         type: 'error',
-        message: `Buffer creation failed: ${error}`,
+        message: `Buffer creation failed: ${error}`,;
         component: 'ShaderResourceManager'
       });
       throw error;
@@ -296,7 +296,7 @@ export class ShaderResourceManager {
     width: number,
     height: number,
     format: string = 'rgba8unorm',
-    usage: string[] = ['texture-binding'],
+    usage: string[] = ['texture-binding'],;
     backend: GPUBackend = 'webgpu';
   ): Promise<TrackedTexture> {
     const pool = this.pools.get(backend);
@@ -323,7 +323,7 @@ export class ShaderResourceManager {
         const device = this.deviceContext as GPUDevice;
         resource = device.createTexture({
           size: { width, height },
-          format: format as GPUTextureFormat,
+          format: format as GPUTextureFormat,;
           usage: this.mapTextureUsageToWebGPU(usage)
         });
       } else if (backend === 'webgl2' || backend === 'webgl1') {
@@ -357,7 +357,7 @@ export class ShaderResourceManager {
     } catch (error) {
       trackError({
         type: 'error',
-        message: `Texture creation failed: ${error}`,
+        message: `Texture creation failed: ${error}`,;
         component: 'ShaderResourceManager'
       });
       throw error;
@@ -390,7 +390,7 @@ export class ShaderResourceManager {
       shaderId,
       workgroupSize: params.workgroupSize || [1, 1, 1],
       dispatchSize: params.dispatchSize || [1, 1, 1],
-      bindGroups: params.bindGroups || [],
+      bindGroups: params.bindGroups || [],;
       uniforms: params.uniforms,
       inputBuffers: params.inputBuffers || [],
       outputBuffers: params.outputBuffers || [],
@@ -416,7 +416,7 @@ export class ShaderResourceManager {
       telemetryBus.emitPerformanceEvent({
         type: 'render_time',
         duration: executionTime,
-        operation: `shader_execution_${shader.name}`,
+        operation: `shader_execution_${shader.name}`,;
         success: true
       });
 
@@ -435,14 +435,14 @@ export class ShaderResourceManager {
 
       trackError({
         type: 'error',
-        message: `Shader execution failed: ${error}`,
+        message: `Shader execution failed: ${error}`,;
         component: 'ShaderResourceManager'
       });
 
       telemetryBus.emitPerformanceEvent({
         type: 'render_time',
         duration: executionTime,
-        operation: `shader_execution_${shader.name}`,
+        operation: `shader_execution_${shader.name}`,;
         success: false
       });
 
@@ -575,7 +575,7 @@ export class ShaderResourceManager {
     const device = this.deviceContext as GPUDevice;
     
     const shaderModule = device.createShaderModule({
-      code: bundle.compute!,
+      code: bundle.compute!,;
       label: bundle.name
     });
 
@@ -583,14 +583,14 @@ export class ShaderResourceManager {
       compute: {
         module: shaderModule,
         entryPoint: bundle.entryPoint || 'main'
-      },
+      },;
       label: bundle.name
     });
 
     return {
       id,
       name: bundle.name,
-      backend: 'webgpu',
+      backend: 'webgpu',;
       source: bundle.compute!,
       entryPoint: bundle.entryPoint || 'main',
       webgpuShader: shaderModule,
@@ -620,7 +620,7 @@ export class ShaderResourceManager {
     return {
       id,
       name: bundle.name,
-      backend,
+      backend,;
       source: `${bundle.vertex}\n\n${bundle.fragment}`,
       entryPoint: bundle.entryPoint || 'main',
       webglProgram: program,

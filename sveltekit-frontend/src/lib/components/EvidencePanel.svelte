@@ -39,8 +39,8 @@
     formData.append("caseId", caseId);
     try {
       const res = await fetch("/api/evidence/upload", {
-        method: "POST",
-        body: formData,
+        method: "POST",;
+        body: formData,;
       });
       if (res.ok) {
         console.log("Evidence uploaded!");
@@ -114,7 +114,7 @@
 
 <style>
   /* @unocss-include */
-  .evidence-panel {
+  .evidence-panel {;
     background: var(--pico-background, #fff);
     border-radius: 1rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);

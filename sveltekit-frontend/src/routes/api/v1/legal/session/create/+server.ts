@@ -1,30 +1,30 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 // Legal AI Session Creation API
 // Creates and manages legal AI sessions with YoRHa interface integration
 
-import { json } from '@sveltejs/kit';
-import type { LegalAISession, LegalContext, SessionStatus } from '$lib/types/yorha-interface';
+import { json } from '@sveltejs/kit'
+import type { LegalAISession, LegalContext, SessionStatus } from '$lib/types/yorha-interface'
 
 // Session storage (in production, use database)
-const activeSessions = new Map<string, LegalAISession>();
+const activeSessions = new Map<string, LegalAISession>()
 
-/* POST /api/v1/legal/session/create - Create new legal AI session */;
+/* POST /api/v1/legal/session/create - Create new legal AI session */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		const body = await request.json();
-		const { user_id, case_id, context } = body;
+		const body = await request.json()
+		const { user_id, case_id, context } = body
 
-		// Validate required fields;
+		// Validate required fields
 		if (!user_id) {
-			return json({ error: 'user_id is required' }, { status: 400 });
+			return json({ error: 'user_id is required' }, { status: 400 })
 		}
 
 		// Generate session ID
-		const session_id = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-		const timestamp = new Date().toISOString();
+		const session_id = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+		const timestamp = new Date().toISOString()
 
-		// Create legal AI session;
+		// Create legal AI session
 		const session: LegalAISession = {
 			session_id,
 			user_id,
@@ -35,30 +35,30 @@ export const POST: RequestHandler = async ({ request }) => {
 			query_count: 0,
 			processing_time_total: 0,
 			context: validateAndEnhanceContext(context)
-		};
+		}
 
 		// Store session
-		activeSessions.set(session_id, session);
+		activeSessions.set(session_id, session)
 
-		console.log(`[Legal AI] Session created: ${session_id} for user: ${user_id}`);
+		console.log(`[Legal AI] Session created: ${session_id} for user: ${user_id}`)
 
 			return json({
         success: true,
         session,
         message: 'Legal AI session created successfully'
-      });
+      })
 
 	} catch (error: any) {
-		console.error('[Legal AI] Session creation error:', error);
+		console.error('[Legal AI] Session creation error:', error)
 		return json({
 			success: false,
 			error: 'Failed to create legal AI session',
 			details: error instanceof Error ? error.message: 'Unknown error'
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}
 
-/* GET /api/v1/legal/session/create - Get session creation info and active sessions */;
+/* GET /api/v1/legal/session/create - Get session creation info and active sessions */
 export const GET: RequestHandler = async () => {
 	return json({
 		service: 'Legal AI Session Manager',
@@ -82,8 +82,8 @@ export const GET: RequestHandler = async () => {
 			terminate_session: 'DELETE /api/v1/legal/session/{session_id}'
 		},
 		timestamp: new Date().toISOString()
-	});
-};
+	})
+}
 
 // Helper functions
 
@@ -96,9 +96,9 @@ function validateAndEnhanceContext(context: any): LegalContext {
 		security_classification: 'STANDARD',
 		related_cases: [],
 		key_entities: []
-	};
+	}
 
-	if (!context) return defaultContext;
+	if (!context) return defaultContext
 
 	return {
     jurisdiction: context.jurisdiction || defaultContext.jurisdiction,
@@ -118,13 +118,13 @@ function validateAndEnhanceContext(context: any): LegalContext {
     key_entities: Array.isArray(context.key_entities)
       ? context.key_entities
       : defaultContext.key_entities
-  };
+  }
 }
 
 function isValidSecurityLevel(level: any): boolean {
-	const validLevels = ['MINIMUM', 'STANDARD', 'HIGH', 'MAXIMUM', 'CLASSIFIED'];
-	return typeof level === 'string' && validLevels.includes(level);
+	const validLevels = ['MINIMUM', 'STANDARD', 'HIGH', 'MAXIMUM', 'CLASSIFIED']
+	return typeof level === 'string' && validLevels.includes(level)
 }
 
 // Export session storage for other endpoints
-export { activeSessions };
+export { activeSessions }

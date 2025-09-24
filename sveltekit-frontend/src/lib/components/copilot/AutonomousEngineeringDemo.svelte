@@ -6,13 +6,13 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   // Svelte 5 runes are auto-imported
 
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
@@ -74,7 +74,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'comprehensive' as const,
       platform: 'webapp' as const,
       urgency: 'high' as const,
-      description: 'Comprehensive TypeScript error analysis and resolution'
+      description: 'Comprehensive TypeScript error analysis and resolution';
     },
     {
       id: 'performance-optimization',
@@ -83,7 +83,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'autonomous' as const,
       platform: 'all' as const,
       urgency: 'critical' as const,
-      description: 'Full-stack performance analysis with autonomous engineering'
+      description: 'Full-stack performance analysis with autonomous engineering';
     },
     {
       id: 'security-audit',
@@ -92,7 +92,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'comprehensive' as const,
       platform: 'webapp' as const,
       urgency: 'high' as const,
-      description: 'Multi-agent security analysis'
+      description: 'Multi-agent security analysis';
     },
     {
       id: 'deployment-pipeline',
@@ -101,16 +101,16 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'autonomous' as const,
       platform: 'all' as const,
       urgency: 'medium' as const,
-      description: 'DevOps automation and pipeline optimization'
+      description: 'DevOps automation and pipeline optimization';
     },
     {
       id: 'api-integration',
       title: 'API Integration Help',
       prompt: 'How can I integrate the multi-agent AI system with external legal databases and ensure proper error handling and rate limiting?',
       mode: 'quick' as const,
-      platform: 'webapp' as const,
-      urgency: 'medium' as const,
-      description: 'Quick semantic search for integration patterns'
+      platform: 'webapp' as const,;
+      urgency: 'medium' as const,;
+      description: 'Quick semantic search for integration patterns';
     }
   ];
 
@@ -157,10 +157,10 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
         enableSelfSynthesis: selectedMode !== 'quick',
         context: {
           projectPath: process.cwd(),
-          platform: selectedPlatform,
+          platform: selectedPlatform,;
           urgency: selectedUrgency,
           includeTests: true,
-          targetExtensions: ['cline', 'roo', 'copilot']
+          targetExtensions: ['cline', 'roo', 'copilot'];
         },
         outputFormat
       });
@@ -198,16 +198,16 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
 
     try {
       const response = await fetch('/api/copilot/self-prompt', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prompt: userPrompt,
-          mode: selectedMode,
+          mode: selectedMode,;
           options: {
             context: {
-              platform: selectedPlatform,
+              platform: selectedPlatform,;
               urgency: selectedUrgency,
-              includeTests: true
+              includeTests: true;
             },
             outputFormat
           }
@@ -226,7 +226,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
           processingTime: 0,
           confidence: 0.8,
           sources: [],
-          tokensUsed: 0
+          tokensUsed: 0;
         }
       };
 
@@ -243,7 +243,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     if (!currentResult) return;
 
     const blob = new Blob([JSON.stringify(currentResult, null, 2)], {
-      type: 'application/json'
+      type: 'application/json';
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

@@ -1,5 +1,5 @@
 <!-- Component exported by default -->
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- NieR-themed Rich Text Editor for Legal Investigation Notes -->
@@ -12,7 +12,7 @@ https://svelte.dev/e/attribute_duplicate -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   	import Button from '$lib/components/ui/button/Button.svelte';
   	// Badge replaced with span - not available in enhanced-bits
   	import {
@@ -37,9 +37,9 @@ https://svelte.dev/e/attribute_duplicate -->
 
   	let nieRTheme = $state({
   		mode: 'android', // 'android' | 'yorha' | 'machine'
-  		glitchEnabled: true,
+  		glitchEnabled: true,;
   		scanlines: true,
-  		typingSound: true
+  		typingSound: true;
   	});
 
   	// Component props
@@ -221,9 +221,9 @@ https://svelte.dev/e/attribute_duplicate -->
 
   		try {
   			const response = await fetch('/api/legal/investigation-notes', {
-  				method: 'POST',
-  				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify.toISOString()
+  				method: 'POST',;
+  				headers: { 'Content-Type': 'application/json' },;
+  				body: JSON.stringify(toISOString)();
   				})
   			});
 
@@ -439,7 +439,7 @@ https://svelte.dev/e/attribute_duplicate -->
 		<div class="yorha-panel-content p-0 h-full">
 			<div
 				bind:this={editorContainer}
-				class="w-full h-full p-4 prose prose-sm max-w-none focus:outline-none nier-editor-content"
+				class="w-full h-full p-4 prose prose-sm max-w-none focus:outline-none nier-editor-content";
 				class:scanlines={nieRTheme.scanlines}
 				class:readonly
 				role="textbox"
@@ -458,7 +458,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	/* NieR: Automata Theme Styles */
 
 	/* Base NieR Editor */
-	.nier-editor-container {
+	.nier-editor-container {;
 		font-family: 'Courier New', 'Monaco', monospace;
 		background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
 		color: #e8e6e3;
@@ -536,7 +536,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	}
 
 	/* Scanlines Effect */
-	.scanlines: :after {
+	.scanlines::after {
 		content: '';
 		position: absolute;
 		top: 0;

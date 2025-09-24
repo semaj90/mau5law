@@ -68,7 +68,7 @@ export class SecureStorageClient {
    * Upload file with proper error handling and security
    */
   async uploadFile(
-    file: File, 
+    file: File, ;
     bucket: string = 'legal-documents',
     customKey?: string;
   ): Promise<UploadResponse> {
@@ -83,7 +83,7 @@ export class SecureStorageClient {
 
       const response = await fetch(`${this.baseUrl}/upload`, {
         method: 'POST',
-        headers: this.getAuthHeaders(),
+        headers: this.getAuthHeaders(),;
         body: formData
       });
 
@@ -112,7 +112,7 @@ export class SecureStorageClient {
       url.searchParams.set('key', key);
 
       const response = await fetch(url.toString(), {
-        method: 'DELETE',
+        method: 'DELETE',;
         headers: this.getAuthHeaders()
       });
 
@@ -140,7 +140,7 @@ export class SecureStorageClient {
       url.searchParams.set('key', key);
 
       const response = await fetch(url.toString(), {
-        method: 'GET',
+        method: 'GET',;
         headers: this.getAuthHeaders()
       });
 
@@ -161,7 +161,7 @@ export class SecureStorageClient {
    * Batch upload multiple files
    */
   async uploadFiles(
-    files: File[], 
+    files: File[], ;
     bucket: string = 'legal-documents',
     onProgress?: (completed: number, total: number) => void;
   ): Promise<any> {
@@ -206,7 +206,7 @@ export class ReactiveStorageManager {
   get state() {
     return {
       files: this.files,
-      loading: this.loading,
+      loading: this.loading,;
       error: this.error
     };
   }

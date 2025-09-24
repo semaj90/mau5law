@@ -42,7 +42,7 @@
 
   let selectedNode = $state<any>(null);
   let hoveredNode = $state<any>(null);
-  let networkMetrics = $state<any>( );
+  let networkMetrics = $state<any>({});
   let clusterData = $state<any[]>([]);
   let isLoading = $state(true);
   let analysisMode = $state<'relationships' | 'importance' | 'timeline' | 'similarity'>('relationships');
@@ -59,8 +59,9 @@
   let clusterElements: d3.Selection<SVGCircleElement, any, SVGGElement, unknown>;
 
   // Lifecycle
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
 
     try {
       await initializeNetwork();
@@ -77,6 +78,7 @@
       console.error('Failed to initialize network analysis:', error);
       isLoading = false;
     }
+    })();
   });
 
   onDestroy(() => {
@@ -105,23 +107,23 @@
   async function processNetworkData() {
     // Process evidence data into nodes
     nodes = evidenceData.map(evidence => ({
-      id: evidence.id,
+      id: evidence.id,;
       label: evidence.title || `Evidence ${evidence.id}`,
       type: evidence.type || 'document',
       importance: calculateImportance(evidence),
       cluster: assignCluster(evidence),
-      x: Math.random() * width,
-      y: Math.random() * height,
-      evidence: evidence
+      x: Math.random() * width,;
+      y: Math.random() * height,;
+      evidence: evidence;
     }));
 
     // Process relationships into links
     links = relationshipData.map(rel => ({
       source: rel.sourceId,
       target: rel.targetId,
-      strength: rel.strength || 1,
-      type: rel.type || 'related',
-      value: rel.confidence || 0.5
+      strength: rel.strength || 1,;
+      type: rel.type || 'related',;
+      value: rel.confidence || 0.5;
     }));
 
     // Add implicit links based on analysis mode

@@ -17,10 +17,10 @@
  */
 
 
-import { aiService } from "$lib/server/services/ai-service.js";
-import { URL } from "url";
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { aiService } from "$lib/server/services/ai-service.js"
+import { URL } from "url"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 
 
 const searchSchema = z.object({
@@ -28,30 +28,30 @@ const searchSchema = z.object({
   limit: z.number().min(1).max(50).optional(),
   threshold: z.number().min(0).max(1).optional(),
   documentType: z.string().optional()
-});
+})
 
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication;
+    // Check authentication
     if (!locals.user) {
-      return json({ error: 'Authentication required' }, { status: 401 });
+      return json({ error: 'Authentication required' }, { status: 401 })
     }
 
     // Parse and validate request
-    const body = await request.json();
-    const { query, limit = 10, threshold = 0.7 } = searchSchema.parse(body);
+    const body = await request.json()
+    const { query, limit = 10, threshold = 0.7 } = searchSchema.parse(body)
 
     // Generate embedding for search query
-    const queryEmbedding = await aiService.getOrCreateEmbedding(query);
+    const queryEmbedding = await aiService.getOrCreateEmbedding(query)
 
     // Perform vector search
     const results = await aiService.findSimilarDocuments(
       queryEmbedding,
       limit,
       threshold
-    );
+    )
 
-    // Format results for response;
+    // Format results for response
     const formattedResults = results.map((result: any) => ({
       content: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).content,
       similarity: Math.round((result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).similarity * 100) / 100,
@@ -59,7 +59,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       documentType: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.documentType || 'unknown',
       confidence: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.analysis?.confidence || null,
       tags: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.analysis?.tags || []
-    });
+    })
 
     return json({
       success: true,
@@ -73,18 +73,18 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           embeddingModel: 'nomic-embed-text'
         }
       }
-    });
+    })
 
   } catch (error: any) {
-    console.error('Vector search API error:', error);
+    console.error('Vector search API error:', error)
 
     if (error instanceof z.ZodError) {
       return json({ 
-          error: 'Validation failed', 
+          error: 'Validation failed',
           details: error.errors 
         }, )
         { status: 400 }
-      );
+      )
     }
 
     return json({ 
@@ -92,33 +92,33 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         message: error instanceof Error ? error.message: 'Unknown error'
       }, )
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     if (!locals.user) {
-      return json({ error: 'Authentication required' }, { status: 401 });
+      return json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    const query = url.searchParams.get('q');
-    const limit = parseInt(url.searchParams.get('limit') || '10');
-    const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
+    const query = url.searchParams.get('q')
+    const limit = parseInt(url.searchParams.get('limit') || '10')
+    const threshold = parseFloat(url.searchParams.get('threshold') || '0.7')
 
     if (!query) {
-      return json({ error: 'Query parameter required' }, { status: 400 });
+      return json({ error: 'Query parameter required' }, { status: 400 })
     }
 
     // Generate embedding for search query
-    const queryEmbedding = await aiService.getOrCreateEmbedding(query);
+    const queryEmbedding = await aiService.getOrCreateEmbedding(query)
 
     // Perform vector search
     const results = await aiService.findSimilarDocuments(
       queryEmbedding,
       limit,
       threshold
-    );
+    )
 
     return json({
       success: true,
@@ -127,16 +127,16 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         results,
         totalResults: results.length
       }
-    });
+    })
 
   } catch (error: any) {
-    console.error('Vector search GET API error:', error);
+    console.error('Vector search GET API error:', error)
     return json(
       { error: 'Vector search failed' }, )
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-export const POST = redisOptimized.aiSearch(originalPOSTHandler);
-export const GET = redisOptimized.aiSearch(originalGETHandler);
+export const POST = redisOptimized.aiSearch(originalPOSTHandler)
+export const GET = redisOptimized.aiSearch(originalGETHandler)

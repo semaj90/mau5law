@@ -10,12 +10,12 @@ https://svelte.dev/e/expected_token -->
   import { page } from '$app/stores';
   import Button from '$lib/components/ui/nes-button.svelte';
   import NesCard from '$lib/components/ui/nes-card.svelte';
-  
+
   let mounted = $state(false);
   let machines = $state([]);
   let selectedMachine = $state(null);
   let loading = $state(true);
-  
+
   // Mock machine registry data - replace with actual XState registry
   let mockMachines = [
     {
@@ -25,7 +25,7 @@ https://svelte.dev/e/expected_token -->
       currentState: 'authenticated',
       transitions: ['logout', 'refresh', 'profile'],
       lastUpdated: new Date().toISOString(),
-      instances: 3
+      instances: 3;
     },
     {
       id: 'case-management-machine',
@@ -34,7 +34,7 @@ https://svelte.dev/e/expected_token -->
       currentState: 'reviewing',
       transitions: ['submit', 'save-draft', 'archive'],
       lastUpdated: new Date().toISOString(),
-      instances: 1
+      instances: 1;
     },
     {
       id: 'rag-pipeline-machine',
@@ -43,24 +43,24 @@ https://svelte.dev/e/expected_token -->
       currentState: 'waiting',
       transitions: ['process', 'reset', 'configure'],
       lastUpdated: new Date().toISOString(),
-      instances: 0
+      instances: 0;
     },
     {
       id: 'gpu-allocation-machine',
       name: 'GPU Resource Allocation',
       status: 'running',
-      currentState: 'allocated',
+      currentState: 'allocated',;
       transitions: ['release', 'extend', 'optimize'],
-      lastUpdated: new Date().toISOString(),
-      instances: 2
+      lastUpdated: new Date().toISOString(),;
+      instances: 2;
     }
   ];
-  
+
   $effect(() => {
     mounted = true;
     loadMachines();
   });
-  
+
   async function loadMachines() {
     loading = true;
     try {
@@ -74,7 +74,7 @@ https://svelte.dev/e/expected_token -->
       loading = false;
     }
   }
-  
+
   async function restartMachine(machineId: string) {
     try {
       // await fetch(`/api/state/machines/${machineId}/restart`, { method: 'POST' });
@@ -84,7 +84,7 @@ https://svelte.dev/e/expected_token -->
       console.error('Failed to restart machine:', error);
     }
   }
-  
+
   async function stopMachine(machineId: string) {
     try {
       // await fetch(`/api/state/machines/${machineId}/stop`, { method: 'POST' });
@@ -94,7 +94,7 @@ https://svelte.dev/e/expected_token -->
       console.error('Failed to stop machine:', error);
     }
   }
-  
+
   function getStatusColor(status: string) {
     switch (status) {
       case 'running': return 'bg-green-100 text-green-800';
@@ -114,7 +114,7 @@ https://svelte.dev/e/expected_token -->
   <header class="page-header">
     <h1>🔄 State Machine Registry</h1>
     <p>Monitor and manage XState machines across the legal AI platform</p>
-    
+
     <div class="stats-grid">
       <div class="stat-nier-bits-card">
         <span class="stat-number">{machines.length}</span>
@@ -150,24 +150,24 @@ https://svelte.dev/e/expected_token -->
               </div>
               <p class="machine-id">ID: {machine.id}</p>
             </div>
-            
+
             <divContent>
               <div class="machine-details">
                 <div class="detail-row">
                   <span class="label">Current State:</span>
                   <span class="value state-indicator">{machine.currentState}</span>
                 </div>
-                
+
                 <div class="detail-row">
                   <span class="label">Instances:</span>
                   <span class="value">{machine.instances}</span>
                 </div>
-                
+
                 <div class="detail-row">
                   <span class="label">Last Updated:</span>
                   <span class="value">{new Date(machine.lastUpdated).toLocaleTimeString()}</span>
                 </div>
-                
+
                 <div class="transitions">
                   <span class="label">Available Transitions:</span>
                   <div class="transition-tags">
@@ -176,26 +176,26 @@ https://svelte.dev/e/expected_token -->
                     {/each}
                   </div>
                 </div>
-                
+
                 <div class="machine-actions">
-                  <button class="nes-btn" 
-                    variant="ghost" 
+                  <button class="nes-btn"
+                    variant="ghost"
                     size="sm"
                     onclick={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
                   >
                     View Transitions
                   </button>
-                  
-                  <button class="nes-btn" 
-                    variant="ghost" 
+
+                  <button class="nes-btn"
+                    variant="ghost"
                     size="sm"
                     onclick={() => restartMachine(machine.id)}
                   >
                     Restart
                   </button>
-                  
+
                   {#if machine.status === 'running'}
-                    <button class="nes-btn is-error" 
+                    <button class="nes-btn is-error"
                       size="sm"
                       onclick={() => stopMachine(machine.id)}
                     >
@@ -238,7 +238,7 @@ https://svelte.dev/e/expected_token -->
 
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
   }

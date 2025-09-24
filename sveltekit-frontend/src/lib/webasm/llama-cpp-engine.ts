@@ -102,7 +102,7 @@ export class WebASMLlamaCppEngine {
     // Instantiate with memory and GPU bindings;
     const memory = new WebAssembly.Memory({ 
       initial: 256,  // 16MB initial
-      maximum: 2048, // 128MB maximum
+      maximum: 2048, // 128MB maximum;
       shared: true   // Enable SharedArrayBuffer for threading
     });
     
@@ -260,7 +260,7 @@ export class WebASMLlamaCppEngine {
       this.updateMetrics(outputTokens.length, processingTime);
       
       return {
-        text: outputText,
+        text: outputText,;
         tokens: outputTokens.length,
         processingTime,
         tokensPerSecond,
@@ -506,7 +506,7 @@ export const llamaCppEngine = new WebASMLlamaCppEngine({
 
 // Convenience function for quick inference
 export async function runQuickInference(
-  prompt: string,
+  prompt: string,;
   options: Partial<InferenceRequest> = {}
 ): Promise<InferenceResult> {
   if (!llamaCppEngine) {
@@ -517,7 +517,7 @@ export async function runQuickInference(
     prompt,
     maxTokens: options.maxTokens || 256,
     temperature: options.temperature || 0.1,
-    topP: options.topP || 0.9,
+    topP: options.topP || 0.9,;
     stream: options.stream || false,
     stopTokens: options.stopTokens || ['</s>', '\n\n']
   });

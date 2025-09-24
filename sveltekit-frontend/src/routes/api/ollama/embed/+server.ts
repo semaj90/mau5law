@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
-import type { EmbeddingResponse } from "$lib/types/ollama";
-import type { RequestHandler } from './$types.js';
+import type { EmbeddingResponse } from "$lib/types/ollama"
+import type { RequestHandler } from './$types.js'
 
 /*
  * Ollama Embeddings API Endpoint
@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js';
  */
 
 
-const OLLAMA_BASE_URL = import.meta.env.OLLAMA_URL || 'http://localhost:11434';
+const OLLAMA_BASE_URL = import.meta.env.OLLAMA_URL || 'http://localhost:11434'
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -17,14 +17,14 @@ export const POST: RequestHandler = async ({ request }) => {
       model = 'nomic-embed-text:latest',
       normalize = true,
       truncate = true
-    } = await request.json();
+    } = await request.json()
 
     if (!text) {
-      return json({ error: 'Text is required' }, { status: 400 });
+      return json({ error: 'Text is required' }, { status: 400 })
     }
 
     // Truncate text if too long (embedding models have token limits)
-    const truncatedText = truncate ? text.substring(0, 2000) : text;
+    const truncatedText = truncate ? text.substring(0, 2000) : text
 
     const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
       method: 'POST',
@@ -35,21 +35,21 @@ export const POST: RequestHandler = async ({ request }) => {
         model: model.replace(':latest', ''),
         prompt: truncatedText
       })
-    });
+    })
 
     if (!response.ok) {
-      throw new Error(`Ollama embeddings API error: ${response.status} ${response.statusText}`);
+      throw new Error(`Ollama embeddings API error: ${response.status} ${response.statusText}`)
     }
 
-    const data: EmbeddingResponse = await response.json();
+    const data: EmbeddingResponse = await response.json()
 
-    let embedding = data.embedding;
+    let embedding = data.embedding
 
-    // Normalize embedding if requested;
+    // Normalize embedding if requested
     if (normalize && embedding) {
-      const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
+      const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0)
       if (norm > 0) {
-        embedding = embedding.map(val => val / norm);
+        embedding = embedding.map(val => val / norm)
       }
     }
 
@@ -64,16 +64,16 @@ export const POST: RequestHandler = async ({ request }) => {
         normalized: normalize,
         timestamp: new Date().toISOString()
       }
-    });
+    })
   } catch (error: any) {
-    console.error('Embeddings API error:', error);
-    return json();
+    console.error('Embeddings API error:', error)
+    return json()
       {
         success: false,
         error: 'Failed to generate embeddings',
         details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
-    );
+    )
   }
-};
+}

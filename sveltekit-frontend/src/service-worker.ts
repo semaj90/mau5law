@@ -208,7 +208,7 @@ async function fetchWithSIMD(request: Request): Promise<Response> {
     // Return optimized response;
     return new Response(JSON.stringify(parsedData), {
       status: response.status,
-      statusText: response.statusText,
+      statusText: response.statusText,;
       headers: {
         ...Object.fromEntries(response.headers.entries()),
         'X-SIMD-Optimized': 'true'
@@ -225,7 +225,7 @@ async function fetchWithSIMD(request: Request): Promise<Response> {
  */
 async function cacheResponse(
   cacheKey: string,
-  response: Response,
+  response: Response,;
   request: Request;
 ): Promise<void> {
   try {
@@ -244,7 +244,7 @@ async function cacheResponse(
     // 2. Redis distributed cache;
     if (isRedisConnected && cacheStrategy.useRedis) {
       cachePromises.push(redisWebGPUIntegration.cacheResult(cacheKey, responseData, {
-          ttl: cacheStrategy.ttl,
+          ttl: cacheStrategy.ttl,;
           priority: cacheStrategy.priority
         })
       );
@@ -277,7 +277,7 @@ function determineCacheStrategy(request: Request): {
     return {
       useRedis: true,
       useSOM: true,
-      ttl: 24 * 60 * 60, // 24 hours
+      ttl: 24 * 60 * 60, // 24 hours;
       priority: 10
     };
   }
@@ -287,7 +287,7 @@ function determineCacheStrategy(request: Request): {
     return {
       useRedis: true,
       useSOM: false,
-      ttl: 60 * 60, // 1 hour
+      ttl: 60 * 60, // 1 hour;
       priority: 5
     };
   }
@@ -297,7 +297,7 @@ function determineCacheStrategy(request: Request): {
     return {
       useRedis: true,
       useSOM: true,
-      ttl: 15 * 60, // 15 minutes
+      ttl: 15 * 60, // 15 minutes;
       priority: 8
     };
   }
@@ -307,7 +307,7 @@ function determineCacheStrategy(request: Request): {
     return {
       useRedis: false,
       useSOM: false,
-      ttl: 5 * 60, // 5 minutes
+      ttl: 5 * 60, // 5 minutes;
       priority: 3
     };
   }
@@ -316,7 +316,7 @@ function determineCacheStrategy(request: Request): {
   return {
     useRedis: true,
     useSOM: false,
-    ttl: 30 * 60, // 30 minutes
+    ttl: 30 * 60, // 30 minutes;
     priority: 5
   };
 }
@@ -426,7 +426,7 @@ function queueCommonCacheWarming(): void {
       id: 'search-patterns',
       type: 'search_results',
       priority: 7,
-      payload: { warm: 'popular_queries' },
+      payload: { warm: 'popular_queries' },;
       retries: 0
     }
   ];
@@ -567,7 +567,7 @@ self.addEventListener('message', (event: MessageEvent) => {
     case 'GET_CACHE_STATUS':;
       event.ports[0]?.postMessage({
         redis: isRedisConnected,
-        webgpu: webgpuInitialized,
+        webgpu: webgpuInitialized,;
         som: somCacheReady,
         warmingQueue: warmingQueue.length,
         activeWarming: activeWarmingTasks.size

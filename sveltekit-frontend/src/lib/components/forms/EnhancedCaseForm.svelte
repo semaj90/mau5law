@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Enhanced Case Form with proper schema mapping -->
@@ -31,9 +31,9 @@ https://svelte.dev/e/props_duplicate -->
     estimatedValue: case_?.estimatedValue || "",
     jurisdiction: case_?.jurisdiction || "",
     leadProsecutor: case_?.leadProsecutor || user?.id || "",
-    assignedTeam: case_?.assignedTeam || [],
-    tags: case_?.tags || [],
-    metadata: case_?.metadata || ,
+    assignedTeam: case_?.assignedTeam || [],;
+    tags: case_?.tags || [],;
+    metadata: case_?.metadata || ,;
   });
   let loading = $state(false);
   let errors = $state<Record<string, string>('') >( );
@@ -53,15 +53,15 @@ https://svelte.dev/e/props_duplicate -->
     if (formData.estimatedValue && isNaN(Number(formData.estimatedValue))) {
       errors.estimatedValue = "Estimated value must be a number";
   }
-    return Object.keys.length === 0;
+    return Object.keys(errors).length === 0;
   }
   // Handle form submission
   async function handleSubmit() {
     if (!validateForm()) {
       notifications.add({
-        type: "error",
-        title: "Validation Error",
-        message: "Please fix the form errors before submitting.",
+        type: "error",;
+        title: "Validation Error",;
+        message: "Please fix the form errors before submitting.",;
       });
       return;
   }
@@ -85,8 +85,8 @@ https://svelte.dev/e/props_duplicate -->
           : null,
         jurisdiction: formData.jurisdiction.trim(),
         leadProsecutor: formData.leadProsecutor || user.id,
-        assignedTeam: formData.assignedTeam,
-        tags: formData.tags,
+        assignedTeam: formData.assignedTeam,;
+        tags: formData.tags,;
         metadata: {
           ...formData.metadata,
           formVersion: "2.0",
@@ -105,8 +105,8 @@ https://svelte.dev/e/props_duplicate -->
         method,
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify(apiData),
+        },;
+        body: JSON.stringify(apiData),;
       });
 
       // Defensive: handle non-JSON error responses
@@ -120,8 +120,8 @@ https://svelte.dev/e/props_duplicate -->
         throw new Error(savedCase?.error || "Failed to save case");
   }
       notifications.add({
-        type: "success",
-        title: case_ ? "Case Updated" : "Case Created",
+        type: "success",;
+        title: case_ ? "Case Updated" : "Case Created",;
         message: `Case "${savedCase.title}" has been ${case_ ? "updated" : "created"} successfully.`,
       });
 
@@ -129,11 +129,11 @@ https://svelte.dev/e/props_duplicate -->
     } catch (error) {
       console.error("Error saving caseItem:", error);
       notifications.add({
-        type: "error",
-        title: "Save Error",
+        type: "error",;
+        title: "Save Error",;
         message:
           error instanceof Error
-            ? error.message: "Failed to save case. Please try again.",
+            ? error.message: "Failed to save case. Please try again.",;
       });
     } finally {
       loading = false;
@@ -405,7 +405,7 @@ https://svelte.dev/e/props_duplicate -->
 
 <style>
   /* @unocss-include */
-  .enhanced-case-form {
+  .enhanced-case-form {;
     max-width: 800px;
     margin: 0 auto;
     background: white;
@@ -439,7 +439,7 @@ https://svelte.dev/e/props_duplicate -->
     font-weight: 500;
     color: #374151;
 }
-  label.required: :after {
+  label.required::after {
     content: "*";
     color: #ef4444;
     margin-left: 0.25rem;
@@ -457,8 +457,8 @@ https://svelte.dev/e/props_duplicate -->
       box-shadow 0.2s;
 }
   input:focus,
-  select:focus,
-  textarea:focus {
+  select:focus,;
+  textarea:focus {;
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -490,7 +490,7 @@ https://svelte.dev/e/props_duplicate -->
     font-size: 0.875rem;
     transition: background-color 0.2s;
 }
-  .tag-input button:hover {
+  .tag-input button:hover {;
     background: #2563eb;
 }
   .tags-list {
@@ -523,7 +523,7 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 50%;
     transition: background-color 0.2s;
 }
-  .tag button:hover {
+  .tag button:hover {;
     background: #d1d5db;
     color: #374151;
 }
@@ -545,7 +545,7 @@ https://svelte.dev/e/props_duplicate -->
     font-size: 1rem;
     transition: all 0.2s;
 }
-  .form-actions button:hover {
+  .form-actions button:hover {;
     background: #f9fafb;
 }
   .form-actions button.primary {
@@ -557,7 +557,7 @@ https://svelte.dev/e/props_duplicate -->
     background: #2563eb;
     border-color: #2563eb;
 }
-  .form-actions button:disabled {
+  .form-actions button:disabled {;
     opacity: 0.5;
     cursor: not-allowed;
 }

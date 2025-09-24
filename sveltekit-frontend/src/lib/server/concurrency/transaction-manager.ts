@@ -32,7 +32,7 @@ export class TransactionManager {
    * Execute a function within a database transaction with advisory locks
    */
   async withTransaction<T>(
-    fn: (ctx: TransactionContext) => Promise<T>,
+    fn: (ctx: TransactionContext) => Promise<T>,;
     options: TransactionOptions = {}
   ): Promise<T> {
     const {
@@ -48,7 +48,7 @@ export class TransactionManager {
       transactionId,
       startTime: new Date(),
       userId,
-      sessionId,
+      sessionId,;
       locks: [],
       metadata
     };
@@ -89,7 +89,7 @@ export class TransactionManager {
     entityType: LockType,
     entityId: string,
     fn: (ctx: TransactionContext) => Promise<T>,
-    mode: LockMode = LOCK_MODES.EXCLUSIVE,
+    mode: LockMode = LOCK_MODES.EXCLUSIVE,;
     options: TransactionOptions = {}
   ): Promise<T> {
     return this.withTransaction(async (ctx) => {
@@ -122,7 +122,7 @@ export class TransactionManager {
    */
   async withCustodyTransaction<T>(
     evidenceId: string,
-    fn: (ctx: TransactionContext) => Promise<T>,
+    fn: (ctx: TransactionContext) => Promise<T>,;
     options: TransactionOptions = {}
   ): Promise<T> {
     return this.withTransactionAndLock('evidence', evidenceId, fn, LOCK_MODES.EXCLUSIVE, {
@@ -147,7 +147,7 @@ export class TransactionManager {
   ): Promise<T> {
     return this.withTransactionAndLock('case', caseId, fn, LOCK_MODES.EXCLUSIVE, {
       ...options,
-      isolationLevel: 'REPEATABLE READ',
+      isolationLevel: 'REPEATABLE READ',;
       metadata: {
         ...options.metadata,
         operationType: 'case_modification',
@@ -163,7 +163,7 @@ export class TransactionManager {
   async withDocumentAnalysisTransaction<T>(
     documentId: string,
     fn: (ctx: TransactionContext) => Promise<T>,
-    isReadOnly: boolean = false,
+    isReadOnly: boolean = false,;
     options: TransactionOptions = {}
   ): Promise<T> {
     const mode = isReadOnly ? LOCK_MODES.SHARED: LOCK_MODES.EXCLUSIVE;
@@ -191,7 +191,7 @@ export class TransactionManager {
   ): Promise<T> {
     return this.withTransactionAndLock('vector_index', indexName, fn, LOCK_MODES.EXCLUSIVE, {
       ...options,
-      isolationLevel: 'SERIALIZABLE',
+      isolationLevel: 'SERIALIZABLE',;
       timeout: 60000, // Vector operations can take longer;
       metadata: {
         ...options.metadata,
@@ -206,7 +206,7 @@ export class TransactionManager {
    */
   async withMultiEntityTransaction<T>(
     entities: Array<any>,
-    fn: (ctx: TransactionContext) => Promise<T>,
+    fn: (ctx: TransactionContext) => Promise<T>,;
     options: TransactionOptions = {}
   ): Promise<T> {
     return this.withTransaction(async (ctx) => {

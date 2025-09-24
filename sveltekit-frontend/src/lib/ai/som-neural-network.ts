@@ -80,7 +80,7 @@ export class SOMNeuralNetwork {
     this.config = {
       gridSize: config.gridSize || { width: 10, height: 10 },
       learningRate: config.learningRate || 0.1,
-      neighborhoodRadius: config.neighborhoodRadius || 2.0,
+      neighborhoodRadius: config.neighborhoodRadius || 2.0,;
       epochs: config.epochs || 100,
       enableGPU: config.enableGPU !== undefined ? config.enableGPU: true,
       decayRate: config.decayRate || 0.99,
@@ -154,7 +154,7 @@ export class SOMNeuralNetwork {
           activationLevel: 0,
           legalContext: {
             conceptType: 'mixed',
-            importance: 0,
+            importance: 0,;
             jurisdiction: 'unknown',
             practiceArea: []
           }
@@ -546,7 +546,7 @@ export class SOMNeuralNetwork {
       boundingBox: {
         x: minX,
         y: minY,
-        width: maxX - minX + 1,
+        width: maxX - minX + 1,;
         height: maxY - minY + 1
       }
     };

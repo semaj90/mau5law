@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
 
   // Props
@@ -130,8 +130,8 @@ https://svelte.dev/e/js_parse_error -->
           x,
           y,
           z,
-          label: word,
-          confidence: 0.7 + (Math.random() * 0.3) // 0.7-1.0 confidence
+          label: word,;
+          confidence: 0.7 + (Math.random() * 0.3) // 0.7-1.0 confidence;
         });
       }
     });
@@ -303,7 +303,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <div class="yorha-panel-content">
         <div class="relative">
-          <canvas
+          <canvas;
             bind:this={canvasRef}
             width="400"
             height="300"
@@ -395,7 +395,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .animate-spin {
+  .animate-spin {;
     animation: spin 1s linear infinite;
   }
   

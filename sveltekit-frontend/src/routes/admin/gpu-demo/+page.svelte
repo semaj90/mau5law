@@ -5,13 +5,13 @@
   // Svelte 5 runes are auto-imported
 
   import { onMount, onDestroy } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import {
     createGPUClusterManager,
     checkGPUCapabilities,
@@ -30,9 +30,9 @@
   }
   let gpuCapabilities: GpuCapabilities = $state({
     webgl: false,
-    webgl2: false,
-    webgpu: false,
-    extensions: [],
+    webgl2: false,;
+    webgpu: false,;
+    extensions: [],;
   });
 
   // Canvas and WebGL context
@@ -89,11 +89,13 @@
   let attentionData = $state<Float32Array>(new Float32Array(0));
   let documentData = $state<Float32Array>(new Float32Array(0));
   let timelineData = $state<Float32Array>(new Float32Array(0));
-  $effect(async () => {
-    // Create GPU manager then init (shader cache created after GL context is ready)
+  $effect(() => {
+    (async () => {
+// Create GPU manager then init (shader cache created after GL context is ready)
     gpuManager = createGPUClusterManager();
     await initializeGPUDemo();
     generateDemoData();
+    })();
   });
 
   onDestroy(() => {
@@ -418,10 +420,10 @@
       const workload = {
         id: `demo_${Date.now()}`,
         type: 'vector-processing' as const,
-        priority: 'high' as const,
+        priority: 'high' as const,;
         data: new Float32Array([1, 2, 3, 4, 5]),
         shaderProgram: 'vector-normalize',
-        expectedDuration: 10,
+        expectedDuration: 10,;
         callback: (result: unknown) => {
           console.log('GPU workload result:', result);
         },
@@ -476,7 +478,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="flex items-center gap-3">
           <div
-            class="p-2 rounded-lg"
+            class="p-2 rounded-lg";
             class:bg-green-100={gpuCapabilities.webgl}
             class:bg-red-100={!gpuCapabilities.webgl}>
             <div
@@ -624,7 +626,7 @@
       <div class="space-y-4">
         <!-- Canvas -->
         <div class="relative">
-          <canvas
+          <canvas;
             bind:this={canvas as any}
             width="500"
             height="400"
@@ -784,7 +786,7 @@ Execute GPU Workload
 
 <style>
   /* Custom WebGL canvas styling */
-  canvas {
+  canvas {;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;

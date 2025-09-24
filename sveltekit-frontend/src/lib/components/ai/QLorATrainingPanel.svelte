@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- QLorA Training Panel with Checkbox Toggle -->
@@ -14,7 +14,7 @@ https://svelte.dev/e/attribute_duplicate -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   // Import QLorA training service
   import { 
@@ -73,7 +73,7 @@ https://svelte.dev/e/attribute_duplicate -->
     trainingEnabled = !trainingEnabled;
     // Update service configuration
     qloraTrainingService.updateConfig({
-      enabled: trainingEnabled
+      enabled: trainingEnabled;
     });
 
     // If enabling and we have files, start training
@@ -500,21 +500,21 @@ showAdvancedConfig = !showAdvancedConfig}
 
 <style>
   /* Custom scrollbar for file list */
-  .overflow-y-auto: :-webkit-scrollbar {
+  .overflow-y-auto::-webkit-scrollbar {;
     width: 6px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-track {
+  .overflow-y-auto::-webkit-scrollbar-track {
     background: rgba(55, 65, 81, 0.3);
     border-radius: 3px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-thumb {
+  .overflow-y-auto::-webkit-scrollbar-thumb {
     background: rgba(59, 130, 246, 0.5);
     border-radius: 3px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-thumb:hover {
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: rgba(59, 130, 246, 0.7);
   }
 </style>

@@ -83,7 +83,7 @@
 
 <style>
   /* @unocss-include */
-  .search-input-container {
+  .search-input-container {;
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -117,7 +117,7 @@
 	color: var(--text-primary);
 	font-size: 0.875rem;
   }
-  .search-input: :placeholder {
+  .search-input::placeholder {
 	color: var(--text-muted);
   }
   .clear-button {

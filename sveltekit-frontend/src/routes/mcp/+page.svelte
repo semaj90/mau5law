@@ -9,9 +9,9 @@
   // Server status
   const serverStatus = writable({
     status: 'checking',
-    workers: 0,
-    uptime: 0,
-    version: 'Unknown'
+    workers: 0,;
+    uptime: 0,;
+    version: 'Unknown';
   });
 
   // Quick stats
@@ -26,25 +26,25 @@
       title: 'Document Analysis',
       description: 'AI-powered legal document processing with entity extraction, risk assessment, and compliance checking',
       icon: '📄',
-      href: '/mcp/demo',
+      href: '/mcp/demo',;
       stats: { processed: '450+ docs', accuracy: '95%' },
-      color: 'blue'
+      color: 'blue';
     },
     {
       title: 'Legal Processor',
       description: 'Batch document processing with parallel worker threads and real-time progress tracking',
       icon: '⚖️',
-      href: '/mcp/processor',
+      href: '/mcp/processor',;
       stats: { workers: '4 cores', speed: '2.3s avg' },
-      color: 'purple'
+      color: 'purple';
     },
     {
       title: 'Server Dashboard',
       description: 'Real-time monitoring of MCP server performance, GPU utilization, and system metrics',
       icon: '📊',
-      href: '/mcp/dashboard',
-      stats: { uptime: '99.9%', gpu: 'RTX 3060 Ti' },
-      color: 'green'
+      href: '/mcp/dashboard',;
+      stats: { uptime: '99.9%', gpu: 'RTX 3060 Ti' },;
+      color: 'green';
     }
   ];
 
@@ -58,15 +58,17 @@
   ];
 
   // Check server status on mount
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       const health = await mcpApi.getHealth();
       serverStatus.set({
         status: health.status,
-        workers: health.workers,
-        uptime: health.uptime,
-        version: health.version
-      });
+        workers: health.workers,;
+        uptime: health.uptime,;
+        version: health.version;
+    })();
+  });
     } catch (error) {
       console.error('Failed to get server status:', error);
     }

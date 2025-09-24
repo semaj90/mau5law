@@ -36,8 +36,8 @@
   	// Filter state
   	let selectedFileTypes: string[] = $state([]);
   	let dateRange = $state({
-  		from: '',
-  		to: ''
+  		from: '',;
+  		to: '';
   	});
 
   	function handleSearch(event: CustomEvent) {
@@ -67,7 +67,7 @@
   		dispatchFilters();
   }
   	function dispatchFilters() {
-  		onfiltersChanged?.(new CustomEvent('filtersChanged', { 
+  		onfiltersChanged?.(new CustomEvent('filtersChanged', {
   			detail: {
   				fileTypes: selectedFileTypes,
   				dateRange: dateRange
@@ -78,7 +78,7 @@
 
 <div class="search-bar-container">
 	<!-- Main Search Input -->
-	<SearchInput 
+	<SearchInput
 		{placeholder}
 		{value}
 		onsearch={handleSearch}
@@ -123,36 +123,36 @@
 			<span class="filter-label">File Type:</span>
 			<div class="filter-options">
 				<label class="filter-checkbox">
-					<input 
-						type="checkbox" 
-						value="image" 
+					<input
+						type="checkbox"
+						value="image"
 						checked={selectedFileTypes.includes('image')}
 						onchange={handleFileTypeChange}
 					/>
 					Images
 				</label>
 				<label class="filter-checkbox">
-					<input 
-						type="checkbox" 
-						value="document" 
+					<input
+						type="checkbox"
+						value="document"
 						checked={selectedFileTypes.includes('document')}
 						onchange={handleFileTypeChange}
 					/>
 					Documents
 				</label>
 				<label class="filter-checkbox">
-					<input 
-						type="checkbox" 
-						value="video" 
+					<input
+						type="checkbox"
+						value="video"
 						checked={selectedFileTypes.includes('video')}
 						onchange={handleFileTypeChange}
 					/>
 					Videos
 				</label>
 				<label class="filter-checkbox">
-					<input 
-						type="checkbox" 
-						value="audio" 
+					<input
+						type="checkbox"
+						value="audio"
 						checked={selectedFileTypes.includes('audio')}
 						onchange={handleFileTypeChange}
 					/>
@@ -164,18 +164,18 @@
 		<div class="filter-group">
 			<span class="filter-label">Date Range:</span>
 			<div class="date-range">
-				<input 
-					type="date" 
-					class="date-input" 
+				<input
+					type="date"
+					class="date-input"
 					aria-label="From date"
 					bind:value={dateRange.from}
 					onchange={handleDateChange}
 				/>
 				<span>to</span>
-				<input 
-					type="date" 
-					class="date-input" 
-					aria-label="To date"
+				<input
+					type="date"
+					class="date-input"
+					aria-label="To date";
 					bind:value={dateRange.to}
 					onchange={handleDateChange}
 				/>
@@ -183,8 +183,8 @@
 		</div>
 
 		<div class="filter-actions">
-			<button 
-				type="button" 
+			<button
+				type="button"
 				class="clear-filters-btn"
 				onclick={() => {
 					selectedFileTypes = [];
@@ -228,7 +228,7 @@
 		cursor: pointer;
 		min-width: 100px;
 }
-	.sort-container: global(svg) {
+	.sort-container :global(svg) {
 		position: absolute;
 		right: 0.5rem;
 		top: 50%;

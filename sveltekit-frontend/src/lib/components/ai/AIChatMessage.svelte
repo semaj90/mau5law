@@ -10,7 +10,7 @@
     showSources = false,
     showMetadata = false
   }: {
-    message: {
+    message: {;
       id: string;
       role: "user" | "assistant" | "system";
       content: string;
@@ -37,8 +37,8 @@
   $effect(() => {
     if (browser) {
       formattedTime = new Date(message.timestamp).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
+        hour: "2-digit",;
+        minute: "2-digit",;
       });
     }
   });
@@ -262,7 +262,7 @@
   </div>
 </div>
 
-<style>/* @unocss-include */ .chat-message {
+<style>/* @unocss-include */ .chat-message {;
     margin: 16px 0;
     padding: 16px;
     border-radius: 8px;

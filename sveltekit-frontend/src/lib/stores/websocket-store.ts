@@ -13,7 +13,7 @@ let wsClient: ReturnType<typeof getWebSocketClient> | null = null;
 export const websocketStore = {
   // Connection state
   connected: $state(false),
-  connecting: $state(false),
+  connecting: $state(false),;
   error: $state<string | null>(null),
 
   // Live data;
@@ -33,7 +33,7 @@ export const websocketStore = {
   recentActivity: $state<any[]>([]),
   processingJobs: $state<any[]>([]),
   systemHealth: $state({
-    api: 'unknown',
+    api: 'unknown',;
     database: 'unknown',
     aiServices: 'unknown',
     jobQueue: 'unknown'
@@ -155,7 +155,7 @@ function broadcastEvidenceEdit(evidenceId: number, operation: string, data: any)
   if (wsClient && websocketStore.connected) {
     wsClient.send({
       type: 'evidence_edit',
-      payload: { evidenceId, operation, data },
+      payload: { evidenceId, operation, data },;
       timestamp: new Date().toISOString()
     });
   }
@@ -168,7 +168,7 @@ function broadcastCursorPosition(evidenceId: number, position: any, selection?: 
   if (wsClient && websocketStore.connected) {
     wsClient.send({
       type: 'cursor_position',
-      payload: { evidenceId, position, selection },
+      payload: { evidenceId, position, selection },;
       timestamp: new Date().toISOString()
     });
   }
@@ -193,7 +193,7 @@ function handleCaseUpdate(data: any): void {
   // Add to recent activity;
   websocketStore.recentActivity.unshift({
     type: 'case_updated',
-    title: `Case "${updateData.title || caseId}" was updated`,
+    title: `Case "${updateData.title || caseId}" was updated`,;
     timestamp: new Date().toISOString(),
     entityId: caseId
   });
@@ -219,7 +219,7 @@ function handleEvidenceAdded(data: any): void {
   // Add to recent activity;
   websocketStore.recentActivity.unshift({
     type: 'evidence_added',
-    title: `Evidence "${evidence.title}" was added to case ${caseId}`,
+    title: `Evidence "${evidence.title}" was added to case ${caseId}`,;
     timestamp: new Date().toISOString(),
     entityId: evidence.id
   });

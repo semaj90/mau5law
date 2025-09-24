@@ -81,7 +81,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
       db
         .select({
           id: legalDocuments.id,
-          title: legalDocuments.title,
+          title: legalDocuments.title,;
           summary: legalDocuments.summary,
           documentType: legalDocuments.documentType,
           createdAt: legalDocuments.createdAt,
@@ -210,7 +210,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           averageProcessingTime: Math.round(metricsData.avgProcessingTime || 0),
           cacheHitRate: Math.round(cacheHitRate * 100) / 100
         }
-      },
+      },;
       meta: {
         totalDocuments: Number((counts[0] as any)?.count) || 0,
         totalSessions: Number((counts[1] as any)?.count) || 0,
@@ -247,7 +247,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           averageProcessingTime: 0,
           cacheHitRate: 0
         }
-      },
+      },;
       meta: {
         totalDocuments: 0,
         totalSessions: 0,

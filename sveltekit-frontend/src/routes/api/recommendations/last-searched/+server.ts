@@ -3,23 +3,23 @@
  * Returns user's recent search history with intelligent suggestions
  */
 
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem';
+import type { RequestHandler } from './$types'
+import { json } from '@sveltejs/kit'
+import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem'
 
 interface SearchItem {
-  id: string;
-  query: string;
-  timestamp: string;
-  resultCount: number;
-  searchType: 'cases' | 'documents' | 'evidence' | 'precedents' | 'clients';
+  id: string
+  query: string
+  timestamp: string
+  resultCount: number
+  searchType: 'cases' | 'documents' | 'evidence' | 'precedents' | 'clients'
   filters?: {
-    practiceArea?: string;
-    dateRange?: string;
-    status?: string;
-  };
-  confidence: number;
-  clickedResults: string[];
+    practiceArea?: string
+    dateRange?: string
+    status?: string
+  }
+  confidence: number
+  clickedResults: string[]
   timeSpent: number; // seconds
 }
 
@@ -93,38 +93,38 @@ const mockSearchHistory: SearchItem[] = [
     clickedResults: ['case-003'],
     timeSpent: 178
   }
-];
+]
 
 export const GET: RequestHandler = async ({ url }) => {
-  const limit = parseInt(url.searchParams.get('limit') || '10');
-  const searchType = url.searchParams.get('type') as SearchItem['searchType'] | null;
-  const cacheKey = `last-searched-${limit}-${searchType || 'all'}`;
+  const limit = parseInt(url.searchParams.get('limit') || '10')
+  const searchType = url.searchParams.get('type') as SearchItem['searchType'] | null
+  const cacheKey = `last-searched-${limit}-${searchType || 'all'}`
 
   try {
     // Check cache first
-    const cached = await multiLayerCache.get<SearchItem[]>(cacheKey);
+    const cached = await multiLayerCache.get<SearchItem[]>(cacheKey)
     if (cached) {
       return json({
         success: true,
         data: cached,
         fromCache: true,
         timestamp: new Date().toISOString()
-      });
+      })
     }
 
     // Filter by search type if specified
-    let filteredSearches = mockSearchHistory;
+    let filteredSearches = mockSearchHistory
     if (searchType) {
-      filteredSearches = mockSearchHistory.filter(search => search.searchType === searchType);
+      filteredSearches = mockSearchHistory.filter(search => search.searchType === searchType)
     }
 
     // Sort by timestamp (most recent first) and limit
     const recentSearches = filteredSearches
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-      .slice(0, limit);
+      .slice(0, limit)
 
     // Cache the results (5-minute TTL, medium priority)
-    await multiLayerCache.set(cacheKey, recentSearches, 300, 150);
+    await multiLayerCache.set(cacheKey, recentSearches, 300, 150)
 
     return json({
       success: true,
@@ -137,28 +137,28 @@ export const GET: RequestHandler = async ({ url }) => {
         averageResults: recentSearches.reduce((sum, s) => sum + s.resultCount, 0) / recentSearches.length,
         totalTimeSpent: recentSearches.reduce((sum, s) => sum + s.timeSpent, 0)
       }
-    });
+    })
 
   } catch (error) {
-    console.error('Error fetching search history:', error);
+    console.error('Error fetching search history:', error)
     return json({
       success: false,
       error: 'Failed to fetch search history',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json();
-    const { query, searchType, filters, resultCount } = body;
+    const body = await request.json()
+    const { query, searchType, filters, resultCount } = body
 
     if (!query || !searchType) {
       return json({
         success: false,
         error: 'Missing required fields: query, searchType'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Create new search entry
@@ -172,84 +172,84 @@ export const POST: RequestHandler = async ({ request }) => {
       confidence: 0.8, // Default confidence
       clickedResults: [],
       timeSpent: 0
-    };
+    }
 
     // Add to mock history (in production, save to PostgreSQL)
-    mockSearchHistory.unshift(newSearch);
+    mockSearchHistory.unshift(newSearch)
 
     // Keep only last 100 searches
     if (mockSearchHistory.length > 100) {
-      mockSearchHistory.splice(100);
+      mockSearchHistory.splice(100)
     }
 
     // Clear cache to force refresh
-    await multiLayerCache.clear('memory');
+    await multiLayerCache.clear('memory')
 
     return json({
       success: true,
       message: 'Search recorded successfully',
       data: newSearch,
       timestamp: new Date().toISOString()
-    });
+    })
 
   } catch (error) {
-    console.error('Error recording search:', error);
+    console.error('Error recording search:', error)
     return json({
       success: false,
       error: 'Failed to record search'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const PATCH: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json();
-    const { searchId, clickedResult, timeSpent } = body;
+    const body = await request.json()
+    const { searchId, clickedResult, timeSpent } = body
 
     if (!searchId) {
       return json({
         success: false,
         error: 'Missing required field: searchId'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Find and update search entry
-    const searchIndex = mockSearchHistory.findIndex(s => s.id === searchId);
+    const searchIndex = mockSearchHistory.findIndex(s => s.id === searchId)
     if (searchIndex === -1) {
       return json({
         success: false,
         error: 'Search not found'
-      }, { status: 404 });
+      }, { status: 404 })
     }
 
-    const search = mockSearchHistory[searchIndex];
+    const search = mockSearchHistory[searchIndex]
 
     // Update clicked results
     if (clickedResult && !search.clickedResults.includes(clickedResult)) {
-      search.clickedResults.push(clickedResult);
+      search.clickedResults.push(clickedResult)
       search.confidence = Math.min(1.0, search.confidence + 0.05); // Boost confidence for engaged searches
     }
 
     // Update time spent
     if (timeSpent) {
-      search.timeSpent += timeSpent;
+      search.timeSpent += timeSpent
     }
 
     // Clear cache
-    await multiLayerCache.clear('memory');
+    await multiLayerCache.clear('memory')
 
     return json({
       success: true,
       message: 'Search updated successfully',
       data: search,
       timestamp: new Date().toISOString()
-    });
+    })
 
   } catch (error) {
-    console.error('Error updating search:', error);
+    console.error('Error updating search:', error)
     return json({
       success: false,
       error: 'Failed to update search'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

@@ -20,7 +20,7 @@ export class AuthDemo {
     {
       id: 'user-2',
       email: 'paralegal@lawfirm.com',
-      name: 'Mike Paralegal',
+      name: 'Mike Paralegal',;
       role: 'paralegal',
       isAuthenticated: true
     }
@@ -82,7 +82,7 @@ export class AuthDemo {
     const newUser: AuthUser = {
       id: `user-${Date.now()}`,
       email: userData.email,
-      name: userData.name,
+      name: userData.name,;
       role: userData.role,
       isAuthenticated: true
     };

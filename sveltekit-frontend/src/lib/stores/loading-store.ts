@@ -27,7 +27,7 @@ function createLoadingStore() {
 
     startOperation: (
       id: string,
-      title: string,
+      title: string,;
       operation: LoadingOperation['operation'] = 'processing',
       description?: string,
       estimatedTime?: number;
@@ -37,7 +37,7 @@ function createLoadingStore() {
           id,
           title,
           description,
-          progress: 0,
+          progress: 0,;
           status: 'loading',
           operation,
           startTime: Date.now(),
@@ -140,7 +140,7 @@ export const aiLoading = {
 
   progress: (id: string, progress: number, description?: string) =>
     loadingStore.updateProgress(id, progress, description),
-
+;
   complete: (id: string, status: 'success' | 'error' | 'warning' = 'success') =>
     loadingStore.completeOperation(id, status)
 };
@@ -151,7 +151,7 @@ export const gpuLoading = {
 
   progress: (id: string, progress: number, description?: string) =>
     loadingStore.updateProgress(id, progress, description),
-
+;
   complete: (id: string, status: 'success' | 'error' | 'warning' = 'success') =>
     loadingStore.completeOperation(id, status)
 };
@@ -162,7 +162,7 @@ export const uploadLoading = {
 
   progress: (id: string, progress: number, description?: string) =>
     loadingStore.updateProgress(id, progress, description),
-
+;
   complete: (id: string, status: 'success' | 'error' | 'warning' = 'success') =>
     loadingStore.completeOperation(id, status)
 };
@@ -171,7 +171,7 @@ export const uploadLoading = {
 export function withLoadingTimeout<T>(
   promise: Promise<T>,
   id: string,
-  title: string,
+  title: string,;
   operation: LoadingOperation['operation'] = 'processing',
   timeoutMs: number = 30000;
 ): Promise<T> {

@@ -28,7 +28,7 @@
   interface AIMessage {
     id: string
     role: 'user' | 'assistant' | 'system'
-    content: string
+    content: string;
     timestamp: Date
     status?: 'sending' | 'sent' | 'error'
     metadata?: {
@@ -41,9 +41,9 @@
 
   interface Props {
     caseContext?: {
-      id: string
-      title: string
-      status: string
+      id: string;
+      title: string;
+      status: string;
     }
     isVisible?: boolean
   }
@@ -71,8 +71,8 @@
     {
       id: '1',
       role: 'system',
-      content: 'YoRHa Legal AI System - Version 2.0.1 - Initialized\nConnection established with Case Management Database\nGemma3 Legal AI modules loaded successfully\nReady for legal analysis and consultation',
-      timestamp: new Date(),
+      content: 'YoRHa Legal AI System - Version 2.0.1 - Initialized\nConnection established with Case Management Database\nGemma3 Legal AI modules loaded successfully\nReady for legal analysis and consultation',;
+      timestamp: new Date(),;
       metadata: { confidence: 100, model: 'gemma3-legal' }
     }
   ])
@@ -90,7 +90,7 @@
       role: 'user',
       content,
       timestamp: new Date(),
-      status: 'sending'
+      status: 'sending';
     }
     messages = [...messages, userMessage]
 
@@ -100,13 +100,13 @@
 
     try {
       const response = await fetch('/api/ai/chat', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: content,
+        body: JSON.stringify({;
+          message: content,;
           }); const settings = {
             model: 'gemma3-legal',
-            temperature: 0.1
+            temperature: 0.1;
           }
         })
       })
@@ -123,11 +123,11 @@
         role: 'assistant',
         content: data.response,
         timestamp: new Date(),
-        status: 'sent',
+        status: 'sent',;
         metadata: {
           model: data.model,
           confidence: Math.floor(Math.random() * 20) + 80, // Simulate confidence
-          processingTime: Math.floor(Math.random() * 1000) + 500
+          processingTime: Math.floor(Math.random() * 1000) + 500;
         }
       }
 
@@ -144,9 +144,9 @@
       // Add error message
       const errorMessage: AIMessage = {
         id: crypto.randomUUID(),
-        role: 'system',
+        role: 'system',;
         content: `ERROR: AI system unavailable - ${error instanceof Error ? error.message: 'Unknown error'}`,
-        timestamp: new Date(),
+        timestamp: new Date(),;
         metadata: { confidence: 0 }
       }
 
@@ -172,7 +172,7 @@
       danger: 'text-red-400',
       bg: 'bg-gray-900',
       panel: 'bg-gray-800/90',
-      border: 'border-gray-600/50'
+      border: 'border-gray-600/50';
     },
     cyberpunk: {
       primary: 'text-cyan-300',
@@ -181,16 +181,16 @@
       danger: 'text-pink-400',
       bg: 'bg-black',
       panel: 'bg-gray-900/95',
-      border: 'border-cyan-500/30'
+      border: 'border-cyan-500/30';
     },
     matrix: {
       primary: 'text-green-300',
       secondary: 'text-green-400',
       accent: 'text-lime-400',
       danger: 'text-red-500',
-      bg: 'bg-black',
-      panel: 'bg-green-950/80',
-      border: 'border-green-500/40'
+      bg: 'bg-black',;
+      panel: 'bg-green-950/80',;
+      border: 'border-green-500/40';
     }
   }
 
@@ -216,7 +216,7 @@
       role: 'user',
       content: command,
       timestamp: new Date(),
-      status: 'sent'
+      status: 'sent';
     }
     messages = [...messages, userMessage]
 
@@ -242,12 +242,12 @@
       id: (Date.now() + 1).toString(),
       role: 'assistant',
       content: response,
-      timestamp: new Date(),
+      timestamp: new Date(),;
       metadata: {
         tokens: response.length,
         model: 'YoRHa-Legal-AI-v2',
         processingTime: 1.2,
-        confidence: confidence
+        confidence: confidence;
       }
     }
 
@@ -303,7 +303,7 @@
 {#if showAIInterface}
   <div
     class="fixed inset-4 z-40 flex items-center justify-center"
-    in:scale={{ duration: 400, start: 0.9 }}
+    in:scale={{ duration: 400, start: 0.9 }};
     out:scale={{ duration: 300, start: 0.9 }}
   >
     <!-- Background Overlay -->
@@ -396,7 +396,7 @@
           <div class="flex-1 overflow-y-auto p-4 space-y-4">
             {#each messages as message (message.id)}
               <div
-                class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}"
+                class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}";
                 in:fly={{ x: message.role === 'user' ? 20 : -20, duration: 200 }}
               >
                 <div class="max-w-[80%]">
@@ -465,7 +465,7 @@
                   placeholder={isTyping ? "AI is processing..." : "Enter command or query..."}
                   disabled={isTyping}
                   class="w-full px-4 py-3 bg-gray-800/50 border {theme.border} rounded-lg
-                         {theme.primary} placeholder-gray-500 focus:border-{theme.accent.split('-')[1]}-400
+                         {theme.primary} placeholder-gray-500 focus:border-{theme.accent.split('-')[1]}-400;
                          focus:outline-none transition-colors font-mono"
                 />
                 <Activity class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 {theme.secondary} animate-pulse" />
@@ -547,7 +547,7 @@
 
 <!-- Nier Assistant Integration -->
 {#if showNierAssistant}
-  <NierAIAssistant
+  <NierAIAssistant;
     bind:isOpen={showNierAssistant}
     {caseContext}
     close={() => showNierAssistant = false}

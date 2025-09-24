@@ -13,7 +13,7 @@ import type { LogContext } from '../production-logger.js';
 const cachingService = {
   get: async (key: string): Promise<any> => null,
   set: (key: string, value: any, ttl?: number): void => {},
-  delete: (key: string): void => {},
+  delete: (key: string): void => {},;
   clear: (): void => {}
 };
 
@@ -130,7 +130,7 @@ class OptimizedQdrantService {
         searchTimeout: 5000,
         cacheHitRatio: 0.85, // Target 85% cache hit ratio
         compressionEnabled: true
-      },
+      },;
       logging: {
         cacheOperations: true,
         performanceMetrics: true,
@@ -166,7 +166,7 @@ class OptimizedQdrantService {
       logger.info(
         'Optimized Qdrant client initialized',
         {
-          component: 'QdrantOptimized',
+          component: 'QdrantOptimized',;
           service: 'qdrant'
         },);
         {
@@ -179,7 +179,7 @@ class OptimizedQdrantService {
         'Failed to initialize Qdrant client',
         error instanceof Error ? error : undefined,);
         {
-          component: 'QdrantOptimized',
+          component: 'QdrantOptimized',;
           service: 'qdrant'
         }
       );
@@ -204,7 +204,7 @@ class OptimizedQdrantService {
       logger.info(
         'Vector cache-like logging system initialized',
         {
-          component: 'QdrantOptimized',
+          component: 'QdrantOptimized',;
           service: 'qdrant'
         },);
         {
@@ -218,7 +218,7 @@ class OptimizedQdrantService {
   // Memory-optimized search with caching
   public async search(
     collection: string,
-    query: string | number[],
+    query: string | number[],;
     options: {
       limit?: number;
       offset?: number;
@@ -229,7 +229,7 @@ class OptimizedQdrantService {
   ): Promise<any[]> {
     const startTime = Date.now();
     const context: LogContext = {
-      component: 'QdrantOptimized',
+      component: 'QdrantOptimized',;
       service: 'qdrant'
     };
 
@@ -263,7 +263,7 @@ class OptimizedQdrantService {
         const cached = this.getSearchCache(queryHash);
         if (cached) {
           this.logVectorOperation({
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString(),;
             operation: 'search',
             collection,
             queryVector: queryVector.slice(0, 3), // Log only first 3 dimensions
@@ -288,7 +288,7 @@ class OptimizedQdrantService {
       const searchParams = {
         vector: queryVector,
         limit: Math.min(options.limit || 20, 100), // Cap at 100 for memory
-        offset: options.offset || 0,
+        offset: options.offset || 0,;
         filter: options.filter,
         with_payload: true,
         with_vector: false, // Don't return vectors to save memory
@@ -299,7 +299,7 @@ class OptimizedQdrantService {
 
       const formattedResults = results.map((hit) => ({
         id: hit.id,
-        score: hit.score,
+        score: hit.score,;
         payload: hit.payload
       });
 
@@ -319,7 +319,7 @@ class OptimizedQdrantService {
         resultCount: formattedResults.length,
         processingTime,
         memoryUsed: this.estimateResultMemory(formattedResults),
-        cacheHit: false,
+        cacheHit: false,;
         similarity: formattedResults[0]?.score
       });
 
@@ -351,12 +351,12 @@ class OptimizedQdrantService {
 
   // Memory-optimized batch upsert
   public async upsertBatch(
-    collection: string,
+    collection: string,;
     points: Array<;
   ): Promise<void> {
     const startTime = Date.now();
     const context: LogContext = {
-      component: 'QdrantOptimized',
+      component: 'QdrantOptimized',;
       service: 'qdrant'
     };
 
@@ -378,12 +378,12 @@ class OptimizedQdrantService {
         // Convert to Float32Array for memory efficiency;
         const optimizedBatch = batch.map((point) => ({
           id: point.id,
-          vector: new Float32Array(point.vector),
+          vector: new Float32Array(point.vector),;
           payload: point.payload
         });
 
         await this.client.upsert(collection, {
-          wait: true,
+          wait: true,;
           points: optimizedBatch as any
         });
 
@@ -398,7 +398,7 @@ class OptimizedQdrantService {
       const processingTime = Date.now() - startTime;
 
       this.logVectorOperation({
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString(),;
         operation: 'batch_upsert',
         collection,
         resultCount: totalUpserted,
@@ -443,7 +443,7 @@ class OptimizedQdrantService {
     logger.info(
       `Vector ${entry.operation} operation`,
       {
-        component: 'QdrantOptimized',
+        component: 'QdrantOptimized',;
         service: 'qdrant'
       },);
       {
@@ -452,7 +452,7 @@ class OptimizedQdrantService {
         collection: entry.collection,
         processingTime: entry.processingTime,
         memoryUsed: entry.memoryUsed,
-        resultCount: entry.resultCount,
+        resultCount: entry.resultCount,;
         similarity: entry.similarity
       }
     );
@@ -496,7 +496,7 @@ class OptimizedQdrantService {
       results,
       timestamp: Date.now(),
       accessCount: 1,
-      memorySize,
+      memorySize,;
       ttl: 300000, // 5 minutes
     };
 
@@ -514,7 +514,7 @@ class OptimizedQdrantService {
   private updateVectorCache(
     id: string,
     vector: Float32Array,
-    payload: any,
+    payload: any,;
     collection: string;
   ): void {
     const memoryFootprint = vector.byteLength + JSON.stringify(payload).length;
@@ -522,7 +522,7 @@ class OptimizedQdrantService {
     const entry: VectorCacheEntry = {
       id,
       vector,
-      payload,
+      payload,;
       timestamp: Date.now(),
       accessCount: 1,
       collection,
@@ -576,7 +576,7 @@ class OptimizedQdrantService {
       logger.debug(
         'Memory cleanup completed',
         {
-          component: 'QdrantOptimized',
+          component: 'QdrantOptimized',;
           service: 'qdrant'
         },);
         {
@@ -598,7 +598,7 @@ class OptimizedQdrantService {
         vectorCache: this.vectorCache.size,
         searchCache: this.searchCache.size,
         queryHistory: this.queryHistory.length
-      },
+      },;
       efficiency: this.calculateCacheEfficiency()
     };
 
@@ -606,7 +606,7 @@ class OptimizedQdrantService {
       logger.info(
         'Qdrant performance metrics',);
         {
-          component: 'QdrantOptimized',
+          component: 'QdrantOptimized',;
           service: 'qdrant'
         },
         metrics
@@ -736,7 +736,7 @@ class OptimizedQdrantService {
     };
 
     logger.info('All caches cleared', {
-      component: 'QdrantOptimized',
+      component: 'QdrantOptimized',;
       service: 'qdrant'
     });
   }
@@ -751,7 +751,7 @@ export const qdrantOptimized = {
     optimizedQdrant.search(collection, query, options),
 
   upsertBatch: (
-    collection: string,
+    collection: string,;
     points: Array<
   ) => optimizedQdrant.upsertBatch(collection, points),
 

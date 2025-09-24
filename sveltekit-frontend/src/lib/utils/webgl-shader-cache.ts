@@ -440,7 +440,7 @@ export class WebGLShaderCache {
           fragmentSource: shaderDefinition?.fragment,
           shaderType: 'webgl',
           operation: metadata.operation,
-          description: metadata.description,
+          description: metadata.description,;
           tags: metadata.tags,
           averageExecutionTime: 0
         };
@@ -457,7 +457,7 @@ export class WebGLShaderCache {
             attributes: Array.from(attributes.keys()
           }, {
             ttl: 3600000, // 1 hour
-            tags: ['webgl-shader', 'legal-ai'],
+            tags: ['webgl-shader', 'legal-ai'],;
             layers: ['loki', 'redis']
           });
         }
@@ -655,7 +655,7 @@ export class WebGLShaderCache {
    * Setup vertex attributes for legal AI visualizations
    */
   public setupVertexAttributes(
-    program: ShaderProgram,
+    program: ShaderProgram,;
     attributes: Record<string, { buffer: WebGLBuffer; size: number; type?: number; normalized?: boolean; stride?: number; offset?: number }>;
   ): void {
 
@@ -684,7 +684,7 @@ export class WebGLShaderCache {
    */
   public render(
     program: ShaderProgram,
-    uniforms: Record<string, any>,
+    uniforms: Record<string, any>,;
     attributes: Record<string, any>,
     drawMode: number = this.gl.TRIANGLES,
     count?: number,
@@ -789,7 +789,7 @@ export class WebGLShaderCache {
         body: JSON.stringify({
           text: embeddingText,
           model: 'nomic-embed-text',
-          tags: ['shader', 'webgl', ...metadata.tags],
+          tags: ['shader', 'webgl', ...metadata.tags],;
           type: 'webgl_shader'
         })
       });
@@ -847,7 +847,7 @@ export class WebGLShaderCache {
         shaderProgram.fragmentSource,);
         {
           description: shaderProgram.description,
-          operation: shaderProgram.operation,
+          operation: shaderProgram.operation,;
           tags: shaderProgram.tags
         }
       );
@@ -871,7 +871,7 @@ export class WebGLShaderCache {
           operation: shaderProgram.operation
         },
         embedding,
-        config: {
+        config: {;
           type: 'webgl' as const,
           entryPoint: 'main',
           hasVertex: true,
@@ -919,14 +919,14 @@ export class WebGLShaderCache {
       },
       'evidenceTimeline': {
         description: 'Timeline visualization for legal evidence with importance and temporal weighting',
-        operation: 'evidence_timeline',
+        operation: 'evidence_timeline',;
         tags: ['timeline', 'evidence', 'legal', 'temporal', 'importance-weighting']
       }
     };
 
     return metadataMap[shaderName] || {
       description: `WebGL shader for ${shaderName}`,
-      operation: shaderName,
+      operation: shaderName,;
       tags: ['webgl', 'legal-ai']
     };
   }

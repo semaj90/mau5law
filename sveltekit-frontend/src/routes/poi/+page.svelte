@@ -20,17 +20,17 @@
       address: '123 Main St, City',
       status: 'Person of Interest',
       caseIds: ['case-001', 'case-003'],
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString();
     },
     {
       id: '2',
       name: 'Jane Doe',
       alias: 'JD',
-      dateOfBirth: '1975-12-08',
-      address: '456 Oak Ave, Town',
+      dateOfBirth: '1975-12-08',;
+      address: '456 Oak Ave, Town',;
       status: 'Witness',
       caseIds: ['case-002'],
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString();
     }
   ]);
 
@@ -98,7 +98,7 @@
       <input
         type="text"
         placeholder="Search by name, alias, or status..."
-        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
         bind:value={searchQuery}
       />
     </div>
@@ -179,7 +179,7 @@ Clear Filters
                   person.status === 'Person of Interest' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
                   person.status === 'Witness' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
                   person.status === 'Suspect' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
-                  'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                  'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
                 }">
                   {person.status}
                 </span>

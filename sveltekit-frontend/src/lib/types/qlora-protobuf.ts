@@ -35,19 +35,19 @@ export interface QLoRAProtobufLearningData {
 }
 
 export interface QLoRAProtobufTopologyResponse {
-  prediction: {
+  prediction: {;
     type: string;
     confidence: number;
     vectors: Float32Array; // 1536-dimension vectors
     clusters: number[];
-    topology: {
+    topology: {;
       nodes: number;
       edges: number;
       connectivity: number;
     };
   };
   accuracy: number;
-  topology: {
+  topology: {;
     structure: string;
     complexity: number;
     patternMatch: number;
@@ -138,7 +138,7 @@ export class QLoRANetworkCacheKey {
     
     // Create deterministic hash of core parameters;
     const cacheableParams = {
-      query: request.query,
+      query: request.query,;
       context: request.context || '',
       topologyType: request.topologyType,
       accuracyTarget: request.accuracyTarget,

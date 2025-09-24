@@ -3,81 +3,81 @@
  * Handles chunked responses and VRAM management
  */
 
-import type { RequestHandler } from './$types.js';
-import { GPULLMStreamingPipeline } from '$lib/services/gpu-llm-streaming-pipeline';
-import { error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js'
+import { GPULLMStreamingPipeline } from '$lib/services/gpu-llm-streaming-pipeline'
+import { error } from '@sveltejs/kit'
 
 // Single pipeline instance for efficiency
-let pipeline: GPULLMStreamingPipeline | null = null;
+let pipeline: GPULLMStreamingPipeline | null = null
 
-// Initialize pipeline on first request;
+// Initialize pipeline on first request
 async function getPipeline(): Promise<GPULLMStreamingPipeline> {
   if (!pipeline) {
-    pipeline = new GPULLMStreamingPipeline();
+    pipeline = new GPULLMStreamingPipeline()
     // Note: GPU initialization happens client-side in browser
     // Server-side uses CPU fallback with SIMD optimization
   }
-  return pipeline;
+  return pipeline
 }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { prompt, config = {} } = await request.json();
+    const { prompt, config = {} } = await request.json()
     
     if (!prompt) {
-      throw error(400, 'Prompt is required');
+      throw error(400, 'Prompt is required')
     }
     
-    const llmPipeline = await getPipeline();
+    const llmPipeline = await getPipeline()
     
-    // Default configuration;
+    // Default configuration
     const streamConfig = {
       modelPath: config.modelPath || '/models/gemma-3b',
       maxTokens: config.maxTokens || 2048,
       temperature: config.temperature || 0.7,
       topP: config.topP || 0.9,
       ...config
-    };
+    }
     
-    // Create a ReadableStream for chunked response;
+    // Create a ReadableStream for chunked response
     const stream = new ReadableStream({
       async start(controller) {
         try {
           // Stream generation
-          const generator = llmPipeline.streamGeneration(prompt, streamConfig);
+          const generator = llmPipeline.streamGeneration(prompt, streamConfig)
           
           for await (const chunk of generator) {
-            // Send each chunk as a Server-Sent Event;
+            // Send each chunk as a Server-Sent Event
             const data = JSON.stringify({
               type: 'token',
               content: chunk,
               timestamp: Date.now()
-            });
+            })
             
-            controller.enqueue(new TextEncoder().encode(`data: ${data}\n\n`);
+            controller.enqueue(new TextEncoder().encode(`data: ${data}\n\n`)
           }
           
-          // Send completion event;
+          // Send completion event
           const completeData = JSON.stringify({
             type: 'complete',
             timestamp: Date.now()
-          });
-          controller.enqueue(new TextEncoder().encode(`data: ${completeData}\n\n`);
+          })
+          controller.enqueue(new TextEncoder().encode(`data: ${completeData}\n\n`)
           
-          controller.close();
+          controller.close()
         } catch (err) {
-          console.error('Streaming error:', err);
+          console.error('Streaming error:', err)
           const errorData = JSON.stringify({
             type: 'error',
             message: err instanceof Error ? err.message: 'Unknown error'
-          });
-          controller.enqueue(new TextEncoder().encode(`data: ${errorData}\n\n`);
-          controller.close();
+          })
+          controller.enqueue(new TextEncoder().encode(`data: ${errorData}\n\n`)
+          controller.close()
         }
       }
-    });
+    })
     
-    // Return as Server-Sent Events stream;
+    // Return as Server-Sent Events stream
     return new Response(stream, {
       headers: {
         'Content-Type': 'text/event-stream',
@@ -85,19 +85,19 @@ export const POST: RequestHandler = async ({ request }) => {
         'Connection': 'keep-alive',
         'X-Accel-Buffering': 'no' // Disable Nginx buffering
       }
-    });
+    })
     
   } catch (err) {
-    console.error('API error:', err);
-    throw error(500, err instanceof Error ? err.message: 'Internal server error');
+    console.error('API error:', err)
+    throw error(500, err instanceof Error ? err.message: 'Internal server error')
   }
-};
+}
 
 export const GET: RequestHandler = async () => {
   try {
-    const llmPipeline = await getPipeline();
+    const llmPipeline = await getPipeline()
     
-    // Return memory stats and system info;
+    // Return memory stats and system info
     const stats = {
       status: 'ready',
       gpu: {
@@ -114,25 +114,25 @@ export const GET: RequestHandler = async () => {
         workers: 4, // Number of SIMD workers
         supported: true
       }
-    };
+    }
     
     return new Response(JSON.stringify(stats), {
       headers: {
         'Content-Type': 'application/json'
       }
-    });
+    })
     
   } catch (err) {
-    console.error('Stats error:', err);
-    throw error(500, 'Failed to get system stats');
+    console.error('Stats error:', err)
+    throw error(500, 'Failed to get system stats')
   }
-};
+}
 
-// Cleanup on server shutdown;
+// Cleanup on server shutdown
 if (typeof process !== 'undefined') {
   process.on('SIGTERM', async () => {
     if (pipeline) {
-      await pipeline.cleanup();
+      await pipeline.cleanup()
     }
-  });
+  })
 }

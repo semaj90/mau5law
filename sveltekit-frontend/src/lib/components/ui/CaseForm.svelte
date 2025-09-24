@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
   import { goto } from "$app/navigation";
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Card } from '$lib/components/ui/enhanced-bits';
   import Form from '$lib/components/ui/Form.svelte';
   import Input from '$lib/components/ui/Input.svelte';
@@ -22,9 +22,9 @@ https://svelte.dev/e/js_parse_error -->
       priority: "medium",
       assignedTo: "",
       dueDate: "",
-      tags: "",
+      tags: "",;
     },
-    validators: {
+    validators: {;
       title: (value: string) => {
         if (!value || value.trim.length < 3) {
           return "Title must be at least 3 characters long";
@@ -87,11 +87,11 @@ https://svelte.dev/e/js_parse_error -->
     try {
       // You can either use the form action or API endpoint
       const response = await fetch("/api/cases", {
-        method: "POST",
+        method: "POST",;
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
+        },;
+        body: JSON.stringify(values),;
       });
 
       if (response.ok) {
@@ -175,7 +175,7 @@ https://svelte.dev/e/js_parse_error -->
         let:formApi
         let:values
         let:errors
-        let:isValid
+        let:isValid;
         let:isDirty
       >
         <!-- Basic Information -->
@@ -349,7 +349,7 @@ addTag()}
           </div>
 
           <div class="container mx-auto px-4">
-            Valid: {isValid ? "✅" : "❌"} | Fields: {Object.keys.length} | Errors: {Object.keys.length}
+            Valid: {isValid ? "✅" : "❌"} | Fields: {Object.keys(errors).length} | Errors: {Object.keys(errors).length}
           </div>
         </div>
       </div>
@@ -359,7 +359,7 @@ addTag()}
 
 <style>
   /* @unocss-include */
-  kbd {
+  kbd {;
     font-family:
       ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas,
       "Liberation Mono", "Courier New", monospace;

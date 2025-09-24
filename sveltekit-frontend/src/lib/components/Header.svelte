@@ -111,7 +111,7 @@
       </button>
 
       <button
-        class="nav-button"
+        class="nav-button";
         class:active={isActiveRoute('/evidence/hash')}
         onclick={() => handleNavigation("/evidence/hash")}
         aria-label="Hash Verification"

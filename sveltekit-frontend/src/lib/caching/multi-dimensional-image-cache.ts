@@ -127,7 +127,7 @@ export class MultiDimensionalImageCache {
       capacity: 100000,
       ttl: 86400000, // 24 hours
       priority: 2,
-      evictionPolicy: 'lru',
+      evictionPolicy: 'lru',;
       compression: true
     }
   ];
@@ -155,7 +155,7 @@ export class MultiDimensionalImageCache {
       this.som = new SOMNeuralNetwork({
         gridSize: { width: 8, height: 8 },
         learningRate: 0.1,
-        neighborhoodRadius: 2.0,
+        neighborhoodRadius: 2.0,;
         epochs: 50,
         enableGPU: true,
         inputDimension: 256,
@@ -233,7 +233,7 @@ export class MultiDimensionalImageCache {
         processingTime: processingMetrics.processingTime || 0,
         compressionRatio: 0,
         qualityScore: processingMetrics.qualityScore || 0.8,
-        legalDomain: graphData.metadata?.legalDomain || 'general',
+        legalDomain: graphData.metadata?.legalDomain || 'general',;
         patterns: {
           citationDensity: this.calculateCitationDensity(graphData),
           jurisdictionalSpread: this.calculateJurisdictionalSpread(graphData),
@@ -260,7 +260,7 @@ export class MultiDimensionalImageCache {
         id: cacheKey,
         algorithm: dimensions.algorithm || 'dfs',
         imageData,
-        dimensions: {
+        dimensions: {;
           width: parseInt(imageData.split(',')[0].split(';')[1]?.split('=')[1]) || 800,
           height: 600
         },
@@ -274,7 +274,7 @@ export class MultiDimensionalImageCache {
           lastAccessed: Date.now(),
           generationCost: processingMetrics.processingTime || 100,
           compressionEfficiency: compressionData.compressionRatio
-        },
+        },;
         timestamp: Date.now()
       };
 
@@ -376,7 +376,7 @@ export class MultiDimensionalImageCache {
           totalEdges: graphData.edges?.length || 0,
           density: graphData.metadata?.density || 0,
           averageDegree: graphData.metadata?.averageDegree || 0,
-          legalDomain: graphData.metadata?.legalDomain || 'general',
+          legalDomain: graphData.metadata?.legalDomain || 'general',;
           timestamp: Date.now()
         }
       };
@@ -397,7 +397,7 @@ export class MultiDimensionalImageCache {
         confidenceLevel: 0.8,
         riskLevel: 'medium' as const,
         lastAccessed: Date.now(),
-        compressed: true,
+        compressed: true,;
         metadata: {
           imageData,
           originalSize: imageData.length,
@@ -419,7 +419,7 @@ export class MultiDimensionalImageCache {
       // Return fallback compression;
       return {
         original: Record<string, any> as EncodedGraphPattern,
-        som: Record<string, any> as SOMDecomposition,
+        som: Record<string, any> as SOMDecomposition,;
         compressed: new ArrayBuffer(imageData.length),
         compressionRatio: 1.0
       };
@@ -648,7 +648,7 @@ export class MultiDimensionalImageCache {
       const entry: ImageCacheEntry = {
         id: cacheKey,
         algorithm: 'dfs', // Default
-        imageData: metadata.imageData,
+        imageData: metadata.imageData,;
         dimensions: { width: 800, height: 600 }, // Default;
         metadata: {
           graphSignature: cacheKey,
@@ -672,7 +672,7 @@ export class MultiDimensionalImageCache {
           lastAccessed: Date.now(),
           generationCost: 100,
           compressionEfficiency: data.byteLength / metadata.imageData.length
-        },
+        },;
         timestamp: document?.lastAccessed || Date.now()
       };
 
@@ -786,7 +786,7 @@ export class MultiDimensionalImageCache {
       layerStats: this.cacheLayers.map((layer) => ({
         name: layer.name,
         capacity: layer.capacity,
-        priority: layer.priority,
+        priority: layer.priority,;
         ttl: layer.ttl
       }))
     };

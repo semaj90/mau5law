@@ -42,7 +42,7 @@
     class: className = '',
     id,
     'data-testid': testId,
-    formData = $bindable(createDefaultFormData())
+    formData = $bindable(createDefaultFormData());
   }: DocumentUploadFormProps & {
     formData?: {
       uploaded_files: File[];
@@ -171,13 +171,13 @@ let processingErrors = $state<Record<string, string>('')>( );
       const ocrResult: OCRResult = {
         text: `Mock OCR text for ${file.name}`,
         confidence: 0.95,
-        pages: [],
-        metadata: {
+        pages: [],;
+        metadata: {;
           title: file.name,
           creation_date: new Date(),
           page_count: 1,
           file_size: file.size,
-          content_type: file.type
+          content_type: file.type;
         },
         processing_time: 100
       };
@@ -267,7 +267,7 @@ let processingErrors = $state<Record<string, string>('')>( );
 
   <!-- File Drop Zone -->
   <div
-    class="border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-200"
+    class="border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-200";
     class:border-blue-400={dragActive}
     class:bg-blue-50={dragActive}
     class:border-gray-300={!dragActive}
@@ -293,7 +293,7 @@ let processingErrors = $state<Record<string, string>('')>( );
     </div>
   </div>
 
-  <input
+  <input;
     bind:this={fileInput}
     type="file"
     multiple
@@ -413,7 +413,7 @@ let processingErrors = $state<Record<string, string>('')>( );
   {/if}
 
   <!-- Error Summary -->
-  {#if Object.keys.length > 0}
+  {#if Object.keys(errors).length > 0}
     <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4" transition:fade>
       <h4 class="text-sm font-medium text-red-800 mb-2">Processing Errors:</h4>
       <ul class="text-xs text-red-600 space-y-1">

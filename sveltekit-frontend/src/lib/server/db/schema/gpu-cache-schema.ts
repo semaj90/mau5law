@@ -63,7 +63,7 @@ export const shaderCacheEntries = pgTable("shader_cache_entries", {
   
   // Metadata and dependencies
   dependencies: jsonb("dependencies").default("[]"), // Other shader dependencies
-  parameters: jsonb("parameters").default("{}"), // Shader uniform parameters
+  parameters: jsonb("parameters").default("{}"), // Shader uniform parameters;
   metadata: jsonb("metadata").default("{}"),
   
   // Audit fields
@@ -116,7 +116,7 @@ export const shaderUserPatterns = pgTable("shader_user_patterns", {
   reward: decimal("reward", { precision: 7, scale: 4 }), // calculated reward for this access
   prediction: jsonb("prediction").default("{}"), // ML model prediction data
   actualOutcome: jsonb("actual_outcome").default("{}"), // actual user behavior for training
-  
+  ;
   metadata: jsonb("metadata").default("{}");
 }, (table) => ({
   // Indexes for ML queries
@@ -144,7 +144,7 @@ export const shaderDependencies = pgTable("shader_dependencies", {
   loadOrderPriority: integer("load_order_priority").default(100), // lower = load first
   parallelizable: boolean("parallelizable").default(true),
   
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),;
   metadata: jsonb("metadata").default("{}");
 }, (table) => ({
   // Unique constraint and indexes
@@ -184,7 +184,7 @@ export const shaderPreloadQueue = pgTable("shader_preload_queue", {
   wasUsed: boolean("was_used"), // did user actually use this shader?
   usedAtTimestamp: timestamp("used_at_timestamp"),
   actualDelay: integer("actual_delay"), // ms between preload and actual use
-  
+  ;
   metadata: jsonb("metadata").default("{}");
 }, (table) => ({
   userIdIdx: index("preload_user_id_idx").on(table.userId),
@@ -224,7 +224,7 @@ export const shaderPerformanceMetrics = pgTable("shader_performance_metrics", {
   deviceInfo: jsonb("device_info").default("{}"), // GPU model, driver version, etc.
   renderContext: jsonb("render_context").default("{}"), // resolution, complexity settings
   
-  recordedAt: timestamp("recorded_at").defaultNow().notNull(),
+  recordedAt: timestamp("recorded_at").defaultNow().notNull(),;
   metadata: jsonb("metadata").default("{}");
 }, (table) => ({
   shaderCacheIdIdx: index("perf_shader_id_idx").on(table.shaderCacheId),
@@ -241,7 +241,7 @@ export const shaderPerformanceMetrics = pgTable("shader_performance_metrics", {
 
 export const shaderCacheEntriesRelations = relations(shaderCacheEntries, ({ many }) => ({
   userPatterns: many(shaderUserPatterns),
-  dependencies: many(shaderDependencies, { relationName: "parent_dependencies" }),
+  dependencies: many(shaderDependencies, { relationName: "parent_dependencies" }),;
   dependents: many(shaderDependencies, { relationName: "dependent_shaders" }),
   preloadQueue: many(shaderPreloadQueue),
   performanceMetrics: many(shaderPerformanceMetrics)
@@ -249,7 +249,7 @@ export const shaderCacheEntriesRelations = relations(shaderCacheEntries, ({ many
 
 export const shaderUserPatternsRelations = relations(shaderUserPatterns, ({ one }) => ({
   shaderCache: one(shaderCacheEntries, {
-    fields: [shaderUserPatterns.shaderCacheId],
+    fields: [shaderUserPatterns.shaderCacheId],;
     references: [shaderCacheEntries.id]
   })
 });
@@ -261,7 +261,7 @@ export const shaderDependenciesRelations = relations(shaderDependencies, ({ one 
     relationName: "parent_dependencies"
   }),
   dependentShader: one(shaderCacheEntries, {
-    fields: [shaderDependencies.dependentShaderCacheId],
+    fields: [shaderDependencies.dependentShaderCacheId],;
     references: [shaderCacheEntries.id],
     relationName: "dependent_shaders"
   })
@@ -269,14 +269,14 @@ export const shaderDependenciesRelations = relations(shaderDependencies, ({ one 
 
 export const shaderPreloadQueueRelations = relations(shaderPreloadQueue, ({ one }) => ({
   shaderCache: one(shaderCacheEntries, {
-    fields: [shaderPreloadQueue.shaderCacheId],
+    fields: [shaderPreloadQueue.shaderCacheId],;
     references: [shaderCacheEntries.id]
   })
 });
 
 export const shaderPerformanceMetricsRelations = relations(shaderPerformanceMetrics, ({ one }) => ({
   shaderCache: one(shaderCacheEntries, {
-    fields: [shaderPerformanceMetrics.shaderCacheId],
+    fields: [shaderPerformanceMetrics.shaderCacheId],;
     references: [shaderCacheEntries.id]
   })
 });

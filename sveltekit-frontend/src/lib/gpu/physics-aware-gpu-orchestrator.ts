@@ -40,7 +40,7 @@ export class PhysicsAwareGPUOrchestrator {
     console.log('🌊 Processing physics simulation:', simulation);
     return {
       processed: true,
-      particles: 10000,
+      particles: 10000,;
       interactions: 5000,
       frameTime: 16.7
     };

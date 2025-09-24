@@ -40,7 +40,7 @@ export const users = pgTable('users', {
   email: varchar('email', { length: 255 }).notNull().unique(),
   passwordHash: text('password_hash').notNull(),
   firstName: varchar('first_name', { length: 100 }),
-  lastName: varchar('last_name', { length: 100 }),
+  lastName: varchar('last_name', { length: 100 }),;
   role: varchar('role', { length: 50 }).notNull().default('user'),
   isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at').defaultNow(),
@@ -51,7 +51,7 @@ export const cases = pgTable('cases', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
-  status: varchar('status', { length: 50 }).default('active'),
+  status: varchar('status', { length: 50 }).default('active'),;
   priority: varchar('priority', { length: 20 }).default('medium'),
   caseNumber: varchar('case_number', { length: 100 }).unique(),
   createdBy: uuid('created_by').references(() => users.id),
@@ -74,7 +74,7 @@ export const documents = pgTable('documents', {
   embedding: vector('embedding', { dimensions: 768 }),
   metadata: json('metadata'),
   tags: json('tags').default(sql`'[]'::json`),
-  isIndexed: boolean('is_indexed').default(false),
+  isIndexed: boolean('is_indexed').default(false),;
   source: varchar('source', { length: 100 }).default('upload'),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
@@ -96,7 +96,7 @@ export const documentChunks = pgTable('document_chunks', {
   embedding: vector('embedding', { dimensions: 768 }).notNull(),
   startIndex: integer('start_index'),
   endIndex: integer('end_index'),
-  tokenCount: integer('token_count'),
+  tokenCount: integer('token_count'),;
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow()
 }, (table: any) => ({
@@ -121,7 +121,7 @@ export const evidence = pgTable('evidence', {
   tags: json('tags').default(sql`'[]'::json`),
   // Enhanced AI analysis with embedding support
   aiAnalysis: json('ai_analysis'),
-  // Vector embedding for semantic search
+  // Vector embedding for semantic search;
   embedding: vector('embedding', { dimensions: 768 }),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
@@ -138,7 +138,7 @@ export const searchIndex = pgTable('search_index', {
   entityId: uuid('entity_id').notNull(),
   content: text('content').notNull(),
   // 768-dimensional embeddings for nomic-embed-text
-  embedding: vector('embedding', { dimensions: 768 }).notNull(),
+  embedding: vector('embedding', { dimensions: 768 }).notNull(),;
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
@@ -163,7 +163,7 @@ export const aiInteractions = pgTable('ai_interactions', {
   confidence: real('confidence'),
   // Context embedding for conversation understanding
   contextEmbedding: vector('context_embedding', { dimensions: 768 }),
-  feedback: json('feedback'),
+  feedback: json('feedback'),;
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow()
 }, (table: any) => ({
@@ -176,7 +176,7 @@ export const aiInteractions = pgTable('ai_interactions', {
 export const vectorSimilarityCache = pgTable('vector_similarity_cache', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   queryHash: varchar('query_hash', { length: 64 }).notNull().unique(),
-  queryEmbedding: vector('query_embedding', { dimensions: 768 }).notNull(),
+  queryEmbedding: vector('query_embedding', { dimensions: 768 }).notNull(),;
   results: json('results').notNull(),
   hitCount: integer('hit_count').default(1),
   lastAccessed: timestamp('last_accessed').defaultNow(),
@@ -199,7 +199,7 @@ export const legalKnowledgeBase = pgTable('legal_knowledge_base', {
   sourceUrl: text('source_url'),
   citationFormat: text('citation_format'),
   // Semantic embedding for knowledge retrieval
-  embedding: vector('embedding', { dimensions: 768 }),
+  embedding: vector('embedding', { dimensions: 768 }),;
   metadata: json('metadata'),
   isVerified: boolean('is_verified').default(false),
   verifiedBy: uuid('verified_by').references(() => users.id),
@@ -225,7 +225,7 @@ export const embeddingJobs = pgTable('embedding_jobs', {
   priority: integer('priority').default(5), // 1-10, higher is more priority
   retryCount: integer('retry_count').default(0),
   maxRetries: integer('max_retries').default(3),
-  error: text('error'),
+  error: text('error'),;
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
@@ -245,13 +245,13 @@ export const documentsRelations = relations(documents, ({ one, many }) => ({
     fields: [documents.createdBy],
     references: [users.id]
   }),
-  chunks: many(documentChunks),
+  chunks: many(documentChunks),;
   evidence: many(evidence)
 });
 
 export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
   document: one(documents, {
-    fields: [documentChunks.documentId],
+    fields: [documentChunks.documentId],;
     references: [documents.id]
   })
 });
@@ -266,7 +266,7 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     references: [documents.id]
   }),
   creator: one(users, {
-    fields: [evidence.createdBy],
+    fields: [evidence.createdBy],;
     references: [users.id]
   })
 });
@@ -280,7 +280,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
     fields: [cases.assignedTo],
     references: [users.id]
   }),
-  documents: many(documents),
+  documents: many(documents),;
   evidence: many(evidence),
   aiInteractions: many(aiInteractions)
 });
@@ -291,14 +291,14 @@ export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
     references: [users.id]
   }),
   case: one(cases, {
-    fields: [aiInteractions.caseId],
+    fields: [aiInteractions.caseId],;
     references: [cases.id]
   })
 });
 
 export const legalKnowledgeBaseRelations = relations(legalKnowledgeBase, ({ one }) => ({
   verifier: one(users, {
-    fields: [legalKnowledgeBase.verifiedBy],
+    fields: [legalKnowledgeBase.verifiedBy],;
     references: [users.id]
   })
 });
@@ -341,7 +341,7 @@ export const aiProcessingJobs = pgTable('ai_processing_jobs', {
   status: varchar('status', { length: 50 }).default('pending'),
   input: json('input'),
   output: json('output'),
-  error: text('error'),
+  error: text('error'),;
   progress: integer('progress').default(0),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),

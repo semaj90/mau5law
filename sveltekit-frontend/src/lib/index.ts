@@ -99,7 +99,7 @@ export const BUILD_DATE = new Date().toISOString();
 export const FRAMEWORK_INFO = {
   sveltekit: '2.x',
   svelte: '5.x',
-  typescript: '5.x',
+  typescript: '5.x',;
   vite: '5.x'
 };
 

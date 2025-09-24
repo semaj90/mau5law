@@ -557,7 +557,7 @@ class TopologyPredictiveAnalyticsEngine {
       
       topologyState.set(nodeId, {
         node_id: nodeId,
-        position: glyph.topology_position,
+        position: glyph.topology_position,;
         connections: connections,
         semantic_features: semanticFeatures,
         temporal_weight: temporalWeight,
@@ -642,7 +642,7 @@ class TopologyPredictiveAnalyticsEngine {
           direction: 'bidirectional',
           confidence: similarity * 0.9,
           temporal_stability: 0.8,
-          user_validation: 0.5,
+          user_validation: 0.5,;
           metadata: {
             discovered_at: Date.now(),
             usage_frequency: 0,
@@ -747,7 +747,7 @@ class TopologyPredictiveAnalyticsEngine {
           direction: 'forward',
           confidence: relevance * 0.8,
           temporal_stability: 0.6,
-          user_validation: 0.5,
+          user_validation: 0.5,;
           metadata: {
             discovered_at: Date.now(),
             usage_frequency: 0,
@@ -761,7 +761,7 @@ class TopologyPredictiveAnalyticsEngine {
     
     return {
       node_id: 'query_node',
-      position: new Float32Array([0.5, 0.5, 0.5]), // Center position
+      position: new Float32Array([0.5, 0.5, 0.5]), // Center position;
       connections: connections,
       semantic_features: queryFeatures,
       temporal_weight: 1.0, // Current query has maximum temporal weight
@@ -811,7 +811,7 @@ class TopologyPredictiveAnalyticsEngine {
         {
           neurons: outputDim,
           activation: 'sigmoid',
-          weights: this.initializeWeights(hiddenDim, outputDim),
+          weights: this.initializeWeights(hiddenDim, outputDim),;
           biases: new Float32Array(outputDim)
         }
       ],
@@ -866,7 +866,7 @@ class TopologyPredictiveAnalyticsEngine {
           estimated_complexity: 0.7
         },
         {
-          query: `${query} examples`,
+          query: `${query} examples`,;
           confidence: 0.75,
           predicted_intent: 'educational',
           semantic_category: 'examples',
@@ -932,7 +932,7 @@ class TopologyPredictiveAnalyticsEngine {
       ],
       recommended_content: [],
       user_intent_analysis: {
-        primary_intent: 'unknown',
+        primary_intent: 'unknown',;
         confidence: 0.2,
         intent_progression: [],
         predicted_session_goal: 'information_seeking',
@@ -993,7 +993,7 @@ class TopologyPredictiveAnalyticsEngine {
     // Neural completion generation
     return [;
       {
-        completion: `${partialQuery} analysis`,
+        completion: `${partialQuery} analysis`,;
         confidence: 0.8,
         predicted_intent: 'analytical',
         contextual_relevance: 0.7,
@@ -1036,7 +1036,7 @@ class TopologyPatternRecognizer {
   async generatePatternCompletions(partialQuery: string, history: UserInteractionPattern[], topology: any) {
     return [;
       {
-        completion: `${partialQuery} patterns`,
+        completion: `${partialQuery} patterns`,;
         confidence: 0.6,
         predicted_intent: 'pattern_analysis',
         contextual_relevance: 0.8,
@@ -1051,7 +1051,7 @@ class UserIntentPredictor {
 
   async analyzeUserIntent(query: string, session: any, topology: any) {
     return {
-      primary_intent: 'information_seeking',
+      primary_intent: 'information_seeking',;
       confidence: 0.85,
       intent_progression: ['exploration', 'focused_search', 'analysis'],
       predicted_session_goal: 'comprehensive_understanding',

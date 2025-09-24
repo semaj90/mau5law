@@ -1,74 +1,74 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 // AI Synthesizer API Route - Full Stack Integration
 // Uses Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama with gemma3-legal:latest
 // TypeScript-safe with Drizzle ORM and MCP Context7 best practices
 
-import { aiOrchestrator } from "$lib/server/ai/enhanced-ai-synthesis-orchestrator";
-import { monitoringService } from "$lib/server/ai/monitoring-service";
-import stream from "stream";
-import { URL } from "url";
+import { aiOrchestrator } from "$lib/server/ai/enhanced-ai-synthesis-orchestrator"
+import { monitoringService } from "$lib/server/ai/monitoring-service"
+import stream from "stream"
+import { URL } from "url"
 
 // SSE stream storage for real-time updates
-const activeStreams = new Map<string, any>();
+const activeStreams = new Map<string, any>()
 
-// Main synthesis endpoint;
+// Main synthesis endpoint
 export const POST: RequestHandler = async ({ request, url }) => {
-  const startTime = Date.now();
-  let requestId: string | undefined;
+  const startTime = Date.now()
+  let requestId: string | undefined
 
   try {
     // Parse request body
-    const body = await request.json();
-    const { query, context, options = {} } = body;
+    const body = await request.json()
+    const { query, context, options = {} } = body
 
-    // Validate input;
+    // Validate input
     if (!query || typeof query !== 'string') {
-      throw error(400, 'Query is required and must be a string');
+      throw error(400, 'Query is required and must be a string')
     }
 
     // Generate request ID for tracking
-    requestId = `req_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    requestId = `req_${Date.now()}_${Math.random().toString(36).substring(7)}`
 
-    logger.info(`[API] Processing synthesis request ${requestId}: "${query}"`);
+    logger.info(`[API] Processing synthesis request ${requestId}: "${query}"`)
 
-    // Check if streaming is requested;
+    // Check if streaming is requested
     if (options.stream) {
       // Create stream ID for SSE
-      const streamId = `stream_${requestId}`;
+      const streamId = `stream_${requestId}`
 
-      // Initialize stream tracking;
+      // Initialize stream tracking
       activeStreams.set(streamId, {
         query,
         startTime,
         status: 'initializing'
-      });
+      })
 
       // Start async processing
-      processStreamingRequest(streamId, query, context, options);
+      processStreamingRequest(streamId, query, context, options)
 
-      // Return stream ID immediately;
+      // Return stream ID immediately
       return json({
         success: true,
         streamId,
         message: 'Streaming synthesis initiated',
         streamUrl: `/api/ai-synthesizer/stream/${streamId}`
-      });
+      })
     }
 
-    // Non-streaming request - process synchronously;
+    // Non-streaming request - process synchronously
     const result = await aiOrchestrator.process(query, {
       ...options,
       context,
       requestId
-    });
+    })
 
     // Track metrics
-    const processingTime = Date.now() - startTime;
-    await monitoringService.recordMetric('api_request_duration', processingTime);
-    await monitoringService.recordMetric('api_requests_total', 1);
+    const processingTime = Date.now() - startTime
+    await monitoringService.recordMetric('api_request_duration', processingTime)
+    await monitoringService.recordMetric('api_requests_total', 1)
 
-    // Return successful result;
+    // Return successful result
     return json({
       success: true,
       requestId,
@@ -82,16 +82,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
           processingTime
         }
       }
-    });
+    })
   } catch (err: any) {
     // Log error
-    logger.error('[API] Synthesis error:', err);
+    logger.error('[API] Synthesis error:', err)
 
     // Track error metrics
-    await monitoringService.recordMetric('api_errors_total', 1);
+    await monitoringService.recordMetric('api_errors_total', 1)
 
     // Return error response
-    return json();
+    return json()
       {
         success: false,
         error: err.message || 'An error occurred during synthesis',
@@ -99,23 +99,23 @@ export const POST: RequestHandler = async ({ request, url }) => {
         processingTime: Date.now() - startTime
       },
       { status: err.status || 500 }
-    );
+    )
   }
-};
+}
 
-// Health check endpoint;
+// Health check endpoint
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Get orchestrator health
-    const health = await aiOrchestrator.health();
+    const health = await aiOrchestrator.health()
 
     // Get cache stats
-    const cacheStats = await cachingLayer.getStats();
+    const cacheStats = await cachingLayer.getStats()
 
     // Get monitoring metrics
-    const metrics = await monitoringService.getMetrics();
+    const metrics = await monitoringService.getMetrics()
 
-    // Compile comprehensive health status;
+    // Compile comprehensive health status
     const status = {
       status: health.status,
       timestamp: new Date().toISOString(),
@@ -162,43 +162,43 @@ export const GET: RequestHandler = async ({ url }) => {
         caching: true,
         monitoring: true
       }
-    };
-
-    // Determine overall health
-    const healthyServices = Object.values(health.services).filter((s) => s === 'healthy').length;
-    const totalServices = Object.keys(health.services).length;
-
-    if (healthyServices === totalServices) {
-      status.status = 'healthy';
-    } else if (healthyServices >= totalServices * 0.5) {
-      status.status = 'degraded';
-    } else {
-      status.status = 'unhealthy';
     }
 
-    return json(status);
-  } catch (err: any) {
-    logger.error('[API] Health check error:', err);
+    // Determine overall health
+    const healthyServices = Object.values(health.services).filter((s) => s === 'healthy').length
+    const totalServices = Object.keys(health.services).length
 
-    return json();
+    if (healthyServices === totalServices) {
+      status.status = 'healthy'
+    } else if (healthyServices >= totalServices * 0.5) {
+      status.status = 'degraded'
+    } else {
+      status.status = 'unhealthy'
+    }
+
+    return json(status)
+  } catch (err: any) {
+    logger.error('[API] Health check error:', err)
+
+    return json()
       {
         status: 'error',
         error: err.message,
         timestamp: new Date().toISOString()
       },
       { status: 503 }
-    );
+    )
   }
-};
+}
 
-// Test endpoint for integration testing (consolidated with health check);
+// Test endpoint for integration testing (consolidated with health check)
 export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
   if (url.pathname.endsWith('/test')) {
     try {
-      logger.info('[API] Running integration test...');
+      logger.info('[API] Running integration test...')
 
       // Test queries following MCP best practices
-      const testQueries = [;
+      const testQueries = [
         {
           query: 'What are the elements of negligence in tort law?',
           expectedSources: ['neo4j', 'pgvector', 'context7']
@@ -211,18 +211,18 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
           query: 'What is the statute of limitations for breach of contract?',
           expectedSources: ['neo4j', 'context7', 'ollama']
         }
-      ];
+      ]
 
-      const results = [];
+      const results = []
 
       for (const test of testQueries) {
-        const startTime = Date.now();
+        const startTime = Date.now()
 
         try {
           const result = await aiOrchestrator.process(test.query, {
             test: true,
             timeout: 10000
-          });
+          })
 
           results.push({
             query: test.query,
@@ -231,21 +231,21 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
             confidence: (result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).confidence,
             sourcesUsed: ((result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).metadata as any)?.sourcesUsed || [],
             expectedSources: test.expectedSources
-          });
+          })
         } catch (err: any) {
           results.push({
             query: test.query,
             success: false,
             error: err.message,
             processingTime: Date.now() - startTime
-          });
+          })
         }
       }
 
       // Calculate test metrics
-      const successCount = results.filter((r) => r.success).length;
+      const successCount = results.filter((r) => r.success).length
       const avgProcessingTime =
-        results.reduce((sum, r) => sum + r.processingTime, 0) / results.length;
+        results.reduce((sum, r) => sum + r.processingTime, 0) / results.length
 
       return json({
         success: successCount === results.length,
@@ -255,88 +255,88 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
         results,
         services: await aiOrchestrator.health(),
         timestamp: new Date().toISOString()
-      });
+      })
     } catch (err: any) {
-      logger.error('[API] Test error:', err);
+      logger.error('[API] Test error:', err)
 
-      return json();
+      return json()
         {
           success: false,
           error: err.message,
           timestamp: new Date().toISOString()
         },
         { status: 500 }
-      );
+      )
     }
   }
 
   // Default GET returns health
   // Construct a minimal fake event for GET handler
-  return GET({ url, request: new Request(url), params: Record<string, any> } as any);
-};
+  return GET({ url, request: new Request(url), params: Record<string, any> } as any)
+}
 
 // Helper function for streaming requests
 async function processStreamingRequest(
   streamId: string,
   query: string,
   context: any,
-  options: any;
+  options: any
 ): Promise<void> {
   try {
     // Update stream status
-    const stream = activeStreams.get(streamId);
+    const stream = activeStreams.get(streamId)
     if (stream) {
-      stream.status = 'processing';
+      stream.status = 'processing'
     }
 
-    // Process with streaming;
+    // Process with streaming
     const generator = aiOrchestrator.processStream(query, {
       ...options,
       context,
       streamId
-    });
+    })
 
     // Collect stream updates
-    const updates = [];
+    const updates = []
 
     for await (const update of generator) {
-      updates.push(update);
+      updates.push(update)
 
-      // Update stream state;
+      // Update stream state
       if (stream) {
-        stream.lastUpdate = update;
-        stream.updates = updates;
+        stream.lastUpdate = update
+        stream.updates = updates
       }
     }
 
-    // Mark as complete;
+    // Mark as complete
     if (stream) {
-      stream.status = 'complete';
-      stream.result = updates[updates.length - 1]?.result;
+      stream.status = 'complete'
+      stream.result = updates[updates.length - 1]?.result
     }
   } catch (err: any) {
-    logger.error(`[API] Streaming error for ${streamId}:`, err);
+    logger.error(`[API] Streaming error for ${streamId}:`, err)
 
-    const stream = activeStreams.get(streamId);
+    const stream = activeStreams.get(streamId)
     if (stream) {
-      stream.status = 'error';
-      stream.error = err.message;
+      stream.status = 'error'
+      stream.error = err.message
     }
   }
 }
 
-// Cleanup old streams periodically;
+// Cleanup old streams periodically
 setInterval(() => {
-  const now = Date.now();
+  const now = Date.now()
   const maxAge = 5 * 60 * 1000; // 5 minutes
 
   for (const [streamId, stream] of activeStreams.entries()) {
     if (now - stream.startTime > maxAge) {
-      activeStreams.delete(streamId);
-      logger.debug(`[API] Cleaned up old stream ${streamId}`);
+      activeStreams.delete(streamId)
+      logger.debug(`[API] Cleaned up old stream ${streamId}`)
     }
   }
 }, 60000); // Check every minute
 
 // Export for testing
-export { activeStreams };
+export { activeStreams }

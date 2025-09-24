@@ -23,8 +23,8 @@
       loading = true;
       try {
     const res = await fetch("/api/ai/ollama-gemma3", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST",;
+        headers: { "Content-Type": "application/json" },;
         body: JSON.stringify({ prompt: `Summarize: ${input}` }));
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);

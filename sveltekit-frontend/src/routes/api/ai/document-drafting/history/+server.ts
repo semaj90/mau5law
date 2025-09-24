@@ -21,22 +21,22 @@
  * GET /api/ai/document-drafting/history - Get user's document history
  */
 
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     // In production, this would query the database for the user's document history
     // For now, return mock data that demonstrates the functionality
     
-    const limit = parseInt(url.searchParams.get('limit') || '20');
-    const offset = parseInt(url.searchParams.get('offset') || '0');
+    const limit = parseInt(url.searchParams.get('limit') || '20')
+    const offset = parseInt(url.searchParams.get('offset') || '0')
     const status = url.searchParams.get('status'); // 'draft', 'review', 'finalized'
     const type = url.searchParams.get('type'); // document type filter
 
     // Mock document history data
-    const mockHistory = [;
+    const mockHistory = [
       {
         id: 'doc_001',
         title: 'Motion to Suppress Evidence - State v. Johnson',
@@ -50,7 +50,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           wordCount: 1247,
           completionScore: 92
         },
-        aiSuggestions: [;
+        aiSuggestions: [
           {
             id: 'sugg_001',
             type: 'legal_point',
@@ -94,7 +94,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           wordCount: 892,
           completionScore: 87
         },
-        aiSuggestions: [;
+        aiSuggestions: [
           {
             id: 'sugg_002',
             type: 'content',
@@ -121,7 +121,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           wordCount: 1789,
           completionScore: 89
         },
-        aiSuggestions: [;
+        aiSuggestions: [
           {
             id: 'sugg_003',
             type: 'structure',
@@ -148,7 +148,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           wordCount: 3421,
           completionScore: 94
         },
-        aiSuggestions: [;
+        aiSuggestions: [
           {
             id: 'sugg_004',
             type: 'citation',
@@ -162,23 +162,23 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         status: 'finalized',
         collaborators: ['attorney_007', 'paralegal_008']
       }
-    ];
+    ]
 
     // Apply filters
-    let filteredHistory = mockHistory;
+    let filteredHistory = mockHistory
     
     if (status) {
-      filteredHistory = filteredHistory.filter(doc => doc.status === status);
+      filteredHistory = filteredHistory.filter(doc => doc.status === status)
     }
     
     if (type) {
-      filteredHistory = filteredHistory.filter(doc => doc.type === type);
+      filteredHistory = filteredHistory.filter(doc => doc.type === type)
     }
 
     // Apply pagination
-    const paginatedHistory = filteredHistory.slice(offset, offset + limit);
+    const paginatedHistory = filteredHistory.slice(offset, offset + limit)
 
-    // Calculate statistics;
+    // Calculate statistics
     const stats = {
       total: filteredHistory.length,
       byStatus: {
@@ -187,12 +187,12 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         finalized: filteredHistory.filter(item => item.length)
       },
       byType: filteredHistory.reduce((acc, doc) => {
-        acc[doc.type] = (acc[doc.type] || 0) + 1;
-        return acc;
+        acc[doc.type] = (acc[doc.type] || 0) + 1
+        return acc
       }, {} as Record<string, number>),
       avgCompletionScore: filteredHistory.reduce((sum, d) => sum + d.metadata.completionScore, 0) / filteredHistory.length,
       totalWordCount: filteredHistory.reduce((sum, d) => sum + d.metadata.wordCount, 0)
-    };
+    }
 
     return json({
       success: true,
@@ -208,15 +208,15 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         userId: locals?.user?.id || 'anonymous',
         timestamp: new Date().toISOString()
       }
-    });
+    })
 
   } catch (error) {
-    console.error('Error fetching document history:', error);
+    console.error('Error fetching document history:', error)
     return json(
       { success: false, message: 'Failed to fetch document history' },)>
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-export const GET = redisOptimized.documentProcessing(originalGETHandler);
+export const GET = redisOptimized.documentProcessing(originalGETHandler)

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:on:mouseenter) and new syntaxes for event handling is not allowed. Use only the onon:mouseenter syntax
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:on:mouseenter) and new syntaxes for event handling is not allowed. Use only the onon:mouseenter syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:on:mouseenter) and new syntaxes for event handling is not allowed. Use only the onon:mouseenter syntax -->
 <!--
@@ -50,7 +50,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     maxWidth,
     minHeight,
     onClick,
-    onHover
+    onHover;
   }: Props = $props();
 
   // Events now handled via props in Svelte 5
@@ -271,7 +271,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     outline: 2px solid #ffffff;
     outline-offset: 2px;
   }
-/* Scanlines effect */ :global(.nes-8bit-container.enable-scanlines: :after) {
+/* Scanlines effect */ :global(.nes-8bit-container.enable-scanlines::after) {
     content: '';
     position: absolute;
     top: 0;

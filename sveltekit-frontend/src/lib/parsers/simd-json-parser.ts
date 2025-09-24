@@ -152,7 +152,7 @@ export class SIMDJSONParser {
       documentType: rawData.document_type || rawData.type || "legal_document",
       content: rawData.content || rawData.text || "",
       metadata: rawData.metadata || {},
-      parseTime: 0,
+      parseTime: 0,;
       size: 0
     };
 
@@ -227,7 +227,7 @@ export class SIMDJSONParser {
           text: chunkText,
           startIndex: chunkStart,
           endIndex: chunkEnd,
-          metadata: {
+          metadata: {;
             index: chunkIndex,
             wordCount: chunkText.split(/\s+/).length,
             charCount: chunkText.length
@@ -289,7 +289,7 @@ export class SIMDJSONParser {
         startIndex: position,
         endIndex: end,
         metadata: {
-          streamChunk: true,
+          streamChunk: true,;
           index: chunkIndex
         }
       });
@@ -412,7 +412,7 @@ export class SIMDJSONParser {
       documentType: typeMatch?.[1] || "unknown",
       content: contentMatch?.[1] || "",
       metadata: { parsedWithFallback: true },
-      parseTime: performance.now() - startTime,
+      parseTime: performance.now() - startTime,;
       size: jsonString.length
     };
   }
@@ -426,7 +426,7 @@ export class SIMDJSONParser {
         text: this.textBuffer.length,
         embeddings: this.embeddingBuffer.length,
         indices: this.chunkIndices.length
-      },
+      },;
       configuration: {
         batchSize: this.batchSize,
         enableSIMD: this.enableSIMD,

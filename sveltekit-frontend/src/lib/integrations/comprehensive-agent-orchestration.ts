@@ -128,7 +128,7 @@ export class ComprehensiveAgentOrchestrator {
       if ((result as { status?: any; value?: any; reason?: any; result?: any }).status === 'fulfilled') {
         const agentName = agentsToUse[index];
         const agentResult = {
-          agent: agentName,
+          agent: agentName,;
           output: (result as { status?: any; value?: any; reason?: any; result?: any }).value.output,
           score: (result as { status?: any; value?: any; reason?: any; result?: any }).value.score,
           metadata: (result as { status?: any; value?: any; reason?: any; result?: any }).value.metadata
@@ -143,9 +143,9 @@ export class ComprehensiveAgentOrchestrator {
       } else {
         console.error(`❌ Agent ${agentsToUse[index]} failed:`, (result as { status?: any; value?: any; reason?: any; result?: any }).reason);
         allResults.push({
-          agent: agentsToUse[index],
+          agent: agentsToUse[index],;
           output: `Error: ${(result as { status?: any; value?: any; reason?: any; result?: any }).reason.message}`,
-          score: 0,
+          score: 0,;
           metadata: { error: true }
         });
       }
@@ -167,7 +167,7 @@ export class ComprehensiveAgentOrchestrator {
         metadata: Record<string, any>
       },
       allResults,
-      multicoreAnalysis: multicoreAnalysis ? {
+      multicoreAnalysis: multicoreAnalysis ? {;
         recommendations: multicoreAnalysis.recommendations,
         errorPatterns: multicoreAnalysis.errorPatterns,
         performanceMetrics: multicoreAnalysis.performanceMetrics
@@ -206,7 +206,7 @@ export class ComprehensiveAgentOrchestrator {
     const recommendationRequest: RecommendationRequest = {
       context: `Legal AI analysis request: ${request.prompt}`,
       errorType: request.options?.analysisType,
-      codeSnippet: (request.context as any)?.codeSnippet,
+      codeSnippet: (request.context as any)?.codeSnippet,;
       priority: request.options?.priority || 'medium'
     };
 
@@ -279,7 +279,7 @@ export class ComprehensiveAgentOrchestrator {
       case 'claude':;
         const claudeRequest: ClaudeAgentRequest = {
           prompt: request.prompt,
-          context: enhancedContext,
+          context: enhancedContext,;
           options: baseOptions
         };
         return await this.simulateClaudeAgent(claudeRequest);
@@ -287,7 +287,7 @@ export class ComprehensiveAgentOrchestrator {
       case 'crewai':;
         const crewRequest: CrewAIAgentRequest = {
           prompt: request.prompt,
-          context: enhancedContext,
+          context: enhancedContext,;
           options: {
             ...baseOptions,
             crewType: this.mapAnalysisTypeToCrewType(request.options?.analysisType)
@@ -298,7 +298,7 @@ export class ComprehensiveAgentOrchestrator {
       case 'autogen':;
         const autogenRequest: AutoGenAgentRequest = {
           prompt: request.prompt,
-          context: enhancedContext,
+          context: enhancedContext,;
           options: {
             ...baseOptions,
             analysisType: request.options?.analysisType,
@@ -362,7 +362,7 @@ export class ComprehensiveAgentOrchestrator {
     const errorAnalysisTask = await this.multicoreService.generateRecommendations({
       context: 'TypeScript/Svelte error analysis',
       errorType: 'compilation_errors',
-      codeSnippet: JSON.stringify(errorData).substring(0, 1000),
+      codeSnippet: JSON.stringify(errorData).substring(0, 1000),;
       priority: 'high'
     });
 
@@ -385,7 +385,7 @@ export class ComprehensiveAgentOrchestrator {
     }
 
     return {
-      analysis: null,
+      analysis: null,;
       recommendations: ['Error analysis failed - check multicore service'],
       fixSuggestions: ['Restart Context7 multicore service']
     };
@@ -401,7 +401,7 @@ export class ComprehensiveAgentOrchestrator {
       metadata: {
         success: true,
         agent: 'claude-simulated',
-        reasoning: 'Simulated Claude reasoning based on prompt analysis',
+        reasoning: 'Simulated Claude reasoning based on prompt analysis',;
         timestamp: new Date().toISOString()
       }
     };
@@ -417,7 +417,7 @@ export class ComprehensiveAgentOrchestrator {
       metadata: {
         success: true,
         agent: 'crewai-simulated',
-        crewType: 'legal-analysis',
+        crewType: 'legal-analysis',;
         timestamp: new Date().toISOString()
       }
     };
@@ -433,7 +433,7 @@ export class ComprehensiveAgentOrchestrator {
       metadata: {
         success: true,
         agent: 'autogen-simulated',
-        analysisType: 'automated-review',
+        analysisType: 'automated-review',;
         timestamp: new Date().toISOString()
       }
     };
@@ -450,7 +450,7 @@ export async function executeAgents(
 ): Promise<ComprehensiveAgentResponse> {
   return await comprehensiveOrchestrator.executeComprehensiveAnalysis({
     prompt,
-    options: {
+    options: {;
       agents: ['claude', 'crewai', 'autogen'],
       useMulticoreAnalysis: true,
       includeContext7: true,
@@ -465,7 +465,7 @@ export async function analyzeAndFixErrors(errorData: any): Promise<any> {
     comprehensiveOrchestrator.executeComprehensiveAnalysis({
       prompt: `Analyze and provide fixes for TypeScript/Svelte errors: ${JSON.stringify(errorData).substring(0, 500)}...`,
       options: {
-        agents: ['claude', 'crewai'],
+        agents: ['claude', 'crewai'],;
         priority: 'high',
         useMulticoreAnalysis: true,
         errorAnalysis: true,

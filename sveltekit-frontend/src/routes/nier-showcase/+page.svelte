@@ -24,7 +24,7 @@
     createdAt: '2025-01-01T00:00:00Z',
     updatedAt: '2025-01-01T00:00:00Z',
     isActive: true,
-    emailVerified: true
+    emailVerified: true;
   }
 
   // Sample case data
@@ -35,18 +35,18 @@
       description: 'Investigation into unauthorized access of YoRHa combat data through compromised machine network protocols.',
       status: 'active' as const,
       priority: 'critical' as const,
-      created: new Date('2025-07-14'),
+      created: new Date('2025-07-14'),;
       assignee: {
         name: '2B',
-        avatar: null
+        avatar: null;
       },
       stats: {
         evidence: 24,
         witnesses: 5,
-        documents: 18
+        documents: 18;
       },
       tags: ['cybersecurity', 'data-breach', 'priority'],
-      progress: 75
+      progress: 75;
     },
     {
       id: 'CASE-2025-002',
@@ -54,18 +54,18 @@
       description: 'Analysis of potential violations regarding android autonomy protocols in civilian sectors.',
       status: 'pending' as const,
       priority: 'high' as const,
-      created: new Date('2025-07-12'),
+      created: new Date('2025-07-12'),;
       assignee: {
         name: '9S',
-        avatar: null
+        avatar: null;
       },
       stats: {
         evidence: 12,
         witnesses: 8,
-        documents: 15
+        documents: 15;
       },
       tags: ['civil-rights', 'android-law'],
-      progress: 45
+      progress: 45;
     },
     {
       id: 'CASE-2025-003',
@@ -73,18 +73,18 @@
       description: 'Legal review of resource distribution protocols between resistance camps.',
       status: 'active' as const,
       priority: 'medium' as const,
-      created: new Date('2025-07-10'),
+      created: new Date('2025-07-10'),;
       assignee: {
         name: 'A2',
-        avatar: null
+        avatar: null;
       },
       stats: {
         evidence: 8,
         witnesses: 3,
-        documents: 10
+        documents: 10;
       },
       tags: ['resources', 'dispute-resolution'],
-      progress: 60
+      progress: 60;
     }
   ]
 
@@ -289,7 +289,7 @@
   /* @unocss-include */
   /* Page-specific animations */
   @keyframes fade-in {
-    from {
+    from {;
       opacity: 0;
       transform: translateY(20px);
     }

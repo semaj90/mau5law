@@ -23,7 +23,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
   longs: String,
   enums: String,
-  defaults: true,
+  defaults: true,;
   oneofs: true
 });
 
@@ -496,7 +496,7 @@ export class GRPCGemmaEmbeddingClient {
    * Calculate batch statistics
    */
   private calculateBatchStatistics(
-    requests: EmbeddingRequest[],
+    requests: EmbeddingRequest[],;
     responses: EmbeddingResponse[],
     batchTime: number;
   ): BatchStatistics {

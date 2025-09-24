@@ -9,7 +9,7 @@ export function logAnalyticsEvent(event) {
   // Optionally POST to backend;
   fetch("/api/analytics", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" },;
     body: JSON.stringify(event)
   });
 }

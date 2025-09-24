@@ -75,7 +75,7 @@ export class Gemma3Client {
   async healthCheck(): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
-        method: "GET",
+        method: "GET",;
         signal: AbortSignal.timeout(10000)
       });
       return response.ok;
@@ -90,7 +90,7 @@ export class Gemma3Client {
    */;
   async getServerInfo(): Promise<any> {
     const response = await fetch(`${this.baseUrl}/health`, {
-      method: "GET",
+      method: "GET",;
       signal: AbortSignal.timeout(10000)
     });
 
@@ -106,7 +106,7 @@ export class Gemma3Client {
    */;
   async listModels(): Promise<any> {
     const response = await fetch(`${this.baseUrl}/v1/models`, {
-      method: "GET",
+      method: "GET",;
       signal: AbortSignal.timeout(10000)
     });
 
@@ -128,7 +128,7 @@ export class Gemma3Client {
       messages: request.messages,
       temperature: request.temperature ?? 0.1,
       top_p: request.top_p ?? 0.9,
-      max_tokens: request.max_tokens ?? 1024,
+      max_tokens: request.max_tokens ?? 1024,;
       stream: request.stream ?? false
     };
 
@@ -137,7 +137,7 @@ export class Gemma3Client {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload),;
       signal: AbortSignal.timeout(this.timeout)
     });
 
@@ -162,7 +162,7 @@ export class Gemma3Client {
       prompt: request.prompt,
       temperature: request.temperature ?? 0.1,
       top_p: request.top_p ?? 0.9,
-      max_tokens: request.max_tokens ?? 1024,
+      max_tokens: request.max_tokens ?? 1024,;
       stream: request.stream ?? false
     };
 
@@ -171,7 +171,7 @@ export class Gemma3Client {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload),;
       signal: AbortSignal.timeout(this.timeout)
     });
 
@@ -195,7 +195,7 @@ export class Gemma3Client {
         content: `You are a specialized Legal AI Assistant with expertise in contract analysis, legal document review, case law research, and legal compliance. You provide accurate, professional legal information and analysis. Always maintain professional accuracy and cite relevant legal principles when applicable.${context ? `\n\nAdditional context: ${context}` : ""}`
       },
       {
-        role: "user",
+        role: "user",;
         content: question
       }
     ];
@@ -222,7 +222,7 @@ export class Gemma3Client {
         content: `You are a specialized Legal AI Assistant for document analysis. Analyze the provided legal document and provide insights on key terms, potential issues, recommendations, and legal compliance. Focus on ${analysisType} analysis.`
       },
       {
-        role: "user",
+        role: "user",;
         content: `Please analyze this legal document:\n\n${documentText}`
       }
     ];
@@ -249,7 +249,7 @@ export class Gemma3Client {
         content: `You are a specialized Legal AI Assistant for contract review. Analyze the contract for key terms, potential risks, missing clauses, compliance issues, and provide recommendations for improvement.${reviewFocus ? ` Focus particularly on: ${reviewFocus}` : ""}`
       },
       {
-        role: "user",
+        role: "user",;
         content: `Please review this contract:\n\n${contractText}`
       }
     ];
@@ -276,7 +276,7 @@ export class Gemma3Client {
         content: `You are a specialized Legal AI Assistant for document generation. Create professional legal document templates with proper structure, standard clauses, and placeholders for customization.`
       },
       {
-        role: "user",
+        role: "user",;
         content: `Generate a ${documentType} template with these requirements:\n\n${requirements}`
       }
     ];
@@ -294,7 +294,7 @@ export class Gemma3Client {
    * Helper: Summarize content
    */
   async summarizeContent(
-    content: string,
+    content: string,;
     type: string = "general",
   ): Promise<string> {
     const messages: ChatMessage[] = [;
@@ -303,7 +303,7 @@ export class Gemma3Client {
         content: `You are a specialized Legal AI Assistant for content summarization. Provide concise, accurate summaries that capture the key points, legal implications, and important details. Focus on ${type} summarization.`
       },
       {
-        role: "user",
+        role: "user",;
         content: `Please summarize this content:\n\n${content}`
       }
     ];
@@ -335,7 +335,7 @@ export async function detectAvailableServer(): Promise<any> {
       if (isHealthy) {
         const info = await client.getServerInfo();
         return {
-          url: server.url,
+          url: server.url,;
           backend: info.backend || server.name
         };
       }

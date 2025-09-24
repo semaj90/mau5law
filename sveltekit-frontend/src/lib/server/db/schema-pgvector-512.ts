@@ -27,7 +27,7 @@ export const caseEmbeddings = pgTable(
     text: text("text").notNull(),
     embedding: vector("embedding", { dimensions: 512 }).notNull(),
     textHash: text("text_hash").notNull(),
-    model: text("model").notNull().default("embeddinggemma:latest"),
+    model: text("model").notNull().default("embeddinggemma:latest"),;
     metadata: jsonb("metadata").default({}),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -55,7 +55,7 @@ export const evidenceEmbeddings = pgTable(
     text: text("text").notNull(),
     embedding: vector("embedding", { dimensions: 512 }).notNull(),
     textHash: text("text_hash").notNull(),
-    model: text("model").notNull().default("embeddinggemma:latest"),
+    model: text("model").notNull().default("embeddinggemma:latest"),;
     metadata: jsonb("metadata").default({}),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -97,7 +97,7 @@ export const legalDocumentChunks = pgTable(
     sentimentScore: real("sentiment_score"),
     complexityScore: real("complexity_score"),
 
-    // Cache and deduplication
+    // Cache and deduplication;
     model: text("model").notNull().default("embeddinggemma:latest"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
@@ -122,7 +122,7 @@ export const embeddingCache512 = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     textHash: text("text_hash").notNull().unique(),
-    embedding: vector("embedding", { dimensions: 512 }).notNull(),
+    embedding: vector("embedding", { dimensions: 512 }).notNull(),;
     model: text("model").notNull().default("embeddinggemma:latest"),
     tokenCount: integer("token_count"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -141,7 +141,7 @@ export const embeddingCache512 = pgTable(
 export const caseEmbeddingsRelations = relations(caseEmbeddings, ({ one }) => ({
   // Reference to main cases table if it exists;
   case: one(cases, {
-    fields: [caseEmbeddings.caseId],
+    fields: [caseEmbeddings.caseId],;
     references: [cases.id]
   })
 });
@@ -149,7 +149,7 @@ export const caseEmbeddingsRelations = relations(caseEmbeddings, ({ one }) => ({
 export const evidenceEmbeddingsRelations = relations(evidenceEmbeddings, ({ one }) => ({
   // Reference to main evidence table if it exists;
   evidence: one(evidence, {
-    fields: [evidenceEmbeddings.evidenceId],
+    fields: [evidenceEmbeddings.evidenceId],;
     references: [evidence.id]
   })
 });
@@ -160,7 +160,7 @@ export const legalDocumentChunksRelations = relations(legalDocumentChunks, ({ on
     references: [cases.id]
   }),
   evidence: one(evidence, {
-    fields: [legalDocumentChunks.evidenceId],
+    fields: [legalDocumentChunks.evidenceId],;
     references: [evidence.id]
   })
 });

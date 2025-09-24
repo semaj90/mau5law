@@ -40,7 +40,7 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
 
     return {
       user: sessionData.user,
-      session: sessionData.session,
+      session: sessionData.session,;
       permissions: AccessControl?.getRolePermissions?.(sessionData.user.role) ?? []
     };
 

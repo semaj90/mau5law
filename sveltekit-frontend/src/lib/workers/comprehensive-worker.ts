@@ -57,7 +57,7 @@ async function processChunkJob(job: ChunkJob) {
         documentId: job.documentId,
         priority: job.metadata.priority,
         workerId,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime,;
         timestamp: new Date().toISOString()
       } as any
     } as any);
@@ -111,7 +111,7 @@ async function reportError(jobId: string, chunkIndex: number, error: any) {
   try {
     await cache.set(`job:${jobId}:error`, {
       chunkIndex,
-      error: error instanceof Error ? error.message: String(error),
+      error: error instanceof Error ? error.message: String(error),;
       timestamp: new Date().toISOString(),
       workerId
     }, 3600); // 1 hour TTL for error debugging
@@ -132,7 +132,7 @@ async function runRabbitConsumer() {
       id: workerId,
       startedAt: new Date().toISOString(),
       status: 'active',
-      queues: ['evidence.embedding.queue', 'evidence.embedding.priority'],
+      queues: ['evidence.embedding.queue', 'evidence.embedding.priority'],;
       pid: process.pid
     }, 300); // 5 minute TTL, renewed by heartbeat
 
@@ -201,7 +201,7 @@ async function runRedisLoop() {
       id: workerId,
       startedAt: new Date().toISOString(),
       status: 'active',
-      queues: ['embedding:jobs'],
+      queues: ['embedding:jobs'],;
       pid: process.pid
     }, 300);
 

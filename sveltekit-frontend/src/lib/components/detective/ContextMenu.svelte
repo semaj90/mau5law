@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Missing catch or finally clause
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Missing catch or finally clause -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 
 <script lang="ts">
@@ -45,9 +45,9 @@ https://svelte.dev/e/js_parse_error -->
     if (!item) return;
     try {
       const res = await fetch('/api/audit/semantic', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify.id}` })
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(id)}` })
       });
       if (!res.ok) throw new Error('Failed to audit evidence');
       const data = await res.json();
@@ -62,9 +62,9 @@ https://svelte.dev/e/js_parse_error -->
     if (!item) return;
     try {
       const res = await fetch('/api/agent/trigger', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify.id })
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(id) })
       });
       if (!res.ok) throw new Error('Failed to trigger agent review');
     closeMenu();
@@ -79,8 +79,9 @@ https://svelte.dev/e/js_parse_error -->
   let cases = $state<Case[] >([]);
   let menuOpen = $state(true);
 
-  $effect(async () => {
-    // Load available cases
+  $effect(() => {
+    (async () => {
+// Load available cases
     try {
       const response = await fetch("/api/cases");
       if ((response as { ok?: any; json?: any }).ok) {
@@ -91,6 +92,7 @@ https://svelte.dev/e/js_parse_error -->
   }
     // Open menu after mount
     await tick();
+    })();
   });
 
   function sendToCase(caseId: string) {

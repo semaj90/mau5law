@@ -30,7 +30,7 @@ const meta = {
     streaming: {
       control: { type: 'boolean' }
     }
-  },
+  },;
   tags: ['autodocs']
 } satisfies Meta<AIChat>;
 
@@ -42,7 +42,7 @@ export const Default: Story = {
     model: 'gemma3-legal',
     provider: 'ollama',
     temperature: 0.7,
-    maxTokens: 2000,
+    maxTokens: 2000,;
     streaming: true
   }
 };
@@ -52,7 +52,7 @@ export const OpenAI: Story = {
     model: 'gpt-4',
     provider: 'openai',
     temperature: 0.5,
-    maxTokens: 1500,
+    maxTokens: 1500,;
     streaming: true
   }
 };
@@ -62,7 +62,7 @@ export const Conservative: Story = {
     model: 'gemma3-legal',
     provider: 'ollama',
     temperature: 0.1,
-    maxTokens: 1000,
+    maxTokens: 1000,;
     streaming: false
   }
 };
@@ -72,7 +72,7 @@ export const Creative: Story = {
     model: 'gemma3-legal',
     provider: 'ollama',
     temperature: 1.5,
-    maxTokens: 3000,
+    maxTokens: 3000,;
     streaming: true
   }
 };

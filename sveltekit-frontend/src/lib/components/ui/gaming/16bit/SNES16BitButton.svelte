@@ -1,7 +1,7 @@
 <!--
   SNES 16-Bit Enhanced Button Component
   Advanced 16-bit styling with gradients and enhanced visuals
-  
+
   Features:
   - Extended SNES color palette
   - Gradient effects and layering
@@ -60,11 +60,11 @@
     class: className = '',
     onClick,
     onHover,
-    onFocus
+    onFocus;
   }: Props = $props();
 
   // Events now handled via props in Svelte 5
-  // 
+  //
 
   let isPressed = $state(false);
   let isHovered = $state(false);
@@ -153,7 +153,7 @@
     const directionMap = {
       'horizontal': 'to right',
       'vertical': 'to bottom',
-      'diagonal': 'to bottom right', 
+      'diagonal': 'to bottom right',
       'radial': 'radial-gradient(circle'
     };
     const gradientType = direction === 'radial' ? 'radial-gradient(circle, ' : 'linear-gradient(' + directionMap[direction as keyof typeof directionMap] + ', ';
@@ -164,7 +164,7 @@
     const sizeMap = {
       small: { padding: '10px 16px', fontSize: '11px', minHeight: '36px' },
       medium: { padding: '14px 20px', fontSize: '13px', minHeight: '44px' },
-      large: { padding: '18px 24px', fontSize: '15px', minHeight: '52px' },
+      large: { padding: '18px 24px', fontSize: '15px', minHeight: '52px' },;
       xl: { padding: '22px 28px', fontSize: '17px', minHeight: '60px' }
     };
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
@@ -172,7 +172,7 @@
 
   // TODO: Convert to $derived: sizeStyles = getSizeStyles(size)
   // TODO: Convert to $derived: variantGradient = getVariantGradient(variant, gradientDirection)
-  // TODO: Convert to $derived: mode7Transform = enableMode7 && isPressed ? 'perspective(100px) rotateX(5deg) scale(0.95)' : 
+  // TODO: Convert to $derived: mode7Transform = enableMode7 && isPressed ? 'perspective(100px) rotateX(5deg) scale(0.95)' :
                       enableMode7 && isHovered ? 'perspective(200px) rotateX(-2deg) scale(1.02)' : 'none'
 </script>
 
@@ -188,7 +188,7 @@
   ononmouseleave={handleUnhover}
   onfocus={handleFocus}
   class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7 ? 'mode7' : ''} {plasmaEffect ? 'plasma' : ''}"
-  style="
+  style=";
     --button-gradient: {variantGradient};
     --button-padding: {sizeStyles.padding};
     --button-font-size: {sizeStyles.fontSize};
@@ -220,7 +220,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 /* Enhanced 3D effect */ box-shadow: 0 2px 0px rgba(0, 0, 0, 0.3), inset 0 1px 0px rgba(255, 255, 255, 0.4), inset 0 -1px 0px rgba(0, 0, 0, 0.2);
-    
+
     transform: var(--mode7-transform, none);
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 /* Remove default button styles */ -webkit-appearance: none;
@@ -241,7 +241,7 @@
 /* Layer effects support */ position: relative;
     overflow: hidden;
   }
-/* Layer effects (pseudo-Mode 7 layering) */ :global(.snes-16bit-button.layer-effects: :before) {
+/* Layer effects (pseudo-Mode 7 layering) */ :global(.snes-16bit-button.layer-effects::before) {
     content: '';
     position: absolute;
     top: 0;
@@ -265,13 +265,13 @@ background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%
 /* Mode 7 perspective effects */ :global(.snes-16bit-button.mode7) {
     transform-style: preserve-3d;
   }
-/* Hover effects */ :global(.snes-16bit-button: not(:disabled):hover) {
+/* Hover effects */ :global(.snes-16bit-button:not(:disabled):hover) {
     border-color: rgba(255, 255, 255, 0.5);
 box-shadow: 0 3px 0px rgba(0, 0, 0, 0.3), inset 0 1px 0px rgba(255, 255, 255, 0.6), inset 0 -1px 0px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2);
-    
+
     filter: brightness(1.1) saturate(1.1);
   }
-/* Active/Pressed state */ :global(.snes-16bit-button: not(:disabled):active) {
+/* Active/Pressed state */ :global(.snes-16bit-button:not(:disabled):active) {
 box-shadow: 0 1px 0px rgba(0, 0, 0, 0.3), inset 0 1px 0px rgba(255, 255, 255, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 /* Disabled state */ :global(.snes-16bit-button:disabled) {
@@ -326,7 +326,7 @@ box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2), inset 0 1px 0px rgba(255, 255, 255, 0.
   :global(.snes-16bit-button.variant-error) {
     background: linear-gradient(to bottom, #fc5c5c, #f83800, #cc2800);
   }
-/* Scanlines effect (optional) */ :global(.snes-16bit-button.enable-scanlines: :after) {
+/* Scanlines effect (optional) */ :global(.snes-16bit-button.enable-scanlines::after) {
     content: '';
     position: absolute;
     top: 0;
@@ -374,7 +374,7 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 0px rgba(0, 0, 0, 0.
       animation: none;
       background-size: 100% 100%;
     }
-    
+
     :global(.snes-16bit-button.mode7) {
       transform: none !important;
     }
@@ -384,11 +384,11 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 0px rgba(0, 0, 0, 0.
       animation: none;
       transition: opacity 150ms ease;
     }
-    
+
     :global(.snes-16bit-button.plasma) {
       animation: none;
     }
-    
+
     :global(.enhanced-spinner) {
       animation: none;
       border: 2px solid currentColor;

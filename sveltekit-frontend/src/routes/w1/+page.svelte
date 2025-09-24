@@ -10,11 +10,11 @@
 		id: '550e8400-e29b-41d4-a716-446655440000',
 		name: 'Sarah Chen',
 		email: 'sarah.chen@prosecutor.gov',
-		role: 'Senior Prosecutor',
-		avatar: '👩‍⚖️',
+		role: 'Senior Prosecutor',;
+		avatar: '👩‍⚖️',;
 		cases: 47,
 		evidenceAnalyzed: 1284,
-		convictionRate: 94.2
+		convictionRate: 94.2;
 	};
 
 	// Demo state
@@ -38,7 +38,7 @@
 			evidence: 23,
 			aiConfidence: 87,
 			lastActivity: '2 hours ago',
-			deadline: '3 days'
+			deadline: '3 days';
 		},
 		{
 			id: '2',
@@ -48,17 +48,17 @@
 			evidence: 156,
 			aiConfidence: 94,
 			lastActivity: '1 day ago',
-			deadline: '1 week'
+			deadline: '1 week';
 		},
 		{
 			id: '3',
 			title: 'People v. Davis - Assault',
 			status: 'preparation',
-			priority: 'urgent',
+			priority: 'urgent',;
 			evidence: 8,
 			aiConfidence: 76,
-			lastActivity: '5 mins ago',
-			deadline: 'Tomorrow'
+			lastActivity: '5 mins ago',;
+			deadline: 'Tomorrow';
 		}
 	]);
 
@@ -75,9 +75,9 @@
 		what: '',
 		who: '',
 		when: '',
-		where: '',
-		why: '',
-		how: ''
+		where: '',;
+		why: '',;
+		how: '';
 	});
 
 	const aiPrompts = [
@@ -151,9 +151,9 @@
 			year: 'numeric',
 			month: 'short',
 			day: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit'
+			hour: '2-digit',;
+			minute: '2-digit',;
+			second: '2-digit';
 		});
 	}
 
@@ -359,7 +359,7 @@
 				{#if workflowStep < prosecutionWorkflow.length}
 					<div class="current-question">
 						<h3>{prosecutionWorkflow[workflowStep].question}</h3>
-						<textarea
+						<textarea;
 							bind:value={workflowAnswers[prosecutionWorkflow[workflowStep].step]}
 							placeholder="Enter details..."
 							class="workflow-input"
@@ -460,7 +460,7 @@
 
 		{#if showQuickInput}
 			<div class="quick-input-panel" transition:fly={{ y: 20, duration: 300 }}>
-				<textarea
+				<textarea;
 					bind:value={quickInput}
 					placeholder="Describe what happened... (e.g., 'Urgent fraud case with missing financial records and uncooperative witness')"
 					class="quick-input"
@@ -539,7 +539,7 @@
 		font-size: 0.875rem;
 	}
 
-	.nav-item:hover, .nav-.active {
+	.nav-item:hover, .nav-item.active {
 		background: rgba(16, 185, 129, 0.1);
 		border-color: #10b981;
 		color: #10b981;

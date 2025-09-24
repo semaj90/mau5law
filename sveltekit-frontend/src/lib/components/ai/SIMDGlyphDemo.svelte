@@ -12,7 +12,7 @@ https://svelte.dev/e/expected_token -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   
   let isGenerating = $state(false);
   let results = $state([]);
@@ -42,8 +42,8 @@ https://svelte.dev/e/expected_token -->
       const request = {
         evidence_id: prompt.evidence_id,
         prompt: prompt.text,
-        style: prompt.style,
-        dimensions: [512, 512],
+        style: prompt.style,;
+        dimensions: [512, 512],;
         seed: Math.floor(Math.random() * 1000000),
         neural_sprite_config: {
           enable_compression: true,
@@ -64,9 +64,9 @@ https://svelte.dev/e/expected_token -->
       console.log('🎨 Generating SIMD glyph:', request);
       
       const response = await fetch('/api/glyph/simd-embeds', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(request)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(request);
       });
       
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -78,8 +78,8 @@ https://svelte.dev/e/expected_token -->
       if ((result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).success) {
         const newResult = {
           id: `simd-${Date.now()}`,
-          timestamp: new Date().toISOString(),
-          prompt: prompt.text,
+          timestamp: new Date().toISOString(),;
+          prompt: prompt.text,;
           style: prompt.style,
           evidence_id: prompt.evidence_id,
           glyph_url: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).data.glyph_url,
@@ -436,7 +436,7 @@ generateSIMDGlyph(demoPrompts[0])}
   }
   
   /* Improve image hover effects */
-  img:hover {
+  img:hover {;
     transform: scale(1.02);
     transition: transform 0.2s ease-in-out;
   }

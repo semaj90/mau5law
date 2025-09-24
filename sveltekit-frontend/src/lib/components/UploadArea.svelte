@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses
+<!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses;
 https://svelte.dev/e/rune_missing_parentheses -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses -->
 <script lang="ts">
@@ -35,7 +35,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
 </script>
 
 <div
-  class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors"
+  class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors";
   class:border-blue-500={dragActive}
   class:bg-blue-50={dragActive}
   ondrop={handleDrop}

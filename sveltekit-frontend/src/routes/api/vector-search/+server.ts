@@ -3,67 +3,67 @@
  * Semantic similarity search across documents, cases, and chunks
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { documents, document_chunks, cases, vectors } from '$lib/server/schema/documents';
-import { eq, desc, and, gt, sql } from 'drizzle-orm';
-import { createEmbedding } from '$lib/services/embedding-service';
-import { cache, getCachedSearchResults, cacheSearchResults } from '$lib/server/cache/redis';
+import { json, type RequestHandler } from '@sveltejs/kit'
+import { db } from '$lib/server/db'
+import { documents, document_chunks, cases, vectors } from '$lib/server/schema/documents'
+import { eq, desc, and, gt, sql } from 'drizzle-orm'
+import { createEmbedding } from '$lib/services/embedding-service'
+import { cache, getCachedSearchResults, cacheSearchResults } from '$lib/server/cache/redis'
 
 const CACHE_TTL = 180; // 3 minutes for vector search results
-const DEFAULT_SIMILARITY_THRESHOLD = 0.7;
-const DEFAULT_LIMIT = 10;
+const DEFAULT_SIMILARITY_THRESHOLD = 0.7
+const DEFAULT_LIMIT = 10
 
 interface VectorSearchRequest {
-  query: string;
-  threshold?: number;
-  limit?: number;
-  entity_types?: ('document' | 'chunk' | 'case')[];
-  vector_types?: ('content' | 'title' | 'summary')[];
+  query: string
+  threshold?: number
+  limit?: number
+  entity_types?: ('document' | 'chunk' | 'case')[]
+  vector_types?: ('content' | 'title' | 'summary')[]
   filters?: {
-    case_id?: string;
-    document_type?: string;
-    risk_level?: string;
-    jurisdiction?: string;
-    practice_area?: string;
-    created_after?: string;
-    created_before?: string;
-  };
-  include_content?: boolean;
+    case_id?: string
+    document_type?: string
+    risk_level?: string
+    jurisdiction?: string
+    practice_area?: string
+    created_after?: string
+    created_before?: string
+  }
+  include_content?: boolean
   boost_factors?: {
-    title?: number;
-    content?: number;
-    summary?: number;
-  };
+    title?: number
+    content?: number
+    summary?: number
+  }
 }
 
 interface VectorSearchResult {
-  id: string;
-  entity_type: 'document' | 'chunk' | 'case';
-  vector_type: 'content' | 'title' | 'summary';
-  similarity: number;
-  boosted_score?: number;
-  title: string;
-  content?: string;
-  summary?: string;
+  id: string
+  entity_type: 'document' | 'chunk' | 'case'
+  vector_type: 'content' | 'title' | 'summary'
+  similarity: number
+  boosted_score?: number
+  title: string
+  content?: string
+  summary?: string
   metadata: {
-    document_type?: string;
-    risk_level?: string;
-    confidence_level?: number;
-    case_title?: string;
-    jurisdiction?: string;
-    practice_area?: string;
-    created_at: string;
-  };
+    document_type?: string
+    risk_level?: string
+    confidence_level?: number
+    case_title?: string
+    jurisdiction?: string
+    practice_area?: string
+    created_at: string
+  }
 }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const searchRequest: VectorSearchRequest = await request.json();
+    const searchRequest: VectorSearchRequest = await request.json()
 
-    // Validate request;
+    // Validate request
     if (!searchRequest.query || searchRequest.query.trim().length === 0) {
-      return json({ error: 'Query is required and cannot be empty' }, { status: 400 });
+      return json({ error: 'Query is required and cannot be empty' }, { status: 400 })
     }
 
     const {
@@ -75,84 +75,84 @@ export const POST: RequestHandler = async ({ request }) => {
       filters = {},
       include_content = false,
       boost_factors = { title: 1.2, content: 1.0, summary: 0.9 }
-    } = searchRequest;
+    } = searchRequest
 
     // Build cache key
-    const cacheKey = `vector_search:${Buffer.from(JSON.stringify(searchRequest)).toString('base64')}`;
+    const cacheKey = `vector_search:${Buffer.from(JSON.stringify(searchRequest)).toString('base64')}`
 
-    // Try cache first;
+    // Try cache first
     const cached = await getCachedSearchResults(query, 'vector-api', {
       threshold,
       limit,
       entity_types,
       vector_types,
       filters
-    });
+    })
     if (cached) {
-      const payload = typeof cached === 'string' ? JSON.parse(cached) : cached;
-      return json(payload);
+      const payload = typeof cached === 'string' ? JSON.parse(cached) : cached
+      return json(payload)
     }
 
     // Generate query embedding
-    let queryEmbedding: number[];
+    let queryEmbedding: number[]
     try {
-      queryEmbedding = await createEmbedding(query);
+      queryEmbedding = await createEmbedding(query)
     } catch (error) {
-      console.error('Failed to generate query embedding:', error);
-      return json({ error: 'Failed to generate embedding for query' }, { status: 500 });
+      console.error('Failed to generate query embedding:', error)
+      return json({ error: 'Failed to generate embedding for query' }, { status: 500 })
     }
 
     // Search across different entity types
-    const searchPromises = [];
+    const searchPromises = []
 
-    // 1. Search documents;
+    // 1. Search documents
     if (entity_types.includes('document')) {
-      const documentSearches = vector_types;
+      const documentSearches = vector_types
         .map((vectorType) => {
-          let vectorColumn;
+          let vectorColumn
           switch (vectorType) {
             case 'title':
-              vectorColumn = documents.title_embedding;
-              break;
+              vectorColumn = documents.title_embedding
+              break
             case 'summary':
-              vectorColumn = documents.summary_embedding;
-              break;
+              vectorColumn = documents.summary_embedding
+              break
             default:
-              vectorColumn = documents.embedding;
+              vectorColumn = documents.embedding
           }
 
-          if (!vectorColumn) return null;
+          if (!vectorColumn) return null
 
           const conditions = [
             eq(documents.is_active, true),
             eq(documents.is_indexed, true),
             sql`${vectorColumn} IS NOT NULL`
-          ];
+          ]
 
-          // Apply filters;
+          // Apply filters
           if (filters.case_id) {
-            conditions.push(eq(documents.case_id, filters.case_id);
+            conditions.push(eq(documents.case_id, filters.case_id)
           }
           if (filters.document_type) {
-            conditions.push(eq(documents.document_type, filters.document_type);
+            conditions.push(eq(documents.document_type, filters.document_type)
           }
           if (filters.risk_level) {
-            conditions.push(eq(documents.risk_level, filters.risk_level);
+            conditions.push(eq(documents.risk_level, filters.risk_level)
           }
           if (filters.jurisdiction) {
-            conditions.push(eq(documents.jurisdiction, filters.jurisdiction);
+            conditions.push(eq(documents.jurisdiction, filters.jurisdiction)
           }
           if (filters.practice_area) {
-            conditions.push(eq(documents.practice_area, filters.practice_area);
+            conditions.push(eq(documents.practice_area, filters.practice_area)
           }
           if (filters.created_after) {
-            conditions.push(sql`${documents.created_at} >= ${filters.created_after}`);
+            conditions.push(sql`${documents.created_at} >= ${filters.created_after}`)
           }
           if (filters.created_before) {
-            conditions.push(sql`${documents.created_at} <= ${filters.created_before}`);
+            conditions.push(sql`${documents.created_at} <= ${filters.created_before}`)
           }
 
-          return db;
+          return db
             .select({
               id: documents.id,
               entity_type: sql`'document'::text`,
@@ -175,16 +175,16 @@ export const POST: RequestHandler = async ({ request }) => {
               sql`1 - (${vectorColumn} <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`
             )
             .orderBy(sql`similarity DESC`)
-            .limit(limit);
+            .limit(limit)
         })
-        .filter(Boolean);
+        .filter(Boolean)
 
-      searchPromises.push(...documentSearches);
+      searchPromises.push(...documentSearches)
     }
 
-    // 2. Search document chunks;
+    // 2. Search document chunks
     if (entity_types.includes('chunk')) {
-      const chunkSearch = db;
+      const chunkSearch = db
         .select({
           id: document_chunks.id,
           entity_type: sql`'chunk'::text`,
@@ -209,14 +209,14 @@ export const POST: RequestHandler = async ({ request }) => {
           sql`1 - (${document_chunks.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`
         )
         .orderBy(sql`similarity DESC`)
-        .limit(limit);
+        .limit(limit)
 
-      searchPromises.push(chunkSearch);
+      searchPromises.push(chunkSearch)
     }
 
-    // 3. Search cases;
+    // 3. Search cases
     if (entity_types.includes('case')) {
-      const caseSearch = db;
+      const caseSearch = db
         .select({
           id: cases.id,
           entity_type: sql`'case'::text`,
@@ -239,20 +239,20 @@ export const POST: RequestHandler = async ({ request }) => {
           sql`1 - (${cases.case_embedding} <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`
         )
         .orderBy(sql`similarity DESC`)
-        .limit(limit);
+        .limit(limit)
 
-      searchPromises.push(caseSearch);
+      searchPromises.push(caseSearch)
     }
 
     // Execute all searches in parallel
-    const searchResults = await Promise.all(searchPromises);
+    const searchResults = await Promise.all(searchPromises)
 
-    // Flatten and process results;
+    // Flatten and process results
     const allResults: VectorSearchResult[] = searchResults.flat().map((result: any) => {
-      const similarity = Number((result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).similarity);
-      const vectorType = (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).vector_type as keyof typeof boost_factors;
-      const boostFactor = boost_factors[vectorType] || 1.0;
-      const boostedScore = similarity * boostFactor;
+      const similarity = Number((result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).similarity)
+      const vectorType = (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).vector_type as keyof typeof boost_factors
+      const boostFactor = boost_factors[vectorType] || 1.0
+      const boostedScore = similarity * boostFactor
 
       return {
         id: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).id,
@@ -272,15 +272,15 @@ export const POST: RequestHandler = async ({ request }) => {
           practice_area: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).practice_area,
           created_at: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).created_at?.toISOString() || new Date().toISOString()
         }
-      };
-    });
+      }
+    })
 
     // Sort by boosted score and limit results
     const sortedResults = allResults
       .sort((a, b) => (b.boosted_score || b.similarity) - (a.boosted_score || a.similarity)
-      .slice(0, limit);
+      .slice(0, limit)
 
-    // Prepare response;
+    // Prepare response
     const response = {
       query,
       results: sortedResults,
@@ -293,38 +293,38 @@ export const POST: RequestHandler = async ({ request }) => {
         vector_types_searched: vector_types,
         boost_factors_applied: boost_factors
       }
-    };
+    }
 
-    // Cache results;
+    // Cache results
     await cacheSearchResults(query, 'vector-api', (response as { results?: any }).results, {
       threshold,
       limit,
       entity_types,
       vector_types,
       filters
-    });
+    })
 
-    return json(response);
+    return json(response)
   } catch (error) {
-    console.error('Vector search error:', error);
-    return json();
+    console.error('Vector search error:', error)
+    return json()
       {
         error: 'Vector search failed',
         details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const query = url.searchParams.get('q') || url.searchParams.get('query');
+    const query = url.searchParams.get('q') || url.searchParams.get('query')
     if (!query) {
-      return json({ error: 'Query parameter "q" or "query" is required' }, { status: 400 });
+      return json({ error: 'Query parameter "q" or "query" is required' }, { status: 400 })
     }
 
-    // Convert URL params to POST request format;
+    // Convert URL params to POST request format
     const searchRequest: VectorSearchRequest = {
       query,
       threshold: parseFloat(
@@ -335,7 +335,7 @@ export const GET: RequestHandler = async ({ url }) => {
       vector_types: (url.searchParams.get('vector_types')?.split(',') as any) || ['content'],
       include_content: url.searchParams.get('include_content') === 'true',
       filters: Record<string, any>
-    };
+    }
 
     // Add filters from URL params
     const filterParams = [
@@ -346,28 +346,28 @@ export const GET: RequestHandler = async ({ url }) => {
       'practice_area',
       'created_after',
       'created_before'
-    ];
+    ]
     filterParams.forEach((param) => {
-      const value = url.searchParams.get(param);
+      const value = url.searchParams.get(param)
       if (value) {
-        (searchRequest.filters as any)[param] = value;
+        (searchRequest.filters as any)[param] = value
       }
-    });
+    })
 
-    // Create a fake request object to reuse POST logic;
+    // Create a fake request object to reuse POST logic
     const fakeRequest = {
       json: async () => searchRequest
-    };
+    }
 
-    return await exports.POST({ request: fakeRequest as any, url } as any);
+    return await exports.POST({ request: fakeRequest as any, url } as any)
   } catch (error) {
-    console.error('Vector search GET error:', error);
-    return json();
+    console.error('Vector search GET error:', error)
+    return json()
       {
         error: 'Vector search failed',
         details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
-    );
+    )
   }
-};
+}

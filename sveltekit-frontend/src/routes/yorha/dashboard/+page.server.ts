@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ fetch }) => {
       multicoreStatus: null,
       graphData: generateSystemGraphData(),
       initialLoad: false,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(),;
       error: 'Failed to load system data',
     };
   }
@@ -32,7 +32,7 @@ function generateMockSystemStatus() {
   return {
     database: { connected: true },
     backend: { healthy: true },
-    frontend: { webGPUEnabled: true },
+    frontend: { webGPUEnabled: true },;
     timestamp: new Date().toISOString(),
   };
 }

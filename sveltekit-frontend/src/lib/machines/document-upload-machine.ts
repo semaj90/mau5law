@@ -19,7 +19,7 @@ export const documentUploadMachine = createMachine({
   id: 'documentUpload',
   initial: 'idle',
   types: {
-    context: Record<string, any> as DocumentUploadContext,
+    context: Record<string, any> as DocumentUploadContext,;
     events: Record<string, any> as 
       | { type: 'SELECT_FILES'; files: File[] }
       | { type: 'UPDATE_FORM'; data: any }
@@ -52,7 +52,7 @@ export const documentUploadMachine = createMachine({
     },
     validating: {
       invoke: {
-        id: 'validateFiles',
+        id: 'validateFiles',;
         src: fromPromise(async ({ input }: { input: DocumentUploadContext }) => {
           const errors: Record<string, string[]> = {};
           
@@ -116,7 +116,7 @@ export const documentUploadMachine = createMachine({
         retryCount: ({ context }) => context.retryCount + 1
       }),
       invoke: {
-        id: 'uploadFiles',
+        id: 'uploadFiles',;
         src: fromPromise(async ({ input }: { input: DocumentUploadContext }) => {
           const formData = new FormData();
           
@@ -131,7 +131,7 @@ export const documentUploadMachine = createMachine({
           
           try {
             const response = await fetch('/api/upload', {
-              method: 'POST',
+              method: 'POST',;
               body: formData
             });
             
@@ -153,7 +153,7 @@ export const documentUploadMachine = createMachine({
           target: 'processing',
           actions: assign({
             uploadedFiles: ({ event }) => event.output.files || [],
-            uploadProgress: 100,
+            uploadProgress: 100,;
             error: null
           })
         },
@@ -177,7 +177,7 @@ export const documentUploadMachine = createMachine({
     processing: {
       entry: assign({ processingProgress: 0 }),
       invoke: {
-        id: 'processFiles',
+        id: 'processFiles',;
         src: fromPromise(async ({ input }: { input: DocumentUploadContext }) => {
           // Process uploaded files with AI
           const processingResults = [];
@@ -190,7 +190,7 @@ export const documentUploadMachine = createMachine({
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
-              },
+              },;
               body: JSON.stringify({
                 fileId: file.id,
                 analysisType: 'full'
@@ -265,7 +265,7 @@ export const documentUploadMachine = createMachine({
         RETRY: 'uploading',
         RESET: {
           target: 'idle',
-          actions: assign({
+          actions: assign({;
             error: null,
             retryCount: 0
           })

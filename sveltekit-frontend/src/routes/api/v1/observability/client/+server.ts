@@ -3,11 +3,11 @@
  * Integrates with server-side observability infrastructure
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import type { ClientMetricsPayload, TimingMetrics, PerformanceMetrics } from '$lib/types/metrics';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import type { ClientMetricsPayload, TimingMetrics, PerformanceMetrics } from '$lib/types/metrics'
 
-// In-memory metrics store for development (replace with database/Redis in production);
+// In-memory metrics store for development (replace with database/Redis in production)
 const metricsStore = {
   clientMetrics: [] as ClientMetricsPayload[],
   timingMetrics: [] as TimingMetrics[],
@@ -23,16 +23,16 @@ const metricsStore = {
     },
     lastUpdated: Date.now()
   }
-};
+}
 
 function updateAggregatedStats() {
-  const allMetrics = metricsStore.clientMetrics.flatMap(payload => payload.metrics);
+  const allMetrics = metricsStore.clientMetrics.flatMap(payload => payload.metrics)
   
-  if (allMetrics.length === 0) return;
+  if (allMetrics.length === 0) return
 
   // Calculate averages
-  const totalLoadTime = allMetrics.reduce((sum, m) => sum + m.loadTime, 0);
-  const totalRenderTime = allMetrics.reduce((sum, m) => sum + m.renderTime, 0);
+  const totalLoadTime = allMetrics.reduce((sum, m) => sum + m.loadTime, 0)
+  const totalRenderTime = allMetrics.reduce((sum, m) => sum + m.renderTime, 0)
   
   metricsStore.aggregatedStats = {
     totalRequests: allMetrics.length,
@@ -45,16 +45,16 @@ function updateAggregatedStats() {
       fcp: calculateWebVitalAverage(allMetrics, 'fcp')
     },
     lastUpdated: Date.now()
-  };
+  }
 }
 
 function calculateWebVitalAverage(metrics: any[], vital: string): number {
   const validValues = metrics
     .map(m => m.webVitals?.[vital])
-    .filter(v => typeof v === 'number' && !isNaN(v);
+    .filter(v => typeof v === 'number' && !isNaN(v)
   
-  if (validValues.length === 0) return 0;
-  return validValues.reduce((sum, v) => sum + v, 0) / validValues.length;
+  if (validValues.length === 0) return 0
+  return validValues.reduce((sum, v) => sum + v, 0) / validValues.length
 }
 
 function logMetricsForDevelopment(payload: ClientMetricsPayload, requestId: string) {
@@ -63,7 +63,7 @@ function logMetricsForDevelopment(payload: ClientMetricsPayload, requestId: stri
     metricsCount: payload.metrics.length,
     userAgent: payload.userAgent.slice(0, 50) + '...',
     url: payload.url
-  });
+  })
 
   payload.metrics.forEach((metric, index) => {
     console.log(`  📈 [${requestId.slice(0, 8)}] Route ${index + 1}:`, {
@@ -78,45 +78,45 @@ function logMetricsForDevelopment(payload: ClientMetricsPayload, requestId: stri
         cls: metric.webVitals.cls ? Math.round(metric.webVitals.cls * 1000) / 1000 : 'N/A',
         fcp: metric.webVitals.fcp ? `${Math.round(metric.webVitals.fcp)}ms` : 'N/A'
       } : 'N/A'
-    });
-  });
+    })
+  })
 }
 
 export const POST: RequestHandler = async ({ request, getClientAddress, locals }) => {
-  const requestStart = performance.now();
-  const requestId = (locals as any).requestId || crypto.randomUUID();
+  const requestStart = performance.now()
+  const requestId = (locals as any).requestId || crypto.randomUUID()
 
   try {
-    const payload: ClientMetricsPayload = await request.json();
+    const payload: ClientMetricsPayload = await request.json()
     
-    // Validate payload;
+    // Validate payload
     if (!payload.metrics || !Array.isArray(payload.metrics)) {
       return json({ 
         error: 'Invalid payload: metrics array required',
         requestId 
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
-    // Store metrics (in production, save to PostgreSQL/Redis);
+    // Store metrics (in production, save to PostgreSQL/Redis)
     metricsStore.clientMetrics.push({
       ...payload,
       timestamp: Date.now() // Use server timestamp for consistency
-    });
+    })
 
-    // Keep only last 1000 entries to prevent memory issues;
+    // Keep only last 1000 entries to prevent memory issues
     if (metricsStore.clientMetrics.length > 1000) {
-      metricsStore.clientMetrics = metricsStore.clientMetrics.slice(-1000);
+      metricsStore.clientMetrics = metricsStore.clientMetrics.slice(-1000)
     }
 
     // Update aggregated statistics
-    updateAggregatedStats();
+    updateAggregatedStats()
 
-    // Log for development visibility;
+    // Log for development visibility
     if (process.env.NODE_ENV !== 'production') {
-      logMetricsForDevelopment(payload, requestId);
+      logMetricsForDevelopment(payload, requestId)
     }
 
-    const processingTime = performance.now() - requestStart;
+    const processingTime = performance.now() - requestStart
 
     return json({
       success: true,
@@ -129,12 +129,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
         'X-Request-ID': requestId,
         'Server-Timing': `client-metrics-processing;dur=${processingTime.toFixed(2)}`
       }
-    });
+    })
 
   } catch (error) {
-    const processingTime = performance.now() - requestStart;
+    const processingTime = performance.now() - requestStart
     
-    console.error(`❌ [${requestId.slice(0, 8)}] Client metrics processing failed:`, error);
+    console.error(`❌ [${requestId.slice(0, 8)}] Client metrics processing failed:`, error)
     
     return json({
       error: 'Failed to process client metrics',
@@ -146,42 +146,42 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
         'X-Request-ID': requestId,
         'Server-Timing': `client-metrics-processing;dur=${processingTime.toFixed(2)}`
       }
-    });
+    })
   }
-};
+}
 
 export const GET: RequestHandler = async ({ url, locals }) => {
-  const requestId = (locals as any).requestId || crypto.randomUUID();
-  const action = url.searchParams.get('action') || 'stats';
+  const requestId = (locals as any).requestId || crypto.randomUUID()
+  const action = url.searchParams.get('action') || 'stats'
 
   try {
     switch (action) {
-      case 'stats':;
+      case 'stats':
         return json({
           aggregatedStats: metricsStore.aggregatedStats,
           totalStoredMetrics: metricsStore.clientMetrics.length,
           healthScore: calculateHealthScore(),
           requestId
-        });
+        })
 
       case 'recent':
-        const limit = parseInt(url.searchParams.get('limit') || '10');
+        const limit = parseInt(url.searchParams.get('limit') || '10')
         const recentMetrics = metricsStore.clientMetrics
-          .slice(-limit);
+          .slice(-limit)
           .map(payload => ({
             timestamp: payload.timestamp,
             metricsCount: payload.metrics.length,
             averageLoadTime: payload.metrics.reduce((sum, m) => sum + m.loadTime, 0) / payload.metrics.length,
             routes: payload.metrics.map(m => m.routeId || m.pathname)
-          });
+          })
 
         return json({
           recentMetrics,
           requestId
-        });
+        })
 
       case 'health':
-        const healthScore = calculateHealthScore();
+        const healthScore = calculateHealthScore()
         return json({
           status: healthScore > 80 ? 'excellent' : healthScore > 60 ? 'good' : healthScore > 40 ? 'fair' : 'poor',
           score: healthScore,
@@ -194,9 +194,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           },
           aggregatedStats: metricsStore.aggregatedStats,
           requestId
-        });
+        })
 
-      case 'performance':;
+      case 'performance':
         const performanceMetrics: PerformanceMetrics = {
           overall: {
             status: calculateHealthScore() > 80 ? 'excellent' : 
@@ -225,98 +225,98 @@ export const GET: RequestHandler = async ({ url, locals }) => {
             quantumCoherence: 50,     // Quantum state coherence
             timestamp: new Date().toISOString()
           }
-        };
+        }
 
         return json({
           performance: performanceMetrics,
           requestId
-        });
+        })
 
       case 'clear':
-        // Clear metrics (development only);
+        // Clear metrics (development only)
         if (process.env.NODE_ENV !== 'production') {
-          const clearedCount = metricsStore.clientMetrics.length;
-          metricsStore.clientMetrics = [];
-          metricsStore.timingMetrics = [];
-          updateAggregatedStats();
+          const clearedCount = metricsStore.clientMetrics.length
+          metricsStore.clientMetrics = []
+          metricsStore.timingMetrics = []
+          updateAggregatedStats()
           
-          console.log(`🧹 [${requestId.slice(0, 8)}] Cleared ${clearedCount} client metrics`);
+          console.log(`🧹 [${requestId.slice(0, 8)}] Cleared ${clearedCount} client metrics`)
           
           return json({
             success: true,
             message: `Cleared ${clearedCount} metrics`,
             requestId
-          });
+          })
         }
-        return json({ error: 'Clear action not available in production', requestId }, { status: 403 });
+        return json({ error: 'Clear action not available in production', requestId }, { status: 403 })
 
       default:
-        return json({ error: 'Invalid action', availableActions: ['stats', 'recent', 'health', 'performance', 'clear'], requestId }, { status: 400 });
+        return json({ error: 'Invalid action', availableActions: ['stats', 'recent', 'health', 'performance', 'clear'], requestId }, { status: 400 })
     }
   } catch (error) {
-    console.error(`❌ [${requestId.slice(0, 8)}] Client metrics GET failed:`, error);
+    console.error(`❌ [${requestId.slice(0, 8)}] Client metrics GET failed:`, error)
     return json({
       error: 'Internal server error',
       requestId
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 function calculateHealthScore(): number {
-  const stats = metricsStore.aggregatedStats;
+  const stats = metricsStore.aggregatedStats
   
   if (stats.totalRequests === 0) return 100; // No data yet, assume healthy
   
-  let score = 100;
+  let score = 100
   
   // Load time scoring (0-30 points)
-  if (stats.averageLoadTime > 5000) score -= 30;
-  else if (stats.averageLoadTime > 3000) score -= 20;
-  else if (stats.averageLoadTime > 2000) score -= 10;
-  else if (stats.averageLoadTime > 1000) score -= 5;
+  if (stats.averageLoadTime > 5000) score -= 30
+  else if (stats.averageLoadTime > 3000) score -= 20
+  else if (stats.averageLoadTime > 2000) score -= 10
+  else if (stats.averageLoadTime > 1000) score -= 5
   
   // Render time scoring (0-20 points)
-  if (stats.averageRenderTime > 2000) score -= 20;
-  else if (stats.averageRenderTime > 1000) score -= 10;
-  else if (stats.averageRenderTime > 500) score -= 5;
+  if (stats.averageRenderTime > 2000) score -= 20
+  else if (stats.averageRenderTime > 1000) score -= 10
+  else if (stats.averageRenderTime > 500) score -= 5
   
   // Web Vitals scoring (0-50 points total)
-  const { lcp, fid, cls, fcp } = stats.webVitalsAverages;
+  const { lcp, fid, cls, fcp } = stats.webVitalsAverages
   
   // LCP (0-15 points)
-  if (lcp > 4000) score -= 15;
-  else if (lcp > 2500) score -= 10;
-  else if (lcp > 1500) score -= 5;
+  if (lcp > 4000) score -= 15
+  else if (lcp > 2500) score -= 10
+  else if (lcp > 1500) score -= 5
   
   // FID (0-15 points)  
-  if (fid > 300) score -= 15;
-  else if (fid > 100) score -= 10;
-  else if (fid > 50) score -= 5;
+  if (fid > 300) score -= 15
+  else if (fid > 100) score -= 10
+  else if (fid > 50) score -= 5
   
   // CLS (0-10 points)
-  if (cls > 0.25) score -= 10;
-  else if (cls > 0.1) score -= 5;
+  if (cls > 0.25) score -= 10
+  else if (cls > 0.1) score -= 5
   
   // FCP (0-10 points)
-  if (fcp > 3000) score -= 10;
-  else if (fcp > 1800) score -= 5;
+  if (fcp > 3000) score -= 10
+  else if (fcp > 1800) score -= 5
   
-  return Math.max(0, Math.min(100, score);
+  return Math.max(0, Math.min(100, score)
 }
 
-// Cleanup old metrics periodically (only in server environment);
+// Cleanup old metrics periodically (only in server environment)
 if (typeof setInterval !== 'undefined' && typeof process !== 'undefined') {
   const cleanupInterval = setInterval(() => {
     if (metricsStore.clientMetrics.length > 500) {
-      const removed = metricsStore.clientMetrics.length - 500;
-      metricsStore.clientMetrics = metricsStore.clientMetrics.slice(-500);
-      updateAggregatedStats();
-      console.log(`🧹 Auto-cleaned ${removed} old client metrics`);
+      const removed = metricsStore.clientMetrics.length - 500
+      metricsStore.clientMetrics = metricsStore.clientMetrics.slice(-500)
+      updateAggregatedStats()
+      console.log(`🧹 Auto-cleaned ${removed} old client metrics`)
     }
   }, 5 * 60 * 1000); // Every 5 minutes
 
-  // Cleanup on process exit;
+  // Cleanup on process exit
   process.on('exit', () => {
-    clearInterval(cleanupInterval);
-  });
+    clearInterval(cleanupInterval)
+  })
 }

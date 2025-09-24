@@ -67,7 +67,7 @@ class PhysicsAwareGpuOrchestrator {
         name: 'NVIDIA GeForce RTX 3060 Ti',
         memoryUsage: 3.2,
         memoryTotal: 8.0, // 8GB VRAM for RTX 3060 Ti
-        load: 0.25,
+        load: 0.25,;
         temperature: 62,
         powerUsage: 200,
         computeUnits: 4864, // CUDA cores for RTX 3060 Ti
@@ -136,7 +136,7 @@ class PhysicsAwareGpuOrchestrator {
   } | { error: string } {
     const task: GpuTask = {
       ...taskRequest,
-      id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,;
       status: 'queued'
     };
 

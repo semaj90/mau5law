@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- YoRHa Dialog Component - Lightweight Terminal Dialog -->
@@ -52,39 +52,39 @@ https://svelte.dev/e/attribute_duplicate -->
     info: {
       icon: "■",
       color: "var(--yorha-accent, #00ff41)",
-      border: "var(--yorha-accent, #00ff41)",
+      border: "var(--yorha-accent, #00ff41)",;
     },
     success: {
       icon: "✓",
       color: "var(--yorha-accent, #00ff41)",
-      border: "var(--yorha-accent, #00ff41)",
+      border: "var(--yorha-accent, #00ff41)",;
     },
     warning: {
       icon: "⚠",
       color: "var(--yorha-warning, #ffaa00)",
-      border: "var(--yorha-warning, #ffaa00)",
+      border: "var(--yorha-warning, #ffaa00)",;
     },
     error: {
       icon: "✕",
       color: "var(--yorha-danger, #ff0041)",
-      border: "var(--yorha-danger, #ff0041)",
+      border: "var(--yorha-danger, #ff0041)",;
     },
     confirm: {
       icon: "?",
       color: "var(--yorha-secondary, #ffd700)",
-      border: "var(--yorha-secondary, #ffd700)",
+      border: "var(--yorha-secondary, #ffd700)",;
     },
     prompt: {
-      icon: "►",
-      color: "var(--yorha-secondary, #ffd700)",
-      border: "var(--yorha-secondary, #ffd700)",
+      icon: "►",;
+      color: "var(--yorha-secondary, #ffd700)",;
+      border: "var(--yorha-secondary, #ffd700)",;
     },
   };
 
   const positionClasses = {
-    center: "dialog-center",
-    top: "dialog-top",
-    bottom: "dialog-bottom",
+    center: "dialog-center",;
+    top: "dialog-top",;
+    bottom: "dialog-bottom",;
   };
 
   function handleKeydown(event: KeyboardEvent) {
@@ -152,9 +152,9 @@ https://svelte.dev/e/attribute_duplicate -->
       class="yorha-dialog {positionClasses[position]}"
       style="border-color: {config.border}"
       transitionfly={{
-        y: position === "top" ? -50 : position === "bottom" ? 50 : 0,
-        duration: 250,
-        easing: quintOut,
+        y: position === "top" ? -50 : position === "bottom" ? 50 : 0,;
+        duration: 250,;
+        easing: quintOut,;
       }}
       tabindex="-1"
     >
@@ -268,7 +268,7 @@ overflow: hidden box-shadow: 0 0 0 1px var(--yorha-bg-primary, #0a0a0a), 0 10px 
 /* Positioning */ .dialog-center {
 align-self: center }
 
-  .dialog-top {
+  .dialog-top {;
     align-self: flex-start;
     margin-top: 10vh;
   }
@@ -386,7 +386,7 @@ cursor: pointer transition: all 0.2s ease;
     min-width: 80px;
 justify-content: center }
 
-  .dialog-button:hover {
+  .dialog-button:hover {;
     background: rgba(255, 255, 255, 0.05);
     transform: translateY(-1px);
   }
@@ -432,7 +432,7 @@ background: currentColor color: var(--yorha-bg-primary, #0a0a0a);
       width: 95vw;
 max-width: none }
 
-    .dialog-header {
+    .dialog-header {;
       padding: 10px 12px;
     }
 
@@ -447,7 +447,7 @@ flex-direction: column }
     .dialog-button {
 min-width: auto }
 
-    .dialog-top {
+    .dialog-top {;
       margin-top: 5vh;
     }
 

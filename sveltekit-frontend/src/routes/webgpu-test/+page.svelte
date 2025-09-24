@@ -13,14 +13,16 @@
   let testResults = $state(null);
   let performanceStats = $state<any>(null);
 
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
     
     // Check browser compatibility
     browserCheck = checkBrowserCompatibility();
     
     // Run full diagnostics
     await runDiagnostics();
+    })();
   });
 
   async function runDiagnostics() {
@@ -80,8 +82,8 @@
     } catch (error) {
       console.error('Vector similarity test failed:', error);
       testResults = { 
-        cpu: 0, 
-        error: error instanceof Error ? error.message: 'Test failed' 
+        cpu: 0, ;
+        error: error instanceof Error ? error.message: 'Test failed' ;
       };
     } finally {
       isRunning = false;
@@ -240,7 +242,7 @@
 </div>
 
 <style>
-  .container {
+  .container {;
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
@@ -306,11 +308,11 @@
     margin-bottom: 1.5rem;
   }
 
-  button:hover:not(:disabled) {
+  button:hover:not(:disabled) {;
     background: #1d4ed8;
   }
 
-  button:disabled {
+  button:disabled {;
     background: #9ca3af;
     cursor: not-allowed;
   }

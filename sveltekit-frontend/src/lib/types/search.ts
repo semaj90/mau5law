@@ -63,7 +63,7 @@ export interface TestResults {
   query: string;
   results: any[];
   timestamp: Date;
-  performance: {
+  performance: {;
     duration: number;
     documentsSearched: number;
   };

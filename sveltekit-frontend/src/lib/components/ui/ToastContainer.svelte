@@ -131,7 +131,7 @@
 </div>
 
 <style>
-  .toast-container {
+  .toast-container {;
     position: fixed;
     top: 20px;
     right: 20px;
@@ -325,31 +325,31 @@
   }
 
   /* Hide default progress styling and add pixel styling */
-  .nes-progress: :-webkit-progress-bar {
+  .nes-progress::-webkit-progress-bar {
     background-color: #e5e7eb;
     border: 1px solid #212529;
   }
 
-  .nes-progress: :-webkit-progress-value {
+  .nes-progress::-webkit-progress-value {
     background-color: #92cc41;
     border-right: 2px solid #212529;
   }
 
-  .nes-progress.is-primary: :-webkit-progress-value {
+  .nes-progress.is-primary::-webkit-progress-value {
     background-color: #209cee;
   }
 
-  .nes-progress.is-success: :-webkit-progress-value {
+  .nes-progress.is-success::-webkit-progress-value {
     background-color: #92cc41;
   }
 
   /* Firefox */
-  .nes-progress: :-moz-progress-bar {
+  .nes-progress::-moz-progress-bar {
     background-color: #92cc41;
     border: 1px solid #212529;
   }
 
-  .nes-progress.is-primary: :-moz-progress-bar {
+  .nes-progress.is-primary::-moz-progress-bar {
     background-color: #209cee;
   }
 </style>

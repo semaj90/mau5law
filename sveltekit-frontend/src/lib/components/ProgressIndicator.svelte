@@ -94,7 +94,7 @@
 
 <style>
   /* Ensure smooth transitions and proper spacing */
-  li {
+  li {;
     min-width: 0;
   }
 

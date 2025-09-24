@@ -99,9 +99,9 @@ https://svelte.dev/e/expected_token -->
   let visibleNodes = $derived(() => {
     const viewportBounds = {
       left: -pan.x / zoom,
-      top: -pan.y / zoom,
-      right: (-pan.x + width) / zoom,
-      bottom: (-pan.y + height) / zoom
+      top: -pan.y / zoom,;
+      right: (-pan.x + width) / zoom,;
+      bottom: (-pan.y + height) / zoom;
     };
 
     return canvasNodes.filter(node => {
@@ -119,8 +119,8 @@ https://svelte.dev/e/expected_token -->
     return {
       id: selectedNode.id,
       type: selectedNode.type,
-      title: selectedNode.title,
-      position: { x: selectedNode.x, y: selectedNode.y },
+      title: selectedNode.title,;
+      position: { x: selectedNode.x, y: selectedNode.y },;
       size: { width: selectedNode.width, height: selectedNode.height }
     };
   });
@@ -317,9 +317,9 @@ https://svelte.dev/e/expected_token -->
     const colors = {
       document: '#4a5568',
       image: '#2d3748',
-      video: '#1a202c',
-      audio: '#2c5282',
-      note: '#553c9a'
+      video: '#1a202c',;
+      audio: '#2c5282',;
+      note: '#553c9a';
     };
     return colors[type] || '#4a5568';
   }
@@ -328,9 +328,9 @@ https://svelte.dev/e/expected_token -->
     const icons = {
       document: '📄',
       image: '🖼️',
-      video: '🎬',
-      audio: '🔊',
-      note: '📝'
+      video: '🎬',;
+      audio: '🔊',;
+      note: '📝';
     };
     return icons[type] || '📄';
   }
@@ -391,8 +391,8 @@ https://svelte.dev/e/expected_token -->
     if (!snapToGrid || gridSize <= 0) return { x, y };
     
     return {
-      x: Math.round(x / gridSize) * gridSize,
-      y: Math.round(y / gridSize) * gridSize
+      x: Math.round(x / gridSize) * gridSize,;
+      y: Math.round(y / gridSize) * gridSize;
     };
   }
 
@@ -410,8 +410,8 @@ https://svelte.dev/e/expected_token -->
       selectedNode = clickedNode;
       isDragging = true;
       dragOffset = {
-        x: mousePos.x - clickedNode.x,
-        y: mousePos.y - clickedNode.y
+        x: mousePos.x - clickedNode.x,;
+        y: mousePos.y - clickedNode.y;
       };
     } else {
       selectedNode = null;
@@ -480,9 +480,9 @@ https://svelte.dev/e/expected_token -->
         type: 'note',
         title: 'New Evidence',
         x: mousePos.x,
-        y: mousePos.y,
-        width: 150,
-        height: 100
+        y: mousePos.y,;
+        width: 150,;
+        height: 100;
       };
       
       onNodeCreate?.(newNode);
@@ -660,7 +660,7 @@ https://svelte.dev/e/expected_token -->
     font-size: 12px;
   }
 
-  .canvas-controls button:hover {
+  .canvas-controls button:hover {;
     background: #555;
   }
 

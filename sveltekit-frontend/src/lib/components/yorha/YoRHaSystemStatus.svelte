@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa System Status Bar Component -->
@@ -79,17 +79,17 @@ https://svelte.dev/e/js_parse_error -->
   function formatTime(date: Date): string {
     return date.toLocaleTimeString('en-US', { 
       hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
+      hour: '2-digit',;
+      minute: '2-digit',;
+      second: '2-digit';
     });
   }
 
   function formatDate(date: Date): string {
     return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: '2-digit'
+      year: 'numeric',;
+      month: 'short',;
+      day: '2-digit';
     });
   }
 </script>

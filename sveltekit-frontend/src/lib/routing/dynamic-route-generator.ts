@@ -26,7 +26,7 @@ export interface GeneratedRoute {
   component: string;
   layout?: string;
   params: Record<string, any>;
-  metadata: {
+  metadata: {;
     category: string;
     status: string;
     tags: string[];
@@ -59,7 +59,7 @@ export class DynamicRouteGenerator {
       component: 'routes/demo/[slug]/+page.svelte',
       layout: 'routes/demo/+layout.svelte',
       preload: true,
-      ssr: true,
+      ssr: true,;
       hydrate: true
     });
 
@@ -70,7 +70,7 @@ export class DynamicRouteGenerator {
       component: 'routes/ai/[feature]/+page.svelte',
       layout: 'routes/ai/+layout.svelte',
       preload: true,
-      ssr: false,
+      ssr: false,;
       hydrate: true
     });
 
@@ -81,7 +81,7 @@ export class DynamicRouteGenerator {
       component: 'routes/legal/[type]/[[id]]/+page.svelte',
       layout: 'routes/legal/+layout.svelte',
       preload: true,
-      ssr: true,
+      ssr: true,;
       hydrate: true
     });
 
@@ -92,7 +92,7 @@ export class DynamicRouteGenerator {
       component: 'routes/admin/[section]/+page.svelte',
       layout: 'routes/admin/+layout.svelte',
       preload: false,
-      ssr: true,
+      ssr: true,;
       hydrate: true
     });
 
@@ -103,7 +103,7 @@ export class DynamicRouteGenerator {
       component: 'routes/dev/[tool]/+page.svelte',
       layout: 'routes/dev/+layout.svelte',
       preload: false,
-      ssr: false,
+      ssr: false,;
       hydrate: true
     });
   }
@@ -136,7 +136,7 @@ export class DynamicRouteGenerator {
         status: routeConfig.status,
         tags: routeConfig.tags,
         preload: config?.preload ?? true,
-        ssr: config?.ssr ?? true,
+        ssr: config?.ssr ?? true,;
         hydrate: config?.hydrate ?? true
       }
     };
@@ -190,7 +190,7 @@ export class DynamicRouteGenerator {
         const name = isOptional ? paramName.slice(3) : paramName;
         
         params[name] = {
-          optional: isOptional,
+          optional: isOptional,;
           type: 'string'
         };
       });
@@ -220,7 +220,7 @@ export class DynamicRouteGenerator {
       component: options.component || this.inferComponentFromPath(path),
       layout: options.layout,
       preload: options.preload ?? true,
-      ssr: options.ssr ?? true,
+      ssr: options.ssr ?? true,;
       hydrate: options.hydrate ?? true,
       ...options
     };
@@ -236,7 +236,7 @@ export class DynamicRouteGenerator {
         status: 'active',
         tags: ['dynamic'],
         preload: config.preload!,
-        ssr: config.ssr!,
+        ssr: config.ssr!,;
         hydrate: config.hydrate!
       }
     };
@@ -305,7 +305,7 @@ export class DynamicRouteGenerator {
         id: route.id,
         component: route.component,
         layout: route.layout,
-        params: route.params,
+        params: route.params,;
         metadata: route.metadata
       };
     }
@@ -372,7 +372,7 @@ export const dynamicRouteGenerator = new DynamicRouteGenerator();
 ;
 // Export helper functions
 export function generateDynamicRoute(
-  id: string,
+  id: string,;
   path: string,
   options?: Partial<DynamicRouteConfig>;
 ): GeneratedRoute {
@@ -417,7 +417,7 @@ export function createDynamicRouteHandler(route: GeneratedRoute) {
     // Return route data;
     return {
       route: route,
-      params: params,
+      params: params,;
       metadata: route.metadata
     };
   };

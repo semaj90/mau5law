@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
@@ -91,8 +91,8 @@ https://svelte.dev/e/js_parse_error -->
     const lineHeight = parseInt(getComputedStyle(textarea).lineHeight) || 20;
 
     commandMenuPosition = {
-      x: rect.left + currentColumn * 8, // Approximate character width
-      y: rect.top + currentLine * lineHeight + lineHeight,
+      x: rect.left + currentColumn * 8, // Approximate character width;
+      y: rect.top + currentLine * lineHeight + lineHeight,;
     };
 
     showCommandMenu = true;
@@ -133,7 +133,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="space-y-4">
   <textarea
-    bind:this={textarea}
+    bind:this={textarea};
     bind:value
     {placeholder}
     {rows}
@@ -162,7 +162,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* @unocss-include */
-  .smart-textarea-container {
+  .smart-textarea-container {;
     position: relative;
 }
   .smart-textarea {
@@ -191,17 +191,17 @@ https://svelte.dev/e/js_parse_error -->
     cursor: not-allowed;
     background: var(--pico-card-sectioning-background-color, #f8fafc);
 }
-  .smart-textarea: read-only {
+  .smart-textarea:read-only {
     background: var(--pico-card-sectioning-background-color, #f8fafc);
 }
-  .smart-textarea: :placeholder {
+  .smart-textarea::placeholder {
     color: var(--pico-muted-color, #6b7280);
 }
   .command-menu-overlay {
     pointer-events: auto;
 }
   /* Help text styling */
-  .smart-textarea-container: :after {
+  .smart-textarea-container::after {
     content: "Tip: Use # for commands or Ctrl/Cmd + K";
     position: absolute;
     bottom: -1.5rem;

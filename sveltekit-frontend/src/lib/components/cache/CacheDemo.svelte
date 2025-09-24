@@ -61,7 +61,7 @@
       const response = await fetch('/api/cache?action=stats');
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) {
-        cacheStats.set.stats);
+        cacheStats.set(stats));
       }
     } catch (error) {
       console.error('Failed to load cache stats:', error);
@@ -73,7 +73,7 @@
       const response = await fetch('/api/cache?action=health');
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) {
-        healthStatus.set.health);
+        healthStatus.set(health));
       }
     } catch (error) {
       console.error('Failed to load health status:', error);
@@ -90,15 +90,15 @@
     try {
       const tags = selectedTags.split.map(t => t.trim()).filter(t => t);
       const response = await fetch('/api/cache', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           key: cacheKey,
-          value: cacheValue,
+          value: cacheValue,;
           options: {
-            ttl: parseInt(selectedTTL) * 1000, // Convert to milliseconds
-            priority: selectedPriority,
-            tags: tags.length > 0 ? tags : undefined
+            ttl: parseInt(selectedTTL) * 1000, // Convert to milliseconds;
+            priority: selectedPriority,;
+            tags: tags.length > 0 ? tags : undefined;
           }
         })
       });
@@ -155,7 +155,7 @@
     isLoading.set(true);
     try {
       const response = await fetch(`/api/cache?key=${encodeURIComponent(cacheKey)}`, {
-        method: 'DELETE'
+        method: 'DELETE';
       });
 
       const data = await (response as { json?: any }).json();
@@ -179,7 +179,7 @@
     isLoading.set(true);
     try {
       const response = await fetch('/api/cache?action=clear', {
-        method: 'DELETE'
+        method: 'DELETE';
       });
 
       const data = await (response as { json?: any }).json();
@@ -212,8 +212,8 @@
       for (let i = 0; i < testSize; i++) {
         testData.push.toString(36)}`,
           options: {
-            ttl: 300000, // 5 minutes
-            priority: i % 3 === 0 ? 'high' : 'medium',
+            ttl: 300000, // 5 minutes;
+            priority: i % 3 === 0 ? 'high' : 'medium',;
             tags: [`test`, `batch-${Math.floor(i / 10)}`]
           }
         });
@@ -223,8 +223,8 @@
 
       // Execute batch operation
       const response = await fetch('/api/cache', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ operations: testData })
       });
 
@@ -267,11 +267,11 @@
 
       // Set value
       response = await fetch('/api/cache', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          key: testKey,
-          value: 'test_data_for_hit_test',
+          key: testKey,;
+          value: 'test_data_for_hit_test',;
           options: { ttl: 60000 }
         })
       });
@@ -375,7 +375,7 @@
           <div class="yorha-panel-content space-y-4">
             <div>
               <label class="block text-sm font-medium mb-2">Cache Key</label>
-              <Input
+              <Input;
                 bind:value={cacheKey}
                 placeholder="Enter cache key"
                 class="w-full"
@@ -413,7 +413,7 @@
 
             <div>
               <label class="block text-sm font-medium mb-2">Tags (comma-separated)</label>
-              <Input
+              <Input;
                 bind:value={selectedTags}
                 placeholder="tag1, tag2, tag3"
                 class="w-full"

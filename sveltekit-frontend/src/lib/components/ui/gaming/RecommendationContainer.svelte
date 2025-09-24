@@ -53,16 +53,16 @@
   // Recommendation categories with icons
   const categoryIcons = {
     detective: '🕵️',
-    legal: '⚖️',
-    evidence: '📋',
-    ai: '🤖'
+    legal: '⚖️',;
+    evidence: '📋',;
+    ai: '🤖';
   };
 
   const priorityColors = {
     low: '#10B981',
-    medium: '#F59E0B', 
-    high: '#EF4444',
-    critical: '#DC2626'
+    medium: '#F59E0B', ;
+    high: '#EF4444',;
+    critical: '#DC2626';
   };
 
   // Group recommendations by type
@@ -190,15 +190,15 @@
     return {
       userId: 'anonymous',
       role: 'user',
-      expertise: [],
+      expertise: [],;
       preferences: {
         recommendationTypes: ['legal', 'evidence', 'detective', 'ai'],
         confidenceThreshold: 0.3,
         maxRecommendations: 15
       },
       history: {
-        queries: [],
-        feedback: []
+        queries: [],;
+        feedback: [];
       }
     };
   }
@@ -206,7 +206,7 @@
   // Enhanced Feedback Functions with Integration Service
   async function submitFeedback(
     recommendationId: string, 
-    feedback: 'positive' | 'negative',
+    feedback: 'positive' | 'negative',;
     recommendation: EnhancedRecommendation
   ) {
     if (feedbackCooldown.has(recommendationId) || processingFeedback) {
@@ -241,9 +241,9 @@
         // Trigger distillation if needed
         if ((result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).shouldTriggerDistillation) {
           await fetch('/api/qlora-distillation', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify.totalFeedbackCount
+            method: 'POST',;
+            headers: { 'Content-Type': 'application/json' },;
+            body: JSON.stringify(totalFeedbackCount);
             })
           });
         }
@@ -251,7 +251,7 @@
       } else {
         // Fallback to direct API call
         const response = await fetch('/api/rl-feedback', {
-          method: 'POST',
+          method: 'POST',;
           headers: {
             'Content-Type': 'application/json',
           },
@@ -263,9 +263,9 @@
             recommendationDescription: recommendation.description,
             confidence: recommendation.confidence,
             priority: recommendation.priority,
-            context: recommendation.context || '',
+            context: recommendation.context || '',;
             query: recommendation.query || '',
-            userInteractionData: {
+            userInteractionData: {;
               timestamp: Date.now(),
               consoleStyle,
               position,
@@ -286,9 +286,9 @@
 
         if ((result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).shouldTriggerDistillation) {
           await fetch('/api/qlora-distillation', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify.totalFeedbackCount
+            method: 'POST',;
+            headers: { 'Content-Type': 'application/json' },;
+            body: JSON.stringify(totalFeedbackCount);
             })
           });
         }
@@ -362,7 +362,7 @@
         // Dispatch event for external listeners
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent('recommendations:predicted', {
-            detail: prediction
+            detail: prediction;
           }));
         }
       } catch (error) {
@@ -586,7 +586,7 @@
 />
 
 <style>
-  .recommendation-container {
+  .recommendation-container {;
     position: fixed;
     top: 60px; /* Adjust based on your nav-bar height */
     left: 50%;

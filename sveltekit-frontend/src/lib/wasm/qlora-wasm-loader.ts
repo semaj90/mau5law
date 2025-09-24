@@ -43,7 +43,7 @@ interface QLoRAModelConfig {
     contextLength: number;
     vocabulary: number;
   };
-  adapter: {
+  adapter: {;
     name: string;
     path: string;
     rank: number;
@@ -51,7 +51,7 @@ interface QLoRAModelConfig {
     targetModules: string[];
     size: number; // in MB
   };
-  quantization: {
+  quantization: {;
     enabled: boolean;
     bits: 4 | 8;
     groupSize: number;
@@ -98,7 +98,7 @@ export class QLoRAWasmLoader {
       enabled: true,
       bits: 4,
       groupSize: 128
-    },
+    },;
     runtime: {
       maxThreads: navigator.hardwareConcurrency || 4,
       memoryLimit: 1024, // 1GB limit for browser
@@ -219,7 +219,7 @@ export class QLoRAWasmLoader {
         path: config.adapter?.path || '/models/legal-qlora-adapter.bin',
         rank: config.adapter?.rank || 16,
         alpha: config.adapter?.alpha || 32,
-        targetModules: config.adapter?.targetModules || ['q_proj', 'v_proj', 'k_proj', 'o_proj'],
+        targetModules: config.adapter?.targetModules || ['q_proj', 'v_proj', 'k_proj', 'o_proj'],;
         size: config.adapter?.size || 8 // 8MB adapter
       },
       ...this.defaultConfig,
@@ -278,7 +278,7 @@ export class QLoRAWasmLoader {
    */
   async generateText(
     modelKey: string,
-    prompt: string,
+    prompt: string,;
     options: {
       maxTokens?: number;
       temperature?: number;
@@ -338,7 +338,7 @@ export class QLoRAWasmLoader {
       const totalTime = endTime - startTime;
       const tokensPerSecond = (tokens.length / totalTime) * 1000;
 
-      const result: QLoRAInferenceResult = {
+      const result: QLoRAInferenceResult = {;
         text: generatedText,
         tokens,
         logProbs: tokens.map(() => Math.random() * -2), // Mock log probabilities;
@@ -346,7 +346,7 @@ export class QLoRAWasmLoader {
           promptEval: totalTime * 0.2, // Mock: 20% of time for prompt eval
           generation: totalTime * 0.8, // Mock: 80% of time for generation
           tokensPerSecond
-        },
+        },;
         metadata: {
           modelId,
           temperature,
@@ -536,7 +536,7 @@ export class QLoRAWasmLoader {
    */
   private async recordInference(
     prompt: string,
-    response: string,
+    response: string,;
     result: QLoRAInferenceResult;
   ): Promise<void> {
     try {
@@ -575,7 +575,7 @@ export async function prepareDistilledModels(): Promise<void> {
     },
     {
       name: 'legal-litigation-adapter',
-      url: '/models/legal-litigation-qlora.bin',
+      url: '/models/legal-litigation-qlora.bin',;
       size: 8 // MB
     }
   ];

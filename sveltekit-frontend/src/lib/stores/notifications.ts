@@ -42,7 +42,7 @@ function createNotificationStore() {
       duration: options.duration ?? 5000,
       persistent: options.persistent ?? false,
       closable: options.closable ?? true,
-      icon: options.icon,
+      icon: options.icon,;
       position: options.position || 'top-right',
       showProgress: options.showProgress ?? true
     };
@@ -80,7 +80,7 @@ function createNotificationStore() {
     return add(message, { 
       ...options, 
       type: 'system',
-      persistent: options.persistent ?? true,
+      persistent: options.persistent ?? true,;
       position: options.position || 'center'
     });
   }
@@ -91,7 +91,7 @@ function createNotificationStore() {
     return add(message, {
       type: 'info',
       title,
-      icon: '📋',
+      icon: '📋',;
       duration: 7000
     });
   }
@@ -101,7 +101,7 @@ function createNotificationStore() {
     return add(message, {
       type: 'success',
       title,
-      icon: '🔍',
+      icon: '🔍',;
       duration: 5000
     });
   }
@@ -111,7 +111,7 @@ function createNotificationStore() {
     return add(message + confidenceText, {
       type: 'success',
       title: 'AI Analysis Complete',
-      icon: '🤖',
+      icon: '🤖',;
       duration: 8000
     });
   }
@@ -121,7 +121,7 @@ function createNotificationStore() {
       type: 'error',
       title: 'Security Alert',
       icon: '🚨',
-      persistent: true,
+      persistent: true,;
       position: 'center'
     });
   }
@@ -131,7 +131,7 @@ function createNotificationStore() {
       type: 'system',
       title: 'System Status',
       icon: isOnline ? '🟢' : '🔴',
-      persistent: !isOnline,
+      persistent: !isOnline,;
       position: 'top-left'
     });
   }

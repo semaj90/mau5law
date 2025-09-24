@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -43,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Search,
       category: 'Navigation',
       href: '/',
-      shortcut: ['⌘', 'H']
+      shortcut: ['⌘', 'H'];
     },
     {
       id: 'nav-evidence',
@@ -52,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: File,
       category: 'Navigation',
       href: '/evidence',
-      shortcut: ['⌘', 'E']
+      shortcut: ['⌘', 'E'];
     },
     {
       id: 'nav-cases',
@@ -61,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Briefcase,
       category: 'Navigation',
       href: '/cases',
-      shortcut: ['⌘', 'C']
+      shortcut: ['⌘', 'C'];
     },
     // Actions
     {
@@ -71,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Briefcase,
       category: 'Actions',
       action: () => console.log('Create new case'),
-      shortcut: ['⌘', 'N']
+      shortcut: ['⌘', 'N'];
     },
     {
       id: 'action-upload-evidence',
@@ -80,7 +80,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: File,
       category: 'Actions',
       action: () => console.log('Upload evidence'),
-      shortcut: ['⌘', 'U']
+      shortcut: ['⌘', 'U'];
     },
     // Settings
     {
@@ -89,15 +89,15 @@ https://svelte.dev/e/js_parse_error -->
       description: 'Manage your user profile',
       icon: UserIcon,
       category: 'Settings',
-      href: '/profile'
+      href: '/profile';
     },
     {
       id: 'settings-system',
       title: 'System Settings',
       description: 'Configure system preferences',
-      icon: Settings,
-      category: 'Settings',
-      href: '/settings'
+      icon: Settings,;
+      category: 'Settings',;
+      href: '/settings';
   }
   ];
   $effect(() => {
@@ -173,7 +173,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex items-center border-b border-nier-gray px-4">
           <Search class="h-5 w-5 nes-text is-disabled mr-3" />
           <input
-            bind:this={searchInput}
+            bind:this={searchInput};
             bind:value={searchQuery}
             type="text"
             placeholder="Search commands, cases, evidence..."
@@ -298,7 +298,7 @@ https://svelte.dev/e/js_parse_error -->
     position: relative;
     box-shadow: 0 0 30px rgba(165, 28, 48, 0.3);
 }
-  .nier-border-glow: :before {
+  .nier-border-glow::before {
     content: '';
     position: absolute;
     inset: -1px;

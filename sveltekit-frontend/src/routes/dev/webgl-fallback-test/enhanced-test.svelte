@@ -10,8 +10,8 @@
     webgpu: { supported: false, tested: false, performance: null as any, error: null as string | null },
     webgl2: { supported: false, tested: false, performance: null as any, error: null as string | null },
     webgl1: { supported: false, tested: false, performance: null as any, error: null as string | null },
-    wasm: { supported: false, tested: false, performance: null as any, error: null as string | null },
-    recommendation: ''
+    wasm: { supported: false, tested: false, performance: null as any, error: null as string | null },;
+    recommendation: '';
   });
   let isTestingInProgress = $state(false);
   let currentTest = $state('');
@@ -26,13 +26,15 @@
     log += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
   }
 
-  $effect(async () => {
-    if (browser) {
+  $effect(() => {
+    (async () => {
+if (browser) {
       append('🚀 WebGL2/WebGPU Fallback Test for Gemma3 270M WebAssembly');
       append('Testing GPU acceleration hierarchy: WebGPU → WebGL2 → WebGL1 → WASM CPU');
       await initializeTests();
       await runBasicCompatibilityCheck();
     }
+    })();
   });
 
   async function initializeTests() {
@@ -182,7 +184,7 @@
 
       const computeShader = device.createShaderModule({ code: computeShaderSource });
       const computePipeline = device.createComputePipeline({
-        layout: 'auto',
+        layout: 'auto',;
         compute: { module: computeShader, entryPoint: 'main' }
       });
 
@@ -345,25 +347,25 @@
     const matrixSizeBytes = matrixSize * matrixSize * 4;
 
     const bufferA = device.createBuffer({
-      size: matrixSizeBytes,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+      size: matrixSizeBytes,;
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST;
     });
 
     const bufferB = device.createBuffer({
-      size: matrixSizeBytes,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+      size: matrixSizeBytes,;
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST;
     });
 
     const resultBuffer = device.createBuffer({
-      size: matrixSizeBytes,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+      size: matrixSizeBytes,;
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC;
     });
 
     device.queue.writeBuffer(bufferA, 0, testData!.matrixA);
     device.queue.writeBuffer(bufferB, 0, testData!.matrixB);
 
     const bindGroup = device.createBindGroup({
-      layout: computePipeline.getBindGroupLayout(0),
+      layout: computePipeline.getBindGroupLayout(0),;
       entries: [
         { binding: 0, resource: { buffer: bufferA } },
         { binding: 1, resource: { buffer: bufferB } },

@@ -1,33 +1,33 @@
-import { json } from "@sveltejs/kit";
-import { cases, evidence, users } from "$lib/server/db/schema-postgres";
-import { eq } from "drizzle-orm";
-import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types.js';
-import { URL } from "url";
+import { json } from "@sveltejs/kit"
+import { cases, evidence, users } from "$lib/server/db/schema-postgres"
+import { eq } from "drizzle-orm"
+import { db } from "$lib/server/db/index"
+import type { RequestHandler } from './$types.js'
+import { URL } from "url"
 
 
 export const GET: RequestHandler = async ({ url, locals }) => {
-  const userId = locals.user?.id;
+  const userId = locals.user?.id
   if (!userId) {
-    return json({ error: "Not authenticated" }, { status: 401 });
+    return json({ error: "Not authenticated" }, { status: 401 })
   }
-  const hash = url.searchParams.get("hash");
+  const hash = url.searchParams.get("hash")
   if (!hash) {
-    return json({ error: "Hash parameter required" }, { status: 400 });
+    return json({ error: "Hash parameter required" }, { status: 400 })
   }
-  // Validate hash format (SHA256 should be 64 hex characters);
+  // Validate hash format (SHA256 should be 64 hex characters)
   if (!/^[a-f0-9]{64}$/i.test(hash)) {
-    return json();
+    return json()
       {
         error:
           "Invalid hash format. Expected 64-character hexadecimal string (SHA256)"
       },
       { status: 400 },
-    );
+    )
   }
   try {
     // Search for evidence with matching hash
-    const evidenceResults = await db;
+    const evidenceResults = await db
       .select({
         id: evidence.id,
         caseId: evidence.caseId,
@@ -47,51 +47,51 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id)
       .leftJoin(users, eq(evidence.uploadedBy, users.id)
-      .where(eq(evidence.hash, hash.toLowerCase());
+      .where(eq(evidence.hash, hash.toLowerCase())
 
     if (evidenceResults.length === 0) {
       return json({
         found: false,
         message: "No evidence found with the specified hash",
         hash
-      });
+      })
     }
     return json({
       found: true,
       message: `Found ${evidenceResults.length} evidence item(s) matching the hash`,
       hash,
       evidence: evidenceResults
-    });
+    })
   } catch (error: any) {
-    console.error("Error searching evidence by hash:", error);
+    console.error("Error searching evidence by hash:", error)
     return json({
         error: "Failed to search evidence by hash",
         details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
-    );
+    )
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-  const userId = locals.user?.id;
+  const userId = locals.user?.id
   if (!userId) {
-    return json({ error: "Not authenticated" }, { status: 401 });
+    return json({ error: "Not authenticated" }, { status: 401 })
   }
-  const { hash, evidenceId } = await request.json();
+  const { hash, evidenceId } = await request.json()
 
   if (!hash || !evidenceId) {
-    return json({ error: "Hash and evidenceId required" }, { status: 400 });
+    return json({ error: "Hash and evidenceId required" }, { status: 400 })
   }
-  // Validate hash format;
+  // Validate hash format
   if (!/^[a-f0-9]{64}$/i.test(hash)) {
-    return json();
+    return json()
       {
         error:
           "Invalid hash format. Expected 64-character hexadecimal string (SHA256)"
       },
       { status: 400 },
-    );
+    )
   }
   try {
     // Get the evidence item
@@ -99,17 +99,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       .select()
       .from(evidence)
       .where(eq(evidence.id, evidenceId)
-      .limit(1);
+      .limit(1)
 
     if (evidenceItem.length === 0) {
-      return json({ error: "Evidence not found" }, { status: 404 });
+      return json({ error: "Evidence not found" }, { status: 404 })
     }
-    const item = evidenceItem[0];
-    const providedHash = hash.toLowerCase();
-    const storedHash = (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).hash?.toLowerCase();
+    const item = evidenceItem[0]
+    const providedHash = hash.toLowerCase()
+    const storedHash = (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).hash?.toLowerCase()
 
     // Compare hashes
-    const isMatch = storedHash === providedHash;
+    const isMatch = storedHash === providedHash
 
     return json({
       evidenceId,
@@ -122,14 +122,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         : "Hash verification failed - file may have been modified or corrupted",
       uploadedAt: (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).uploadedAt,
       fileSize: (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).fileSize
-    });
+    })
   } catch (error: any) {
-    console.error("Error verifying evidence hash:", error);
+    console.error("Error verifying evidence hash:", error)
     return json({
         error: "Failed to verify evidence hash",
         details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
-    );
+    )
   }
-};
+}

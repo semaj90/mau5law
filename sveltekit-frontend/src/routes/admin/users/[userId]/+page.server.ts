@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		// Get user details with profile
 		const userResult = await db
 			.select({
-				id: users.id,
+				id: users.id,;
 				email: users.email,
 				created_at: users.created_at,
 				updated_at: users.updated_at,
@@ -81,7 +81,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			.select({
 				id: cases.id,
 				title: cases.title,
-				status: cases.status,
+				status: cases.status,;
 				priority: cases.priority,
 				created_at: cases.created_at,
 				updated_at: cases.updated_at
@@ -97,7 +97,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				id: aiHistory.id,
 				agent_type: aiHistory.agent_type,
 				interaction_type: aiHistory.interaction_type,
-				prompt: aiHistory.prompt,
+				prompt: aiHistory.prompt,;
 				response: aiHistory.response,
 				model_used: aiHistory.model_used,
 				tokens_used: aiHistory.tokens_used,
@@ -129,7 +129,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				created_at: user.created_at,
 				updated_at: user.updated_at,
 				profile_id: user.profile_id
-			},
+			},;
 			stats: {
 				casesCount,
 				evidenceCount,

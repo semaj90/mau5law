@@ -34,7 +34,7 @@ export async function validateSecurity(payload: SecurityValidationRequestClient)
       firstName: payload.user.firstName || payload.user.username.split('.')[0],
       lastName: payload.user.lastName || payload.user.username.split('.')[1],
       role: payload.user.requestedRole,
-      department: payload.user.department,
+      department: payload.user.department,;
       jurisdiction: payload.user.jurisdiction,
       badgeNumber: payload.user.badgeNumber,
       deviceInfo: payload.fingerprint
@@ -59,7 +59,7 @@ export async function validateSecurity(payload: SecurityValidationRequestClient)
     status: apiResponse.riskLevel === 'critical' ? 'deny' : 
             apiResponse.riskLevel === 'high' ? 'review' : 'allow',
     modelVersion: 'enhanced-rag-v1',
-    durationMs: apiResponse.processingTime || 0,
+    durationMs: apiResponse.processingTime || 0,;
     timestamp: new Date().toISOString()
   };
 }

@@ -17,9 +17,9 @@
  */
 
 
-import { json } from "@sveltejs/kit";
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } from "@sveltejs/kit"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
@@ -29,17 +29,17 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       fileName,
       fileType,
       enhanced = false
-    } = await request.json();
+    } = await request.json()
 
     if (!content || content.trim() === "") {
-      return json({ error: "Content is required" }, { status: 400 });
+      return json({ error: "Content is required" }, { status: 400 })
     }
     // Enhanced prompt for better auto-form fill capabilities
     const enhancedPrompt = `You are an advanced legal AI assistant specializing in evidence analysis and metadata extraction. Extract comprehensive structured metadata from the following content for use in a legal case management system.
 
 CRITICAL: Return ONLY a valid JSON object with NO additional text, markdown, or formatting.
 
-Required JSON structure:;
+Required JSON structure:
 {
   "tags": ["relevant", "case", "tags"],
   "title": "Brief descriptive title (max 100 chars)",
@@ -90,7 +90,7 @@ File Details:
 Content to analyze:
 ${content.slice(0, enhanced ? 5000 : 2000)}
 
-Return ONLY the JSON object. No markdown, no explanations, no additional text.`;
+Return ONLY the JSON object. No markdown, no explanations, no additional text.`
 
     const basicPrompt = `Extract structured legal metadata from this content. Return ONLY valid JSON:
 
@@ -107,9 +107,9 @@ Return ONLY the JSON object. No markdown, no explanations, no additional text.`;
   "keyFacts": ["fact1", "fact2"]
 }
 File: ${fileName || "Unknown"}
-Content: ${content.slice(0, 2000)}`;
+Content: ${content.slice(0, 2000)}`
 
-    const prompt = enhanced ? enhancedPrompt : basicPrompt;
+    const prompt = enhanced ? enhancedPrompt : basicPrompt
 
     // Try legal Gemma3 model first, with fallbacks
     const models = [
@@ -118,14 +118,14 @@ Content: ${content.slice(0, 2000)}`;
       "gemma3",
       "llama3.1",
       "gemma3-legal:latest"
-    ];
-    let result: any = null;
-    let modelUsed = "";
+    ]
+    let result: any = null
+    let modelUsed = ""
 
     for (const model of models) {
       try {
         const ollamaResponse = await fetch(
-          "http://localhost:11434/api/generate",);
+          "http://localhost:11434/api/generate",)
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -142,20 +142,20 @@ Content: ${content.slice(0, 2000)}`;
               }
             })
           },
-        );
+        )
 
         if (ollamaResponse.ok) {
-          result = await ollamaResponse.json();
-          modelUsed = model;
-          break;
+          result = await ollamaResponse.json()
+          modelUsed = model
+          break
         }
       } catch (error: any) {
-        console.log(`Model ${model} failed, trying next...`);
-        continue;
+        console.log(`Model ${model} failed, trying next...`)
+        continue
       }
     }
     if (!result) {
-      return json({ error: "No AI models available" }, { status: 503 });
+      return json({ error: "No AI models available" }, { status: 503 })
     }
     const parsedResult = await parseAndReturnTags(
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).response,
@@ -163,28 +163,28 @@ Content: ${content.slice(0, 2000)}`;
       fileType,
       enhanced,
       modelUsed,
-    );
+    )
 
-    // Add embedding generation for vector search (if enhanced);
+    // Add embedding generation for vector search (if enhanced)
     if (enhanced) {
       try {
-        await generateEmbedding(parsedResult, content);
+        await generateEmbedding(parsedResult, content)
       } catch (error: any) {
-        console.log("Embedding generation failed:", error);
+        console.log("Embedding generation failed:", error)
         // Non-critical, continue without embedding
       }
     }
-    return parsedResult;
+    return parsedResult
   } catch (error: any) {
-    console.error("AI Tagging error:", error);
+    console.error("AI Tagging error:", error)
     return json({
         error: "Failed to process content for tagging",
         details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
-    );
+    )
   }
-};
+}
 
 async function parseAndReturnTags(
   response: string,
@@ -193,7 +193,7 @@ async function parseAndReturnTags(
   enhanced = false,
   modelUsed = "",
 ): Promise<any> {
-  // Enhanced default structure for auto-form fill;
+  // Enhanced default structure for auto-form fill
   let tagsResult: any = {
     tags: [],
     title: fileName || "Untitled Evidence",
@@ -206,7 +206,7 @@ async function parseAndReturnTags(
     summary: "",
     keyFacts: [],
 
-    // Enhanced fields for auto-form fill;
+    // Enhanced fields for auto-form fill
     ...(enhanced && {
       legalCategories: [],
       confidentialityLevel: "internal",
@@ -231,11 +231,11 @@ async function parseAndReturnTags(
       modelUsed,
       processingTime: new Date().toISOString()
     })
-  };
+  }
 
   try {
     // Multiple JSON extraction strategies
-    let cleanResponse = (response as { trim?: any }).trim();
+    let cleanResponse = (response as { trim?: any }).trim()
 
     // Remove common AI response prefixes/suffixes
     const prefixesToRemove = [
@@ -245,114 +245,114 @@ async function parseAndReturnTags(
       "The extracted metadata is:",
       "```json",
       "```"
-    ];
+    ]
 
     const suffixesToRemove = [
       "Please let me know if you need any clarification.",
       "This analysis is based on the provided content.",
       "```",
       "Let me know if you need anything else."
-    ];
+    ]
 
     prefixesToRemove.forEach((prefix) => {
       if (cleanResponse.toLowerCase().startsWith(prefix.toLowerCase())) {
-        cleanResponse = cleanResponse.substring(prefix.length).trim();
+        cleanResponse = cleanResponse.substring(prefix.length).trim()
       }
-    });
+    })
 
     suffixesToRemove.forEach((suffix) => {
       if (cleanResponse.toLowerCase().endsWith(suffix.toLowerCase())) {
         cleanResponse = cleanResponse
           .substring(0, cleanResponse.length - suffix.length)
-          .trim();
+          .trim()
       }
-    });
+    })
 
     // Find JSON boundaries more robustly
-    const jsonStart = cleanResponse.indexOf("{");
-    const jsonEnd = cleanResponse.lastIndexOf("}");
+    const jsonStart = cleanResponse.indexOf("{")
+    const jsonEnd = cleanResponse.lastIndexOf("}")
 
     if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
-      const jsonStr = cleanResponse.substring(jsonStart, jsonEnd + 1);
+      const jsonStr = cleanResponse.substring(jsonStart, jsonEnd + 1)
 
       try {
-        const parsed = JSON.parse(jsonStr);
+        const parsed = JSON.parse(jsonStr)
 
-        // Validate and merge with defaults;
+        // Validate and merge with defaults
         tagsResult = {
           ...tagsResult,
           ...validateAndCleanParsedData(parsed, enhanced)
-        };
+        }
       } catch (parseError) {
-        console.warn("JSON parsing failed, attempting repair:", parseError);
+        console.warn("JSON parsing failed, attempting repair:", parseError)
 
         // Attempt JSON repair
-        const repairedJson = attemptJsonRepair(jsonStr);
+        const repairedJson = attemptJsonRepair(jsonStr)
         if (repairedJson) {
-          const parsed = JSON.parse(repairedJson);
+          const parsed = JSON.parse(repairedJson)
           tagsResult = {
             ...tagsResult,
             ...validateAndCleanParsedData(parsed, enhanced)
-          };
+          }
         } else {
-          throw parseError;
+          throw parseError
         }
       }
     } else {
-      throw new Error("No valid JSON structure found");
+      throw new Error("No valid JSON structure found")
     }
   } catch (parseError) {
-    console.error("Failed to parse AI response:", parseError);
-    console.log("Raw response:", response);
+    console.error("Failed to parse AI response:", parseError)
+    console.log("Raw response:", response)
 
-    // Advanced fallback parsing using regex and NLP techniques;
+    // Advanced fallback parsing using regex and NLP techniques
     tagsResult = {
       ...tagsResult,
       ...extractWithFallbackMethods(response, enhanced)
-    };
+    }
 
-    // Add warning about parsing failure;
+    // Add warning about parsing failure
     if (enhanced) {
       tagsResult.redFlags = [
         ...(tagsResult.redFlags || []),
         "AI response parsing partially failed"
-      ];
-      tagsResult.qualityScore = 0.3;
+      ]
+      tagsResult.qualityScore = 0.3
     }
   }
-  // Auto-detect evidence type if not provided or invalid;
+  // Auto-detect evidence type if not provided or invalid
   if (!tagsResult.evidenceType || tagsResult.evidenceType === "other") {
-    tagsResult.evidenceType = detectEvidenceType(fileType);
+    tagsResult.evidenceType = detectEvidenceType(fileType)
   }
-  // Enhance with file-based metadata;
+  // Enhance with file-based metadata
   if (enhanced) {
-    tagsResult = enhanceWithFileMetadata(tagsResult, fileName, fileType);
+    tagsResult = enhanceWithFileMetadata(tagsResult, fileName, fileType)
   }
-  return json(tagsResult);
+  return json(tagsResult)
 }
 function validateAndCleanParsedData(parsed: any, enhanced: boolean): unknown {
-  const result: any = {};
+  const result: any = {}
 
   // Validate arrays
   if (Array.isArray(parsed.tags)
-    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).tags = parsed.tags.filter((t) => typeof t === "string");
+    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).tags = parsed.tags.filter((t) => typeof t === "string")
   if (Array.isArray(parsed.people)
-    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).people = parsed.people.filter((p) => typeof p === "string");
+    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).people = parsed.people.filter((p) => typeof p === "string")
   if (Array.isArray(parsed.locations)
-    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).locations = parsed.locations.filter((l) => typeof l === "string");
-  if (Array.isArray(parsed.dates)) (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).dates = validateDates(parsed.dates);
+    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).locations = parsed.locations.filter((l) => typeof l === "string")
+  if (Array.isArray(parsed.dates)) (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).dates = validateDates(parsed.dates)
   if (Array.isArray(parsed.organizations)
     (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).organizations = parsed.organizations.filter(
       (o) => typeof o === "string",
-    );
+    )
   if (Array.isArray(parsed.keyFacts)
-    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).keyFacts = parsed.keyFacts.filter((f) => typeof f === "string");
+    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).keyFacts = parsed.keyFacts.filter((f) => typeof f === "string")
 
   // Validate strings
   if (typeof parsed.title === "string")
-    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).title = parsed.title.substring(0, 100);
+    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).title = parsed.title.substring(0, 100)
   if (typeof parsed.summary === "string")
-    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).summary = parsed.summary.substring(0, 300);
+    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).summary = parsed.summary.substring(0, 300)
 
   // Validate enums
   const validEvidenceTypes = [
@@ -364,84 +364,84 @@ function validateAndCleanParsedData(parsed: any, enhanced: boolean): unknown {
     "digital",
     "testimony",
     "other"
-  ];
+  ]
   if (validEvidenceTypes.includes(parsed.evidenceType)
-    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).evidenceType = parsed.evidenceType;
+    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).evidenceType = parsed.evidenceType
 
-  const validRelevance = ["critical", "high", "medium", "low"];
+  const validRelevance = ["critical", "high", "medium", "low"]
   if (validRelevance.includes(parsed.legalRelevance)
-    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).legalRelevance = parsed.legalRelevance;
+    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).legalRelevance = parsed.legalRelevance
 
-  // Enhanced validation;
+  // Enhanced validation
   if (enhanced) {
     if (Array.isArray(parsed.legalCategories)
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).legalCategories = parsed.legalCategories.filter(
         (c) => typeof c === "string",
-      );
+      )
     if (Array.isArray(parsed.potentialWitnesses)
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).potentialWitnesses = parsed.potentialWitnesses.filter(
         (w) => typeof w === "string",
-      );
+      )
     if (Array.isArray(parsed.relatedCases)
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).relatedCases = parsed.relatedCases.filter(
         (c) => typeof c === "string",
-      );
+      )
     if (Array.isArray(parsed.statutes)
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).statutes = parsed.statutes.filter((s) => typeof s === "string");
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).statutes = parsed.statutes.filter((s) => typeof s === "string")
     if (Array.isArray(parsed.monetaryAmounts)
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).monetaryAmounts = parsed.monetaryAmounts.filter(
         (m) => typeof m === "string",
-      );
+      )
     if (Array.isArray(parsed.timeReferences)
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).timeReferences = parsed.timeReferences.filter(
         (t) => typeof t === "string",
-      );
+      )
     if (Array.isArray(parsed.actions)
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).actions = parsed.actions.filter((a) => typeof a === "string");
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).actions = parsed.actions.filter((a) => typeof a === "string")
     if (Array.isArray(parsed.redFlags)
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).redFlags = parsed.redFlags.filter((r) => typeof r === "string");
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).redFlags = parsed.redFlags.filter((r) => typeof r === "string")
     if (Array.isArray(parsed.recommendations)
       (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).recommendations = parsed.recommendations.filter(
         (r) => typeof r === "string",
-      );
+      )
 
     const validConfidentiality = [
       "public",
       "internal",
       "confidential",
       "restricted"
-    ];
+    ]
     if (validConfidentiality.includes(parsed.confidentialityLevel)
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).confidentialityLevel = parsed.confidentialityLevel;
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).confidentialityLevel = parsed.confidentialityLevel
 
-    const validUrgency = ["immediate", "high", "normal", "low"];
+    const validUrgency = ["immediate", "high", "normal", "low"]
     if (validUrgency.includes(parsed.urgencyLevel)
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).urgencyLevel = parsed.urgencyLevel;
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).urgencyLevel = parsed.urgencyLevel
 
-    const validSentiment = ["positive", "negative", "neutral"];
+    const validSentiment = ["positive", "negative", "neutral"]
     if (validSentiment.includes(parsed.sentiment)
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).sentiment = parsed.sentiment;
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).sentiment = parsed.sentiment
 
     if (
       typeof parsed.qualityScore === "number" &&
       parsed.qualityScore >= 0 &&
-      parsed.qualityScore <= 1;
+      parsed.qualityScore <= 1
     ) {
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).qualityScore = parsed.qualityScore;
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).qualityScore = parsed.qualityScore
     }
     if (typeof parsed.extractionConfidence === "object") {
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).extractionConfidence = parsed.extractionConfidence;
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).extractionConfidence = parsed.extractionConfidence
     }
   }
-  return result;
+  return result
 }
 function validateDates(dates: any[]): string[] {
   return dates.filter((date) => {
-    if (typeof date !== "string") return false;
+    if (typeof date !== "string") return false
 
     // Try to parse various date formats
-    const parsedDate = new Date(date);
-    if (!isNaN(parsedDate.getTime())) return true;
+    const parsedDate = new Date(date)
+    if (!isNaN(parsedDate.getTime())) return true
 
     // Check for relative dates or time expressions
     const timePatterns = [
@@ -450,33 +450,33 @@ function validateDates(dates: any[]): string[] {
       /last\s+(week|month|year)/i,
       /\d{1,2}\/\d{1,2}\/\d{2,4}/, // Date format
       /\d{4}-\d{1,2}-\d{1,2}/, // ISO date format
-    ];
+    ]
 
-    return timePatterns.some((pattern) => pattern.test(date);
-  });
+    return timePatterns.some((pattern) => pattern.test(date)
+  })
 }
 function attemptJsonRepair(jsonStr: string): string | null {
   try {
     // Common JSON repair strategies
-    let repaired = jsonStr;
+    let repaired = jsonStr
 
     // Fix missing quotes around keys
     repaired = repaired.replace(
       /([{]\s*) => [a-zA-Z_][a-zA-Z0-9_]*)\s*:/g,
       '$1"$2":',
-    );
+    )
 
     // Fix trailing commas
-    repaired = repaired.replace(/,(\s*[}\]])/g, "$1");
+    repaired = repaired.replace(/,(\s*[}\]])/g, "$1")
 
     // Fix single quotes to double quotes
-    repaired = repaired.replace(/'/g, '"');
+    repaired = repaired.replace(/'/g, '"')
 
     // Try to parse the repaired JSON
-    JSON.parse(repaired);
-    return repaired;
+    JSON.parse(repaired)
+    return repaired
   } catch {
-    return null;
+    return null
   }
 }
 function extractWithFallbackMethods(text: string, enhanced: boolean): unknown {
@@ -484,7 +484,7 @@ function extractWithFallbackMethods(text: string, enhanced: boolean): unknown {
     tags: extractBasicTags(text),
     summary: text.substring(0, 200) + "...",
     keyFacts: []
-  };
+  }
 
   // Extract people using regex patterns
   const peoplePatterns = [
@@ -492,36 +492,36 @@ function extractWithFallbackMethods(text: string, enhanced: boolean): unknown {
     /Mr\.\s+[A-Z][a-z]+/g,
     /Mrs\.\s+[A-Z][a-z]+/g,
     /Dr\.\s+[A-Z][a-z]+/g
-  ];
+  ]
 
   peoplePatterns.forEach((pattern) => {
-    const matches = text.match(pattern);
+    const matches = text.match(pattern)
     if (matches) {
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).people = [...((result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).people || []), ...matches];
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).people = [...((result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).people || []), ...matches]
     }
-  });
+  })
 
   // Extract dates using regex
   const datePatterns = [
     /\d{1,2}\/\d{1,2}\/\d{2,4}/g,
     /\d{4}-\d{1,2}-\d{1,2}/g,
     /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}\b/g
-  ];
+  ]
 
   datePatterns.forEach((pattern) => {
-    const matches = text.match(pattern);
+    const matches = text.match(pattern)
     if (matches) {
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).dates = [...((result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).dates || []), ...matches];
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).dates = [...((result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).dates || []), ...matches]
     }
-  });
+  })
 
   // Extract monetary amounts
-  const moneyPattern = /\$[\d]+(?:\.\d{2})?/g;
-  const moneyMatches = text.match(moneyPattern);
+  const moneyPattern = /\$[\d]+(?:\.\d{2})?/g
+  const moneyMatches = text.match(moneyPattern)
   if (moneyMatches && enhanced) {
-    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).monetaryAmounts = moneyMatches;
+    (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).monetaryAmounts = moneyMatches
   }
-  // Basic sentiment analysis;
+  // Basic sentiment analysis
   if (enhanced) {
     const positiveWords = [
       "good",
@@ -529,7 +529,7 @@ function extractWithFallbackMethods(text: string, enhanced: boolean): unknown {
       "positive",
       "successful",
       "agreement"
-    ];
+    ]
     const negativeWords = [
       "bad",
       "negative",
@@ -537,24 +537,24 @@ function extractWithFallbackMethods(text: string, enhanced: boolean): unknown {
       "dispute",
       "violation",
       "damage"
-    ];
+    ]
 
-    const lowerText = text.toLowerCase();
+    const lowerText = text.toLowerCase()
     const positiveCount = positiveWords.filter((word) =>
       lowerText.includes(word),
-    ).length;
+    ).length
     const negativeCount = negativeWords.filter((word) =>
       lowerText.includes(word),
-    ).length;
+    ).length
 
-    if (positiveCount > negativeCount) (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).sentiment = "positive";
-    else if (negativeCount > positiveCount) (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).sentiment = "negative";
-    else (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).sentiment = "neutral";
+    if (positiveCount > negativeCount) (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).sentiment = "positive"
+    else if (negativeCount > positiveCount) (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).sentiment = "negative"
+    else (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).sentiment = "neutral"
   }
-  return result;
+  return result
 }
 function extractBasicTags(text: string): string[] {
-  const words = text.toLowerCase().split(/\s+/);
+  const words = text.toLowerCase().split(/\s+/)
   const commonWords = new Set([
     "the",
     "and",
@@ -574,35 +574,35 @@ function extractBasicTags(text: string): string[] {
     "are",
     "was",
     "were"
-  ]);
+  ])
 
-  const wordFreq = new Map();
+  const wordFreq = new Map()
   words.forEach((word) => {
-    const cleaned = word.replace(/[^\w]/g, "");
+    const cleaned = word.replace(/[^\w]/g, "")
     if (cleaned.length > 3 && !commonWords.has(cleaned)) {
-      wordFreq.set(cleaned, (wordFreq.get(cleaned) || 0) + 1);
+      wordFreq.set(cleaned, (wordFreq.get(cleaned) || 0) + 1)
     }
-  });
+  })
 
   return Array.from(wordFreq.entries()
     .sort((a, b) => b[1] - a[1])
     .slice(0, 8)
-    .map(([word]) => word);
+    .map(([word]) => word)
 }
 function detectEvidenceType(fileType?: string): string {
-  if (!fileType) return "other";
+  if (!fileType) return "other"
 
-  if (fileType.includes("image") || fileType.includes("photo")) return "photo";
-  if (fileType.includes("video")) return "video";
-  if (fileType.includes("audio")) return "audio";
+  if (fileType.includes("image") || fileType.includes("photo")) return "photo"
+  if (fileType.includes("video")) return "video"
+  if (fileType.includes("audio")) return "audio"
   if (
     fileType.includes("pdf") ||
     fileType.includes("document") ||
     fileType.includes("text")
   )
-    return "document";
+    return "document"
 
-  return "digital";
+  return "digital"
 }
 function enhanceWithFileMetadata(
   result: any,
@@ -611,31 +611,31 @@ function enhanceWithFileMetadata(
 ): unknown {
   if (fileName) {
     // Extract metadata from filename
-    const lowerName = fileName.toLowerCase();
+    const lowerName = fileName.toLowerCase()
 
-    // Detect urgency from filename;
+    // Detect urgency from filename
     if (lowerName.includes("urgent") || lowerName.includes("emergency")) {
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).urgencyLevel = "immediate";
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).urgencyLevel = "immediate"
     } else if (
       lowerName.includes("priority") ||
-      lowerName.includes("important");
+      lowerName.includes("important")
     ) {
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).urgencyLevel = "high";
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).urgencyLevel = "high"
     }
-    // Detect confidentiality from filename;
+    // Detect confidentiality from filename
     if (lowerName.includes("confidential") || lowerName.includes("private")) {
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).confidentialityLevel = "confidential";
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).confidentialityLevel = "confidential"
     } else if (
       lowerName.includes("restricted") ||
-      lowerName.includes("classified");
+      lowerName.includes("classified")
     ) {
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).confidentialityLevel = "restricted";
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).confidentialityLevel = "restricted"
     }
     // Extract case numbers or references
-    const caseNumberPattern = /case[_\s]?(\d+)/i;
-    const match = fileName.match(caseNumberPattern);
+    const caseNumberPattern = /case[_\s]?(\d+)/i
+    const match = fileName.match(caseNumberPattern)
     if (match) {
-      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).relatedCases = [...((result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).relatedCases || []), match[0]];
+      (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).relatedCases = [...((result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).relatedCases || []), match[0]]
     }
   }
   // Set quality score based on available metadata
@@ -644,13 +644,13 @@ function enhanceWithFileMetadata(
     "locations",
     "dates",
     "organizations"
-  ].filter((field) => result[field] && result[field].length > 0);
-  (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).qualityScore = Math.min(0.9, 0.3 + metadataFields.length * 0.15);
+  ].filter((field) => result[field] && result[field].length > 0)
+  (result as { response?: any; tags?: any; people?: any; locations?: any; dates?: any; organizations?: any; keyFacts?: any; title?: any; summary?: any; evidenceType?: any; legalRelevance?: any; legalCategories?: any; potentialWitnesses?: any; relatedCases?: any; statutes?: any; monetaryAmounts?: any; timeReferences?: any; actions?: any; redFlags?: any; recommendations?: any; confidentialityLevel?: any; urgencyLevel?: any; sentiment?: any; qualityScore?: any; extractionConfidence?: any }).qualityScore = Math.min(0.9, 0.3 + metadataFields.length * 0.15)
 
-  return result;
+  return result
 }
 async function generateEmbedding(parsedResult: any, content: string): Promise<any> {
-  // Generate embeddings for vector search using Ollama's embedding model;
+  // Generate embeddings for vector search using Ollama's embedding model
   try {
     const embeddingText = [
       parsedResult.title,
@@ -658,10 +658,10 @@ async function generateEmbedding(parsedResult: any, content: string): Promise<an
       ...parsedResult.tags,
       ...parsedResult.keyFacts,
       content.substring(0, 1000)
-    ].join(" ");
+    ].join(" ")
 
     const embeddingResponse = await fetch(
-      "http://localhost:11434/api/embeddings",);
+      "http://localhost:11434/api/embeddings",)
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -670,12 +670,12 @@ async function generateEmbedding(parsedResult: any, content: string): Promise<an
           prompt: embeddingText
         })
       },
-    );
+    )
 
     if (embeddingResponse.ok) {
-      const embeddingData = await embeddingResponse.json();
+      const embeddingData = await embeddingResponse.json()
 
-      // Store embedding in Qdrant (if available);
+      // Store embedding in Qdrant (if available)
       await fetch("/api/qdrant/tag", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -684,12 +684,12 @@ async function generateEmbedding(parsedResult: any, content: string): Promise<an
           metadata: parsedResult,
           content: embeddingText
         })
-      }).catch((error) => console.log("Qdrant storage failed:", error);
+      }).catch((error) => console.log("Qdrant storage failed:", error)
     }
   } catch (error: any) {
-    console.log("Embedding generation failed:", error);
+    console.log("Embedding generation failed:", error)
   }
 }
 
 
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

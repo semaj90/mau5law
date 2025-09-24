@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -29,7 +29,7 @@ https://svelte.dev/e/js_parse_error -->
     collapsed = false,
     minSidebarWidth = "200px",
     maxSidebarWidth = "400px",
-    gap = "1rem"
+    gap = "1rem";
   }: Props = $props();
 
   
@@ -70,17 +70,17 @@ https://svelte.dev/e/js_parse_error -->
 
 <div
   class="container mx-auto px-4"
-  class:collapsed
+  class:collapsed;
   class:sidebar-left={sidebarPosition === "left"}
 >
   {#if sidebarPosition === "left"}
     <aside
       class="container mx-auto px-4"
       class:collapsed
-      style="
+      style=";
         flex: {collapsed ? '0' : calculatedSidebarFlex}
         min-width: {collapsed ? '0' : minSidebarWidth}
-        max-width: {collapsed ? '0' : maxSidebarWidth}
+        max-width: {collapsed ? '0' : maxSidebarWidth};
         margin-right: {collapsed ? '0' : gap}
       "
     >
@@ -110,7 +110,7 @@ https://svelte.dev/e/js_parse_error -->
     <aside
       class="container mx-auto px-4"
       class:collapsed
-      style="
+      style=";
         flex: {collapsed ? '0' : calculatedSidebarFlex}
         min-width: {collapsed ? '0' : minSidebarWidth}
         max-width: {collapsed ? '0' : maxSidebarWidth}
@@ -136,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 </div>
 
-<style>/* @unocss-include */ .golden-layout {
+<style>/* @unocss-include */ .golden-layout {;
     display: flex;
     height: 100%;
     min-height: 0;
@@ -243,17 +243,17 @@ https://svelte.dev/e/js_parse_error -->
       left: auto;
       transform: none;
 }}
-/* Smooth scrollbar for sidebar */ .sidebar-content: :-webkit-scrollbar {
+/* Smooth scrollbar for sidebar */ .sidebar-content::-webkit-scrollbar {
     width: 6px;
 }
-  .sidebar-content: :-webkit-scrollbar-track {
+  .sidebar-content::-webkit-scrollbar-track {
     background: transparent;
 }
-  .sidebar-content: :-webkit-scrollbar-thumb {
+  .sidebar-content::-webkit-scrollbar-thumb {
     background: var(--pico-border-color, #e2e8f0);
     border-radius: 3px;
 }
-  .sidebar-content: :-webkit-scrollbar-thumb:hover {
+  .sidebar-content::-webkit-scrollbar-thumb:hover {
     background: var(--pico-muted-color, #6b7280);
 }
 </style>

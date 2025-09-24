@@ -23,16 +23,16 @@
     totalDocuments: 0,
     processedDocuments: 0,
     aiAnalyses: 0,
-    uptime: '0d 0h 0m'
+    uptime: '0d 0h 0m';
   });
 
   let systemHealth = $state({
-    database: true,
+    database: true,;
     redis: true,
     aiService: true,
-    fileSystem: true,
+    fileSystem: true,;
     gpu: false,
-    vectorSearch: true
+    vectorSearch: true;
   });
 
   let recentActivity = $state([]);
@@ -67,7 +67,7 @@
           totalDocuments: 1847,
           processedDocuments: 1523,
           aiAnalyses: 3421,
-          uptime: '2d 14h 32m'
+          uptime: '2d 14h 32m';
         };
       }
     } catch (error) {
@@ -104,7 +104,7 @@
             user: 'john.doe@law.com',
             description: 'Created new case: Smith v. Johnson',
             timestamp: new Date(Date.now() - 300000).toISOString(),
-            status: 'success'
+            status: 'success';
           },
           {
             id: 2,
@@ -112,15 +112,15 @@
             user: 'jane.smith@law.com',
             description: 'Completed AI analysis on contract dispute',
             timestamp: new Date(Date.now() - 900000).toISOString(),
-            status: 'success'
+            status: 'success';
           },
           {
             id: 3,
             type: 'user_login',
             user: 'admin@legal-ai.com',
-            description: 'Administrator login from 192.168.1.100',
-            timestamp: new Date(Date.now() - 1800000).toISOString(),
-            status: 'info'
+            description: 'Administrator login from 192.168.1.100',;
+            timestamp: new Date(Date.now() - 1800000).toISOString(),;
+            status: 'info';
           }
         ];
       }
@@ -381,4 +381,4 @@
       </div>
     </div>
   </div>
-</div>
+</div>;

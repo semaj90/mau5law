@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: `<div>` was left open
+<!-- @migration-task Error while migrating Svelte code: `<div>` was left open;
 https://svelte.dev/e/element_unclosed -->
 <!-- @migration-task Error while migrating Svelte code: `<div>` was left open -->
 <script lang="ts">
@@ -14,7 +14,7 @@ https://svelte.dev/e/element_unclosed -->
     type LogLevel,
     type LogFilter
   } from '$lib/services/logging-aggregation-service';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
 
   // Modern Svelte 5 props via $props rune
@@ -70,9 +70,9 @@ https://svelte.dev/e/element_unclosed -->
     const colors = {
       debug: 'bg-gray-100 text-gray-600',
       info: 'bg-blue-100 text-blue-600',
-      warn: 'bg-yellow-100 text-yellow-600',
-      error: 'bg-red-100 text-red-600',
-      fatal: 'bg-red-200 text-red-800'
+      warn: 'bg-yellow-100 text-yellow-600',;
+      error: 'bg-red-100 text-red-600',;
+      fatal: 'bg-red-200 text-red-800';
     };
     return colors[level] || 'bg-gray-100 text-gray-600';
   }
@@ -81,9 +81,9 @@ https://svelte.dev/e/element_unclosed -->
     const icons = {
       debug: '🐛',
       info: 'ℹ️',
-      warn: '⚠️',
-      error: '❌',
-      fatal: '💀'
+      warn: '⚠️',;
+      error: '❌',;
+      fatal: '💀';
     };
     return icons[level] || 'ℹ️';
   }
@@ -96,9 +96,9 @@ https://svelte.dev/e/element_unclosed -->
       ai: '🤖',
       database: '🗄️',
       frontend: '🎨',
-      backend: '🖥️',
-      security: '🛡️',
-      console: '📟'
+      backend: '🖥️',;
+      security: '🛡️',;
+      console: '📟';
     };
     return icons[category] || '📋';
   }
@@ -106,10 +106,10 @@ https://svelte.dev/e/element_unclosed -->
   function formatTimestamp(timestamp: number): string {
     return new Date(timestamp).toLocaleTimeString('en-US', {
       hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
+      hour: '2-digit',;
+      minute: '2-digit',;
       second: '2-digit',
-      fractionalSecondDigits: 3
+      fractionalSecondDigits: 3;
     });
   }
 
@@ -131,8 +131,8 @@ https://svelte.dev/e/element_unclosed -->
 
   function exportLogs() {
     const filter: LogFilter = {
-      category: selectedCategory !== 'all' ? [selectedCategory] : undefined,
-      level: selectedLevel !== 'all' ? [selectedLevel] : undefined
+      category: selectedCategory !== 'all' ? [selectedCategory] : undefined,;
+      level: selectedLevel !== 'all' ? [selectedLevel] : undefined;
     };
 
     const exportData = loggingService.exportLogs('json', filter);
@@ -247,7 +247,7 @@ https://svelte.dev/e/element_unclosed -->
 
     <!-- Log Entries -->
     <div
-      class="flex-1 overflow-y-auto p-2"
+      class="flex-1 overflow-y-auto p-2";
       bind:this={logContainer}
     >
       {#if filteredEntries.length === 0}
@@ -483,25 +483,25 @@ showDetails = false}>
     word-wrap: break-word;
   }
 
-  :global(.logging-dashboard .log-entry: nth-child(even)) {
+  :global(.logging-dashboard .log-entry:nth-child(even)) {
     background-color: rgba(255, 255, 255, 0.02);
   }
 
   /* Scrollbar styling */
-  .overflow-y-auto: :-webkit-scrollbar {
+  .overflow-y-auto::-webkit-scrollbar {
     width: 8px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-track {
+  .overflow-y-auto::-webkit-scrollbar-track {
     background: #1f2937;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-thumb {
+  .overflow-y-auto::-webkit-scrollbar-thumb {
     background: #4b5563;
     border-radius: 4px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-thumb:hover {
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: #6b7280;
   }
 </style>

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Navigation Sidebar Component -->
@@ -25,11 +25,11 @@ https://svelte.dev/e/js_parse_error -->
     const sections = {
       main: routes.filter(r => 
         ['command-center', 'cases', 'evidence', 'persons', 'ai-assistant', 'search', 'documents', 'reports', 'memory', 'chat'].includes(r.id)
-      ),
-      demo: routes.filter(r => r.id.startsWith('demo-') || r.id === 'enhanced-rag' || r.id === 'context7'),
+      ),;
+      demo: routes.filter(r => r.id.startsWith('demo-') || r.id === 'enhanced-rag' || r.id === 'context7'),;
       admin: routes.filter(r => 
         ['dev-tools', 'security', 'settings', 'profile', 'help'].includes(r.id)
-      )
+      );
     };
     return sections;
   });
@@ -226,7 +226,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .yorha-navigation {
+  .yorha-navigation {;
     --yorha-primary: #c4b49a;
     --yorha-secondary: #b5a48a;
     --yorha-accent-warm: #4a4a4a;
@@ -256,22 +256,22 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   /* Custom Scrollbar */
-  .custom-scrollbar: :-webkit-scrollbar {
+  .custom-scrollbar::-webkit-scrollbar {
     width: 8px;
   }
 
-  .custom-scrollbar: :-webkit-scrollbar-track {
+  .custom-scrollbar::-webkit-scrollbar-track {
     background: var(--yorha-darker);
     border-radius: 4px;
   }
 
-  .custom-scrollbar: :-webkit-scrollbar-thumb {
+  .custom-scrollbar::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, var(--yorha-accent-warm) 0%, #b8941f 100%);
     border-radius: 4px;
     border: 1px solid var(--yorha-accent-warm);
   }
 
-  .custom-scrollbar: :-webkit-scrollbar-thumb:hover {
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, var(--yorha-accent-cool) 0%, #6bb8e6 100%);
   }
 
@@ -282,7 +282,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   /* Glow effect for active items */
-  .nav-.active: :before {
+  .nav-.active::before {
     content: '';
     position: absolute;
     top: 0;

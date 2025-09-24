@@ -177,7 +177,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
 
       states: {
         determiningMode: {
-          entry: ['analyzeMessage'],
+          entry: ['analyzeMessage'],;
           always: [;
             {
               guard: 'hasInstantResponse',
@@ -313,7 +313,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
   },
 
   on: {
-    FEEDBACK_PROVIDED: {
+    FEEDBACK_PROVIDED: {;
       actions: ['recordFeedback', 'triggerLearning']
     }
   }
@@ -390,7 +390,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
             {
               ...lastMessage,
               content: event.response,
-              source: 'nes_memory',
+              source: 'nes_memory',;
               streaming: false,
               processingTime: 0
             }
@@ -409,7 +409,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
             {
               ...lastMessage,
               content: event.response,
-              source: 'gpu_cache',
+              source: 'gpu_cache',;
               streaming: false,
               processingTime: 50 // Typical cache response time
             }
@@ -437,7 +437,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
             {
               ...lastMessage,
               content: event.response,
-              source: 'qlora',
+              source: 'qlora',;
               streaming: false
             }
           ];
@@ -460,7 +460,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
             {
               ...lastMessage,
               content: event.response,
-              source: 'gemma3',
+              source: 'gemma3',;
               streaming: false
             }
           ];
@@ -486,7 +486,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
             ...context.messages.slice(0, -1),
             {
               ...lastMessage,
-              chunks: updatedChunks,
+              chunks: updatedChunks,;
               content: updatedChunks.join(' ')
             }
           ];

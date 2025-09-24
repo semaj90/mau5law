@@ -21,11 +21,11 @@
   let conversationId = $state<string | null>(null);
   let userId = $state('mock-user-id'); // TODO: Get from auth
   let systemStatus = $state<SystemStatus>({
-    gpu: false,
+    gpu: false,;
     ollama: false,
-    enhancedRAG: false,
+    enhancedRAG: false,;
     postgres: false,
-    neo4j: false
+    neo4j: false;
   });
 
   // POI Timeline State
@@ -57,11 +57,11 @@
 
       const data = await res.json();
       systemStatus = {
-        gpu: data?.services?.gpu === 'accelerated',
+        gpu: data?.services?.gpu === 'accelerated',;
         ollama: data?.services?.ollama === 'healthy',
-        enhancedRAG: data?.services?.enhancedRAG === 'running',
+        enhancedRAG: data?.services?.enhancedRAG === 'running',;
         postgres: data?.services?.postgres === 'connected',
-        neo4j: data?.services?.neo4j === 'active'
+        neo4j: data?.services?.neo4j === 'active';
       };
     } catch (e: unknown) {
       console.error('Health check error:', e);
@@ -75,11 +75,11 @@
 
       // Set mock system status
       systemStatus = {
-        gpu: false,
+        gpu: false,;
         ollama: false,
-        enhancedRAG: false,
+        enhancedRAG: false,;
         postgres: false,
-        neo4j: false
+        neo4j: false;
       };
 
       error = 'System health check failed - using mock status';
@@ -91,9 +91,9 @@
 
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      role: 'user',
-      content: currentMessage,
-      timestamp: new Date()
+      role: 'user',;
+      content: currentMessage,;
+      timestamp: new Date();
     };
 
     messages = [...messages, userMessage];
@@ -108,16 +108,16 @@
 
       // Send message data via POST first to initiate the stream
       const initResponse = await fetch('/api/ai/chat-sse', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          message: messageToSend,
+          message: messageToSend,;
           model: 'gemma3-legal:latest',
           conversationId,
           userId,
-          useRAG: true
+          useRAG: true;
         })
       });
 
@@ -127,9 +127,9 @@
 
       const aiMessage: ChatMessage = {
         id: crypto.randomUUID(),
-        role: 'assistant',
-        content: '',
-        timestamp: new Date()
+        role: 'assistant',;
+        content: '',;
+        timestamp: new Date();
       };
 
       messages = [...messages, aiMessage];
@@ -213,9 +213,9 @@
 
       const mockAiMessage: ChatMessage = {
         id: crypto.randomUUID(),
-        role: 'assistant',
-        content: `🤖 ${randomMockResponse} [Mock AI Assistant - Real service unavailable]`,
-        timestamp: new Date()
+        role: 'assistant',;
+        content: `🤖 ${randomMockResponse} [Mock AI Assistant - Real service unavailable]`,;
+        timestamp: new Date();
       };
 
       messages = [...messages, mockAiMessage];
@@ -268,15 +268,15 @@
           type: 'police_report',
           date: '2024-01-15',
           content: 'Mock evidence: Initial incident report regarding workplace harassment allegations.',
-          confidence: 0.85
+          confidence: 0.85;
         },
         {
           id: 'mock-evidence-002',
           title: 'Mock Witness Statement - Contract Violation',
           type: 'witness_statement',
-          date: '2024-01-16',
-          content: 'Mock evidence: Witness account of contract negotiation meeting.',
-          confidence: 0.92
+          date: '2024-01-16',;
+          content: 'Mock evidence: Witness account of contract negotiation meeting.',;
+          confidence: 0.92;
         }
       ];
     }
@@ -291,8 +291,8 @@
     try {
       // Semantic RAG analysis to extract POI from evidence reports
       const ragResponse = await fetch('/api/v1/rag/analyze-poi', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           evidenceReports: evidenceReports,
           analysisType: 'semantic_entity_extraction',
@@ -308,10 +308,10 @@
           id: person.id,
           name: person.name,
           type: person.type || 'person',
-          activities: person.timeline || [],
+          activities: person.timeline || [],;
           confidence: person.confidence || 0.8,
-          evidenceSources: person.sources || [],
-          relationships: person.relationships || []
+          evidenceSources: person.sources || [],;
+          relationships: person.relationships || [];
         })) || [];
 
         showTimeline = true;
@@ -513,7 +513,7 @@ handleQuickQuery('What are the elements of negligence?')}
                 </div>
               {/if}
               <div class="flex gap-2">
-                <input
+                <input;
                   bind:value={currentMessage}
                   onkeydown={handleKeydown}
                   placeholder="Ask a legal question..."
@@ -1001,21 +1001,21 @@ window.open('/api/v1/cluster/health', '_blank')}
 
 <style>
   /* Custom scrollbar for chat */
-  :global(.overflow-y-auto: :-webkit-scrollbar) {
+  :global(.overflow-y-auto::-webkit-scrollbar) {;
     width: 6px;
   }
 
-  :global(.overflow-y-auto: :-webkit-scrollbar-track) {
+  :global(.overflow-y-auto::-webkit-scrollbar-track) {
     background: #f1f1f1;
     border-radius: 3px;
   }
 
-  :global(.overflow-y-auto: :-webkit-scrollbar-thumb) {
+  :global(.overflow-y-auto::-webkit-scrollbar-thumb) {
     background: #c1c1c1;
     border-radius: 3px;
   }
 
-  :global(.overflow-y-auto: :-webkit-scrollbar-thumb:hover) {
+  :global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
     background: #a8a8a8;
   }
 </style>

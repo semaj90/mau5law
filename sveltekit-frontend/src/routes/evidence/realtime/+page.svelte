@@ -4,7 +4,7 @@
 
   import MonacoEditor from "$lib/components/MonacoEditor.svelte";
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import RichTextEditor from "$lib/components/ui/RichTextEditor.svelte";
   import { evidenceStore } from "$lib/stores/evidenceStore";
   import { lokiEvidenceService } from "$lib/utils/loki-evidence";
@@ -37,10 +37,10 @@
     total: number;
     inProgress: boolean;
   } = $state({
-    pending: 0,
-    failed: 0,
+    pending: 0,;
+    failed: 0,;
     total: 0,
-    inProgress: false,
+    inProgress: false,;
   });
 
   $effect(() => {
@@ -66,10 +66,10 @@
     if (lokiEvidenceService.isReady()) {
       const status = lokiEvidenceService.getSyncStatus();
       syncStatus = {
-        pending: status.pending,
-        failed: status.failed,
+        pending: status.pending,;
+        failed: status.failed,;
         total: status.total,
-        inProgress: status.inProgress ?? false,
+        inProgress: status.inProgress ?? false,;
       };
   }}
   async function startDemoMode() {
@@ -83,7 +83,7 @@
           "Camera footage from the main entrance showing suspect entering at 9:15 PM",
         type: "video",
         caseId: "case-001",
-        tags: ["surveillance", "timestamp", "entrance"],
+        tags: ["surveillance", "timestamp", "entrance"],;
         classification: {
           category: "visual",
           relevance: 0.95,
@@ -96,7 +96,7 @@
           "First-hand account of the incident from witness who was present at the scene",
         type: "testimony",
         caseId: "case-001",
-        tags: ["witness", "firsthand", "scene"],
+        tags: ["witness", "firsthand", "scene"],;
         classification: {
           category: "testimony",
           relevance: 0.82,
@@ -109,7 +109,7 @@
           "Forensic analysis of fingerprints found on the door handle",
         type: "document",
         caseId: "case-001",
-        tags: ["forensics", "fingerprints", "physical"],
+        tags: ["forensics", "fingerprints", "physical"],;
         classification: {
           category: "forensic",
           relevance: 0.78,
@@ -122,10 +122,10 @@
           "Call logs and text messages from suspect's phone for the relevant time period",
         type: "digital",
         caseId: "case-001",
-        tags: ["communications", "timeline", "digital"],
+        tags: ["communications", "timeline", "digital"],;
         classification: {
-          category: "digital",
-          relevance: 0.65,
+          category: "digital",;
+          relevance: 0.65,;
           confidence: 0.85,
         },
       },
@@ -288,7 +288,7 @@ clearAllEvidence()}>
     </div>
 
     <!-- Evidence Type Breakdown -->
-    {#if Object.keys.length > 0}
+    {#if Object.keys(errors).length > 0}
       <div class="space-y-4">
         <h3 class="space-y-4">Evidence by Type</h3>
         <div class="space-y-4">
@@ -365,7 +365,7 @@ clearAllEvidence()}>
             >
             <select
               id="evidence-types"
-              multiple
+              multiple;
               bind:value={selectedTypes}
               class="space-y-4"
               size="3"

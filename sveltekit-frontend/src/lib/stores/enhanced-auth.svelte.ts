@@ -47,7 +47,7 @@ class EnhancedAuthStore {
   }) : {
     user: null,
     isAuthenticated: false,
-    isLoading: false,
+    isLoading: false,;
     session: null,
     lastActivity: null,
     securitySettings: {
@@ -135,7 +135,7 @@ class EnhancedAuthStore {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
+        },;
         body: JSON.stringify({
           ...credentials,
           ipAddress: await this.getClientIP(),
@@ -180,7 +180,7 @@ class EnhancedAuthStore {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
+        },;
         body: JSON.stringify({
           ...data,
           ipAddress: await this.getClientIP(),
@@ -225,7 +225,7 @@ class EnhancedAuthStore {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
-          },
+          },;
           body: JSON.stringify({
             sessionId: this._state.session.id
           })
@@ -245,7 +245,7 @@ class EnhancedAuthStore {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
+        },;
         body: JSON.stringify({ token })
       });
 
@@ -270,7 +270,7 @@ class EnhancedAuthStore {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
+        },;
         body: JSON.stringify({ email })
       });
 
@@ -287,7 +287,7 @@ class EnhancedAuthStore {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
+        },;
         body: JSON.stringify({ token, newPassword })
       });
 
@@ -315,7 +315,7 @@ class EnhancedAuthStore {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
-        },
+        },;
         body: JSON.stringify(updates)
       });
 
@@ -342,7 +342,7 @@ class EnhancedAuthStore {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
+        },;
         body: JSON.stringify({ currentPassword, newPassword })
       });
 
@@ -357,7 +357,7 @@ class EnhancedAuthStore {
   async refreshSession(): Promise<boolean> {
     try {
       const response = await fetch('/api/auth/refresh', {
-        method: 'POST',
+        method: 'POST',;
         credentials: 'include'
       });
 
@@ -421,7 +421,7 @@ class EnhancedAuthStore {
     const rolePermissions = {
       admin: ['*'],
       prosecutor: ['case:read', 'case:write', 'evidence:read', 'evidence:write', 'document:read', 'document:write'],
-      detective: ['case:read', 'evidence:read', 'evidence:write', 'document:read'],
+      detective: ['case:read', 'evidence:read', 'evidence:write', 'document:read'],;
       user: ['case:read', 'document:read']
     };
 

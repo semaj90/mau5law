@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -10,7 +10,7 @@ https://svelte.dev/e/js_parse_error -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   // Badge replaced with span - not available in enhanced-bits
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import { AlertCircle, UploadCloud, Search, Brain, CheckCircle, AlertTriangle } from 'lucide-svelte';
@@ -42,10 +42,12 @@ https://svelte.dev/e/js_parse_error -->
   );
   let canQuery = $derived(ragQuery.trim.length > 0);
 
-  $effect(async () => {
-    await checkSystemStatus();
+  $effect(() => {
+    (async () => {
+await checkSystemStatus();
     // Start real-time logging
     startRealTimeLogging();
+    })();
   });
 
   function handleFileSelect(event: Event) {
@@ -85,8 +87,8 @@ https://svelte.dev/e/js_parse_error -->
       );
 
       const response = await fetch('/api/legal/ingest', {
-        method: 'POST',
-        body: formData,
+        method: 'POST',;
+        body: formData,;
       });
 
       if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
@@ -123,17 +125,17 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch('/api/enhanced-rag/query', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          query: ragQuery,
+          query: ragQuery,;
           jurisdiction: selectedJurisdiction,
           maxResults: 5,
           includeContext7: true,
           prioritizeFactChecked: true,
-          minProsecutionScore: 0.5,
+          minProsecutionScore: 0.5,;
         }),
       });
 
@@ -435,7 +437,7 @@ https://svelte.dev/e/js_parse_error -->
               Legal Query
             </label>
             <input
-              id="rag-query"
+              id="rag-query";
               bind:value={ragQuery}
               placeholder="Enter your legal question or search query..."
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
@@ -620,21 +622,21 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* Custom scrollbar for logs */
-  :global(.max-h-64: :-webkit-scrollbar) {
+  :global(.max-h-64::-webkit-scrollbar) {;
     width: 6px;
   }
 
-  :global(.max-h-64: :-webkit-scrollbar-track) {
+  :global(.max-h-64::-webkit-scrollbar-track) {
     background: #f1f1f1;
     border-radius: 3px;
   }
 
-  :global(.max-h-64: :-webkit-scrollbar-thumb) {
+  :global(.max-h-64::-webkit-scrollbar-thumb) {
     background: #c1c1c1;
     border-radius: 3px;
   }
 
-  :global(.max-h-64: :-webkit-scrollbar-thumb:hover) {
+  :global(.max-h-64::-webkit-scrollbar-thumb:hover) {
     background: #a8a8a8;
   }
 </style>

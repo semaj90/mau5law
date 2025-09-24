@@ -1,19 +1,19 @@
 /// <reference types="vite/client" />
 
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
-import { Pool } from 'pg';
+import type { RequestHandler } from './$types.js'
+import { json, error } from '@sveltejs/kit'
+import { Pool } from 'pg'
 
 /*
  * Auto-Complete API Endpoint
  * Provides real-time legal phrase suggestions using semantic search
  */
 
-import type { Redis } from 'ioredis';
-import { createRedisInstance } from '$lib/server/redis';
-import { z } from 'zod';
+import type { Redis } from 'ioredis'
+import { createRedisInstance } from '$lib/server/redis'
+import { z } from 'zod'
 
-// Configuration;
+// Configuration
 const CONFIG = {
   redis: {
     url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
@@ -30,16 +30,16 @@ const CONFIG = {
     minQueryLength: 2,
     cacheTimeSeconds: 300
   }
-};
+}
 
-// Validation schemas;
+// Validation schemas
 const AutocompleteRequestSchema = z.object({
   query: z.string().min(1).max(200),
   context: z.enum(['legal_phrase', 'case_law', 'statute', 'evidence']).optional(),
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   maxResults: z.number().min(1).max(20).optional(),
   includeScores: z.boolean().optional()
-});
+})
 
 const AutocompleteSuggestionSchema = z.object({
   suggestion: z.string(),
@@ -47,35 +47,35 @@ const AutocompleteSuggestionSchema = z.object({
   context_type: z.string(),
   frequency: z.number().optional(),
   prosecution_correlation: z.number().optional()
-});
+})
 
 // Initialize connections
-type RedisClient = ReturnType<typeof createRedisInstance>;
-let redis: RedisClient | null = null;
-let db: Pool | null = null;
+type RedisClient = ReturnType<typeof createRedisInstance>
+let redis: RedisClient | null = null
+let db: Pool | null = null
 
 function getRedis(): RedisClient {
   if (!redis) {
-    redis = createRedisInstance();
+    redis = createRedisInstance()
   }
-  return redis;
+  return redis
 }
 
 function getDB() {
   if (!db) {
-    db = new Pool(CONFIG.database);
+    db = new Pool(CONFIG.database)
   }
-  return db;
+  return db
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-  const startTime = Date.now();
+  const startTime = Date.now()
 
   try {
-    const requestData = await request.json();
+    const requestData = await request.json()
 
     // Validate request
-    const validatedRequest = AutocompleteRequestSchema.parse(requestData);
+    const validatedRequest = AutocompleteRequestSchema.parse(requestData)
 
     const {
       query,
@@ -83,9 +83,9 @@ export const POST: RequestHandler = async ({ request }) => {
       jurisdiction,
       maxResults = CONFIG.autocomplete.maxSuggestions,
       includeScores = false
-    } = validatedRequest;
+    } = validatedRequest
 
-    // Check minimum query length;
+    // Check minimum query length
     if (query.length < CONFIG.autocomplete.minQueryLength) {
       return json({
         suggestions: [],
@@ -94,63 +94,63 @@ export const POST: RequestHandler = async ({ request }) => {
           total: 0,
           processingTime: Date.now() - startTime
         }
-      });
+      })
     }
 
-    console.log(`🔍 Autocomplete query: "${query}" (context: ${context})`);
+    console.log(`🔍 Autocomplete query: "${query}" (context: ${context})`)
 
     // Get suggestions from multiple sources
     const [cacheSuggestions, dbSuggestions, semanticSuggestions] = await Promise.allSettled([
       getCachedSuggestions(query),
       getDatabaseSuggestions(query, context, jurisdiction, maxResults),
       getSemanticSuggestions(query, maxResults)
-    ]);
+    ])
 
     // Combine and rank suggestions
-    const allSuggestions = [];
+    const allSuggestions = []
 
-    // Add cached suggestions (highest priority);
+    // Add cached suggestions (highest priority)
     if (cacheSuggestions.status === 'fulfilled' && cacheSuggestions.value) {
       allSuggestions.push(...cacheSuggestions.value.map((s: any) => ({
           ...s,
           source: 'cache',
           boost: 1.2
         })
-      );
+      )
     }
 
-    // Add database suggestions;
+    // Add database suggestions
     if (dbSuggestions.status === 'fulfilled' && dbSuggestions.value) {
       allSuggestions.push(...dbSuggestions.value.map((s: any) => ({
           ...s,
           source: 'database',
           boost: 1.0
         })
-      );
+      )
     }
 
-    // Add semantic suggestions;
+    // Add semantic suggestions
     if (semanticSuggestions.status === 'fulfilled' && semanticSuggestions.value) {
       allSuggestions.push(...semanticSuggestions.value.map((s: any) => ({
           ...s,
           source: 'semantic',
           boost: 0.8
         })
-      );
+      )
     }
 
     // Remove duplicates and rank
-    const uniqueSuggestions = removeDuplicates(allSuggestions);
-    const rankedSuggestions = rankSuggestions(uniqueSuggestions, query);
-    const topSuggestions = rankedSuggestions.slice(0, maxResults);
+    const uniqueSuggestions = removeDuplicates(allSuggestions)
+    const rankedSuggestions = rankSuggestions(uniqueSuggestions, query)
+    const topSuggestions = rankedSuggestions.slice(0, maxResults)
 
     // Update usage statistics
-    updateUsageStats(query, topSuggestions);
+    updateUsageStats(query, topSuggestions)
 
     const response = {
       suggestions: topSuggestions.map((s: any) =>
         includeScores
-          ? s;
+          ? s
           : {
               suggestion: s.suggestion,
               context_type: s.context_type
@@ -162,11 +162,11 @@ export const POST: RequestHandler = async ({ request }) => {
         sources: [...new Set(allSuggestions.map((s: any) => s.source))],
         processingTime: Date.now() - startTime
       }
-    };
+    }
 
-    return json(response);
+    return json(response)
   } catch (err: any) {
-    console.error('❌ Autocomplete error:', err);
+    console.error('❌ Autocomplete error:', err)
 
     if (err instanceof z.ZodError) {
       return json({
@@ -174,7 +174,7 @@ export const POST: RequestHandler = async ({ request }) => {
           errors: err.errors
         },)
         { status: 400 }
-      );
+      )
     }
 
     return json({
@@ -182,38 +182,38 @@ export const POST: RequestHandler = async ({ request }) => {
         details: err instanceof Error ? err.message: 'Unknown error'
       },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 async function getCachedSuggestions(query: string): Promise<any> {
-  const redis = getRedis();
-  const prefixes = generatePrefixes(query);
+  const redis = getRedis()
+  const prefixes = generatePrefixes(query)
 
-  const suggestions = [];
+  const suggestions = []
 
   for (const prefix of prefixes) {
     try {
-      const cached = await redis.get(`autocomplete:${prefix.toLowerCase()}`);
+      const cached = await redis.get(`autocomplete:${prefix.toLowerCase()}`)
       if (cached) {
-        const parsedSuggestions = JSON.parse(cached);
-        suggestions.push(...parsedSuggestions);
+        const parsedSuggestions = JSON.parse(cached)
+        suggestions.push(...parsedSuggestions)
       }
     } catch (error: any) {
-      console.warn(`Cache lookup failed for prefix "${prefix}":`, error);
+      console.warn(`Cache lookup failed for prefix "${prefix}":`, error)
     }
   }
 
-  return suggestions;
+  return suggestions
 }
 
 async function getDatabaseSuggestions(
   query: string,
   context: string,
   jurisdiction: string | undefined,
-  maxResults: number;
+  maxResults: number
 ): Promise<any> {
-  const db = getDB();
+  const db = getDB()
 
   let sql = `
         SELECT
@@ -229,11 +229,11 @@ async function getDatabaseSuggestions(
             spr.frequency DESC,
             spr.correlation_strength DESC
         LIMIT $3
-    `;
+    `
 
-  const params = [`%${query}%`, context, maxResults];
+  const params = [`%${query}%`, context, maxResults]
 
-  // Add jurisdiction filter if specified;
+  // Add jurisdiction filter if specified
   if (jurisdiction) {
     sql = `
             SELECT DISTINCT
@@ -243,25 +243,25 @@ async function getDatabaseSuggestions(
                 spr.frequency,
                 spr.correlation_strength as prosecution_correlation
             FROM semantic_phrases_ranking spr
-            JOIN legal_documents_processed ldp ON ldp.semantic_phrases: :text LIKE '%' || spr.phrase || '%'
+            JOIN legal_documents_processed ldp ON ldp.semantic_phrases::text LIKE '%' || spr.phrase || '%'
             WHERE spr.phrase ILIKE $1 AND ldp.jurisdiction = $4
             ORDER BY
                 spr.avg_prosecution_score DESC,
                 spr.frequency DESC,
                 spr.correlation_strength DESC
             LIMIT $3
-        `;
-    params.push(jurisdiction);
+        `
+    params.push(jurisdiction)
   }
 
-  const result = await db.query(sql, params);
-  return (result as { rows?: any }).rows;
+  const result = await db.query(sql, params)
+  return (result as { rows?: any }).rows
 }
 
 async function getSemanticSuggestions(query: string, maxResults: number): Promise<any> {
-  const db = getDB();
+  const db = getDB()
 
-  // Use vector similarity search (requires embedding generation);
+  // Use vector similarity search (requires embedding generation)
   try {
     // For now, use text similarity as fallback
     const result = await db.query(
@@ -278,111 +278,111 @@ async function getSemanticSuggestions(query: string, maxResults: number): Promis
             LIMIT $2
         `,
       [`%${query}%`, maxResults]
-    );
+    )
 
-    return (result as { rows?: any }).rows;
+    return (result as { rows?: any }).rows
   } catch (error: any) {
-    console.warn('Semantic search failed:', error);
-    return [];
+    console.warn('Semantic search failed:', error)
+    return []
   }
 }
 
 function generatePrefixes(query: string): string[] {
-  const words = query.toLowerCase().trim().split(/\s+/);
-  const prefixes = [];
+  const words = query.toLowerCase().trim().split(/\s+/)
+  const prefixes = []
 
-  // Generate cumulative prefixes;
+  // Generate cumulative prefixes
   for (let i = 1; i <= words.length; i++) {
-    prefixes.push(words.slice(0, i).join(' ');
+    prefixes.push(words.slice(0, i).join(' ')
   }
 
   // Add partial word prefixes for the last word
-  const lastWord = words[words.length - 1];
+  const lastWord = words[words.length - 1]
   if (lastWord && lastWord.length > 2) {
     for (let i = 2; i < lastWord.length; i++) {
-      const partialWord = lastWord.substring(0, i);
-      const partialPrefix = [...words.slice(0, -1), partialWord].join(' ');
-      prefixes.push(partialPrefix);
+      const partialWord = lastWord.substring(0, i)
+      const partialPrefix = [...words.slice(0, -1), partialWord].join(' ')
+      prefixes.push(partialPrefix)
     }
   }
 
-  return prefixes;
+  return prefixes
 }
 
 function removeDuplicates(suggestions: any[]): unknown[] {
-  const seen = new Set();
+  const seen = new Set()
   return suggestions.filter((s: any) => {
-    const key = s.suggestion.toLowerCase();
+    const key = s.suggestion.toLowerCase()
     if (seen.has(key)) {
-      return false;
+      return false
     }
-    seen.add(key);
-    return true;
-  });
+    seen.add(key)
+    return true
+  })
 }
 
 function rankSuggestions(suggestions: any[], query: string): unknown[] {
-  const queryLower = query.toLowerCase();
+  const queryLower = query.toLowerCase()
 
-  return suggestions;
+  return suggestions
     .map((s: any) => {
-      let finalScore = (s.score || 0) * (s.boost || 1);
+      let finalScore = (s.score || 0) * (s.boost || 1)
 
-      // Boost exact prefix matches;
+      // Boost exact prefix matches
       if (s.suggestion.toLowerCase().startsWith(queryLower)) {
-        finalScore *= 1.5;
+        finalScore *= 1.5
       }
 
-      // Boost by frequency if available;
+      // Boost by frequency if available
       if (s.frequency) {
-        finalScore *= Math.min(1 + s.frequency / 100, 2);
+        finalScore *= Math.min(1 + s.frequency / 100, 2)
       }
 
-      // Boost by prosecution correlation;
+      // Boost by prosecution correlation
       if (s.prosecution_correlation) {
-        finalScore *= 1 + s.prosecution_correlation * 0.5;
+        finalScore *= 1 + s.prosecution_correlation * 0.5
       }
 
       return {
         ...s,
         finalScore
-      };
+      }
     })
-    .sort((a, b) => b.finalScore - a.finalScore);
+    .sort((a, b) => b.finalScore - a.finalScore)
 }
 
 function updateUsageStats(query: string, suggestions: any[]) {
-  // Async update without blocking response;
+  // Async update without blocking response
   setTimeout(async () => {
     try {
-      const redis = getRedis();
+      const redis = getRedis()
 
       // Track query frequency
-      await (redis as any).zincrby('query_frequency', 1, query);
+      await (redis as any).zincrby('query_frequency', 1, query)
 
-      // Track suggestion selections;
+      // Track suggestion selections
       for (const suggestion of suggestions.slice(0, 3)) {
-        await (redis as any).zincrby('suggestion_popularity', 1, suggestion.suggestion);
+        await (redis as any).zincrby('suggestion_popularity', 1, suggestion.suggestion)
       }
     } catch (error: any) {
-      console.warn('Failed to update usage stats:', error);
+      console.warn('Failed to update usage stats:', error)
     }
-  }, 0);
+  }, 0)
 }
 
-// Health check endpoint;
+// Health check endpoint
 export const GET: RequestHandler = async () => {
   try {
-    const redis = getRedis();
-    const db = getDB();
+    const redis = getRedis()
+    const db = getDB()
 
     // Test connections
-    await redis.ping();
-    await db.query('SELECT 1');
+    await redis.ping()
+    await db.query('SELECT 1')
 
     // Get service stats
-    const phraseCount = await db.query('SELECT COUNT(*) FROM semantic_phrases_ranking');
-    const documentCount = await db.query('SELECT COUNT(*) FROM legal_documents_processed');
+    const phraseCount = await db.query('SELECT COUNT(*) FROM semantic_phrases_ranking')
+    const documentCount = await db.query('SELECT COUNT(*) FROM legal_documents_processed')
 
     return json({
       status: 'healthy',
@@ -395,9 +395,9 @@ export const GET: RequestHandler = async () => {
         legal_documents: parseInt(documentCount.rows[0].count)
       },
       timestamp: new Date().toISOString()
-    });
+    })
   } catch (err: any) {
-    console.error('Autocomplete health check failed:', err);
-    throw error(503, 'Autocomplete service unhealthy');
+    console.error('Autocomplete health check failed:', err)
+    throw error(503, 'Autocomplete service unhealthy')
   }
-};
+}

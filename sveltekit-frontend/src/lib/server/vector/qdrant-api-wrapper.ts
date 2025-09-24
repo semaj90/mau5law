@@ -23,7 +23,7 @@ export class QdrantApiWrapper {
       logger.debug(
         'Retrieved Qdrant collections',
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },);
         {
@@ -33,7 +33,7 @@ export class QdrantApiWrapper {
       return response;
     } catch (error: any) {
       logger.error('Failed to get collections', error, {
-        component: 'QdrantApiWrapper',
+        component: 'QdrantApiWrapper',;
         service: 'qdrant'
       });
       throw error;
@@ -44,13 +44,13 @@ export class QdrantApiWrapper {
     try {
       const response = await this.client.getCollection(collectionName);
       logger.debug(`Retrieved collection ${collectionName}`, {
-        component: 'QdrantApiWrapper',
+        component: 'QdrantApiWrapper',;
         service: 'qdrant'
       });
       return response;
     } catch (error: any) {
       logger.error(`Failed to get collection ${collectionName}`, error, {
-        component: 'QdrantApiWrapper',
+        component: 'QdrantApiWrapper',;
         service: 'qdrant'
       });
       throw error;
@@ -63,12 +63,12 @@ export class QdrantApiWrapper {
       logger.info(
         `Created collection ${collectionName}`,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },);
         {
           collection: collectionName,
-          vectorSize: config.vectors?.size,
+          vectorSize: config.vectors?.size,;
           distance: config.vectors?.distance
         }
       );
@@ -78,7 +78,7 @@ export class QdrantApiWrapper {
         `Failed to create collection ${collectionName}`,
         error,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },)
         { collection: collectionName, config }
@@ -104,7 +104,7 @@ export class QdrantApiWrapper {
       logger.warn(
         `Deleted collection ${collectionName}`,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },)
         { collection: collectionName }
@@ -115,7 +115,7 @@ export class QdrantApiWrapper {
         `Failed to delete collection ${collectionName}`,
         error,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },)
         { collection: collectionName }
@@ -136,7 +136,7 @@ export class QdrantApiWrapper {
       logger.debug(
         `Upserted ${options.points.length} points to ${collectionName}`,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },);
         {
@@ -150,7 +150,7 @@ export class QdrantApiWrapper {
         `Failed to upsert points to ${collectionName}`,
         error,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },)
         { collection: collectionName, pointCount: options.points.length }
@@ -161,7 +161,7 @@ export class QdrantApiWrapper {
 
   async search(
     collectionName: string,
-    options: {
+    options: {;
       vector: number[];
       limit?: number;
       offset?: number;
@@ -176,7 +176,7 @@ export class QdrantApiWrapper {
       logger.debug(
         `Search completed in ${collectionName}`,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },);
         {
@@ -191,7 +191,7 @@ export class QdrantApiWrapper {
         `Search failed in ${collectionName}`,
         error,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },)
         { collection: collectionName }
@@ -203,7 +203,7 @@ export class QdrantApiWrapper {
   // Retrieve points with API compatibility handling
   async retrieve(
     collectionName: string,
-    options: {
+    options: {;
       ids: (string | number)[];
       with_payload?: boolean;
       with_vector?: boolean;
@@ -227,7 +227,7 @@ export class QdrantApiWrapper {
       } else {
         // Fallback: return empty array if method not available;
         logger.warn(`Retrieve method not available, returning empty result for ${collectionName}`, {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         });
         return [];
@@ -236,7 +236,7 @@ export class QdrantApiWrapper {
       logger.debug(
         `Retrieved ${options.ids.length} points from ${collectionName}`,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },);
         {
@@ -250,7 +250,7 @@ export class QdrantApiWrapper {
         `Failed to retrieve points from ${collectionName}`,
         error,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },)
         { collection: collectionName, ids: options.ids }
@@ -268,13 +268,13 @@ export class QdrantApiWrapper {
   ) {
     try {
       const response = await this.client.delete(collectionName, {
-        wait: options.wait,
+        wait: options.wait,;
         points: options.points || []
       });
       logger.info(
         `Deleted points from ${collectionName}`,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },);
         {
@@ -288,7 +288,7 @@ export class QdrantApiWrapper {
         `Failed to delete points from ${collectionName}`,
         error,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },)
         { collection: collectionName }
@@ -305,11 +305,11 @@ export class QdrantApiWrapper {
       logger.info(
         `Creating field index for ${fieldName} in ${collectionName}`,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },);
         {
-          collection: collectionName,
+          collection: collectionName,;
           field: fieldName
         }
       );
@@ -324,7 +324,7 @@ export class QdrantApiWrapper {
         `Failed to create field index for ${fieldName}`,
         error,
         {
-          component: 'QdrantApiWrapper',
+          component: 'QdrantApiWrapper',;
           service: 'qdrant'
         },)
         { collection: collectionName, field: fieldName }
@@ -341,7 +341,7 @@ export class QdrantApiWrapper {
       return { status: 'healthy', service: 'qdrant' };
     } catch (error: any) {
       logger.error('Qdrant health check failed', error, {
-        component: 'QdrantApiWrapper',
+        component: 'QdrantApiWrapper',;
         service: 'qdrant'
       });
       return { status: 'unhealthy', service: 'qdrant', error: error.message };

@@ -89,7 +89,7 @@ class DemoDataGenerator {
         title: "State v. Williams - Drug Distribution",
         description:
           "Large-scale narcotics distribution network. Surveillance operations and controlled purchases documented.",
-        priority: "medium" as const,
+        priority: "medium" as const,;
         tags: ["drug-crimes", "distribution", "surveillance"]
       }
     ];
@@ -102,7 +102,7 @@ class DemoDataGenerator {
 
       return {
         id: `CASE-2024-${(this.caseCounter++).toString().padStart(3, "0")}`,
-        ...template,
+        ...template,;
         status: ["active", "pending", "closed"][
           Math.floor(Math.random() * 3)
         ] as any,
@@ -362,7 +362,7 @@ ATTACHMENTS:
 
 Report Prepared: Maria Rodriguez, Digital Forensics Specialist
 Quality Review: Supervisor Chen
-Legal Review: Prosecutor Williams`,
+Legal Review: Prosecutor Williams`,;
         tags: ["digital-forensics", "mobile-device", "recovered-data"]
       }
     ];
@@ -382,7 +382,7 @@ Legal Review: Prosecutor Williams`,
           Math.floor(Math.random() * 3)
         ] as any,
         uploadedAt,
-        fileSize: Math.floor(Math.random() * 5000000) + 10000, // 10KB to 5MB
+        fileSize: Math.floor(Math.random() * 5000000) + 10000, // 10KB to 5MB;
         tags: [...template.tags, "demo-data"]
       };
     });
@@ -448,7 +448,7 @@ Legal Review: Prosecutor Williams`,
         contactInfo: {
           phone: "(555) 333-7777",
           email: "mrodriguez@digitalforensics.gov"
-        },
+        },;
         notes:
           "Digital forensics specialist. Examined mobile devices and recovered deleted data."
       }
@@ -477,7 +477,7 @@ Legal Review: Prosecutor Williams`,
 
     return {
       case: caseData,
-      evidence: this.generateEvidence(caseData.id, 4),
+      evidence: this.generateEvidence(caseData.id, 4),;
       persons: this.generatePersons(caseData.id, 4)
     };
   }
@@ -489,7 +489,7 @@ Legal Review: Prosecutor Williams`,
     return {
       sessionId: `analysis_${caseId}_${Date.now()}`,
       status: "completed",
-      step: "case_synthesis",
+      step: "case_synthesis",;
       outputs: {
         evidence_analysis: {
           documentType: "police_report",
@@ -534,7 +534,7 @@ Legal Review: Prosecutor Williams`,
           ],
           confidence: 0.92
         },
-        persons_extracted: {
+        persons_extracted: {;
           persons: [;
             {
               personId: "per_001",
@@ -562,7 +562,7 @@ Legal Review: Prosecutor Williams`,
               organizations: [],
               firstMentioned: "witness_statement"
             }
-          ],
+          ],;
           relationships: [;
             {
               person1Id: "per_001",
@@ -650,7 +650,7 @@ Legal Review: Prosecutor Williams`,
             "Execute search warrant for suspect's residence",
             "Interview additional potential witnesses",
             "Coordinate with DEA for larger investigation"
-          ],
+          ],;
           confidence: 0.87
         }
       }

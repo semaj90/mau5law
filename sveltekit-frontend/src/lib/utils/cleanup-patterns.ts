@@ -5,7 +5,7 @@
 
 export function createEventListener<T extends keyof HTMLElementEventMap>(
   element: HTMLElement,
-  event: T,
+  event: T,;
   handler: (event: HTMLElementEventMap[T]) => void,
   options?: AddEventListenerOptions;
 ) {
@@ -36,7 +36,7 @@ export function createWebSocket(url: string, protocols?: string | string[]) {
   const ws = new WebSocket(url, protocols);
 
   return {
-    socket: ws,
+    socket: ws,;
     cleanup: () => {
       if (ws.readyState === WebSocket.OPEN) {
         ws.close();
@@ -46,7 +46,7 @@ export function createWebSocket(url: string, protocols?: string | string[]) {
 }
 
 export function createResizeObserver(
-  callback: ResizeObserverCallback,
+  callback: ResizeObserverCallback,;
   element: Element;
 ) {
   const observer = new ResizeObserver(callback);
@@ -58,7 +58,7 @@ export function createResizeObserver(
 }
 
 export function createIntersectionObserver(
-  callback: IntersectionObserverCallback,
+  callback: IntersectionObserverCallback,;
   element: Element,
   options?: IntersectionObserverInit;
 ) {
@@ -97,7 +97,7 @@ export function createAbortController() {
 
   return {
     signal: controller.signal,
-    abort: () => controller.abort(),
+    abort: () => controller.abort(),;
     cleanup: () => controller.abort()
   };
 }

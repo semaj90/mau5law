@@ -35,7 +35,7 @@ export interface LegalCase {
   jurisdiction: string;
   practiceArea: string;
   nodes: EvidenceNode[];
-  connections: Array<{
+  connections: Array<{;
     id: string;
     fromNodeId: string;
     toNodeId: string;
@@ -127,7 +127,7 @@ class EvidenceGlobalStore {
       metadata: {
         dateCreated: Date.now(),
         lastModified: Date.now(),
-        status: 'active',
+        status: 'active',;
         priority: 'medium'
       }
     };
@@ -153,7 +153,7 @@ class EvidenceGlobalStore {
     if (this.cases[caseId]) {
       this.cases[caseId] = {
         ...this.cases[caseId],
-        ...updates,
+        ...updates,;
         metadata: {
           ...this.cases[caseId].metadata,
           lastModified: Date.now()
@@ -174,7 +174,7 @@ class EvidenceGlobalStore {
     const newNode: EvidenceNode = {
       ...nodeData,
       id: nodeId,
-      connections: [],
+      connections: [],;
       metadata: {
         dateCreated: Date.now(),
         lastModified: Date.now()
@@ -278,7 +278,7 @@ class EvidenceGlobalStore {
       id: connectionId,
       fromNodeId,
       toNodeId,
-      relationship,
+      relationship,;
       strength: aiGenerated ? 0.7 : 1.0,
       aiGenerated
     };
@@ -383,7 +383,7 @@ class EvidenceGlobalStore {
               node,
               allNodes: this.currentCase.nodes,
               caseContext: {
-                title: this.currentCase.title,
+                title: this.currentCase.title,;
                 jurisdiction: this.currentCase.jurisdiction,
                 practiceArea: this.currentCase.practiceArea
               }
@@ -412,7 +412,7 @@ class EvidenceGlobalStore {
 
       const suggestions = await legalLocalAI.suggestEvidenceLinks(this.currentNodes.map(node => ({
           id: node.id,
-          title: node.title,
+          title: node.title,;
           content: node.content
         })
       );
@@ -526,7 +526,7 @@ class EvidenceGlobalStore {
     try {
       const stateToSave = {
         cases: this.cases,
-        currentCaseId: this.currentCaseId,
+        currentCaseId: this.currentCaseId,;
         stats: this.stats
       };
       localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave);
@@ -578,7 +578,7 @@ class EvidenceGlobalStore {
 
     return JSON.stringify({
       case: caseData,
-      exportedAt: new Date().toISOString(),
+      exportedAt: new Date().toISOString(),;
       version: '1.0'
     }, null, 2);
   }
@@ -628,7 +628,7 @@ export function createEvidenceNode(
     content,
     type,
     tags: [],
-    position,
+    position,;
     status: 'pending'
   };
 }

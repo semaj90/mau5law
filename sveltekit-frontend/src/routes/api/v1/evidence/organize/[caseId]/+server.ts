@@ -1,5 +1,5 @@
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from '@sveltejs/kit'
+import { z } from 'zod'
 
 // Minimal, valid implementation to restore route integrity
 const OrganizationRequestSchema = z.object({
@@ -16,32 +16,32 @@ const OrganizationRequestSchema = z.object({
     })
     .optional(),
   includeAnalytics: z.boolean().optional(),
-});
+})
 
 export const POST: RequestHandler = async ({ params, request }) => {
   try {
-    const { caseId } = params;
-    if (!caseId) throw error(400, 'Missing caseId');
+    const { caseId } = params
+    if (!caseId) throw error(400, 'Missing caseId')
 
-    const body = await request.json().catch(() => ({}));
-    const parsed = OrganizationRequestSchema.safeParse(body);
+    const body = await request.json().catch(() => ({}))
+    const parsed = OrganizationRequestSchema.safeParse(body)
     if (!parsed.success) {
-      throw error(400, 'Invalid request body');
+      throw error(400, 'Invalid request body')
     }
 
-    const { organizationMode } = parsed.data;
+    const { organizationMode } = parsed.data
 
     // Return minimal stub structure; real logic can be reintroduced incrementally
-    const structure = { type: organizationMode, groups: [], metadata: { caseId } };
-    const analytics = { organizationEfficiency: 0, coverage: 0, qualityScore: 0 };
+    const structure = { type: organizationMode, groups: [], metadata: { caseId } }
+    const analytics = { organizationEfficiency: 0, coverage: 0, qualityScore: 0 }
 
     return json({
       success: true,
       data: { caseId, organizationMode, structure, analytics },
       meta: { timestamp: new Date().toISOString() },
-    });
+    })
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    throw error(500, `Failed to organize evidence: ${message}`);
+    const message = err instanceof Error ? err.message : 'Unknown error'
+    throw error(500, `Failed to organize evidence: ${message}`)
   }
-};
+}

@@ -186,7 +186,7 @@ export interface PipelineStatus {
 // Validation Schemas;
 const FileSchema = z.object({
   name: z.string(),
-  size: z.number().positive(),
+  size: z.number().positive(),;
   type: z.string(),
   lastModified: z.number()
 });
@@ -194,7 +194,7 @@ const FileSchema = z.object({
 const LegalContextSchema = z.object({
   practiceArea: z.string().optional(),
   caseType: z.string().optional(),
-  urgency: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+  urgency: z.enum(['low', 'medium', 'high', 'critical']).optional(),;
   jurisdiction: z.string().optional(),
   clientId: z.string().optional(),
   matterNumber: z.string().optional()
@@ -208,7 +208,7 @@ export const analyzeUserBehaviorService = fromPromise(async ({ input }: { input:
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userAnalytics: input.userAnalytics,
+          userAnalytics: input.userAnalytics,;
           context: input.context,
           legalContext: input.context.legalContext
         })
@@ -230,7 +230,7 @@ export const analyzeUserBehaviorService = fromPromise(async ({ input }: { input:
       // Enhanced fallback with legal-specific patterns;
       const legalPatterns = {
         novice: ['needs_guidance', 'prefers_detailed_explanations'],
-        intermediate: ['moderate_guidance', 'context_aware'],
+        intermediate: ['moderate_guidance', 'context_aware'],;
         expert: ['minimal_guidance', 'efficiency_focused'],
         power_user: ['advanced_features', 'shortcuts_preferred']
       };
@@ -240,7 +240,7 @@ export const analyzeUserBehaviorService = fromPromise(async ({ input }: { input:
           ...input.userAnalytics,
           behaviorPattern: input.userAnalytics.behaviorPattern || 'intermediate'
         },
-        insights: {
+        insights: {;
           patterns: legalPatterns[input.userAnalytics.behaviorPattern] || legalPatterns.intermediate,
           legalWorkflow: input.context.legalContext?.practiceArea || 'general_practice',
           urgencyAwareness: input.context.legalContext?.urgency || 'medium'
@@ -259,7 +259,7 @@ export const generateContextualPromptsService = fromPromise(async ({ input }: { 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           context: input.context,
-          timing: input.timing,
+          timing: input.timing,;
           model: input.context.ollamaConfig?.model || 'gemma3:270m',
           legalContext: input.context.legalContext
         })
@@ -285,7 +285,7 @@ export const generateContextualPromptsService = fromPromise(async ({ input }: { 
             category: 'warning',
             timing: 'before-upload',
             confidence: 0.95,
-            relevance: 0.9,
+            relevance: 0.9,;
             actionable: true,
             legalSpecific: true
           });
@@ -298,7 +298,7 @@ export const generateContextualPromptsService = fromPromise(async ({ input }: { 
             category: 'warning',
             timing: 'before-upload',
             confidence: 0.8,
-            relevance: 0.85,
+            relevance: 0.85,;
             actionable: true,
             legalSpecific: true
           });
@@ -312,7 +312,7 @@ export const generateContextualPromptsService = fromPromise(async ({ input }: { 
           category: 'guidance',
           timing: 'during-upload',
           confidence: 0.7,
-          relevance: 0.6,
+          relevance: 0.6,;
           actionable: true,
           legalSpecific: true
         });
@@ -335,7 +335,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
         formData.append('analysisType', 'comprehensive_legal');
 
         const response = await fetch('/api/ai/ollama/analyze-legal-document', {
-          method: 'POST',
+          method: 'POST',;
           body: formData
         });
 
@@ -366,7 +366,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
             chain_of_custody: [{
               timestamp: new Date().toISOString(),
               actor: input.context.authSession?.userId || 'system',
-              action: 'uploaded',
+              action: 'uploaded',;
               details: `Uploaded via legal AI system with ${(result as { analytics?: any; insights?: any; score?: any; prompts?: any; documentId?: any; summary?: any; entities?: any; tags?: any; confidence?: any; privileged?: any; evidenceType?: any; hash?: any }).confidence}% confidence`
             }]
           }
@@ -402,7 +402,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
           chain_of_custody: [{
             timestamp: new Date().toISOString(),
             actor: input.context.authSession?.userId || 'anonymous',
-            action: 'uploaded',
+            action: 'uploaded',;
             details: 'Uploaded via fallback system'
           }]
         }
@@ -425,7 +425,7 @@ export const saveToDatabaseService = fromPromise(async ({ input }: { input: { re
           legalContext: input.context.legalContext,
           metadata: {
             uploadSession: input.context.userAnalytics.sessionId,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString(),;
             source: 'legal_ai_upload'
           }
         })
@@ -443,7 +443,7 @@ export const saveToDatabaseService = fromPromise(async ({ input }: { input: { re
         `legal-upload-${Date.now()}`,
         JSON.stringify({
           results: input.results,
-          context: input.context,
+          context: input.context,;
           timestamp: new Date().toISOString()
         })
       );
@@ -502,7 +502,7 @@ export function generateUserInsights(context: UploadContext): any {
 // Enhanced XState Machine with Production Integration;
 export const comprehensiveUploadAnalyticsMachine = setup({
   types: {
-    context: Record<string, any> as UploadContext,
+    context: Record<string, any> as UploadContext,;
     events: Record<string, any> as
       | { type: 'SELECT_FILES'; files: File[]; caseId?: string }
       | { type: 'START_UPLOAD' }
@@ -625,7 +625,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
             })
           })
         },
-        TRACK_USER_ACTION: {
+        TRACK_USER_ACTION: {;
           actions: assign({
             userAnalytics: ({ context, event }) => ({
               ...context.userAnalytics,
@@ -857,7 +857,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
       }
     },
 
-    completed: {
+    completed: {;
       entry: [;
         assign({
           userAnalytics: ({ context }) => ({
@@ -895,7 +895,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
       }
     },
 
-    error: {
+    error: {;
       on: {
         RETRY_UPLOAD: 'uploadPipeline',
         RESET: 'idle'
@@ -925,7 +925,7 @@ export function createUploadAnalyticsActor(initialContext: Partial<UploadContext
       pipeline: {
         fileValidation: { status: 'pending' },
         fileUpload: { status: 'pending' },
-        aiAnalysis: { status: 'pending' },
+        aiAnalysis: { status: 'pending' },;
         indexing: { status: 'pending' },
         vectorEmbedding: { status: 'pending' },
         dbStorage: { status: 'pending' }

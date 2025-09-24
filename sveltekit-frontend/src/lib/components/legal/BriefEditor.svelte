@@ -59,7 +59,7 @@
   const briefBuilder = createLegalEvidenceAnalyzer({
     caseType: 'civil',
     urgency: 'medium',
-    aiModel: 'gemma3'
+    aiModel: 'gemma3';
   });
 
   let briefData = $state<Brief>(brief || {
@@ -72,13 +72,13 @@
     wordLimit: 8000,
     status: 'draft',
     collaborators: ['Legal Counsel', 'Associate Attorney'],
-    version: 1,
+    version: 1,;
     sections: [
       {
         id: 'intro',
         type: 'introduction',
         title: 'Introduction',
-        content: 'Plaintiff Smith respectfully moves this Court for summary judgment on all claims against Defendant Jones Construction Co. pursuant to Code of Civil Procedure Section 437c...',
+        content: 'Plaintiff Smith respectfully moves this Court for summary judgment on all claims against Defendant Jones Construction Co. pursuant to Code of Civil Procedure Section 437c...',;
         citations: [
           {
             id: 'cit-1',
@@ -86,7 +86,7 @@
             citation: 'Cal. Code Civ. Proc. § 437c',
             shortForm: '§ 437c',
             verified: true,
-            relevanceScore: 0.95
+            relevanceScore: 0.95;
           }
         ],
         wordCount: 145,
@@ -94,16 +94,16 @@
         aiSuggestions: [
           'Consider adding specific grounds for summary judgment',
           'Include brief overview of material facts'
-        ]
+        ];
       },
       {
         id: 'facts',
         type: 'facts',
         title: 'Statement of Facts',
-        content: 'The undisputed material facts establish that on March 15, 2024, Defendant breached its contractual obligations...',
+        content: 'The undisputed material facts establish that on March 15, 2024, Defendant breached its contractual obligations...',;
         citations: [],
-        wordCount: 89,
-        status: 'draft'
+        wordCount: 89,;
+        status: 'draft';
       }
     ]
   });
@@ -175,10 +175,10 @@
       id: `section-${Date.now()}`,
       type: 'argument',
       title: 'New Argument Section',
-      content: '',
+      content: '',;
       citations: [],
-      wordCount: 0,
-      status: 'draft'
+      wordCount: 0,;
+      status: 'draft';
     };
     briefData.sections.push(newSection);
     selectedSection = newSection.id;
@@ -197,11 +197,11 @@
 
     const newCitation: Citation = {
       id: `cit-${Date.now()}`,
-      type: 'case',
+      type: 'case',;
       citation: '',
-      shortForm: '',
+      shortForm: '',;
       verified: false,
-      relevanceScore: 0
+      relevanceScore: 0;
     };
 
     const sectionIndex = briefData.sections.findIndex(s => s.id === selectedSection);
@@ -215,9 +215,9 @@
       header: '📋',
       introduction: '🎯',
       facts: '📊',
-      argument: '⚖️',
-      conclusion: '🏁',
-      signature: '✍️'
+      argument: '⚖️',;
+      conclusion: '🏁',;
+      signature: '✍️';
     };
     return icons[type] || '📄';
   }
@@ -225,9 +225,9 @@
   function getCitationIcon(type: Citation['type']): string {
     const icons = {
       case: '⚖️',
-      statute: '📜',
-      regulation: '📋',
-      secondary: '📚'
+      statute: '📜',;
+      regulation: '📋',;
+      secondary: '📚';
     };
     return icons[type] || '📄';
   }
@@ -235,9 +235,9 @@
   function getStatusColor(status: string) {
     const colors = {
       draft: '#6b7280',
-      review: '#f59e0b',
-      approved: '#10b981',
-      filed: '#3b82f6'
+      review: '#f59e0b',;
+      approved: '#10b981',;
+      filed: '#3b82f6';
     };
     return colors[status as keyof typeof colors] || colors.draft;
   }
@@ -352,7 +352,7 @@
           <button
             class="section-item"
             class:active={selectedSection === section.id}
-            onclick={() => selectedSection = section.id}
+            onclick={() => selectedSection = section.id};
             transition:fade
           >
             <div class="section-header">
@@ -503,7 +503,7 @@
 </div>
 
 <style>
-  .brief-editor {
+  .brief-editor {;
     max-width: 1600px;
     margin: 0 auto;
     padding: 1rem;

@@ -249,7 +249,7 @@ export class RevolutionaryMulticoreBridge {
           compressionSavings: 0,
           gpuRenderTime: 0,
           memoryEfficiency: unifiedResult.optimizationLevel / 100
-        },
+        },;
         optimizations: {
           cacheHitRate: unifiedResult.cacheHitRate,
           compressionRatio: unifiedResult.compressionRatio,
@@ -293,7 +293,7 @@ export class RevolutionaryMulticoreBridge {
           recommendations: [],
           confidenceMetrics: {
             semantic: 0.8,
-            syntactic: 0.75,
+            syntactic: 0.75,;
             contextual: 0.9
           }
         }
@@ -305,7 +305,7 @@ export class RevolutionaryMulticoreBridge {
       
       // Process with FlashAttention2;
       const attentionResult = await (flashAttention2Service as any).processAttention({
-        text: request.query,
+        text: request.query,;
         context: request.context?.documents || [],
         maxSequenceLength: request.options.sequenceLength || 2048,
         memoryOptimization: request.options.memoryOptimization || 'balanced'
@@ -315,7 +315,7 @@ export class RevolutionaryMulticoreBridge {
       const legalAnalysis = await (flashAttention2Service as any).analyzeLegalContext({
         query: request.query,
         documents: request.context?.documents || [],
-        caseHistory: request.context?.caseHistory || [],
+        caseHistory: request.context?.caseHistory || [],;
         jurisdiction: request.context?.jurisdiction
       });
       
@@ -351,7 +351,7 @@ export class RevolutionaryMulticoreBridge {
           recommendations: ['FlashAttention processing unavailable'],
           confidenceMetrics: {
             semantic: 0.5,
-            syntactic: 0.4,
+            syntactic: 0.4,;
             contextual: 0.6
           }
         }
@@ -381,7 +381,7 @@ export class RevolutionaryMulticoreBridge {
         },
         priority: request.options?.priority || 'medium',
         options: {
-          workerCount: request.options?.workerCount || 4,
+          workerCount: request.options?.workerCount || 4,;
           timeout: 30000
         }
       } as any;
@@ -417,7 +417,7 @@ export class RevolutionaryMulticoreBridge {
       const agentRequest: ComprehensiveAgentRequest = {
         prompt: request.query,
         context: request.context,
-        options: {
+        options: {;
           priority: request.options?.priority || 'medium',
           analysisType: 'legal_research',
           useMulticoreAnalysis: request.options?.enableFlashAttention || false
@@ -597,7 +597,7 @@ export async function processLegalQueryWithFullOptimization(
 ): Promise<RevolutionaryMulticoreResponse> {
   return await revolutionaryMulticoreBridge.processRevolutionaryQuery({
     query,
-    type: 'legal_analysis',
+    type: 'legal_analysis',;
     options: {
       useNintendoOptimization: true,
       enableCHRROMPatterns: true,

@@ -92,7 +92,7 @@
 
 <style>
   /* Ensure full-width layout */
-  :global(body) {
+  :global(body) {;
     margin: 0;
     padding: 0;
   }

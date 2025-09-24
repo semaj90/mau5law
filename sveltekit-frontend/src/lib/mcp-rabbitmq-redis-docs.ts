@@ -6,7 +6,7 @@ import { mcpContext72GetLibraryDocs, type LibraryDocsResponse } from './mcp-cont
 // Get RabbitMQ (amqplib) documentation;
 export async function getRabbitMQDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/amqplib/amqplib', topic, { 
-    format: 'typescript',
+    format: 'typescript',;
     tokens: 12000 
   }, fetchFn);
 }
@@ -14,7 +14,7 @@ export async function getRabbitMQDocs(topic?: string, fetchFn?: typeof fetch): P
 // Get Redis (ioredis) documentation;
 export async function getRedisDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/ioredis/ioredis', topic, { 
-    format: 'typescript',
+    format: 'typescript',;
     tokens: 10000 
   }, fetchFn);
 }
@@ -22,7 +22,7 @@ export async function getRedisDocs(topic?: string, fetchFn?: typeof fetch): Prom
 // Get Node Redis client documentation;
 export async function getNodeRedisDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/redis/node-redis', topic, { 
-    format: 'typescript',
+    format: 'typescript',;
     tokens: 8000 
   }, fetchFn);
 }
@@ -30,7 +30,7 @@ export async function getNodeRedisDocs(topic?: string, fetchFn?: typeof fetch): 
 // Get LokiJS documentation;
 export async function getLokiJSDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/lokijs/lokijs', topic, { 
-    format: 'typescript',
+    format: 'typescript',;
     tokens: 8000 
   }, fetchFn);
 }
@@ -38,7 +38,7 @@ export async function getLokiJSDocs(topic?: string, fetchFn?: typeof fetch): Pro
 // Get best practices for RabbitMQ + Redis integration;
 export async function getMessageQueueRedisBestPractices(fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/patterns/message-queue-redis', 'integration-patterns', { 
-    format: 'typescript',
+    format: 'typescript',;
     tokens: 15000 
   }, fetchFn);
 }

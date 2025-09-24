@@ -264,7 +264,7 @@ class WebAssemblyLlamaService {
    * Generate text using WebAssembly llama.cpp with enhanced ranking cache
    */
   async generate(
-    prompt: string,
+    prompt: string,;
     options: {
       maxTokens?: number;
       temperature?: number;
@@ -343,7 +343,7 @@ class WebAssemblyLlamaService {
    * Analyze legal document using WebAssembly Gemma 3 Legal
    */
   async analyzeLegalDocument(
-    title: string,
+    title: string,;
     content: string,
     analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive';
   ): Promise<{
@@ -371,7 +371,7 @@ class WebAssemblyLlamaService {
       keyTerms: analysis?.keyTerms || [],
       entities: analysis?.entities || [],
       risks: analysis?.risks || [],
-      recommendations: analysis?.recommendations || [],
+      recommendations: analysis?.recommendations || [],;
       confidence: analysis?.confidence || 0,
       processingTime: (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).processingTime,
       method: 'WebAssembly llama.cpp + Gemma 3 Legal'
@@ -442,7 +442,7 @@ class WebAssemblyLlamaService {
    */
   private async storeInRankingCache(
     prompt: string,
-    result: WebLlamaResponse,
+    result: WebLlamaResponse,;
     options: any;
   ): Promise<void> {
     // Deferred: the ranking cache API doesn't expose direct set/get; storage not supported in this build
@@ -511,7 +511,7 @@ class WebAssemblyLlamaService {
       cacheMetrics: this.cacheMetrics,
       performance: {
         avgLatency: this.cacheMetrics.avgLatency,
-        hitRatio: this.cacheMetrics.hitRatio,
+        hitRatio: this.cacheMetrics.hitRatio,;
         throughput: this.cacheMetrics.totalRequests
       }
     };
@@ -532,7 +532,7 @@ class WebAssemblyLlamaService {
       },
       ranking: this.rankingCache ? this.rankingCache.getMetrics() : null,
       serviceWorker: {
-        registered: !!this.serviceWorkerRegistration,
+        registered: !!this.serviceWorkerRegistration,;
         active: !!this.serviceWorkerRegistration?.active
       }
     };
@@ -568,7 +568,7 @@ class WebAssemblyLlamaService {
   private createWasmImports(): WebAssembly.Imports {
     const memory = new WebAssembly.Memory({
       initial: 256,
-      maximum: 1024,
+      maximum: 1024,;
       shared: this.config.enableMultiCore
     });
 
@@ -659,7 +659,7 @@ class WebAssemblyLlamaService {
 
       this.worker.addEventListener('message', messageHandler);
       this.worker.postMessage({
-        type: 'generate',
+        type: 'generate',;
         data: { prompt, options }
       });
     });
@@ -683,7 +683,7 @@ class WebAssemblyLlamaService {
           options: {
             num_predict: maxTokens,
             temperature: temperature
-          },
+          },;
           stream: false
         })
       });
@@ -698,7 +698,7 @@ class WebAssemblyLlamaService {
       return {
         text: resultText,
         tokensGenerated: this.estimateTokenCount(resultText),
-        processingTime: 0, // Will be set by caller
+        processingTime: 0, // Will be set by caller;
         confidence: 0.85,
         fromCache: false,
         cacheHit: false,
@@ -712,7 +712,7 @@ class WebAssemblyLlamaService {
 
   private buildLegalAnalysisPrompt(title: string, content: string, analysisType: string): string {
     const instructions = {
-      comprehensive: 'Provide detailed analysis of all legal aspects',
+      comprehensive: 'Provide detailed analysis of all legal aspects',;
       quick: 'Provide concise summary of key legal points',
       'risk-focused': 'Focus on identifying legal risks and compliance issues'
     };
@@ -747,7 +747,7 @@ Provide analysis in structured format:
       keyTerms: [] as string[],
       entities: [] as Array<any>,
       risks: [] as Array<any>,
-      recommendations: [] as string[],
+      recommendations: [] as string[],;
       confidence: 0.8
     };
 
@@ -773,7 +773,7 @@ Provide analysis in structured format:
             const [type, value, confidenceStr] = line.split(':');
             return {
               type: type?.trim() || 'unknown',
-              value: value?.trim() || '',
+              value: value?.trim() || '',;
               confidence: parseFloat(confidenceStr?.trim() || '0.8')
             };
           })
@@ -789,7 +789,7 @@ Provide analysis in structured format:
             const [type, severity, description] = line.split(':');
             return {
               type: type?.trim() || 'general',
-              severity: severity?.trim() || 'medium',
+              severity: severity?.trim() || 'medium',;
               description: description?.trim() || ''
             };
           })

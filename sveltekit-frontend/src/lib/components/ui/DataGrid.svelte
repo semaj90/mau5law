@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
@@ -65,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
     if (sortConfig?.column === column) {
       sortConfig = {
         column,
-        direction: sortConfig.direction === 'asc' ? 'desc' : 'asc'
+        direction: sortConfig.direction === 'asc' ? 'desc' : 'asc';
       };
     } else {
       sortConfig = { column, direction: 'asc' };
@@ -240,7 +240,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .modern-data-grid {
+  .modern-data-grid {;
     background-color: white;
     border: 1px solid rgb(229 231 235);
     border-radius: 12px;

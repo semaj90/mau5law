@@ -6,13 +6,13 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   // Svelte 5 runes are auto-imported
 
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import {
     Bot,
@@ -79,64 +79,64 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
       icon: Search,
       description: 'Intelligent code and documentation search with context awareness',
       status: systemStatus.semanticSearch,
-      capabilities: ['Code pattern matching', 'Documentation retrieval', 'Context-aware suggestions']
+      capabilities: ['Code pattern matching', 'Documentation retrieval', 'Context-aware suggestions'];
     },
     {
       name: 'Memory MCP',
       icon: Memory,
       description: 'Persistent memory and context management across sessions',
       status: systemStatus.memoryMCP,
-      capabilities: ['Session memory', 'Context graphs', 'Historical insights']
+      capabilities: ['Session memory', 'Context graphs', 'Historical insights'];
     },
     {
       name: 'Multi-Agent AI',
       icon: Users,
       description: 'AutoGen and CrewAI orchestration for complex problem-solving',
       status: systemStatus.multiAgent,
-      capabilities: ['Conversational agents', 'Task-based crews', 'Expert coordination']
+      capabilities: ['Conversational agents', 'Task-based crews', 'Expert coordination'];
     },
     {
       name: 'Autonomous Engineering',
       icon: Cog,
       description: 'Self-directed problem analysis and solution generation',
       status: systemStatus.autonomousEngineering,
-      capabilities: ['Problem diagnosis', 'Solution planning', 'Execution strategies']
+      capabilities: ['Problem diagnosis', 'Solution planning', 'Execution strategies'];
     },
     {
       name: 'Service Workers',
       icon: Zap,
-      description: 'Multi-threaded AI processing for parallel execution',
-      status: systemStatus.serviceWorkers,
-      capabilities: ['Parallel processing', 'Load balancing', 'Real-time monitoring']
+      description: 'Multi-threaded AI processing for parallel execution',;
+      status: systemStatus.serviceWorkers,;
+      capabilities: ['Parallel processing', 'Load balancing', 'Real-time monitoring'];
     }
   ];
 
   const integrationExamples = [
     {
       title: 'VS Code Copilot Integration',
-      description: 'Direct integration with GitHub Copilot for enhanced suggestions',
+      description: 'Direct integration with GitHub Copilot for enhanced suggestions',;
       code: `// In VS Code, Copilot can now leverage our autonomous system
   await copilotSelfPrompt("Fix TypeScript errors", {
-  useAutonomousEngineering: true,
+  useAutonomousEngineering: true,;
   context: { platform: "webapp", urgency: "high" }
   });`
     },
     {
       title: 'Cline Extension Integration',
-      description: 'Autonomous engineering for Cline AI assistant',
+      description: 'Autonomous engineering for Cline AI assistant',;
       code: `// Cline can use our API for comprehensive analysis
   const response = await fetch('/api/copilot/self-prompt', {
-  method: 'POST',
+  method: 'POST',;
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    prompt: "Optimize performance across all platforms",
-    mode: "autonomous"
+    prompt: "Optimize performance across all platforms",;
+    mode: "autonomous";
   })
   });`
     },
     {
-      title: 'Roo Extension Integration',
-      description: 'Multi-agent coordination for Roo AI workflows',
+      title: 'Roo Extension Integration',;
+      description: 'Multi-agent coordination for Roo AI workflows',;
       code: `// Roo can leverage multi-agent analysis
   const analysis = await copilotSelfPrompt(userRequest, {
   useMultiAgent: true,
@@ -145,8 +145,8 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   });`
     },
     {
-      title: 'Custom Extension Development',
-      description: 'Build your own VS Code extension with our AI stack',
+      title: 'Custom Extension Development',;
+      description: 'Build your own VS Code extension with our AI stack',;
       code: `// Custom extension using our autonomous engineering
   import { copilotSelfPrompt } from './autonomous-ai';
 
@@ -169,25 +169,25 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
       title: 'Automated Bug Fixing',
       description: 'Autonomous identification and resolution of software bugs',
       icon: Code,
-      benefits: ['Faster resolution', 'Pattern recognition', 'Preventive analysis']
+      benefits: ['Faster resolution', 'Pattern recognition', 'Preventive analysis'];
     },
     {
       title: 'Performance Optimization',
       description: 'Cross-platform performance analysis and optimization',
       icon: Zap,
-      benefits: ['Multi-threaded analysis', 'Comprehensive profiling', 'Automated tuning']
+      benefits: ['Multi-threaded analysis', 'Comprehensive profiling', 'Automated tuning'];
     },
     {
       title: 'Security Auditing',
       description: 'Multi-agent security analysis and vulnerability assessment',
       icon: Globe,
-      benefits: ['Expert coordination', 'Comprehensive coverage', 'Risk prioritization']
+      benefits: ['Expert coordination', 'Comprehensive coverage', 'Risk prioritization'];
     },
     {
       title: 'Architecture Review',
-      description: 'Intelligent architectural analysis and recommendations',
-      icon: Settings,
-      benefits: ['Best practices', 'Scalability analysis', 'Modernization guidance']
+      description: 'Intelligent architectural analysis and recommendations',;
+      icon: Settings,;
+      benefits: ['Best practices', 'Scalability analysis', 'Modernization guidance'];
     }
   ];
 </script>

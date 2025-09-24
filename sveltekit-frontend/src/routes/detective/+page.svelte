@@ -28,7 +28,7 @@
       tags: ['surveillance', 'timestamp', 'suspect-entry'],
       hash: 'abc123',
       thumbnailUrl: '/api/thumbnails/evidence-1.jpg',
-      aiSummary: 'Video shows suspect entering building at 10:23 PM wearing dark clothing'
+      aiSummary: 'Video shows suspect entering building at 10:23 PM wearing dark clothing';
     },
     {
       id: 'evidence-2',
@@ -42,7 +42,7 @@
       updatedAt: new Date('2024-01-16T14:20:00'),
       description: 'Witness observed suspicious activity near the crime scene around 10:15 PM',
       tags: ['witness', 'testimony', 'timeline'],
-      aiSummary: 'Witness observed suspicious activity near the crime scene around 10:15 PM'
+      aiSummary: 'Witness observed suspicious activity near the crime scene around 10:15 PM';
     },
     {
       id: 'evidence-3',
@@ -56,7 +56,7 @@
       updatedAt: new Date('2024-01-17T09:15:00'),
       tags: ['crime-scene', 'forensics', 'photography'],
       hash: 'xyz789',
-      thumbnailUrl: '/api/thumbnails/evidence-3.jpg'
+      thumbnailUrl: '/api/thumbnails/evidence-3.jpg';
     },
     {
       id: 'evidence-4',
@@ -70,7 +70,7 @@
       updatedAt: new Date('2024-01-18T11:45:00'),
       description: 'Audio recording contains discussion about meeting location',
       tags: ['wiretap', 'conversation', 'evidence'],
-      aiSummary: 'Audio recording contains discussion about meeting location'
+      aiSummary: 'Audio recording contains discussion about meeting location';
     },
     {
       id: 'evidence-5',
@@ -84,7 +84,7 @@
       updatedAt: new Date('2024-01-19T16:30:00'),
       description: 'Bank statements showing suspicious transactions',
       tags: ['financial', 'money-laundering', 'transactions'],
-      aiSummary: 'Bank statements reveal suspicious large cash deposits totaling $50,000 over 3 months'
+      aiSummary: 'Bank statements reveal suspicious large cash deposits totaling $50,000 over 3 months';
     },
     {
       id: 'evidence-6',
@@ -96,10 +96,10 @@
       createdAt: new Date('2024-01-20T09:00:00'),
       uploadedAt: new Date('2024-01-20T09:00:00'),
       updatedAt: new Date('2024-01-20T09:00:00'),
-      description: 'Forensic DNA analysis results',
-      tags: ['dna', 'forensics', 'lab-report'],
+      description: 'Forensic DNA analysis results',;
+      tags: ['dna', 'forensics', 'lab-report'],;
       hash: 'dna456',
-      aiSummary: 'DNA evidence confirms 99.7% match with suspect sample collected at scene'
+      aiSummary: 'DNA evidence confirms 99.7% match with suspect sample collected at scene';
   }
   ]);
 

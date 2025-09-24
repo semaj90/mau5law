@@ -38,42 +38,42 @@
       href: '/',
       label: 'Dashboard',
       icon: Home,
-      description: 'Executive overview and key metrics'
+      description: 'Executive overview and key metrics';
     },
     {
       id: 'cases',
       href: '/cases',
       label: 'Case Management',
       icon: Folder,
-      description: 'Legal case tracking and documentation'
+      description: 'Legal case tracking and documentation';
     },
     {
       id: 'evidence',
       href: '/evidenceboard',
       label: 'Evidence Analysis',
       icon: Eye,
-      description: 'Digital evidence collection and forensics'
+      description: 'Digital evidence collection and forensics';
     },
     {
       id: 'research',
       href: '/demo/enhanced-rag-semantic',
       label: 'Legal Research',
       icon: Search,
-      description: 'AI-powered legal research and precedents'
+      description: 'AI-powered legal research and precedents';
     },
     {
       id: 'chat',
       href: '/chat',
       label: 'AI Assistant',
       icon: MessageSquare,
-      description: 'Intelligent legal consultation'
+      description: 'Intelligent legal consultation';
     },
     {
       id: 'analysis',
       href: '/analysis',
-      label: 'Analytics',
-      icon: BarChart3,
-      description: 'Data insights and trend analysis'
+      label: 'Analytics',;
+      icon: BarChart3,;
+      description: 'Data insights and trend analysis';
     }
   ];
 
@@ -83,28 +83,28 @@
       href: '/yorha-command-center',
       label: 'Command Center',
       icon: Terminal,
-      description: 'Advanced system controls'
+      description: 'Advanced system controls';
     },
     {
       id: 'gpu-inference',
       href: '/demo/gpu-inference',
       label: 'GPU Processing',
       icon: Zap,
-      description: 'High-performance AI inference'
+      description: 'High-performance AI inference';
     },
     {
       id: 'settings',
       href: '/settings',
       label: 'Settings',
       icon: Settings,
-      description: 'Platform configuration'
+      description: 'Platform configuration';
     },
     {
       id: 'admin',
       href: '/admin',
-      label: 'Administration',
-      icon: Database,
-      description: 'System administration'
+      label: 'Administration',;
+      icon: Database,;
+      description: 'System administration';
     }
   ];
 
@@ -116,9 +116,9 @@
   let currentTime = $state(new Date());
   let systemStatus = $state({
     ai: true,
-    database: true,
-    search: true,
-    gpu: false
+    database: true,;
+    search: true,;
+    gpu: false;
   });
 
   // Derived state
@@ -138,9 +138,9 @@
       // Mock system status check - replace with real API calls
       systemStatus = {
         ai: Math.random() > 0.1,
-        database: Math.random() > 0.05,
-        search: Math.random() > 0.1,
-        gpu: Math.random() > 0.3
+        database: Math.random() > 0.05,;
+        search: Math.random() > 0.1,;
+        gpu: Math.random() > 0.3;
       };
     }, 10000);
 
@@ -175,17 +175,17 @@
   function formatTime(date: Date) {
     return date.toLocaleTimeString('en-US', { 
       hour12: false, 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      second: '2-digit' 
+      hour: '2-digit', ;
+      minute: '2-digit', ;
+      second: '2-digit' ;
     });
   }
 
   function formatDate(date: Date) {
     return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+      year: 'numeric', ;
+      month: 'short', ;
+      day: 'numeric' ;
     });
   }
 
@@ -203,7 +203,7 @@
       currentHref += '/' + segment;
       const navItem = mainNavItems.find.href === currentHref);
       crumbs.push.toUpperCase() + segment.slice(1),
-        href: currentHref
+        href: currentHref;
       });
     });
     

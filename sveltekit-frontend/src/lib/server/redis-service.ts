@@ -44,7 +44,7 @@ class RedisService {
     retryDelayOnFailover: 100,
     enableReadyCheck: true,
     lazyConnect: true,
-    keepAlive: 30000,
+    keepAlive: 30000,;
     family: 4,
     keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:'
   };
@@ -76,7 +76,7 @@ class RedisService {
           lazyConnect: false,
           connectionName: 'legal-ai-subscriber'
         }),
-
+;
         publisher: new Redis({
           ...this.config,
           lazyConnect: false,
@@ -243,7 +243,7 @@ class RedisService {
       status: this.isConnected ? 'connected' : 'disconnected',
       reconnectAttempts: this.reconnectAttempts,
       config: {
-        ...this.config,
+        ...this.config,;
         password: this.config.password ? '[REDACTED]' : undefined
       }
     };
@@ -536,7 +536,7 @@ class RedisService {
     const key = `vector:quantized:${batchId}`;
     const cached = await this.get(key);
     if (cached?.quantized) {
-      return new Int8Array(Buffer.from(cached.quantized, 'base64');
+      return new Int8Array(Buffer.from(cached.quantized, 'base64'));
     }
     return null;
   }
@@ -569,7 +569,7 @@ class RedisService {
 
   async xRevRange(
     key: string,
-    end: string,
+    end: string,;
     start: string,
     options?: { COUNT: number }
   ): Promise<any[]> {
@@ -579,7 +579,7 @@ class RedisService {
     try {
       const args = [key, end, start];
       if (options?.COUNT) {
-        args.push('COUNT', options.COUNT.toString();
+        args.push('COUNT', options.COUNT.toString());
       }
       return await (client as any).xrevrange(...args);
     } catch (error) {

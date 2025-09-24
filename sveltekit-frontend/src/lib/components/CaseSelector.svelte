@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
 
   import { user } from "$lib/stores/user";
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import Modal from "$lib/components/ui/Modal.svelte";
   let cases = $state([
     { id: "case-1", name: "State v. John Doe" },

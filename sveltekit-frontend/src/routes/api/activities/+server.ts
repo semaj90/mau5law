@@ -1,52 +1,52 @@
-import { json } from "@sveltejs/kit";
-import { caseActivities } from "$lib/server/db/schema-postgres";
-import { db } from "$lib/server/db/index";
-import { eq, sql, desc, or as orExpr, like } from "drizzle-orm";
-import type { RequestHandler } from './$types.js';
-import { URL } from "url";
+import { json } from "@sveltejs/kit"
+import { caseActivities } from "$lib/server/db/schema-postgres"
+import { db } from "$lib/server/db/index"
+import { eq, sql, desc, or as orExpr, like } from "drizzle-orm"
+import type { RequestHandler } from './$types.js'
+import { URL } from "url"
 
 
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.user) {
-      return json({ error: "Not authenticated" }, { status: 401 });
+      return json({ error: "Not authenticated" }, { status: 401 })
     }
     if (!db) {
-      return json({ error: "Database not available" }, { status: 500 });
+      return json({ error: "Database not available" }, { status: 500 })
     }
-    const caseId = url.searchParams.get("caseId");
-    const activityType = url.searchParams.get("activityType");
-    const status = url.searchParams.get("status");
-    const priority = url.searchParams.get("priority");
-    const assignedTo = url.searchParams.get("assignedTo");
-    const search = url.searchParams.get("search") || "";
-    const limit = parseInt(url.searchParams.get("limit") || "50");
-    const offset = parseInt(url.searchParams.get("offset") || "0");
-    const sortBy = url.searchParams.get("sortBy") || "scheduledFor";
-    const sortOrder = url.searchParams.get("sortOrder") || "asc";
+    const caseId = url.searchParams.get("caseId")
+    const activityType = url.searchParams.get("activityType")
+    const status = url.searchParams.get("status")
+    const priority = url.searchParams.get("priority")
+    const assignedTo = url.searchParams.get("assignedTo")
+    const search = url.searchParams.get("search") || ""
+    const limit = parseInt(url.searchParams.get("limit") || "50")
+    const offset = parseInt(url.searchParams.get("offset") || "0")
+    const sortBy = url.searchParams.get("sortBy") || "scheduledFor"
+    const sortOrder = url.searchParams.get("sortOrder") || "asc"
 
     // Build filters
-    const filters: any[] = [];
+    const filters: any[] = []
 
     // Add case filter
     if (caseId) {
-      filters.push(eq(caseActivities.caseId, caseId));
+      filters.push(eq(caseActivities.caseId, caseId))
     }
     // Add activity type filter
     if (activityType) {
-      filters.push(eq(caseActivities.activityType, activityType));
+      filters.push(eq(caseActivities.activityType, activityType))
     }
     // Add status filter
     if (status) {
-      filters.push(eq(caseActivities.status, status));
+      filters.push(eq(caseActivities.status, status))
     }
     // Add priority filter
     if (priority) {
-      filters.push(eq(caseActivities.priority, priority));
+      filters.push(eq(caseActivities.priority, priority))
     }
     // Add assigned user filter
     if (assignedTo) {
-      filters.push(eq(caseActivities.assignedTo, assignedTo));
+      filters.push(eq(caseActivities.assignedTo, assignedTo))
     }
     // Add search filter
     if (search) {
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
           like(caseActivities.title, `%${search}%`),
           like(caseActivities.description, `%${search}%`)
         ]),
-      );
+      )
     }
 
     // Determine the column for sorting
@@ -74,32 +74,32 @@ export const GET: RequestHandler = async ({ locals, url }) => {
                   : caseActivities.createdAt; // Default to createdAt
 
     // Base select query
-    const baseQuery = db.select().from(caseActivities);
+    const baseQuery = db.select().from(caseActivities)
 
     // Build the main query
-    let finalQuery = baseQuery;
+    let finalQuery = baseQuery
     if (filters.length > 0) {
-      finalQuery = baseQuery.where(...filters);
+      finalQuery = baseQuery.where(...filters)
     }
 
     const orderedQuery = finalQuery.orderBy(
       sortOrder === "asc" ? orderColumn : desc(orderColumn),
-    );
+    )
 
-    const activityResults = await orderedQuery.limit(limit).offset(offset);
+    const activityResults = await orderedQuery.limit(limit).offset(offset)
 
     // Get total count for pagination
     const baseCountQuery = db
       .select({ count: sql<number>`count(*)` })
-      .from(caseActivities);
+      .from(caseActivities)
 
-    let finalCountQuery = baseCountQuery;
+    let finalCountQuery = baseCountQuery
     if (filters.length > 0) {
-      finalCountQuery = baseCountQuery.where(...filters);
+      finalCountQuery = baseCountQuery.where(...filters)
     }
 
-    const totalCountResult = await finalCountQuery;
-    const totalCount = totalCountResult[0]?.count ?? 0;
+    const totalCountResult = await finalCountQuery
+    const totalCount = totalCountResult[0]?.count ?? 0
 
     return json({
       activities: activityResults,
@@ -110,29 +110,29 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         offset,
         total: totalCount
       }
-    });
+    })
   } catch (error: any) {
-    console.error("Error fetching activities:", error);
-    return json({ error: "Failed to fetch activities" }, { status: 500 });
+    console.error("Error fetching activities:", error)
+    return json({ error: "Failed to fetch activities" }, { status: 500 })
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
-      return json({ error: "Not authenticated" }, { status: 401 });
+      return json({ error: "Not authenticated" }, { status: 401 })
     }
     if (!db) {
-      return json({ error: "Database not available" }, { status: 500 });
+      return json({ error: "Database not available" }, { status: 500 })
     }
-    const data = await request.json();
+    const data = await request.json()
 
-    // Validate required fields;
+    // Validate required fields
     if (!data.caseId || !data.title || !data.activityType) {
       return json(
         { error: "Case ID, title, and activity type are required" },
         { status: 400 }
-      );
+      )
     }
     // Map frontend data to schema fields
     const activityData = {
@@ -149,16 +149,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       relatedCriminals: data.relatedCriminals || [],
       metadata: data.metadata || {},
       createdBy: locals.user.id
-    };
+    }
 
     const [newActivity] = await db
       .insert(caseActivities)
       .values(activityData)
-      .returning();
+      .returning()
 
-    return json(newActivity, { status: 201 });
+    return json(newActivity, { status: 201 })
   } catch (error: any) {
-    console.error("Error creating activity:", error);
-    return json({ error: "Failed to create activity" }, { status: 500 });
+    console.error("Error creating activity:", error)
+    return json({ error: "Failed to create activity" }, { status: 500 })
   }
-};
+}

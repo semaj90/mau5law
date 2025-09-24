@@ -175,7 +175,7 @@ export class PerformanceMonitor {
       gpuAcceleration: this.capabilities.hasWebGL,
       adaptiveThresholds: {
         excellent: 16.67, // 60fps
-        good: 33.33, // 30fps
+        good: 33.33, // 30fps;
         poor: 66.67 // 15fps
       }
     };
@@ -544,7 +544,7 @@ export class PerformanceMonitor {
       timestamp: new Date().toISOString(),
       capabilities: this.capabilities,
       metrics: this.metrics,
-      qualitySettings: this.qualitySettings,
+      qualitySettings: this.qualitySettings,;
       recommendations: this.generateRecommendations()
     };
 

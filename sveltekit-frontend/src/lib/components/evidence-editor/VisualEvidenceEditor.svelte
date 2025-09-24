@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -43,10 +43,10 @@ https://svelte.dev/e/js_parse_error -->
 <div class="space-y-4">
   <!-- Golden Ratio Layout: 61.8% main canvas, 19.1% inspector, 19.1% AI assistant -->
   <div class="space-y-4">
-    
+
     <!-- Main Canvas Area -->
     <div class="space-y-4">
-      <CanvasEditor 
+      <CanvasEditor
         bind:this={canvasComponent}
         {caseId}
         {readOnly}
@@ -54,19 +54,19 @@ https://svelte.dev/e/js_parse_error -->
         onnodesave={handleNodeSave}
       />
     </div>
-    
+
     <!-- Inspector Panel -->
     <div class="space-y-4">
-      <InspectorPanel 
+      <InspectorPanel
         selectedNode={currentSelectedNode}
         {readOnly}
         onsave={handleNodeSave}
       />
     </div>
-    
+
     <!-- AI Assistant Panel -->
     <div class="space-y-4">
-      <AIAssistantPanel 
+      <AIAssistantPanel
         selectedNode={currentSelectedNode}
         ontagsupdate={(e) => {
           if (currentSelectedNode) {
@@ -76,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
         }}
       />
     </div>
-    
+
   </div>
 </div>
 
@@ -87,7 +87,7 @@ https://svelte.dev/e/js_parse_error -->
 }
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    .visual-evidence-editor: global(.grid) {
+  .visual-evidence-editor :global(.grid) {
       grid-template-columns: 1fr;
       grid-template-rows: 60% 20% 20%;
 }

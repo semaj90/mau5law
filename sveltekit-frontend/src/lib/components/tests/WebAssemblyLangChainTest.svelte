@@ -17,32 +17,32 @@
   const testMethods = [
     {
       name: 'WebAssembly Only',
-      description: 'Direct WebAssembly llama.cpp inference',
+      description: 'Direct WebAssembly llama.cpp inference',;
       options: { useWebAssembly: true, useLangChain: false, useHybridRAG: false, useAcceleration: false }
     },
     {
       name: 'SIMD + WebGPU Accelerated',
-      description: 'GPU-accelerated vector processing with SIMD preprocessing',
+      description: 'GPU-accelerated vector processing with SIMD preprocessing',;
       options: { useWebAssembly: true, useLangChain: true, useHybridRAG: false, useAcceleration: true, useSIMD: true, useWebGPU: true }
     },
     {
       name: 'SIMD Only',
-      description: 'CPU SIMD vector acceleration without GPU',
+      description: 'CPU SIMD vector acceleration without GPU',;
       options: { useWebAssembly: true, useLangChain: true, useHybridRAG: false, useAcceleration: true, useSIMD: true, useWebGPU: false }
     },
     {
       name: 'LangChain + WebAssembly',
-      description: 'LangChain document retrieval with WebAssembly generation',
+      description: 'LangChain document retrieval with WebAssembly generation',;
       options: { useWebAssembly: true, useLangChain: true, useHybridRAG: false, useAcceleration: false }
     },
     {
       name: 'Hybrid RAG',
-      description: 'Hybrid WebAssembly + Ollama processing with LangChain',
+      description: 'Hybrid WebAssembly + Ollama processing with LangChain',;
       options: { useWebAssembly: true, useLangChain: true, useHybridRAG: true, useAcceleration: false }
     },
     {
-      name: 'Ollama Fallback',
-      description: 'Traditional Ollama processing (fallback)',
+      name: 'Ollama Fallback',;
+      description: 'Traditional Ollama processing (fallback)',;
       options: { useWebAssembly: false, useLangChain: false, useHybridRAG: false, useAcceleration: false }
     }
   ];
@@ -68,7 +68,7 @@
       const responseMessage = await aiAssistant.sendMessage(testCaseId, testQuery, undefined, {
         backend: method.options.useWebAssembly ? 'webasm' : 'ollama',
         useAcceleration: method.options.useAcceleration,
-        legalContext: 'Legal AI test query'
+        legalContext: 'Legal AI test query';
       });
 
       response = responseMessage.content;
@@ -83,10 +83,10 @@
         query: testQuery,
         response,
         error: aiAssistant.error,
-        duration: Math.round(duration),
-        timestamp: new Date().toLocaleTimeString(),
+        duration: Math.round(duration),;
+        timestamp: new Date().toLocaleTimeString(),;
         success: !aiAssistant.error,
-        accelerationMetrics
+        accelerationMetrics;
       };
 
       testResults = [result, ...testResults];
@@ -99,10 +99,10 @@
         query: testQuery,
         response: '',
         error: error instanceof Error ? error.message: String(error),
-        duration: Math.round(performance.now() - startTime),
-        timestamp: new Date().toLocaleTimeString(),
+        duration: Math.round(performance.now() - startTime),;
+        timestamp: new Date().toLocaleTimeString(),;
         success: false,
-        accelerationMetrics: null
+        accelerationMetrics: null;
       };
 
       testResults = [result, ...testResults];
@@ -116,15 +116,15 @@
     const mockCaseDocuments = Array.from({ length: 5 }, (_, i) => ({
       id: `case_${i}`,
       title: `Legal Case Document ${i + 1}`,
-      content: `Mock case content for testing purposes...`,
-      embedding: new Float32Array(768).map(() => Math.random())
+      content: `Mock case content for testing purposes...`,;
+      embedding: new Float32Array(768).map(() => Math.random());
     }));
 
     const mockEvidenceDocuments = Array.from({ length: 20 }, (_, i) => ({
       id: `evidence_${i}`,
       title: `Evidence Document ${i + 1}`,
-      content: `Mock evidence content for testing purposes...`,
-      embedding: new Float32Array(768).map(() => Math.random())
+      content: `Mock evidence content for testing purposes...`,;
+      embedding: new Float32Array(768).map(() => Math.random());
     }));
 
     // Use accelerated legal assistant
@@ -141,8 +141,8 @@
     );
 
     return {
-      response: enhancedResult.enhancedResponse,
-      metrics: enhancedResult.acceleratedResults.processingMetrics
+      response: enhancedResult.enhancedResponse,;
+      metrics: enhancedResult.acceleratedResults.processingMetrics;
     };
   }
 
@@ -196,8 +196,8 @@
           currentModel: aiAssistant.config.model,
           currentBackend: aiAssistant.currentBackend,
           totalQueries: aiAssistant.metrics.totalQueries,
-          averageResponseTime: aiAssistant.metrics.averageResponseTime
-        },
+          averageResponseTime: aiAssistant.metrics.averageResponseTime;
+        },;
         acceleration: {
           acceleratedAssistantInitialized: accelerationInitialized,
           webgpuSupported,
@@ -371,7 +371,7 @@
           class="w-full px-3 py-2 rounded text-sm transition-colors
             {method.options.useAcceleration
               ? 'bg-green-600 text-white hover:bg-green-700'
-              : 'bg-blue-600 text-white hover:bg-blue-700'}
+              : 'bg-blue-600 text-white hover:bg-blue-700'};
             disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {aiAssistant.isLoading ? 'Running...' : 'Test'}

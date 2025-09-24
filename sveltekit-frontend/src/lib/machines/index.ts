@@ -21,7 +21,7 @@ export { default as goMicroserviceMachine } from './enhanced-legal-case-machine'
 export const createAITask = (type: string, data: any) => ({ id: `${type}_${Date.now()}`, type, data, timestamp: Date.now() });
 export const aiTaskCreators = {
   analysis: (data: any) => createAITask('analysis', data),
-  processing: (data: any) => createAITask('processing', data),
+  processing: (data: any) => createAITask('processing', data),;
   search: (data: any) => createAITask('search', data)
 };
 

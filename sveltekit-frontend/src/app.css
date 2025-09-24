@@ -220,7 +220,7 @@
     background: linear-gradient(
       90deg,
       transparent,
-      theme(colors.yorha.primary),
+      #e0e0e0,
       transparent
     );
     animation: scan-line 3s linear infinite;
@@ -243,18 +243,18 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: theme(colors.yorha.primary);
+  background: #e0e0e0;
 }
 
 /* Selection styling */
 ::selection {
-  background: theme(colors.yorha.primary);
-  color: theme(colors.yorha.text);
+  background: #e0e0e0;
+  color: #0a0a0a;
 }
 
 /* Focus indicators */
 .focus-visible {
-  outline: 2px solid theme(colors.yorha.primary);
+  outline: 2px solid #e0e0e0;
   outline-offset: 2px;
 }
 
@@ -288,10 +288,10 @@
 
 @keyframes glow {
   from {
-    box-shadow: 0 0 20px theme(colors.yorha.primary / 20%);
+    box-shadow: 0 0 20px rgba(224, 224, 224, 0.2);
   }
   to {
-    box-shadow: 0 0 30px theme(colors.yorha.primary / 40%);
+    box-shadow: 0 0 30px rgba(224, 224, 224, 0.4);
   }
 }
 

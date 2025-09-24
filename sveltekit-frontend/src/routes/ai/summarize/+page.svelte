@@ -275,4 +275,4 @@ TODO: Implement document upload, AI summarization, export functionality
 			</div>
 		</div>
 	{/snippet}
-</EssentialRoutePage>
+</EssentialRoutePage>;

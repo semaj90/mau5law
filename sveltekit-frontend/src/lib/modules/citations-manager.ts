@@ -180,7 +180,7 @@ export class CitationsManager {
     const collection: CitationCollection = {
       id: `collection-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       name,
-      description,
+      description,;
       citations: [],
       userId: this.currentUser!.id,
       createdAt: new Date(),

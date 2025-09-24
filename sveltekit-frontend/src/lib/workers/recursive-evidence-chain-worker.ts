@@ -80,7 +80,7 @@ class RecursiveEvidenceChainProcessor {
         children: [],
         relationships: [],
         legalImplications: ['max_depth_reached_or_circular_reference'],
-        confidence: 0.1,
+        confidence: 0.1,;
         metadata: {
           processingTime: performance.now() - startTime,
           recursionPath: [...recursionPath, rootEvidenceId],
@@ -132,7 +132,7 @@ class RecursiveEvidenceChainProcessor {
         children,
         relationships,
         legalImplications,
-        confidence: this.calculateConfidence(chainOfCustody, relationships),
+        confidence: this.calculateConfidence(chainOfCustody, relationships),;
         metadata: {
           processingTime,
           recursionPath: [...recursionPath, rootEvidenceId],
@@ -149,7 +149,7 @@ class RecursiveEvidenceChainProcessor {
         children: [],
         relationships: [],
         legalImplications: [`error_processing: ${error.message}`],
-        confidence: 0.0,
+        confidence: 0.0,;
         metadata: {
           processingTime: performance.now() - startTime,
           recursionPath: [...recursionPath, rootEvidenceId],
@@ -191,7 +191,7 @@ class RecursiveEvidenceChainProcessor {
       // Integration with existing evidence-correlation.ts;
       const response = await fetch(`${this.apiBaseUrl}/evidence/correlate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           evidenceIds: [evidenceId],
           analysisType: 'comprehensive',
@@ -209,7 +209,7 @@ class RecursiveEvidenceChainProcessor {
       return correlationResults.correlations?.map((corr: any) => ({
         evidenceId: corr.evidenceB === evidenceId ? corr.evidenceA: corr.evidenceB,
         relationshipType: corr.correlationType,
-        strength: corr.strength,
+        strength: corr.strength,;
         metadata: corr
       })) || [];
 
@@ -270,7 +270,7 @@ class RecursiveEvidenceChainProcessor {
       strength,
       description: this.generateRelationshipDescription(relationshipType, strength),
       legalSignificance: significance,
-      supportingEvidence: [evidenceId, related.evidenceId],
+      supportingEvidence: [evidenceId, related.evidenceId],;
       confidence: this.calculateRelationshipConfidence(strength, relationshipType)
     };
   }
@@ -459,7 +459,7 @@ self.addEventListener('message', async (event) => {
       self.postMessage({
         messageId,
         success: true,
-        result,
+        result,;
         metadata: {
           totalNodesProcessed: processor.visitedEvidenceSize,
           maxDepthReached: Math.max(result.depth, ...result.children.map(c => c.depth)),
@@ -476,7 +476,7 @@ self.addEventListener('message', async (event) => {
       self.postMessage({
         messageId,
         success: false,
-        error: error.message,
+        error: error.message,;
         stack: error.stack
       });
     }
@@ -486,13 +486,13 @@ self.addEventListener('message', async (event) => {
       processor.reset();
       self.postMessage({
         messageId,
-        success: true,
+        success: true,;
         message: 'Processor reset successfully'
       });
     } catch (error) {
       self.postMessage({
         messageId,
-        success: false,
+        success: false,;
         error: error.message
       });
     }

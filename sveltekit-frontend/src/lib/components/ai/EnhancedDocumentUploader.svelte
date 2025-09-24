@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
@@ -51,19 +51,19 @@ https://svelte.dev/e/js_parse_error -->
     userId = "",
     autoProcess = true,
     showMetadataForm = true,
-    class: className = "",
+    class: className = "",;
    }: { acceptedTypes = ".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp",
     maxFileSize = 50 * 1024 * 1024, // 50MB
     maxFiles = 10,
     caseId = "",
     userId = "",
     autoProcess = true,
-    showMetadataForm = true,
+    showMetadataForm = true,;
     class: className = "",
   : any } = $props();
 
   // Event dispatcher
-  // TODO: Replace createEventDispatcher with callback props in Svelte 5
+
 
   // Types
   interface UploadFile {
@@ -210,13 +210,13 @@ https://svelte.dev/e/js_parse_error -->
         id: crypto.randomUUID(),
         file,
         status: "pending",
-        progress: 0,
+        progress: 0,;
         metadata: {
           title: file.name.replace(/\.[^/.]+$/, ""),
           documentType: "other",
           autoSummarize: true,
-          extractEntities: true,
-          tags: [],
+          extractEntities: true,;
+          tags: [],;
         },
       }));
 
@@ -275,8 +275,8 @@ https://svelte.dev/e/js_parse_error -->
     try {
       // Upload file
       const uploadResponse = await fetch("/api/documents/upload", {
-        method: "POST",
-        body: formData,
+        method: "POST",;
+        body: formData,;
       });
 
       if (!uploadResponse.ok) {
@@ -292,8 +292,8 @@ https://svelte.dev/e/js_parse_error -->
         uploadFile.metadata.extractEntities
       ) {
         const processingResponse = await fetch("/api/ai/process-document", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: "POST",;
+          headers: { "Content-Type": "application/json" },;
           body: JSON.stringify({
             documentId: uploadResult.documentId,
             extractEntities: uploadFile.metadata.extractEntities,
@@ -314,7 +314,7 @@ https://svelte.dev/e/js_parse_error -->
         // Emit events
         ondispatch?.({
           fileId: uploadFile.id,
-          result: processingResult,
+          result: processingResult,;
         });
 
         ondispatch?.({
@@ -324,9 +324,9 @@ https://svelte.dev/e/js_parse_error -->
               documentId: uploadResult.documentId,
               filename: uploadFile.file.name,
               size: uploadFile.file.size,
-              type: uploadFile.file.type,
-              url: uploadResult.url,
-              thumbnail: uploadFile.preview,
+              type: uploadFile.file.type,;
+              url: uploadResult.url,;
+              thumbnail: uploadFile.preview,;
             },
           ],
         });
@@ -337,14 +337,14 @@ https://svelte.dev/e/js_parse_error -->
       updateFileStatus(uploadFile.id, "error", 0, String(error));
       ondispatch?.({
         fileId: uploadFile.id,
-        error: String(error),
+        error: String(error),;
       });
     }
   }
 
   function updateFileStatus(
     fileId: string,
-    status: UploadFile["status"],
+    status: UploadFile["status"],;
     progress: number,
     error?: string
   ) {
@@ -646,7 +646,7 @@ files.set([])}
           <div>
             <Label for="description">Description</Label>
             <Textarea
-              id="description"
+              id="description";
               bind:value={$selectedFile.metadata.description}
               placeholder="Brief description"
               rows={3}

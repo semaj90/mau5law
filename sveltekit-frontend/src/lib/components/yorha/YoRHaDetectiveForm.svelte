@@ -197,7 +197,7 @@
     box-shadow: 0 0 0 3px rgba(61, 61, 61, 0.2);
   }
 
-  .form-input: :placeholder {
+  .form-input::placeholder {
     color: #999;
     opacity: 1;
   }

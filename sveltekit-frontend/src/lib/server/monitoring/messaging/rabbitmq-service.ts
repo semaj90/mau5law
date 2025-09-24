@@ -11,7 +11,7 @@ const RABBITMQ_CONFIG = {
   url: import.meta.env.RABBITMQ_URL || 'amqp://localhost:5672',
   username: import.meta.env.RABBITMQ_USERNAME || 'guest',
   password: import.meta.env.RABBITMQ_PASSWORD || 'guest',
-  vhost: import.meta.env.RABBITMQ_VHOST || '/',
+  vhost: import.meta.env.RABBITMQ_VHOST || '/',;
   heartbeat: 60
 };
 
@@ -66,7 +66,7 @@ export class RabbitMQService {
 
     // Queue options that match existing configurations to prevent conflicts;
     const queueOptions = {
-      durable: true,
+      durable: true,;
       arguments: {
         'x-message-ttl': 3600000, // 1 hour TTL to match existing queues
         'x-max-length': 10000     // Max 10k messages
@@ -96,7 +96,7 @@ export class RabbitMQService {
     await this.channel.consume(queue, async (msg) => {
       if (msg) {
         try {
-          const content = JSON.parse(msg.content.toString());
+          const content = JSON.parse(msg.content.toString()));
           await handler(content, msg);
           this.channel!.ack(msg);
         } catch (error: any) {
@@ -114,12 +114,12 @@ export class RabbitMQService {
       }
 
       return {
-        status: 'healthy',
+        status: 'healthy',;
         details: { connected: this.isConnected, queues: Object.keys(QUEUES).length }
       };
     } catch (error: any) {
       return {
-        status: 'unhealthy',
+        status: 'unhealthy',;
         details: { error: error instanceof Error ? error.message: 'Unknown error' }
       };
     }

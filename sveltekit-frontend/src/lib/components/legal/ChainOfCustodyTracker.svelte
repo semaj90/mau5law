@@ -53,7 +53,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     interactive = true,
     onTransferEvidence,
     onViewDetails,
-    class: className = ''
+    class: className = '';
   }: ChainOfCustodyProps = $props();
 
   // Sort transfers by date (newest first)
@@ -72,7 +72,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     digital: { icon: FileCheck, color: 'text-green-400', bg: 'bg-green-500/10' },
     document: { icon: FileCheck, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
     biological: { icon: Shield, color: 'text-red-400', bg: 'bg-red-500/10' },
-    chemical: { icon: Shield, color: 'text-purple-400', bg: 'bg-purple-500/10' },
+    chemical: { icon: Shield, color: 'text-purple-400', bg: 'bg-purple-500/10' },;
     other: { icon: Shield, color: 'text-gray-400', bg: 'bg-gray-500/10' }
   };
 
@@ -81,7 +81,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     excellent: { label: 'Excellent', class: 'bg-green-500/20 text-green-400' },
     good: { label: 'Good', class: 'bg-blue-500/20 text-blue-400' },
     fair: { label: 'Fair', class: 'bg-yellow-500/20 text-yellow-400' },
-    poor: { label: 'Poor', class: 'bg-orange-500/20 text-orange-400' },
+    poor: { label: 'Poor', class: 'bg-orange-500/20 text-orange-400' },;
     damaged: { label: 'Damaged', class: 'bg-red-500/20 text-red-400' }
   };
 
@@ -89,9 +89,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     return date.toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric',;
+      hour: '2-digit',;
+      minute: '2-digit';
     });
   }
 
@@ -350,7 +350,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 </div>
 
 <style>
-  .chain-of-custody {
+  .chain-of-custody {;
     --custody-line-color: rgb(var(--yorha-border));
   }
 </style>

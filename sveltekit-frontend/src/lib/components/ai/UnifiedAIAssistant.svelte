@@ -9,12 +9,12 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   	import Button from '$lib/components/ui/button/Button.svelte';
   	// Badge replaced with span - not available in enhanced-bits
   	import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   	import { 
   		Bot, Send, Cpu, Zap, Database, MessageSquare,
   		Settings, Mic, MicOff, Upload, Download,
@@ -32,7 +32,7 @@
   	let aiBackends = $state({
   		vllm: { available: false, status: 'unknown', endpoint: 'http://localhost:8000' },
   		ollama: { available: false, status: 'unknown', endpoint: 'http://localhost:11434' },
-  		webasm: { available: false, status: 'unknown', loaded: false },
+  		webasm: { available: false, status: 'unknown', loaded: false },;
   		webgpu: { available: false, status: 'unknown', initialized: false },
   		goMicroservice: { available: false, status: 'unknown', endpoint: 'http://localhost:8080' }
   	});
@@ -46,13 +46,13 @@
   	});
 
   	let assistantConfig = $state({
-  		model: 'gemma3-legal',
+  		model: 'gemma3-legal',;
   		temperature: 0.7,
   		maxTokens: 1000,
   		streamResponse: true,
   		useGPUAcceleration: true,
   		preferredBackend: 'auto', // 'vllm' | 'ollama' | 'webasm' | 'auto'
-  		legalContext: true
+  		legalContext: true;
   	});
 
   	let voiceRecording = $state({
@@ -71,14 +71,16 @@
   	} = $props();
 
   	// Initialize AI systems
-  	$effect(async () => {
-  		console.log('🤖 Initializing Unified AI Assistant');
+  	$effect(() => {
+    (async () => {
+console.log('🤖 Initializing Unified AI Assistant');
   		await initializeBackends();
   		await loadConversationHistory();
   		setupWebGPUWorker();
   		// Add welcome message
   		addSystemMessage('Legal AI Assistant initialized. How can I help you analyze your case today?');
-  	});
+    })();
+  });
 
   	async function initializeBackends() {
   		console.log('🔌 Checking backend availability...');
@@ -86,8 +88,8 @@
   		// Check vLLM
   		try {
   			const vllmResponse = await fetch(`${aiBackends.vllm.endpoint}/v1/models`, { 
-  				method: 'GET',
-  				signal: AbortSignal.timeout(5000)
+  				method: 'GET',;
+  				signal: AbortSignal.timeout(5000);
   			});
   			aiBackends.vllm.available = vllmResponse.ok;
   			aiBackends.vllm.status = vllmResponse.ok ? 'healthy' : 'error';
@@ -99,8 +101,8 @@
   		// Check Ollama
   		try {
   			const ollamaResponse = await fetch(`${aiBackends.ollama.endpoint}/api/version`, {
-  				method: 'GET',
-  				signal: AbortSignal.timeout(5000)
+  				method: 'GET',;
+  				signal: AbortSignal.timeout(5000);
   			});
   			aiBackends.ollama.available = ollamaResponse.ok;
   			aiBackends.ollama.status = ollamaResponse.ok ? 'healthy' : 'error';
@@ -202,10 +204,10 @@
 
   		const userMessage = {
   			id: `msg-${Date.now()}-user`,
-  			role: 'user',
-  			content: currentMessage.trim(),
+  			role: 'user',;
+  			content: currentMessage.trim(),;
   			timestamp: new Date().toISOString(),
-  			caseId
+  			caseId;
   		};
 
   		messages = [...messages, userMessage];
@@ -222,10 +224,10 @@
 
   			const aiMessage = {
   				id: `msg-${Date.now()}-assistant`,
-  				role: 'assistant',
+  				role: 'assistant',;
   				content: (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).content,
   				timestamp: new Date().toISOString(),
-  				processingTime,
+  				processingTime,;
   				backend: (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).backend,
   				tokensPerSecond: (response as { ok?: any; json?: any; content?: any; backend?: any; tokensPerSecond?: any; status?: any }).tokensPerSecond || 0,
   				caseId
@@ -245,11 +247,11 @@
   			console.error('❌ AI request failed:', error);
   			const errorMessage = {
   				id: `msg-${Date.now()}-error`,
-  				role: 'assistant',
-  				content: `Sorry, I encountered an error processing your request: ${error instanceof Error ? error.message: String(error)}`,
+  				role: 'assistant',;
+  				content: `Sorry, I encountered an error processing your request: ${error instanceof Error ? error.message: String(error)}`,;
   				timestamp: new Date().toISOString(),
   				isError: true,
-  				caseId
+  				caseId;
   			};
 
   			messages = [...messages, errorMessage];
@@ -330,14 +332,14 @@
 
   	async function processWithVLLM(context: string): Promise<any> {
   		const response = await fetch(`${aiBackends.vllm.endpoint}/v1/chat/completions`, {
-  			method: 'POST',
+  			method: 'POST',;
   			headers: { 'Content-Type': 'application/json' },
   			body: JSON.stringify({
-  				model: 'mistralai/Mistral-7B-Instruct-v0.3',
+  				model: 'mistralai/Mistral-7B-Instruct-v0.3',;
   				messages: [{ role: 'user', content: context }],
   				temperature: assistantConfig.temperature,
-  				max_tokens: assistantConfig.maxTokens,
-  				stream: false
+  				max_tokens: assistantConfig.maxTokens,;
+  				stream: false;
   			})
   		});
 
@@ -349,21 +351,21 @@
   		return {
   			content: (result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).choices?.[0]?.message?.content || 'No response',
   			backend: 'vLLM',
-  			tokensPerSecond: 0 // vLLM doesn't provide this directly
+  			tokensPerSecond: 0 // vLLM doesn't provide this directly;
   		};
   	}
 
   	async function processWithOllama(context: string): Promise<any> {
   		const response = await fetch(`${aiBackends.ollama.endpoint}/api/chat`, {
-  			method: 'POST',
+  			method: 'POST',;
   			headers: { 'Content-Type': 'application/json' },
   			body: JSON.stringify({
-  				model: assistantConfig.model,
+  				model: assistantConfig.model,;
   				messages: [{ role: 'user', content: context }],
-  				stream: false,
-  				options: {
+  				stream: false,;
+  				options: {;
   					temperature: assistantConfig.temperature,
-  					num_predict: assistantConfig.maxTokens
+  					num_predict: assistantConfig.maxTokens;
   				}
   			})
   		});
@@ -386,9 +388,9 @@
   		return new Promise((resolve) => {
   			setTimeout(() => {
   				resolve({
-  					content: `[WebASM Response] I understand you're asking about: "${context.slice(-100)}...". This is a placeholder response from the WebAssembly LLaMA.cpp implementation.`,
+  					content: `[WebASM Response] I understand you're asking about: "${context.slice(-100)}...". This is a placeholder response from the WebAssembly LLaMA.cpp implementation.`,;
   					backend: 'WebASM LLaMA.cpp',
-  					tokensPerSecond: 15
+  					tokensPerSecond: 15;
   				});
   			}, 2000);
   		});
@@ -397,9 +399,9 @@
   	async function processWithGoMicroservice(context: string): Promise<any> {
   		const result = await goMicroserviceClient.processChat({
   			messages: [{ role: 'user', content: context }],
-  			model: assistantConfig.model,
-  			temperature: assistantConfig.temperature,
-  			stream: false
+  			model: assistantConfig.model,;
+  			temperature: assistantConfig.temperature,;
+  			stream: false;
   		});
 
   		if (!(result as { choices?: any; message?: any; eval_duration?: any; eval_count?: any; success?: any; error?: any; data?: any; metadata?: any }).success) {
@@ -417,12 +419,12 @@
   		if (caseId) {
   			try {
   				await fetch('/api/legal/conversations', {
-  					method: 'POST',
+  					method: 'POST',;
   					headers: { 'Content-Type': 'application/json' },
   					body: JSON.stringify({
   						caseId,
-  						messages: messages.slice(-20), // Save last 20 messages
-  						timestamp: new Date().toISOString()
+  						messages: messages.slice(-20), // Save last 20 messages;
+  						timestamp: new Date().toISOString();
   					})
   				});
   			} catch (error) {
@@ -435,9 +437,9 @@
   		const systemMessage = {
   			id: `msg-${Date.now()}-system`,
   			role: 'system',
-  			content,
+  			content,;
   			timestamp: new Date().toISOString(),
-  			isSystem: true
+  			isSystem: true;
   		};
   		messages = [...messages, systemMessage];
   	}
@@ -503,7 +505,7 @@
   			caseId,
   			messages,
   			timestamp: new Date().toISOString(),
-  			performanceMetrics
+  			performanceMetrics;
   		};
 
   		const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -740,20 +742,20 @@ currentMessage = 'Find relevant precedents'}>
 
 <style>
 	/* Custom scrollbar for chat container */
-	.overflow-y-auto {
+	.overflow-y-auto {;
 		scrollbar-width: thin;
 		scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
 	}
 	
-	.overflow-y-auto: :-webkit-scrollbar {
+	.overflow-y-auto::-webkit-scrollbar {
 		width: 6px;
 	}
 	
-	.overflow-y-auto: :-webkit-scrollbar-track {
+	.overflow-y-auto::-webkit-scrollbar-track {
 		background: hsl(var(--muted));
 	}
 	
-	.overflow-y-auto: :-webkit-scrollbar-thumb {
+	.overflow-y-auto::-webkit-scrollbar-thumb {
 		background: hsl(var(--muted-foreground));
 		border-radius: 3px;
 	}

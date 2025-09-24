@@ -60,7 +60,7 @@
       riskLow: '#28a745',
       riskMedium: '#ffc107',
       riskHigh: '#fd7e14',
-      riskCritical: '#dc3545'
+      riskCritical: '#dc3545';
     },
     nes: {
       background: '#212529',
@@ -75,7 +75,7 @@
       riskLow: '#28a745',
       riskMedium: '#ffc107',
       riskHigh: '#fd7e14',
-      riskCritical: '#dc3545'
+      riskCritical: '#dc3545';
     },
     legal: {
       background: '#1a1a2e',
@@ -84,13 +84,13 @@
       accent: '#10d5c2',
       evidence: '#0f3460',
       case: '#16213e',
-      document: '#e94560',
-      citation: '#f5f5f5',
+      document: '#e94560',;
+      citation: '#f5f5f5',;
       connection: '#533483',
       riskLow: '#00b894',
       riskMedium: '#fdcb6e',
       riskHigh: '#e17055',
-      riskCritical: '#d63031'
+      riskCritical: '#d63031';
     }
   };
 
@@ -297,10 +297,10 @@
 
     const stats = {
       nodes: data.length,
-      evidence: data.filter(n => n.type === 'evidence').length,
-      cases: data.filter(n => n.type === 'case').length,
+      evidence: data.filter(n => n.type === 'evidence').length,;
+      cases: data.filter(n => n.type === 'case').length,;
       documents: data.filter(n => n.type === 'document').length,
-      highRisk: data.filter(n => n.riskLevel === 'high' || n.riskLevel === 'critical').length
+      highRisk: data.filter(n => n.riskLevel === 'high' || n.riskLevel === 'critical').length;
     };
 
     ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
@@ -389,7 +389,7 @@
           y: 100,
           label: 'Case 001',
           type: 'case',
-          riskLevel: 'high',
+          riskLevel: 'high',;
           metadata: { priority: 'urgent', connections: ['evidence-001', 'document-001'] }
         },
         {
@@ -398,7 +398,7 @@
           y: 150,
           label: 'Evidence A',
           type: 'evidence',
-          riskLevel: 'critical',
+          riskLevel: 'critical',;
           metadata: { type: 'forensic', connections: ['case-001'] }
         },
         {
@@ -407,16 +407,16 @@
           y: 120,
           label: 'Contract X',
           type: 'document',
-          riskLevel: 'medium',
+          riskLevel: 'medium',;
           metadata: { category: 'legal', connections: ['case-001', 'citation-001'] }
         },
         {
           id: 'citation-001',
           x: 400,
           y: 200,
-          label: 'Precedent Y',
+          label: 'Precedent Y',;
           type: 'citation',
-          riskLevel: 'low',
+          riskLevel: 'low',;
           metadata: { court: 'supreme', connections: ['document-001'] }
         }
       ];
@@ -484,7 +484,7 @@
 </div>
 
 <style>
-  .canvas-container {
+  .canvas-container {;
     margin: 1rem;
     padding: 1rem;
     background: var(--yorha-bg-secondary);
@@ -570,7 +570,7 @@
     background: var(--yorha-bg-secondary);
   }
 
-  summary:hover {
+  summary:hover {;
     background: var(--yorha-bg-tertiary);
     border-color: var(--yorha-secondary);
   }

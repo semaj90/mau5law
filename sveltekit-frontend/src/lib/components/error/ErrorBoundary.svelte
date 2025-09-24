@@ -72,10 +72,10 @@
     if (browser) {
       const errorReport = {
         path: currentPath,
-        error: errorDetails,
+        error: errorDetails,;
         stack: errorStack,
-        userAgent: navigator.userAgent,
-        timestamp: new Date().toISOString()
+        userAgent: navigator.userAgent,;
+        timestamp: new Date().toISOString();
       };
       
       console.log('Error Report:', errorReport);

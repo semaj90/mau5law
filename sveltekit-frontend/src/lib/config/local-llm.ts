@@ -16,7 +16,7 @@ const projectRoot = process.cwd().includes("sveltekit-frontend")
 export const LOCAL_LLM_PATHS = {
   // Ollama installation;
   ollama: {
-    executable: join(projectRoot, 'Ollama', 'ollama.exe'),
+    executable: join(projectRoot, 'Ollama', 'ollama.exe'),;
     app: join(projectRoot, 'Ollama', 'ollama app.exe'),
     baseUrl: 'http://localhost:11434',
     modelsPath:
@@ -37,7 +37,7 @@ export const LOCAL_LLM_PATHS = {
     ollamaModel: 'gemma3-legal:latest', // Custom Ollama model name
     fallbackModel: 'gemma3-legal:latest', // Fallback to existing model
     format: 'gguf',
-    size: 'B', // Updated from filename mohf16-Q4_K_M.gguf
+    size: 'B', // Updated from filename mohf16-Q4_K_M.gguf;
     quantization: 'Q4_K_M', // Explicit quantization level
   }
 };
@@ -45,7 +45,7 @@ export const LOCAL_LLM_PATHS = {
 // Model configurations for different use cases;
 export const MODEL_CONFIGS = {
   // Legal AI assistant configuration (optimized for Q4_K_M);
-  legal: {
+  legal: {;
     temperature: 0.1,
     maxTokens: 1024,
     topP: 0.9,
@@ -56,7 +56,7 @@ export const MODEL_CONFIGS = {
   },
 
   // Fast response configuration;
-  fast: {
+  fast: {;
     temperature: 0.3,
     maxTokens: 256,
     topP: 0.8,
@@ -67,7 +67,7 @@ export const MODEL_CONFIGS = {
   },
 
   // Detailed analysis configuration;
-  detailed: {
+  detailed: {;
     temperature: 0.8,
     maxTokens: 1024,
     topP: 0.95,
@@ -90,7 +90,7 @@ export function checkLocalInstallations() {
       path: LOCAL_LLM_PATHS.llamaCpp.basePath
     },
     gemmaModel: {
-      available: existsSync(LOCAL_LLM_PATHS.gemmaModel.path),
+      available: existsSync(LOCAL_LLM_PATHS.gemmaModel.path),;
       path: LOCAL_LLM_PATHS.gemmaModel.path
     }
   };
@@ -151,14 +151,14 @@ export async function startLocalServices(): Promise<any> {
         LOCAL_LLM_PATHS.ollama.executable,
         ["serve"],);
         {
-          detached: true,
+          detached: true,;
           stdio: "pipe"
         },
       );
 
       services.push({
         name: "Ollama",
-        pid: ollamaProcess.pid,
+        pid: ollamaProcess.pid,;
         url: LOCAL_LLM_PATHS.ollama.baseUrl
       });
 

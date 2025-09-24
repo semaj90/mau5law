@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Identifier 'number' has already been declared
+<!-- @migration-task Error while migrating Svelte code: Identifier 'number' has already been declared;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'number' has already been declared -->
 <!--
@@ -43,10 +43,10 @@ https://svelte.dev/e/js_parse_error -->
   const currentMetrics = writable<PerformanceMetrics | null>(null);
   const serviceStatus = writable<ServiceStatus>({
     gpu: 'healthy',
-    webgpu: 'healthy', 
-    neural: 'healthy',
+    webgpu: 'healthy', ;
+    neural: 'healthy',;
     vectordb: 'healthy',
-    lastCheck: new Date()
+    lastCheck: new Date();
   });
   const connectionStatus = writable<'connected' | 'disconnected' | 'error'>('disconnected');
 
@@ -90,8 +90,8 @@ https://svelte.dev/e/js_parse_error -->
       memoryUsage: 60 + Math.random() * 30,
       neuralEfficiency: 85 + Math.sin(now / 15000) * 10 + (Math.random() - 0.5) * 5,
       processingSpeed: 1200 + Math.sin(now / 8000) * 300 + (Math.random() - 0.5) * 100,
-      activeConnections: Math.floor(5 + Math.sin(now / 20000) * 3 + Math.random() * 2),
-      temperature: 65 + Math.sin(now / 25000) * 8 + (Math.random() - 0.5) * 3
+      activeConnections: Math.floor(5 + Math.sin(now / 20000) * 3 + Math.random() * 2),;
+      temperature: 65 + Math.sin(now / 25000) * 8 + (Math.random() - 0.5) * 3;
     };
   }
 
@@ -107,10 +107,10 @@ https://svelte.dev/e/js_parse_error -->
   function checkServiceHealth(): ServiceStatus {
     return {
       gpu: Math.random() > 0.1 ? 'healthy' : 'degraded',
-      webgpu: Math.random() > 0.05 ? 'healthy' : 'degraded',
-      neural: Math.random() > 0.08 ? 'healthy' : 'degraded',
+      webgpu: Math.random() > 0.05 ? 'healthy' : 'degraded',;
+      neural: Math.random() > 0.08 ? 'healthy' : 'degraded',;
       vectordb: Math.random() > 0.03 ? 'healthy' : 'degraded',
-      lastCheck: new Date()
+      lastCheck: new Date();
     };
   }
 
@@ -383,7 +383,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .neural-dashboard {
+  .neural-dashboard {;
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;

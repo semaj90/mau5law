@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- EnhancedRAG:Studio UI - Complete RAG Management Dashboard -->
@@ -104,10 +104,10 @@ https://svelte.dev/e/attribute_duplicate -->
     isLoading = true;
     try {
       const response = await fetch('/api/rag?action=search', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: searchQuery,
+          query: searchQuery,;
           options: { topK: 10, threshold: 0.7 }
         })
       });
@@ -134,8 +134,8 @@ https://svelte.dev/e/attribute_duplicate -->
       formData.append('file', uploadFile);
 
       const response = await fetch('/api/rag?action=upload', {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
 
       const data = await (response as { json?: unknown }).json();
@@ -159,10 +159,10 @@ https://svelte.dev/e/attribute_duplicate -->
     isLoading = true;
     try {
       const response = await fetch('/api/rag?action=crawl', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          url: crawlUrl,
+          url: crawlUrl,;
           options: { maxPages: 1 }
         })
       });
@@ -185,13 +185,13 @@ https://svelte.dev/e/attribute_duplicate -->
   async function submitFeedback(resultId: string, score: number) {
     try {
       await fetch('/api/rl-feedback', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           resultId,
           score,
-          query: searchQuery,
-          timestamp: Date.now()
+          query: searchQuery,;
+          timestamp: Date.now();
         })
       });
 
@@ -205,9 +205,9 @@ https://svelte.dev/e/attribute_duplicate -->
   async function logActivity(action: string, metadata: unknown) {
     try {
       await fetch('/api/logs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify.toISOString()
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(toISOString)();
         })
       });
     } catch (error) {
@@ -324,7 +324,7 @@ activeTab = 'settings'}
           </div>
           <div class="yorha-panel-content space-y-4">
             <div class="flex gap-2">
-              <Input
+              <Input;
                 bind:value={searchQuery}
                 placeholder="Enter your search query..."
                 class="flex-1"
@@ -581,21 +581,21 @@ Save Settings
 
 <style>
   /* Custom scrollbar for logs */
-  .overflow-y-auto: :-webkit-scrollbar {
+  .overflow-y-auto::-webkit-scrollbar {;
     width: 6px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-track {
+  .overflow-y-auto::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 3px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-thumb {
+  .overflow-y-auto::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
   }
 
-  .overflow-y-auto: :-webkit-scrollbar-thumb:hover {
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
 </style>

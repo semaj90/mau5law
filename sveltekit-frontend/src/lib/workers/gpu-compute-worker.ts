@@ -49,7 +49,7 @@ class GPUWorker {
             env: {
                 memory: new WebAssembly.Memory({ initial: 256, maximum: 4096 }),
                 __memory_base: 0,
-                __table_base: 0,
+                __table_base: 0,;
                 abort: () => console.error('WASM abort')
             }
         });
@@ -66,7 +66,7 @@ class GPUWorker {
             code: `;
                 struct Matrix {
                     data: array<f32>,
-                    rows: u32,
+                    rows: u32,;
                     cols: u32
                 }
 
@@ -95,7 +95,7 @@ class GPUWorker {
 
         return this.gpuDevice.createComputePipeline({
             layout: 'auto',
-            compute: {
+            compute: {;
                 module: shaderModule,
                 entryPoint: 'main'
             }
@@ -147,7 +147,7 @@ class GPUWorker {
 
         return this.gpuDevice.createComputePipeline({
             layout: 'auto',
-            compute: {
+            compute: {;
                 module: shaderModule,
                 entryPoint: 'main'
             }
@@ -204,18 +204,18 @@ class GPUWorker {
 
         // Create buffers;
         const aBuffer = this.gpuDevice.createBuffer({
-            size: a.byteLength,
+            size: a.byteLength,;
             usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
         });
 
         const bBuffer = this.gpuDevice.createBuffer({
-            size: b.byteLength,
+            size: b.byteLength,;
             usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
         });
 
         const resultSize = params.m * params.n * 4;
         const resultBuffer = this.gpuDevice.createBuffer({
-            size: resultSize,
+            size: resultSize,;
             usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
         });
 
@@ -225,7 +225,7 @@ class GPUWorker {
 
         // Create bind group;
         const bindGroup = this.gpuDevice.createBindGroup({
-            layout: pipeline.getBindGroupLayout(0),
+            layout: pipeline.getBindGroupLayout(0),;
             entries: [
                 { binding: 0, resource: { buffer: aBuffer } },
                 { binding: 1, resource: { buffer: bBuffer } },
@@ -246,7 +246,7 @@ class GPUWorker {
 
         // Read back result;
         const readBuffer = this.gpuDevice.createBuffer({
-            size: resultSize,
+            size: resultSize,;
             usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
         });
 
@@ -335,7 +335,7 @@ class GPUWorker {
         this.vertexCache.set(key, {
             url: key,
             buffer: buffer,
-            timestamp: Date.now(),
+            timestamp: Date.now(),;
             score: 1
         });
 

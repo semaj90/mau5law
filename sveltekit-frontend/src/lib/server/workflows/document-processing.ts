@@ -135,7 +135,7 @@ const storageActor = fromPromise(async ({
         total_chunks: chunks.length,
         source_document: documentId,
         processed_at: new Date().toISOString()
-      } as any,
+      } as any,;
       embedding: vec as unknown as any
     });
 
@@ -280,7 +280,7 @@ export const documentProcessingMachine = createMachine({
 
           on: {
             CHUNKING_COMPLETE: {
-              target: 'embedding',
+              target: 'embedding',;
               actions: [;
                 assign({
                   chunks: ({ event }) => (event as any).output?.chunks || [],
@@ -317,7 +317,7 @@ export const documentProcessingMachine = createMachine({
 
           on: {
             EMBEDDING_COMPLETE: {
-              target: 'storing',
+              target: 'storing',;
               actions: [;
                 assign({
                   embeddings: ({ event }) => (event as any).output?.embeddings || [],
@@ -406,7 +406,7 @@ export const documentProcessingMachine = createMachine({
           },
 
           onDone: {
-            target: '#documentProcessing.completed',
+            target: '#documentProcessing.completed',;
             actions: [;
               assign({
                 progress: 100,
@@ -454,7 +454,7 @@ export const documentProcessingMachine = createMachine({
       entry: assign({
         status: 'failed'
       }),
-
+;
       on: {
         RETRY: [;
           {
@@ -507,7 +507,7 @@ export const documentProcessingMachine = createMachine({
         progress: 0,
         errors: [],
         startTime: 0,
-        endTime: undefined,
+        endTime: undefined,;
         status: 'pending',
         retryCount: 0,
         processingStage: 'chunking'

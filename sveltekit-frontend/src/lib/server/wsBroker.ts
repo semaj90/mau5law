@@ -103,7 +103,7 @@ export function registerWsConnection(sessionId: string, ws: WebSocket): void {
   try {
     ws.send(JSON.stringify({
         type: 'connection-established',
-        sessionId,
+        sessionId,;
         timestamp: new Date().toISOString()
       })
     );
@@ -250,7 +250,7 @@ export function wsHealthCheck(): { local: number; redis: boolean } {
   );
 
   return {
-    local: localConnections,
+    local: localConnections,;
     redis: redis?.status === 'ready'
   };
 }

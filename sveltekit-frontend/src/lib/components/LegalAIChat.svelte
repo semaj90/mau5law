@@ -2,16 +2,16 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   let messages = $state([]);
   let input = $state('');
   let isLoading = $state(false);
@@ -25,15 +25,15 @@
 
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gemma3-legal',
           prompt: userMessage,
-          stream: false,
-          options: {
+          stream: false,;
+          options: {;
             temperature: 0.3,
-            num_ctx: 2048
+            num_ctx: 2048;
           }
         })
       });

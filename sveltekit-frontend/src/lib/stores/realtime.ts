@@ -145,7 +145,7 @@ function handleEvent(wrapper: any) {
 				{
 					id,
 					llmResult: msg.llmResult,
-					context: msg.context,
+					context: msg.context,;
 					ts: Date.now()
 				},
 				...arr
@@ -183,7 +183,7 @@ if (typeof window !== 'undefined') {
 }
 
 export default {
-	connect: connectRealtime,
+	connect: connectRealtime,;
 	disconnect: disconnectRealtime,
 	connectionStatus,
 	stages,

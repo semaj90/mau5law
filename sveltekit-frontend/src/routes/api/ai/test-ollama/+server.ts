@@ -1,22 +1,22 @@
 /// <reference types="vite/client" />
 
-import { json } from "@sveltejs/kit";
-import type { RequestHandler } from './$types.js';
+import { json } from "@sveltejs/kit"
+import type { RequestHandler } from './$types.js'
 
 
 export const GET = (async (): Promise<any> => {
   try {
     // Check if service is available
-    const isAvailable = await ollamaService.healthCheck();
-    const models = ollamaService.getAvailableModels();
-    const currentModel = ollamaService.getGemma3Model();
+    const isAvailable = await ollamaService.healthCheck()
+    const models = ollamaService.getAvailableModels()
+    const currentModel = ollamaService.getGemma3Model()
 
     // Get more detailed status
-    let ollamaDetails = null;
+    let ollamaDetails = null
     try {
-      const response = await fetch("http://localhost:11434/api/version");
+      const response = await fetch("http://localhost:11434/api/version")
       if (response.ok) {
-        ollamaDetails = await response.json();
+        ollamaDetails = await response.json()
       }
     } catch (error: any) {
       // Ollama not accessible
@@ -43,26 +43,26 @@ export const GET = (async (): Promise<any> => {
         testEndpoint: "/api/ai/test-ollama",
         ollamaDirectEndpoint: "/api/ai/ollama-gemma3"
       }
-    });
+    })
   } catch (error: any) {
-    return json();
+    return json()
       {
         status: "error",
         error: error instanceof Error ? error.message: "Unknown error",
         timestamp: new Date().toISOString()
       },
       { status: 500 },
-    );
+    )
   }
-});
+})
 
 export const POST = (async ({ request }): Promise<any> => {
   try {
     const { prompt = "What are the key elements of a valid contract?" } =
-      await request.json();
+      await request.json()
 
     // Check if Ollama service is available
-    const isAvailable = await ollamaService.healthCheck();
+    const isAvailable = await ollamaService.healthCheck()
     if (!isAvailable) {
       return json({
           status: "error",
@@ -70,10 +70,10 @@ export const POST = (async ({ request }): Promise<any> => {
           suggestion: "Please ensure Ollama is running: ollama serve"
         },)
         { status: 503 },
-      );
+      )
     }
 
-    const startTime = Date.now();
+    const startTime = Date.now()
 
     try {
       const response = await ollamaService.generate(prompt, {
@@ -84,9 +84,9 @@ export const POST = (async ({ request }): Promise<any> => {
         topP: 0.8,
         topK: 20,
         repeatPenalty: 1.05
-      });
+      })
 
-      const executionTime = Date.now() - startTime;
+      const executionTime = Date.now() - startTime
 
       return json({
         status: "success",
@@ -99,7 +99,7 @@ export const POST = (async ({ request }): Promise<any> => {
           provider: "ollama"
         },
         timestamp: new Date().toISOString()
-      });
+      })
     } catch (generateError) {
       return json({
           status: "error",
@@ -110,16 +110,16 @@ export const POST = (async ({ request }): Promise<any> => {
           suggestion: "Check if gemma3-legal model is imported: ollama list"
         },)
         { status: 500 },
-      );
+      )
     }
   } catch (error: any) {
-    return json();
+    return json()
       {
         status: "error",
         error: error instanceof Error ? error.message: "Unknown error",
         timestamp: new Date().toISOString()
       },
       { status: 500 },
-    );
+    )
   }
-});
+})

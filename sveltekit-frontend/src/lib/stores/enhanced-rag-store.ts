@@ -128,7 +128,7 @@ class NeuralMemoryManager {
   async predictMemoryUsage(minutes: number) {
     return {
       recommendations: ['compress'],
-      suggestedQueries: [],
+      suggestedQueries: [],;
       confidence: 0.8
     };
   }
@@ -147,7 +147,7 @@ class NeuralMemoryManager {
 // Mock XState functions;
 function createActor(machine: any, options: any) {
   return {
-    start: () => {},
+    start: () => {},;
     send: (event: any) => {}
   };
 }
@@ -217,7 +217,7 @@ export function createEnhancedRAGStore() {
     },
     recommendations: [],
     didYouMean: [],
-    isLoading: false,
+    isLoading: false,;
     error: null,
     somClusters: [],
     neuralPredictions: [],
@@ -248,7 +248,7 @@ export function createEnhancedRAGStore() {
 
   // Core actions
   async function search(
-    query: string,
+    query: string,;
     options: any = {}
   ): Promise<any> {
     state.update((s) => ({ ...s, isLoading: true, currentQuery: query, error: null });
@@ -269,7 +269,7 @@ export function createEnhancedRAGStore() {
         updateCacheMetrics();
 
         return {
-          results: cachedResult.results,
+          results: cachedResult.results,;
           recommendations: cachedResult.recommendations
         };
       }
@@ -317,7 +317,7 @@ export function createEnhancedRAGStore() {
           confidence: docEmbedding.metadata?.confidence || 0.8
         },
         relevanceScore: 0.8,
-        rank: index + 1,
+        rank: index + 1,;
         snippet: docEmbedding.content?.substring(0, 200) || ''
       });
 
@@ -338,7 +338,7 @@ export function createEnhancedRAGStore() {
       // Cache results in multiple layers;
       await cacheResultsMultiLayer(query, {
         results: optimizedResults,
-        clusters,
+        clusters,;
         predictions: [memoryPrediction],
         recommendations
       });
@@ -359,7 +359,7 @@ export function createEnhancedRAGStore() {
       ragActor.send({ type: 'SEARCH_ERROR', error: errorMessage });
 
       return {
-        results: [],
+        results: [],;
         recommendations: []
       };
     } finally {
@@ -381,7 +381,7 @@ export function createEnhancedRAGStore() {
       // Add to documents;
       state.update((s) => ({
         ...s,
-        documents: [...s.documents, document],
+        documents: [...s.documents, document],;
         embeddings: { ...s.embeddings, [document.id]: embeddings }
       });
 
@@ -396,7 +396,7 @@ export function createEnhancedRAGStore() {
   async function removeDocument(documentId: string): Promise<any> {
     state.update((s) => ({
       ...s,
-      documents: s.documents.filter((doc) => doc.id !== documentId),
+      documents: s.documents.filter((doc) => doc.id !== documentId),;
       embeddings: Object.fromEntries(
         Object.entries(s.embeddings).filter(([id]) => id !== documentId)
       )
@@ -457,7 +457,7 @@ export function createEnhancedRAGStore() {
       embeddings: (currentState as RAGStoreState).embeddings,
       somClusters: (currentState as RAGStoreState).somClusters,
       cacheMetrics: (currentState as RAGStoreState).cacheMetrics,
-      performanceMetrics: currentMetrics,
+      performanceMetrics: currentMetrics,;
       timestamp: new Date().toISOString()
     };
   }
@@ -501,7 +501,7 @@ export function createEnhancedRAGStore() {
   }
 
   async function generateRecommendations(
-    query: string,
+    query: string,;
     results: SearchResult[];
   ): Promise<string[]> {
     // Generate intelligent recommendations based on search results and patterns

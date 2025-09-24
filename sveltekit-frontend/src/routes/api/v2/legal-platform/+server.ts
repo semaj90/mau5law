@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Legal AI Platform API Router v2
@@ -6,14 +6,14 @@ import type { RequestHandler } from './$types.js';
  * Integrates: Enhanced RAG, Upload Service, Vector Search, Case Management, Evidence Processing
  */
 
-import { json, error } from '@sveltejs/kit';
-import { db } from '$lib/server/db/unified-client';
-import { cases, evidence, criminals, legalDocuments } from '$lib/server/db/schema-postgres';
-import { eq, or, desc, ilike, and } from 'drizzle-orm';
-import { createId } from '@paralleldrive/cuid2';
-import { URL } from 'url';
+import { json, error } from '@sveltejs/kit'
+import { db } from '$lib/server/db/unified-client'
+import { cases, evidence, criminals, legalDocuments } from '$lib/server/db/schema-postgres'
+import { eq, or, desc, ilike, and } from 'drizzle-orm'
+import { createId } from '@paralleldrive/cuid2'
+import { URL } from 'url'
 
-// Go Microservice Configuration;
+// Go Microservice Configuration
 const GO_SERVICES = {
   enhanced_rag: {
     url: 'http://localhost:8094',
@@ -51,15 +51,15 @@ const GO_SERVICES = {
       metrics: '/metrics'
     }
   }
-};
+}
 
-// Request Types;
+// Request Types
 export interface LegalPlatformRequest {
-  action: 'create' | 'read' | 'update' | 'delete' | 'search' | 'process' | 'analyze';
-  entity: 'case' | 'evidence' | 'criminal' | 'document' | 'search' | 'upload' | 'ai';
-  data?: any;
-  id?: string;
-  filters?: Record<string, any>;
+  action: 'create' | 'read' | 'update' | 'delete' | 'search' | 'process' | 'analyze'
+  entity: 'case' | 'evidence' | 'criminal' | 'document' | 'search' | 'upload' | 'ai'
+  data?: any
+  id?: string
+  filters?: Record<string, any>
 }
 
 // Utility function to call Go microservices
@@ -67,10 +67,10 @@ async function callGoService(
   service: keyof typeof GO_SERVICES,
   endpoint: string,
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
-  data?: any;
+  data?: any
 ): Promise<any> {
-  const serviceConfig = GO_SERVICES[service];
-  const url = `${serviceConfig.url}${endpoint}`;
+  const serviceConfig = GO_SERVICES[service]
+  const url = `${serviceConfig.url}${endpoint}`
 
   try {
     const response = await fetch(url, {
@@ -79,96 +79,96 @@ async function callGoService(
         'Content-Type': 'application/json'
       },
       body: data ? JSON.stringify(data) : undefined
-    });
+    })
 
     if (!response.ok) {
-      throw new Error(`Service ${service} returned ${response.status}: ${response.statusText}`);
+      throw new Error(`Service ${service} returned ${response.status}: ${response.statusText}`)
     }
 
-    return await response.json();
+    return await response.json()
   } catch (err: any) {
-    console.error(`Error calling ${service} service:`, err);
-    throw new Error(`Failed to communicate with ${service} service`);
+    console.error(`Error calling ${service} service:`, err)
+    throw new Error(`Failed to communicate with ${service} service`)
   }
 }
 
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
-    const req: LegalPlatformRequest = await request.json();
+    const req: LegalPlatformRequest = await request.json()
 
-    // Handle health check;
+    // Handle health check
     if (req.action === ('health' as any)) {
       const healthChecks = await Promise.allSettled([
         callGoService('enhanced_rag', '/api/health'),
         callGoService('upload_service', '/health')
-      ]);
+      ])
 
       const services = {
         enhanced_rag: healthChecks[0].status === 'fulfilled',
         upload_service: healthChecks[1].status === 'fulfilled',
         database: true, // Assume database is healthy if we got this far
-      };
+      }
 
       return json({
         success: true,
         data: { services },
         timestamp: new Date().toISOString(),
         message: 'Health check completed'
-      });
+      })
     }
 
-    // Route based on entity and action;
+    // Route based on entity and action
     switch (req.entity) {
       case 'case':
-        return await handleCaseOperations(req);
+        return await handleCaseOperations(req)
       case 'evidence':
-        return await handleEvidenceOperations(req);
+        return await handleEvidenceOperations(req)
       case 'criminal':
-        return await handleCriminalOperations(req);
+        return await handleCriminalOperations(req)
       case 'document':
-        return await handleDocumentOperations(req);
+        return await handleDocumentOperations(req)
       case 'search':
-        return await handleSearchOperations(req);
+        return await handleSearchOperations(req)
       case 'upload':
-        return await handleUploadOperations(req);
+        return await handleUploadOperations(req)
       case 'ai':
-        return await handleAIOperations(req);
+        return await handleAIOperations(req)
       default:
-        throw error(400, `Unknown entity: ${req.entity}`);
+        throw error(400, `Unknown entity: ${req.entity}`)
     }
   } catch (err: any) {
-    console.error('API Error:', err);
-    throw error(500, err instanceof Error ? err.message: 'Internal server error');
+    console.error('API Error:', err)
+    throw error(500, err instanceof Error ? err.message: 'Internal server error')
   }
-};
+}
 
 export const GET: RequestHandler = async ({ url }) => {
-  const action = url.searchParams.get('action');
-  const entity = url.searchParams.get('entity');
-  const id = url.searchParams.get('id');
+  const action = url.searchParams.get('action')
+  const entity = url.searchParams.get('entity')
+  const id = url.searchParams.get('id')
 
   if (!action || !entity) {
-    throw error(400, 'Missing required parameters: action and entity');
+    throw error(400, 'Missing required parameters: action and entity')
   }
 
   const req: LegalPlatformRequest = {
     action: action as any,
     entity: entity as any,
     id: id || undefined
-  };
+  }
 
   return await POST({
     request: new Request('', { method: 'POST', body: JSON.stringify(req) }),
     url
-  } as any);
-};
+  } as any)
+}
 
-// Case Management Operations;
+// Case Management Operations
 async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
   switch (req.action) {
     case 'create':
       const newCase = await db
-        .insert(cases);
+        .insert(cases)
         .values({
           id: createId(),
           caseNumber: `CASE-${Date.now()}`,
@@ -184,53 +184,53 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
           createdAt: new Date(),
           updatedAt: new Date()
         })
-        .returning();
+        .returning()
 
       return json({
         success: true,
         data: newCase[0],
         message: 'Case created successfully'
-      });
+      })
 
-    case 'read':;
+    case 'read':
       if (req.id) {
-        const caseData = await db.select().from(cases).where(eq(cases.id, req.id);
+        const caseData = await db.select().from(cases).where(eq(cases.id, req.id)
         if (caseData.length === 0) {
-          throw error(404, 'Case not found');
+          throw error(404, 'Case not found')
         }
-        return json({ success: true, data: caseData[0] });
+        return json({ success: true, data: caseData[0] })
       } else {
-        const allCases = await db.select().from(cases).orderBy(desc(cases.createdAt)).limit(50);
-        return json({ success: true, data: allCases });
+        const allCases = await db.select().from(cases).orderBy(desc(cases.createdAt)).limit(50)
+        return json({ success: true, data: allCases })
       }
 
     case 'update':
-      if (!req.id) throw error(400, 'Case ID required for update');
+      if (!req.id) throw error(400, 'Case ID required for update')
 
       const updatedCase = await db
-        .update(cases);
+        .update(cases)
         .set({
           ...req.data,
           updatedAt: new Date()
         })
         .where(eq(cases.id, req.id)
-        .returning();
+        .returning()
 
       return json({
         success: true,
         data: updatedCase[0],
         message: 'Case updated successfully'
-      });
+      })
 
     case 'delete':
-      if (!req.id) throw error(400, 'Case ID required for deletion');
+      if (!req.id) throw error(400, 'Case ID required for deletion')
 
-      await db.delete(cases).where(eq(cases.id, req.id);
+      await db.delete(cases).where(eq(cases.id, req.id)
 
       return json({
         success: true,
         message: 'Case deleted successfully'
-      });
+      })
 
     case 'search':
       const searchResults = await db
@@ -243,21 +243,21 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
             cases.caseNumber.ilike(`%${req.data.query}%`)
           )
         )
-        .limit(20);
+        .limit(20)
 
-      return json({ success: true, data: searchResults });
+      return json({ success: true, data: searchResults })
 
     default:
-      throw error(400, `Unknown case action: ${req.action}`);
+      throw error(400, `Unknown case action: ${req.action}`)
   }
 }
 
-// Evidence Management Operations;
+// Evidence Management Operations
 async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any> {
   switch (req.action) {
     case 'create':
       const newEvidence = await db
-        .insert(evidence);
+        .insert(evidence)
         .values({
           id: createId(),
           caseId: req.data.caseId,
@@ -273,61 +273,61 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any>
           uploadedAt: new Date(),
           updatedAt: new Date()
         })
-        .returning();
+        .returning()
 
       return json({
         success: true,
         data: newEvidence[0],
         message: 'Evidence created successfully'
-      });
+      })
 
-    case 'read':;
+    case 'read':
       if (req.id) {
-        const evidenceData = await db.select().from(evidence).where(eq(evidence.id, req.id);
+        const evidenceData = await db.select().from(evidence).where(eq(evidence.id, req.id)
         if (evidenceData.length === 0) {
-          throw error(404, 'Evidence not found');
+          throw error(404, 'Evidence not found')
         }
-        return json({ success: true, data: evidenceData[0] });
+        return json({ success: true, data: evidenceData[0] })
       } else {
-        const filters = req.filters || {};
-        const whereClauses = [] as any[];
+        const filters = req.filters || {}
+        const whereClauses = [] as any[]
         if (filters.caseId) {
-          whereClauses.push(eq(evidence.caseId, filters.caseId);
+          whereClauses.push(eq(evidence.caseId, filters.caseId)
         }
         const allEvidence = await db
           .select()
           .from(evidence)
           .where(whereClauses.length ? and(...whereClauses) : (undefined as any)
           .orderBy(desc(evidence.uploadedAt)
-          .limit(50);
-        return json({ success: true, data: allEvidence });
+          .limit(50)
+        return json({ success: true, data: allEvidence })
       }
 
     case 'analyze':
-      // Call enhanced RAG service for AI analysis;
+      // Call enhanced RAG service for AI analysis
       const analysisResult = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
         type: 'evidence_analysis',
         evidenceId: req.id,
         data: req.data
-      });
+      })
 
       return json({
         success: true,
         data: analysisResult,
         message: 'Evidence analysis completed'
-      });
+      })
 
     default:
-      throw error(400, `Unknown evidence action: ${req.action}`);
+      throw error(400, `Unknown evidence action: ${req.action}`)
   }
 }
 
-// Criminal Records Operations;
+// Criminal Records Operations
 async function handleCriminalOperations(req: LegalPlatformRequest): Promise<any> {
   switch (req.action) {
     case 'create':
       const newCriminal = await db
-        .insert(criminals);
+        .insert(criminals)
         .values({
           id: createId(),
           firstName: req.data.firstName,
@@ -343,41 +343,41 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<any>
           createdAt: new Date(),
           updatedAt: new Date()
         })
-        .returning();
+        .returning()
 
       return json({
         success: true,
         data: newCriminal[0],
         message: 'Criminal record created successfully'
-      });
+      })
 
-    case 'read':;
+    case 'read':
       if (req.id) {
-        const criminalData = await db.select().from(criminals).where(eq(criminals.id, req.id);
+        const criminalData = await db.select().from(criminals).where(eq(criminals.id, req.id)
         if (criminalData.length === 0) {
-          throw error(404, 'Criminal not found');
+          throw error(404, 'Criminal not found')
         }
-        return json({ success: true, data: criminalData[0] });
+        return json({ success: true, data: criminalData[0] })
       } else {
         const allCriminals = await db
           .select()
           .from(criminals)
           .orderBy(desc(criminals.createdAt)
-          .limit(50);
-        return json({ success: true, data: allCriminals });
+          .limit(50)
+        return json({ success: true, data: allCriminals })
       }
 
     default:
-      throw error(400, `Unknown criminal action: ${req.action}`);
+      throw error(400, `Unknown criminal action: ${req.action}`)
   }
 }
 
-// Document Operations;
+// Document Operations
 async function handleDocumentOperations(req: LegalPlatformRequest): Promise<any> {
   switch (req.action) {
     case 'create':
       const newDocument = await db
-        .insert(legalDocuments);
+        .insert(legalDocuments)
         .values({
           id: createId(),
           caseId: req.data.caseId,
@@ -391,62 +391,62 @@ async function handleDocumentOperations(req: LegalPlatformRequest): Promise<any>
           createdAt: new Date(),
           updatedAt: new Date()
         })
-        .returning();
+        .returning()
 
       return json({
         success: true,
         data: newDocument[0],
         message: 'Document created successfully'
-      });
+      })
 
-    case 'read':;
+    case 'read':
       if (req.id) {
         const documentData = await db
           .select()
           .from(legalDocuments)
-          .where(eq(legalDocuments.id, req.id);
+          .where(eq(legalDocuments.id, req.id)
         if (documentData.length === 0) {
-          throw error(404, 'Document not found');
+          throw error(404, 'Document not found')
         }
-        return json({ success: true, data: documentData[0] });
+        return json({ success: true, data: documentData[0] })
       } else {
-        const filters = req.filters || {};
-        const whereClauses = [] as any[];
+        const filters = req.filters || {}
+        const whereClauses = [] as any[]
         if (filters.caseId) {
-          whereClauses.push(eq(legalDocuments.caseId, filters.caseId);
+          whereClauses.push(eq(legalDocuments.caseId, filters.caseId)
         }
         const allDocuments = await db
           .select()
           .from(legalDocuments)
           .where(whereClauses.length ? and(...whereClauses) : (undefined as any)
           .orderBy(desc(legalDocuments.createdAt)
-          .limit(50);
-        return json({ success: true, data: allDocuments });
+          .limit(50)
+        return json({ success: true, data: allDocuments })
       }
 
     default:
-      throw error(400, `Unknown document action: ${req.action}`);
+      throw error(400, `Unknown document action: ${req.action}`)
   }
 }
 
-// Search Operations (Vector + Traditional);
+// Search Operations (Vector + Traditional)
 async function handleSearchOperations(req: LegalPlatformRequest): Promise<any> {
-  const { query, type = 'semantic', limit = 10 } = req.data;
+  const { query, type = 'semantic', limit = 10 } = req.data
 
   try {
-    // Call enhanced RAG service for semantic search;
+    // Call enhanced RAG service for semantic search
     const searchResults = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
       type: 'vector_similarity',
       query,
       search_type: type,
       limit
-    });
+    })
 
     return json({
       success: true,
       data: searchResults,
       message: 'Search completed successfully'
-    });
+    })
   } catch (err: any) {
     // Fallback to traditional database search
     const fallbackResults = await db
@@ -455,88 +455,88 @@ async function handleSearchOperations(req: LegalPlatformRequest): Promise<any> {
       .where(
         or(ilike(cases.title, `%${query}%` as any), ilike(cases.description, `%${query}%` as any)
       )
-      .limit(limit);
+      .limit(limit)
 
     return json({
       success: true,
       data: fallbackResults,
       message: 'Search completed (database fallback)',
       fallback: true
-    });
+    })
   }
 }
 
-// Upload Operations;
+// Upload Operations
 async function handleUploadOperations(req: LegalPlatformRequest): Promise<any> {
   try {
-    const uploadResult = await callGoService('upload_service', '/upload', 'POST', req.data);
+    const uploadResult = await callGoService('upload_service', '/upload', 'POST', req.data)
 
     return json({
       success: true,
       data: uploadResult,
       message: 'Upload processed successfully'
-    });
+    })
   } catch (err: any) {
-    throw error(500, `Upload service error: ${err instanceof Error ? err.message: 'Unknown error'}`);
+    throw error(500, `Upload service error: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
 }
 
-// AI Operations (Enhanced RAG, GPU Compute, SOM Training);
+// AI Operations (Enhanced RAG, GPU Compute, SOM Training)
 async function handleAIOperations(req: LegalPlatformRequest): Promise<any> {
-  const { operation, data } = req.data;
+  const { operation, data } = req.data
 
   try {
-    let result;
+    let result
 
     switch (operation) {
       case 'chat':
       case 'analyze':
-      case 'summarize':;
+      case 'summarize':
         result = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
           type: operation,
           ...data
-        });
-        break;
+        })
+        break
 
       case 'train_som':
-        result = await callGoService('enhanced_rag', '/api/som/train', 'POST', data);
-        break;
+        result = await callGoService('enhanced_rag', '/api/som/train', 'POST', data)
+        break
 
       case 'xstate_event':
-        result = await callGoService('enhanced_rag', '/api/xstate/event', 'POST', data);
-        break;
+        result = await callGoService('enhanced_rag', '/api/xstate/event', 'POST', data)
+        break
 
       default:
-        throw error(400, `Unknown AI operation: ${operation}`);
+        throw error(400, `Unknown AI operation: ${operation}`)
     }
 
     return json({
       success: true,
       data: result,
       message: `AI operation ${operation} completed successfully`
-    });
+    })
   } catch (err: any) {
-    throw error(500, `AI service error: ${err instanceof Error ? err.message: 'Unknown error'}`);
+    throw error(500, `AI service error: ${err instanceof Error ? err.message: 'Unknown error'}`)
   }
 }
 
-// Health Check endpoint;
+// Health Check endpoint
 export const OPTIONS: RequestHandler = async () => {
   const healthChecks = await Promise.allSettled([
     callGoService('enhanced_rag', '/api/health'),
     callGoService('upload_service', '/health')
-  ]);
+  ])
 
   const services = {
     enhanced_rag: healthChecks[0].status === 'fulfilled',
     upload_service: healthChecks[1].status === 'fulfilled',
     database: true // Assume database is healthy if we got this far
-  };
+  }
 
   return json({
     success: true,
     services,
     timestamp: new Date().toISOString(),
     message: 'Health check completed'
-  });
-};
+  })
+}

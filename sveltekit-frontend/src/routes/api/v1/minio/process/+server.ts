@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { minioService } from '$lib/server/storage/minio-service';
-import { MinIOService as MinIOUtility } from '$lib/server/minio-service';
+import type { RequestHandler } from './$types.js'
+import { minioService } from '$lib/server/storage/minio-service'
+import { MinIOService as MinIOUtility } from '$lib/server/minio-service'
 
 /**
  * MinIO File Processing API - Upload + AI Analysis
@@ -11,7 +11,7 @@ import { MinIOService as MinIOUtility } from '$lib/server/minio-service';
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     // Initialize MinIO service
-    const initialized = await minioService.initialize();
+    const initialized = await minioService.initialize()
     if (!initialized) {
       return new Response(JSON.stringify({
         error: 'MinIO service unavailable',
@@ -19,16 +19,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     // Parse form data
-    const form = await request.formData();
-    const file = form.get('file');
-    const bucket = form.get('bucket')?.toString() || 'legal-documents';
+    const form = await request.formData()
+    const file = form.get('file')
+    const bucket = form.get('bucket')?.toString() || 'legal-documents'
     const enableAI = form.get('enableAI')?.toString() !== 'false'; // Default: true
-    const caseId = form.get('caseId')?.toString();
-    const userId = form.get('userId')?.toString() || 'anonymous';
+    const caseId = form.get('caseId')?.toString()
+    const userId = form.get('userId')?.toString() || 'anonymous'
 
     if (!file || !(file instanceof File)) {
       return new Response(JSON.stringify({
@@ -37,18 +37,18 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
-    const startTime = Date.now();
+    const startTime = Date.now()
 
     // Step 1: Upload file to MinIO
-    console.log(`📤 Uploading ${file.name} to bucket: ${bucket}`);
+    console.log(`📤 Uploading ${file.name} to bucket: ${bucket}`)
     const uploadResult = await minioService.uploadFile(file, file.name, {
       bucket,
       caseId: caseId ? parseInt(caseId) : undefined,
       uploadedBy: userId ? parseInt(userId) : undefined
-    });
+    })
 
     if (!uploadResult.success) {
       return new Response(JSON.stringify({
@@ -57,27 +57,27 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     // Step 2: Extract text content if AI analysis is enabled
-    let aiAnalysis = null;
-    let textContent = null;
+    let aiAnalysis = null
+    let textContent = null
 
     if (enableAI) {
       try {
-        console.log(`🤖 Starting AI analysis for ${file.name}`);
+        console.log(`🤖 Starting AI analysis for ${file.name}`)
 
         // Extract text content using the utility MinIO service
-        const minioUrl = `minio://${bucket}/${uploadResult.fileName}`;
+        const minioUrl = `minio://${bucket}/${uploadResult.fileName}`
         const extractionResult = await MinIOUtility.getTextContent(minioUrl, {
           maxSize: 10 * 1024 * 1024, // 10MB max
           extractPlainText: true
-        });
+        })
 
-        textContent = extractionResult.content;
+        textContent = extractionResult.content
 
-        // Basic AI analysis (this would connect to your AI pipeline);
+        // Basic AI analysis (this would connect to your AI pipeline)
         aiAnalysis = {
           documentType: determineDocumentType(file.name, textContent),
           keyTerms: extractKeyTerms(textContent),
@@ -90,19 +90,19 @@ export const POST: RequestHandler = async ({ request, url }) => {
             processingTime: extractionResult.metadata.processingTime,
             confidence: 0.85
           }
-        };
+        }
 
-        console.log(`✅ AI analysis completed for ${file.name}`);
+        console.log(`✅ AI analysis completed for ${file.name}`)
       } catch (aiError) {
-        console.warn('AI analysis failed, continuing without it:', aiError);
+        console.warn('AI analysis failed, continuing without it:', aiError)
         aiAnalysis = {
           error: aiError instanceof Error ? aiError.message: 'AI analysis failed',
           fallback: true
-        };
+        }
       }
     }
 
-    const totalProcessingTime = Date.now() - startTime;
+    const totalProcessingTime = Date.now() - startTime
 
     return new Response(JSON.stringify({
       success: true,
@@ -125,27 +125,27 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
 
   } catch (error) {
-    console.error('File processing error:', error);
+    console.error('File processing error:', error)
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Processing failed',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
   }
-};
+}
 
 /**
  * GET: Get processing status of uploaded files
- */;
+ */
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const fileId = url.searchParams.get('fileId');
-    const bucket = url.searchParams.get('bucket') || 'legal-documents';
+    const fileId = url.searchParams.get('fileId')
+    const bucket = url.searchParams.get('bucket') || 'legal-documents'
 
     if (!fileId) {
       return new Response(JSON.stringify({
@@ -154,12 +154,12 @@ export const GET: RequestHandler = async ({ url }) => {
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
     // This would typically query a processing status database
     // For now, we'll check if the file exists in MinIO
-    const initialized = await minioService.initialize();
+    const initialized = await minioService.initialize()
     if (!initialized) {
       return new Response(JSON.stringify({
         error: 'MinIO service unavailable',
@@ -167,11 +167,11 @@ export const GET: RequestHandler = async ({ url }) => {
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
-      });
+      })
     }
 
-    const files = await minioService.listFiles(bucket, fileId, 1);
-    const fileExists = files.length > 0;
+    const files = await minioService.listFiles(bucket, fileId, 1)
+    const fileExists = files.length > 0
 
     return new Response(JSON.stringify({
       fileId,
@@ -183,36 +183,36 @@ export const GET: RequestHandler = async ({ url }) => {
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
 
   } catch (error) {
-    console.error('Processing status error:', error);
+    console.error('Processing status error:', error)
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Status check failed',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
-    });
+    })
   }
-};
+}
 
-// Helper functions for basic AI analysis;
+// Helper functions for basic AI analysis
 function determineDocumentType(fileName: string, content: string): string {
-  const ext = fileName.split('.').pop()?.toLowerCase() || '';
+  const ext = fileName.split('.').pop()?.toLowerCase() || ''
 
   // Basic document type detection
-  if (['pdf', 'doc', 'docx'].includes(ext)) return 'legal-document';
-  if (['txt', 'md'].includes(ext)) return 'text-document';
-  if (['json'].includes(ext)) return 'structured-data';
-  if (['jpg', 'png', 'gif'].includes(ext)) return 'image-evidence';
+  if (['pdf', 'doc', 'docx'].includes(ext)) return 'legal-document'
+  if (['txt', 'md'].includes(ext)) return 'text-document'
+  if (['json'].includes(ext)) return 'structured-data'
+  if (['jpg', 'png', 'gif'].includes(ext)) return 'image-evidence'
 
   // Content-based detection
-  if (content.toLowerCase().includes('contract')) return 'contract';
-  if (content.toLowerCase().includes('evidence')) return 'evidence';
-  if (content.toLowerCase().includes('case')) return 'case-file';
+  if (content.toLowerCase().includes('contract')) return 'contract'
+  if (content.toLowerCase().includes('evidence')) return 'evidence'
+  if (content.toLowerCase().includes('case')) return 'case-file'
 
-  return 'unknown';
+  return 'unknown'
 }
 
 function extractKeyTerms(content: string): string[] {
@@ -220,35 +220,35 @@ function extractKeyTerms(content: string): string[] {
   const legalTerms = [
     'contract', 'agreement', 'evidence', 'witness', 'defendant', 'plaintiff',
     'jurisdiction', 'precedent', 'statute', 'liability', 'damages', 'testimony'
-  ];
+  ]
 
-  const foundTerms = legalTerms.filter(item => item.includes(term.toLowerCase());
+  const foundTerms = legalTerms.filter(item => item.includes(term.toLowerCase())
 
   return foundTerms.slice(0, 10); // Limit to top 10 terms
 }
 
 function assessComplexity(content: string): 'low' | 'medium' | 'high' {
-  const wordCount = content.split(/\s+/).length;
+  const wordCount = content.split(/\s+/).length
 
-  if (wordCount < 500) return 'low';
-  if (wordCount < 2000) return 'medium';
-  return 'high';
+  if (wordCount < 500) return 'low'
+  if (wordCount < 2000) return 'medium'
+  return 'high'
 }
 
 function assessRiskLevel(content: string): 'low' | 'medium' | 'high' | 'critical' {
-  const riskKeywords = ['criminal', 'felony', 'urgent', 'emergency', 'critical'];
-  const foundRiskTerms = riskKeywords.filter(item => item.includes(term.toLowerCase());
+  const riskKeywords = ['criminal', 'felony', 'urgent', 'emergency', 'critical']
+  const foundRiskTerms = riskKeywords.filter(item => item.includes(term.toLowerCase())
 
-  if (foundRiskTerms.length >= 2) return 'critical';
-  if (foundRiskTerms.length >= 1) return 'high';
-  if (content.split(/\s+/).length > 1000) return 'medium';
-  return 'low';
+  if (foundRiskTerms.length >= 2) return 'critical'
+  if (foundRiskTerms.length >= 1) return 'high'
+  if (content.split(/\s+/).length > 1000) return 'medium'
+  return 'low'
 }
 
 function generateSummary(content: string): string {
   // Basic summary generation - first few sentences
-  const sentences = content.split(/[.!?]+/).filter(item => item.length) > 0);
-  const summary = sentences.slice(0, 3).join('. ');
+  const sentences = content.split(/[.!?]+/).filter(item => item.length) > 0)
+  const summary = sentences.slice(0, 3).join('. ')
 
-  return summary.substring(0, 200) + (summary.length > 200 ? '...' : '');
+  return summary.substring(0, 200) + (summary.length > 200 ? '...' : '')
 }

@@ -86,7 +86,7 @@ export class WebGPUTensorAccelerator {
       console.log('📊 WebGPU Adapter Info:', {
         vendor: this.adapter.info?.vendor,
         architecture: this.adapter.info?.architecture,
-        device: this.adapter.info?.device,
+        device: this.adapter.info?.device,;
         limits: this.adapter.limits
       });
 
@@ -302,7 +302,7 @@ export class WebGPUTensorAccelerator {
 
     for (const [name, source] of Object.entries(shaders)) {
       const shader = this.device.createShaderModule({
-        label: `${name}Shader`,
+        label: `${name}Shader`,;
         code: source
       });
 
@@ -326,11 +326,11 @@ export class WebGPUTensorAccelerator {
       const bufferA = this.createBuffer(vectorA, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
       const bufferB = this.createBuffer(vectorB, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
       const resultBuffer = this.device.createBuffer({
-        size: size * 4,
+        size: size * 4,;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
       const paramsBuffer = this.device.createBuffer({
-        size: 16,
+        size: 16,;
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
@@ -341,14 +341,14 @@ export class WebGPUTensorAccelerator {
       const shader = this.shaderCache.get('vectorSimilarity')!;
       const computePipeline = this.device.createComputePipeline({
         layout: 'auto',
-        compute: {
+        compute: {;
           module: shader,
           entryPoint: 'main'
         }
       });
 
       const bindGroup = this.device.createBindGroup({
-        layout: computePipeline.getBindGroupLayout(0),
+        layout: computePipeline.getBindGroupLayout(0),;
         entries: [
           { binding: 0, resource: { buffer: bufferA } },
           { binding: 1, resource: { buffer: bufferB } },
@@ -367,7 +367,7 @@ export class WebGPUTensorAccelerator {
 
       // Copy result to staging buffer;
       const stagingBuffer = this.device.createBuffer({
-        size: size * 4,
+        size: size * 4,;
         usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
@@ -501,7 +501,7 @@ export class WebGPUTensorAccelerator {
             performanceMetrics: {
               totalTime,
               simdTime,
-              gpuTime,
+              gpuTime,;
               throughput: combinedData.byteLength / 1024 / 1024 / (totalTime / 1000), // MB/s
             }
           };
@@ -523,7 +523,7 @@ export class WebGPUTensorAccelerator {
         performanceMetrics: {
           totalTime,
           simdTime,
-          gpuTime,
+          gpuTime,;
           throughput: (vectorA.byteLength + vectorB.byteLength) / 1024 / 1024 / (totalTime / 1000), // MB/s
         }
       };
@@ -582,11 +582,11 @@ export class WebGPUTensorAccelerator {
     const tokensBuffer = this.createBuffer(tokens, GPUBufferUsage.STORAGE);
     const weightsBuffer = this.createBuffer(weights, GPUBufferUsage.STORAGE);
     const outputBuffer = this.device.createBuffer({
-      size: tokens.length * embeddingDim * 4,
+      size: tokens.length * embeddingDim * 4,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const paramsBuffer = this.device.createBuffer({
-      size: 16,
+      size: 16,;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
@@ -601,14 +601,14 @@ export class WebGPUTensorAccelerator {
     const shader = this.shaderCache.get('embedding')!;
     const computePipeline = this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: shader,
         entryPoint: 'main'
       }
     });
 
     const bindGroup = this.device.createBindGroup({
-      layout: computePipeline.getBindGroupLayout(0),
+      layout: computePipeline.getBindGroupLayout(0),;
       entries: [
         { binding: 0, resource: { buffer: tokensBuffer } },
         { binding: 1, resource: { buffer: weightsBuffer } },
@@ -626,7 +626,7 @@ export class WebGPUTensorAccelerator {
 
     // Copy and read result;
     const stagingBuffer = this.device.createBuffer({
-      size: tokens.length * embeddingDim * 4,
+      size: tokens.length * embeddingDim * 4,;
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
@@ -664,7 +664,7 @@ export class WebGPUTensorAccelerator {
   }
 
   private createBuffer(data: ArrayBufferView, usage: GPUBufferUsageFlags): GPUBuffer {
-    const buffer = this.device!.createBuffer({
+    const buffer = this.device!.createBuffer({;
       size: data.byteLength,
       usage
     });
@@ -698,7 +698,7 @@ export class WebGPUTensorAccelerator {
       isSupported: !!navigator.gpu,
       isInitialized: this.isInitialized,
       adapter: this.adapter?.info || null,
-      limits: this.adapter?.limits || null,
+      limits: this.adapter?.limits || null,;
       features: this.adapter ? Array.from(this.adapter.features) : [],
       shaderCacheSize: this.shaderCache.size
     };

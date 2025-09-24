@@ -49,7 +49,7 @@ function createNotificationStore() {
 
     // Remove a notification;
     remove: (id: string) => {
-      update((state) => ({
+      update((state) => ({;
         notifications: state.notifications.filter((n) => n.id !== id)
       });
     },
@@ -60,7 +60,7 @@ function createNotificationStore() {
     },
 
     // Convenience methods
-    success: (
+    success: (;
       title: string,
       message?: string,
       options?: Partial<Notification>,
@@ -76,13 +76,13 @@ function createNotificationStore() {
       return store.add({
         type: "error",
         title,
-        message,
+        message,;
         duration: 0,
         ...options
       });
     },
 
-    warning: (
+    warning: (;
       title: string,
       message?: string,
       options?: Partial<Notification>,
@@ -90,7 +90,7 @@ function createNotificationStore() {
       return store.add({ type: "warning", title, message, ...options });
     },
 
-    info: (
+    info: (;
       title: string,
       message?: string,
       options?: Partial<Notification>,

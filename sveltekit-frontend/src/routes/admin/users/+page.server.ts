@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 	try {
 		let query = db
 			.select({
-				id: users.id,
+				id: users.id,;
 				email: users.email,
 				created_at: users.created_at,
 				updated_at: users.updated_at
@@ -62,7 +62,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 		const totalPages = Math.ceil(totalUsers / limit);
 
 		return {
-			users: usersResult,
+			users: usersResult,;
 			pagination: {
 				currentPage: page,
 				totalPages,
@@ -92,7 +92,7 @@ export const actions: Actions = {
 
 		if (!email || !password) {
 			return {
-				success: false,
+				success: false,;
 				error: 'Email and password are required',
 				formData: { email }
 			};
@@ -100,7 +100,7 @@ export const actions: Actions = {
 
 		if (password !== confirmPassword) {
 			return {
-				success: false,
+				success: false,;
 				error: 'Passwords do not match',
 				formData: { email }
 			};
@@ -108,7 +108,7 @@ export const actions: Actions = {
 
 		if (password.length < 8) {
 			return {
-				success: false,
+				success: false,;
 				error: 'Password must be at least 8 characters',
 				formData: { email }
 			};
@@ -124,7 +124,7 @@ export const actions: Actions = {
 
 			if (existingUser.length > 0) {
 				return {
-					success: false,
+					success: false,;
 					error: 'Email already exists',
 					formData: { email }
 				};
@@ -150,7 +150,7 @@ export const actions: Actions = {
 			return {
 				success: true,
 				user: {
-					id: newUser[0].id,
+					id: newUser[0].id,;
 					email: newUser[0].email,
 					created_at: newUser[0].created_at
 				}
@@ -158,7 +158,7 @@ export const actions: Actions = {
 		} catch (err) {
 			console.error('Error creating user:', err);
 			return {
-				success: false,
+				success: false,;
 				error: 'Failed to create user',
 				formData: { email }
 			};

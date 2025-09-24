@@ -16,55 +16,55 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 /*
  * Document Drafting Assistant API Endpoint
  * Provides AI-powered legal document drafting assistance with templates and guidance
  */
 
-import { synthesizeAIInput, processAIAssistantQuery } from "$lib/services/comprehensive-database-orchestrator";
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { synthesizeAIInput, processAIAssistantQuery } from "$lib/services/comprehensive-database-orchestrator"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 }
 
 export interface DocumentDraftingRequest {
-  documentType: string;
-  jurisdiction?: string;
+  documentType: string
+  jurisdiction?: string
   parties: {
-    role: string;
-    name: string;
-    type?: 'individual' | 'corporation' | 'government';
-  }[];
+    role: string
+    name: string
+    type?: 'individual' | 'corporation' | 'government'
+  }[]
   keyTerms?: {
-    [key: string]: unknown;
-  };
-  templateId?: string;
-  userRole?: string;
-  complexity?: 'simple' | 'standard' | 'complex';
-  urgency?: 'low' | 'normal' | 'high';
-  customRequirements?: string;
+    [key: string]: unknown
+  }
+  templateId?: string
+  userRole?: string
+  complexity?: 'simple' | 'standard' | 'complex'
+  urgency?: 'low' | 'normal' | 'high'
+  customRequirements?: string
 }
 
 export interface DraftingAssistance {
   documentStructure: {
-    section: string;
-    description: string;
-    required: boolean;
-    template?: string;
-    guidance?: string[];
-  }[];
-  templateContent: string;
-  legalConsiderations: string[];
-  complianceChecklist: string[];
-  commonPitfalls: string[];
-  nextSteps: string[];
+    section: string
+    description: string
+    required: boolean
+    template?: string
+    guidance?: string[]
+  }[]
+  templateContent: string
+  legalConsiderations: string[]
+  complianceChecklist: string[]
+  commonPitfalls: string[]
+  nextSteps: string[]
 }
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
-  const startTime = Date.now();
+  const startTime = Date.now()
 
   try {
-    const body: DocumentDraftingRequest = await request.json();
+    const body: DocumentDraftingRequest = await request.json()
     const {
       documentType,
       jurisdiction = 'federal',
@@ -75,27 +75,27 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       complexity = 'standard',
       urgency = 'normal',
       customRequirements
-    } = body;
+    } = body
 
     if (!documentType?.trim()) {
-      return json({ error: 'Document type is required' }, { status: 400 });
+      return json({ error: 'Document type is required' }, { status: 400 })
     }
 
     if (!parties?.length) {
-      return json({ error: 'At least one party must be specified' }, { status: 400 });
+      return json({ error: 'At least one party must be specified' }, { status: 400 })
     }
 
     // Generate drafting assistance
-    const assistance = await generateDraftingAssistance(body);
+    const assistance = await generateDraftingAssistance(body)
 
     // Generate AI-powered content suggestions
-    const aiSuggestions = await generateAIContentSuggestions(body, assistance);
+    const aiSuggestions = await generateAIContentSuggestions(body, assistance)
 
     // Create compliance analysis
-    const complianceAnalysis = await generateComplianceAnalysis(body);
+    const complianceAnalysis = await generateComplianceAnalysis(body)
 
     // Calculate drafting confidence
-    const confidence = calculateDraftingConfidence(body, assistance);
+    const confidence = calculateDraftingConfidence(body, assistance)
 
     const response = {
       documentType,
@@ -113,43 +113,43 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         templateUsed: templateId || 'auto-generated'
       },
       recommendations: generateDraftingRecommendations(body, assistance)
-    };
+    }
 
-    return json(response);
+    return json(response)
   } catch (error: any) {
-    console.error('Document drafting API error:', error);
+    console.error('Document drafting API error:', error)
 
-    return json();
+    return json()
       {
         error: 'Drafting assistance failed',
         message: error.message,
         processingTime: Date.now() - startTime
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 async function generateDraftingAssistance(
-  request: DocumentDraftingRequest;
+  request: DocumentDraftingRequest
 ): Promise<DraftingAssistance> {
-  const { documentType, jurisdiction, parties, complexity } = request;
+  const { documentType, jurisdiction, parties, complexity } = request
 
   // Get document template and structure
-  const documentStructure = getDocumentStructure(documentType, jurisdiction);
-  const templateContent = await generateTemplateContent(request, documentStructure);
+  const documentStructure = getDocumentStructure(documentType, jurisdiction)
+  const templateContent = await generateTemplateContent(request, documentStructure)
 
   // Generate legal considerations
-  const legalConsiderations = generateLegalConsiderations(documentType, jurisdiction, complexity);
+  const legalConsiderations = generateLegalConsiderations(documentType, jurisdiction, complexity)
 
   // Create compliance checklist
-  const complianceChecklist = generateComplianceChecklist(documentType, jurisdiction);
+  const complianceChecklist = generateComplianceChecklist(documentType, jurisdiction)
 
   // Identify common pitfalls
-  const commonPitfalls = generateCommonPitfalls(documentType, parties);
+  const commonPitfalls = generateCommonPitfalls(documentType, parties)
 
   // Generate next steps
-  const nextSteps = generateNextSteps(documentType, complexity);
+  const nextSteps = generateNextSteps(documentType, complexity)
 
   return {
     documentStructure,
@@ -158,12 +158,12 @@ async function generateDraftingAssistance(
     complianceChecklist,
     commonPitfalls,
     nextSteps
-  };
+  }
 }
 
 function getDocumentStructure(documentType: string, jurisdiction: string) {
   const commonStructures = {
-    contract: [;
+    contract: [
       {
         section: 'Title and Parties',
         description: 'Document title and identification of all parties',
@@ -221,7 +221,7 @@ function getDocumentStructure(documentType: string, jurisdiction: string) {
         guidance: ['Include entire agreement clause', 'Address amendments', 'Include signatures']
       }
     ],
-    motion: [;
+    motion: [
       {
         section: 'Caption',
         description: 'Court identification and case information',
@@ -257,7 +257,7 @@ function getDocumentStructure(documentType: string, jurisdiction: string) {
         guidance: ['Summarize argument', 'Specify relief requested', 'Include prayer for relief']
       }
     ],
-    brief: [;
+    brief: [
       {
         section: 'Table of Contents',
         description: 'Document outline with page numbers',
@@ -309,95 +309,95 @@ function getDocumentStructure(documentType: string, jurisdiction: string) {
         guidance: ['Restate key points', 'Specify relief requested', 'End persuasively']
       }
     ]
-  };
+  }
 
-  return commonStructures[documentType.toLowerCase()] || commonStructures['contract'];
+  return commonStructures[documentType.toLowerCase()] || commonStructures['contract']
 }
 
 async function generateTemplateContent(
   request: DocumentDraftingRequest,
-  structure: any[];
+  structure: any[]
 ): Promise<string> {
-  const { documentType, parties, keyTerms, jurisdiction } = request;
+  const { documentType, parties, keyTerms, jurisdiction } = request
 
-  let template = `${documentType.toUpperCase()}\n\n`;
+  let template = `${documentType.toUpperCase()}\n\n`
 
   // Add parties section
-  template += `PARTIES:\n`;
+  template += `PARTIES:\n`
   parties.forEach((party, index) => {
-    template += `${index + 1}. ${party.name} ("${party.role}")\n`;
-  });
-  template += `\n`;
+    template += `${index + 1}. ${party.name} ("${party.role}")\n`
+  })
+  template += `\n`
 
-  // Add structure sections;
+  // Add structure sections
   structure.forEach((section) => {
-    template += `${section.section.toUpperCase()}\n`;
-    template += `[${section.description}]\n\n`;
+    template += `${section.section.toUpperCase()}\n`
+    template += `[${section.description}]\n\n`
 
     if (section.guidance) {
-      template += `Guidance:\n`;
+      template += `Guidance:\n`
       section.guidance.forEach((guide) => {
-        template += `• ${guide}\n`;
-      });
-      template += `\n`;
+        template += `• ${guide}\n`
+      })
+      template += `\n`
     }
-  });
+  })
 
   // Add jurisdiction-specific notes
-  template += `JURISDICTION NOTES (${jurisdiction}):\n`;
-  template += `[Include any jurisdiction-specific requirements or considerations]\n\n`;
+  template += `JURISDICTION NOTES (${jurisdiction}):\n`
+  template += `[Include any jurisdiction-specific requirements or considerations]\n\n`
 
-  return template;
+  return template
 }
 
 function generateLegalConsiderations(
   documentType: string,
   jurisdiction: string,
-  complexity: string;
+  complexity: string
 ): string[] {
-  const considerations = [];
+  const considerations = []
 
-  // Document-specific considerations;
+  // Document-specific considerations
   switch (documentType.toLowerCase()) {
     case 'contract':
       considerations.push(
         'Ensure all essential contract elements are present (offer, acceptance, consideration)'
-      );
-      considerations.push('Include clear performance standards and deadlines');
-      considerations.push('Address intellectual property ownership if applicable');
-      considerations.push('Consider force majeure and impossibility clauses');
-      break;
+      )
+      considerations.push('Include clear performance standards and deadlines')
+      considerations.push('Address intellectual property ownership if applicable')
+      considerations.push('Consider force majeure and impossibility clauses')
+      break
     case 'motion':
-      considerations.push('Verify proper court jurisdiction and venue');
-      considerations.push('Ensure compliance with local court rules');
-      considerations.push('Include proper service and notice requirements');
-      considerations.push('Consider timing requirements and deadlines');
-      break;
+      considerations.push('Verify proper court jurisdiction and venue')
+      considerations.push('Ensure compliance with local court rules')
+      considerations.push('Include proper service and notice requirements')
+      considerations.push('Consider timing requirements and deadlines')
+      break
     case 'brief':
-      considerations.push('Comply with page and word limits');
-      considerations.push('Follow court formatting requirements');
-      considerations.push('Ensure all citations are accurate and complete');
-      considerations.push('Address standard of review appropriately');
-      break;
+      considerations.push('Comply with page and word limits')
+      considerations.push('Follow court formatting requirements')
+      considerations.push('Ensure all citations are accurate and complete')
+      considerations.push('Address standard of review appropriately')
+      break
   }
 
-  // Jurisdiction considerations;
+  // Jurisdiction considerations
   if (jurisdiction === 'federal') {
-    considerations.push('Review Federal Rules of Civil Procedure');
-    considerations.push('Consider federal question or diversity jurisdiction');
+    considerations.push('Review Federal Rules of Civil Procedure')
+    considerations.push('Consider federal question or diversity jurisdiction')
   } else {
-    considerations.push(`Review ${jurisdiction} state law requirements`);
-    considerations.push('Consider state-specific procedural rules');
+    considerations.push(`Review ${jurisdiction} state law requirements`)
+    considerations.push('Consider state-specific procedural rules')
   }
 
-  // Complexity considerations;
+  // Complexity considerations
   if (complexity === 'complex') {
-    considerations.push('Consider engaging specialized counsel');
-    considerations.push('Plan for extended review and revision process');
-    considerations.push('Document decision-making process');
+    considerations.push('Consider engaging specialized counsel')
+    considerations.push('Plan for extended review and revision process')
+    considerations.push('Document decision-making process')
   }
 
-  return considerations;
+  return considerations
 }
 
 function generateComplianceChecklist(documentType: string, jurisdiction: string): string[] {
@@ -407,23 +407,23 @@ function generateComplianceChecklist(documentType: string, jurisdiction: string)
     'Check signature and notarization requirements',
     'Confirm proper service methods if required',
     'Review filing deadlines and procedures'
-  ];
+  ]
 
-  // Document-specific compliance;
+  // Document-specific compliance
   switch (documentType.toLowerCase()) {
     case 'contract':
-      checklist.push('Verify parties have authority to enter contract');
-      checklist.push('Ensure consideration is adequate');
-      checklist.push('Check for required disclosures');
-      break;
+      checklist.push('Verify parties have authority to enter contract')
+      checklist.push('Ensure consideration is adequate')
+      checklist.push('Check for required disclosures')
+      break
     case 'motion':
-      checklist.push('Verify meet and confer requirements');
-      checklist.push('Check supporting documentation requirements');
-      checklist.push('Confirm proper notice to all parties');
-      break;
+      checklist.push('Verify meet and confer requirements')
+      checklist.push('Check supporting documentation requirements')
+      checklist.push('Confirm proper notice to all parties')
+      break
   }
 
-  return checklist;
+  return checklist
 }
 
 function generateCommonPitfalls(documentType: string, parties: any[]): string[] {
@@ -433,29 +433,29 @@ function generateCommonPitfalls(documentType: string, parties: any[]): string[] 
     'Inconsistent terminology throughout document',
     'Failure to consider all relevant parties',
     'Inadequate dispute resolution provisions'
-  ];
+  ]
 
-  // Document-specific pitfalls;
+  // Document-specific pitfalls
   switch (documentType.toLowerCase()) {
     case 'contract':
-      pitfalls.push('Unclear payment terms or schedules');
-      pitfalls.push('Missing termination clauses');
-      pitfalls.push('Inadequate liability limitations');
-      break;
+      pitfalls.push('Unclear payment terms or schedules')
+      pitfalls.push('Missing termination clauses')
+      pitfalls.push('Inadequate liability limitations')
+      break
     case 'motion':
-      pitfalls.push('Insufficient factual support');
-      pitfalls.push('Failure to address counterarguments');
-      pitfalls.push('Missing procedural requirements');
-      break;
+      pitfalls.push('Insufficient factual support')
+      pitfalls.push('Failure to address counterarguments')
+      pitfalls.push('Missing procedural requirements')
+      break
   }
 
-  // Party-specific considerations;
+  // Party-specific considerations
   if (parties.some((p) => p.type === 'corporation')) {
-    pitfalls.push('Failure to verify corporate authority');
-    pitfalls.push('Missing corporate resolutions if required');
+    pitfalls.push('Failure to verify corporate authority')
+    pitfalls.push('Missing corporate resolutions if required')
   }
 
-  return pitfalls;
+  return pitfalls
 }
 
 function generateNextSteps(documentType: string, complexity: string): string[] {
@@ -464,33 +464,33 @@ function generateNextSteps(documentType: string, complexity: string): string[] {
     'Obtain necessary approvals from stakeholders',
     'Conduct legal review with counsel',
     'Prepare for execution and implementation'
-  ];
+  ]
 
   if (complexity === 'complex') {
-    steps.unshift('Schedule planning meeting with all stakeholders');
-    steps.push('Develop implementation timeline');
-    steps.push('Create compliance monitoring procedures');
+    steps.unshift('Schedule planning meeting with all stakeholders')
+    steps.push('Develop implementation timeline')
+    steps.push('Create compliance monitoring procedures')
   }
 
   switch (documentType.toLowerCase()) {
     case 'motion':
-      steps.push('Prepare supporting documentation');
-      steps.push('Schedule hearing if required');
-      steps.push('File with court and serve opposing parties');
-      break;
+      steps.push('Prepare supporting documentation')
+      steps.push('Schedule hearing if required')
+      steps.push('File with court and serve opposing parties')
+      break
     case 'contract':
-      steps.push('Negotiate terms with counterparty');
-      steps.push('Execute original documents');
-      steps.push('Distribute copies to all parties');
-      break;
+      steps.push('Negotiate terms with counterparty')
+      steps.push('Execute original documents')
+      steps.push('Distribute copies to all parties')
+      break
   }
 
-  return steps;
+  return steps
 }
 
 async function generateAIContentSuggestions(
   request: DocumentDraftingRequest,
-  assistance: DraftingAssistance;
+  assistance: DraftingAssistance
 ): Promise<string> {
   const prompt = `Generate specific content suggestions for a ${request.documentType} involving:
 
@@ -501,15 +501,15 @@ Complexity: ${request.complexity}
 Key considerations:
 ${assistance.legalConsiderations.join('\n')}
 
-Provide specific language suggestions and alternatives for key sections:`;
+Provide specific language suggestions and alternatives for key sections:`
 
   try {
     return await ollamaService.generateCompletion(prompt, {
       temperature: 0.4,
       maxTokens: 800
-    });
+    })
   } catch (error: any) {
-    console.warn('AI content suggestions failed:', error);
+    console.warn('AI content suggestions failed:', error)
 
     return `Content Suggestions for ${request.documentType}:
 
@@ -521,109 +521,109 @@ Key Language Recommendations:
 
 For ${request.parties.length} parties: Ensure balanced obligations and mutual considerations.
 Jurisdiction (${request.jurisdiction}): Review applicable local law requirements.
-Complexity (${request.complexity}): ${request.complexity === 'complex' ? 'Consider phased implementation and detailed specifications.' : 'Focus on essential terms and clear obligations.'}`;
+Complexity (${request.complexity}): ${request.complexity === 'complex' ? 'Consider phased implementation and detailed specifications.' : 'Focus on essential terms and clear obligations.'}`
   }
 }
 
 async function generateComplianceAnalysis(request: DocumentDraftingRequest): Promise<string> {
-  const analysisPoints = [];
+  const analysisPoints = []
 
   // Jurisdiction compliance
-  analysisPoints.push(`${request.jurisdiction} Jurisdiction Requirements:`);
-  analysisPoints.push(`• Review applicable state/federal law`);
-  analysisPoints.push(`• Verify court rules compliance if litigation document`);
+  analysisPoints.push(`${request.jurisdiction} Jurisdiction Requirements:`)
+  analysisPoints.push(`• Review applicable state/federal law`)
+  analysisPoints.push(`• Verify court rules compliance if litigation document`)
 
-  // Document type compliance;
+  // Document type compliance
   switch (request.documentType.toLowerCase()) {
     case 'contract':
-      analysisPoints.push('Contract Formation Requirements:');
-      analysisPoints.push('• Ensure mutual assent and consideration');
-      analysisPoints.push('• Verify parties have capacity to contract');
-      break;
+      analysisPoints.push('Contract Formation Requirements:')
+      analysisPoints.push('• Ensure mutual assent and consideration')
+      analysisPoints.push('• Verify parties have capacity to contract')
+      break
     case 'motion':
-      analysisPoints.push('Motion Practice Requirements:');
-      analysisPoints.push('• Comply with court deadlines and procedures');
-      analysisPoints.push('• Include proper citations and legal authority');
-      break;
+      analysisPoints.push('Motion Practice Requirements:')
+      analysisPoints.push('• Comply with court deadlines and procedures')
+      analysisPoints.push('• Include proper citations and legal authority')
+      break
   }
 
-  // Party-specific compliance;
+  // Party-specific compliance
   if (request.parties.some((p) => p.type === 'corporation')) {
-    analysisPoints.push('Corporate Compliance:');
-    analysisPoints.push('• Verify corporate authority and good standing');
-    analysisPoints.push('• Consider required board resolutions');
+    analysisPoints.push('Corporate Compliance:')
+    analysisPoints.push('• Verify corporate authority and good standing')
+    analysisPoints.push('• Consider required board resolutions')
   }
 
-  return analysisPoints.join('\n');
+  return analysisPoints.join('\n')
 }
 
 function calculateDraftingConfidence(
   request: DocumentDraftingRequest,
-  assistance: DraftingAssistance;
+  assistance: DraftingAssistance
 ): number {
   let confidence = 0.5; // Base confidence
 
   // Boost from clear document type
-  const recognizedTypes = ['contract', 'motion', 'brief', 'agreement', 'complaint'];
+  const recognizedTypes = ['contract', 'motion', 'brief', 'agreement', 'complaint']
   if (recognizedTypes.includes(request.documentType.toLowerCase())) {
-    confidence += 0.2;
+    confidence += 0.2
   }
 
-  // Boost from complete party information;
+  // Boost from complete party information
   if (request.parties.every((p) => p.name && p.role)) {
-    confidence += 0.15;
+    confidence += 0.15
   }
 
-  // Boost from jurisdiction specification;
+  // Boost from jurisdiction specification
   if (request.jurisdiction) {
-    confidence += 0.1;
+    confidence += 0.1
   }
 
   // Boost from structure completeness
-  const requiredSections = assistance.documentStructure.filter((s) => s.required);
-  confidence += requiredSections.length * 0.02;
+  const requiredSections = assistance.documentStructure.filter((s) => s.required)
+  confidence += requiredSections.length * 0.02
 
-  return Math.min(confidence, 0.95);
+  return Math.min(confidence, 0.95)
 }
 
 function generateDraftingRecommendations(
   request: DocumentDraftingRequest,
-  assistance: DraftingAssistance;
+  assistance: DraftingAssistance
 ): string[] {
-  const recommendations = [];
+  const recommendations = []
 
-  // Based on complexity;
+  // Based on complexity
   switch (request.complexity) {
     case 'simple':
-      recommendations.push('Use standard templates and proven language');
-      recommendations.push('Focus on essential terms and clear obligations');
-      break;
+      recommendations.push('Use standard templates and proven language')
+      recommendations.push('Focus on essential terms and clear obligations')
+      break
     case 'complex':
-      recommendations.push('Engage specialized legal counsel for review');
-      recommendations.push('Plan for iterative drafting and stakeholder review');
-      recommendations.push('Consider phased implementation approach');
-      break;
+      recommendations.push('Engage specialized legal counsel for review')
+      recommendations.push('Plan for iterative drafting and stakeholder review')
+      recommendations.push('Consider phased implementation approach')
+      break
   }
 
-  // Based on urgency;
+  // Based on urgency
   switch (request.urgency) {
     case 'high':
-      recommendations.push('Prioritize essential terms over comprehensive coverage');
-      recommendations.push('Use proven templates to accelerate drafting');
-      break;
+      recommendations.push('Prioritize essential terms over comprehensive coverage')
+      recommendations.push('Use proven templates to accelerate drafting')
+      break
     case 'low':
-      recommendations.push('Take time for comprehensive legal research');
-      recommendations.push('Consider innovative approaches and recent legal developments');
-      break;
+      recommendations.push('Take time for comprehensive legal research')
+      recommendations.push('Consider innovative approaches and recent legal developments')
+      break
   }
 
   // General recommendations
-  recommendations.push('Maintain version control throughout drafting process');
-  recommendations.push('Document rationale for key drafting decisions');
-  recommendations.push('Plan for regular stakeholder review and feedback');
+  recommendations.push('Maintain version control throughout drafting process')
+  recommendations.push('Document rationale for key drafting decisions')
+  recommendations.push('Plan for regular stakeholder review and feedback')
 
-  return recommendations;
+  return recommendations
 }
 
 
-export const POST = redisOptimized.documentProcessing(originalPOSTHandler);
+export const POST = redisOptimized.documentProcessing(originalPOSTHandler)

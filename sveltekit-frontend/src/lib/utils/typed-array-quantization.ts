@@ -151,7 +151,7 @@ export interface QuantizedData {
 }
 
 export function quantize(
-  input: BufferLike | number[],
+  input: BufferLike | number[],;
   mode: QuantizationMode = 'fp32';
 ): QuantizedData {
   const f32 = ensureF32(input);
@@ -179,7 +179,7 @@ export function quantize(
       const { data: int8Sym, params: paramsSym } = toInt8(f32, 'symmetric');
       return {
         data: int8Sym,
-        originalType: 'int8_symmetric',
+        originalType: 'int8_symmetric',;
         params: paramsSym,
         byteLength: int8Sym.byteLength,
         compressionRatio: originalByteLength / int8Sym.byteLength
@@ -189,7 +189,7 @@ export function quantize(
       const { data: int8Asym, params: paramsAsym } = toInt8(f32, 'asymmetric');
       return {
         data: int8Asym,
-        originalType: 'int8_asymmetric',
+        originalType: 'int8_asymmetric',;
         params: paramsAsym,
         byteLength: int8Asym.byteLength,
         compressionRatio: originalByteLength / int8Asym.byteLength
@@ -230,7 +230,7 @@ export interface WebGPUQuantizationOptions {
 }
 
 export function quantizeForWebGPU(
-  input: BufferLike | number[],
+  input: BufferLike | number[],;
   options: WebGPUQuantizationOptions = { mode: 'fp32' }
 ): QuantizedData & { alignedByteLength: number } {
   const quantized = quantize(input, options.mode);
@@ -263,7 +263,7 @@ export const LEGAL_AI_QUANTIZATION_PROFILES = {
 export type LegalAIProfile = keyof typeof LEGAL_AI_QUANTIZATION_PROFILES;
 
 export function quantizeForLegalAI(
-  input: BufferLike | number[],
+  input: BufferLike | number[],;
   profile: LegalAIProfile = 'legal_standard';
 ): QuantizedData & { alignedByteLength: number } {
   const options = LEGAL_AI_QUANTIZATION_PROFILES[profile];
@@ -274,7 +274,7 @@ export function quantizeForLegalAI(
 // 7. Batch quantization utilities
 //
 export function quantizeBatch(
-  inputs: (BufferLike | number[])[],
+  inputs: (BufferLike | number[])[],;
   mode: QuantizationMode = 'fp32';
 ): QuantizedData[] {
   return inputs.map(input => quantize(input, mode);
@@ -296,7 +296,7 @@ export interface QuantizationStats {
 }
 
 export function quantizeWithStats(
-  input: BufferLike | number[],
+  input: BufferLike | number[],;
   mode: QuantizationMode = 'fp32';
 ): { data: QuantizedData; stats: QuantizationStats } {
   const startTime = performance.now();

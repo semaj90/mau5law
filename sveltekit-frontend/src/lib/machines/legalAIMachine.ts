@@ -22,23 +22,23 @@ export interface Evidence {
 }
 
 export interface LegalAIContext {
-  user: {
+  user: {;
     id: string | null;
     email: string | null;
     role: string | null;
     permissions: string[];
     isAuthenticated: boolean;
   };
-  cases: {
+  cases: {;
     items: Case[];
     currentCase: Case | null;
-    filters: {
+    filters: {;
       search: string;
       status: string;
       priority: string;
       category: string;
     };
-    pagination: {
+    pagination: {;
       page: number;
       limit: number;
       total: number;
@@ -51,15 +51,15 @@ export interface LegalAIContext {
     currentQuery: string;
     lastResponse: any;
     error: string | null;
-    models: {
+    models: {;
       primary: string;
       embedding: string;
       available: string[];
     };
   };
-  system: {
+  system: {;
     connected: boolean;
-    services: {
+    services: {;
       database: boolean;
       redis: boolean;
       ollama: boolean;
@@ -130,14 +130,14 @@ const initialContext: LegalAIContext = {
     },
     metrics: {
       errorCount: 0,
-      performanceScore: 0,
+      performanceScore: 0,;
       uptime: 0
     }
   }
 };
 
 export const legalAIMachine = setup({
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: LegalAIContext;
     events: LegalAIEvent;
   },
@@ -201,14 +201,14 @@ export const legalAIMachine = setup({
         error: null
       })
     })
-  },
+  },;
   actors: {
     checkSystemStatus: fromPromise(async () => {
       // Mock system status check
       await new Promise(resolve => setTimeout(resolve, 1000);
       return {
         connected: true,
-        services: { database: true, redis: true, ollama: true, gpu: true },
+        services: { database: true, redis: true, ollama: true, gpu: true },;
         metrics: { errorCount: 0, performanceScore: 95, uptime: Date.now() }
       };
     }),
@@ -218,7 +218,7 @@ export const legalAIMachine = setup({
       return {
         id: '1',
         email: input.credentials?.email || 'user@example.com',
-        role: 'legal_professional',
+        role: 'legal_professional',;
         permissions: ['read:cases', 'write:cases', 'ai:query']
       };
     }),
@@ -236,7 +236,7 @@ export const legalAIMachine = setup({
       return {
         response: `AI analysis for: "${input.prompt}"`,
         confidence: 0.95,
-        sources: ['case_law_1', 'statute_2'],
+        sources: ['case_law_1', 'statute_2'],;
         timestamp: new Date().toISOString()
       };
     })
@@ -322,7 +322,7 @@ export const legalAIMachine = setup({
         }
       }
     },
-    error: {
+    error: {;
       on: {
         'SYSTEM.CHECK_STATUS': 'initializing'
       }
@@ -338,7 +338,7 @@ export const legalAIMachine = setup({
         1000: 'authenticated'
       }
     },
-    checkingStatus: {
+    checkingStatus: {;
       after: {
         500: 'idle'
       }

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -83,7 +83,7 @@ https://svelte.dev/e/js_parse_error -->
 
     observer.observe(document.body, { 
       childList: true, 
-      subtree: true 
+      subtree: true ;
     });
 
     isInitialized = true;
@@ -340,10 +340,10 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const chrRomPattern = {
         renderableHTML: pattern.renderableHTML,
-        type: pattern.type || 'summary_card',
+        type: pattern.type || 'summary_card',;
         priority: 4, // High priority for recently accessed patterns
         compressedData: new TextEncoder().encode(pattern.renderableHTML),
-        bankId: 1 // Store in fast access bank
+        bankId: 1 // Store in fast access bank;
       };
       
       await nesGPUBridge.storeCHRROMPattern(patternId, chrRomPattern);
@@ -360,10 +360,10 @@ https://svelte.dev/e/js_parse_error -->
       // Store in CHR-ROM
       const chrRomPattern = {
         renderableHTML: html,
-        type: 'summary_card',
+        type: 'summary_card',;
         priority: 3,
         compressedData: new TextEncoder().encode(html),
-        bankId: 2
+        bankId: 2;
       };
       
       await nesGPUBridge.storeCHRROMPattern(`${patternPrefix}_${elementId}`, chrRomPattern);
@@ -465,7 +465,7 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.1s ease;
   }
 
-  :global(.zero-latency-enabled: :after) {
+  :global(.zero-latency-enabled::after) {
     content: '⚡';
     position: absolute;
     top: -2px;

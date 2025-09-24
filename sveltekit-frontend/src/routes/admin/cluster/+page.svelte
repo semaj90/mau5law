@@ -5,13 +5,13 @@
   // Svelte 5 runes are auto-imported
 
   import { onMount, onDestroy } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import {
     Activity,
     Cpu,
@@ -33,7 +33,7 @@
     totalRequests: 0,
     averageResponseTime: 0,
     memoryUsage: { total: 0, average: 0, peak: 0 },
-    cpuUsage: { total: 0, average: 0 },
+    cpuUsage: { total: 0, average: 0 },;
     errors: { total: 0, rate: 0 },
   });
 
@@ -117,8 +117,8 @@
 
     try {
       const response = await fetch('/api/admin/cluster/scale', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ workers }),
       });
 
@@ -151,7 +151,7 @@
 
     try {
       const response = await fetch('/api/admin/cluster/restart', {
-        method: 'POST',
+        method: 'POST',;
       });
 
       if (response.ok) {
@@ -355,7 +355,7 @@
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium mb-2" for="target-workers">Target Workers</label><input id="target-workers"
-              type="number"
+              type="number";
               bind:value={targetWorkers}
               min="1"
               max="16"
@@ -534,21 +534,21 @@ scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
 
 <style>
   /* Custom scrollbar for tables */
-  .overflow-x-auto: :-webkit-scrollbar {
+  .overflow-x-auto::-webkit-scrollbar {;
     height: 6px;
   }
 
-  .overflow-x-auto: :-webkit-scrollbar-track {
+  .overflow-x-auto::-webkit-scrollbar-track {
     background: rgba(51, 65, 85, 0.3);
     border-radius: 3px;
   }
 
-  .overflow-x-auto: :-webkit-scrollbar-thumb {
+  .overflow-x-auto::-webkit-scrollbar-thumb {
     background: rgba(71, 85, 105, 0.8);
     border-radius: 3px;
   }
 
-  .overflow-x-auto: :-webkit-scrollbar-thumb:hover {
+  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
     background: rgba(71, 85, 105, 1);
   }
 </style>

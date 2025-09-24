@@ -1,7 +1,6 @@
 /**
  * Type definitions for the AI Assistant system with intelligent fallback support
- */;
-}
+ */
 
 export interface OllamaConfig {
   baseUrl: string;
@@ -112,7 +111,7 @@ export interface OllamaEmbeddingResponse {
 export interface DocumentChunk {
   id: string;
   content: string;
-  metadata: {
+  metadata: {;
     source: string;
     page?: number;
     section?: string;
@@ -135,7 +134,7 @@ export interface SOMNode {
 export interface ProcessingPipeline {
   id: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
-  stages: {
+  stages: {;
     ingestion: boolean;
     preprocessing: boolean;
     embedding: boolean;
@@ -179,7 +178,7 @@ export interface AnalysisResult {
   documentId: string;
   summary: string;
   keyPoints: string[];
-  entities: {
+  entities: {;
     people: string[];
     organizations: string[];
     dates: string[];

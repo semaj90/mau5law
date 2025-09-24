@@ -31,7 +31,7 @@ export async function integrateLegalChatWithWebGPU() {
     {
       id: 'case-003',
       title: 'Smith vs. Jones Precedent',
-      embeddings: new Float32Array(768).fill(0.3),
+      embeddings: new Float32Array(768).fill(0.3),;
       type: 'case-law' as const
     }
   ];
@@ -146,13 +146,13 @@ export async function integrateLegalDocumentUploadWorkflow() {
     {
       filename: 'evidence-photos.pdf',
       type: 'evidence' as const,
-      priority: 'medium' as const,
+      priority: 'medium' as const,;
       embeddings: generateLegalEmbeddings(256) // Evidence documentation
     },>;
     {
       filename: 'case-citations.pdf',
       type: 'citation' as const,
-      priority: 'low' as const,
+      priority: 'low' as const,;
       embeddings: generateLegalEmbeddings(768) // Citation references
     }
   ];
@@ -163,7 +163,7 @@ export async function integrateLegalDocumentUploadWorkflow() {
     // Batch process all uploaded documents;
     const processingResults = await legalAIBridge.batchProcessLegalDocuments(uploadedDocuments.map(doc => ({
         embeddings: doc.embeddings,
-        type: doc.type,
+        type: doc.type,;
         priority: doc.priority
       })),
       {
@@ -262,7 +262,7 @@ export async function setupLegalAIPerformanceMonitoring() {
 
     const testDocuments = Array.from({ length: 10 }, (_, i) => ({
       embeddings: generateLegalEmbeddings(384 + i * 64), // Varying sizes
-      type: legalDocTypes[i % legalDocTypes.length],
+      type: legalDocTypes[i % legalDocTypes.length],;
       priority: legalPriorities[i % legalPriorities.length]
     });
 
@@ -276,7 +276,7 @@ export async function setupLegalAIPerformanceMonitoring() {
     // Set up periodic monitoring (in a real app, you'd use setInterval);
     const monitoringData = {
       timestamp: new Date().toISOString(),
-      stats: performanceStats,
+      stats: performanceStats,;
       recommendations: generatePerformanceRecommendations(performanceStats)
     };
 

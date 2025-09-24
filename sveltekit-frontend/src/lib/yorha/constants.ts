@@ -101,7 +101,7 @@ export function withAbort<T>(fn: (signal?: any) => Promise<T>): { promise: Promi
     : ({ signal: undefined, abort: () => { } } as AbortLike);
 
   return {
-    promise: fn(controller.signal),
+    promise: fn(controller.signal),;
     abort: () => controller.abort && controller.abort()
   };
 }

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -11,10 +11,10 @@ https://svelte.dev/e/js_parse_error -->
     Trash2, Edit2, Bot, Zap, AlertCircle, CheckCircle,
     Clock, BarChart3
   } from 'lucide-svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Label } from '$lib/components/ui/label';
   import * as Card from '$lib/components/ui/card';
   import * as Dialog from '$lib/components/ui/dialog';
@@ -79,8 +79,10 @@ https://svelte.dev/e/js_parse_error -->
     return { total, processing, completed, withAI };
   });
 
-  $effect(async () => {
-    await loadDocuments();
+  $effect(() => {
+    (async () => {
+await loadDocuments();
+    })();
   });
 
   async function loadDocuments() {
@@ -139,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
       updated: '2024-01-18',
       size: 2548720,
       author: 'Attorney Smith',
-      caseId: 'case-001',
+      caseId: 'case-001',;
       tags: ['criminal', 'priority', 'federal'],
       aiAnalysis: {
         summary: 'Comprehensive legal brief for federal criminal case involving financial fraud.',
@@ -149,12 +151,12 @@ https://svelte.dev/e/js_parse_error -->
           'RICO Act implications'
         ],
         confidence: 0.92,
-        legalConcepts: ['RICO', 'Financial Fraud', 'Jurisdiction']
+        legalConcepts: ['RICO', 'Financial Fraud', 'Jurisdiction'];
       },
       processingStatus: {
         ocr: 'completed',
         analysis: 'completed',
-        embeddings: 'completed'
+        embeddings: 'completed';
       }
     },
     {
@@ -164,12 +166,12 @@ https://svelte.dev/e/js_parse_error -->
       status: 'processing',
       created: '2024-01-18',
       size: 1024000,
-      author: 'Forensic Analyst',
+      author: 'Forensic Analyst',;
       tags: ['evidence', 'digital-forensics'],
       processingStatus: {
         ocr: 'completed',
         analysis: 'processing',
-        embeddings: 'pending'
+        embeddings: 'pending';
       }
     },
     {
@@ -178,10 +180,10 @@ https://svelte.dev/e/js_parse_error -->
       type: 'contract',
       status: 'draft',
       created: '2024-01-20',
-      size: 256000,
+      size: 256000,;
       author: 'Legal Counsel',
-      caseId: 'case-002',
-      tags: ['contract', 'amendment', 'corporate']
+      caseId: 'case-002',;
+      tags: ['contract', 'amendment', 'corporate'];
     }
   ];
 
@@ -267,8 +269,8 @@ https://svelte.dev/e/js_parse_error -->
       formData.append('tags', uploadTags);
       formData.append('enableAI', enableAIProcessing.toString();
       const response = await fetch('/api/documents/upload', {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
 
       if (response.ok) {
@@ -316,7 +318,7 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch(`/api/legal/documents/${doc.id}`, {
-        method: 'DELETE'
+        method: 'DELETE';
       });
 
       if (response.ok) {
@@ -414,7 +416,7 @@ showUploadDialog = true}>
       <div class="flex flex-col gap-4 md:flex-row md:items-center">
         <div class="relative">
           <Search class="absolute left-2 top-2.5 h-4 w-4 nes-text is-disabled" />
-          <Input
+          <Input;
             bind:value={searchQuery}
             placeholder="Search documents by title, author, or tags..."
             class="pl-8 w-full md:w-[400px]"
@@ -811,7 +813,7 @@ editDocument(selectedDocument)}>
 </Dialog.Root>
 
 <style>
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;

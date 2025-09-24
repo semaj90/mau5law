@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -34,13 +34,13 @@ Real-time collaboration interface for multiple investigators working on evidence
 
   import { onMount } from 'svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea';
   import { Users, MessageCircle, MapPin, Send, Eye, UserCheck } from 'lucide-svelte';
 
@@ -111,15 +111,15 @@ Real-time collaboration interface for multiple investigators working on evidence
 
     const message = {
       userId,
-      message: newMessage,
-      timestamp: new Date().toISOString()
+      message: newMessage,;
+      timestamp: new Date().toISOString();
     };
 
     // Send via WebSocket
     wsConnection.send(JSON.stringify({
       type: 'chat-message',
       sessionId: collaborationSession.sessionId,
-      message
+      message;
     }));
 
     // Update local state
@@ -140,7 +140,7 @@ Real-time collaboration interface for multiple investigators working on evidence
       wsConnection.send(JSON.stringify({
         type: 'user-typing',
         sessionId: collaborationSession.sessionId,
-        userId
+        userId;
       }));
     }
   }
@@ -150,9 +150,9 @@ Real-time collaboration interface for multiple investigators working on evidence
 
     const annotation = {
       userId,
-      content: newAnnotation,
-      position: annotationPosition,
-      timestamp: new Date().toISOString()
+      content: newAnnotation,;
+      position: annotationPosition,;
+      timestamp: new Date().toISOString();
     };
 
     // Send via WebSocket
@@ -160,7 +160,7 @@ Real-time collaboration interface for multiple investigators working on evidence
       wsConnection.send(JSON.stringify({
         type: 'annotation-added',
         sessionId: collaborationSession.sessionId,
-        annotation
+        annotation;
       }));
     }
 
@@ -310,7 +310,7 @@ Real-time collaboration interface for multiple investigators working on evidence
         <!-- Message input -->
         <div class="p-4">
           <div class="flex space-x-2">
-            <Textarea
+            <Textarea;
               bind:value={newMessage}
               placeholder="Type your message..."
               class="flex-1 resize-none min-h-[40px] max-h-[120px]"
@@ -425,15 +425,15 @@ showAnnotationInput = false} variant="ghost" size="sm">
 </div>
 
 <style>
-  .collaboration-panel {
+  .collaboration-panel {;
     max-height: 100vh;
-    overflow-y: auto
+    overflow-y: auto;
   }
 
   /* Typing indicator animation */
-  .typing-indicator {
+  .typing-indicator {;
     display: inline-flex;
-    align-items: center
+    align-items: center;
     space: 1px;
   }
   
@@ -447,11 +447,11 @@ showAnnotationInput = false} variant="ghost" size="sm">
     margin: 0 1px;
   }
   
-  .typing-indicator span:nth-child(2) {
+  .typing-indicator span:nth-child(2) {;
     animation-delay: 0.2s;
   }
   
-  .typing-indicator span:nth-child(3) {
+  .typing-indicator span:nth-child(3) {;
     animation-delay: 0.4s;
   }
   
@@ -467,21 +467,21 @@ showAnnotationInput = false} variant="ghost" size="sm">
   }
 
   /* Custom scrollbar for chat */
-  .collaboration-panel: :-webkit-scrollbar {
+  .collaboration-panel::-webkit-scrollbar {
     width: 4px;
   }
   
-  .collaboration-panel: :-webkit-scrollbar-track {
+  .collaboration-panel::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 2px;
   }
   
-  .collaboration-panel: :-webkit-scrollbar-thumb {
+  .collaboration-panel::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 2px;
   }
   
-  .collaboration-panel: :-webkit-scrollbar-thumb:hover {
+  .collaboration-panel::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
 </style>

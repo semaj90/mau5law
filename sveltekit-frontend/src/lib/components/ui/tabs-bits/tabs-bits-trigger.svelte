@@ -8,7 +8,7 @@
 		disabled = false,
 		class: className = undefined,
 		children = undefined,
-		...restProps
+		...restProps;
 	} = $props();
 </script>
 
@@ -28,4 +28,4 @@
 	{#if children}
 		{@render children()}
 	{/if}
-</TabsPrimitive.Trigger>
+</TabsPrimitive.Trigger>;

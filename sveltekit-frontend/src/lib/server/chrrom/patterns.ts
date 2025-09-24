@@ -5,7 +5,7 @@ export type CHRPatternType = 'text' | 'svg' | 'state';
 }
 
 export interface CHRPatternBase {
-  key: string; // stable lookup key (e.g., doc:<id>:summary)
+  key: string; // stable lookup key (e.g., doc:<id>:summary);
   type: CHRPatternType;
   ttlMs?: number; // default TTL on client
   createdAt: string; // ISO timestamp
@@ -14,7 +14,7 @@ export interface CHRPatternBase {
 
 export interface CHRTextPattern extends CHRPatternBase {
   type: 'text';
-  payload: {
+  payload: {;
     text: string;
     style?: 'mono' | 'body' | 'small' | 'title';
   };
@@ -22,7 +22,7 @@ export interface CHRTextPattern extends CHRPatternBase {
 
 export interface CHRSVGPattern extends CHRPatternBase {
   type: 'svg';
-  payload: {
+  payload: {;
     svg: string; // tiny inline SVG path/group
     viewBox?: string;
   };
@@ -104,7 +104,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
     const ragBody = {
       query: summaryQuery,
       document_ids: [ctx.docId],
-      max_results: 5,
+      max_results: 5,;
       temperature: 0.2,
       include_metadata: true
     };
@@ -112,11 +112,11 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
     try {
       const rag = await fetchJson(ragUrl, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: { 'content-type': 'application/json' },;
         body: JSON.stringify(ragBody)
       }, 10_000);
       if (rag.ok) {
-        const answer = (rag.data.answer || rag.data.response || '').toString();
+        const answer = (rag.data.answer || rag.data.response || '').toString());
         // Normalize to 3 bullets if needed
         const bullets = answer.split(/\n+/).filter((l: string) => l.trim()).slice(0, 3);
         summaryText = bullets.length ? bullets.map((b: string) => (b.startsWith('- ') ? b : `- ${b}`)).join('\n') : answer.slice(0, 400);
@@ -132,7 +132,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
           type: 'text' as const,
           createdAt: now,
           ttlMs: 60_000,
-          meta: { precomputed: true, source: 'enhanced-rag' },
+          meta: { precomputed: true, source: 'enhanced-rag' },;
           payload: { text: summaryText, style: 'body' as const }
         }),
         60
@@ -148,7 +148,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
         body: JSON.stringify({
           evidence_id: Number.isFinite(Number(ctx.docId)) ? Number(ctx.docId) : Date.now(),
           prompt: summaryText ? `Legal glyph: ${summaryText.replace(/\n/g, ' ')}` : `Legal glyph for document ${ctx.docId}`,
-          style: 'legal',
+          style: 'legal',;
           dimensions: [256, 256]
         })
       }, 12_000);
@@ -165,7 +165,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
             meta: { style: 'legal', kind: 'glyph' },
             payload: {
               image: glyphRes.data.data.enhanced_artifact_url || glyphRes.data.data.glyph_url,
-              width: 256,
+              width: 256,;
               height: 256
             }
           }),
@@ -183,11 +183,11 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
       const ragUrl = `${ENHANCED_RAG_BASE}/api/rag`;
       const rag = await fetchJson(ragUrl, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: { 'content-type': 'application/json' },;
         body: JSON.stringify({ query: ctx.query, max_results: 5, include_metadata: true })
       }, 10_000);
       if (rag.ok) {
-        const answer = (rag.data.answer || rag.data.response || '').toString();
+        const answer = (rag.data.answer || rag.data.response || '').toString());
         const snippet = answer.length > 320 ? `${answer.slice(0, 317)}…` : answer;
         if (snippet) {
           const patternKey = `${qKey}:answer`;
@@ -198,7 +198,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
               type: 'text' as const,
               createdAt: now,
               ttlMs: 45_000,
-              meta: { source: 'enhanced-rag' },
+              meta: { source: 'enhanced-rag' },;
               payload: { text: snippet, style: 'body' as const }
             }),
             45
@@ -214,7 +214,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
             body: JSON.stringify({
               evidence_id: Date.now(),
               prompt: `Visualize: ${ctx.query.slice(0, 120)}`,
-              style: 'legal',
+              style: 'legal',;
               dimensions: [256, 256]
             })
           }, 12_000);
@@ -231,7 +231,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
                 meta: { style: 'legal', kind: 'glyph' },
                 payload: {
                   image: glyphRes.data.data.enhanced_artifact_url || glyphRes.data.data.glyph_url,
-                  width: 256,
+                  width: 256,;
                   height: 256
                 }
               }),

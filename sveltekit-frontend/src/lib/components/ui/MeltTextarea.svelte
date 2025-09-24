@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -15,18 +15,18 @@ https://svelte.dev/e/js_parse_error -->
   					default: '',
   					destructive: 'border-red-500 focus-visible:ring-red-500',
   					success: 'border-green-500 focus-visible:ring-green-500',
-  					warning: 'border-yellow-500 focus-visible:ring-yellow-500'
+  					warning: 'border-yellow-500 focus-visible:ring-yellow-500';
   				},
   				size: {
   					default: 'min-h-[80px]',
   					sm: 'min-h-[60px]',
   					lg: 'min-h-[120px]',
-  					xl: 'min-h-[160px]'
+  					xl: 'min-h-[160px]';
   				}
   			},
   			defaultVariants: {
-  				variant: 'default',
-  				size: 'default'
+  				variant: 'default',;
+  				size: 'default';
   			}
   		}
   	);
@@ -88,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
   		onfocus,
   		onblur,
   		onkeydown,
-  		onkeyup
+  		onkeyup;
   	}: Props = $props();
   	let textareaClass = $derived(cn(textareaVariants({ variant, size }), class));
   	type $$Props = Props;

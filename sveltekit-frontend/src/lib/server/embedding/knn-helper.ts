@@ -50,7 +50,7 @@ export function euclideanDistance(a: Vector, b: Vector): number {
  * Returns array sorted by descending score (best first).
  */
 export function topKNearest<T extends string | number | symbol = string>(
-  query: Vector,
+  query: Vector,;
   items: { id: T; embedding: Vector }[],
   k = 5;
 ): { id: T; score: number }[] {

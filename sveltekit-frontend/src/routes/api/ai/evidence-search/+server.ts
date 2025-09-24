@@ -16,38 +16,38 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db';
-import { eq, sql, and, ne } from 'drizzle-orm';
-import { evidence } from '$lib/server/db/unified-schema';
-import { cache } from '$lib/server/cache/redis';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { db } from '$lib/server/db'
+import { eq, sql, and, ne } from 'drizzle-orm'
+import { evidence } from '$lib/server/db/unified-schema'
+import { cache } from '$lib/server/cache/redis'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json();
-    const { embedding, limit = 5, caseId } = body;
+    const body = await request.json()
+    const { embedding, limit = 5, caseId } = body
 
     if (!embedding || !Array.isArray(embedding)) {
-      return json({ error: 'Invalid embedding provided' }, { status: 400 });
+      return json({ error: 'Invalid embedding provided' }, { status: 400 })
     }
 
     // Create cache key for this search
-    const cacheKey = `evidence_search:${JSON.stringify(embedding.slice(0, 10))}:${limit}:${caseId || 'all'}`;
+    const cacheKey = `evidence_search:${JSON.stringify(embedding.slice(0, 10))}:${limit}:${caseId || 'all'}`
     
     // Check Redis cache first
-    const cachedResults = await cache.get(cacheKey);
+    const cachedResults = await cache.get(cacheKey)
     if (cachedResults) {
-      console.log('🚀 Evidence search cache hit');
-      return json(cachedResults);
+      console.log('🚀 Evidence search cache hit')
+      return json(cachedResults)
     }
 
     // Convert the embedding array to a pgvector-compatible format
-    const embeddingVector = `[${embedding.join(',')}]`;
+    const embeddingVector = `[${embedding.join(',')}]`
 
     // Build the query to find similar evidence
-    let query = db;
+    let query = db
       .select({
         id: evidence.id,
         file_name: evidence.file_name,
@@ -68,9 +68,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         )
       )
       .orderBy(sql`${evidence.embedding_vector} <=> ${embeddingVector}::vector`)
-      .limit(limit);
+      .limit(limit)
 
-    const results = await query;
+    const results = await query
 
     const responseData = {
       results: results.map(item => ({
@@ -84,23 +84,23 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         similarity: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).similarity
       })),
       count: results.length
-    };
+    }
 
     // Cache results for 5 minutes
-    await cache.set(cacheKey, responseData, 5 * 60 * 1000);
-    console.log('💾 Evidence search results cached');
+    await cache.set(cacheKey, responseData, 5 * 60 * 1000)
+    console.log('💾 Evidence search results cached')
 
-    return json(responseData);
+    return json(responseData)
 
   } catch (error) {
-    console.error('Evidence search error:', error);
+    console.error('Evidence search error:', error)
     return json({ 
         error: 'Evidence search failed',
         details: error instanceof Error ? error.message: 'Unknown error'
       }, )
       { status: 500 }
-    );
+    )
   }
-};
+}
 
-export const POST = redisOptimized.aiSearch(originalPOSTHandler);
+export const POST = redisOptimized.aiSearch(originalPOSTHandler)

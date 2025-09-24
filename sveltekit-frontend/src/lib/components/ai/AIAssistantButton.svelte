@@ -27,7 +27,7 @@
     disabled = false,
     voiceEnabled = true,
     class: className = '',
-    onclick
+    onclick;
   }: Props = $props();
 
   // AI Assistant state
@@ -52,9 +52,9 @@
 
     const variants = {
       floating: 'fixed z-50 rounded-full shadow-2xl hover:shadow-yorha-accent/20 border-2',
-      inline: 'relative rounded-lg shadow-md hover:shadow-lg border',
-      compact: 'relative rounded-md shadow-sm hover:shadow-md border',
-      full: 'w-full rounded-lg shadow-md hover:shadow-lg border p-4'
+      inline: 'relative rounded-lg shadow-md hover:shadow-lg border',;
+      compact: 'relative rounded-md shadow-sm hover:shadow-md border',;
+      full: 'w-full rounded-lg shadow-md hover:shadow-lg border p-4';
     };
 
     const positions = {
@@ -66,9 +66,9 @@
 
     const statusColors = {
       idle: 'bg-yorha-bg-secondary border-yorha-border-primary text-yorha-text-primary',
-      processing: 'bg-yorha-primary/10 border-yorha-primary text-yorha-primary animate-pulse',
-      listening: 'bg-red-500/10 border-red-500 text-red-400 animate-pulse',
-      connected: 'bg-yorha-accent-gold/10 border-yorha-accent-gold text-yorha-accent-gold'
+      processing: 'bg-yorha-primary/10 border-yorha-primary text-yorha-primary animate-pulse',;
+      listening: 'bg-red-500/10 border-red-500 text-red-400 animate-pulse',;
+      connected: 'bg-yorha-accent-gold/10 border-yorha-accent-gold text-yorha-accent-gold';
     };
   let classes = $state(`${base} ${variants[variant]} ${statusColors[aiStatus]}`);
 
@@ -111,15 +111,15 @@
     const statusConfig = {
       idle: { color: 'bg-gray-400', pulse: false },
       processing: { color: 'bg-yorha-primary', pulse: true },
-      listening: { color: 'bg-red-500', pulse: true },
+      listening: { color: 'bg-red-500', pulse: true },;
       connected: { color: 'bg-yorha-accent-gold', pulse: false }
     };
 
     const config = statusConfig[aiStatus];
 
     return {
-      class: `w-2 h-2 rounded-full ${config.color} ${config.pulse ? 'animate-pulse' : ''}`,
-      title: aiStatus.charAt(0).toUpperCase() + aiStatus.slice(1)
+      class: `w-2 h-2 rounded-full ${config.color} ${config.pulse ? 'animate-pulse' : ''}`,;
+      title: aiStatus.charAt(0).toUpperCase() + aiStatus.slice(1);
     };
   }
 </script>
@@ -308,7 +308,7 @@
     overflow: hidden;
   }
 
-  .ai-assistant-btn: :before {
+  .ai-assistant-btn::before {
     content: '';
     position: absolute;
     top: 0;

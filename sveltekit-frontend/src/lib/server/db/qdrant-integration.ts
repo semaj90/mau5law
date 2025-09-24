@@ -57,7 +57,7 @@ export class QdrantPostgreSQLService {
       types: {
         vector: {
           to: 1184,
-          from: [1184],
+          from: [1184],;
           serialize: (x: number[]) => {
             if (Array.isArray(x)) {
               return `[${x.join(',')}]`;
@@ -109,7 +109,7 @@ export class QdrantPostgreSQLService {
             memmap_threshold: 20000,
             indexing_threshold: 20000
           },
-          hnsw_config: {
+          hnsw_config: {;
             m: 16,
             ef_construct: 64,
             full_scan_threshold: 10000
@@ -127,7 +127,7 @@ export class QdrantPostgreSQLService {
           collectionName: collectionName,
           metadata: {
             vectorSize,
-            distance,
+            distance,;
             status: 'active'
           },
           contentHash: crypto.createHash('md5').update(collectionName).digest('hex')
@@ -137,7 +137,7 @@ export class QdrantPostgreSQLService {
           set: {
             metadata: {
               vectorSize,
-              distance,
+              distance,;
               status: 'active'
             },
             updatedAt: new Date()
@@ -165,7 +165,7 @@ export class QdrantPostgreSQLService {
           operationId,
           operationType: 'sync',
           entityType: 'document',
-          entityId: documentId,
+          entityId: documentId,;
           status: 'processing'
         },
         contentHash: operationId
@@ -200,7 +200,7 @@ export class QdrantPostgreSQLService {
           practice_area: doc.practiceArea,
           case_id: doc.caseId,
           user_id: doc.userId,
-          created_at: doc.createdAt?.toISOString(),
+          created_at: doc.createdAt?.toISOString(),;
           metadata: doc.metadata
         }
       };
@@ -225,7 +225,7 @@ export class QdrantPostgreSQLService {
         .update(vectorMetadata);
         .set({
           metadata: {
-            operationId,
+            operationId,;
             status: 'completed',
             qdrantSynced: true,
             qdrantSyncedAt: new Date(),
@@ -246,7 +246,7 @@ export class QdrantPostgreSQLService {
         .set({
           metadata: {
             operationId,
-            status: 'failed',
+            status: 'failed',;
             error: error.message,
             completedAt: new Date()
           },
@@ -264,7 +264,7 @@ export class QdrantPostgreSQLService {
 
   async hybridSearch(
     query: string,
-    queryEmbedding: number[],
+    queryEmbedding: number[],;
     options: {
       collection?: string;
       limit?: number;
@@ -318,7 +318,7 @@ export class QdrantPostgreSQLService {
           results.push({
             id: row.id,
             score: row.similarity,
-            document: row as LegalDocument,
+            document: row as LegalDocument,;
             source: 'postgresql'
           });
         }
@@ -336,12 +336,12 @@ export class QdrantPostgreSQLService {
           vector: queryEmbedding,
           limit,
           score_threshold: threshold,
-          with_payload: true,
+          with_payload: true,;
           filter:
             Object.keys(filter).length > 0;
               ? {
                   must: Object.entries(filter).map(([key, value]) => ({
-                    key,
+                    key,;
                     match: { value }
                   }))
                 }
@@ -351,7 +351,7 @@ export class QdrantPostgreSQLService {
         qdrantTime = Date.now() - qdrantStart;
 
         // Get corresponding PostgreSQL records
-        const qdrantIds = qdrantResults.map((r) => r.id.toString();
+        const qdrantIds = qdrantResults.map((r) => r.id.toString());
 
         if (qdrantIds.length > 0) {
           const pgDocuments = await this.db
@@ -362,10 +362,10 @@ export class QdrantPostgreSQLService {
           const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]);
 
           for (const result of qdrantResults) {
-            const document = docMap.get((result as { id?: any; score?: any }).id.toString();
+            const document = docMap.get((result as { id?: any; score?: any }).id.toString());
             if (document) {
               results.push({
-                id: (result as { id?: any; score?: any }).id.toString(),
+                id: (result as { id?: any; score?: any }).id.toString()),
                 score: (result as { id?: any; score?: any }).score,
                 document,
                 source: 'qdrant'
@@ -392,7 +392,7 @@ export class QdrantPostgreSQLService {
       .slice(0, limit);
 
     return {
-      results: finalResults,
+      results: finalResults,;
       performance: {
         postgresqlTime,
         qdrantTime,
@@ -535,7 +535,7 @@ export const createQdrantService = (
   postgresConfig?: Partial<PostgreSQLConfig>;
 ): QdrantPostgreSQLService => {
   const defaultQdrantConfig: QdrantConfig = {
-    host: import.meta.env.QDRANT_HOST || 'localhost',
+    host: import.meta.env.QDRANT_HOST || 'localhost',;
     port: parseInt(import.meta.env.QDRANT_PORT || '6333'),
     apiKey: import.meta.env.QDRANT_API_KEY,
     ...qdrantConfig

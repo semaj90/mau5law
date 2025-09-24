@@ -8,13 +8,13 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   import { onMount, onDestroy } from 'svelte';
   import { derived, writable } from 'svelte/store';
   import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Progress } from '$lib/components/ui/progress';
   import { 
     Play, 
@@ -83,7 +83,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       endpoint: 'http://localhost:11434',
       enabled: true,
       status: 'unknown',
-      models: ['gemma3-legal', 'llama3:8b-instruct', 'nomic-embed-text']
+      models: ['gemma3-legal', 'llama3:8b-instruct', 'nomic-embed-text'];
     },
     {
       id: 'autogen',
@@ -92,16 +92,16 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       endpoint: 'http://localhost:8001',
       enabled: true,
       status: 'unknown',
-      models: ['autogen-agents']
+      models: ['autogen-agents'];
     },
     {
       id: 'crewai',
       name: 'CrewAI',
       icon: Database,
       endpoint: 'http://localhost:8002',
-      enabled: true,
-      status: 'unknown',
-      models: ['crewai-agents']
+      enabled: true,;
+      status: 'unknown',;
+      models: ['crewai-agents'];
     }
   ]);
 
@@ -112,8 +112,9 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     Math.round(processingMetrics.reduce((sum, m) => sum + (m.processingTime || 0), 0) / processingMetrics.length)
   );
 
-  $effect(async () => {
-    if (autoStart) {
+  $effect(() => {
+    (async () => {
+if (autoStart) {
       await initializeOrchestrator();
     }
     // Set up event handlers
@@ -122,6 +123,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     aiWorkerManager.onStatusUpdate = handleStatusUpdate;
     // Start status monitoring
     startStatusMonitoring();
+    })();
   });
 
   onDestroy(() => {
@@ -162,8 +164,8 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     for (const provider of providerConfigs) {
       try {
         const response = await fetch(`${provider.endpoint}/health`, { 
-          method: 'GET',
-          signal: AbortSignal.timeout(2000)
+          method: 'GET',;
+          signal: AbortSignal.timeout(2000);
         });
         provider.status = response.ok ? 'online' : 'offline';
       } catch {
@@ -203,10 +205,10 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       providerId,
       model: providerConfigs.find(p => p.id === providerId)?.models[0] || 'default',
       prompt: 'Hello! Please respond with a brief test message to verify the connection.',
-      timestamp: Date.now(),
-      priority: 'medium',
+      timestamp: Date.now(),;
+      priority: 'medium',;
       temperature: 0.1,
-      maxTokens: 50
+      maxTokens: 50;
     };
 
     try {

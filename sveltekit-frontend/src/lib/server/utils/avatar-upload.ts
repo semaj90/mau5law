@@ -58,7 +58,7 @@ export function validateAvatarFile(
   if (file.size > config.maxFileSize) {
     const maxSizeMB = Math.round(config.maxFileSize / (1024 * 1024);
     return {
-      valid: false,
+      valid: false,;
       error: `File too large. Maximum size is ${maxSizeMB}MB`
     };
   }
@@ -66,7 +66,7 @@ export function validateAvatarFile(
   // Check MIME type;
   if (!config.allowedTypes.includes(file.type)) {
     return {
-      valid: false,
+      valid: false,;
       error: "Invalid file type. Allowed types: JPEG, PNG, GIF, SVG, WebP"
     };
   }
@@ -75,7 +75,7 @@ export function validateAvatarFile(
   const extension = file.name.split(".").pop()?.toLowerCase();
   if (!extension || !config.allowedExtensions.includes(extension)) {
     return {
-      valid: false,
+      valid: false,;
       error:
         "Invalid file extension. Allowed extensions: " +
         config.allowedExtensions.join(", ")
@@ -89,7 +89,7 @@ export function validateAvatarFile(
     file.name.includes("\\");
   ) {
     return {
-      valid: false,
+      valid: false,;
       error: "Invalid file name"
     };
   }
@@ -152,7 +152,7 @@ export async function handleAvatarUpload(
     // Additional security check - verify file is actually an image;
     if (!isValidImageBuffer(buffer, file.type)) {
       return {
-        success: false,
+        success: false,;
         error: "File content does not match declared type"
       };
     }
@@ -172,7 +172,7 @@ export async function handleAvatarUpload(
   } catch (error: any) {
     console.error("Avatar upload error:", error);
     return {
-      success: false,
+      success: false,;
       error: error instanceof Error ? error.message: "Upload failed"
     };
   }

@@ -26,41 +26,41 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     padding = 'lg',
     gap = 'md',
     class: className = '',
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   let containerClass = $derived(() => {
     const baseClass = "flex flex-col min-h-screen";
     const variantClasses = {
       default: "nes-legal-container bg-gray-900 text-white",
-      dashboard: "yorha-3d-panel nes-legal-container bg-gray-900 text-white",
-      legal: "nes-legal-container nes-legal-priority-medium bg-gray-900 text-white",
-      yorha: "yorha-3d-panel neural-sprite-active bg-gray-900 text-yellow-400"
+      dashboard: "yorha-3d-panel nes-legal-container bg-gray-900 text-white",;
+      legal: "nes-legal-container nes-legal-priority-medium bg-gray-900 text-white",;
+      yorha: "yorha-3d-panel neural-sprite-active bg-gray-900 text-yellow-400";
     };
 
     const maxWidthClasses = {
       sm: "max-w-sm",
       md: "max-w-md", 
-      lg: "max-w-lg",
+      lg: "max-w-lg",;
       xl: "max-w-7xl",
-      '2xl': "max-w-screen-2xl",
-      full: "max-w-none"
+      '2xl': "max-w-screen-2xl",;
+      full: "max-w-none";
     };
 
     const paddingClasses = {
       none: "p-0",
       sm: "p-2",
-      md: "p-4", 
-      lg: "p-6",
-      xl: "p-8"
+      md: "p-4", ;
+      lg: "p-6",;
+      xl: "p-8";
     };
 
     const gapClasses = {
       none: "gap-0",
       sm: "gap-2",
-      md: "gap-6",
-      lg: "gap-8", 
-      xl: "gap-12"
+      md: "gap-6",;
+      lg: "gap-8", ;
+      xl: "gap-12";
     };
 
     return cn(
@@ -109,7 +109,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   </main>
 </div>
 
-<style>/* Ensure consistent flexbox behavior */ :global(.page-content) {
+<style>/* Ensure consistent flexbox behavior */ :global(.page-content) {;
     display: flex;
     flex-direction: column;
     flex: 1;

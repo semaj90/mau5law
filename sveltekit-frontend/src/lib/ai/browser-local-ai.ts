@@ -129,7 +129,7 @@ export class BrowserLocalAI {
       modelId: 'gemma3-270m-q4', // Quantized 270M model
       quantized: true,
       device: 'wasm', // Will be auto-detected
-      maxTokens: 512,
+      maxTokens: 512,;
       temperature: 0.3,
       ...config
     };
@@ -247,7 +247,7 @@ export class BrowserLocalAI {
         text: result.generated_text || '',
         tokensGenerated: result.num_tokens || 0,
         processingTime,
-        device: this.config.device,
+        device: this.config.device,;
         confidence: 0.8 + Math.random() * 0.2, // Simulated confidence
         fromCache: false
       };
@@ -315,7 +315,7 @@ export class BrowserLocalAI {
       return {
         embeddings,
         processingTime,
-        device: this.config.device,
+        device: this.config.device,;
         dimensions: embeddings[0]?.length || 384
       };
 
@@ -354,7 +354,7 @@ export class BrowserLocalAI {
     return topResults.map(({ index, similarity }) => ({
       id: request.documents[index].id,
       text: request.documents[index].text,
-      similarity,
+      similarity,;
       metadata: request.documents[index].metadata
     });
   }
@@ -420,7 +420,7 @@ export class BrowserLocalAI {
       cacheSize: {
         inference: this.inferenceCache.size,
         embeddings: this.embeddingCache.size
-      },
+      },;
       config: this.config
     };
   }
@@ -443,7 +443,7 @@ export class BrowserLocalAI {
 // Singleton instance for the application;
 export const browserLocalAI = new BrowserLocalAI({
   modelId: 'gemma3-270m-q4',
-  quantized: true,
+  quantized: true,;
   temperature: 0.2,
   maxTokens: 512
 });
@@ -489,7 +489,7 @@ Describe their relationship in one concise phrase:`;
           suggestions.push({
             fromId: evidenceNodes[i].id,
             toId: evidenceNodes[j].id,
-            relationship: result.text.trim(),
+            relationship: result.text.trim(),;
             confidence: similarity
           });
         }
@@ -524,7 +524,7 @@ Suggest 3 additional bullet points that should be added to the notes:`;
     return this.ai.semanticSearch({
       query,
       documents: documents.map(doc => ({ id: doc.id, text: doc.content })),
-      topK: 5,
+      topK: 5,;
       threshold: 0.4
     });
   }

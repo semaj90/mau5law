@@ -15,9 +15,9 @@
   let connections = $state([]);
   let caseData = $state({
     id: 'CORPORATE ESPIONAGE INV',
-    title: 'Corporate Espionage Investigation', 
-    status: 'active',
-    items: []
+    title: 'Corporate Espionage Investigation', ;
+    status: 'active',;
+    items: [];
   });
   let isDemoMode = $state(false);
   let isConnected = $state(true);
@@ -55,25 +55,25 @@
         id: 'video-001',
         title: 'SECURITY CAMERA',
         type: 'VIDEO',
-        description: 'CCTV footage from the main entrance',
+        description: 'CCTV footage from the main entrance',;
         position: { x: 200, y: 300 },
-        connections: ['doc-001'],
+        connections: ['doc-001'],;
         metadata: {
           timestamp: '2024-03-15 14:32',
           location: 'Main Entrance',
-          source: 'Security System'
+          source: 'Security System';
         }
       },
       {
         id: 'doc-001', 
         title: 'WITNESS STATEMENT',
         type: 'DOCUMENT',
-        description: 'Detailed written statement from key witness',
+        description: 'Detailed written statement from key witness',;
         position: { x: 500, y: 400 },
-        connections: ['video-001'],
+        connections: ['video-001'],;
         metadata: {
-          timestamp: '2024-03-16 09:15',
-          source: 'Detective Interview'
+          timestamp: '2024-03-16 09:15',;
+          source: 'Detective Interview';
         }
       }
     ];
@@ -107,9 +107,9 @@
       id: `evidence-${Date.now()}`,
       title: 'NEW EVIDENCE',
       type: 'DOCUMENT',
-      description: 'New evidence item',
-      position: { x: Math.random() * 400 + 200, y: Math.random() * 300 + 200 },
-      connections: []
+      description: 'New evidence item',;
+      position: { x: Math.random() * 400 + 200, y: Math.random() * 300 + 200 },;
+      connections: [];
     };
     canvasItems = [...canvasItems, newEvidence];
   }
@@ -121,9 +121,9 @@
     } else if (selectedItem && selectedItem.id !== (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id) {
       // Create connection
       const newConnection = {
-        from: selectedItem.id,
+        from: selectedItem.id,;
         to: (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id,
-        type: 'correlation'
+        type: 'correlation';
       };
       connections = [...connections, newConnection];
       
@@ -156,8 +156,8 @@
     draggedItem = item;
     const rect = event.currentTarget.getBoundingClientRect();
     dragOffset = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top
+      x: event.clientX - rect.left,;
+      y: event.clientY - rect.top;
     };
   }
 
@@ -464,7 +464,7 @@ Cancel Connection
 
 <style>
   /* Grid background pattern */
-  #evidence-canvas {
+  #evidence-canvas {;
     background-color: #f9fafb;
   }
   

@@ -22,7 +22,7 @@ const authMachine = createMachine({
       }
     },
     authenticating: {
-      invoke: {
+      invoke: {;
         src: fromPromise(async ({ input }) => {
           // Performance measurement for gRPC migration baseline
           const startTime = performance.now();
@@ -44,7 +44,7 @@ const authMachine = createMachine({
         },
         onError: {
           target: 'error',
-          actions: assign({
+          actions: assign({;
             error: ({ event }) => {
               const err = event.error;
               return err && typeof err === 'object' && 'message' in err
@@ -66,7 +66,7 @@ const authMachine = createMachine({
       }
     },
     refreshingToken: {
-      invoke: {
+      invoke: {;
         src: fromPromise(async () => {
           const startTime = performance.now();
           const result = await mockServices.refreshAuthToken();
@@ -84,7 +84,7 @@ const authMachine = createMachine({
         },
         onError: {
           target: 'idle',
-          actions: assign({
+          actions: assign({;
             error: ({ event }) => {
               const err = event.error;
               return err && typeof err === 'object' && 'message' in err
@@ -100,7 +100,7 @@ const authMachine = createMachine({
     error: {
       on: {
         LOGIN: {
-          target: 'authenticating',
+          target: 'authenticating',;
           guard: ({ context }) => context.retryCount < 3
         }
       }
@@ -128,7 +128,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
 
       // Send login event;
       authActor.send({
-        type: 'LOGIN',
+        type: 'LOGIN',;
         credentials: { email: 'test@example.com', password: 'password' }
       });
 
@@ -146,7 +146,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
 
       // Assert service was called correctly;
       expect(mockServices.validateCredentials).toHaveBeenCalledWith({
-        email: 'test@example.com',
+        email: 'test@example.com',;
         password: 'password'
       });
 
@@ -167,7 +167,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         const startTime = performance.now();
 
         authActor.send({
-          type: 'LOGIN',
+          type: 'LOGIN',;
           credentials: { email: `test${i}@example.com`, password: 'password' }
         });
 
@@ -208,7 +208,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
 
       // First attempt - should fail;
       authActor.send({
-        type: 'LOGIN',
+        type: 'LOGIN',;
         credentials: { email: 'test@example.com', password: 'wrong' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
@@ -218,7 +218,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
 
       // Second attempt - should fail;
       authActor.send({
-        type: 'LOGIN',
+        type: 'LOGIN',;
         credentials: { email: 'test@example.com', password: 'wrong' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
@@ -228,7 +228,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
 
       // Third attempt - should succeed;
       authActor.send({
-        type: 'LOGIN',
+        type: 'LOGIN',;
         credentials: { email: 'test@example.com', password: 'correct' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
@@ -247,7 +247,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
 
       // Initial login;
       authActor.send({
-        type: 'LOGIN',
+        type: 'LOGIN',;
         credentials: { email: 'test@example.com', password: 'password' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
@@ -276,7 +276,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
 
       // Login first;
       authActor.send({
-        type: 'LOGIN',
+        type: 'LOGIN',;
         credentials: { email: 'test@example.com', password: 'password' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
@@ -321,7 +321,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       authActor.start();
 
       authActor.send({
-        type: 'LOGIN',
+        type: 'LOGIN',;
         credentials: { email: 'test@example.com', password: 'password' }
       });
 

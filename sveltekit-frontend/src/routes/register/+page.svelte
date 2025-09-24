@@ -9,7 +9,7 @@
   const { form, errors, enhance, message } = superForm(data.form, {
     validators: zodClient(registerSchema),
     resetForm: true,
-    taintedMessage: null
+    taintedMessage: null;
   });
 </script>
 
@@ -24,7 +24,7 @@
     <input
       name="name"
       type="text"
-      placeholder="Full Name"
+      placeholder="Full Name";
       bind:value={$form.name}
       aria-invalid={$errors.name ? 'true' : undefined}
       required
@@ -108,7 +108,7 @@
 </form>
 
 <style>
-  .error-message {
+  .error-message {;
     background: #f8d7da;
     color: #721c24;
     padding: 0.75rem;
@@ -159,7 +159,7 @@
     cursor: pointer;
   }
 
-  button:hover {
+  button:hover {;
     background: #1e7e34;
   }
 </style>

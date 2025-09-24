@@ -84,7 +84,7 @@ class ErrorAnalysisWorkerEngine {
       complexity: this.estimateComplexity(error),
       suggestionCount: this.generateSuggestionCount(error),
       autoFixStrategy: this.getFixStrategy(codeNumber),
-      estimatedTime: this.estimateFixTime(error),
+      estimatedTime: this.estimateFixTime(error),;
       dependencies: this.extractDependencies(error)
     };
   }
@@ -228,14 +228,14 @@ self.addEventListener('message', (event: MessageEvent) => {
         self.postMessage({
           type: 'analysis_complete',
           results,
-          id,
+          id,;
           timestamp: Date.now()
         });
         break;
         
       case 'ping':;
         self.postMessage({
-          type: 'pong',
+          type: 'pong',;
           timestamp: Date.now()
         });
         break;
@@ -245,7 +245,7 @@ self.addEventListener('message', (event: MessageEvent) => {
     }
   } catch (error: any) {
     self.postMessage({
-      type: 'error',
+      type: 'error',;
       error: error instanceof Error ? error.message: String(error),
       id
     });
@@ -254,7 +254,7 @@ self.addEventListener('message', (event: MessageEvent) => {
 
 // Signal that worker is ready;
 self.postMessage({
-  type: 'worker_ready',
+  type: 'worker_ready',;
   timestamp: Date.now()
 });
 

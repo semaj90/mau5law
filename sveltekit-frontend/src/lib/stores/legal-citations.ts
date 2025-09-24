@@ -118,7 +118,7 @@ export const citationFilters = writable<CitationFilters>({
   search: '',
   type: '',
   jurisdiction: '',
-  court: '',
+  court: '',;
   tags: []
 });
 
@@ -206,7 +206,7 @@ export const citationStats = derived(legalCitations, ($citations): CitationStats
     byCourt: {},
     byYear: {},
     aiExtracted: 0,
-    verified: 0,
+    verified: 0,;
     bookmarked: 0,
     averageRelevance: 0,
     recentlyAdded: 0
@@ -344,7 +344,7 @@ class LegalCitationsManager {
       extractionSource: sourceDocId,
       contextSnippet: this.extractContext(sourceText, extracted.fullCitation),
       relevanceScore: extracted.relevance || 0.5,
-      bookmarked: false,
+      bookmarked: false,;
       tags: extracted.tags || [],
       verificationStatus: 'unverified',
       createdAt: new Date(),
@@ -422,7 +422,7 @@ class LegalCitationsManager {
           title: citation.title,
           court: citation.court,
           jurisdiction: citation.jurisdiction,
-          year: citation.year,
+          year: citation.year,;
           parties: citation.parties,
           keyHoldings: citation.keyHoldings,
           legalPrinciples: citation.legalPrinciples,
@@ -454,7 +454,7 @@ class LegalCitationsManager {
           metadata: {
             type: citation.type,
             jurisdiction: citation.jurisdiction,
-            court: citation.court,
+            court: citation.court,;
             year: citation.year,
             precedentialValue: citation.precedentialValue
           }
@@ -591,7 +591,7 @@ class LegalCitationsManager {
       // Use external validation service
       const response = await fetch('/api/citations/validate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ citation: citation.citation, type: citation.type })
       });
 
@@ -648,7 +648,7 @@ class LegalCitationsManager {
     try {
       await fetch('/api/citations/sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify(citation)
       });
     } catch (error) {
@@ -710,7 +710,7 @@ class LegalCitationsManager {
       legalPrinciples: data.legalPrinciples || [],
       precedentialValue: data.precedentialValue || 'informational',
       aiExtracted: false,
-      bookmarked: false,
+      bookmarked: false,;
       tags: data.tags || [],
       verificationStatus: 'unverified',
       createdAt: new Date(),
@@ -762,7 +762,7 @@ export function clearCitationFilters(): void {
     search: '',
     type: '',
     jurisdiction: '',
-    court: '',
+    court: '',;
     tags: []
   });
 }

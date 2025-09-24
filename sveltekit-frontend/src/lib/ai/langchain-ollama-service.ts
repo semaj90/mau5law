@@ -53,7 +53,7 @@ export interface QueryResult {
 const DEFAULT_CONFIG: LangChainConfig = {
   ollamaBaseUrl: "http://localhost:11434",
   model: "gemma3-legal:latest",
-  embeddingModel: "nomic-embed-text:latest",
+  embeddingModel: "nomic-embed-text:latest",;
   temperature: 0.3,
   maxTokens: 2048,
   chunkSize: 1000,
@@ -85,7 +85,7 @@ export class LangChainOllamaService {
     // Initialize Chat Model with CUDA optimization;
     this.chatModel = new ChatOllama({
       baseUrl: this.config.ollamaBaseUrl,
-      model: this.config?.model || 'gemma3:2b',
+      model: this.config?.model || 'gemma3:2b',;
       temperature: this.config.temperature,
       // Note: numCtx, useGpu, numGpu, numThread may not be available in current ChatOllama version
     });
@@ -113,7 +113,7 @@ export class LangChainOllamaService {
   // ========================================================================
 
   async processDocument(
-    content: string,
+    content: string,;
     metadata: Record<string, any> = {}
   ): Promise<ProcessingResult> {
     const startTime = Date.now();
@@ -161,7 +161,7 @@ export class LangChainOllamaService {
         processingTime,
         metadata: {
           totalTokens: content.length / 4, // Rough estimate
-          avgChunkSize: Math.round(avgChunkSize),
+          avgChunkSize: Math.round(avgChunkSize),;
           model: this.config.embeddingModel
         }
       };
@@ -180,7 +180,7 @@ export class LangChainOllamaService {
   // ========================================================================
 
   async queryDocuments(
-    question: string,
+    question: string,;
     context: {
       documentTypes?: string[];
       dateRange?: { start: Date; end: Date };
@@ -201,7 +201,7 @@ export class LangChainOllamaService {
       const retriever = this.vectorStore.asRetriever({
         k: maxResults,
         searchType: "similarity",
-        // Note: searchKwargs may not be available in current version
+        // Note: searchKwargs may not be available in current version;
         filter: (doc) => true // Simple filter function
       });
 
@@ -226,7 +226,7 @@ export class LangChainOllamaService {
         answer: response.content as string,
         sources: filteredDocs.map(doc => ({
           content: doc.pageContent,
-          metadata: doc.metadata,
+          metadata: doc.metadata,;
           score: doc.metadata.score || 0.8
         })),
         confidence,
@@ -247,7 +247,7 @@ export class LangChainOllamaService {
   // ========================================================================
 
   private filterDocumentsByContext(
-    documents: LangChainDocument[],
+    documents: LangChainDocument[],;
     context: any
   ): LangChainDocument[] {
     let filtered = documents;
@@ -321,7 +321,7 @@ Answer:`;
     return {
       config: this.config,
       isInitialized: this.isInitialized,
-      vectorStoreSize: this.vectorStore?.memoryVectors?.length || 0,
+      vectorStoreSize: this.vectorStore?.memoryVectors?.length || 0,;
       model: this.config?.model || 'gemma3:2b',
       embeddingModel: this.config.embeddingModel
     };

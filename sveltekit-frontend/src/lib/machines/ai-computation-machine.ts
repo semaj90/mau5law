@@ -15,7 +15,7 @@ export interface AIComputationContext {
   idleTime: number;
   isOnline: boolean;
   rabbitMQConnected: boolean;
-  recommendations: {
+  recommendations: {;
     similar: DimensionalArray[];
     suggestions: string[];
     didYouMean: string[];
@@ -66,7 +66,7 @@ const perform3DComputation = fromPromise(async ({ input }: {
 
   return {
     result: dimensionalArray,
-    processed: true,
+    processed: true,;
     timestamp: Date.now()
   };
 });
@@ -93,7 +93,7 @@ const processRabbitMQQueue = fromPromise(async ({ input }: {
           () =>;
             resolve({
               computation,
-              processed: true,
+              processed: true,;
               timestamp: Date.now()
             }),
           500
@@ -110,7 +110,7 @@ const processRabbitMQQueue = fromPromise(async ({ input }: {
 
 export const aiComputationMachine = createMachine({
   id: 'aiComputation',
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: AIComputationContext;
     events: AIComputationEvent;
   },
@@ -134,7 +134,7 @@ export const aiComputationMachine = createMachine({
     idle: {
       entry: assign({
         idleTime: () => Date.now()
-      }),
+      }),;
       on: {
         START_COMPUTATION: [;
           {
@@ -168,7 +168,7 @@ export const aiComputationMachine = createMachine({
     userIdle: {
       entry: assign({
         idleTime: () => Date.now()
-      }),
+      }),;
       after: {
         // After 5 minutes of idle, start background computations;
         300000: {
@@ -183,7 +183,7 @@ export const aiComputationMachine = createMachine({
         RESUME_FROM_IDLE: {
           target: 'resumingFromIdle'
         },
-        PICK_UP_WHERE_LEFT_OFF: {
+        PICK_UP_WHERE_LEFT_OFF: {;
           target: 'resumingFromIdle'
         },
         NETWORK_ONLINE: [;
@@ -209,7 +209,7 @@ export const aiComputationMachine = createMachine({
         input: ({ event, context }) => {
           if (event.type === 'START_COMPUTATION') {
             return {
-              data: event.data.input,
+              data: event.data.input,;
               shape: event.data.shape,
               attentionWeights: event.data.attentionWeights,
               userId: context.userId
@@ -247,7 +247,7 @@ export const aiComputationMachine = createMachine({
       }
     },
 
-    backgroundComputing: {
+    backgroundComputing: {;
       entry: () => {
         console.log('🎯 Starting background computations during idle time');
       },
@@ -276,7 +276,7 @@ export const aiComputationMachine = createMachine({
       }
     },
 
-    queueing: {
+    queueing: {;
       entry: assign({
         queuedComputations: ({ context, event }) => {
           if (event.type === 'START_COMPUTATION') {
@@ -335,7 +335,7 @@ export const aiComputationMachine = createMachine({
         input: ({ event, context }) => {
           if (event.type === 'GET_RECOMMENDATIONS') {
             return {
-              userId: context.userId,
+              userId: context.userId,;
               context: event.context
             };
           }
@@ -350,7 +350,7 @@ export const aiComputationMachine = createMachine({
       }
     },
 
-    resumingFromIdle: {
+    resumingFromIdle: {;
       entry: () => {
         console.log('🔄 Resuming from idle state - picking up where you left off');
       },
@@ -381,7 +381,7 @@ export const aiComputationMachine = createMachine({
           })
         },
         USER_ACTIVE: {
-          target: 'idle',
+          target: 'idle',;
           actions: assign({
             errorMessage: undefined
           })

@@ -79,7 +79,7 @@ export class N64TextureStreamingEngine {
     // Try WebGL2 first;
     this.gl = canvas.getContext('webgl2', {
       powerPreference: 'high-performance',
-      antialias: false, // N64 style
+      antialias: false, // N64 style;
       alpha: false,
       preserveDrawingBuffer: true
     });
@@ -88,7 +88,7 @@ export class N64TextureStreamingEngine {
     if (!this.gl) {
       this.gl = canvas.getContext('webgl', {
         powerPreference: 'high-performance',
-        antialias: false,
+        antialias: false,;
         alpha: false,
         preserveDrawingBuffer: true
       });
@@ -407,19 +407,19 @@ export class N64TextureStreamingEngine {
       case 'rgba':;
         return {
           internalFormat: this.gl.RGBA,
-          format: this.gl.RGBA,
+          format: this.gl.RGBA,;
           type: this.gl.UNSIGNED_BYTE
         };
       case 'rgb':;
         return {
           internalFormat: this.gl.RGB,
-          format: this.gl.RGB,
+          format: this.gl.RGB,;
           type: this.gl.UNSIGNED_BYTE
         };
       case 'luminance':;
         return {
           internalFormat: this.gl.LUMINANCE,
-          format: this.gl.LUMINANCE,
+          format: this.gl.LUMINANCE,;
           type: this.gl.UNSIGNED_BYTE
         };
       default:
@@ -458,7 +458,7 @@ export class N64TextureStreamingEngine {
       chunks,
       metadata: {
         ...metadata,
-        evidenceType: 'photo',
+        evidenceType: 'photo',;
         timestamp: new Date()
       }
     };
@@ -475,7 +475,7 @@ export class N64TextureStreamingEngine {
       chunks,
       metadata: {
         caseId,
-        classification: 'legal_document',
+        classification: 'legal_document',;
         timestamp: new Date()
       }
     };
@@ -512,7 +512,7 @@ export class N64TextureStreamingEngine {
           id: (row * chunksPerRow + col).toString(),
           data: chunkData,
           width: chunkSize,
-          height: chunkSize,
+          height: chunkSize,;
           format: 'rgba',
           mipLevel: 0,
           isCompressed: false
@@ -654,7 +654,7 @@ export const LegalTextureUtils = {
       resolution: { width: 1024, height: 1024 },
       chunks,
       metadata: {
-        evidenceType: 'relationship_map',
+        evidenceType: 'relationship_map',;
         timestamp: new Date()
       }
     };
@@ -676,7 +676,7 @@ export const LegalTextureUtils = {
       textureType: 'courtroom',
       chunks: optimizedChunks,
       metadata: {
-        ...documentTexture.metadata,
+        ...documentTexture.metadata,;
         classification: 'courtroom_display'
       }
     };

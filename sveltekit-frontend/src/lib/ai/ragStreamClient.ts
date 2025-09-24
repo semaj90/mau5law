@@ -64,7 +64,7 @@ export interface InternalSSEState {
 }
 
 function finalizeEvent(
-  state: InternalSSEState,
+  state: InternalSSEState,;
   emit: (evt: { event?: string; data: string }) => void;
 ) {
   if (state.dataLines.length === 0) return;
@@ -76,7 +76,7 @@ function finalizeEvent(
 /** Incremental SSE line processor (per complete line without trailing \n) */
 function processSSELine(
   line: string,
-  state: InternalSSEState,
+  state: InternalSSEState,;
   emit: (evt: { event?: string; data: string }) => void;
 ) {
   if (line === '' || line === '\r') {
@@ -121,7 +121,7 @@ export async function streamRag(opts: RagStreamOptions): Promise<any> {
   try {
     const body = JSON.stringify({ query, contextIds, intent, model, ingestionId, ...extra });
     const resp = await fetch(endpoint, {
-      method: 'POST',
+      method: 'POST',;
       headers: { 'Content-Type': 'application/json' },
       body,
       signal
@@ -245,7 +245,7 @@ export async function* streamRagGenerator(
       const body = JSON.stringify({
         query: base.query,
         contextIds: base.contextIds ?? [],
-        intent: base.intent,
+        intent: base.intent,;
         model: base?.model || "unknown", // @ts-ignore - Model property access ?? 'default'
         ingestionId: base.ingestionId,
         ...(base.extra || {})
@@ -253,7 +253,7 @@ export async function* streamRagGenerator(
       const resp = await fetch(base.endpoint || '/rag/query/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body,
+        body,;
         signal: outerAbort.signal
       });
       if (!resp.ok || !resp.body) {
@@ -266,7 +266,7 @@ export async function* streamRagGenerator(
         }
         yield {
           type: 'error',
-          error: new Error(`Stream request failed: ${resp.status}`),
+          error: new Error(`Stream request failed: ${resp.status}`),;
           final: true,
           attempt
         };
@@ -354,7 +354,7 @@ export interface RagStreamStore {
   patches: Readable<any[]>;
   appliedObject?: Readable<any>; // auto-applied object derived from patches
   summary: Readable<string | undefined>;
-  start: (
+  start: (;
     opts: Omit<RagStreamGeneratorOptions, 'signal'> & { signal?: AbortSignal }
   ) => Promise<void>;
   cancel: () => void;
@@ -763,7 +763,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       // Attempt server cooperative interrupt;
       await fetch('/rag/interrupt', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ streamId: sid, mode })
       });
       // If graceful, wait briefly for server summary; if force, abort now;
@@ -855,7 +855,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     traceparent: { subscribe: traceparentW.subscribe },
     streamId: { subscribe: streamIdW.subscribe },
     patches: { subscribe: patchesW.subscribe },
-    appliedObject: { subscribe: appliedObjectW.subscribe },
+    appliedObject: { subscribe: appliedObjectW.subscribe },;
     summary: { subscribe: summaryW.subscribe },
     start,
     cancel,

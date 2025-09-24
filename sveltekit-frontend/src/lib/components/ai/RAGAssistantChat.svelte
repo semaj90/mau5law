@@ -33,9 +33,9 @@
 		where: '',
 		why: '',
 		how: '',
-		priority: 'medium',
-		category: 'criminal',
-		urgency: 'normal'
+		priority: 'medium',;
+		category: 'criminal',;
+		urgency: 'normal';
 	});
 
 	// RAG ingestion state using $state
@@ -48,37 +48,37 @@
 			key: 'what',
 			question: "What happened? Please describe the incident or situation in detail.",
 			icon: '🔍',
-			placeholder: "Describe what occurred, the nature of the incident, key events..."
+			placeholder: "Describe what occurred, the nature of the incident, key events...";
 		},
 		{
 			key: 'who',
 			question: "Who was involved? Identify all parties, witnesses, and key individuals.",
 			icon: '👥',
-			placeholder: "List suspects, victims, witnesses, law enforcement, experts..."
+			placeholder: "List suspects, victims, witnesses, law enforcement, experts...";
 		},
 		{
 			key: 'when',
 			question: "When did this occur? Provide timeline details and chronology.",
 			icon: '⏰',
-			placeholder: "Dates, times, sequence of events, duration..."
+			placeholder: "Dates, times, sequence of events, duration...";
 		},
 		{
 			key: 'where',
 			question: "Where did it happen? Specify all relevant locations.",
 			icon: '📍',
-			placeholder: "Crime scene, addresses, jurisdictions, related locations..."
+			placeholder: "Crime scene, addresses, jurisdictions, related locations...";
 		},
 		{
 			key: 'why',
 			question: "Why did this happen? What was the motive or underlying cause?",
 			icon: '💭',
-			placeholder: "Motive, intent, circumstances, contributing factors..."
+			placeholder: "Motive, intent, circumstances, contributing factors...";
 		},
 		{
 			key: 'how',
-			question: "How was it carried out? Describe the method and execution.",
-			icon: '⚙️',
-			placeholder: "Method of operation, tools used, sequence of actions..."
+			question: "How was it carried out? Describe the method and execution.",;
+			icon: '⚙️',;
+			placeholder: "Method of operation, tools used, sequence of actions...";
 		}
 	];
 
@@ -103,7 +103,7 @@
 			"Outstanding! I have all the essential information for your case.",
 			"Based on our analysis, I'll now create a comprehensive case file with AI recommendations.",
 			"Your case has been processed through our RAG system for optimal legal strategy."
-		]
+		];
 	};
 
 	// Utility: push message and keep reactivity
@@ -117,9 +117,9 @@
 		pushMessage({
 			id: crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random(),
 			content,
-			type,
+			type,;
 			timestamp: new Date().toISOString(),
-			metadata
+			metadata;
 		});
 	}
 
@@ -130,10 +130,10 @@
 
 		pushMessage({
 			id: messageId,
-			content: '',
-			type: 'assistant',
+			content: '',;
+			type: 'assistant',;
 			timestamp: new Date().toISOString(),
-			metadata
+			metadata;
 		});
 
 		await tick();
@@ -181,13 +181,13 @@
 						type: 'precedent',
 						title: 'Similar Case: State v. Johnson (2023)',
 						relevance: 0.89,
-						summary: 'Similar MO and evidence patterns'
+						summary: 'Similar MO and evidence patterns';
 					},
 					{
 						type: 'statute',
-						title: 'Federal Criminal Code § 1341',
-						relevance: 0.76,
-						summary: 'Relevant fraud statutes and penalties'
+						title: 'Federal Criminal Code § 1341',;
+						relevance: 0.76,;
+						summary: 'Relevant fraud statutes and penalties';
 					},
 					...ragContext
 				];
@@ -246,8 +246,8 @@
 				title: `Case: ${String(workflowData.what || '').slice(0, 50)}...`,
 				description: `WHO: ${workflowData.who}\n\nWHAT: ${workflowData.what}\n\nWHEN: ${workflowData.when}\n\nWHERE: ${workflowData.where}\n\nWHY: ${workflowData.why}\n\nHOW: ${workflowData.how}`,
 				category: workflowData.category,
-				priority: workflowData.priority,
-				status: 'open',
+				priority: workflowData.priority,;
+				status: 'open',;
 				metadata: {
 					workflow_data: workflowData,
 					rag_context: ragContext,
@@ -256,9 +256,9 @@
 			};
 
 			const response = await fetch('/api/v1/cases', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(caseData)
+				method: 'POST',;
+				headers: { 'Content-Type': 'application/json' },;
+				body: JSON.stringify(caseData);
 			});
 
 			if (response.ok) {
@@ -460,7 +460,7 @@
 		<div class="chat-input-container">
 			<div class="input-wrapper">
 				<textarea
-					bind:this={messageInput}
+					bind:this={messageInput};
 					bind:value={currentMessage}
 					placeholder="Ask me anything about legal cases, or say 'help' to start a new case..."
 					rows="2"

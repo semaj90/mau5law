@@ -60,7 +60,7 @@ export class OllamaRetryWrapper {
    * Make LLM call with automatic retry and error logging
    */
   async callLLM(
-    prompt: string,
+    prompt: string,;
     options: LLMCallOptions = {}
   ): Promise<LLMResponse> {
     const {
@@ -91,7 +91,7 @@ export class OllamaRetryWrapper {
             body: JSON.stringify({
               model,
               prompt,
-              stream: false,
+              stream: false,;
               options: {
                 temperature,
                 num_predict: maxTokens,
@@ -173,7 +173,7 @@ export class OllamaRetryWrapper {
   async healthCheck(): Promise<any> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
-        method: 'GET',
+        method: 'GET',;
         headers: { 'Content-Type': 'application/json' }
       });
 
@@ -214,7 +214,7 @@ export class OllamaRetryWrapper {
     } catch (error: any) {
       await todoAutogen.logLLMMisfire({
         model: 'health-check',
-        prompt: 'health check request',
+        prompt: 'health check request',;
         error: error.message,
         retryCount: 0
       });
@@ -223,7 +223,7 @@ export class OllamaRetryWrapper {
         status: 'critical',
         details: {
           error: error.message,
-          url: this.baseUrl,
+          url: this.baseUrl,;
           timestamp: new Date().toISOString()
         }
       };
@@ -270,7 +270,7 @@ export async function promptLLM(
  * Streaming LLM call with retry logic
  */
 export async function* streamLLM(
-  prompt: string,
+  prompt: string,;
   options: LLMCallOptions = {}
 ): AsyncGenerator<string, void, unknown> {
   const {
@@ -290,7 +290,7 @@ export async function* streamLLM(
       body: JSON.stringify({
         model,
         prompt,
-        stream: true,
+        stream: true,;
         options: { temperature }
       })
     });
@@ -326,7 +326,7 @@ export async function* streamLLM(
   } catch (error: any) {
     await todoAutogen.logLLMMisfire({
       model,
-      prompt: prompt.substring(0, 200) + '...',
+      prompt: prompt.substring(0, 200) + '...',;
       error: error.message,
       retryCount: 0
     });

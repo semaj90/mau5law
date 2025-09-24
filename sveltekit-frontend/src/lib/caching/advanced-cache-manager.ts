@@ -54,7 +54,7 @@ export class AdvancedCacheManager implements CacheLayerInterface {
   getStats() {
     return {
       size: this.cache.size,
-      maxSize: this.config.maxSize,
+      maxSize: this.config.maxSize,;
       ttl: this.config.ttl,
       hitRate: 0.85,
       missRate: 0.15

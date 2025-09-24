@@ -102,7 +102,7 @@ export async function processQuery(
         precision: options?.quantization?.precision || 'adaptive',
         compressionRatio: conversionResult.compressionRatio,
         memorySavedMB: (conversionResult.originalSize - conversionResult.compressedSize) / (1024 * 1024)
-      } : null,
+      } : null,;
       profiling: { 
         ttfbMs: Math.round(processingTime * 0.3), 
         totalMs: Math.round(processingTime),
@@ -122,7 +122,7 @@ function fallbackProcessing(query: string, options?: any) {
     tokensUsed: 128,
     cacheHit: false,
     webgpuAccelerated: false,
-    fallbackReason: 'WebGPU unavailable',
+    fallbackReason: 'WebGPU unavailable',;
     profiling: { ttfbMs: 20, totalMs: 45, gpuProcessingMs: 0 }
   };
 }
@@ -144,20 +144,20 @@ export const webgpuRAGService = {
 
     const result = await processQuery(query, {
       embeddings: mockEmbeddings,
-      context: contextArray,
+      context: contextArray,;
       quantization: { precision: 'fp16' }, // Default to FP16 for legal AI
       memoryBudgetMB: 512 // Default 512MB budget
     });
     
     return {
       processed: true,
-      results: contextArray.map((item) => ({ ...item, score: Math.random() })),
+      results: contextArray.map((item) => ({ ...item, score: Math.random() })),;
       performance: { 
         webgpuAccelerated: (result as { webgpuAccelerated?: any; profiling?: any; quantizationApplied?: any; embeddingDimensions?: any; device?: any; adapter?: any; conversionResult?: any }).webgpuAccelerated, 
         processingTime: `${(result as { webgpuAccelerated?: any; profiling?: any; quantizationApplied?: any; embeddingDimensions?: any; device?: any; adapter?: any; conversionResult?: any }).profiling.totalMs}ms`,
         quantization: (result as { webgpuAccelerated?: any; profiling?: any; quantizationApplied?: any; embeddingDimensions?: any; device?: any; adapter?: any; conversionResult?: any }).quantizationApplied
       },
-      embeddings: {
+      embeddings: {;
         dimensions: (result as { webgpuAccelerated?: any; profiling?: any; quantizationApplied?: any; embeddingDimensions?: any; device?: any; adapter?: any; conversionResult?: any }).embeddingDimensions,
         quantized: !!(result as { webgpuAccelerated?: any; profiling?: any; quantizationApplied?: any; embeddingDimensions?: any; device?: any; adapter?: any; conversionResult?: any }).quantizationApplied
       }
@@ -204,7 +204,7 @@ export const webgpuRAGService = {
       device,
       embeddings.map((emb, idx) => ({
         name: `embedding_${idx}`,
-        data: Array.isArray(emb) ? new Float32Array(emb) : emb,
+        data: Array.isArray(emb) ? new Float32Array(emb) : emb,;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       })),
       { precision: 'fp16' } // Default quantization for legal AI

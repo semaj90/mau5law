@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 
 export const GET: RequestHandler = async () => {
 	try {
-		// Comprehensive system health check;
+		// Comprehensive system health check
 		const healthStatus = {
 			status: 'healthy',
 			timestamp: new Date().toISOString(),
@@ -38,19 +38,19 @@ export const GET: RequestHandler = async () => {
 				cpuUsage: process.cpuUsage(),
 				loadAverage: process.platform !== 'win32' ? require('os').loadavg() : 'N/A (Windows)'
 			}
-		};
+		}
 
-		// Basic service availability checks;
+		// Basic service availability checks
 		try {
 			// You can add actual service checks here
-			healthStatus.services.database.status = 'healthy';
-			healthStatus.services.database.message = 'Database connection assumed healthy';
+			healthStatus.services.database.status = 'healthy'
+			healthStatus.services.database.message = 'Database connection assumed healthy'
 			
 			healthStatus.services.redis.status = 'healthy'; 
-			healthStatus.services.redis.message = 'Redis connection assumed healthy';
+			healthStatus.services.redis.message = 'Redis connection assumed healthy'
 		} catch (error: any) {
-			console.error('Health check error:', error);
-			healthStatus.status = 'degraded';
+			console.error('Health check error:', error)
+			healthStatus.status = 'degraded'
 		}
 
 		return json(healthStatus, {
@@ -60,9 +60,9 @@ export const GET: RequestHandler = async () => {
 				'Cache-Control': 'no-cache',
 				'X-Health-Check': 'true'
 			}
-		});
+		})
 	} catch (error: any) {
-		console.error('System health check failed:', error);
+		console.error('System health check failed:', error)
 		
 		return json({
 			status: 'unhealthy',
@@ -75,6 +75,6 @@ export const GET: RequestHandler = async () => {
 				'Content-Type': 'application/json',
 				'X-Health-Check': 'failed'
 			}
-		});
+		})
 	}
-};
+}

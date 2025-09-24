@@ -1,17 +1,17 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 // Enhanced Document Storage API with MinIO + PostgreSQL + Cognitive Cache
-import { db, getDatabaseHealth } from '$lib/server/db';
-import { legal_documents } from '$lib/server/db/schema-postgres';
-import { cognitiveCacheManager } from '$lib/services/cognitive-cache-integration';
-import { sql } from 'drizzle-orm';
+import { db, getDatabaseHealth } from '$lib/server/db'
+import { legal_documents } from '$lib/server/db/schema-postgres'
+import { cognitiveCacheManager } from '$lib/services/cognitive-cache-integration'
+import { sql } from 'drizzle-orm'
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    console.log('[Storage] Processing document storage request...');
+    console.log('[Storage] Processing document storage request...')
 
-    const body = await request.json();
+    const body = await request.json()
     const {
       content,
       embedding,
@@ -20,28 +20,28 @@ export const POST: RequestHandler = async ({ request }) => {
       originalContent,
       legalAnalysis,
       confidence
-    } = body;
+    } = body
 
     if (!content) {
       return json({
         success: false,
         error: 'Content is required'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Check database health
-    const dbHealth = await getDatabaseHealth();
+    const dbHealth = await getDatabaseHealth()
     if (dbHealth.overall !== 'healthy') {
       return json({
         success: false,
         error: 'Database temporarily unavailable',
         healthStatus: dbHealth
-      }, { status: 503 });
+      }, { status: 503 })
     }
 
-    console.log(`[Storage] Storing document: ${filename}`);
+    console.log(`[Storage] Storing document: ${filename}`)
 
-    // Store document in legal_documents table with proper schema;
+    // Store document in legal_documents table with proper schema
     const documentData = {
       title: filename || 'untitled',
       content,
@@ -57,21 +57,21 @@ export const POST: RequestHandler = async ({ request }) => {
       created_by: metadata.userId || null,
       created_at: new Date(),
       updated_at: new Date()
-    };
+    }
 
     const documentResult = await db
       .insert(legal_documents)
       .values(documentData)
-      .returning();
+      .returning()
 
-    const documentId = documentResult[0].id;
-    console.log(`[Storage] Document stored with ID: ${documentId}`);
+    const documentId = documentResult[0].id
+    console.log(`[Storage] Document stored with ID: ${documentId}`)
 
     if (embedding && embedding.length > 0) {
-      console.log(`[Storage] Vector embedding included (${embedding.length} dimensions)`);
+      console.log(`[Storage] Vector embedding included (${embedding.length} dimensions)`)
     }
 
-    console.log(`[Storage] Document stored successfully with ID: ${documentId}`);
+    console.log(`[Storage] Document stored successfully with ID: ${documentId}`)
 
     const responseData = {
       success: true,
@@ -94,9 +94,9 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString(),
         databaseHealth: dbHealth.overall
       }
-    };
+    }
 
-    // Cache the stored document for future retrieval;
+    // Cache the stored document for future retrieval
     await cognitiveCacheManager.set({
       key: `document_${documentId}`,
       type: 'legal-data' as const,
@@ -109,34 +109,34 @@ export const POST: RequestHandler = async ({ request }) => {
     }, responseData.document, {
       distributeAcrossCaches: true,
       cognitiveValue: 0.8
-    });
+    })
 
-    return json(responseData);
+    return json(responseData)
 
   } catch (err: any) {
-    console.error('[Storage] Error:', err);
+    console.error('[Storage] Error:', err)
 
     return json({
       success: false,
       error: err.message || 'Storage failed'
-    }, { status: err.status || 500 });
+    }, { status: err.status || 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async () => {
   try {
     // Get comprehensive database health
-    const dbHealth = await getDatabaseHealth();
+    const dbHealth = await getDatabaseHealth()
     
     // Count stored documents
-    let documentCount = 0;
+    let documentCount = 0
     try {
       const [result] = await db
         .select({ count: sql<number>`count(*)` })
-        .from(legal_documents);
-      documentCount = result?.count || 0;
+        .from(legal_documents)
+      documentCount = result?.count || 0
     } catch (countError) {
-      console.warn('[Storage] Failed to count documents:', countError);
+      console.warn('[Storage] Failed to count documents:', countError)
     }
 
     return json({
@@ -160,12 +160,12 @@ export const GET: RequestHandler = async () => {
         search: 'POST /api/documents/search'
       },
       version: '3.0.0'
-    });
+    })
   } catch (err: any) {
     return json({
       status: 'unhealthy',
       error: err.message,
       timestamp: new Date().toISOString()
-    }, { status: 503 });
+    }, { status: 503 })
   }
-};
+}

@@ -34,9 +34,9 @@
 
   // Mock user data for demo
   let mockUser = $state({
-    id: 'demo-user-123',
-    email: 'demo@legalai.com',
-    role: 'prosecutor' as const
+    id: 'demo-user-123',;
+    email: 'demo@legalai.com',;
+    role: 'prosecutor' as const;
   });
 
   interface TabItem { id: string; label: string }
@@ -62,17 +62,17 @@
   // Mock session actions for demo
   const mockSessionActions = {
     setSession: (user: any, session: any) => console.log('Mock setSession:', user, session),
-    clearSession: () => console.log('Mock clearSession'),
-    init: (data: any) => console.log('Mock init:', data)
+    clearSession: () => console.log('Mock clearSession'),;
+    init: (data: any) => console.log('Mock init:', data);
   };
 
   // Session demo functions
   function simulateLogin() {
     mockSessionActive = true;
     mockSessionActions.setSession(mockUser, {
-      id: 'demo-session-123',
-      user: mockUser,
-      fresh: true
+      id: 'demo-session-123',;
+      user: mockUser,;
+      fresh: true;
     });
   }
 
@@ -101,7 +101,7 @@
     totalEvidence: 1284,
     totalDocuments: 567,
     totalCitations: 89,
-    totalReports: 34
+    totalReports: 34;
   } : {
     totalCases: 0,
     totalEvidence: 0,

@@ -54,7 +54,7 @@ class DatabasePoolService {
       max: parseInt(process.env.DB_POOL_SIZE || '10'),
       idle_timeout: parseInt(process.env.DB_IDLE_TIMEOUT || '30'),
       connect_timeout: parseInt(process.env.DB_CONNECT_TIMEOUT || '10'),
-      prepare: process.env.NODE_ENV === 'production',
+      prepare: process.env.NODE_ENV === 'production',;
       ssl: process.env.DB_SSL === 'true' ? 'require' : false
     };
   }
@@ -78,7 +78,7 @@ class DatabasePoolService {
     const pool = postgres(this.connectionString, {
       ...this.config,
       ...dynamicConfig,
-      onnotice: () => {}, // Suppress notices
+      onnotice: () => {}, // Suppress notices;
       debug: process.env.NODE_ENV === 'development'
     });
 
@@ -114,7 +114,7 @@ class DatabasePoolService {
   async queryCached<T = any>(
     sql: string,
     params: any[] = [],
-    context: string = 'default',
+    context: string = 'default',;
     ttl: number = this.DEFAULT_CACHE_TTL;
   ): Promise<T> {
     const cacheKey = this.generateCacheKey(sql, params);
@@ -236,7 +236,7 @@ class DatabasePoolService {
 
       await redisService.hincrby(key, 'total', operation === 'created' ? 1 : 0);
       await redisService.hincrby(key, operation === 'reused' ? 'reuses' : 'creates', 1);
-      await redisService.hset(key, 'lastUpdate', timestamp.toString();
+      await redisService.hset(key, 'lastUpdate', timestamp.toString());
       await redisService.expire(key, 3600); // Stats expire after 1 hour;
     } catch (error) {
       console.warn('Failed to record connection stats:', error);

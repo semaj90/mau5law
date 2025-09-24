@@ -56,7 +56,7 @@ class MSAARenderTarget {
     // Using WebGLRenderTarget with samples parameter instead;
     this.renderTarget = new THREE.WebGLRenderTarget(width, height, {
       format: THREE.RGBAFormat,
-      type: THREE.UnsignedByteType,
+      type: THREE.UnsignedByteType,;
       samples: samples > 1 ? samples : 0,
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
@@ -79,7 +79,7 @@ class MSAARenderTarget {
 // FXAA Post-processing Shader;
 const FXAAShader = {
   uniforms: {
-    tDiffuse: { value: null },
+    tDiffuse: { value: null },;
     resolution: { value: new THREE.Vector2() },
     qualityPreset: { value: 12 }, // 10-39 range
     edgeThreshold: { value: 0.166 },
@@ -179,7 +179,7 @@ export const TAAShader = {
     previousProjectionMatrix: { value: new THREE.Matrix4() },
     cameraMatrix: { value: new THREE.Matrix4() },
     previousCameraMatrix: { value: new THREE.Matrix4() },
-    resolution: { value: new THREE.Vector2() },
+    resolution: { value: new THREE.Vector2() },;
     alpha: { value: 0.9 },
     jitterOffset: { value: new THREE.Vector2() },
     velocityScale: { value: 1.0 },
@@ -289,7 +289,7 @@ export const SMAAShader = {
     tDiffuse: { value: null },
     tArea: { value: null },
     tSearch: { value: null },
-    resolution: { value: new THREE.Vector2() },
+    resolution: { value: new THREE.Vector2() },;
     threshold: { value: 0.1 },
     maxSearchSteps: { value: 16 },
     maxSearchStepsDiag: { value: 8 },
@@ -421,7 +421,7 @@ const EnhancedAAShader = {
     edgeColor: { value: new THREE.Color(YORHA_COLORS.primary.black) },
     edgeWidth: { value: 0.02 },
     aaStrength: { value: 1.0 },
-    supersampleFactor: { value: 2.0 },
+    supersampleFactor: { value: 2.0 },;
     time: { value: 0 }
   },
 
@@ -574,7 +574,7 @@ class TAAManager {
     // Initialize history buffers;
     for (let i = 0; i < 2; i++) {
       this.history.push(new THREE.WebGLRenderTarget(width, height, {
-        format: THREE.RGBAFormat,
+        format: THREE.RGBAFormat,;
         type: THREE.FloatType,
         minFilter: THREE.LinearFilter,
         magFilter: THREE.LinearFilter
@@ -651,7 +651,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
       samples: 4,
       quality: 'high',
       edgeThreshold: 0.166,
-      subpixelQuality: 0.75,
+      subpixelQuality: 0.75,;
       enabled: true,
       temporalSamples: 8,
       jitterPattern: 'halton',
@@ -701,7 +701,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     this.fxaaPass = new THREE.ShaderMaterial({
       uniforms: THREE.UniformsUtils.clone(FXAAShader.uniforms),
       vertexShader: FXAAShader.vertexShader,
-      fragmentShader: FXAAShader.fragmentShader,
+      fragmentShader: FXAAShader.fragmentShader,;
       transparent: true
     });
     
@@ -777,7 +777,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
       uniforms: THREE.UniformsUtils.clone(EnhancedAAShader.uniforms),
       vertexShader: EnhancedAAShader.vertexShader,
       fragmentShader: EnhancedAAShader.fragmentShader,
-      transparent: this.style.opacity !== undefined && this.style.opacity < 1,
+      transparent: this.style.opacity !== undefined && this.style.opacity < 1,;
       side: THREE.DoubleSide
     });
     
@@ -933,7 +933,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
   } {
     return {
       type: this.aaConfig.type,
-      quality: this.aaConfig.quality || 'high',
+      quality: this.aaConfig.quality || 'high',;
       samples: this.aaConfig.samples || 0,
       estimatedFPS: this.estimateFPS(),
       memoryUsage: this.estimateMemoryUsage()
@@ -990,7 +990,7 @@ export const AntiAliasingUtils = {
       samples: type === 'msaa' ? 4 : 8,
       quality: targetFPS >= 60 ? 'high' : 'medium',
       edgeThreshold: 0.166,
-      subpixelQuality: 0.75,
+      subpixelQuality: 0.75,;
       enabled: true,
       adaptiveQuality: true,
       performanceTarget: targetFPS
@@ -1015,7 +1015,7 @@ export const AntiAliasingUtils = {
       },
       quality: {
         type: 'taa' as const,
-        quality: 'ultra' as const,
+        quality: 'ultra' as const,;
         samples: 8,
         adaptiveQuality: false,
         performanceTarget: 30

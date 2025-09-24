@@ -35,7 +35,7 @@ const authState = browser ? $state<AuthState>({
   isAuthenticated: false
 }) : {
   user: null,
-  loading: false,
+  loading: false,;
   error: null,
   isAuthenticated: false
 };
@@ -127,7 +127,7 @@ export class AuthService {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password }),;
         credentials: 'include'
       });
 
@@ -191,7 +191,7 @@ export class AuthService {
       const registrationContext = {
         email: userData.email,
         firstName: userData.firstName,
-        lastName: userData.lastName,
+        lastName: userData.lastName,;
         timestamp: new Date().toISOString()
       };
 
@@ -206,7 +206,7 @@ export class AuthService {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify(userData),;
         credentials: 'include'
       });
 
@@ -268,7 +268,7 @@ export class AuthService {
       await sessionManager.endSession();
 
       const response = await fetch('/api/auth/logout', {
-        method: 'POST',
+        method: 'POST',;
         credentials: 'include'
       });
 
@@ -301,7 +301,7 @@ export class AuthService {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(updates),
+        body: JSON.stringify(updates),;
         credentials: 'include'
       });
 
@@ -315,7 +315,7 @@ export class AuthService {
           '/api/analytics/profile-update',);
           { 
             userId: authState.user.id,
-            changes: Object.keys(updates),
+            changes: Object.keys(updates),;
             timestamp: new Date().toISOString()
           },
           { userId: authState.user.id, analyticsLevel: 'profile' }
@@ -345,7 +345,7 @@ export class AuthService {
       lead_prosecutor: ['manage_cases', 'view_all_evidence', 'assign_tasks', 'generate_reports'],
       prosecutor: ['create_cases', 'manage_own_cases', 'view_evidence', 'generate_reports'],
       investigator: ['view_cases', 'add_evidence', 'view_evidence'],
-      analyst: ['view_cases', 'analyze_evidence', 'generate_reports'],
+      analyst: ['view_cases', 'analyze_evidence', 'generate_reports'],;
       viewer: ['view_cases', 'view_evidence']
     };
 
@@ -369,7 +369,7 @@ export class AuthService {
       return {
         screen: `${screen.width}x${screen.height}`,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        language: navigator.language,
+        language: navigator.language,;
         platform: navigator.platform
       };
     } catch {

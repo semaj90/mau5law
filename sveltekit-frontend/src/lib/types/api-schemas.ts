@@ -6,7 +6,7 @@
 export interface APIResponse<T = any> {
   success: boolean;
   data: T;
-  meta: {
+  meta: {;
     timestamp: string;
     cached: boolean;
     source: 'ssr' | 'api';
@@ -53,14 +53,14 @@ export interface AuthMeResponse {
 
 // System Health Schemas;
 export interface SystemHealth {
-  overall: {
+  overall: {;
     status: 'healthy' | 'degraded' | 'unhealthy';
     healthScore: number;
     healthyServices: number;
     totalServices: number;
     timestamp: string;
   };
-  services: {
+  services: {;
     databases: Record<string, ServiceStatus>;
     aiServices: Record<string, ServiceStatus>;
     gpuServices: Record<string, GPUServiceStatus>;
@@ -71,7 +71,7 @@ export interface SystemHealth {
     systemUptime: number;
     memoryUsage: MemoryUsage;
   };
-  architecture: {
+  architecture: {;
     platform: string;
     version: string;
     gpuArchitecture: string;
@@ -280,7 +280,7 @@ export interface GraphEdge {
 export interface ErrorResponse {
   success: false;
   data: null;
-  meta: {
+  meta: {;
     timestamp: string;
     cached: false;
     source: 'ssr' | 'api';

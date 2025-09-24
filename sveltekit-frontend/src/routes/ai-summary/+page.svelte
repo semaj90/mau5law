@@ -15,12 +15,12 @@
     isGenerating = true;
     try {
       const res = await fetch('/api/ai/generate-summary', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId: 'demo-case',
           summaryType,
-          includeEvidence: true,
+          includeEvidence: true,;
           prompt: `Generate ${summaryType} summary with legal analysis`
         })
       });
@@ -41,13 +41,13 @@
   const loadCaseDemo = async () => {
     caseData = {
       id: 'demo-case',
-      title: 'State v. Digital Evidence Analysis',
+      title: 'State v. Digital Evidence Analysis',;
       evidence: [
         { id: '1', type: 'digital', title: 'Email Communications' },
         { id: '2', type: 'document', title: 'Financial Records' },
         { id: '3', type: 'photo', title: 'Crime Scene Photos' }
-      ],
-      status: 'active'
+      ],;
+      status: 'active';
     };
   };
 

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!--
@@ -109,7 +109,7 @@ https://svelte.dev/e/attribute_duplicate -->
     header,
     footer,
     children,
-    class: className = ''
+    class: className = '';
    }: Props = $props();
 
   // Events now handled via props in Svelte 5
@@ -299,7 +299,7 @@ https://svelte.dev/e/attribute_duplicate -->
       secondary: { base: '#2d3748', highlight: '#4a5568', shadow: '#1a202c', accent: '#6c757d' },
       success: { base: '#1a365d', highlight: '#2d5016', shadow: '#0d1b2a', accent: '#28a745' },
       warning: { base: '#452f06', highlight: '#744210', shadow: '#2d1b05', accent: '#ffc107' },
-      error: { base: '#451b1b', highlight: '#742a2a', shadow: '#2d0e0e', accent: '#dc3545' },
+      error: { base: '#451b1b', highlight: '#742a2a', shadow: '#2d0e0e', accent: '#dc3545' },;
       info: { base: '#1a202c', highlight: '#2a4365', shadow: '#0d1117', accent: '#17a2b8' }
     };
 
@@ -324,7 +324,7 @@ https://svelte.dev/e/attribute_duplicate -->
           0 ${dialogDepth * 2}px ${dialogDepth * 3}px rgba(0,0,0,0.6)
         `
       },
-      pbr: {
+      pbr: {;
         background: `
           linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 30%, ${colors.shadow} 70%, ${colors.base} 100%),
           radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0%, transparent 50%),
@@ -402,7 +402,7 @@ https://svelte.dev/e/attribute_duplicate -->
     role="button" 
     tabindex="0"
     onclick={handleBackdropClick}
-    style="
+    style=";
       --atmosphere-intensity: {atmosphereIntensity};
       --fog-color: {effectiveRenderOptions.fogColor};
     "
@@ -416,9 +416,9 @@ https://svelte.dev/e/attribute_duplicate -->
     <div
       bind:this={dialogElement}
       class="n64-dialog {className} {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()} entrance-{entranceAnimation}"
-      class:fullscreen
+      class:fullscreen;
       class:animating={isAnimating}
-      style="
+      style=";
         --material-bg: {materialStyles.background};
         --material-border: {materialStyles.borderColor};
         --material-shadow: {materialStyles.boxShadow};
@@ -816,7 +816,7 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 
     overflow: hidden;
     border-radius: 8px;
   }
-.particle-overlay: :before, .particle-overlay::after {
+.particle-overlay::before, .particle-overlay::after {
     content: '';
     position: absolute;
     width: 3px;
@@ -826,13 +826,13 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 
     animation: floatParticles 8s ease-in-out infinite;
   }
 
-  .particle-overlay: :before {
+  .particle-overlay::before {
     top: 20%;
     left: 10%;
     animation-delay: 0s;
   }
 
-  .particle-overlay: :after {
+  .particle-overlay::after {
     top: 60%;
     right: 15%;
     animation-delay: -4s;
@@ -884,7 +884,7 @@ filter: contrast(1.03) brightness(1.02) saturate(1.08);
   .n64-dialog.anisotropic-16x {
     filter: contrast(1.1) brightness(1.03);
   }
-/* Fog effects */ .n64-dialog: :before {
+/* Fog effects */ .n64-dialog::before {
     content: '';
     position: absolute;
     top: 0;
@@ -924,7 +924,7 @@ background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color,
       display: none;
     }
 
-    .n64-dialog: :before {
+    .n64-dialog::before {
       display: none;
     }
   }
@@ -941,7 +941,7 @@ background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color,
     .atmosphere-layer {
       animation: none;
     }
-.particle-overlay: :before, .particle-overlay::after {
+.particle-overlay::before, .particle-overlay::after {
       animation: none;
     }
 
@@ -978,7 +978,7 @@ background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color,
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
     }
-.lighting-overlay, .reflection-overlay, .particle-overlay, .atmosphere-layer, .n64-dialog: :before {
+.lighting-overlay, .reflection-overlay, .particle-overlay, .atmosphere-layer, .n64-dialog::before {
       display: none;
     }
   }

@@ -36,24 +36,24 @@
 
   const sizeClasses = {
     small: 'w-80 h-64',
-    medium: 'w-96 h-80',
-    large: 'w-[32rem] h-96',
-    fullscreen: 'w-[90vw] h-[80vh]'
+    medium: 'w-96 h-80',;
+    large: 'w-[32rem] h-96',;
+    fullscreen: 'w-[90vw] h-[80vh]';
   };
 
   const typeColors = {
     menu: 'from-blue-900/90 to-blue-800/90',
     dialog: 'from-purple-900/90 to-purple-800/90',
     battle: 'from-red-900/90 to-red-800/90',
-    shop: 'from-green-900/90 to-green-800/90',
-    inventory: 'from-amber-900/90 to-amber-800/90',
-    status: 'from-cyan-900/90 to-cyan-800/90'
+    shop: 'from-green-900/90 to-green-800/90',;
+    inventory: 'from-amber-900/90 to-amber-800/90',;
+    status: 'from-cyan-900/90 to-cyan-800/90';
   };
 
   const cornerClasses = {
-    classic: 'ff-corner-classic',
-    modern: 'ff-corner-modern',
-    hybrid: 'ff-corner-hybrid'
+    classic: 'ff-corner-classic',;
+    modern: 'ff-corner-modern',;
+    hybrid: 'ff-corner-hybrid';
   };
 
   function handleClose() {
@@ -92,7 +92,7 @@
       class="relative {sizeClasses[size]} bg-gradient-to-br {typeColors[type]} 
              border-2 border-amber-400/80 shadow-2xl overflow-hidden
              {cornerClasses[cornerStyle]}"
-      transitiscale={{ duration: 400, easing: quintOut, start: 0.8 }}
+      transitiscale={{ duration: 400, easing: quintOut, start: 0.8 }};
       bind:this={contentElement}
     >
       <!-- FF-Style Corner Decorations -->
@@ -149,7 +149,7 @@ clip-path: polygon( 0% 8px, 8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100
     position: relative;
   }
 
-  .ff-corner-modern: :before {
+  .ff-corner-modern::before {
     content: '';
     position: absolute;
     inset: -2px;
@@ -162,21 +162,21 @@ clip-path: polygon( 0% 8px, 8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100
 clip-path: polygon( 0% 12px, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0% calc(100% - 12px) );
     border-radius: 0.25rem;
   }
-/* Custom Scrollbar */ .custom-scrollbar: :-webkit-scrollbar {
+/* Custom Scrollbar */ .custom-scrollbar::-webkit-scrollbar {
     width: 8px;
   }
 
-  .custom-scrollbar: :-webkit-scrollbar-track {
+  .custom-scrollbar::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
   }
 
-  .custom-scrollbar: :-webkit-scrollbar-thumb {
+  .custom-scrollbar::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #fbbf24, #d97706);
     border-radius: 4px;
   }
 
-  .custom-scrollbar: :-webkit-scrollbar-thumb:hover {
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, #f59e0b, #b45309);
   }
 /* Text Shadow Utility */ .text-shadow-lg {
@@ -187,7 +187,7 @@ clip-path: polygon( 0% 12px, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc
     50% { opacity: 1; }
   }
 
-  .ff-corner-classic: :after {
+  .ff-corner-classic::after {
     content: '';
     position: absolute;
     inset: 0;

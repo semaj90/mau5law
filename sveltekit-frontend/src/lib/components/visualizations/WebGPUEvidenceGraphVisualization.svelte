@@ -24,8 +24,9 @@
   let showLabels = true;
   let animationSpeed = 1;
 
-  $effect(async () => {
-    // Check WebGPU support
+  $effect(() => {
+    (async () => {
+// Check WebGPU support
     if (!navigator.gpu) {
       error = 'WebGPU is not supported in this browser. Please use a modern browser with WebGPU enabled.';
       return;
@@ -45,6 +46,7 @@
       error = `Failed to initialize WebGPU: ${err.message}`;
       console.error(err);
     }
+    })();
   });
 
   onDestroy(() => {
@@ -67,9 +69,9 @@
       z: 0,
       type: 'evidence',
       label: 'Primary Evidence',
-      weight: 1.0,
-      color: [0.2, 0.6, 1.0, 1.0], // Blue
-      connections: []
+      weight: 1.0,;
+      color: [0.2, 0.6, 1.0, 1.0], // Blue;
+      connections: [];
     };
     nodes.push(mainNode);
 
@@ -85,9 +87,9 @@
         z: Math.sin(angle) * radius,
         type: 'entity',
         label: entity.value,
-        weight: entity.confidence,
-        color: getEntityColor(entity.type),
-        connections: []
+        weight: entity.confidence,;
+        color: getEntityColor(entity.type),;
+        connections: [];
       };
 
       nodes.push(entityNode);
@@ -97,9 +99,9 @@
       edges.push({
         source: mainNode.id,
         target: entityNode.id,
-        weight: entity.confidence,
-        type: 'entity',
-        color: [0.5, 0.5, 0.5, 0.5]
+        weight: entity.confidence,;
+        type: 'entity',;
+        color: [0.5, 0.5, 0.5, 0.5];
       });
     });
 
@@ -113,11 +115,11 @@
         x: Math.cos(angle) * radius,
         y: 0,
         z: Math.sin(angle) * radius,
-        type: 'correlation',
+        type: 'correlation',;
         label: `Related Evidence ${i + 1}`,
-        weight: correlation.strength,
-        color: getCorrelationColor(correlation.correlationType),
-        connections: []
+        weight: correlation.strength,;
+        color: getCorrelationColor(correlation.correlationType),;
+        connections: [];
       };
 
       nodes.push(correlationNode);
@@ -126,9 +128,9 @@
       edges.push({
         source: mainNode.id,
         target: correlationNode.id,
-        weight: correlation.strength,
-        type: correlation.correlationType,
-        color: getCorrelationColor(correlation.correlationType)
+        weight: correlation.strength,;
+        type: correlation.correlationType,;
+        color: getCorrelationColor(correlation.correlationType);
       });
 
       // Connect shared entities
@@ -138,9 +140,9 @@
           edges.push({
             source: correlationNode.id,
             target: entityNode.id,
-            weight: 0.3,
-            type: 'semantic',
-            color: [0.7, 0.7, 0.3, 0.3]
+            weight: 0.3,;
+            type: 'semantic',;
+            color: [0.7, 0.7, 0.3, 0.3];
           });
         }
       });
@@ -158,9 +160,9 @@
         z: 0,
         type: 'event',
         label: event.description,
-        weight: event.confidence,
-        color: [0.8, 0.5, 0.2, 1.0], // Orange
-        connections: []
+        weight: event.confidence,;
+        color: [0.8, 0.5, 0.2, 1.0], // Orange;
+        connections: [];
       };
 
       nodes.push(eventNode);
@@ -170,9 +172,9 @@
         edges.push({
           source: `event-${i - 1}`,
           target: eventNode.id,
-          weight: 0.5,
-          type: 'temporal',
-          color: [0.6, 0.6, 0.6, 0.5]
+          weight: 0.5,;
+          type: 'temporal',;
+          color: [0.6, 0.6, 0.6, 0.5];
         });
       }
 
@@ -180,9 +182,9 @@
       edges.push({
         source: mainNode.id,
         target: eventNode.id,
-        weight: event.confidence * 0.5,
-        type: 'temporal',
-        color: [0.5, 0.5, 0.5, 0.3]
+        weight: event.confidence * 0.5,;
+        type: 'temporal',;
+        color: [0.5, 0.5, 0.5, 0.3];
       });
     });
 
@@ -278,9 +280,9 @@
     // Group nodes by type
     const groups = {
       evidence: nodes.filter(n => n.type === 'evidence'),
-      entity: nodes.filter(n => n.type === 'entity'),
-      event: nodes.filter(n => n.type === 'event'),
-      correlation: nodes.filter(n => n.type === 'correlation')
+      entity: nodes.filter(n => n.type === 'entity'),;
+      event: nodes.filter(n => n.type === 'event'),;
+      correlation: nodes.filter(n => n.type === 'correlation');
     };
 
     // Position groups in layers
@@ -352,7 +354,7 @@
       Evidence Relationship Graph (WebGPU Accelerated)
     </h3>
     <div class="graph-controls">
-      <select
+      <select;
         bind:value={layoutType}
         onchange={handleLayoutChange}
         class="layout-select"
@@ -389,7 +391,7 @@
     </div>
   {:else}
     <div class="canvas-container">
-      <canvas
+      <canvas;
         bind:this={canvas}
         width={800}
         height={600}

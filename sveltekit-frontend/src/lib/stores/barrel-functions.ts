@@ -16,7 +16,7 @@
 // ===== TESTING FRAMEWORK BARREL STORE =====;
 export const testingFramework = {
   describe: (globalThis as any).describe || ((name: string, fn: () => void) => fn()),
-  it: (globalThis as any).it || ((name: string, fn: () => void) => fn()),
+  it: (globalThis as any).it || ((name: string, fn: () => void) => fn()),;
   expect: (globalThis as any).expect || ((value: any) => ({
     toBe: (expected: any) => value === expected,
     toEqual: (expected: any) => JSON.stringify(value) === JSON.stringify(expected),
@@ -101,7 +101,7 @@ export const cacheLayerMethods = {
     indexedDB: {
       open: async (name: string) => null,
       get: async (key: string) => null,
-      set: async (key: string, value: any) => true,
+      set: async (key: string, value: any) => true,;
       delete: async (key: string) => true
     }
   }
@@ -138,7 +138,7 @@ export const databaseEntityProperties = {
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     user_id: null,
-    status: 'pending',
+    status: 'pending',;
     type: 'document'
   },
 
@@ -147,7 +147,7 @@ export const databaseEntityProperties = {
     message: '',
     role: 'user',
     timestamp: new Date().toISOString(),
-    sources: [],
+    sources: [],;
     id: null,
     user_id: null
   },
@@ -158,7 +158,7 @@ export const databaseEntityProperties = {
     accessCount: 0,
     createdAt: Date.now(),
     expiresAt: Date.now() + 3600000, // 1 hour
-    size: 0,
+    size: 0,;
     version: 1
   }
 };
@@ -211,14 +211,14 @@ export const webGPUExtendedMethods = {
   // GPU error event types;
   createGPUError: (type: string, message: string) => ({
     type,
-    message,
+    message,;
     timestamp: Date.now()
   }),
 
   // GPU uncaptured error event;
   createGPUUncapturedErrorEvent: (error: any) => ({
     type: 'uncapturederror',
-    error,
+    error,;
     timestamp: Date.now()
   })
 };
@@ -333,7 +333,7 @@ export const configurationProperties = {
     misses: 0,
     errors: 0,
     gets: 0,
-    sets: 0,
+    sets: 0,;
     deletes: 0,
     totalOperations: 0,
     totalOperationTime: 0,
@@ -360,7 +360,7 @@ export const configurationProperties = {
     createdAt: Date.now(),
     lastAccessed: Date.now(),
     accessCount: 0,
-    size: 0,
+    size: 0,;
     compressed: false
   },
 
@@ -423,7 +423,7 @@ export const barrelStore = {
   database: databaseEntityProperties,
   webgpu: webGPUExtendedMethods,
   loki: lokiCollectionMethods,
-  config: configurationProperties,
+  config: configurationProperties,;
   utils: utilityFunctions
 };
 

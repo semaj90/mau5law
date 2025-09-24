@@ -71,7 +71,7 @@ export class LangChainSIMDBridge {
       // LangChain defaults
       ollamaBaseUrl: "http://localhost:11434",
       model: "gemma3-legal:latest",
-      embeddingModel: "nomic-embed-text:latest",
+      embeddingModel: "nomic-embed-text:latest",;
       temperature: 0.3,
       maxTokens: 2048,
       chunkSize: 1000,
@@ -113,7 +113,7 @@ export class LangChainSIMDBridge {
    */
   async processDocument(
     content: string,
-    metadata: Record<string, any> = {},
+    metadata: Record<string, any> = {},;
     options: {
       skipLangChain?: boolean;
       directSIMD?: boolean;
@@ -139,7 +139,7 @@ export class LangChainSIMDBridge {
         documentId: processingId,
         chunksCreated: 1,
         embeddings: [new Array(this.config.vectorDimensions!).fill(0.1)],
-        processingTime: 0,
+        processingTime: 0,;
         metadata: { totalTokens: content.length / 4, avgChunkSize: content.length, model: 'direct' }
       };
     }
@@ -147,7 +147,7 @@ export class LangChainSIMDBridge {
     // Phase 2: SIMD compression with enhanced configuration
     const simdStart = Date.now();
     const simdResult = await simdTextTilingEngine.processText(content, {
-      type: metadata.type || 'general',
+      type: metadata.type || 'general',;
       context: `langchain-${this.config?.model || "unknown"}`,
       uiTarget: options.generateUI ? 'component' : undefined
     });
@@ -197,7 +197,7 @@ export class LangChainSIMDBridge {
       processingTime: totalPipelineTime,
       metadata: {
         totalTokens: langchainResult.metadata?.totalTokens || 0,
-        avgChunkSize: langchainResult.metadata?.avgChunkSize || 0,
+        avgChunkSize: langchainResult.metadata?.avgChunkSize || 0,;
         model: langchainResult.metadata?.model || 'unknown'
       } as { totalTokens: number; avgChunkSize: number; model: string; },
 
@@ -238,7 +238,7 @@ export class LangChainSIMDBridge {
    */
   async queryDocuments(
     question: string,
-    context: Parameters<typeof langChainOllamaService.queryDocuments>[1] = {},
+    context: Parameters<typeof langChainOllamaService.queryDocuments>[1] = {},;
     options: {
       generateInstantComponents?: boolean;
       compressionLevel?: number;
@@ -268,7 +268,7 @@ export class LangChainSIMDBridge {
         ].join('\n\n---\n\n');
 
         const simdResult = await simdTextTilingEngine.processText(combinedContent, {
-          type: 'legal',
+          type: 'legal',;
           context: `query-response-${question.substring(0, 20)}`,
           uiTarget: 'component'
         });
@@ -302,7 +302,7 @@ export class LangChainSIMDBridge {
     const enhancedResult: SIMDQueryResult = {
       // Standard query result fields
       answer: queryResult.answer,
-      sources: queryResult.sources,
+      sources: queryResult.sources,;
       confidence: queryResult.confidence,
       processingTime,
 
@@ -320,7 +320,7 @@ export class LangChainSIMDBridge {
    * Batch process multiple documents with optimal SIMD pipeline
    */
   async processBatchDocuments(
-    documents: Array<any>,
+    documents: Array<any>,;
     options: {
       concurrencyLimit?: number;
       enableUIGeneration?: boolean;
@@ -365,7 +365,7 @@ export class LangChainSIMDBridge {
     compressedTiles: any[];
   ): InstantUIComponent[] {
     return compressedTiles.map((tile, index) => ({
-      id: tile.id,
+      id: tile.id,;
       type: 'text-display' as const,
       renderData: new ArrayBuffer(32), // Minimal render data
       cssStyles: `;
@@ -433,7 +433,7 @@ export class LangChainSIMDBridge {
         maxConcurrency: this.config.maxConcurrentProcessing,
         memoryPoolSize: this.config.memoryPoolSize,
         gpuAccelerationLevel: this.config.gpuAccelerationLevel
-      },
+      },;
       capabilities: {
         directLangChainIntegration: true,
         sevenBitCompression: true,
@@ -475,7 +475,7 @@ export class LangChainSIMDBridge {
 
       // Test document processing;
       const processResult = await this.processDocument(testDocument, {
-        type: 'legal',
+        type: 'legal',;
         test: true
       });
 
@@ -497,7 +497,7 @@ export class LangChainSIMDBridge {
           memoryEfficiency: processResult.pipelineStats.memoryEfficiency
         },
         results: {
-          processing: processResult,
+          processing: processResult,;
           query: queryResult
         }
       };
@@ -506,7 +506,7 @@ export class LangChainSIMDBridge {
       console.error('Pipeline test failed:', error);
       return {
         success: false,
-        performance: Record<string, any>,
+        performance: Record<string, any>,;
         results: { error: error instanceof Error ? error.message: 'Unknown error' }
       };
     }

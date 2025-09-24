@@ -148,7 +148,7 @@ const uploadFileService = fromPromise(async ({ input }: { input: DocumentUploadC
   
   // This would be replaced with actual upload to your backend;
   const response = await fetch('/api/documents/upload', {
-    method: 'POST',
+    method: 'POST',;
     body: formData
   });
   
@@ -246,7 +246,7 @@ export const documentUploadMachine = createMachine({
 
     validating: {
       invoke: {
-        src: validateFileService,
+        src: validateFileService,;
         input: ({ context }) => context,
         onDone: [;
           {
@@ -303,7 +303,7 @@ export const documentUploadMachine = createMachine({
             fileHash: ({ event }) => event.output
           })
         },
-        onError: {
+        onError: {;
           target: 'uploadReady', // Continue without hash;
           actions: assign({
             error: ({ event }) => `Hash calculation failed: ${event.error}`
@@ -322,7 +322,7 @@ export const documentUploadMachine = createMachine({
             extractedText: ({ event }) => event.output
           })
         },
-        onError: {
+        onError: {;
           target: 'uploadReady', // Continue without extracted text;
           actions: assign({
             error: ({ event }) => `Text extraction failed: ${event.error}`
@@ -379,7 +379,7 @@ export const documentUploadMachine = createMachine({
       }
     },
 
-    uploadError: {
+    uploadError: {;
       on: {
         RETRY_UPLOAD: [;
           {
@@ -410,7 +410,7 @@ export const documentUploadMachine = createMachine({
 
     startingProcessing: {
       always: {
-        target: 'processing',
+        target: 'processing',;
         actions: assign({
           // Initialize evidence processing state;
           evidenceProcessingState: ({ context }) => ({
@@ -511,21 +511,21 @@ export const documentUploadMachine = createMachine({
     },
 
     completed: {
-      type: 'final',
+      type: 'final',;
       entry: () => {
         console.log('Document upload and processing completed successfully');
       }
     },
 
     uploadFailed: {
-      type: 'final',
+      type: 'final',;
       entry: ({ context }) => {
         console.error(`Document upload failed after ${context.retryCount} retries: ${context.error}`);
       }
     },
 
     cancelled: {
-      type: 'final',
+      type: 'final',;
       entry: () => {
         console.log('Document upload cancelled by user');
       }

@@ -22,7 +22,7 @@ export interface LegalEmbeddingResult {
 // Metrics stub (replace with proper metrics service later);
 const metrics = {
   increment: (name: string, value: number = 1) => console.log(`[METRIC] ${name}: +${value}`),
-  gauge: (name: string, value: number) => console.log(`[METRIC] ${name}: ${value}`),
+  gauge: (name: string, value: number) => console.log(`[METRIC] ${name}: ${value}`),;
   histogram: (name: string, value: number) => console.log(`[METRIC] ${name}: ${value}ms`)
 };
 
@@ -43,7 +43,7 @@ async function withRetry<T>(fn: () => Promise<T>, retries: number = 3): Promise<
 const LEGALBERT_MODELS = {
   // Local Ollama models;
   local: {
-    embedding: 'nomic-embed-text:latest',
+    embedding: 'nomic-embed-text:latest',;
     analysis: 'gemma3-legal:latest',
     baseUrl: ENV_CONFIG.OLLAMA_URL
   },
@@ -55,7 +55,7 @@ const LEGALBERT_MODELS = {
     baseUrl: 'https://api-inference.huggingface.co/models'
   },
   openai: {
-    embedding: 'text-embedding-3-small',
+    embedding: 'text-embedding-3-small',;
     analysis: 'gpt-4',
     apiKey: process.env.OPENAI_API_KEY,
     baseUrl: 'https://api.openai.com/v1'
@@ -82,7 +82,7 @@ const LEGAL_ENTITY_TYPES = {
 export interface LegalBertAnalysisResult {
   entities: Array<any>;
   concepts: Array<any>;
-  sentiment: {
+  sentiment: {;
     polarity: number; // -1 to 1
     confidence: number;
     classification: 'positive' | 'neutral' | 'negative';
@@ -93,7 +93,7 @@ export interface LegalBertAnalysisResult {
     technicalTerms: number;
   };
   keyPhrases: Array<any>;
-  summary: {
+  summary: {;
     abstractive: string;
     extractive: string[];
     keyPoints: string[];
@@ -193,7 +193,7 @@ export class LegalBERTMiddleware {
         dimensions: embedding.length,
         model: this.modelConfig.embedding,
         processingTime: Date.now() - startTime,
-        confidence: this.calculateEmbeddingConfidence(text, embedding),
+        confidence: this.calculateEmbeddingConfidence(text, embedding),;
         metadata: {
           textLength: text.length,
           legalTerms,
@@ -221,7 +221,7 @@ export class LegalBERTMiddleware {
         confidence: 0.7,
         metadata: {
           textLength: text.length,
-          legalTerms: 0,
+          legalTerms: 0,;
           complexity: 0.5
         }
       };
@@ -307,7 +307,7 @@ export class LegalBERTMiddleware {
 
       return {
         similarity,
-        confidence: Math.min(emb1.confidence, emb2.confidence),
+        confidence: Math.min(emb1.confidence, emb2.confidence),;
         factors: {
           semantic,
           structural,
@@ -318,7 +318,7 @@ export class LegalBERTMiddleware {
       logger.error('[LegalBERT] Similarity calculation failed:', error);
       return {
         similarity: 0.5,
-        confidence: 0.3,
+        confidence: 0.3,;
         factors: { semantic: 0.5, structural: 0.5, legal_concepts: 0.5 }
       };
     }
@@ -345,7 +345,7 @@ export class LegalBERTMiddleware {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          inputs: text,
+          inputs: text,;
           options: { wait_for_model: true }
         })
       });
@@ -367,7 +367,7 @@ export class LegalBERTMiddleware {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: this.modelConfig.embedding,
+          model: this.modelConfig.embedding,;
           input: text
         })
       });
@@ -412,7 +412,7 @@ export class LegalBERTMiddleware {
         type: 'CASE_CITATION',
         confidence: 0.9,
         startIndex: match.index,
-        endIndex: match.index + match[0].length,
+        endIndex: match.index + match[0].length,;
         context: this.getContext(text, match.index, 50)
       });
     }
@@ -425,7 +425,7 @@ export class LegalBERTMiddleware {
         type: 'STATUTE',
         confidence: 0.95,
         startIndex: match.index,
-        endIndex: match.index + match[0].length,
+        endIndex: match.index + match[0].length,;
         context: this.getContext(text, match.index, 50)
       });
     }
@@ -435,7 +435,7 @@ export class LegalBERTMiddleware {
     while ((match = moneyPattern.exec(text)) !== null) {
       entities.push({
         text: match[0],
-        type: 'MONETARY_AMOUNT',
+        type: 'MONETARY_AMOUNT',;
         confidence: 0.85,
         startIndex: match.index,
         endIndex: match.index + match[0].length
@@ -448,7 +448,7 @@ export class LegalBERTMiddleware {
     while ((match = courtPattern.exec(text)) !== null) {
       entities.push({
         text: match[0],
-        type: 'COURT',
+        type: 'COURT',;
         confidence: 0.8,
         startIndex: match.index,
         endIndex: match.index + match[0].length
@@ -467,7 +467,7 @@ export class LegalBERTMiddleware {
       criminal: ['criminal', 'felony', 'misdemeanor', 'sentence', 'conviction'],
       constitutional: ['constitution', 'amendment', 'rights', 'due process', 'equal protection'],
       corporate: ['corporation', 'shareholder', 'director', 'fiduciary', 'merger'],
-      property: ['property', 'real estate', 'ownership', 'title', 'deed'],
+      property: ['property', 'real estate', 'ownership', 'title', 'deed'],;
       employment: ['employment', 'discrimination', 'wrongful termination', 'wages', 'benefits']
     };
 
@@ -486,7 +486,7 @@ export class LegalBERTMiddleware {
       if (relevance > 0.1) {
         concepts.push({
           concept: category,
-          relevance: Math.min(relevance, 1.0),
+          relevance: Math.min(relevance, 1.0),;
           category: 'legal_domain'
         });
       }
@@ -527,7 +527,7 @@ export class LegalBERTMiddleware {
 
     return {
       polarity,
-      confidence: Math.min(totalScore / 10, 1.0),
+      confidence: Math.min(totalScore / 10, 1.0),;
       classification: polarity > 0.1 ? 'positive' : polarity < -0.1 ? 'negative' : 'neutral'
     };
   }
@@ -587,7 +587,7 @@ export class LegalBERTMiddleware {
       while ((match = pattern.exec(text)) !== null) {
         phrases.push({
           phrase: match[0],
-          importance: 0.8 + index * 0.05,
+          importance: 0.8 + index * 0.05,;
           category: 'legal_term'
         });
       }
@@ -651,7 +651,7 @@ export class LegalBERTMiddleware {
       ],
       jurisdiction: this.extractJurisdiction(text),
       practiceArea: this.extractPracticeArea(text),
-      urgency: this.assessUrgency(text),
+      urgency: this.assessUrgency(text),;
       recommendations: ['Review for accuracy', 'Check citations', 'Verify jurisdiction']
     };
   }
@@ -799,7 +799,7 @@ export class LegalBERTMiddleware {
       contract: ['contract', 'agreement', 'breach'],
       tort: ['negligence', 'liability', 'damages'],
       criminal: ['criminal', 'felony', 'misdemeanor'],
-      corporate: ['corporation', 'merger', 'securities'],
+      corporate: ['corporation', 'merger', 'securities'],;
       employment: ['employment', 'discrimination', 'wrongful termination']
     };
 
@@ -835,7 +835,7 @@ export class LegalBERTMiddleware {
       complexity: { readabilityScore: 50, legalComplexity: 0.5, technicalTerms: 0 },
       keyPhrases: [{ phrase: 'legal document', importance: 0.5, category: 'general' }],
       summary: {
-        abstractive: 'Legal document analysis unavailable',
+        abstractive: 'Legal document analysis unavailable',;
         extractive: [text.substring(0, 100) + '...'],
         keyPoints: ['Document requires manual review']
       }
@@ -849,7 +849,7 @@ export class LegalBERTMiddleware {
       subCategories: [{ category: 'unknown', confidence: 0.3 }],
       jurisdiction: 'unknown',
       practiceArea: 'general',
-      urgency: 'medium',
+      urgency: 'medium',;
       recommendations: ['Manual classification required', 'Review document type']
     };
   }
@@ -886,7 +886,7 @@ export class LegalBERTMiddleware {
         status: 'healthy',
         details: {
           model: this.modelConfig.embedding,
-          embeddingDimensions: testResult.dimensions,
+          embeddingDimensions: testResult.dimensions,;
           confidence: testResult.confidence,
           cacheSize: this.cache.size
         }
@@ -895,7 +895,7 @@ export class LegalBERTMiddleware {
       return {
         status: 'unhealthy',
         details: {
-          error: error.message,
+          error: error.message,;
           model: this.modelConfig.embedding
         }
       };

@@ -4,8 +4,8 @@
  * NO MOCKS - Full production implementation per apparch913.txt
  */
 
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from '@sveltejs/kit'
+import { z } from 'zod'
 
 // Tensor storage schema per architecture docs
 const TensorStoreSchema = z.object({
@@ -19,27 +19,27 @@ const TensorStoreSchema = z.object({
     compression: z.enum(['none', 'gzip', 'brotli']).default('none'),
     lod_levels: z.number().min(1).max(5).default(3)
   })
-});
+})
 
-type TensorStoreRequest = z.infer<typeof TensorStoreSchema>;
+type TensorStoreRequest = z.infer<typeof TensorStoreSchema>
 
-const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433';
+const QUIC_SERVER_URL = process.env.QUIC_SERVER_URL || 'http://localhost:4433'
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
-    const sessionId = cookies.get('session_id');
+    const sessionId = cookies.get('session_id')
     if (!sessionId) {
-      throw error(401, 'Authentication required for tensor operations');
+      throw error(401, 'Authentication required for tensor operations')
     }
 
-    const body = await request.json();
-    const validatedData = TensorStoreSchema.safeParse(body);
+    const body = await request.json()
+    const validatedData = TensorStoreSchema.safeParse(body)
 
     if (!validatedData.success) {
       throw error(400, {
         message: 'Invalid tensor data format',
         errors: validatedData.error.errors
-      });
+      })
     }
 
     // Route to QUIC server with authentication (per architecture)
@@ -52,15 +52,15 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         'X-Client-IP': request.headers.get('x-real-ip') || 'unknown'
       },
       body: JSON.stringify(validatedData.data)
-    });
+    })
 
     if (!response.ok) {
-      const errorData = await response.text();
-      console.error('QUIC server tensor store error:', errorData);
-      throw error(response.status, `Tensor storage failed: ${errorData}`);
+      const errorData = await response.text()
+      console.error('QUIC server tensor store error:', errorData)
+      throw error(response.status, `Tensor storage failed: ${errorData}`)
     }
 
-    const result = await response.json();
+    const result = await response.json()
 
     return json({
       success: true,
@@ -73,24 +73,24 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         processing_time: result.processing_time,
         storage_path: result.storage_path
       }
-    });
+    })
 
   } catch (err) {
-    console.error('Tensor store API error:', err);
+    console.error('Tensor store API error:', err)
 
     if (err instanceof Error && 'status' in err) {
-      throw err;
+      throw err
     }
 
-    throw error(500, 'Internal server error during tensor storage');
+    throw error(500, 'Internal server error during tensor storage')
   }
-};
+}
 
 export const GET: RequestHandler = async ({ cookies }) => {
   try {
-    const sessionId = cookies.get('session_id');
+    const sessionId = cookies.get('session_id')
     if (!sessionId) {
-      throw error(401, 'Authentication required');
+      throw error(401, 'Authentication required')
     }
 
     // Get tensor cache metrics from QUIC server
@@ -98,13 +98,13 @@ export const GET: RequestHandler = async ({ cookies }) => {
       headers: {
         'Authorization': `Bearer ${sessionId}`
       }
-    });
+    })
 
     if (!response.ok) {
-      throw error(response.status, 'Failed to retrieve tensor metrics');
+      throw error(response.status, 'Failed to retrieve tensor metrics')
     }
 
-    const metrics = await response.json();
+    const metrics = await response.json()
 
     return json({
       success: true,
@@ -115,15 +115,15 @@ export const GET: RequestHandler = async ({ cookies }) => {
         memory_usage: metrics.memory_usage,
         performance_stats: metrics.performance_stats
       }
-    });
+    })
 
   } catch (err) {
-    console.error('Tensor metrics error:', err);
+    console.error('Tensor metrics error:', err)
 
     if (err instanceof Error && 'status' in err) {
-      throw err;
+      throw err
     }
 
-    throw error(500, 'Failed to retrieve tensor metrics');
+    throw error(500, 'Failed to retrieve tensor metrics')
   }
-};
+}

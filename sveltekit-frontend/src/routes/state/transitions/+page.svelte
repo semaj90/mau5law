@@ -29,10 +29,10 @@ https://svelte.dev/e/expected_token -->
           from: 'authenticated',
           to: 'unauthenticated',
           timestamp: new Date().toISOString(),
-          duration: 150,
+          duration: 150,;
           context: { userId: 'user_123', sessionId: 'sess_456' },
           guards: ['isValidSession'],
-          actions: ['clearToken', 'redirectToLogin']
+          actions: ['clearToken', 'redirectToLogin'];
         },
         {
           id: 'refresh',
@@ -40,10 +40,10 @@ https://svelte.dev/e/expected_token -->
           from: 'authenticated',
           to: 'refreshing',
           timestamp: new Date(Date.now() - 30000).toISOString(),
-          duration: 300,
+          duration: 300,;
           context: { userId: 'user_123', tokenExp: 1642435200 },
           guards: ['tokenNearExpiry'],
-          actions: ['refreshAuthToken']
+          actions: ['refreshAuthToken'];
         },
         {
           id: 'profile',
@@ -51,10 +51,10 @@ https://svelte.dev/e/expected_token -->
           from: 'authenticated',
           to: 'authenticated.profile',
           timestamp: new Date(Date.now() - 60000).toISOString(),
-          duration: 50,
+          duration: 50,;
           context: { userId: 'user_123', route: '/profile' },
           guards: [],
-          actions: ['navigateToProfile', 'trackPageView']
+          actions: ['navigateToProfile', 'trackPageView'];
         }
       ]
     },
@@ -67,10 +67,10 @@ https://svelte.dev/e/expected_token -->
           from: 'reviewing',
           to: 'submitting',
           timestamp: new Date().toISOString(),
-          duration: 500,
+          duration: 500,;
           context: { caseId: 'case_789', reviewerId: 'user_123' },
           guards: ['allFieldsComplete', 'hasPermission'],
-          actions: ['validateCase', 'submitToDatabase', 'notifyStakeholders']
+          actions: ['validateCase', 'submitToDatabase', 'notifyStakeholders'];
         },
         {
           id: 'save-draft',
@@ -78,10 +78,10 @@ https://svelte.dev/e/expected_token -->
           from: 'reviewing',
           to: 'draft',
           timestamp: new Date(Date.now() - 45000).toISOString(),
-          duration: 200,
+          duration: 200,;
           context: { caseId: 'case_789', autosave: true },
-          guards: [],
-          actions: ['saveToDraft', 'updateTimestamp']
+          guards: [],;
+          actions: ['saveToDraft', 'updateTimestamp'];
         }
       ]
     }
@@ -289,7 +289,7 @@ https://svelte.dev/e/expected_token -->
 </div>
 
 <style>
-  .page-container {
+  .page-container {;
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;

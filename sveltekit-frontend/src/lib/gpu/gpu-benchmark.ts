@@ -141,7 +141,7 @@ export async function runEmbeddingBenchmark(
       meanMs: mean,
       p95Ms: percentile(durations, 95),
       bestMs: Math.min(...durations),
-      worstMs: Math.max(...durations),
+      worstMs: Math.max(...durations),;
       dimension: dim,
       segments,
       backend,
@@ -163,7 +163,7 @@ export async function runEmbeddingBenchmark(
     label,
     dimension: dim,
     segments,
-    entries,
+    entries,;
     timestamp: Date.now()
   };
   telemetryBus.publish({ type: 'gpu.benchmark.summary' as any, meta: summary as any });

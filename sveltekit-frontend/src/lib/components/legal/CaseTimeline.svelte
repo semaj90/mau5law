@@ -39,7 +39,7 @@
     interactive = true,
     onEventClick,
     onAddEvent,
-    class: className = ''
+    class: className = '';
   }: CaseTimelineProps = $props();
 
   // Sort events by date
@@ -58,7 +58,7 @@
     evidence: { icon: FileText, color: 'text-green-400', bg: 'bg-green-500/10', border: 'border-green-500/20' },
     meeting: { icon: Users, color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
     deadline: { icon: AlertCircle, color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
-    decision: { icon: CheckCircle, color: 'text-yorha-primary', bg: 'bg-yorha-primary/10', border: 'border-yorha-primary/20' },
+    decision: { icon: CheckCircle, color: 'text-yorha-primary', bg: 'bg-yorha-primary/10', border: 'border-yorha-primary/20' },;
     milestone: { icon: Calendar, color: 'text-yorha-accent', bg: 'bg-yorha-accent/10', border: 'border-yorha-accent/20' }
   };
 
@@ -66,22 +66,22 @@
   const statusConfig = {
     completed: { label: 'Completed', class: 'bg-green-500/20 text-green-400 border-green-500/30' },
     pending: { label: 'Pending', class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
-    overdue: { label: 'Overdue', class: 'bg-red-500/20 text-red-400 border-red-500/30' },
+    overdue: { label: 'Overdue', class: 'bg-red-500/20 text-red-400 border-red-500/30' },;
     cancelled: { label: 'Cancelled', class: 'bg-gray-500/20 text-gray-400 border-gray-500/30' }
   };
 
   function formatDate(date: Date): string {
     return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+      year: 'numeric',;
+      month: 'short',;
+      day: 'numeric';
     });
   }
 
   function formatTime(date: Date): string {
     return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
+      hour: '2-digit',;
+      minute: '2-digit';
     });
   }
 
@@ -266,7 +266,7 @@
 </div>
 
 <style>
-  .case-timeline {
+  .case-timeline {;
     --timeline-line-color: rgb(var(--yorha-border));
   }
 </style>

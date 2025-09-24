@@ -1,6 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax
-https://svelte.dev/e/mixed_event_handler_syntaxes -->
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax -->
 <!--
   Advanced Evidence Upload Component - Legal AI Platform
   Integrates with GPU processing, metadata extraction, and legal document analysis
@@ -20,7 +17,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     'audio/wav'
   ], enableGPUProcessing = true, enableAIAnalysis = true } = $props();
 
-  import {   } from "svelte";
   import { goTensorService, generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client';
   import { fade, fly, scale } from 'svelte/transition';
 
@@ -67,10 +63,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let isProcessing = $state(false);
   let processingStats: ProcessingStats = $state({
     totalFiles: 0,
-    completed: 0,
-    failed: 0,
+    completed: 0,;
+    failed: 0,;
     processing: 0,
-    averageTime: 0
+    averageTime: 0;
   });
 
   // Drag and drop handlers
@@ -81,6 +77,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
   function handleDragLeave() {
     dragActive = false;
+  }
+
+  function handleDragOver(e: DragEvent) {
+    e.preventDefault();
   }
 
   function handleDrop(e: DragEvent) {
@@ -137,14 +137,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
     // Add valid files
     const evidenceFiles: EvidenceFile[] = validFiles.map(file => ({
-      id: `evidence_${Date.now()}_${Math.random.toString-substr(2, 9)}`,
+      id: `evidence_${Date.now()}_${Math.random().toString().substr(2, 9)}`,
       file,
       status: 'pending',
-      progress: 0,
+      progress: 0,;
       metadata: {
-        type: getFileType(file.type),
+        type: getFileType(file.type),;
         size: file.size,
-        mimeType: file.type
+        mimeType: file.type;
       }
     }));
 
@@ -189,8 +189,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
     await Promise.allSettled(processingPromises);
     // Update final stats
-    processingStats.completed = files.filter(item => item.length);
-    processingStats.failed = files.filter(item => item.length);
+    processingStats.completed = files.filter(f => f.status === 'completed').length;
+    processingStats.failed = files.filter(f => f.status === 'error').length;
     processingStats.processing = 0;
     isProcessing = false;
     ondispatch?.({ files, stats: processingStats });
@@ -236,34 +236,34 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       evidenceFile.error = error instanceof Error ? error.message: 'Processing failed';
       files = [...files];
       ondispatch?.({ 
-        message: `Failed to process "${evidenceFile.file.name}": ${evidenceFile.error}`,
-        file: evidenceFile 
+        message: `Failed to process "${evidenceFile.file.name}": ${evidenceFile.error}`,;
+        file: evidenceFile ;
       });
     }
   }
 
   // Upload file to server
-  async function uploadFile(evidenceFile: EvidenceFile): Promise {
+  async function uploadFile(evidenceFile: EvidenceFile): Promise<any> {
     const formData = new FormData();
     formData.append('file', evidenceFile.file);
     formData.append('metadata', JSON.stringify(evidenceFile.metadata));
     const response = await fetch('/api/evidence/upload', {
-      method: 'POST',
-      body: formData
+      method: 'POST',;
+      body: formData;
     });
-    if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
-      throw new Error(`Upload failed: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+    if (!response.ok) {
+      throw new Error(`Upload failed: ${response.statusText}`);
     }
-    return await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
+    return await response.json();
   }
 
   // Extract metadata from file
   async function extractMetadata(evidenceFile: EvidenceFile): Promise<any> {
     // Simulate metadata extraction
     await new Promise(resolve => setTimeout(resolve, 1000));
-    const extractedMetadata: unknown = {
+    const extractedMetadata: any = {
       extractedText: '',
-      tags: []
+      tags: [];
     };
     // Mock text extraction based on file type
     switch (evidenceFile.metadata?.type) {
@@ -290,8 +290,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       // Simple mock analysis
       return {
         aiAnalysis: `AI analysis of ${evidenceFile.file.name} completed`,
-        confidence: Math.random() * 0.3 + 0.7,
-        tags: [...(evidenceFile.metadata?.tags || []), 'ai-analyzed']
+        confidence: Math.random() * 0.3 + 0.7,;
+        tags: [...(evidenceFile.metadata?.tags || []), 'ai-analyzed'];
       };
     }
 
@@ -301,23 +301,23 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       const tensorRequest = generateTensorRequest(evidenceFile.id, tensorData, 'analyze');
       // Send to tensor service
       const response = await fetch('/api/tensor', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           operation: 'analyze',
-          documentId: evidenceFile.id,
-          data: Array.from(tensorData),
+          documentId: evidenceFile.id,;
+          data: Array.from(tensorData),;
           options: { timeout: 15000 }
         })
       });
 
-      const result = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
-      if ((result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).success && (result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).data.result) {
+      const result = await response.json();
+      if (result.success && result.data.result) {
         return {
-          aiAnalysis: `GPU-accelerated analysis completed with ${(result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).data.result.metadata?.confidence || 85}% confidence`,
-          confidence: (result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).data.result.metadata?.confidence || 0.85,
+          aiAnalysis: `GPU-accelerated analysis completed with ${result.data.result.metadata?.confidence || 85}% confidence`,
+          confidence: result.data.result.metadata?.confidence || 0.85,;
           tags: [...(evidenceFile.metadata?.tags || []), 'gpu-analyzed', 'ai-processed'],
-          processingTime: (result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).data.result.processingTime
+          processingTime: result.data.result.processingTime;
         };
       }
       throw new Error('Analysis failed');
@@ -325,8 +325,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       // Fallback to mock analysis
       return {
         aiAnalysis: `Fallback analysis of ${evidenceFile.file.name} (tensor service unavailable)`,
-        confidence: Math.random() * 0.2 + 0.6,
-        tags: [...(evidenceFile.metadata?.tags || []), 'mock-analyzed']
+        confidence: Math.random() * 0.2 + 0.6,;
+        tags: [...(evidenceFile.metadata?.tags || []), 'mock-analyzed'];
       };
     }
   }
@@ -342,10 +342,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     isProcessing = false;
     processingStats = {
       totalFiles: 0,
-      completed: 0,
-      failed: 0,
+      completed: 0,;
+      failed: 0,;
       processing: 0,
-      averageTime: 0
+      averageTime: 0;
     };
   }
 
@@ -388,9 +388,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     aria-label="Evidence upload area"
     ondragenter={handleDragEnter}
     ondragleave={handleDragLeave}
-    on:dragover|preventDefault
-    ondrop={onkeydown}
-    }}
+    ondragover={handleDragOver}
+    ondrop={handleDrop}
   >
     <div class="upload-content">
       <div class="upload-icon">
@@ -542,7 +541,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 </div>
 
 <style>
-  .evidence-upload {
+  .evidence-upload {;
     max-width: 800px;
     margin: 0 auto;
     font-family: system-ui, sans-serif;
@@ -689,17 +688,17 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     border-radius: 8px;
   }
 
-  .stat-.completed {
+  .stat-item.completed {
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.3);
   }
 
-  .stat-.processing {
+  .stat-item.processing {
     background: rgba(59, 130, 246, 0.2);
     border: 1px solid rgba(59, 130, 246, 0.3);
   }
 
-  .stat-.failed {
+  .stat-item.failed {
     background: rgba(239, 68, 68, 0.2);
     border: 1px solid rgba(239, 68, 68, 0.3);
   }

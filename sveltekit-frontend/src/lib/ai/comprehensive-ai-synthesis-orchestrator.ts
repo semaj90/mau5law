@@ -48,7 +48,7 @@ export interface SynthesisRequest {
     renderingNeeded: boolean;
     realTimeRequired: boolean;
   };
-  metadata: {
+  metadata: {;
     timestamp: number;
     clientCapabilities: any;
     previousResults?: any[];
@@ -65,7 +65,7 @@ export interface SynthesisResponse {
     graphSynthesis: any;      // Moogle graph results
     extractionResults: any;   // LangExtract processing
   };
-  performance: {
+  performance: {;
     accuracy: number;         // Achieved accuracy (0-1)
     latency: number;         // Actual processing time (ms)
     memoryUsed: number;      // MB used
@@ -342,7 +342,7 @@ export class ComprehensiveAISynthesisOrchestrator {
       deviceCapabilities: request.metadata.clientCapabilities || {
         gpuTier: 2,
         memoryAvailable: 4 * 1024 * 1024 * 1024,
-        computeUnits: 1024,
+        computeUnits: 1024,;
         bandwidth: 200 * 1024 * 1024 * 1024
       },
       performanceMetrics: {
@@ -407,7 +407,7 @@ export class ComprehensiveAISynthesisOrchestrator {
       ],
       sentimentAnalysis: {
         confidence: 0.85,
-        polarity: 0.1, // Slightly positive
+        polarity: 0.1, // Slightly positive;
         objectivity: 0.9 // Highly objective
       },
       complexityScore: this.calculateComplexityFromRequest(request),
@@ -422,7 +422,7 @@ export class ComprehensiveAISynthesisOrchestrator {
     return {
       knowledgeGraph: {
         nodes: semanticAnalysis.entityExtractions.length * 3,
-        edges: semanticAnalysis.entityExtractions.length * 2,
+        edges: semanticAnalysis.entityExtractions.length * 2,;
         clusters: Math.ceil(semanticAnalysis.entityExtractions.length / 3)
       },
       graphEmbedding: new Array(512).fill(0).map(() => Math.random() * 0.1 - 0.05),
@@ -450,7 +450,7 @@ export class ComprehensiveAISynthesisOrchestrator {
         structuredOutput: {
           documentType: request.context.documentContext.type,
           confidence: 0.93,
-          processingTime: 75,
+          processingTime: 75,;
           accuracy: 0.91
         }
       },
@@ -494,7 +494,7 @@ export class ComprehensiveAISynthesisOrchestrator {
         memoryUsed,
         cacheHitRate: await cacheHitRate,
         confidenceScore
-      },
+      },;
       adaptations: {
         modelUpdated: accuracy > 0.9, // Update models for high-accuracy results
         cacheUpdated: true,
@@ -541,7 +541,7 @@ export class ComprehensiveAISynthesisOrchestrator {
       },
       error: {
         message: error.message || 'Unknown synthesis error',
-        component: error.component || 'orchestrator',
+        component: error.component || 'orchestrator',;
         recovery: 'Retry with fallback configuration'
       }
     };
@@ -558,7 +558,7 @@ export class ComprehensiveAISynthesisOrchestrator {
         {
           timestamp: Date.now(),
           config: response.results.qloraConfig,
-          accuracy: response.performance.accuracy,
+          accuracy: response.performance.accuracy,;
           throughput: 1000 / response.performance.latency,
           memoryUsage: response.performance.memoryUsed * 1024 * 1024,
           userSatisfaction: response.performance.confidenceScore,
@@ -622,7 +622,7 @@ export class ComprehensiveAISynthesisOrchestrator {
       },
       webgpuLangextract: {
         extractionAccuracy: 0.91,
-        gpuAcceleration: 2.5, // speedup factor
+        gpuAcceleration: 2.5, // speedup factor;
         throughput: 100 // tokens per second
       }
     };
@@ -641,7 +641,7 @@ export class ComprehensiveAISynthesisOrchestrator {
         uniformBindings: ['viewMatrix']
       },
       optimalLODLevel: {
-        level: 2,
+        level: 2,;
         distance: 25,
         vertexCount: 256,
         textureSize: 256,

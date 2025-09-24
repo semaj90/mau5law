@@ -3,33 +3,33 @@
  * Demonstrates proper data extraction and serialization patterns
  */
 
-import type { RequestHandler } from './$types.js';
-import { createSSRResponse, withSSRHandler, batchSSRRequests } from '$lib/server/api-ssr-helpers';
-import type { DashboardStats, SystemHealth, RecentActivity } from '$lib/types/api-schemas';
+import type { RequestHandler } from './$types.js'
+import { createSSRResponse, withSSRHandler, batchSSRRequests } from '$lib/server/api-ssr-helpers'
+import type { DashboardStats, SystemHealth, RecentActivity } from '$lib/types/api-schemas'
 
 export const GET: RequestHandler = withSSRHandler(async ({ url, locals }) => {
-  const dataType = url.searchParams.get('type') || 'dashboard';
+  const dataType = url.searchParams.get('type') || 'dashboard'
 
   switch (dataType) {
     case 'dashboard':
-      return getDashboardData(locals);
+      return getDashboardData(locals)
     case 'health':
-      return getSystemHealth();
+      return getSystemHealth()
     case 'activities':
-      return getRecentActivities(locals);
+      return getRecentActivities(locals)
     case 'batch':
-      return getBatchData(locals);
+      return getBatchData(locals)
     default:
-      return createSSRResponse({ message: 'Invalid data type requested' }, { status: 400 });
+      return createSSRResponse({ message: 'Invalid data type requested' }, { status: 400 })
   }
-});
+})
 
 async function getDashboardData(locals: any) {
   const dashboardStats: DashboardStats = {
     activeCases: 42,
     evidenceItems: 1337,
     aiAnalyses: 89,
-    systemUptime: Date.now() - (1000 * 60 * 60 * 24), // 24 hours;
+    systemUptime: Date.now() - (1000 * 60 * 60 * 24), // 24 hours
     cognitive: {
       routingEfficiency: 87.5,
       cacheHitRatio: 92.3,
@@ -38,9 +38,9 @@ async function getDashboardData(locals: any) {
       quantumCoherence: 50,
       timestamp: new Date().toISOString()
     }
-  };
+  }
 
-  return createSSRResponse(dashboardStats);
+  return createSSRResponse(dashboardStats)
 }
 
 async function getSystemHealth(): Promise<Response> {
@@ -71,7 +71,7 @@ async function getSystemHealth(): Promise<Response> {
       }
     },
     performance: {
-      systemUptime: Date.now() - (1000 * 60 * 60 * 2), // 2 hours;
+      systemUptime: Date.now() - (1000 * 60 * 60 * 2), // 2 hours
       memoryUsage: {
         heapUsed: 156 * 1024 * 1024,
         heapTotal: 256 * 1024 * 1024,
@@ -87,13 +87,13 @@ async function getSystemHealth(): Promise<Response> {
       protocols: ['HTTP', 'WebSocket', 'gRPC'],
       features: ['Vector Search', 'AI Analysis', 'Real-time Chat', 'Document Processing']
     }
-  };
+  }
 
-  return createSSRResponse(systemHealth);
+  return createSSRResponse(systemHealth)
 }
 
 async function getRecentActivities(locals: any): Promise<Response> {
-  const activities: RecentActivity[] = [;
+  const activities: RecentActivity[] = [
     {
       id: '001',
       type: 'case_created',
@@ -122,18 +122,18 @@ async function getRecentActivities(locals: any): Promise<Response> {
       timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
       priority: 'medium'
     }
-  ];
+  ]
 
-  return createSSRResponse({ activities, total: activities.length });
+  return createSSRResponse({ activities, total: activities.length })
 }
 
 async function getBatchData(locals: any): Promise<Response> {
-  // Demonstrate batch loading for efficient SSR;
+  // Demonstrate batch loading for efficient SSR
   const batchedData = await batchSSRRequests({
     dashboard: () => getDashboardData(locals).then(r => r.json()),
     health: () => getSystemHealth().then(r => r.json()),
     activities: () => getRecentActivities(locals).then(r => r.json()
-  });
+  })
 
   return createSSRResponse({
     ...batchedData,
@@ -141,20 +141,20 @@ async function getBatchData(locals: any): Promise<Response> {
       batchLoaded: true,
       loadTime: new Date().toISOString()
     }
-  });
+  })
 }
 
-// POST handler for Bits UI form submissions;
+// POST handler for Bits UI form submissions
 export const POST: RequestHandler = withSSRHandler(async ({ request, locals }) => {
-  const data = await request.json();
+  const data = await request.json()
   
-  // Process form data with proper serialization;
+  // Process form data with proper serialization
   const processedData = {
     received: data,
     processedAt: new Date().toISOString(),
     userId: locals.user?.id,
     status: 'processed'
-  };
+  }
 
-  return createSSRResponse(processedData, { status: 201 });
-});
+  return createSSRResponse(processedData, { status: 201 })
+})

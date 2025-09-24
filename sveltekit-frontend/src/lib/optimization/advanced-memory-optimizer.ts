@@ -34,7 +34,7 @@ class DockerResourceOptimizer {
     return {
       key,
       data: jsonData,
-      compressed: true,
+      compressed: true,;
       size: jsonData.length * 0.7 // Simulate 30% compression
     };
   }
@@ -148,7 +148,7 @@ export class AdvancedMemoryOptimizer {
         id: "ultra",
         detail: "ultra",
         maxMemoryMB: 4096,
-        maxObjects: 25000,
+        maxObjects: 25000,;
         quality: 1.0,
         compressionRatio: 1.0
       }
@@ -217,7 +217,7 @@ export class AdvancedMemoryOptimizer {
         hitRate: 0,
         avgResponseTime: 75,
         ttl: 43200,
-        priority: 6,
+        priority: 6,;
         enabled: true
       }
     ];
@@ -274,7 +274,7 @@ export class AdvancedMemoryOptimizer {
         current: 0,
         max: 64 * 1024 * 1024, // 64MB
         items: new Map(),
-        lastAccessed: Date.now(),
+        lastAccessed: Date.now(),;
         priority: 5
       }
     ];
@@ -330,7 +330,7 @@ export class AdvancedMemoryOptimizer {
    */
   async selectOptimalCacheLayer(
     key: string,
-    dataType: string,
+    dataType: string,;
     size: number,
     accessFrequency: number;
   ): Promise<CacheLayer[]> {
@@ -400,7 +400,7 @@ export class AdvancedMemoryOptimizer {
    * K-means clustering using worker threads for CPU-intensive operations
    */
   async performKMeansClustering(
-    data: any[],
+    data: any[],;
     k: number = 5;
   ): Promise<ClusterMetrics[]> {
     console.log(
@@ -424,7 +424,7 @@ export class AdvancedMemoryOptimizer {
    * Perform k-means clustering using worker thread
    */
   private async performKMeansWithWorker(
-    data: any[],
+    data: any[],;
     k: number;
   ): Promise<ClusterMetrics[]> {
     const worker = await this.getKMeansWorker();
@@ -477,7 +477,7 @@ export class AdvancedMemoryOptimizer {
       worker.postMessage({
         data: data,
         k: k,
-        dimensions: data[0]?.embedding?.length || 384,
+        dimensions: data[0]?.embedding?.length || 384,;
         options: {
           maxIterations: 100,
           convergenceThreshold: 0.001
@@ -490,7 +490,7 @@ export class AdvancedMemoryOptimizer {
    * Original in-process k-means for smaller datasets
    */
   private async performKMeansInProcess(
-    data: any[],
+    data: any[],;
     k: number;
   ): Promise<ClusterMetrics[]> {
     // Keep original implementation for small datasets
@@ -583,7 +583,7 @@ export class AdvancedMemoryOptimizer {
         id: `cluster_${i}`,
         centroid: centroids[i],
         size: clusters[i].length,
-        cohesion,
+        cohesion,;
         separability: 0, // Calculate later
         memoryUsage,
         processingTime: processingTime / k
@@ -652,7 +652,7 @@ export class AdvancedMemoryOptimizer {
         case_id: request.caseId,
         evidence_type: request.type || "general",
         legal_category: request.category,
-        confidence: request.priority || 0.5,
+        confidence: request.priority || 0.5,;
         timestamp: Date.now()
       }
     };
@@ -777,7 +777,7 @@ export class AdvancedMemoryOptimizer {
    * K-means clustering using worker threads for parallel processing
    */
   async performKMeansClusteringWithWorkers(
-    data: any[],
+    data: any[],;
     k: number = 5;
   ): Promise<ClusterMetrics[]> {
     console.log(
@@ -805,7 +805,7 @@ export class AdvancedMemoryOptimizer {
       const result = await this.sendWorkerMessage(worker, {
         action: "cluster",
         data: workerData,
-        k,
+        k,;
         dimensions: workerData[0]?.embedding?.length || 384
       });
 
@@ -817,7 +817,7 @@ export class AdvancedMemoryOptimizer {
             id: `cluster_${index}`,
             centroid: cluster.centroid,
             size: cluster.size,
-            cohesion: cluster.cohesion,
+            cohesion: cluster.cohesion,;
             separability: cluster.separability || 0,
             memoryUsage: cluster.memoryUsage,
             processingTime: processingTime / k
@@ -954,7 +954,7 @@ export class AdvancedMemoryOptimizer {
       // Send documents to worker for SIMD processing;
       const result = await this.sendWorkerMessage(worker, {
         action: "processDocuments",
-        documents,
+        documents,;
         options: {
           batchSize: 1024,
           enableSIMD: true,
@@ -1000,7 +1000,7 @@ export class AdvancedMemoryOptimizer {
         action: "optimizeMemoryAllocation",
         request,
         currentState: {
-          memoryPools: this.serializeMemoryPools(),
+          memoryPools: this.serializeMemoryPools(),;
           clusters: this.serializeClusters(),
           memoryPressure: this.memoryPressure,
           lodLevel: this.currentLOD
@@ -1064,7 +1064,7 @@ export class AdvancedMemoryOptimizer {
       current: pool.current,
       max: pool.max,
       itemCount: pool.items.size,
-      lastAccessed: pool.lastAccessed,
+      lastAccessed: pool.lastAccessed,;
       priority: pool.priority
     });
   }
@@ -1170,7 +1170,7 @@ export class AdvancedMemoryOptimizer {
 
   private async allocateToPool(
     poolId: string,
-    request: any,
+    request: any,;
     size: number;
   ): Promise<void> {
     const pool = this.memoryPools.get(poolId);
@@ -1198,7 +1198,7 @@ export class AdvancedMemoryOptimizer {
   }
 
   private async preloadToLayer(
-    layer: CacheLayer,
+    layer: CacheLayer,;
     cluster: ClusterMetrics;
   ): Promise<void> {
     // Implementation depends on layer type
@@ -1419,7 +1419,7 @@ export class AdvancedMemoryOptimizer {
         usage: `${pool.current} / ${pool.max}`,
         percentage: (pool.current / pool.max) * 100,
         items: pool.items.size
-      })),
+      })),;
       clusters: Array.from(this.clusters.values()),
       cacheLayers: Array.from(this.cacheLayers.values())
     };
@@ -1487,7 +1487,7 @@ export class AdvancedMemoryOptimizer {
           embedding: doc.embeddings ? Array.from(doc.embeddings) : [],
           type: doc.documentType,
           caseId: doc.caseNumber,
-          category: doc.metadata?.category,
+          category: doc.metadata?.category,;
           priority: this.calculateDocumentPriority(doc)
         });
 
@@ -1510,7 +1510,7 @@ export class AdvancedMemoryOptimizer {
 
     // Update optimization history;
     this.optimizationHistory.push({
-      timestamp: Date.now(),
+      timestamp: Date.now(),;
       operation: "simd_batch_processing",
       documentCount: processedDocuments.length,
       processingTime,

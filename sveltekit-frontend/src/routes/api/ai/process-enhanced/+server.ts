@@ -17,42 +17,42 @@
  */
 
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 // ======================================================================
 // ENHANCED AI PROCESSING API ENDPOINT
 // Integrating XState workflows with multi-model AI pipeline
 // ======================================================================
 
-import { json } from "@sveltejs/kit";
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from "@sveltejs/kit"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
-// Import AI services;
+// Import AI services
 export interface ProcessingPipeline {
-  evidenceId: string;
+  evidenceId: string
   stages: {
-    embedding: { status: string; result?: unknown; error?: string };
-    tagging: { status: string; result?: unknown; error?: string };
-    analysis: { status: string; result?: unknown; error?: string };
-    vectorSearch: { status: string; result?: unknown; error?: string };
-    graphDiscovery: { status: string; result?: unknown; error?: string };
-  };
-  overallStatus: "pending" | "processing" | "complete" | "error";
-  startTime: Date;
-  endTime?: Date;
-  processingTime?: number;
+    embedding: { status: string; result?: unknown; error?: string }
+    tagging: { status: string; result?: unknown; error?: string }
+    analysis: { status: string; result?: unknown; error?: string }
+    vectorSearch: { status: string; result?: unknown; error?: string }
+    graphDiscovery: { status: string; result?: unknown; error?: string }
+  }
+  overallStatus: "pending" | "processing" | "complete" | "error"
+  startTime: Date
+  endTime?: Date
+  processingTime?: number
 }
 
 const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
   try {
-    const body = await request.json();
-    const { evidence, options = {} } = body;
+    const body = await request.json()
+    const { evidence, options = {} } = body
 
     if (!evidence?.id || !evidence?.content) {
-      return json({ error: "Invalid evidence data" }, { status: 400 });
+      return json({ error: "Invalid evidence data" }, { status: 400 })
     }
 
-    // Initialize processing pipeline;
+    // Initialize processing pipeline
     const pipeline: ProcessingPipeline = {
       evidenceId: evidence.id,
       stages: {
@@ -64,11 +64,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       },
       overallStatus: "processing",
       startTime: new Date()
-    };
+    }
 
-    // Stage 1: Generate Embeddings;
+    // Stage 1: Generate Embeddings
     try {
-      pipeline.stages.embedding.status = "processing";
+      pipeline.stages.embedding.status = "processing"
 
       const embeddingResponse = await fetch("/api/ai/embedding", {
         method: "POST",
@@ -77,20 +77,20 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
           content: evidence.content,
           model: options.embeddingModel || "nomic-embed-text"
         })
-      });
+      })
 
-      const embeddingResult = await embeddingResponse.json();
-      pipeline.stages.embedding.status = "complete";
-      pipeline.stages.embedding.result = embeddingResult;
+      const embeddingResult = await embeddingResponse.json()
+      pipeline.stages.embedding.status = "complete"
+      pipeline.stages.embedding.result = embeddingResult
     } catch (error: any) {
-      pipeline.stages.embedding.status = "error";
-      pipeline.stages.embedding.error = error.message;
+      pipeline.stages.embedding.status = "error"
+      pipeline.stages.embedding.error = error.message
     }
 
-    // Stage 2: AI Tagging (parallel with analysis);
+    // Stage 2: AI Tagging (parallel with analysis)
     const taggingPromise = (async () => {
       try {
-        pipeline.stages.tagging.status = "processing";
+        pipeline.stages.tagging.status = "processing"
 
         const taggingResponse = await fetch("/api/ai/tag", {
           method: "POST",
@@ -101,24 +101,24 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
             enhance_tags: true,
             model: options.taggingModel || "gemma3-legal"
           })
-        });
+        })
 
-        const taggingResult = await taggingResponse.json();
-        pipeline.stages.tagging.status = "complete";
-        pipeline.stages.tagging.result = taggingResult;
+        const taggingResult = await taggingResponse.json()
+        pipeline.stages.tagging.status = "complete"
+        pipeline.stages.tagging.result = taggingResult
 
-        return taggingResult;
+        return taggingResult
       } catch (error: any) {
-        pipeline.stages.tagging.status = "error";
-        pipeline.stages.tagging.error = error.message;
-        return null;
+        pipeline.stages.tagging.status = "error"
+        pipeline.stages.tagging.error = error.message
+        return null
       }
-    })();
+    })()
 
-    // Stage 3: Deep AI Analysis (parallel with tagging);
+    // Stage 3: Deep AI Analysis (parallel with tagging)
     const analysisPromise = (async () => {
       try {
-        pipeline.stages.analysis.status = "processing";
+        pipeline.stages.analysis.status = "processing"
 
         const analysisResponse = await fetch("/api/ai/analyze", {
           method: "POST",
@@ -129,35 +129,35 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
             model: options.analysisModel || "gemma3-legal",
             includeRecommendations: true
           })
-        });
+        })
 
-        const analysisResult = await analysisResponse.json();
-        pipeline.stages.analysis.status = "complete";
-        pipeline.stages.analysis.result = analysisResult;
+        const analysisResult = await analysisResponse.json()
+        pipeline.stages.analysis.status = "complete"
+        pipeline.stages.analysis.result = analysisResult
 
-        return analysisResult;
+        return analysisResult
       } catch (error: any) {
-        pipeline.stages.analysis.status = "error";
-        pipeline.stages.analysis.error = error.message;
-        return null;
+        pipeline.stages.analysis.status = "error"
+        pipeline.stages.analysis.error = error.message
+        return null
       }
-    })();
+    })()
 
     // Wait for parallel processing to complete
     const [taggingResult, analysisResult] = await Promise.all([
       taggingPromise,
       analysisPromise
-    ]);
+    ])
 
     // Stage 4: Vector Similarity Search
-    let vectorMatches = [];
+    let vectorMatches = []
     if (pipeline.stages.embedding.status === "complete") {
       try {
-        pipeline.stages.vectorSearch.status = "processing";
+        pipeline.stages.vectorSearch.status = "processing"
 
         const embeddings =
           pipeline.stages.embedding.result.embeddings ||
-          pipeline.stages.embedding.result.vector;
+          pipeline.stages.embedding.result.vector
 
         const searchResponse = await fetch("/api/vector/search", {
           method: "POST",
@@ -168,23 +168,23 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
             threshold: options.similarityThreshold || 0.7,
             excludeIds: [evidence.id], // Don't match with itself
           })
-        });
+        })
 
-        const searchResult = await searchResponse.json();
-        vectorMatches = searchResult.matches || [];
+        const searchResult = await searchResponse.json()
+        vectorMatches = searchResult.matches || []
 
-        pipeline.stages.vectorSearch.status = "complete";
-        pipeline.stages.vectorSearch.result = { matches: vectorMatches };
+        pipeline.stages.vectorSearch.status = "complete"
+        pipeline.stages.vectorSearch.result = { matches: vectorMatches }
       } catch (error: any) {
-        pipeline.stages.vectorSearch.status = "error";
-        pipeline.stages.vectorSearch.error = error.message;
+        pipeline.stages.vectorSearch.status = "error"
+        pipeline.stages.vectorSearch.error = error.message
       }
     }
 
     // Stage 5: Graph Relationship Discovery
-    let relationships = [];
+    let relationships = []
     try {
-      pipeline.stages.graphDiscovery.status = "processing";
+      pipeline.stages.graphDiscovery.status = "processing"
 
       const graphResponse = await fetch(`/api/graph/discover/${evidence.id}`, {
         method: "POST",
@@ -201,29 +201,29 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
             "similar_to"
           ]
         })
-      });
+      })
 
-      const graphResult = await graphResponse.json();
-      relationships = graphResult.relationships || [];
+      const graphResult = await graphResponse.json()
+      relationships = graphResult.relationships || []
 
-      pipeline.stages.graphDiscovery.status = "complete";
-      pipeline.stages.graphDiscovery.result = { relationships };
+      pipeline.stages.graphDiscovery.status = "complete"
+      pipeline.stages.graphDiscovery.result = { relationships }
     } catch (error: any) {
-      pipeline.stages.graphDiscovery.status = "error";
-      pipeline.stages.graphDiscovery.error = error.message;
+      pipeline.stages.graphDiscovery.status = "error"
+      pipeline.stages.graphDiscovery.error = error.message
     }
 
     // Finalize pipeline
-    pipeline.endTime = new Date();
+    pipeline.endTime = new Date()
     pipeline.processingTime =
-      pipeline.endTime.getTime() - pipeline.startTime.getTime();
+      pipeline.endTime.getTime() - pipeline.startTime.getTime()
 
     const hasErrors = Object.values(pipeline.stages).some(
       (stage) => stage.status === "error",
-    );
-    pipeline.overallStatus = hasErrors ? "error" : "complete";
+    )
+    pipeline.overallStatus = hasErrors ? "error" : "complete"
 
-    // Return comprehensive results;
+    // Return comprehensive results
     return json({
       success: true,
       evidenceId: evidence.id,
@@ -248,17 +248,17 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
           (s) => s.status === "complete",
         ).length
       }
-    });
+    })
   } catch (error: any) {
-    console.error("Evidence processing failed:", error);
+    console.error("Evidence processing failed:", error)
     return json({
         error: "Processing failed",
         details: error.message
       },)
       { status: 500 },
-    );
+    )
   }
-};
+}
 
 
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)

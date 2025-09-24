@@ -44,7 +44,7 @@ export const goldenRatioUtils = {
    * @returns Object with major and minor proportions
    */;
   split: (total: number) => ({
-    major: total * INVERSE_GOLDEN_RATIO,
+    major: total * INVERSE_GOLDEN_RATIO,;
     minor: total * (1 - INVERSE_GOLDEN_RATIO)
   }),
 
@@ -75,7 +75,7 @@ export const goldenRatioUtils = {
 export const goldenBreakpoints = {
   mobile: Math.round(480 * GOLDEN_RATIO), // ~777px
   tablet: Math.round(768 * GOLDEN_RATIO), // ~1242px
-  desktop: Math.round(1024 * GOLDEN_RATIO), // ~1657px
+  desktop: Math.round(1024 * GOLDEN_RATIO), // ~1657px;
   wide: Math.round(1440 * GOLDEN_RATIO), // ~2330px
 };
 
@@ -85,7 +85,7 @@ export const goldenBreakpoints = {
 export const goldenRatioCSSVars = {
   ratio: "--golden-ratio",
   inverse: "--inverse-golden-ratio",
-  squared: "--golden-ratio-squared",
+  squared: "--golden-ratio-squared",;
   cubed: "--golden-ratio-cubed",
 
   // Spacing scale

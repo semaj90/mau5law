@@ -1,69 +1,69 @@
 // src/routes/api/cases/[id]/analyze/+server.ts
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db/unified-client';
-import { legalCases, evidence, documentMetadata } from '$lib/server/db/schema-unified';
-import { eq, sql } from 'drizzle-orm';
-import { GemmaEmbeddingService } from '$lib/services/gemma-embedding';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { db } from '$lib/server/db/unified-client'
+import { legalCases, evidence, documentMetadata } from '$lib/server/db/schema-unified'
+import { eq, sql } from 'drizzle-orm'
+import { GemmaEmbeddingService } from '$lib/services/gemma-embedding'
 
 interface AnalysisResult {
-  caseId: string;
-  summary: string;
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
-  keyFindings: string[];
-  recommendations: string[];
+  caseId: string
+  summary: string
+  riskLevel: 'low' | 'medium' | 'high' | 'critical'
+  keyFindings: string[]
+  recommendations: string[]
   similarCases: Array<{
-    id: string;
-    title: string;
-    similarity: number;
-  }>;
-  complianceStatus: 'compliant' | 'non-compliant' | 'needs-review';
+    id: string
+    title: string
+    similarity: number
+  }>
+  complianceStatus: 'compliant' | 'non-compliant' | 'needs-review'
   timeline: Array<{
-    event: string;
-    date: string;
-    importance: 'low' | 'medium' | 'high';
-  }>;
+    event: string
+    date: string
+    importance: 'low' | 'medium' | 'high'
+  }>
 }
 
 export const POST: RequestHandler = async ({ params, request }) => {
-  const caseId = params.id;
+  const caseId = params.id
 
   if (!caseId) {
-    return json({ error: 'Case ID is required' }, { status: 400 });
+    return json({ error: 'Case ID is required' }, { status: 400 })
   }
 
   try {
-    const startTime = Date.now();
+    const startTime = Date.now()
 
     // 1. Fetch case and related evidence from database
     const caseData = await db
       .select()
       .from(legalCases)
       .where(eq(legalCases.id, caseId)
-      .limit(1);
+      .limit(1)
 
     if (caseData.length === 0) {
-      return json({ error: 'Case not found' }, { status: 404 });
+      return json({ error: 'Case not found' }, { status: 404 })
     }
 
-    const case_ = caseData[0];
+    const case_ = caseData[0]
 
     // 2. Fetch related evidence
     const evidenceData = await db
       .select()
       .from(evidence)
       .where(eq(evidence.caseId, caseId)
-      .limit(50);
+      .limit(50)
 
     // 3. Get document metadata with embeddings for vector similarity
     const documentsWithEmbeddings = await db
       .select()
       .from(documentMetadata)
       .where(eq(documentMetadata.caseId, caseId)
-      .limit(20);
+      .limit(20)
 
     // 4. Perform AI-powered analysis
-    const embeddingService = new GemmaEmbeddingService();
+    const embeddingService = new GemmaEmbeddingService()
 
     // Create analysis prompt
     const analysisPrompt = `
@@ -84,17 +84,17 @@ export const POST: RequestHandler = async ({ params, request }) => {
       2. Key legal findings
       3. Compliance status
       4. Actionable recommendations
-    `;
+    `
 
     // Generate analysis using embeddings for context
-    const analysisEmbedding = await embeddingService.embedText(analysisPrompt);
+    const analysisEmbedding = await embeddingService.embedText(analysisPrompt)
 
     // 5. Find similar cases using vector similarity
-    let similarCases: Array<{ id: string; title: string; similarity: number }> = [];
+    let similarCases: Array<{ id: string; title: string; similarity: number }> = []
 
     if (documentsWithEmbeddings.length > 0) {
       // Use first document's embedding for similarity search
-      const queryEmbedding = documentsWithEmbeddings[0].contentEmbedding;
+      const queryEmbedding = documentsWithEmbeddings[0].contentEmbedding
 
       if (queryEmbedding) {
         const similarityResults = await db.execute(sql`
@@ -103,22 +103,22 @@ export const POST: RequestHandler = async ({ params, request }) => {
             lc.title,
             1 - (dm.content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
           FROM legal_cases lc
-          JOIN document_metadata dm ON dm.case_id = lc.id: :text
+          JOIN document_metadata dm ON dm.case_id = lc.id::text
           WHERE lc.id != ${caseId}
             AND dm.content_embedding IS NOT NULL
           ORDER BY similarity DESC
           LIMIT 5
-        `);
+        `)
 
         similarCases = similarityResults.map((row: any) => ({
           id: row.id,
           title: row.title,
           similarity: Math.round(row.similarity * 100) / 100
-        });
+        })
       }
     }
 
-    // 6. Generate mock AI analysis (replace with actual AI service call);
+    // 6. Generate mock AI analysis (replace with actual AI service call)
     const analysisResult: AnalysisResult = {
       caseId,
       summary: `Comprehensive analysis of ${case_.title}. Case involves ${evidenceData.length} pieces of evidence with ${case_.priority} priority level. Analysis indicates ${
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       ],
       similarCases,
       complianceStatus: evidenceData.length >= 3 ? 'compliant' : 'needs-review',
-      timeline: [;
+      timeline: [
         {
           event: 'Case Analysis Initiated',
           date: new Date().toISOString(),
@@ -157,9 +157,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
           importance: similarCases.length > 0 ? 'high' : 'low'
         }
       ]
-    };
+    }
 
-    const processingTime = Date.now() - startTime;
+    const processingTime = Date.now() - startTime
 
     return json({
       success: true,
@@ -171,14 +171,14 @@ export const POST: RequestHandler = async ({ params, request }) => {
         similarCasesFound: similarCases.length,
         timestamp: new Date().toISOString()
       }
-    });
+    })
 
   } catch (error) {
-    console.error('Case analysis error:', error);
+    console.error('Case analysis error:', error)
     return json({
       success: false,
       error: 'Failed to analyze case',
       details: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

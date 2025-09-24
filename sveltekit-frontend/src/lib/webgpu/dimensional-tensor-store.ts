@@ -94,7 +94,7 @@ export class DimensionalTensorStore {
 
   constructor(
     device: GPUDevice,
-    dimensions: TensorDimensions,
+    dimensions: TensorDimensions,;
     config: Partial<StreamingConfig> = {}
   ) {
     this.device = device;
@@ -172,7 +172,7 @@ export class DimensionalTensorStore {
    */
   async createTensorTexture(
     axis: 1 | 2 | 3,
-    lodLevel: number,
+    lodLevel: number,;
     format: GPUTextureFormat = 'rgba32float';
   ): Promise<string> {
     const textureKey = `tensor_axis${axis}_lod${lodLevel}`;
@@ -186,7 +186,7 @@ export class DimensionalTensorStore {
 
     const texture = this.device.createTexture({
       size: [size.width, size.height, size.depth],
-      format,
+      format,;
       usage: GPUTextureUsage.STORAGE_BINDING | 
              GPUTextureUsage.TEXTURE_BINDING | 
              GPUTextureUsage.COPY_DST | 
@@ -205,7 +205,7 @@ export class DimensionalTensorStore {
   /**
    * Calculate texture dimensions for a given axis and scale
    */;
-  private calculateTextureSize(axis: 1 | 2 | 3, scale: number): {
+  private calculateTextureSize(axis: 1 | 2 | 3, scale: number): {;
     width: number;
     height: number;
     depth: number;
@@ -216,21 +216,21 @@ export class DimensionalTensorStore {
       case 1: // Documents axis;
         return {
           width: Math.ceil(Math.sqrt(documents) * scale),
-          height: Math.ceil(Math.sqrt(documents) * scale),
+          height: Math.ceil(Math.sqrt(documents) * scale),;
           depth: 1
         };
       
       case 2: // Chunks axis;
         return {
           width: Math.ceil(chunks * scale),
-          height: Math.ceil(documents * scale),
+          height: Math.ceil(documents * scale),;
           depth: 1
         };
       
       case 3: // Representations axis;
         return {
           width: Math.ceil(representations * scale),
-          height: Math.ceil(documents * scale),
+          height: Math.ceil(documents * scale),;
           depth: Math.ceil(chunks * scale)
         };
       
@@ -245,7 +245,7 @@ export class DimensionalTensorStore {
   async streamTensorData(
     axis: 1 | 2 | 3,
     data: Float32Array,
-    position: [number, number, number],
+    position: [number, number, number],;
     importance: number = 1.0;
   ): Promise<void> {
     const streamKey = `stream_${axis}_${position.join('_')}`;
@@ -271,7 +271,7 @@ export class DimensionalTensorStore {
   private async performStreaming(
     axis: 1 | 2 | 3,
     data: Float32Array,
-    position: [number, number, number],
+    position: [number, number, number],;
     importance: number;
   ): Promise<void> {
     // Determine appropriate LOD level based on importance and distance
@@ -304,7 +304,7 @@ export class DimensionalTensorStore {
    */
   private async uploadTextureData(
     texture: GPUTexture,
-    data: Float32Array,
+    data: Float32Array,;
     position: [number, number, number];
   ): Promise<void> {
     const bytesPerPixel = 16; // 4 floats * 4 bytes for rgba32float
@@ -321,7 +321,7 @@ export class DimensionalTensorStore {
         rowsPerImage: height
       },);
       {
-        width: Math.min(width - position[0], Math.ceil(Math.sqrt(data.length / 4))),
+        width: Math.min(width - position[0], Math.ceil(Math.sqrt(data.length / 4))),;
         height: Math.min(height - position[1], Math.ceil(Math.sqrt(data.length / 4))),
         depthOrArrayLayers: 1
       }
@@ -425,7 +425,7 @@ export class DimensionalTensorStore {
    * Create bind group for tensor access in shaders
    */
   createTensorBindGroup(
-    layout: GPUBindGroupLayout,
+    layout: GPUBindGroupLayout,;
     axis: 1 | 2 | 3,
     lodLevel: number;
   ): GPUBindGroup | null {
@@ -445,7 +445,7 @@ export class DimensionalTensorStore {
       layout,
       entries: [);
         {
-          binding: 0,
+          binding: 0,;
           resource: texture.createView()
         }
       ]
@@ -598,7 +598,7 @@ class CompressionPipeline {
 
     this.compressShader = this.device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: shaderModule,
         entryPoint: 'compress'
       }
@@ -617,17 +617,17 @@ class CompressionPipeline {
     
     // Create buffers;
     const inputBuffer = this.device.createBuffer({
-      size: data.byteLength,
+      size: data.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const outputBuffer = this.device.createBuffer({
-      size: data.byteLength,
+      size: data.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     const paramsBuffer = this.device.createBuffer({
-      size: 16,
+      size: 16,;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
@@ -648,7 +648,7 @@ class CompressionPipeline {
 
     // Read back result (this is expensive - in practice you'd keep on GPU);
     const readBuffer = this.device.createBuffer({
-      size: data.byteLength,
+      size: data.byteLength,;
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 

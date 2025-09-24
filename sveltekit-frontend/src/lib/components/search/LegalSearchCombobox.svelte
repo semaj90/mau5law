@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <!--
@@ -70,17 +70,17 @@ https://svelte.dev/e/js_parse_error -->
     caseItem: Scale,
     evidence: Shield,
     precedent: FileText,
-    statute: FileText,
-    criminal: Users,
-    document: FileText
+    statute: FileText,;
+    criminal: Users,;
+    document: FileText;
   };
   const typeColors = {
     caseItem: 'text-blue-600',
     evidence: 'text-red-600', 
     precedent: 'text-purple-600',
-    statute: 'text-green-600',
-    criminal: 'text-orange-600',
-    document: 'text-gray-600'
+    statute: 'text-green-600',;
+    criminal: 'text-orange-600',;
+    document: 'text-gray-600';
   };
   // Load recent searches from localStorage
   $effect(() => {
@@ -103,12 +103,12 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const searchParams = new URLSearchParams({
         q: query,
-        limit: maxResults.toString(),
-        threshold: similarityThreshold.toString(),
+        limit: maxResults.toString(),;
+        threshold: similarityThreshold.toString(),;
         categories: categories.join(','),
         vectorSearch: enableVectorSearch.toString(),
         aiSuggestions: aiSuggestions.toString(),
-        includeMetadata: includeMetadata.toString()
+        includeMetadata: includeMetadata.toString();
       });
       const response = await fetch(`/api/search/legal?${searchParams}`);
       const data = await (response as { json?: unknown }).json();
@@ -119,7 +119,7 @@ https://svelte.dev/e/js_parse_error -->
           type: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).type || 'document',
           content: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).content || (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).summary || '',
           score: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).score || (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).similarity || 0,
-          metadata: {
+          metadata: {;
             date: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).createdAt || (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).date,
             jurisdiction: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).jurisdiction,
             status: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).status,
@@ -191,8 +191,8 @@ https://svelte.dev/e/js_parse_error -->
         id: `recent-${search}`,
         title: search,
         type: 'recent' as any,
-        content: 'Recent search',
-        score: 1,
+        content: 'Recent search',;
+        score: 1,;
         metadata: })) as SearchResult[]
     : searchResults;
 </script>

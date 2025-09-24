@@ -104,7 +104,7 @@ export class EnhancedNeo4jReranker {
    * Enhanced reranking with Neo4j path context and 95% accuracy targeting
    */
   async enhancedRerank(
-    query: string,
+    query: string,;
     documents: DocumentEmbedding[],
     userContext: {
       user_id: string;
@@ -130,7 +130,7 @@ export class EnhancedNeo4jReranker {
         timestamp: startTime,
         action: "rerank",
         user_id: userContext.user_id,
-        query_hash: queryHash,
+        query_hash: queryHash,;
         reasoning: `Enhanced reranking initiated for ${documents.length} documents`
       });
     }
@@ -230,7 +230,7 @@ export class EnhancedNeo4jReranker {
         timestamp: Date.now(),
         action: "rerank",
         user_id: userContext.user_id,
-        query_hash: queryHash,
+        query_hash: queryHash,;
         reasoning: `Reranking completed with ${filteredResults.length} high-accuracy results`
       });
     }
@@ -274,7 +274,7 @@ export class EnhancedNeo4jReranker {
       {
         source_entity: "witness_testimony",
         target_entity: "timeline_verification",
-        relationship_type: "supports",
+        relationship_type: "supports",;
         confidence: 0.88,
         legal_weight: 0.75,
         source_document: document.id
@@ -298,7 +298,7 @@ export class EnhancedNeo4jReranker {
    * Calculate boolean pattern matching for 2x2 matrix accuracy
    */
   private async calculateBooleanPatterns(
-    query: string,
+    query: string,;
     document: DocumentEmbedding,
   ): Promise<boolean[][]> {
     const queryTokens = query.toLowerCase().split(/\s+/);
@@ -464,7 +464,7 @@ export class EnhancedNeo4jReranker {
    * Helper methods
    */
   private async calculateSemanticSimilarity(
-    query: string,
+    query: string,;
     document: DocumentEmbedding,
   ): Promise<number> {
     // Mock implementation - would use actual embedding similarity
@@ -525,7 +525,7 @@ export class EnhancedNeo4jReranker {
   private getRoleMultiplier(role: string, searchIntent: string): number {
     const multipliers = {
       prosecutor: { evidence: 1.3, precedent: 1.2, analysis: 1.1 },
-      detective: { evidence: 1.4, precedent: 1.0, analysis: 1.2 },
+      detective: { evidence: 1.4, precedent: 1.0, analysis: 1.2 },;
       admin: { evidence: 1.1, precedent: 1.1, analysis: 1.1 }
     };
     return (

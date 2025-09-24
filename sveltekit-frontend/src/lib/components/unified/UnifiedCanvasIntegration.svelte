@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Unified Canvas Integration - Bridge Between Enhanced Evidence Canvas and Detective Board -->
@@ -13,7 +13,7 @@ https://svelte.dev/e/attribute_duplicate -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   	import Button from '$lib/components/ui/button/Button.svelte';
   	// Badge replaced with span - not available in enhanced-bits
   	import { Activity, Cpu, Database, Zap, Eye, Grid3X3, Canvas } from 'lucide-svelte';
@@ -45,10 +45,12 @@ https://svelte.dev/e/attribute_duplicate -->
   	} = $props();
 
   	// Initialize unified integration
-  	$effect(async () => {
-  		await initializeUnifiedSystems();
+  	$effect(() => {
+    (async () => {
+await initializeUnifiedSystems();
   		startPerformanceMonitoring();
-  	});
+    })();
+  });
 
   	async function initializeUnifiedSystems() {
   		console.log('🚀 Initializing Unified Canvas Integration for caseItem:', caseId);
@@ -91,12 +93,12 @@ https://svelte.dev/e/attribute_duplicate -->
   		// Simulate AI processing
   		try {
   			const response = await fetch('/api/ai/analyze-evidence', {
-  				method: 'POST',
+  				method: 'POST',;
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({
-  					evidenceId: evidenceItem.id,
+  					evidenceId: evidenceItem.id,;
   					content: evidenceItem.description || evidenceItem.title,
-  					forceReanalyze: false
+  					forceReanalyze: false;
   				})
   			});
   			const analysisResult = await (response as { json?: unknown }).json();
@@ -104,7 +106,7 @@ https://svelte.dev/e/attribute_duplicate -->
   				activeAnalysis = [...activeAnalysis, {
   					evidenceId: evidenceItem.id,
   					...analysisResult.data.analysis,
-  					timestamp: new Date().toISOString()
+  					timestamp: new Date().toISOString();
   				}];
   				console.log('✅ Evidence analysis completed:', analysisResult.data.analysis.summary);
   			}
@@ -346,7 +348,7 @@ Analyze All Evidence
 
 <style>
 	/* Enhanced integration styles */
-	:global(.unified-canvas-integration) {
+	:global(.unified-canvas-integration) {;
 		height: 100vh;
 		overflow: hidden;
 	}

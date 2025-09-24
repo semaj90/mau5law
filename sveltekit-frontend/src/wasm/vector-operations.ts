@@ -357,7 +357,7 @@ export function processServerResponse(responsePtr: usize, resultPtr: usize, leng
  */
 export function hybridCosineSimilarity(
   aPtr: usize,
-  bPtr: usize,
+  bPtr: usize,;
   length: i32,
   useServer: bool,
 ): f32 {
@@ -542,7 +542,7 @@ export function getMemoryStats(): i32 {
  */
 export function benchmarkOperation(
   operation: i32,
-  dataSize: i32,
+  dataSize: i32,;
   iterations: i32
 ): f32 {
   const startTime = Date.now();

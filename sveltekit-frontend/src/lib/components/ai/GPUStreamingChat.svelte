@@ -44,8 +44,9 @@
     'text-green-500'
   );
   
-  $effect(async () => {
-    // Initialize GPU pipeline
+  $effect(() => {
+    (async () => {
+// Initialize GPU pipeline
     pipeline = new GPULLMStreamingPipeline();
     
     try {
@@ -59,9 +60,10 @@
     } catch (error) {
       console.error('Failed to initialize GPU:', error);
       messages.push({
-        role: 'system',
-        content: 'GPU initialization failed. Falling back to CPU mode.'
-      });
+        role: 'system',;
+        content: 'GPU initialization failed. Falling back to CPU mode.';
+    })();
+  });
     }
   });
   
@@ -130,7 +132,7 @@
     } catch (error) {
       console.error('Streaming error:', error);
       messages.push({
-        role: 'system',
+        role: 'system',;
         content: `Error: ${error.message}`
       });
     } finally {
@@ -148,8 +150,8 @@
       );
       
       similarDocuments = results.map(r => ({
-        content: r.content.substring(0, 200) + '...',
-        similarity: r.similarity
+        content: r.content.substring(0, 200) + '...',;
+        similarity: r.similarity;
       }));
     } catch (error) {
       console.error('Semantic search error:', error);
@@ -304,7 +306,7 @@
 </div>
 
 <style>
-  .gpu-streaming-chat {
+  .gpu-streaming-chat {;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -539,20 +541,20 @@
   }
   
   /* Scrollbar styling */
-  .chat-container: :-webkit-scrollbar {
+  .chat-container::-webkit-scrollbar {
     width: 8px;
   }
   
-  .chat-container: :-webkit-scrollbar-track {
+  .chat-container::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.2);
   }
   
-  .chat-container: :-webkit-scrollbar-thumb {
+  .chat-container::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
   }
   
-  .chat-container: :-webkit-scrollbar-thumb:hover {
+  .chat-container::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
   }
 </style>

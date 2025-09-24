@@ -1,91 +1,91 @@
 /// <reference types="vite/client" />
 
-import { URL } from "url";
-import { queueDocumentProcessing, getJobStatus, getQueueStats, type DocumentProcessingJobData } from "$lib/services/queue-service";
-import type { RequestHandler } from './$types.js';
+import { URL } from "url"
+import { queueDocumentProcessing, getJobStatus, getQueueStats, type DocumentProcessingJobData } from "$lib/services/queue-service"
+import type { RequestHandler } from './$types.js'
 
 
-// Types for Go server integration (kept for compatibility);
+// Types for Go server integration (kept for compatibility)
 export interface DocumentProcessRequest {
-	document_id: string;
-	content: string;
-	document_type: string;
-	case_id?: string;
-	options: ProcessingOptions;
+	document_id: string
+	content: string
+	document_type: string
+	case_id?: string
+	options: ProcessingOptions
 }
 
 export interface ProcessingOptions {
-	extract_entities: boolean;
-	generate_summary: boolean;
-	assess_risk: boolean;
-	generate_embedding: boolean;
-	store_in_database: boolean;
-	use_gemma3_legal: boolean;
+	extract_entities: boolean
+	generate_summary: boolean
+	assess_risk: boolean
+	generate_embedding: boolean
+	store_in_database: boolean
+	use_gemma3_legal: boolean
 }
 
 export interface DocumentProcessResponse {
-	success: boolean;
-	document_id: string;
-	summary?: string;
-	entities?: LegalEntity[];
-	risk_assessment?: RiskAssessment;
-	embedding?: number[];
-	processing_time: string;
-	metadata: Record<string, unknown>;
-	error?: string;
+	success: boolean
+	document_id: string
+	summary?: string
+	entities?: LegalEntity[]
+	risk_assessment?: RiskAssessment
+	embedding?: number[]
+	processing_time: string
+	metadata: Record<string, unknown>
+	error?: string
 }
 
 export interface LegalEntity {
-	type: string;
-	value: string;
-	confidence: number;
-	start_pos: number;
-	end_pos: number;
+	type: string
+	value: string
+	confidence: number
+	start_pos: number
+	end_pos: number
 }
 
 export interface RiskAssessment {
-	overall_risk: string;
-	risk_score: number;
-	risk_factors: string[];
-	recommendations: string[];
-	confidence: number;
+	overall_risk: string
+	risk_score: number
+	risk_factors: string[]
+	recommendations: string[]
+	confidence: number
 }
 
 // Configuration
-const GO_SERVER_URL = import.meta.env.GO_SERVER_URL || 'http://localhost:8080';
+const GO_SERVER_URL = import.meta.env.GO_SERVER_URL || 'http://localhost:8080'
 const USE_QUEUE = import.meta.env.USE_QUEUE !== 'false'; // Enable by default
 
 /*
  * Process document through BullMQ worker system
  * Integrates with Go Legal AI Server via queue workers
- */;
+ */
 export const POST: RequestHandler = async ({ request, url }) => {
 	try {
-		const body = await request.json();
+		const body = await request.json()
 		
 		// Check if this is a job status check
-		const jobId = url.searchParams.get('job_id');
+		const jobId = url.searchParams.get('job_id')
 		if (jobId) {
 			try {
-				const status = await getJobStatus(jobId);
-				return json(status);
+				const status = await getJobStatus(jobId)
+				return json(status)
 			} catch (error: any) {
-				console.error('❌ Error checking job status:', error);
+				console.error('❌ Error checking job status:', error)
 				return json({ 
 					error: 'Failed to check job status',
 					details: error instanceof Error ? error.message: 'Unknown error'
-				}, { status: 500 });
+				}, { status: 500 })
 			}
 		}
 		
-		// Validate required fields for new job;
+		// Validate required fields for new job
 		if (!body.content) {
-			return json({ error: 'Content is required' }, { status: 400 });
+			return json({ error: 'Content is required' }, { status: 400 })
 		}
 
-		const documentId = body.document_id || `doc_${Date.now()}`;
+		const documentId = body.document_id || `doc_${Date.now()}`
 		
-		// Prepare job data;
+		// Prepare job data
 		const jobData: DocumentProcessingJobData = {
 			documentId: documentId,
 			content: body.content,
@@ -100,22 +100,22 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				storeInDatabase: body.store_in_database ?? true,
 				useGemma3Legal: body.use_gemma3_legal ?? true
 			}
-		};
+		}
 
-		console.log(`🔄 Queuing document for processing: ${documentId}`);
+		console.log(`🔄 Queuing document for processing: ${documentId}`)
 
 		if (USE_QUEUE) {
 			try {
 				// Add job to queue
-				const priority = body.priority || 0;
-				const { jobId: queueJobId, estimated } = await queueDocumentProcessing(jobData, priority);
+				const priority = body.priority || 0
+				const { jobId: queueJobId, estimated } = await queueDocumentProcessing(jobData, priority)
 				
 				// Get current queue statistics
-				const queueStats = await getQueueStats();
+				const queueStats = await getQueueStats()
 				
-				console.log(`✅ Document queued successfully: ${documentId}`);
-				console.log(`📊 Job ID: ${queueJobId}, Estimated: ${estimated}s`);
-				console.log(`📈 Queue stats: ${queueStats.waiting} waiting, ${queueStats.active} active`);
+				console.log(`✅ Document queued successfully: ${documentId}`)
+				console.log(`📊 Job ID: ${queueJobId}, Estimated: ${estimated}s`)
+				console.log(`📈 Queue stats: ${queueStats.waiting} waiting, ${queueStats.active} active`)
 				
 				return json({
 					success: true,
@@ -127,16 +127,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
 					status_url: `/api/legal-ai/process-document?job_id=${queueJobId}`,
 					message: 'Document queued for processing',
 					timestamp: new Date().toISOString()
-				});
+				})
 				
 			} catch (queueError) {
-				console.error('❌ Queue error, falling back to direct processing:', queueError);
+				console.error('❌ Queue error, falling back to direct processing:', queueError)
 				// Fall through to direct processing
 			}
 		}
 
 		// Direct processing fallback (when queue is disabled or failed)
-		console.log(`🔄 Processing document directly via Go server: ${documentId}`);
+		console.log(`🔄 Processing document directly via Go server: ${documentId}`)
 		
 		try {
 			const response = await fetch(`${GO_SERVER_URL}/process-document`, {
@@ -159,22 +159,22 @@ export const POST: RequestHandler = async ({ request, url }) => {
 					}
 				}),
 				signal: AbortSignal.timeout(120000) // 2 minute timeout
-			});
+			})
 
 			if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
-				const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text();
-				console.error(`❌ Go server error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}):`, errorText);
+				const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text()
+				console.error(`❌ Go server error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}):`, errorText)
 				
 				return json({ 
 					error: `Go server error: ${(response as { ok?: any; text?: any; status?: any; json?: any }).status}`,
 					details: errorText 
-				}, { status: (response as { ok?: any; text?: any; status?: any; json?: any }).status });
+				}, { status: (response as { ok?: any; text?: any; status?: any; json?: any }).status })
 			}
 
-			const result: DocumentProcessResponse = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
+			const result: DocumentProcessResponse = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
 			
-			console.log(`✅ Document processed successfully: ${(result as { document_id?: any; processing_time?: any }).document_id}`);
-			console.log(`📊 Processing time: ${(result as { document_id?: any; processing_time?: any }).processing_time}`);
+			console.log(`✅ Document processed successfully: ${(result as { document_id?: any; processing_time?: any }).document_id}`)
+			console.log(`📊 Processing time: ${(result as { document_id?: any; processing_time?: any }).processing_time}`)
 			
 			return json({
 				success: true,
@@ -182,28 +182,28 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				data: result,
 				processed_by: 'go-legal-ai-server-direct',
 				timestamp: new Date().toISOString()
-			});
+			})
 
 		} catch (fetchError) {
-			console.error('❌ Direct processing error:', fetchError);
+			console.error('❌ Direct processing error:', fetchError)
 			return json({ 
 				error: 'Processing failed',
 				details: fetchError instanceof Error ? fetchError.message: 'Unknown error'
-			}, { status: 503 });
+			}, { status: 503 })
 		}
 
 	} catch (error: any) {
-		console.error('❌ API endpoint error:', error);
+		console.error('❌ API endpoint error:', error)
 		return json({ 
 			error: 'Internal server error',
 			details: error instanceof Error ? error.message: 'Unknown error'
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}
 
 /*
  * Get Go server health status
- */;
+ */
 export const GET: RequestHandler = async () => {
 	try {
 		const response = await fetch(`${GO_SERVER_URL}/health`, {
@@ -211,16 +211,16 @@ export const GET: RequestHandler = async () => {
 			headers: {
 				'Content-Type': 'application/json'
 			}
-		});
+		})
 
 		if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
 			return json({ 
 				error: 'Go server health check failed',
 				status: (response as { ok?: any; text?: any; status?: any; json?: any }).status 
-			}, { status: 503 });
+			}, { status: 503 })
 		}
 
-		const healthData = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
+		const healthData = await (response as { ok?: any; text?: any; status?: any; json?: any }).json()
 		
 		return json({
 			success: true,
@@ -228,14 +228,14 @@ export const GET: RequestHandler = async () => {
 			sveltekit_status: 'healthy',
 			integration_status: 'connected',
 			timestamp: new Date().toISOString()
-		});
+		})
 
 	} catch (error: any) {
-		console.error('❌ Go server health check failed:', error);
+		console.error('❌ Go server health check failed:', error)
 		return json({ 
 			error: 'Go server unreachable',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			go_server_url: GO_SERVER_URL
-		}, { status: 503 });
+		}, { status: 503 })
 	}
-};
+}

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Progress Indicator Component -->
@@ -119,7 +119,7 @@ https://svelte.dev/e/js_parse_error -->
 
                                 <!-- Step number badge for smaller screens -->
                                 <div class="absolute -top-1 -right-1 w-4 h-4 bg-gray-100 dark:bg-gray-700 rounded-full
-                                           flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-400
+                                           flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-400;
                                            lg:hidden">
                                     {index + 1}
                                 </div>
@@ -186,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-    .progress-indicator li {
+    .progress-indicator li {;
         position: relative;
     }
 </style>

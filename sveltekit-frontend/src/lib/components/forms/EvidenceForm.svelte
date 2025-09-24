@@ -14,7 +14,7 @@
   import Button from "$lib/components/ui/button";
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Label } from "$lib/components/ui/label";
   import type { Evidence } from "$lib/types/api";
   import * as Select from 'bits-ui';
@@ -118,7 +118,7 @@ ondispatch?.()}
 
 <style>
   /* @unocss-include */
-  form {
+  form {;
     max-width: 500px;
     margin: 0 auto;
 }
@@ -154,7 +154,7 @@ ondispatch?.()}
     cursor: pointer;
     transition: background 0.2s;
 }
-  .select-menu > div:hover {
+  .select-menu > div:hover {;
     background: #f3f4f6;
 }
 </style>

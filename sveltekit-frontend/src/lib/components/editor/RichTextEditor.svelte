@@ -44,7 +44,7 @@
       'insertdatetime', 'media', 'table', 'help', 'wordcount', 'save',
       'autosave', 'paste', 'textpattern', 'emoticons', 'hr', 'pagebreak',
       'nonbreaking', 'template', 'toc', 'quickbars', 'codesample'
-    ],
+    ],;
     toolbar: `
       undo redo | blocks fontfamily fontsize |
       bold italic underline strikethrough |
@@ -56,7 +56,7 @@
       fullscreen preview save | help
     `,
     content_style: `
-      body {
+      body {;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         font-size: 14px;
         line-height: 1.6;
@@ -112,7 +112,7 @@
     autosave_interval: '30s',
     autosave_prefix: 'report-autosave-',
     quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
-    quickbars_insert_toolbar: 'quickimage quicktable | hr pagebreak',
+    quickbars_insert_toolbar: 'quickimage quicktable | hr pagebreak',;
     contextmenu: 'link image table',
     paste_data_images: true,
     paste_as_text: false,
@@ -200,14 +200,14 @@
       await lokiRedisCache.storeDocument({
         id: $report.id || crypto.randomUUID(),
         type: 'brief',
-        content,
+        content,;
         metadata: {
           title: 'Draft Document',
           wordCount: getWordCount(),
           characterCount: getCharCount(),
-          lastModified: new Date().toISOString(),
-          author: 'Current User',
-          version: '1.0'
+          lastModified: new Date().toISOString(),;
+          author: 'Current User',;
+          version: '1.0';
         },
         cacheTimestamp: Date.now(),
         accessCount: 1,
@@ -237,8 +237,8 @@
 
       // Step 1: Check Redis cache via Go microservice
       const cacheResponse = await fetch('/api/v1/ai/summary-cache', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ textHash, content })
       });
 
@@ -254,13 +254,13 @@
 
       // Step 2: Cache miss - Start background AI processing
       const jobResponse = await fetch('/api/v1/ai/summarize-async', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content,
-          textHash,
+          textHash,;
           model: 'legal-bert',
-          embedModel: 'nomic-embed-text'
+          embedModel: 'nomic-embed-text';
         })
       });
 
@@ -329,7 +329,7 @@
   async function storeVectorEmbedding(embedding: number[], text: string) {
     try {
       await fetch('/api/v1/vector/store', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           embedding,
@@ -337,8 +337,8 @@
           documentId: $report.id,
           metadata: {
             wordCount: getWordCount(),
-            characterCount: getCharCount(),
-            timestamp: new Date().toISOString()
+            characterCount: getCharCount(),;
+            timestamp: new Date().toISOString();
           }
         })
       });
@@ -362,8 +362,8 @@
   async function cacheResult(textHash: string, summary: string) {
     try {
       await fetch('/api/v1/ai/cache-result', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ textHash, summary })
       });
     } catch (error) {
@@ -547,7 +547,7 @@
 
 <style>
   /* @unocss-include */
-  .tinymce-container {
+  .tinymce-container {;
     position: relative;
     width: 100%;
 }

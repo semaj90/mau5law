@@ -60,7 +60,7 @@ export class DynamicNavigation {
   private state: Writable<NavigationState> = writable({
     currentPath: '/',
     previousPath: null,
-    navigationHistory: [],
+    navigationHistory: [],;
     breadcrumbs: [],
     canGoBack: false,
     canGoForward: false,
@@ -145,7 +145,7 @@ export class DynamicNavigation {
    */
   public async navigateToRoute(
     routeId: string,
-    params: Record<string, string> = {},
+    params: Record<string, string> = {},;
     options: NavigationOptions = {}
   ): Promise<void> {
     const route = routeRegistry.getRoute(routeId);
@@ -239,7 +239,7 @@ export class DynamicNavigation {
    * Check if navigation is allowed
    */
   private async checkNavigationGuards(
-    to: string,
+    to: string,;
     from: string;
   ): Promise<any> {
     for (const guard of this.guards.values()) {
@@ -268,7 +268,7 @@ export class DynamicNavigation {
    * Update current path and navigation state
    */
   private updateCurrentPath(
-    path: string,
+    path: string,;
     params: Record<string, string> = {},
     routeId?: string;
   ): void {
@@ -292,7 +292,7 @@ export class DynamicNavigation {
   private addToHistory(path: string, state?: any, routeId?: string): void {
     this.state.update((navState) => {
       const entry: NavigationHistoryEntry = {
-        path,
+        path,;
         timestamp: Date.now(),
         routeId,
         state
@@ -333,7 +333,7 @@ export class DynamicNavigation {
 
     // Add home breadcrumb;
     breadcrumbs.push({
-      label: 'Home',
+      label: 'Home',;
       path: '/',
       isActive: path === '/'
     });

@@ -4,23 +4,23 @@
  * Provides health status for RabbitMQ service and queues
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 export const GET: RequestHandler = async () => {
 	try {
 		// Import the actual RabbitMQ service
-		const { rabbitmqService } = await import('$lib/server/messaging/rabbitmq-service.js');
-		const { healthCheck } = await import('$lib/server/rabbitmq.js');
+		const { rabbitmqService } = await import('$lib/server/messaging/rabbitmq-service.js')
+		const { healthCheck } = await import('$lib/server/rabbitmq.js')
 		
 		// Try to get actual health status
 		const [serviceHealth, connectionHealth] = await Promise.allSettled([
 			rabbitmqService.healthCheck(),
 			healthCheck()
-		]);
+		])
 
-		const isServiceHealthy = serviceHealth.status === 'fulfilled' && serviceHealth.value.status === 'healthy';
-		const isConnectionHealthy = connectionHealth.status === 'fulfilled' && connectionHealth.value === true;
+		const isServiceHealthy = serviceHealth.status === 'fulfilled' && serviceHealth.value.status === 'healthy'
+		const isConnectionHealthy = connectionHealth.status === 'fulfilled' && connectionHealth.value === true
 
 		const healthStatus = {
 			status: isServiceHealthy && isConnectionHealthy ? 'healthy' : 'unhealthy',
@@ -78,17 +78,17 @@ export const GET: RequestHandler = async () => {
 				available: true,
 				endpoint: '/api/workers/rabbitmq'
 			}
-		};
+		}
 
 		return json(healthStatus, {
 			headers: {
 				'Cache-Control': 'no-cache',
 				'X-RabbitMQ-Health': healthStatus.status === 'healthy' ? 'ok' : 'error'
 			}
-		});
+		})
 
 	} catch (error) {
-		console.error('RabbitMQ health check failed:', error);
+		console.error('RabbitMQ health check failed:', error)
 		
 		return json({
 			status: 'unhealthy',
@@ -106,6 +106,6 @@ export const GET: RequestHandler = async () => {
 			headers: {
 				'X-RabbitMQ-Health': 'error'
 			}
-		});
+		})
 	}
-};
+}

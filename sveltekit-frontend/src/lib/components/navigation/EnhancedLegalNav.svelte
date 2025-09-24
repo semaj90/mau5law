@@ -38,7 +38,7 @@
       sharingPolicy: 'shared',
       updateFrequency: 'periodic',
       priority: 180,
-      estimatedUsage: NAV_MEMORY_BUDGET
+      estimatedUsage: NAV_MEMORY_BUDGET;
     });
 
     // Load initial recent cases
@@ -70,10 +70,10 @@
       recentCases = response.map(caseItem => ({
         ...caseItem,
         priority: calculateDocumentPriority({
-          type: 'case',
+          type: 'case',;
           urgency: caseItem.status === 'active' ? 'critical' : 'normal',
           lastAccessed: new Date(caseItem.lastAccessed),
-          activeReview: caseItem.status === 'active'
+          activeReview: caseItem.status === 'active';
         })
       }));
 
@@ -139,7 +139,7 @@
               transition:scale|local={{
                 duration: 200,
                 delay: i * 50,
-                easing: elasticOut
+                easing: elasticOut;
               }}
               style="--priority-color: hsl({240 - caseItem.priority}, 70%, 50%)"
             >
@@ -158,7 +158,7 @@
 </nav>
 
 <style>
-  .enhanced-legal-nav {
+  .enhanced-legal-nav {;
     position: fixed;
     top: 0;
     left: 0;
@@ -199,7 +199,7 @@
     position: relative;
   }
 
-  .nav-links a:hover {
+  .nav-links a:hover {;
     border-color: var(--nes-primary);
     transform: translateY(-2px);
   }

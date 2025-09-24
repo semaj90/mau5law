@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration
+<!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration;
 https://svelte.dev/e/bindable_invalid_location -->
 <!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration -->
 <!-- LazyAIAnalysis.svelte - Lazy loading wrapper for AI analysis components -->
@@ -30,7 +30,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     onAnalysisComplete = undefined as ((result: unknown) => void) | undefined,
     onAnalysisError = undefined as ((error: Error) => void) | undefined,
     // Component state binding
-    lazyState = $bindable() as LazyComponentState | undefined
+    lazyState = $bindable() as LazyComponentState | undefined;
   } = $props();
 
   // Dynamic import and analysis state
@@ -76,7 +76,7 @@ https://svelte.dev/e/bindable_invalid_location -->
       const result = await performAnalysis();
       updateProgress(90, 'Finalizing results...');
       analysisComponent = {
-        // component: componentModule.default,
+        // component: componentModule.default,;
         props: { 
           analysisType,
           result,
@@ -115,9 +115,9 @@ https://svelte.dev/e/bindable_invalid_location -->
     const baseResult = {
       analysisId: `analysis_${Date.now()}`,
       type: analysisType,
-      model,
+      model,;
       timestamp: new Date().toISOString(),
-      processingTime: Math.floor(Math.random() * 5000) + 1000, // 1-6 seconds
+      processingTime: Math.floor(Math.random() * 5000) + 1000, // 1-6 seconds;
     };
 
     switch (analysisType) {
@@ -129,13 +129,13 @@ https://svelte.dev/e/bindable_invalid_location -->
             { name: 'Doe v. Smith', relevance: 0.85, year: 2019 },
             { name: 'Johnson v. State', relevance: 0.72, year: 2020 }
           ],
-          riskAssessment: 'Medium',
+          riskAssessment: 'Medium',;
           confidence: 0.87,
           keyFindings: [
             'Contract terms appear enforceable',
             'Potential statute of limitations issue',
             'Strong evidence for damages claim'
-          ]
+          ];
         };
 
       case 'evidence':
@@ -147,14 +147,14 @@ https://svelte.dev/e/bindable_invalid_location -->
           technicalAnalysis: {
             fileIntegrity: 'Verified',
             metadata: 'No tampering detected',
-            forensicHash: 'SHA256-verified'
+            forensicHash: 'SHA256-verified';
           },
-          relevanceScore: 0.89,
+          relevanceScore: 0.89,;
           recommendations: [
             'Evidence meets admissibility standards',
             'Consider additional forensic analysis',
             'Document chain of custody thoroughly'
-          ]
+          ];
         };
 
       case 'document':
@@ -167,8 +167,8 @@ https://svelte.dev/e/bindable_invalid_location -->
           redFlags: [
             'Unusual termination clause',
             'Broad indemnification language'
-          ],
-          summary: 'This appears to be a standard commercial contract with some notable provisions...',
+          ],;
+          summary: 'This appears to be a standard commercial contract with some notable provisions...',;
           entities: [
             { text: 'ABC Corporation', type: 'Organization', confidence: 0.95 },
             { text: 'New York', type: 'Location', confidence: 0.88 }
@@ -203,7 +203,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   // Analysis type icons and colors
   const analysisConfig = {
     legal: { icon: '⚖️', color: '#4f46e5', bgColor: 'rgba(79, 70, 229, 0.1)' },
-    evidence: { icon: '🔍', color: '#059669', bgColor: 'rgba(5, 150, 105, 0.1)' },
+    evidence: { icon: '🔍', color: '#059669', bgColor: 'rgba(5, 150, 105, 0.1)' },;
     document: { icon: '📄', color: '#dc2626', bgColor: 'rgba(220, 38, 38, 0.1)' },
     caseItem: { icon: '📁', color: '#7c2d12', bgColor: 'rgba(124, 45, 18, 0.1)' }
   };
@@ -300,7 +300,7 @@ https://svelte.dev/e/bindable_invalid_location -->
               <p>
                 {analysisResult.summary || 
                  analysisResult.legalOpinion || 
-                 `${analysisType} analysis completed successfully with ${Object.keys.length} data points.`}
+                 `${analysisType} analysis completed successfully with ${Object.keys(errors).length} data points.`}
               </p>
             </div>
 
@@ -479,7 +479,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     color: rgba(0, 0, 0, 0.6);
   }
 
-  .meta-item span:first-child {
+  .meta-item span:first-child {;
     font-weight: 600;
     margin-right: 4px;
   }

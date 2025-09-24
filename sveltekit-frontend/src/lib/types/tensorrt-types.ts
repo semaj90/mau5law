@@ -81,7 +81,7 @@ export interface DocumentAnalysisResponse {
             amounts: string[];
             legal_terms: string[];
         };
-        risks: Array<{
+        risks: Array<{;
             type: string;
             severity: 'low' | 'medium' | 'high';
             description: string;

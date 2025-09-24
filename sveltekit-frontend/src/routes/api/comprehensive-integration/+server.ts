@@ -1,37 +1,37 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 interface SystemHealthResponse {
   system_overview: {
-    healthy_services: number;
-    total_services: number;
-    uptime_hours: number;
-    last_updated: string;
-  };
-  services: Array<any>;
+    healthy_services: number
+    total_services: number
+    uptime_hours: number
+    last_updated: string
+  }
+  services: Array<any>
   performance: {
-    cpu_usage: number;
-    memory_usage: number;
-    disk_usage: number;
-  };
+    cpu_usage: number
+    memory_usage: number
+    disk_usage: number
+  }
   cluster_info?: {
-    active_workers: number;
-    total_capacity: number;
-    load_average: number;
-  };
+    active_workers: number
+    total_capacity: number
+    load_average: number
+  }
 }
 
 interface APIOperationRequest {
-  operation: string;
-  data?: any;
+  operation: string
+  data?: any
 }
 
 interface APIOperationResponse {
-  success: boolean;
-  operation: string;
-  result?: any;
-  timestamp: string;
-  processing_time?: number;
+  success: boolean
+  operation: string
+  result?: any
+  timestamp: string
+  processing_time?: number
 }
 
 async function getSystemHealth(): Promise<SystemHealthResponse> {
@@ -47,19 +47,19 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
     { name: 'MinIO Object Storage', port: 9000 },
     { name: 'Qdrant Vector DB', port: 6333 },
     { name: 'NATS Messaging', port: 4222 }
-  ];
+  ]
 
-  // Simulate health checks;
+  // Simulate health checks
   const serviceResults = services.map(service => {
-    const isHealthy = Math.random() > 0.1; // 90% chance of being healthy;
+    const isHealthy = Math.random() > 0.1; // 90% chance of being healthy
     return {
       ...service,
       status: isHealthy ? 'healthy' : 'degraded' as const,
       response_time: Math.floor(Math.random() * 500) + 10
-    };
-  });
+    }
+  })
 
-  const healthyCount = serviceResults.filter(item => item.length);
+  const healthyCount = serviceResults.filter(item => item.length)
 
   return {
     system_overview: {
@@ -79,19 +79,19 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
       total_capacity: 16,
       load_average: Math.random() * 2 + 0.5
     }
-  };
+  }
 }
 
 async function performOperation(operation: string, data?: any): Promise<APIOperationResponse> {
-  const startTime = Date.now();
+  const startTime = Date.now()
   
   try {
-    let result: any = {};
+    let result: any = {}
 
     switch (operation) {
       case 'system_optimization':
         // Simulate system optimization
-        await new Promise(resolve => setTimeout(resolve, 1000);
+        await new Promise(resolve => setTimeout(resolve, 1000)
         result = {
           optimization_applied: [
             'Memory cache cleared',
@@ -101,65 +101,65 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
           ],
           performance_improvement: '15%',
           memory_freed: '2.3 GB'
-        };
-        break;
+        }
+        break
 
       case 'context7_integration':
         // Simulate Context7 integration check
-        await new Promise(resolve => setTimeout(resolve, 800);
+        await new Promise(resolve => setTimeout(resolve, 800)
         result = {
           context7_status: 'active',
           library_docs_cached: 247,
           integration_tests_passed: 98,
           api_calls_last_hour: 156,
           cache_hit_ratio: '89%'
-        };
-        break;
+        }
+        break
 
       case 'real_time_analysis':
         // Simulate real-time analysis
-        await new Promise(resolve => setTimeout(resolve, 1200);
+        await new Promise(resolve => setTimeout(resolve, 1200)
         result = {
           documents_analyzed: 1247,
           active_cases: 23,
           ai_processing_queue: 4,
           average_response_time: '1.2s',
           accuracy_score: '94.7%'
-        };
-        break;
+        }
+        break
 
       case 'legal_research':
         // Simulate legal research operation
-        await new Promise(resolve => setTimeout(resolve, 1500);
+        await new Promise(resolve => setTimeout(resolve, 1500)
         result = {
           research_databases_online: 5,
           recent_queries: 89,
           cached_precedents: 15670,
           citation_network_nodes: 45000,
           similarity_matches_found: 234
-        };
-        break;
+        }
+        break
 
       case 'vector_search_test':
         // Simulate vector search test
-        await new Promise(resolve => setTimeout(resolve, 600);
+        await new Promise(resolve => setTimeout(resolve, 600)
         result = {
           vector_dimensions: 384,
           indexed_documents: 12450,
           search_latency: '23ms',
           similarity_threshold: 0.85,
           results_returned: 50
-        };
-        break;
+        }
+        break
 
-      default:;
+      default:
         result = {
           message: `Operation '${operation}' completed successfully`,
           data: data || {}
-        };
+        }
     }
 
-    const processingTime = Date.now() - startTime;
+    const processingTime = Date.now() - startTime
 
     return {
       success: true,
@@ -167,10 +167,10 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
       result,
       timestamp: new Date().toISOString(),
       processing_time: processingTime
-    };
+    }
 
   } catch (error) {
-    console.error(`Operation ${operation} failed:`, error);
+    console.error(`Operation ${operation} failed:`, error)
     
     return {
       success: false,
@@ -181,41 +181,41 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
       },
       timestamp: new Date().toISOString(),
       processing_time: Date.now() - startTime
-    };
+    }
   }
 }
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const systemHealth = await getSystemHealth();
-    return json(systemHealth);
+    const systemHealth = await getSystemHealth()
+    return json(systemHealth)
   } catch (error) {
-    console.error('System health check failed:', error);
-    return json({ error: 'Failed to get system health' }, { status: 500 });
+    console.error('System health check failed:', error)
+    return json({ error: 'Failed to get system health' }, { status: 500 })
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json() as APIOperationRequest;
-    const { operation, data } = body;
+    const body = await request.json() as APIOperationRequest
+    const { operation, data } = body
 
     if (!operation) {
-      return json({ error: 'Operation is required' }, { status: 400 });
+      return json({ error: 'Operation is required' }, { status: 400 })
     }
 
-    const result = await performOperation(operation, data);
-    return json(result);
+    const result = await performOperation(operation, data)
+    return json(result)
 
   } catch (error) {
-    console.error('API operation failed:', error);
-    return json();
+    console.error('API operation failed:', error)
+    return json()
       { 
         success: false,
         error: 'Failed to process operation',
         timestamp: new Date().toISOString()
       }, 
       { status: 500 }
-    );
+    )
   }
-};
+}

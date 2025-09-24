@@ -70,7 +70,7 @@ export const chainOfCustodyEntrySchema = z.object({
   officer: z.string().min(1, 'Officer name is required'),
   action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'returned']),
   location: z.string().min(1, 'Location is required'),
-  notes: z.string().optional(),
+  notes: z.string().optional(),;
   signature: z.string().optional()
 });
 
@@ -84,7 +84,7 @@ export const fileMetadataSchema = z.object({
     width: z.number().optional(),
     height: z.number().optional()
   }).optional(),
-  duration: z.number().optional(),
+  duration: z.number().optional(),;
   pages: z.number().optional(),
   extractedText: z.string().optional(),
   ocrConfidence: z.number().min(0).max(1).optional()
@@ -132,7 +132,7 @@ export const fileUploadSchema = z.object({
   enableEmbeddings: z.boolean().default(true),
   enableSummarization: z.boolean().default(true),
 
-  // Additional metadata
+  // Additional metadata;
   metadata: z.record(z.any()).default({})
 });
 
@@ -189,7 +189,7 @@ export const caseWithFilesSchema = z.object({
 
   tags: z.array(z.string()).max(20, 'Cannot have more than 20 tags').default([]),
 
-  // Files to upload with the case (file-like objects)
+  // Files to upload with the case (file-like objects);
   files: z.array(z.any()
     .min(0)
     .max(20, 'Cannot upload more than 20 files when creating a case')
@@ -219,7 +219,7 @@ export const fileSearchSchema = z.object({
   hasAiAnalysis: z.boolean().optional(),
   sortBy: z.enum(['created_at', 'updated_at', 'title', 'size', 'relevance']).default('created_at'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
-  limit: z.number().min(1).max(100).default(20),
+  limit: z.number().min(1).max(100).default(20),;
   offset: z.number().min(0).default(0)
 });
 
@@ -239,7 +239,7 @@ export const aiAnalysisResultSchema = z.object({
   categories: z.array(z.string()).default([]),
   confidence: z.number().min(0).max(1).default(0),
   processingTime: z.number().positive().optional(),
-  model: z.string().optional(),
+  model: z.string().optional(),;
   embedding: z.array(z.number()).optional()
 });
 
@@ -297,7 +297,7 @@ export const defaultFileUploadValues: Partial<FileUpload> = {
   enableOcr: true,
   enableEmbeddings: true,
   enableSummarization: true,
-  chainOfCustody: [],
+  chainOfCustody: [],;
   metadata: Record<string, any>
 };
 
@@ -308,7 +308,7 @@ export const defaultCaseWithFilesValues: Partial<CaseWithFiles> = {
   category: '',
   priority: 'medium',
   assignedTeam: [],
-  tags: [],
+  tags: [],;
   files: [],
   fileDescriptions: [],
   fileTitles: [],

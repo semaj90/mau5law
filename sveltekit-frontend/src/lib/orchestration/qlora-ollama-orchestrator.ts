@@ -56,7 +56,7 @@ interface OllamaModelInfo {
   size: number;
   digest: string;
   modified_at: string;
-  details: {
+  details: {;
     format: string;
     family: string;
     families: string[];
@@ -145,7 +145,7 @@ export class QLoRAOllamaOrchestrator {
         name: 'Legal Synthesizer',
         description: 'Combines insights from multiple agents into coherent recommendations',
         specialization: ['multi_source_synthesis', 'recommendation_generation', 'report_writing'],
-        modelPath: 'gemma3-legal-synthesis-q4:latest',
+        modelPath: 'gemma3-legal-synthesis-q4:latest',;
         confidence: 0.87,
         isActive: false
       }
@@ -231,7 +231,7 @@ Classify the query and respond with JSON:;
       
       console.log('📋 Orchestration plan created:', {
         domain: intent.primaryDomain,
-        agents: plan.selectedAgents.length,
+        agents: plan.selectedAgents.length,;
         steps: plan.executionSteps.length
       });
 
@@ -272,7 +272,7 @@ Classify the query and respond with JSON:;
         // Generate response using agent's specialized model;
         const response = await qloraWasmLoader.generateText(modelKey, step.prompt, {
           maxTokens: 512,
-          temperature: 0.2,
+          temperature: 0.2,;
           streaming: false
         });
 
@@ -296,7 +296,7 @@ Classify the query and respond with JSON:;
       this.workflowHistory.push({
         queryId: plan.queryId,
         intent: plan.intent,
-        agents: plan.selectedAgents.map(a => a.id),
+        agents: plan.selectedAgents.map(a => a.id),;
         success: true,
         duration
       });
@@ -307,7 +307,7 @@ Classify the query and respond with JSON:;
         success: true,
         results,
         finalSynthesis,
-        duration,
+        duration,;
         metadata: {
           agentsUsed: plan.selectedAgents.length,
           stepsExecuted: plan.executionSteps.length,
@@ -323,7 +323,7 @@ Classify the query and respond with JSON:;
         queryId: plan.queryId,
         intent: plan.intent,
         agents: plan.selectedAgents.map(a => a.id),
-        success: false,
+        success: false,;
         duration: performance.now() - startTime
       });
 
@@ -376,7 +376,7 @@ Classify the query and respond with JSON:;
           path: `${this.distilledModelsPath}/${agentId}-adapter.bin`,
           rank: 16,
           alpha: 32,
-          targetModules: ['q_proj', 'v_proj', 'k_proj', 'o_proj'],
+          targetModules: ['q_proj', 'v_proj', 'k_proj', 'o_proj'],;
           size: 8
         }
       });
@@ -418,7 +418,7 @@ Classify the query and respond with JSON:;
     try {
       const response = await fetch(`${this.ollamaEndpoint}/api/pull`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ name: modelName })
       });
 
@@ -448,7 +448,7 @@ Classify the query and respond with JSON:;
           complexity: parsed.complexity || 'moderate',
           urgency: parsed.urgency || 'medium',
           requiredAgents: this.mapSkillsToAgents(parsed.requiredSkills || []),
-          suggestedWorkflow: parsed.suggestedWorkflow || ['analyze', 'synthesize'],
+          suggestedWorkflow: parsed.suggestedWorkflow || ['analyze', 'synthesize'],;
           confidence: parsed.confidence || 0.7
         };
       }
@@ -586,7 +586,7 @@ Synthesis:`;
       complexity: 'moderate',
       urgency: 'medium',
       requiredAgents: [primaryDomain === 'general' ? 'contract_specialist' : `${primaryDomain}_specialist`],
-      suggestedWorkflow: ['analyze', 'synthesize'],
+      suggestedWorkflow: ['analyze', 'synthesize'],;
       confidence: 0.6
     };
   }
@@ -604,7 +604,7 @@ Synthesis:`;
         action: 'analyze',
         prompt: `As a ${agent.name}, analyze this legal query with your expertise in ${agent.specialization.join(', ')}:\n\n"${query}"\n\nProvide detailed analysis:`,
         expectedOutput: `${agent.role}_analysis`,
-        dependencies: index === 0 ? [] : [`step_${index}_${workingAgents[index-1].role}`],
+        dependencies: index === 0 ? [] : [`step_${index}_${workingAgents[index-1].role}`],;
         timeout: 30000
       });
     });
@@ -634,7 +634,7 @@ Synthesis:`;
         action: 'analyze',
         prompt: `Provide a basic legal analysis for: "${query}"`,
         expectedOutput: 'basic_analysis',
-        dependencies: [],
+        dependencies: [],;
         timeout: 15000
       }],
       expectedDuration: 15000

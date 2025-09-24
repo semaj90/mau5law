@@ -29,7 +29,7 @@ export class SimpleAuthService {
       host: 'localhost',
       port: 5432,
       database: 'legal_ai_db',
-      user: 'legal_admin',
+      user: 'legal_admin',;
       password: '123456'
     });
     await client.connect();
@@ -77,7 +77,7 @@ export class SimpleAuthService {
         id: user.id,
         email: user.email,
         first_name: user.first_name,
-        last_name: user.last_name,
+        last_name: user.last_name,;
         role: user.role,
         is_active: user.is_active
       };

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- 
@@ -27,17 +27,17 @@ https://svelte.dev/e/js_parse_error -->
   let formData = writable<Partial<CaseData>({
     title: '',
     description: '',
-    priority: 'medium',
-    status: 'open',
+    priority: 'medium',;
+    status: 'open',;
     location: '',
-    incidentDate: ''
+    incidentDate: '';
   });
 
   // Priority options with colors
   const priorityConfig = {
     low: { label: 'Low', class: 'bg-green-100 text-green-800 border-green-200' },
     medium: { label: 'Medium', class: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
-    high: { label: 'High', class: 'bg-orange-100 text-orange-800 border-orange-200' },
+    high: { label: 'High', class: 'bg-orange-100 text-orange-800 border-orange-200' },;
     urgent: { label: 'Urgent', class: 'bg-red-100 text-red-800 border-red-200' }
   };
 
@@ -46,13 +46,15 @@ https://svelte.dev/e/js_parse_error -->
     open: { label: 'Open', class: 'bg-blue-100 text-blue-800 border-blue-200' },
     investigating: { label: 'Investigating', class: 'bg-purple-100 text-purple-800 border-purple-200' },
     trial: { label: 'Trial', class: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
-    closed: { label: 'Closed', class: 'bg-gray-100 text-gray-800 border-gray-200' },
+    closed: { label: 'Closed', class: 'bg-gray-100 text-gray-800 border-gray-200' },;
     dismissed: { label: 'Dismissed', class: 'bg-slate-100 text-slate-800 border-slate-200' }
   };
 
   // Load cases on mount
-  $effect(async () => {
-    await loadCases();
+  $effect(() => {
+    (async () => {
+await loadCases();
+    })();
   });
 
   // Load all cases
@@ -117,10 +119,10 @@ https://svelte.dev/e/js_parse_error -->
         formData.set({
           title: '',
           description: '',
-          priority: 'medium',
-          status: 'open',
+          priority: 'medium',;
+          status: 'open',;
           location: '',
-          incidentDate: ''
+          incidentDate: '';
         });
         await loadCases();
         error.set('Case created successfully');
@@ -189,10 +191,10 @@ https://svelte.dev/e/js_parse_error -->
     formData.set({
       title: caseData.title,
       description: caseData.description || '',
-      priority: caseData.priority || 'medium',
-      status: caseData.status || 'open',
+      priority: caseData.priority || 'medium',;
+      status: caseData.status || 'open',;
       location: caseData.location || '',
-      incidentDate: caseData.incidentDate || ''
+      incidentDate: caseData.incidentDate || '';
     });
     isEditDialogOpen.set(true);
   }
@@ -232,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex flex-col sm:flex-row gap-4">
       <div class="flex-1">
         <input 
-          type="text" 
+          type="text" ;
           bind:value={$searchQuery}
           placeholder="Search cases by title, description, or case number..."
           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -410,7 +412,7 @@ https://svelte.dev/e/js_parse_error -->
           <div>
             <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea 
-              id="description"
+              id="description";
               bind:value={$formData.description}
               rows="3"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -422,7 +424,7 @@ https://svelte.dev/e/js_parse_error -->
             <div>
               <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
               <select 
-                id="priority"
+                id="priority";
                 bind:value={$formData.priority}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
@@ -462,7 +464,7 @@ https://svelte.dev/e/js_parse_error -->
               <label for="incidentDate" class="block text-sm font-medium text-gray-700 mb-1">Incident Date</label>
               <input 
                 type="date" 
-                id="incidentDate"
+                id="incidentDate";
                 bind:value={$formData.incidentDate}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -514,7 +516,7 @@ https://svelte.dev/e/js_parse_error -->
           <div>
             <label for="edit-description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea 
-              id="edit-description"
+              id="edit-description";
               bind:value={$formData.description}
               rows="3"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -526,7 +528,7 @@ https://svelte.dev/e/js_parse_error -->
             <div>
               <label for="edit-priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
               <select 
-                id="edit-priority"
+                id="edit-priority";
                 bind:value={$formData.priority}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
@@ -566,7 +568,7 @@ https://svelte.dev/e/js_parse_error -->
               <label for="edit-incidentDate" class="block text-sm font-medium text-gray-700 mb-1">Incident Date</label>
               <input 
                 type="date" 
-                id="edit-incidentDate"
+                id="edit-incidentDate";
                 bind:value={$formData.incidentDate}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -596,7 +598,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 
 <style>
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

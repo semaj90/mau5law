@@ -105,7 +105,7 @@ export class N64TextureLODSystem {
       { level: 3, width: 32, height: 32, data: new ArrayBuffer(0), compressed: true, sizeKB: 4 }
     ];
 
-    const asset: TextureAsset = {
+    const asset: TextureAsset = {;
       id: textureId,
       basePath,
       lodLevels,
@@ -211,7 +211,7 @@ export class N64TextureLODSystem {
 
     const texture = this.device.createTexture({
       size: [lod.width, lod.height, 1],
-      format: 'rgba8unorm',
+      format: 'rgba8unorm',;
       usage: GPUTextureUsage.TEXTURE_BINDING |
              GPUTextureUsage.COPY_DST |
              GPUTextureUsage.RENDER_ATTACHMENT,

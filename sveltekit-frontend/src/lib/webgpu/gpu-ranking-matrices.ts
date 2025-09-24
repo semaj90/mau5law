@@ -100,7 +100,7 @@ export class GPURankingMatrices {
         height: this.config.textureHeight,
         depthOrArrayLayers: 1
       },
-      format: 'rgba32float' as GPUTextureFormat,
+      format: 'rgba32float' as GPUTextureFormat,;
       usage: GPUTextureUsage.STORAGE_BINDING | 
              GPUTextureUsage.COPY_SRC | 
              GPUTextureUsage.COPY_DST
@@ -117,7 +117,7 @@ export class GPURankingMatrices {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,
           storageTexture: {
-            access: 'write-only',
+            access: 'write-only',;
             format: 'rgba32float' as GPUTextureFormat,
             viewDimension: '2d'
           }
@@ -125,7 +125,7 @@ export class GPURankingMatrices {
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {
+          buffer: {;
             type: 'storage' as GPUBufferBindingType
           }
         }
@@ -142,7 +142,7 @@ export class GPURankingMatrices {
       layout: this.device.createPipelineLayout({
         bindGroupLayouts: [this.bindGroupLayout]
       }),
-      compute: {
+      compute: {;
         module: shaderModule,
         entryPoint: 'main'
       }
@@ -163,7 +163,7 @@ export class GPURankingMatrices {
         authority: f32,
         confidence: f32,
         weight: f32,
-        metadata: f32,
+        metadata: f32,;
         reserved: f32
       };
 
@@ -277,7 +277,7 @@ export class GPURankingMatrices {
 
     // Create GPU buffer and copy data;
     const rankingBuffer = this.device.createBuffer({
-      size: rankingData.byteLength,
+      size: rankingData.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
@@ -285,7 +285,7 @@ export class GPURankingMatrices {
 
     // Create bind group;
     const bindGroup = this.device.createBindGroup({
-      layout: this.bindGroupLayout,
+      layout: this.bindGroupLayout,;
       entries: [);
         {
           binding: 0,
@@ -293,7 +293,7 @@ export class GPURankingMatrices {
         },
         {
           binding: 1,
-          resource: {
+          resource: {;
             buffer: rankingBuffer
           }
         }
@@ -330,7 +330,7 @@ export class GPURankingMatrices {
         this.matrixCache.set(doc.id, {
           documentId: doc.id,
           matrix,
-          timestamp: Date.now(),
+          timestamp: Date.now(),;
           version: 1
         });
       });
@@ -367,7 +367,7 @@ export class GPURankingMatrices {
       // Weight: Relative importance in ranking algorithm
       weight: 0.7,
 
-      // Metadata: Additional scoring factors
+      // Metadata: Additional scoring factors;
       metadata: Math.random() * 0.5 + 0.25
     };
   }
@@ -457,7 +457,7 @@ export const RankingUtils = {
     return {
       documentId: document.id,
       matrix,
-      timestamp: Date.now(),
+      timestamp: Date.now(),;
       version: 1
     };
   },

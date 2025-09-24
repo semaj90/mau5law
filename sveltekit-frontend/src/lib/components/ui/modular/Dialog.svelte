@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Dialog Component - Bits UI + UnoCSS + Svelte 5 -->
@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     footer,
     closeOnEscape = true,
     closeOnOutsideClick = true,
-    ...restProps
+    ...restProps;
    }: Props = $props();
 
   // UnoCSS-based dialog variants
@@ -56,19 +56,19 @@ https://svelte.dev/e/js_parse_error -->
           yorha: 'bg-black/95 border-2 border-yellow-400/60 shadow-2xl shadow-yellow-400/20 backdrop-blur-sm',
           legal: 'bg-blue-50 border-2 border-blue-200 dark:bg-blue-950 dark:border-blue-800',
           fullscreen: 'inset-0 max-w-none h-screen max-h-none rounded-none',
-          drawer: 'inset-x-0 bottom-0 top-auto translate-y-0 translate-x-0 rounded-b-none rounded-t-xl'
+          drawer: 'inset-x-0 bottom-0 top-auto translate-y-0 translate-x-0 rounded-b-none rounded-t-xl';
         },
         size: {
           sm: 'max-w-sm',
           default: 'max-w-lg',
           lg: 'max-w-2xl',
           xl: 'max-w-4xl',
-          '2xl': 'max-w-6xl'
+          '2xl': 'max-w-6xl';
         }
       },
       defaultVariants: {
-        variant: 'default',
-        size: 'default'
+        variant: 'default',;
+        size: 'default';
       }
     }
   );
@@ -107,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
       transitionConfig={{
         duration: 200,
         easing: quintOut,
-        start: 0.95
+        start: 0.95;
       }}
     >
       <!-- Header Section -->
@@ -152,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
   </DialogPrimitive.Portal>
 </DialogPrimitive.Root>
 
-<style>/* YoRHa-specific dialog styling */ :global(.yorha-dialog) {
+<style>/* YoRHa-specific dialog styling */ :global(.yorha-dialog) {;
     font-family: 'JetBrains Mono', monospace;
   }
 

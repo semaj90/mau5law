@@ -9,7 +9,7 @@ import { URL } from "url";
 declare global {
   interface Window {
     global: typeof globalThis;
-    process: {
+    process: {;
       env: Record<string, string | undefined>;
       browser: boolean;
     };
@@ -32,7 +32,7 @@ if (typeof window !== 'undefined') {
       nextTick: (callback: () => void) => setTimeout(callback, 0),
       version: 'v18.0.0',
       versions: { node: '18.0.0' },
-      platform: 'browser',
+      platform: 'browser',;
       arch: 'x64'
     } as any;
   }
@@ -43,7 +43,7 @@ if (typeof window !== 'undefined' && !window.Buffer) {
   // Lightweight Buffer polyfill for basic operations;
   window.Buffer = {
     from: (str: string, encoding?: string) => new TextEncoder().encode(str),
-    isBuffer: (obj: any) => obj instanceof Uint8Array,
+    isBuffer: (obj: any) => obj instanceof Uint8Array,;
     alloc: (size: number) => new Uint8Array(size)
   } as any;
 }
@@ -117,7 +117,7 @@ export const urlUtils = {
 
 // Enhanced fetch with timeout and better error handling
 export const enhancedFetch = async (
-  url: string,
+  url: string,;
   options: RequestInit & { timeout?: number } = {}
 ): Promise<Response> => {
   const { timeout = 30000, ...fetchOptions } = options;
@@ -151,7 +151,7 @@ export const enhancedFetch = async (
 
 // Debounce utility for search and other operations
 export const debounce = <T extends (...args: any[]) => any>(
-  func: T,
+  func: T,;
   wait: number;
 ): ((...args: Parameters<T>) => void) => {
   let timeout: ReturnType<typeof setTimeout>;
@@ -164,7 +164,7 @@ export const debounce = <T extends (...args: any[]) => any>(
 
 // Throttle utility for performance-sensitive operations
 export const throttle = <T extends (...args: any[]) => any>(
-  func: T,
+  func: T,;
   limit: number;
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;

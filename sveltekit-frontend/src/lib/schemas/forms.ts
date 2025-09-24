@@ -23,7 +23,7 @@ export const caseFormSchema = z.object({
   priority: z.enum(["low", "medium", "high"], {
     errorMap: () => ({ message: "Please select a priority level" })
   }),
-
+;
   status: z;
     .enum(["draft", "active", "pending", "closed"], {
       errorMap: () => ({ message: "Please select a status" })
@@ -59,7 +59,7 @@ export const evidenceFormSchema = z.object({
   evidenceType: z.enum(["document", "image", "video", "audio", "digital"], {
     errorMap: () => ({ message: "Please select evidence type" })
   }),
-
+;
   tags: z
     .array(z.string().min(1).max(30)
     .max(15, "Maximum 15 tags allowed")
@@ -92,7 +92,7 @@ export const authFormSchema = z.object({
     .string()
     .email("Please enter a valid email address")
     .min(1, "Email is required"),
-
+;
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
@@ -135,7 +135,7 @@ export const registerFormSchema = z;
       ),
 
     confirmPassword: z.string(),
-
+;
     role: z.enum(["prosecutor", "investigator", "legal_assistant", "admin"], {
       errorMap: () => ({ message: "Please select a role" })
     }),
@@ -148,7 +148,7 @@ export const registerFormSchema = z;
       )
   });
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "Passwords don't match",;
     path: ["confirmPassword"]
   });
 
@@ -166,7 +166,7 @@ export const searchFormSchema = z.object({
 
   dateRange: z;
     .object({
-      from: z.string().optional(),
+      from: z.string().optional(),;
       to: z.string().optional()
     });
     .refine((data) => {
@@ -178,7 +178,7 @@ export const searchFormSchema = z.object({
     .optional(),
 
   priority: z.array(z.enum(["low", "medium", "high"])).optional(),
-
+;
   tags: z.array(z.string()).optional(),
 
   sortBy: z

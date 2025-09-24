@@ -3,14 +3,14 @@
  * Includes migration status, service health, and system metrics
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { DatabaseMigrator } from '$lib/database/migrations/migration-system';
-import { env } from '$env/dynamic/private';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types'
+import { DatabaseMigrator } from '$lib/database/migrations/migration-system'
+import { env } from '$env/dynamic/private'
 
 export const GET: RequestHandler = async ({ url }) => {
-  const detailed = url.searchParams.get('detailed') === 'true';
-  const checkMigrations = url.searchParams.get('migrations') !== 'false';
+  const detailed = url.searchParams.get('detailed') === 'true'
+  const checkMigrations = url.searchParams.get('migrations') !== 'false'
 
   const healthCheck = {
     status: 'healthy',
@@ -29,21 +29,21 @@ export const GET: RequestHandler = async ({ url }) => {
       nodeVersion: process.version,
       platform: process.platform
     }
-  };
+  }
 
   try {
-    // Check database connection;
+    // Check database connection
     if (checkMigrations && env.DATABASE_URL) {
-      const migrator = new DatabaseMigrator(env.DATABASE_URL);
+      const migrator = new DatabaseMigrator(env.DATABASE_URL)
 
       try {
         // Test database connection
-        await migrator.sql`SELECT 1`;
-        healthCheck.services.database = 'healthy';
+        await migrator.sql`SELECT 1`
+        healthCheck.services.database = 'healthy'
 
         // Check migration status
-        const migrationStatus = await migrator.getStatus();
-        healthCheck.services.migrations = migrationStatus.systemHealthy ? 'healthy' : 'degraded';
+        const migrationStatus = await migrator.getStatus()
+        healthCheck.services.migrations = migrationStatus.systemHealthy ? 'healthy' : 'degraded'
 
         if (detailed) {
           (healthCheck as any).migrationDetails = {
@@ -51,96 +51,96 @@ export const GET: RequestHandler = async ({ url }) => {
             pendingMigrations: migrationStatus.pendingMigrations,
             lastMigration: migrationStatus.lastMigration,
             systemHealthy: migrationStatus.systemHealthy
-          };
+          }
         }
 
-        await migrator.close();
+        await migrator.close()
       } catch (error) {
-        console.error('Database health check failed:', error);
-        healthCheck.services.database = 'error';
-        healthCheck.services.migrations = 'error';
-        healthCheck.status = 'degraded';
+        console.error('Database health check failed:', error)
+        healthCheck.services.database = 'error'
+        healthCheck.services.migrations = 'error'
+        healthCheck.status = 'degraded'
       }
     }
 
-    // Check background jobs (if job queue table exists);
+    // Check background jobs (if job queue table exists)
     try {
       if (env.DATABASE_URL) {
-        const migrator = new DatabaseMigrator(env.DATABASE_URL);
+        const migrator = new DatabaseMigrator(env.DATABASE_URL)
         const jobCount = await migrator.sql`
           SELECT COUNT(*) as count
           FROM background_jobs
           WHERE status IN ('pending', 'processing')
-        `;
+        `
 
-        const pendingJobs = parseInt(jobCount[0]?.count || '0');
-        healthCheck.services.backgroundJobs = pendingJobs > 100 ? 'degraded' : 'healthy';
+        const pendingJobs = parseInt(jobCount[0]?.count || '0')
+        healthCheck.services.backgroundJobs = pendingJobs > 100 ? 'degraded' : 'healthy'
 
         if (detailed) {
           (healthCheck as any).backgroundJobsDetails = {
             pendingJobs,
             threshold: 100,
             status: healthCheck.services.backgroundJobs
-          };
+          }
         }
 
-        await migrator.close();
+        await migrator.close()
       }
     } catch (error) {
       // Background jobs table might not exist yet
-      healthCheck.services.backgroundJobs = 'unknown';
+      healthCheck.services.backgroundJobs = 'unknown'
     }
 
-    // Check AI services (Ollama);
+    // Check AI services (Ollama)
     try {
       const response = await fetch('http://localhost:11434/api/tags', {
         method: 'GET',
         signal: AbortSignal.timeout(5000)
-      });
+      })
 
       if (response.ok) {
-        const models = await response.json();
-        healthCheck.services.aiServices = models.models?.length > 0 ? 'healthy' : 'degraded';
+        const models = await response.json()
+        healthCheck.services.aiServices = models.models?.length > 0 ? 'healthy' : 'degraded'
 
         if (detailed) {
           (healthCheck as any).aiServicesDetails = {
             modelsAvailable: models.models?.length || 0,
             models: models.models?.map((m: any) => m.name) || []
-          };
+          }
         }
       } else {
-        healthCheck.services.aiServices = 'degraded';
+        healthCheck.services.aiServices = 'degraded'
       }
     } catch (error) {
-      healthCheck.services.aiServices = 'error';
+      healthCheck.services.aiServices = 'error'
     }
 
     // Determine overall status
-    const serviceStatuses = Object.values(healthCheck.services);
+    const serviceStatuses = Object.values(healthCheck.services)
     if (serviceStatuses.includes('error')) {
-      healthCheck.status = 'error';
+      healthCheck.status = 'error'
     } else if (serviceStatuses.includes('degraded')) {
-      healthCheck.status = 'degraded';
+      healthCheck.status = 'degraded'
     } else if (serviceStatuses.includes('unknown')) {
-      healthCheck.status = 'partial';
+      healthCheck.status = 'partial'
     }
 
-    // Add system load metrics if detailed;
+    // Add system load metrics if detailed
     if (detailed) {
       (healthCheck as any).systemMetrics = {
         loadAverage: process.loadavg ? process.loadavg() : null,
         freeMemory: process.memoryUsage().heapUsed / process.memoryUsage().heapTotal,
         cpuUsage: process.cpuUsage ? process.cpuUsage() : null
-      };
+      }
     }
 
     return json(healthCheck, {
       status: healthCheck.status === 'healthy' ? 200 :
               healthCheck.status === 'degraded' || healthCheck.status === 'partial' ? 206 : 500
-    });
+    })
 
   } catch (error) {
-    console.error('Health check error:', error);
+    console.error('Health check error:', error)
 
     return json({
       status: 'error',
@@ -153,6 +153,6 @@ export const GET: RequestHandler = async ({ url }) => {
         backgroundJobs: 'unknown',
         aiServices: 'unknown'
       }
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

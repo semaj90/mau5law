@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- Enhanced Vector Search Interface with Ranking, Analytics, and Real-time Results -->
 <script lang="ts">
@@ -60,18 +60,18 @@ https://svelte.dev/e/js_parse_error -->
     enableAnalytics = true,
     enableFilters = true,
     showPreview = true,
-    class: className = "",
+    class: className = "",;
    }: { caseId = "",
     userId = "",
     maxResults = 20,
     enableAnalytics = true,
     enableFilters = true,
-    showPreview = true,
+    showPreview = true,;
     class: className = "",
   : any } = $props();
 
   // Event dispatcher
-  // TODO: Replace createEventDispatcher with callback props in Svelte 5
+
 
   // Types
   interface SearchResult {
@@ -136,10 +136,10 @@ https://svelte.dev/e/js_parse_error -->
     jurisdictions: [],
     dateRange: ,
     similarityThreshold: 0.7,
-    maxResults: maxResults,
+    maxResults: maxResults,;
     tags: [],
     sortBy: "relevance",
-    sortOrder: "desc",
+    sortOrder: "desc",;
   });
   const searchAnalytics = writable<SearchAnalytics>({
     totalSearches: 0,
@@ -225,14 +225,14 @@ https://svelte.dev/e/js_parse_error -->
       // Build search request
       const searchRequest = {
         query: searchTerm,
-        caseId: caseId || undefined,
+        caseId: caseId || undefined,;
         filters: {
           documentTypes: filters.documentTypes,
           jurisdictions: filters.jurisdictions,
-          dateRange: filters.dateRange,
+          dateRange: filters.dateRange,;
           tags: filters.tags,
           similarityThreshold: filters.similarityThreshold,
-          maxResults: filters.maxResults,
+          maxResults: filters.maxResults,;
         },
         sortBy: filters.sortBy,
         sortOrder: filters.sortOrder,
@@ -243,9 +243,9 @@ https://svelte.dev/e/js_parse_error -->
 
       // Make API call
       const response = await fetch("/api/search/vector", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(searchRequest),
+        method: "POST",;
+        headers: { "Content-Type": "application/json" },;
+        body: JSON.stringify(searchRequest),;
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -258,7 +258,7 @@ https://svelte.dev/e/js_parse_error -->
       const results: SearchResult[] = (data as { results?: any; analytics?: any; createdAt?: any }).results.map(
         (result: any, index: number) => ({
           ...result,
-          rank: index + 1,
+          rank: index + 1,;
           highlights: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).highlights || [],
           snippet: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).snippet || (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).content.substring(0, 200) + "...",
         })
@@ -293,11 +293,11 @@ https://svelte.dev/e/js_parse_error -->
       // Dispatch events
       ondispatch?.({ query: searchTerm, results });
       ondispatch?.({
-        event: "search_performed",
-        data: {
+        event: "search_performed",;
+        data: {;
           query: searchTerm,
           resultCount: results.length,
-          responseTime: Date.now() - startTime,
+          responseTime: Date.now() - startTime,;
         },
       });
     } catch (error) {
@@ -314,11 +314,11 @@ https://svelte.dev/e/js_parse_error -->
     // Track click analytics
     if (enableAnalytics) {
       ondispatch?.({
-        event: "result_clicked",
+        event: "result_clicked",;
         data: {
           resultId: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).id,
           rank: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).rank,
-          query: get(searchQuery),
+          query: get(searchQuery),;
         },
       });
     }
@@ -373,10 +373,10 @@ https://svelte.dev/e/js_parse_error -->
       jurisdictions: [],
       dateRange: ,
       similarityThreshold: 0.7,
-      maxResults: maxResults,
+      maxResults: maxResults,;
       tags: [],
       sortBy: "relevance",
-      sortOrder: "desc",
+      sortOrder: "desc",;
     });
     applyFilters();
   }
@@ -408,10 +408,10 @@ https://svelte.dev/e/js_parse_error -->
       brief: "purple",
       evidence: "red",
       correspondence: "yellow",
-      statute: "indigo",
+      statute: "indigo",;
       regulation: "pink",
-      case_law: "gray",
-      other: "slate",
+      case_law: "gray",;
+      other: "slate",;
     };
     return colors[type as keyof typeof colors] || "gray";
   }
@@ -945,7 +945,7 @@ Reset Filters
 </div>
 
 <style>
-  .enhanced-vector-search {
+  .enhanced-vector-search {;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;

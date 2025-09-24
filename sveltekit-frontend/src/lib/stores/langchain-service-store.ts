@@ -46,14 +46,14 @@ export interface ChatState {
 const langchainState = writable<LangChainState>({
   isProcessing: false,
   isAvailable: false,
-  error: null,
+  error: null,;
   models: []
 });
 
 const documentProcessingState = writable<DocumentProcessingState>({
   isProcessing: false,
   progress: 0,
-  result: null,
+  result: null,;
   error: null,
   sessionId: null,
   documentId: null
@@ -61,7 +61,7 @@ const documentProcessingState = writable<DocumentProcessingState>({
 
 const chatState = writable<ChatState>({
   messages: [],
-  isTyping: false,
+  isTyping: false,;
   error: null
 });
 
@@ -103,7 +103,7 @@ class LangChainServiceLogic {
       langchainState.set({
         isProcessing: false,
         isAvailable: false,
-        error: error instanceof Error ? error.message: 'Initialization failed',
+        error: error instanceof Error ? error.message: 'Initialization failed',;
         models: []
       });
     }
@@ -120,7 +120,7 @@ class LangChainServiceLogic {
     documentProcessingState.update(state => ({ 
       ...state, 
       isProcessing: true, 
-      progress: 0, 
+      progress: 0, ;
       error: null 
     });
 
@@ -132,7 +132,7 @@ class LangChainServiceLogic {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
+        },;
         body: JSON.stringify({
           text,
           documentType,
@@ -156,7 +156,7 @@ class LangChainServiceLogic {
       documentProcessingState.set({
         isProcessing: false,
         progress: 100,
-        result,
+        result,;
         error: null,
         sessionId: (result as { sessionId?: any; id?: any }).sessionId,
         documentId: (result as { sessionId?: any; id?: any }).id
@@ -166,7 +166,7 @@ class LangChainServiceLogic {
       documentProcessingState.set({
         isProcessing: false,
         progress: 0,
-        result: null,
+        result: null,;
         error: error instanceof Error ? error.message: 'Document processing failed',
         sessionId: null,
         documentId: null
@@ -201,7 +201,7 @@ class LangChainServiceLogic {
         result: sessionData.documents.length > 0 ? {
           id: sessionData.documents[0].id,
           summary: `Session with ${sessionData.documents.length} documents`,
-          keyTerms: sessionData.documents.flatMap((doc: any) => doc.keyTerms || []),
+          keyTerms: sessionData.documents.flatMap((doc: any) => doc.keyTerms || []),;
           entities: [],
           contractTerms: [],
           processingTime: 0,
@@ -255,7 +255,7 @@ class LangChainServiceLogic {
     chatState.update(state => ({ 
       ...state, 
       messages: [...state.messages, { role: 'user', content: message }],
-      isTyping: true,
+      isTyping: true,;
       error: null 
     });
 
@@ -282,7 +282,7 @@ class LangChainServiceLogic {
     documentProcessingState.set({
       isProcessing: false,
       progress: 0,
-      result: null,
+      result: null,;
       error: null
     });
   }
@@ -290,7 +290,7 @@ class LangChainServiceLogic {
   clearChat(): void {
     chatState.set({
       messages: [],
-      isTyping: false,
+      isTyping: false,;
       error: null
     });
   }

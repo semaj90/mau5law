@@ -235,7 +235,7 @@ class TableManager {
     return this.addNotification({
       type: 'info',
       title: caseId ? `Case ${caseId}` : 'Case Update',
-      message,
+      message,;
       duration: 7000
     });
   }
@@ -244,7 +244,7 @@ class TableManager {
     return this.addNotification({
       type: 'success',
       title: evidenceId ? `Evidence ${evidenceId}` : 'Evidence Update',
-      message,
+      message,;
       duration: 6000
     });
   }
@@ -253,7 +253,7 @@ class TableManager {
     return this.addNotification({
       type: 'error',
       title,
-      message,
+      message,;
       duration: 10000
     });
   }
@@ -262,7 +262,7 @@ class TableManager {
     return this.addNotification({
       type: 'success',
       title: 'Bulk Operation',
-      message: `${operation} completed for ${count} items`,
+      message: `${operation} completed for ${count} items`,;
       duration: 5000
     });
   }
@@ -271,7 +271,7 @@ class TableManager {
     return this.addNotification({
       type: 'success',
       title: 'Export Complete',
-      message: `Exported ${rowCount} rows to ${filename}`,
+      message: `Exported ${rowCount} rows to ${filename}`,;
       duration: 8000
     });
   }
@@ -316,7 +316,7 @@ export const legalAITableConfigs = {
     pageSize: 20,
     sortColumn: 'upload_date',
     sortDirection: 'desc' as const
-  },
+  },;
   users: {
     pageSize: 30,
     sortColumn: 'last_login',

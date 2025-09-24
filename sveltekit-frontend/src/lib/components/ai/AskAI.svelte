@@ -86,7 +86,7 @@
   // Reusable AudioContext for TTS playback
   let audioContext = $state<AudioContext | null >(null);
 
-  // TODO: Replace createEventDispatcher with callback props in Svelte 5
+
 
   // Simple localStorage wrapper for conversation storage
   const getLocalStorageService = () => ({
@@ -178,9 +178,9 @@
 
     const userMessage: ConversationMessage = {
       id: generateId(),
-      type: "user",
-      content: query.trim(),
-      timestamp: Date.now(),
+      type: "user",;
+      content: query.trim(),;
+      timestamp: Date.now(),;
     };
     conversation = [...conversation, userMessage];
     const currentQuery = query;
@@ -193,9 +193,9 @@
       type: "ai",
       content: "",
       timestamp: Date.now(),
-      references: [],
-      confidence: undefined,
-      metadata: ,
+      references: [],;
+      confidence: undefined,;
+      metadata: ,;
     });
     conversation = [...conversation, aiMessage];
     // Auto-resize textarea
@@ -208,18 +208,18 @@
       });
       // Prepare request
       const requestBody = {
-        question: currentQuery,
+        question: currentQuery,;
         context: {
           caseId,
           evidenceIds,
           maxResults,
           searchThreshold,
         },
-        options: {
+        options: {;
           model: selectedModel,
           temperature,
           maxTokens: 1000,
-          includeReferences: showReferences,
+          includeReferences: showReferences,;
         },
       };
       // Use streaming endpoint for Ollama/Gemma3
@@ -227,10 +227,10 @@
       const controller = new AbortController();
       try {
     const response = await fetch(endpoint, {
-        method: "POST",
+        method: "POST",;
         headers: {
           "Content-Type": "application/json",
-        },
+        },;
         body: JSON.stringify(requestBody));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -239,7 +239,7 @@
     console.error('API call failed:', error);
     throw error;
   },
-        signal: controller.signal,
+        signal: controller.signal,;
       });
       if (!response.ok) {
         const errorData = await response.json.catch(() => ( ));
@@ -287,11 +287,11 @@
         await saveConversationHistory();
         ondispatch?.({
           answer: aiMessage.content,
-          references: aiMessage.references || [],
+          references: aiMessage.references || [],;
           confidence: aiMessage.confidence ?? 0,
-          searchResults: meta.searchResults ?? 0,
+          searchResults: meta.searchResults ?? 0,;
           model: meta.model ?? "ollama",
-          processingTime: meta.processingTime ?? 0,
+          processingTime: meta.processingTime ?? 0,;
         });
       } else {
         // Non-streaming (OpenAI or fallback)
@@ -309,11 +309,11 @@
           content: aiResponse.answer,
           timestamp: Date.now(),
           references: aiResponse.references,
-          confidence: aiResponse.confidence,
-          metadata: {
+          confidence: aiResponse.confidence,;
+          metadata: {;
             model: aiResponse.model,
             processingTime: aiResponse.processingTime,
-            searchResults: aiResponse.searchResults,
+            searchResults: aiResponse.searchResults,;
           },
         };
         conversation = conversation.map((m) => m.id === aiMessageId ? aiMessage : m);
@@ -411,8 +411,8 @@
     reference: NonNullable<ConversationMessage["references"]>[0]
   ) {
     ondispatch?.({
-      id: reference.id,
-      type: reference.type,
+      id: reference.id,;
+      type: reference.type,;
     });
   }
   function clearConversation() {
@@ -432,8 +432,8 @@
 
   function formatTime(timestamp: number): string {
   return new Date(timestamp).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
+    hour: "2-digit",;
+    minute: "2-digit",;
   });
   }
   function getConfidenceColor(confidence: number): string {
@@ -557,7 +557,7 @@
   </div>
 
   <!-- Conversation -->
-  <div
+  <div;
     bind:this={messagesContainer}
     style="max-height: {maxHeight};"
     aria-live="polite"
@@ -725,7 +725,7 @@
 </div>
 <style>
   /* @unocss-include */
-  .ai-chat-component {
+  .ai-chat-component {;
     font-family:
       system-ui,
       -apple-system,
@@ -757,7 +757,7 @@
   :global(.prose p) {
     margin-bottom: 0.5rem;
 }
-  :global(.prose p:last-child) {
+  :global(.prose p:last-child) {;
     margin-bottom: 0;
 }
   /* UnoCSS will handle the utility classes, this is for custom animations */

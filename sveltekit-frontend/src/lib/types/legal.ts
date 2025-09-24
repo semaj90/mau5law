@@ -70,7 +70,7 @@ export interface LegalEntity {
     | "ORGANIZATION";
   value: string;
   confidence: number;
-  position: {
+  position: {;
     start: number;
     end: number;
   };
@@ -164,7 +164,7 @@ export interface CacheMetrics {
 
 export interface SystemHealth {
   status: "healthy" | "degraded" | "unhealthy";
-  services: {
+  services: {;
     database: ServiceStatus;
     ai: ServiceStatus;
     cache: ServiceStatus;
@@ -251,7 +251,7 @@ export interface ApiResponse<T> {
 
 export interface PaginatedResponse<T> {
   items: T[];
-  pagination: {
+  pagination: {;
     page: number;
     pageSize: number;
     total: number;
@@ -305,20 +305,20 @@ export interface NotificationAction {
 
 // Configuration Types;
 export interface AppConfig {
-  app: {
+  app: {;
     name: string;
     version: string;
     environment: "development" | "staging" | "production";
   };
-  database: {
+  database: {;
     host: string;
     port: number;
     name: string;
   };
-  ai: {
+  ai: {;
     enabled: boolean;
     models: AIModelConfig[];
-    cache: {
+    cache: {;
       enabled: boolean;
       ttl: number;
       maxSize: number;

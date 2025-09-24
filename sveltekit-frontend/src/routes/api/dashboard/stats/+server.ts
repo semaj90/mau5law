@@ -3,26 +3,26 @@
  * Provides comprehensive stats for the Legal AI Dashboard with WebSocket support
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Import pool for direct database queries
-    const { pool } = await import('$lib/database/connection');
+    const { pool } = await import('$lib/database/connection')
 
-    // Ensure user is authenticated;
+    // Ensure user is authenticated
     if (!locals.user) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
+      return json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const userId = locals.user.id;
-    const timeRange = url.searchParams.get('timeRange') || '30d';
+    const userId = locals.user.id
+    const timeRange = url.searchParams.get('timeRange') || '30d'
 
     // Calculate date range
-    const now = new Date();
-    const daysAgo = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
-    const startDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+    const now = new Date()
+    const daysAgo = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90
+    const startDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000)
 
     // Get comprehensive dashboard statistics with user isolation
     const [
@@ -62,40 +62,40 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
       // Evidence by type breakdown
       pool`SELECT type, COUNT(*)::int AS count FROM evidence WHERE user_id = ${userId} GROUP BY type`
-    ]);
+    ])
 
     // Extract counts
-    const totalCases = totalCasesRes[0]?.count || 0;
-    const totalEvidence = totalEvidenceRes[0]?.count || 0;
-    const totalReports = totalReportsRes[0]?.count || 0;
-    const activeCases = activeCasesRes[0]?.count || 0;
-    const pendingAnalysis = pendingAnalysisRes[0]?.count || 0;
-    const recentCases = recentCasesRes[0]?.count || 0;
-    const recentEvidence = recentEvidenceRes[0]?.count || 0;
+    const totalCases = totalCasesRes[0]?.count || 0
+    const totalEvidence = totalEvidenceRes[0]?.count || 0
+    const totalReports = totalReportsRes[0]?.count || 0
+    const activeCases = activeCasesRes[0]?.count || 0
+    const pendingAnalysis = pendingAnalysisRes[0]?.count || 0
+    const recentCases = recentCasesRes[0]?.count || 0
+    const recentEvidence = recentEvidenceRes[0]?.count || 0
 
-    // Format breakdown data;
+    // Format breakdown data
     const casesByStatus = casesByStatusRes.reduce((acc: Record<string, number>, item: any) => {
-      acc[item.status] = item.count;
-      return acc;
-    }, {});
+      acc[item.status] = item.count
+      return acc
+    }, {})
 
     const evidenceByType = evidenceByTypeRes.reduce((acc: Record<string, number>, item: any) => {
-      acc[item.type || 'other'] = item.count;
-      return acc;
-    }, {});
+      acc[item.type || 'other'] = item.count
+      return acc
+    }, {})
 
     // Calculate productivity metrics
     const casesThisWeekRes = await pool`
       SELECT COUNT(*)::int AS count FROM cases
       WHERE user_id = ${userId}
       AND created_at >= ${new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)}
-    `;
+    `
 
     const evidenceThisWeekRes = await pool`
       SELECT COUNT(*)::int AS count FROM evidence
       WHERE user_id = ${userId}
       AND created_at >= ${new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)}
-    `;
+    `
 
     const productivity = {
       casesThisWeek: casesThisWeekRes[0]?.count || 0,
@@ -104,17 +104,17 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         totalCases > 0 ? Math.round((totalCases / Math.max(1, daysAgo / 7)) * 10) / 10 : 0,
       averageEvidencePerWeek:
         totalEvidence > 0 ? Math.round((totalEvidence / Math.max(1, daysAgo / 7)) * 10) / 10 : 0
-    };
+    }
 
     // Calculate performance indicators
-    const closedCases = casesByStatus['closed'] || 0;
-    const completionRate = totalCases > 0 ? Math.round((closedCases / totalCases) * 100) : 0;
+    const closedCases = casesByStatus['closed'] || 0
+    const completionRate = totalCases > 0 ? Math.round((closedCases / totalCases) * 100) : 0
 
-    const analyzedEvidence = totalEvidence - pendingAnalysis;
+    const analyzedEvidence = totalEvidence - pendingAnalysis
     const analysisRate =
-      totalEvidence > 0 ? Math.round((analyzedEvidence / totalEvidence) * 100) : 0;
+      totalEvidence > 0 ? Math.round((analyzedEvidence / totalEvidence) * 100) : 0
 
-    // Enhanced dashboard stats for WebSocket integration;
+    // Enhanced dashboard stats for WebSocket integration
     const dashboardStats = {
       // Core metrics (compatible with existing WebSocket store)
       totalCases,
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       completionRate,
       analysisRate,
 
-      // System health indicators;
+      // System health indicators
       systemHealth: {
         api: 'healthy',
         database: 'healthy',
@@ -156,25 +156,25 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       // Metadata
       generatedAt: new Date().toISOString(),
       userId
-    };
+    }
 
     return json({
         success: true,
         data: dashboardStats,
         // Legacy format for backward compatibility
         ...dashboardStats
-      },);
+      },)
       {
         status: 200,
         headers: {
           'Cache-Control': 'max-age=30', // Cache for 30 seconds (faster refresh for real-time)
         }
       }
-    );
+    )
   } catch (error: any) {
-    console.error('Enhanced dashboard stats error:', error);
+    console.error('Enhanced dashboard stats error:', error)
 
-    // Return comprehensive fallback stats;
+    // Return comprehensive fallback stats
     return json({
         success: false,
         error: 'Failed to fetch dashboard statistics',
@@ -211,6 +211,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         }
       },)>
       { status: 500 }
-    );
+    )
   }
-};
+}

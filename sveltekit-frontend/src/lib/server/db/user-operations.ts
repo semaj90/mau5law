@@ -43,12 +43,12 @@ const queryClient = postgres(connectionString, {
   max: 20,
   idle_timeout: 20,
   connect_timeout: 10,
-  prepare: false,
+  prepare: false,;
   types: {
     // Support for pgvector;
     vector: {
       to: 1184,
-      from: [1184],
+      from: [1184],;
       serialize: (x: number[]) => {
         if (Array.isArray(x)) {
           return `[${x.join(',')}]`;
@@ -91,7 +91,7 @@ export class UserAuthService {
         email: userData.email.toLowerCase(),
         firstName: userData.firstName,
         lastName: userData.lastName,
-        role: userData.role || 'user',
+        role: userData.role || 'user',;
         jurisdiction: userData.jurisdiction,
         practiceAreas: userData.practiceAreas,
         passwordHash: await bcrypt.hash(userData.password, 12)
@@ -127,12 +127,12 @@ export class UserAuthService {
           userId: newUser.id,
           action: 'user_registered',
           resource: 'user',
-          resourceId: newUser.id.toString(),
+          resourceId: newUser.id.toString()),
           context: {
             registrationMethod: 'email',
             role: newUser.role,
             jurisdiction: newUser.jurisdiction
-          },
+          },;
           success: true
         });
 
@@ -144,7 +144,7 @@ export class UserAuthService {
       console.error('User registration error:', error);
       return { 
         user: Record<string, any> as User, 
-        success: false, 
+        success: false, ;
         error: error instanceof Error ? error.message: 'Registration failed' 
       };
     }
@@ -183,7 +183,7 @@ export class UserAuthService {
           userId: user.id,
           action: 'login_failed',
           resource: 'auth',
-          context: { reason: 'invalid_password' },
+          context: { reason: 'invalid_password' },;
           success: false,
           ipAddress,
           userAgent
@@ -216,7 +216,7 @@ export class UserAuthService {
         userId: user.id,
         action: 'login_success',
         resource: 'auth',
-        context: { sessionId },
+        context: { sessionId },;
         success: true,
         ipAddress,
         userAgent
@@ -225,13 +225,13 @@ export class UserAuthService {
       return {
         user,
         profile: profile || undefined,
-        session,
+        session,;
         success: true
       };
     } catch (error: any) {
       console.error('Authentication error:', error);
       return { 
-        success: false, 
+        success: false, ;
         error: error instanceof Error ? error.message: 'Authentication failed' 
       };
     }
@@ -262,7 +262,7 @@ export class UserAuthService {
       return {
         user: data.users,
         profile: data.user_profiles || undefined,
-        session: data.user_sessions,
+        session: data.user_sessions,;
         valid: true
       };
     } catch (error: any) {
@@ -393,7 +393,7 @@ export class UserProfileService {
           specializations: updates.specializations,
           education: updates.education,
           preferences: updates.preferences,
-          avatarUrl: updates.avatarUrl,
+          avatarUrl: updates.avatarUrl,;
           bio: updates.bio,
           updatedAt: new Date()
         };
@@ -433,10 +433,10 @@ export class UserProfileService {
           userId,
           action: 'profile_updated',
           resource: 'user_profile',
-          resourceId: userId.toString(),
+          resourceId: userId.toString()),
           context: {
             updatedFields: [...Object.keys(userUpdates), ...Object.keys(profileUpdates)]
-          },
+          },;
           success: true
         });
 
@@ -447,7 +447,7 @@ export class UserProfileService {
     } catch (error: any) {
       console.error('Update profile error:', error);
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: 'Profile update failed'
       };
     }
@@ -479,8 +479,8 @@ export class UserProfileService {
           userId,
           action: 'user_deleted',
           resource: 'user',
-          resourceId: userId.toString(),
-          context: { deletionType: 'soft_delete' },
+          resourceId: userId.toString()),
+          context: { deletionType: 'soft_delete' },;
           success: true
         });
       });
@@ -489,7 +489,7 @@ export class UserProfileService {
     } catch (error: any) {
       console.error('Delete user error:', error);
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: 'User deletion failed'
       };
     }
@@ -512,7 +512,7 @@ export class UserProfileService {
 
       const similarUsers = await db;
         .select({
-          user: users,
+          user: users,;
           similarity: sql<number>`1 - (${cosineDistance(users.profileEmbedding, currentUser[0].embedding)})`
         })
         .from(users)
@@ -557,7 +557,7 @@ export class UserActivityService {
    */
   static async getUserActivity(
     userId: number, 
-    limit: number = 50, 
+    limit: number = 50, ;
     offset: number = 0;
   ): Promise<UserActivity[]> {
     try {
@@ -594,7 +594,7 @@ export class UserActivityService {
 
       const topActions = await db;
         .select({
-          action: userActivityLog.action,
+          action: userActivityLog.action,;
           count: count()
         })
         .from(userActivityLog)

@@ -302,7 +302,7 @@ export class TensorFlowSynthesizer {
       pipeline.push({
         name: 'synthesize-insights',
         processingTime: performance.now() - startTime,
-        success: true,
+        success: true,;
         output: { insightsGenerated: Object.keys(synthesizedInsights).length }
       });
 
@@ -317,7 +317,7 @@ export class TensorFlowSynthesizer {
       pipeline.push({
         name: 'enhanced-response',
         processingTime: performance.now() - startTime,
-        success: true,
+        success: true,;
         output: { responseLength: enhancedResponse.primaryResponse.length }
       });
 
@@ -331,7 +331,7 @@ export class TensorFlowSynthesizer {
       pipeline.push({
         name: 'quality-metrics',
         processingTime: performance.now() - startTime,
-        success: true,
+        success: true,;
         output: qualityMetrics
       });
 
@@ -342,7 +342,7 @@ export class TensorFlowSynthesizer {
         languageExtractionResults,
         synthesizedInsights,
         enhancedResponse,
-        processingPipeline: {
+        processingPipeline: {;
           stages: pipeline,
           totalProcessingTime,
           parallelProcessing: this.config.parallelProcessing,
@@ -411,7 +411,7 @@ export class TensorFlowSynthesizer {
           analysisDepth: 0,
           factualAccuracy: 0,
           completeness: 0,
-          coherence: 0,
+          coherence: 0,;
           relevance: 0,
           userSatisfactionPrediction: 0.1
         }
@@ -424,7 +424,7 @@ export class TensorFlowSynthesizer {
    */
   private async runParallelAnalysis(
     text: string,
-    pipeline: PipelineStage[],
+    pipeline: PipelineStage[],;
     callback: (results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult }) => void;
   ): Promise<void> {
     const analysisPromises: Promise<any>[] = [];
@@ -451,7 +451,7 @@ export class TensorFlowSynthesizer {
     pipeline.push({
       name: 'parallel-analysis',
       processingTime: performance.now() - stageStartTime,
-      success: results.some(r => r.status === 'fulfilled' && r.value),
+      success: results.some(r => r.status === 'fulfilled' && r.value),;
       output: {
         legalBERTSuccess: this.config.enableLegalBERT ? results[0]?.status === 'fulfilled' : false,
         languageExtractionSuccess: this.config.enableLanguageExtraction ?
@@ -485,7 +485,7 @@ export class TensorFlowSynthesizer {
    */
   private async runSequentialAnalysis(
     text: string,
-    pipeline: PipelineStage[],
+    pipeline: PipelineStage[],;
     callback: (results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult }) => void;
   ): Promise<void> {
     const results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {};
@@ -497,14 +497,14 @@ export class TensorFlowSynthesizer {
         pipeline.push({
           name: 'legal-bert-analysis',
           processingTime: performance.now() - stageStartTime,
-          success: true,
+          success: true,;
           output: { entitiesFound: results.legalBERT.entities.length }
         });
       } catch (error: any) {
         pipeline.push({
           name: 'legal-bert-analysis',
           processingTime: performance.now() - stageStartTime,
-          success: false,
+          success: false,;
           error: error.message
         });
       }
@@ -517,14 +517,14 @@ export class TensorFlowSynthesizer {
         pipeline.push({
           name: 'language-extraction',
           processingTime: performance.now() - stageStartTime,
-          success: true,
+          success: true,;
           output: { conceptsExtracted: results.languageExtraction.extractedConcepts.length }
         });
       } catch (error: any) {
         pipeline.push({
           name: 'language-extraction',
           processingTime: performance.now() - stageStartTime,
-          success: false,
+          success: false,;
           error: error.message
         });
       }
@@ -574,7 +574,7 @@ export class TensorFlowSynthesizer {
    */
   private async generateEnhancedResponse(
     text: string,
-    query: string | undefined,
+    query: string | undefined,;
     insights: SynthesizedInsights,
     legalBERTResults?: LegalBERTAnalysis,
     languageExtractionResults?: AdvancedExtractionResult;
@@ -602,7 +602,7 @@ export class TensorFlowSynthesizer {
         sources.push({
           type: 'webassembly',
           content: primaryResponse,
-          confidence: confidenceLevel,
+          confidence: confidenceLevel,;
           relevance: 0.9
         });
       } else {
@@ -614,7 +614,7 @@ export class TensorFlowSynthesizer {
         sources.push({
           type: 'webassembly',
           content: primaryResponse,
-          confidence: confidenceLevel,
+          confidence: confidenceLevel,;
           relevance: 0.8
         });
       }
@@ -627,7 +627,7 @@ export class TensorFlowSynthesizer {
         sources.push({
           type: 'legal-bert',
           content: `Classified as ${legalBERTResults.classification.documentType}`,
-          confidence: legalBERTResults.classification.confidence,
+          confidence: legalBERTResults.classification.confidence,;
           relevance: 0.7
         });
       }
@@ -637,7 +637,7 @@ export class TensorFlowSynthesizer {
         sources.push({
           type: 'language-extraction',
           content: languageExtractionResults.abstractiveSummary,
-          confidence: 0.8,
+          confidence: 0.8,;
           relevance: 0.6
         });
       }
@@ -757,7 +757,7 @@ export class TensorFlowSynthesizer {
           description: `High frequency of risk-related terms: ${negativeIndicators.map(i => i.concept).join(', ')}`,
           likelihood: 0.7,
           impact: 0.8,
-          severity: negativeIndicators.length * 0.2,
+          severity: negativeIndicators.length * 0.2,;
           mitigatable: true
         });
       }
@@ -792,7 +792,7 @@ export class TensorFlowSynthesizer {
 
       if (docType === 'contract') {
         regulations.push({
-          regulation: 'Contract Law Requirements',
+          regulation: 'Contract Law Requirements',;
           applicability: 0.9,
           complianceStatus: 'partial',
           requiredActions: ['Review consideration clause', 'Verify signatures', 'Check governing law']
@@ -823,7 +823,7 @@ export class TensorFlowSynthesizer {
         rationale: `High risk level (${riskAssessment.overallRiskLevel}) identified`,
         priority: 1.0,
         estimatedEffort: '4-8 hours',
-        expectedOutcome: 'Risk mitigation and compliance verification',
+        expectedOutcome: 'Risk mitigation and compliance verification',;
         dependencies: []
       });
     }
@@ -836,7 +836,7 @@ export class TensorFlowSynthesizer {
         rationale: `Compliance score below threshold (${complianceAnalysis.complianceScore.toFixed(2)})`,
         priority: 0.8,
         estimatedEffort: '2-4 hours',
-        expectedOutcome: 'Improved regulatory compliance',
+        expectedOutcome: 'Improved regulatory compliance',;
         dependencies: []
       });
     }
@@ -849,7 +849,7 @@ export class TensorFlowSynthesizer {
       return {
         conceptNodes: [],
         relationshipEdges: [],
-        clusters: [],
+        clusters: [],;
         centrality: Record<string, any>
       };
     }
@@ -858,7 +858,7 @@ export class TensorFlowSynthesizer {
       id: `concept_${index}`,
       concept: concept.concept,
       importance: concept.importance,
-      category: concept.category,
+      category: concept.category,;
       embedding: new Float32Array(768) // Would use actual embeddings
     });
 
@@ -866,14 +866,14 @@ export class TensorFlowSynthesizer {
       source: rel.source,
       target: rel.target,
       relationship: rel.relationship,
-      strength: rel.confidence,
+      strength: rel.confidence,;
       bidirectional: rel.relationship === 'synonyms'
     });
 
     return {
       conceptNodes,
       relationshipEdges,
-      clusters: [],
+      clusters: [],;
       centrality: Record<string, any>
     };
   }

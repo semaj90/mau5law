@@ -15,7 +15,7 @@ import { Readable } from "stream";
 // S3 client for ingestion pipeline (separate from main MinIO service);
 export const S3 = new S3Client({
   endpoint: process.env.MINIO_ENDPOINT,
-  region: "us-east-1",
+  region: "us-east-1",;
   credentials: {
     accessKeyId: process.env.MINIO_KEY!,
     secretAccessKey: process.env.MINIO_SECRET!
@@ -88,7 +88,7 @@ export async function listMinioPrefix(bucket: string, prefix: string) {
     return ((response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).Contents ?? []).map(obj => ({
       key: obj.Key!,
       size: obj.Size!,
-      lastModified: obj.LastModified!,
+      lastModified: obj.LastModified!,;
       etag: obj.ETag!,
       minioUrl: `minio://${bucket}/${obj.Key}`
     });
@@ -128,7 +128,7 @@ export async function batchFetchMinioObjects(minioUrls: string[], options: {
       } else {
         results.push({
           url: 'unknown',
-          success: false,
+          success: false,;
           error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error'
         });
       }
@@ -202,7 +202,7 @@ export function detectContentType(buffer: Buffer, filename?: string): string {
 /**
  * Validate content for ingestion pipeline
  */;
-export function validateContentForIngestion(contentType: string, size: number): {
+export function validateContentForIngestion(contentType: string, size: number): {;
   valid: boolean;
   reason?: string;
   type: 'text' | 'image' | 'audio' | 'video' | 'json' | 'other';

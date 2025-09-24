@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -29,14 +29,14 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const response = await fetch('/api/semantic-search', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          query: query.trim(),
-          limit: 5,
-          threshold: 0.3,
+          query: query.trim(),;
+          limit: 5,;
+          threshold: 0.3,;
         }),
       });
 

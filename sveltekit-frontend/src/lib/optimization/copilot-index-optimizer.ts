@@ -78,7 +78,7 @@ const CONTEXT7_PATTERNS: Context7Pattern[] = [;
     pattern: 'interface|type|RequestHandler|PageData',
     priority: 'medium',
     category: 'typescript',
-    boostFactor: 0.1,
+    boostFactor: 0.1,;
     keywords: ['typescript', 'types', 'interface', 'generic']
   }
 ];
@@ -141,7 +141,7 @@ export class CopilotIndexOptimizer {
           avgEmbeddingTime: this.performanceMetrics.optimizationTime / optimizedEntries.length,
           indexSizeMB: this.calculateIndexSize(optimizedEntries),
           lastUpdated: Date.now()
-        },
+        },;
         clusters: semanticClusters
       };
 
@@ -162,7 +162,7 @@ export class CopilotIndexOptimizer {
    * Enhanced semantic search with Context7 pattern boosting
    */
   async enhancedSemanticSearch(
-    query: string,
+    query: string,;
     options: {
       limit?: number;
       includePatterns?: boolean;
@@ -226,7 +226,7 @@ export class CopilotIndexOptimizer {
    */
   async generateCopilotSuggestions(
     currentCode: string,
-    cursor: { line: number; character: number },
+    cursor: { line: number; character: number },;
     language: string;
   ): Promise<Array<any> {
     try {
@@ -272,7 +272,7 @@ export class CopilotIndexOptimizer {
           priority: section.priority || 'medium',
           relevanceScore: 0.8,
           timestamp: Date.now(),
-          fileSize: section.content.length,
+          fileSize: section.content.length,;
           tokens: Math.ceil(section.content.length / 4)
         },
         semanticChunks: await this.generateSemanticChunks(section.content)
@@ -289,7 +289,7 @@ export class CopilotIndexOptimizer {
         avgEmbeddingTime: 0,
         indexSizeMB: 0,
         lastUpdated: Date.now()
-      },
+      },;
       clusters: []
     };
   }
@@ -326,7 +326,7 @@ export class CopilotIndexOptimizer {
         id: `section_${sectionId++}`,
         title: headerText,
         content: sectionContent,
-        priority: this.determineSectionPriority(headerText, sectionContent),
+        priority: this.determineSectionPriority(headerText, sectionContent),;
         language: 'markdown'
       });
     }
@@ -340,7 +340,7 @@ export class CopilotIndexOptimizer {
       sections.push({
         id: `code_${sectionId++}`,
         title: `Code: ${language}`,
-        content: code,
+        content: code,;
         priority: this.determineCodePriority(language, code),
         language
       });
@@ -457,7 +457,7 @@ export class CopilotIndexOptimizer {
           confidentialityLevel: 1,
           lastModified: new Date(),
           fileSize: entry.metadata.fileSize,
-          language: entry.language || 'unknown',
+          language: entry.language || 'unknown',;
           tags: []
         }
       });
@@ -467,7 +467,7 @@ export class CopilotIndexOptimizer {
 
     // Transform BooleanCluster to expected format;
     return booleanClusters.map((cluster, index) => ({
-      id: `cluster_${index}`,
+      id: `cluster_${index}`,;
       centroid: new Float32Array([]), // Empty for now, could be calculated from members
       memberIds: [], // Could be extracted from cluster data if available
       relevantTerms: [], // Could be derived from cluster analysis
@@ -646,7 +646,7 @@ export class CopilotIndexOptimizer {
       suggestions.push({
         text: 'let { prop = "default" } = $props();',
         priority: 0.9,
-        category: 'svelte5',
+        category: 'svelte5',;
         confidence: 0.85,
         context7Pattern: pattern.id
       });
@@ -656,7 +656,7 @@ export class CopilotIndexOptimizer {
       suggestions.push({
         text: 'let computed = $derived(() => {\n  // computation\n});',
         priority: 0.8,
-        category: 'svelte5',
+        category: 'svelte5',;
         confidence: 0.8,
         context7Pattern: pattern.id
       });
@@ -672,7 +672,7 @@ export class CopilotIndexOptimizer {
       suggestions.push({
         text: 'export const load: PageServerLoad = async ({ params }) => {\n  return {\n    // data\n  };\n};',
         priority: 0.85,
-        category: 'sveltekit',
+        category: 'sveltekit',;
         confidence: 0.9,
         context7Pattern: pattern.id
       });
@@ -782,7 +782,7 @@ export class CopilotIndexOptimizer {
           fileSize: entry.metadata.fileSize,
           language: entry.language,
           tags: [entry.metadata.priority, entry.metadata.source]
-        },
+        },;
         version: '1.0'
       };
 

@@ -28,8 +28,8 @@
     const uxReport = await uxPatternValidator.generateUXReport();
 
     validationResults = {
-      accessibility: accessibilityReport,
-      ux: uxReport
+      accessibility: accessibilityReport,;
+      ux: uxReport;
     };
 
     console.log('Validation Results:', validationResults);
@@ -201,7 +201,7 @@
 </LegalDialog>
 
 <style>
-  .legal-ai-showcase {
+  .legal-ai-showcase {;
     font-family: var(--legal-ai-font-family-sans, 'Inter', sans-serif);
   }
 </style>

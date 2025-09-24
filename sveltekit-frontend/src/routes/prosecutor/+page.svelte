@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -14,11 +14,11 @@ Features: Case management, evidence upload, AI chat, vector search
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  import Button from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import EvidenceUploadComponent from '$lib/components/prosecutor/EvidenceUploadComponent.svelte';
   import EnhancedAIChatAssistant from '$lib/components/prosecutor/EnhancedAIChatAssistant.svelte';
@@ -50,8 +50,9 @@ Features: Case management, evidence upload, AI chat, vector search
   let webGPUEnabled = $state(false);
   let ragSystemStatus = $state('initializing');
 
-  $effect(async () => {
-    // Check WebGPU availability
+  $effect(() => {
+    (async () => {
+// Check WebGPU availability
     webGPUEnabled = await webGPUProcessor.initialize();
 
     // Load prosecutor data
@@ -60,6 +61,7 @@ Features: Case management, evidence upload, AI chat, vector search
     await loadRecentEvidence();
 
     ragSystemStatus = 'ready';
+    })();
   });
 
   const loadCases = async () => {
@@ -136,12 +138,12 @@ Features: Case management, evidence upload, AI chat, vector search
       } else {
         // Fallback to API search
         const response = await fetch('/api/search/vector', {
-          method: 'POST',
+          method: 'POST',;
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             query: searchQuery,
-            caseId: selectedCaseId,
-            type: 'evidence'
+            caseId: selectedCaseId,;
+            type: 'evidence';
           })
         });
         const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
@@ -246,7 +248,7 @@ selectCase(caseItem.id)}
           </div>
           <div class="yorha-panel-content space-y-4">
             <div class="flex gap-2">
-              <Input
+              <Input;
                 bind:value={searchQuery}
                 placeholder="Search evidence, cases, precedents..."
                 class="flex-1"
@@ -450,7 +452,7 @@ selectCase(caseItem.id)}
     position: relative;
   }
 
-  :global(.gpu-accelerated: :after) {
+  :global(.gpu-accelerated::after) {
     content: '⚡';
     position: absolute;
     top: -8px;

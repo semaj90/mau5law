@@ -97,7 +97,7 @@
 {/if}
 
 <style>
-  .boot-screen {
+  .boot-screen {;
     position: fixed;
     inset: 0;
     background: linear-gradient(145deg, #000000 0%, #1a1a1a 50%, #000000 100%);

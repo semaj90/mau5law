@@ -28,7 +28,7 @@ interface DocumentProcessingPayload {
 interface EmbeddingPayload {
   text: string;
   model: 'embeddinggemma:latest' | 'embeddinggemma' | 'nomic-embed-text';
-  options: {
+  options: {;
     dimensions: number;
     normalize: boolean;
     quantization: 'FP32' | 'FP16' | 'INT8';
@@ -68,7 +68,7 @@ class SIMDTextProcessor {
       const wasmBinary = await this.loadWasmBinary();
       this.wasmModule = await WebAssembly.compile(wasmBinary);
       this.wasmInstance = await WebAssembly.instantiate(this.wasmModule, {
-        env: {
+        env: {;
           memory: new WebAssembly.Memory({ initial: 10 })
         }
       });
@@ -106,7 +106,7 @@ class SIMDTextProcessor {
     // This would use the WASM module for ultra-fast text extraction;
     return {
       text: 'SIMD-extracted text content...',
-      metadata: { pages: 1, creator: 'SIMD Parser' },
+      metadata: { pages: 1, creator: 'SIMD Parser' },;
       pages: 1,
       extractionTime: 0
     };
@@ -117,7 +117,7 @@ class SIMDTextProcessor {
     // In real implementation, would use pdf.js or similar;
     return {
       text: 'Fallback extracted text content...',
-      metadata: { pages: 1, creator: 'Fallback Parser' },
+      metadata: { pages: 1, creator: 'Fallback Parser' },;
       pages: 1,
       extractionTime: 0
     };
@@ -175,7 +175,7 @@ class SIMDTextProcessor {
           text: match[0],
           type: pattern.type,
           start: match.index,
-          end: match.index + match[0].length,
+          end: match.index + match[0].length,;
           confidence: 0.9
         });
       }
@@ -227,7 +227,7 @@ class VectorEmbeddingCache {
     return this.cache.get(key) || null;
   }
   
-  async search(queryEmbedding: Float32Array, options: {
+  async search(queryEmbedding: Float32Array, options: {;
     limit: number;
     threshold: number;
     filters?: any;
@@ -445,7 +445,7 @@ class RAGIngestionWorker {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model,
+          model,;
           prompt: text
         })
       });
@@ -485,7 +485,7 @@ class RAGIngestionWorker {
   private async searchSimilarity(payload: any): Promise<any> {
     return await this.vectorCache.search(payload.queryEmbedding, {
       limit: payload.limit || 20,
-      threshold: payload.threshold || 0.7,
+      threshold: payload.threshold || 0.7,;
       filters: payload.filters
     });
   }
@@ -520,7 +520,7 @@ class RAGIngestionWorker {
   getWorkerStats(): any {
     return {
       initialized: this.isInitialized,
-      vectorCache: this.vectorCache.getStats(),
+      vectorCache: this.vectorCache.getStats(),;
       timestamp: Date.now()
     };
   }
@@ -537,7 +537,7 @@ self.addEventListener('message', async (event) => {
     const result = await ragWorker.processMessage(message);
     
     self.postMessage({
-      id: message.id,
+      id: message.id,;
       success: true,
       result
     });
@@ -545,7 +545,7 @@ self.addEventListener('message', async (event) => {
   } catch (error) {
     self.postMessage({
       id: message.id,
-      success: false,
+      success: false,;
       error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
@@ -554,7 +554,7 @@ self.addEventListener('message', async (event) => {
 // Initialize worker;
 ragWorker.initialize().then(() => {
   self.postMessage({
-    type: 'worker_ready',
+    type: 'worker_ready',;
     timestamp: Date.now()
   });
 });

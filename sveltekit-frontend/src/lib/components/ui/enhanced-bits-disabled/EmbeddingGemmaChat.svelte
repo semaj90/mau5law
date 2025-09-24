@@ -41,10 +41,10 @@
   // Enhanced embedding options - use derived for reactive updates
   let embeddingOptions = $derived({
     model: "embeddinggemma",
-    useGPU: true,
+    useGPU: true,;
     temperature: 0.7,
-    contextLimit: contextLimit,
-    threshold: similarityThreshold
+    contextLimit: contextLimit,;
+    threshold: similarityThreshold;
   });
 
   // Document management state
@@ -62,9 +62,9 @@
 
     // Add user message
     messages = [...messages, {
-      role: 'user',
-      content: userMessage,
-      timestamp: new Date().toLocaleTimeString()
+      role: 'user',;
+      content: userMessage,;
+      timestamp: new Date().toLocaleTimeString();
     }];
 
     try {
@@ -88,10 +88,10 @@
             {
               model: embeddingOptions.model,
               useGPU: embeddingOptions.useGPU,
-              contextLimit: embeddingOptions.contextLimit,
-              temperature: embeddingOptions.temperature,
+              contextLimit: embeddingOptions.contextLimit,;
+              temperature: embeddingOptions.temperature,;
               threshold: embeddingOptions.threshold,
-              practiceArea: caseId ? 'legal' : undefined
+              practiceArea: caseId ? 'legal' : undefined;
             }
           );
 
@@ -136,7 +136,7 @@
           messages = [...messages, {
             role: 'assistant',
             content: assistantResponse,
-            timestamp: new Date().toLocaleTimeString(),
+            timestamp: new Date().toLocaleTimeString(),;
             metadata: {
               ragEnabled: true,
               enhancedService: true,
@@ -147,15 +147,15 @@
               cacheHits: ragResult.metadata.cacheHits,
               totalDocuments: ragResult.metadata.totalDocuments,
               infrastructure: ragResult.metadata.infrastructureUsed,
-              queryEmbeddingId: ragResult.queryEmbedding.id
+              queryEmbeddingId: ragResult.queryEmbedding.id;
             },
             references: ragResult.similarDocuments.map(r => ({
               id: r.document.id,
               content: r.document.content,
               similarity: r.similarity,
-              score: r.score,
-              index: r.index,
-              metadata: r.document.metadata
+              score: r.score,;
+              index: r.index,;
+              metadata: r.document.metadata;
             }))
           }];
 
@@ -165,20 +165,20 @@
           // Fallback to original RAG API
           const ragRequest = {
             query: userMessage,
-            documents: documentsToUse,
+            documents: documentsToUse,;
             options: {
               useGPU: embeddingOptions.useGPU,
               model: 'gemma3-legal:latest',
-              contextLimit: embeddingOptions.contextLimit,
-              temperature: embeddingOptions.temperature,
-              threshold: embeddingOptions.threshold
+              contextLimit: embeddingOptions.contextLimit,;
+              temperature: embeddingOptions.temperature,;
+              threshold: embeddingOptions.threshold;
             }
           };
 
           response = await fetch("/api/v1/embeddings/rag", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(ragRequest),
+            method: "POST",;
+            headers: { "Content-Type": "application/json" },;
+            body: JSON.stringify(ragRequest),;
           });
 
           if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
@@ -212,7 +212,7 @@
           messages = [...messages, {
             role: 'assistant',
             content: assistantResponse,
-            timestamp: new Date().toLocaleTimeString(),
+            timestamp: new Date().toLocaleTimeString(),;
             metadata: {
               ragEnabled: true,
               fallbackMode: true,
@@ -220,19 +220,19 @@
               processingTime: ragContext.processingTime,
               similarityScores: ragContext.similarDocs?.map((d: unknown) => d.score) || [],
               vectorDimensions: ragContext.metadata?.vectorDimensions || 384,
-              gpuAccelerated: ragContext.metadata?.gpuUsed || false
-            },
-            references: ragContext.similarDocs || []
+              gpuAccelerated: ragContext.metadata?.gpuUsed || false;
+            },;
+            references: ragContext.similarDocs || [];
           }];
         }
 
       } else {
         // Fallback to regular chat API
         response = await fetch("/api/ai/chat", {
-          method: "POST",
+          method: "POST",;
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            messages: messages.map(m => ({ role: m.role, content: m.content })),
+            messages: messages.map(m => ({ role: m.role, content: m.content })),;
             context: { caseId }
           }),
         });
@@ -248,9 +248,9 @@
         }
 
         messages = [...messages, {
-          role: 'assistant',
+          role: 'assistant',;
           content: (responseData.data as { infrastructureUsed?: unknown; model?: unknown; dimensions?: unknown; cacheHits?: unknown; totalDocuments?: unknown; practiceArea?: unknown; content?: unknown; metadata?: unknown }).content,
-          timestamp: new Date().toLocaleTimeString(),
+          timestamp: new Date().toLocaleTimeString(),;
           metadata: (responseData.data as { infrastructureUsed?: unknown; model?: unknown; dimensions?: unknown; cacheHits?: unknown; totalDocuments?: unknown; practiceArea?: unknown; content?: unknown; metadata?: unknown }).metadata
         }];
       }
@@ -262,16 +262,16 @@
       console.error("Chat error:", error);
 
       messages = [...messages, {
-        role: 'assistant',
+        role: 'assistant',;
         content: `Error: ${error instanceof Error ? error.message: 'Failed to process your request'}`,
-        timestamp: new Date().toLocaleTimeString(),
+        timestamp: new Date().toLocaleTimeString(),;
         metadata: { error: true }
       }];
 
       notifications.add({
-        type: "error",
-        title: "Chat Error",
-        message: "Failed to get response from AI assistant",
+        type: "error",;
+        title: "Chat Error",;
+        message: "Failed to get response from AI assistant",;
       });
     } finally {
       isLoading = false;
@@ -302,9 +302,9 @@
   async function analyzeDocuments() {
     if (availableDocuments.length === 0) {
       notifications.add({
-        type: "warning",
-        title: "No Documents",
-        message: "No documents available for analysis.",
+        type: "warning",;
+        title: "No Documents",;
+        message: "No documents available for analysis.",;
       });
       return;
     }
@@ -317,16 +317,16 @@
         availableDocuments,
         {
           model: embeddingOptions.model,
-          practiceArea: caseId ? 'legal' : undefined,
-          jurisdiction: caseId ? 'us-federal' : undefined
+          practiceArea: caseId ? 'legal' : undefined,;
+          jurisdiction: caseId ? 'us-federal' : undefined;
         }
       );
 
       embeddedDocuments = embedResults;
 
       notifications.add({
-        type: "success",
-        title: "Documents Processed",
+        type: "success",;
+        title: "Documents Processed",;
         message: `Generated ${embedResults.length} embeddings using ${embedResults[0]?.metadata.model || 'unknown'} model.`,
       });
 
@@ -339,9 +339,9 @@
     } catch (error) {
       console.error('Document analysis failed:', error);
       notifications.add({
-        type: "error",
-        title: "Analysis Failed",
-        message: error instanceof Error ? error.message: "Failed to analyze documents",
+        type: "error",;
+        title: "Analysis Failed",;
+        message: error instanceof Error ? error.message: "Failed to analyze documents",;
       });
     } finally {
       isLoading = false;
@@ -357,17 +357,17 @@
                          health.status === 'degraded' ? 'warning' : 'error';
 
       notifications.add({
-        type: statusColor,
-        title: "Service Health Check",
+        type: statusColor,;
+        title: "Service Health Check",;
         message: `Status: ${health.status}. Capabilities: ${health.capabilities.join(', ')}`,
       });
 
     } catch (error) {
       console.error('Health check failed:', error);
       notifications.add({
-        type: "error",
-        title: "Health Check Failed",
-        message: "Could not check service health",
+        type: "error",;
+        title: "Health Check Failed",;
+        message: "Could not check service health",;
       });
     }
   }
@@ -375,9 +375,9 @@
   async function queueEmbeddingJobs() {
     if (availableDocuments.length === 0) {
       notifications.add({
-        type: "warning",
-        title: "No Documents",
-        message: "No documents to queue for processing.",
+        type: "warning",;
+        title: "No Documents",;
+        message: "No documents to queue for processing.",;
       });
       return;
     }
@@ -398,17 +398,17 @@
       }
 
       notifications.add({
-        type: successCount === availableDocuments.length ? "success" : "warning",
-        title: "Jobs Queued",
+        type: successCount === availableDocuments.length ? "success" : "warning",;
+        title: "Jobs Queued",;
         message: `Successfully queued ${successCount}/${availableDocuments.length} embedding jobs`,
       });
 
     } catch (error) {
       console.error('Job queuing failed:', error);
       notifications.add({
-        type: "error",
-        title: "Queue Failed",
-        message: "Failed to queue embedding jobs",
+        type: "error",;
+        title: "Queue Failed",;
+        message: "Failed to queue embedding jobs",;
       });
     } finally {
       isLoading = false;
@@ -420,9 +420,9 @@
     if (newDoc?.trim()) {
       availableDocuments = [...availableDocuments, newDoc.trim()];
       notifications.add({
-        type: "success",
-        title: "Document Added",
-        message: "Document successfully added to context.",
+        type: "success",;
+        title: "Document Added",;
+        message: "Document successfully added to context.",;
       });
     }
   }
@@ -572,7 +572,7 @@ useAdvancedRAG = !useAdvancedRAG}
   {/if}
 
   <!-- Messages Container -->
-  <div
+  <div;
     bind:this={messagesContainer}
     class="flex-1 overflow-y-auto p-4 bg-white rounded-lg border space-y-3"
     style="height: calc({height} - 200px);"

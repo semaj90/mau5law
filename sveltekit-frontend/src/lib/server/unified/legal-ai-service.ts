@@ -115,7 +115,7 @@ export class UnifiedLegalAIService {
                 title: upload.fileName,
                 file_path: minioResult.objectName,
                 file_type: upload.contentType,
-                file_size: minioResult.size,
+                file_size: minioResult.size,;
                 content: textContent,
                 minio_url: minioResult.url,
                 qdrant_id: documentId,
@@ -134,7 +134,7 @@ export class UnifiedLegalAIService {
           fileName: upload.fileName,
           textContent: textContent.substring(0, 500), // Cache first 500 chars
           minioUrl: minioResult.url,
-          embedding: embedding.slice(0, 10), // Cache first 10 dimensions for quick similarity checks
+          embedding: embedding.slice(0, 10), // Cache first 10 dimensions for quick similarity checks;
           metadata: upload.metadata
         },
         24 * 60 * 60 * 1000
@@ -148,7 +148,7 @@ export class UnifiedLegalAIService {
       return {
         id: documentId,
         fileUrl: minioResult.url,
-        embeddingId: documentId, // Use documentId since vectorResult doesn't have id
+        embeddingId: documentId, // Use documentId since vectorResult doesn't have id;
         cached: true
       };
     } catch (error) {
@@ -170,7 +170,7 @@ export class UnifiedLegalAIService {
       const cachedResults = await cache.get(cacheKey);
       if (cachedResults && typeof cachedResults === 'object' && 'results' in cachedResults) {
         console.log('🚀 Search cache hit');
-        return { ...cachedResults, cached: true } as {
+        return { ...cachedResults, cached: true } as {;
           results: any[];
           recommendations?: any[];
           cached: boolean;
@@ -201,7 +201,7 @@ export class UnifiedLegalAIService {
             results.push({
               ...result,
               ...dbRecord[0],
-              type: 'evidence',
+              type: 'evidence',;
               source: 'qdrant+postgresql'
             });
           }
@@ -227,7 +227,7 @@ export class UnifiedLegalAIService {
             results.push({
               ...result,
               ...dbRecord[0],
-              type: 'document',
+              type: 'document',;
               source: 'qdrant+postgresql'
             });
           }
@@ -244,7 +244,7 @@ export class UnifiedLegalAIService {
 
       const searchResults = {
         results: results.slice(0, options.limit || 20),
-        recommendations,
+        recommendations,;
         cached: false,
         sources
       };
@@ -364,7 +364,7 @@ export class UnifiedLegalAIService {
     const health = {
       postgresql: false,
       redis: false,
-      minio: false,
+      minio: false,;
       qdrant: false,
       neo4j: false
     };

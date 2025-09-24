@@ -1,11 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
   interface Props {
-    caseId: string
+    caseId: string;
     documents: CaseDocument[] ;
     evidenceReports: EvidenceReport[] ;
   }
@@ -40,14 +40,14 @@ https://svelte.dev/e/js_parse_error -->
   import { fly, fade } from 'svelte/transition';
 
   interface CaseDocument {
-    id: string
-    title: string
+    id: string;
+    title: string;
     type: 'evidence' | 'report' | 'witness_statement' | 'expert_testimony' | 'legal_brief';
-    content: string
+    content: string;
     metadata: {
-      dateCreated: string
+      dateCreated: string;
       author: string
-      relevanceScore: number
+      relevanceScore: number;
     };
   }
 
@@ -61,9 +61,9 @@ https://svelte.dev/e/js_parse_error -->
     updatedAt: string
     analyst: unknown
     evidence: unknown
-    methodology: unknown
+    methodology: unknown;
     findings: unknown
-    legalImplications: unknown
+    legalImplications: unknown;
     attachments: unknown[];
   }
 
@@ -76,11 +76,11 @@ https://svelte.dev/e/js_parse_error -->
     synthesisResult: CaseSynthesis | null;
     progressStage: 'selecting' | 'analyzing' | 'synthesizing' | 'reviewing' | 'complete';
     error: string | null;
-    loading: boolean
+    loading: boolean;
   }
 
   interface CaseSynthesis {
-    executiveSummary: string
+    executiveSummary: string;
     timeline: TimelineEvent[];
     strengthAssessment: StrengthAssessment
     legalStrategy: LegalStrategy
@@ -91,8 +91,8 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   interface TimelineEvent {
-    date: string
-    event: string
+    date: string;
+    event: string;
     sources: string[];
     significance: 'critical' | 'high' | 'medium' | 'low';
   }
@@ -102,11 +102,11 @@ https://svelte.dev/e/js_parse_error -->
     evidenceQuality: number
     legalBasis: number
     witnessCredibility: number
-    expertOpinions: number
+    expertOpinions: number;
     areas: {
-      name: string
-      score: number
-      details: string
+      name: string;
+      score: number;
+      details: string;
     }[];
   }
 
@@ -121,9 +121,9 @@ https://svelte.dev/e/js_parse_error -->
   interface RiskAnalysis {
     challengePoints: {
       issue: string
-      likelihood: number
-      impact: number
-      mitigation: string
+      likelihood: number;
+      impact: number;
+      mitigation: string;
     }[];
     overallRisk: number
   }
@@ -133,12 +133,12 @@ https://svelte.dev/e/js_parse_error -->
     category: 'evidence' | 'legal' | 'procedural' | 'strategic';
     action: string
     rationale: string
-    timeline: string
+    timeline: string;
   }
 
   const synthesisMachine = createMachine<SynthesisContext>({
     id: 'synthesis',
-    initial: 'idle',
+    initial: 'idle',;
     context: {
       caseId,
       documents,
@@ -148,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
       synthesisResult: null,
       progressStage: 'selecting',
       error: null,
-      loading: false
+      loading: false;
     },
     states: {
       idle: {
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
             })
           },
           START_SYNTHESIS: {
-            target: 'synthesizing',
+            target: 'synthesizing',;
             actions: assign({ loading: true, progressStage: 'synthesizing' })
           }
         }
@@ -169,18 +169,18 @@ https://svelte.dev/e/js_parse_error -->
         invoke: {
           src: 'performSynthesis',
           onDone: {
-            target: 'complete',
+            target: 'complete',;
             actions: assign({
               synthesisResult: ({ event }) => event.data,
               loading: false,
-              progressStage: 'complete'
+              progressStage: 'complete';
             })
           },
           onError: {
-            target: 'error',
+            target: 'error',;
             actions: assign({
               error: ({ event }) => event.data.message,
-              loading: false
+              loading: false;
             })
           }
         }
@@ -188,12 +188,12 @@ https://svelte.dev/e/js_parse_error -->
       complete: {
         on: {
           RESTART: {
-            target: 'idle',
+            target: 'idle',;
             actions: assign({
               selectedItems: [],
               synthesisResult: null,
               progressStage: 'selecting',
-              error: null
+              error: null;
             })
           }
         }
@@ -201,16 +201,16 @@ https://svelte.dev/e/js_parse_error -->
       error: {
         on: {
           RETRY: {
-            target: 'synthesizing',
+            target: 'synthesizing',;
             actions: assign({ error: null, loading: true })
           },
           RESTART: {
-            target: 'idle',
+            target: 'idle',;
             actions: assign({
               selectedItems: [],
               synthesisResult: null,
               progressStage: 'selecting',
-              error: null
+              error: null;
             })
           }
         }
@@ -229,25 +229,25 @@ https://svelte.dev/e/js_parse_error -->
                   date: "2023-01-15",
                   event: "First unauthorized access detected in system logs",
                   sources: ["Digital Forensics Report #001", "Server Log Analysis"],
-                  significance: "high"
+                  significance: "high";
                 },
                 {
                   date: "2023-03-22",
                   event: "Large data transfer to external IP address",
                   sources: ["Network Traffic Analysis", "Digital Forensics Report #002"],
-                  significance: "critical"
+                  significance: "critical";
                 },
                 {
                   date: "2023-06-10",
                   event: "Witness reports suspicious behavior from suspect",
                   sources: ["Witness Statement - J. Smith", "Security Camera Footage"],
-                  significance: "medium"
+                  significance: "medium";
                 },
                 {
                   date: "2023-08-15",
                   event: "Financial irregularities discovered in company accounts",
                   sources: ["Financial Analysis Report", "Accounting Records"],
-                  significance: "critical"
+                  significance: "critical";
                 }
               ],
               strengthAssessment: {
@@ -255,22 +255,22 @@ https://svelte.dev/e/js_parse_error -->
                 evidenceQuality: 0.90,
                 legalBasis: 0.88,
                 witnessCredibility: 0.75,
-                expertOpinions: 0.92,
+                expertOpinions: 0.92,;
                 areas: [
                   {
                     name: "Digital Evidence",
                     score: 0.95,
-                    details: "Excellent chain of custody, forensically sound acquisition methods, expert analysis"
+                    details: "Excellent chain of custody, forensically sound acquisition methods, expert analysis";
                   },
                   {
                     name: "Financial Evidence",
                     score: 0.88,
-                    details: "Clear paper trail, professional accounting analysis, quantifiable damages"
+                    details: "Clear paper trail, professional accounting analysis, quantifiable damages";
                   },
                   {
                     name: "Witness Testimony",
                     score: 0.72,
-                    details: "Multiple corroborating witnesses, some credibility concerns to address"
+                    details: "Multiple corroborating witnesses, some credibility concerns to address";
                   }
                 ]
               },
@@ -304,19 +304,19 @@ https://svelte.dev/e/js_parse_error -->
                     issue: "Technical complexity may confuse jury",
                     likelihood: 0.6,
                     impact: 0.7,
-                    mitigation: "Prepare clear visual aids and expert testimony in plain language"
+                    mitigation: "Prepare clear visual aids and expert testimony in plain language";
                   },
                   {
                     issue: "Defense may challenge digital evidence authenticity",
                     likelihood: 0.8,
                     impact: 0.8,
-                    mitigation: "Ensure robust chain of custody documentation and expert certification"
+                    mitigation: "Ensure robust chain of custody documentation and expert certification";
                   },
                   {
                     issue: "Witness credibility concerns",
                     likelihood: 0.4,
                     impact: 0.6,
-                    mitigation: "Prepare witnesses thoroughly and focus on corroborating physical evidence"
+                    mitigation: "Prepare witnesses thoroughly and focus on corroborating physical evidence";
                   }
                 ],
                 overallRisk: 0.35
@@ -327,23 +327,23 @@ https://svelte.dev/e/js_parse_error -->
                   category: "evidence",
                   action: "Conduct additional forensic analysis of backup systems",
                   rationale: "May reveal additional evidence of data destruction attempts",
-                  timeline: "Within 2 weeks"
+                  timeline: "Within 2 weeks";
                 },
                 {
                   priority: "high",
                   category: "legal",
                   action: "Prepare technical expert for jury testimony",
                   rationale: "Complex digital evidence requires clear expert explanation",
-                  timeline: "Before trial preparation"
+                  timeline: "Before trial preparation";
                 },
                 {
                   priority: "medium",
                   category: "strategic",
                   action: "Consider plea negotiations based on cooperation",
                   rationale: "Defendant may provide information about broader criminal network",
-                  timeline: "After initial evidence presentation"
+                  timeline: "After initial evidence presentation";
                 }
-              ],
+              ],;
               gaps: [
                 "Need additional witness interviews to establish motive",
                 "Require expert analysis of encryption methods used",
@@ -354,7 +354,7 @@ https://svelte.dev/e/js_parse_error -->
                 "Coordinate with financial crimes unit for additional investigation",
                 "Prepare comprehensive trial presentation materials",
                 "Conduct mock trial with focus group for jury reactions"
-              ]
+              ];
             });
           }, 3000);
         });

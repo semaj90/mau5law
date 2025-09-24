@@ -1,18 +1,18 @@
-import { db } from "$lib/db/connection";
-import { eq } from "drizzle-orm";
-import type { RequestHandler } from './$types.js';
+import { db } from "$lib/db/connection"
+import { eq } from "drizzle-orm"
+import type { RequestHandler } from './$types.js'
 
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		const { messages, sessionId, model } = await request.json();
+		const { messages, sessionId, model } = await request.json()
 
 		if (!messages || !Array.isArray(messages)) {
-			return json({ error: 'Messages array is required' }, { status: 400 });
+			return json({ error: 'Messages array is required' }, { status: 400 })
 		}
 
 		if (!sessionId) {
-			return json({ error: 'Session ID is required' }, { status: 400 });
+			return json({ error: 'Session ID is required' }, { status: 400 })
 		}
 
 		// Ensure session exists
@@ -20,18 +20,18 @@ export const POST: RequestHandler = async ({ request }) => {
 			.select()
 			.from(chatSessions)
 			.where(eq(chatSessions.id, sessionId)
-			.limit(1);
+			.limit(1)
 
 		if (existingSession.length === 0) {
-			return json({ error: 'Session not found' }, { status: 404 });
+			return json({ error: 'Session not found' }, { status: 404 })
 		}
 
 		// Save messages with embeddings for vector search
-		const savedMessages = [];
+		const savedMessages = []
 		
 		for (const message of messages) {
 			// Generate embedding for message content using nomic-embed-text
-			let embedding: number[] | null = null;
+			let embedding: number[] | null = null
 			
 			try {
 				const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
@@ -41,20 +41,20 @@ export const POST: RequestHandler = async ({ request }) => {
 						model: 'nomic-embed-text',
 						prompt: message.content
 					})
-				});
+				})
 
 				if (embeddingResponse.ok) {
-					const embeddingData = await embeddingResponse.json();
-					embedding = embeddingData.embedding;
+					const embeddingData = await embeddingResponse.json()
+					embedding = embeddingData.embedding
 				}
 			} catch (error: any) {
-				console.warn('Failed to generate embedding:', error);
+				console.warn('Failed to generate embedding:', error)
 				// Continue without embedding - not critical for basic functionality
 			}
 
 			// Insert message into database
 			const [savedMessage] = await db
-				.insert(chatMessages);
+				.insert(chatMessages)
 				.values({
 					id: message.id,
 					sessionId: sessionId,
@@ -66,31 +66,31 @@ export const POST: RequestHandler = async ({ request }) => {
 					model: model || 'gemma3-legal',
 					confidence: message.metadata?.confidence || null
 				})
-				.returning();
+				.returning()
 
-			savedMessages.push(savedMessage);
+			savedMessages.push(savedMessage)
 		}
 
 		// Update session with last activity
 		await db
-			.update(chatSessions);
+			.update(chatSessions)
 			.set({ 
 				updatedAt: new Date(),
 				messageCount: existingSession[0].messageCount + messages.length
 			})
-			.where(eq(chatSessions.id, sessionId);
+			.where(eq(chatSessions.id, sessionId)
 
 		return json({
 			success: true,
 			savedMessages: savedMessages.length,
 			sessionId
-		});
+		})
 
 	} catch (error: any) {
-		console.error('Error saving chat messages:', error);
+		console.error('Error saving chat messages:', error)
 		return json({ 
 			error: 'Failed to save chat messages',
 			details: error instanceof Error ? error.message: 'Unknown error'
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- LLM Provider Selector with Melt UI and Real-time Status -->
@@ -28,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
   		disabled = false,
   		class: className = '',
   		id,
-  		'data-testid': testId
+  		'data-testid': testId;
   	}: LLMProviderSelectorProps = $props();
 
   	
@@ -41,20 +41,20 @@ https://svelte.dev/e/js_parse_error -->
   			type: 'ollama',
   			endpoint: 'http://localhost:11434',
   			status: 'online',
-  			capabilities: ['text-generation', 'embeddings', 'chat'],
+  			capabilities: ['text-generation', 'embeddings', 'chat'],;
   			models: [
   				{
   					id: 'gemma3-legal',
   					name: 'Gemma3 Legal',
   					size: '7.3GB',
-  					specialization: 'legal',
+  					specialization: 'legal',;
   					performance: { avgResponseTime: 1200, tokensPerSecond: 45, memoryUsage: '6.2GB', uptime: 99.2 }
   				},
   				{
   					id: 'nomic-embed-text',
   					name: 'Nomic Embed',
   					size: '274MB',
-  					specialization: 'general',
+  					specialization: 'general',;
   					performance: { avgResponseTime: 150, tokensPerSecond: 200, memoryUsage: '512MB', uptime: 99.8 }
   				}
   			]
@@ -66,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
   			endpoint: 'http://localhost:8000',
   			status: 'offline',
   			capabilities: ['high-throughput', 'batch-processing', 'streaming'],
-  			models: []
+  			models: [];
   		},
   		{
   			id: 'autogen-framework',
@@ -75,16 +75,16 @@ https://svelte.dev/e/js_parse_error -->
   			endpoint: 'http://localhost:8001',
   			status: 'loading',
   			capabilities: ['multi-agent', 'conversation', 'code-execution'],
-  			models: []
+  			models: [];
   		},
   		{
   			id: 'crewai-team',
   			name: 'CrewAI Teams',
   			type: 'crewai',
   			endpoint: 'http://localhost:8002',
-  			status: 'offline',
-  			capabilities: ['role-based', 'collaborative', 'workflow'],
-  			models: []
+  			status: 'offline',;
+  			capabilities: ['role-based', 'collaborative', 'workflow'],;
+  			models: [];
   		}
   	]);
 
@@ -92,8 +92,8 @@ https://svelte.dev/e/js_parse_error -->
   let statusCheckInterval = $state<numberconst checkProviderStatus  | null>(null); const data = async (provider: LLMProvider): Promise<LLMStatus> => {
   		try {
   			const response = await fetch(`${provider.endpoint}/health`, {
-  				method: 'GET',
-  				timeout: 5000
+  				method: 'GET',;
+  				timeout: 5000;
   			}));
   			return response.ok ? 'online' : 'offline';
   		} catch {
@@ -130,9 +130,9 @@ https://svelte.dev/e/js_parse_error -->
   		helpers: { isSelected }
   	} = createSelect<LLMProvider>({
   		forceVisible: true,
-  		positioning: {
+  		positioning: {;
   			placement: 'bottom',
-  			fitViewport: true,
+  			fitViewport: true,;
   		}
   	});
 
@@ -176,7 +176,7 @@ https://svelte.dev/e/js_parse_error -->
 
 	<!-- Select Trigger -->
 	<button
-		class="flex h-10 w-full items-center justify-between rounded-md border border-yorha-border bg-yorha-bg-secondary px-3 py-2 text-sm placeholder:text-yorha-text-tertiary focus:outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
+		class="flex h-10 w-full items-center justify-between rounded-md border border-yorha-border bg-yorha-bg-secondary px-3 py-2 text-sm placeholder:text-yorha-text-tertiary focus:outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200";
 		class:opacity-50={disabled}
 		{disabled}
 		aria-label="Select LLM Provider"
@@ -218,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
 				<div
 					class="relative cursor-default select-none rounded-sm px-2 py-2 text-sm outline-none transition-colors duration-150"
 				 class:bg-yorha-bg-secondary={$isSelected(provider)}
-				 class:text-yorha-text-primary={$isSelected(provider)}
+				 class:text-yorha-text-primary={$isSelected(provider)};
 					class:hover:bg-yorha-bg-tertiary={!$isSelected(provider)}
 				>
 					<div class="border-none bg-transparent nes-container">

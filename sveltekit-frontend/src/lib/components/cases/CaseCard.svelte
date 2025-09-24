@@ -31,17 +31,17 @@
     title: string
     description?: string
     status: 'active' | 'pending' | 'closed' | 'archived'
-    priority: 'critical' | 'high' | 'medium' | 'low'
+    priority: 'critical' | 'high' | 'medium' | 'low';
     created: Date | string
     updated?: Date | string
     assignee?: {
       name: string
-      avatar?: string
+      avatar?: string;
     }
     stats: {
       evidence: number
       witnesses: number
-      documents: number
+      documents: number;
     }
     tags?: string[]
     progress?: number
@@ -281,20 +281,20 @@
 <style lang="css">
   /* @unocss-include */
   /* Add smooth line clamp transitions */
-  .line-clamp-1 {
+  .line-clamp-1 {;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     line-clamp: 1;
     -webkit-box-orient: vertical
-    overflow: hidden
+    overflow: hidden;
   }
 
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical
-    overflow: hidden
+    overflow: hidden;
   }
 </style>
 

@@ -59,11 +59,11 @@
   let newNote = $state({
     title: '',
     content: '',
-    noteType: 'general' as const,
+    noteType: 'general' as const,;
     tags: [] as string[],
-    caseId: '',
+    caseId: '',;
     priority: 'medium' as const,
-    riskLevel: 'low' as const
+    riskLevel: 'low' as const;
   });
 
   // Stats and filters reactive
@@ -71,9 +71,9 @@
   let notes = $state<LegalNote[]>([]);
   let currentFilters = $state<NoteFilters>({
     search: '',
-    noteType: '',
+    noteType: '',;
     tags: [],
-    caseId: undefined
+    caseId: undefined;
   });
 
   onMount(async () => {
@@ -104,7 +104,7 @@
     setNoteFilter({
       search: searchQuery,
       noteType: selectedNoteType,
-      riskLevel: selectedRiskLevel
+      riskLevel: selectedRiskLevel;
     });
   }
 
@@ -126,7 +126,7 @@
       id: noteId,
       title: newNote.title,
       content: newNote.content,
-      markdown: newNote.content,
+      markdown: newNote.content,;
       html: `<p>${newNote.content.replace(/\n/g, '<br>')}</p>`,
       contentJson: { content: newNote.content },
       noteType: newNote.noteType,
@@ -135,10 +135,10 @@
       userId: 'current-user', // TODO: Get from auth
       metadata: {
         priority: newNote.priority,
-        riskLevel: newNote.riskLevel,
+        riskLevel: newNote.riskLevel,;
         starred: false,
         aiGenerated: false,
-        processingStatus: 'completed'
+        processingStatus: 'completed';
       }
     };
 
@@ -151,11 +151,11 @@
     newNote = {
       title: '',
       content: '',
-      noteType: 'general',
+      noteType: 'general',;
       tags: [],
-      caseId: '',
+      caseId: '',;
       priority: 'medium',
-      riskLevel: 'low'
+      riskLevel: 'low';
     };
   }
 
@@ -169,7 +169,7 @@
 
     await saveLegalNote({
       ...editingNote,
-      markdown: editingNote.content,
+      markdown: editingNote.content,;
       html: `<p>${editingNote.content.replace(/\n/g, '<br>')}</p>`
     });
 
@@ -185,8 +185,8 @@
     const updated = {
       ...note,
       metadata: {
-        ...note.metadata,
-        starred: !note.metadata.starred
+        ...note.metadata,;
+        starred: !note.metadata.starred;
       }
     };
     await saveLegalNote(updated);
@@ -217,9 +217,9 @@
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric',;
+      hour: '2-digit',;
+      minute: '2-digit';
     });
   }
 
@@ -447,7 +447,7 @@
             <label class="block text-sm font-medium mb-2">Title</label>
             <Input
               type="text"
-              placeholder="Note title"
+              placeholder="Note title";
               bind:value={newNote.title}
             />
           </div>
@@ -497,7 +497,7 @@
         <div>
           <label class="block text-sm font-medium mb-2">Content</label>
           <Textarea
-            placeholder="Note content..."
+            placeholder="Note content...";
             bind:value={newNote.content}
             rows={6}
           />
@@ -757,4 +757,4 @@
       </Card>
     {/if}
   </div>
-</div>
+</div>;

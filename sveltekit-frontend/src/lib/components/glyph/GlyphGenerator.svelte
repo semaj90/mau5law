@@ -7,7 +7,7 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   // GRPMO Extended Thinking Integration
   import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations';
   import type { SimilarityResult } from '$lib/server/db/vector-operations';
@@ -129,10 +129,10 @@
   async function generateWithGRPMOContext(grpmoResult: unknown): Promise<any> {
     // Enhanced generation request with GRPMO context
     const response = await fetch('/api/glyph/generate', {
-      method: 'POST',
+      method: 'POST',;
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        evidence_id: evidenceId,
+        evidence_id: evidenceId,;
         prompt: prompt.trim(),
         style,
         dimensions,
@@ -156,10 +156,10 @@
   async function generateStandard(): Promise<any> {
     // Standard generation without GRPMO
     const response = await fetch('/api/glyph/generate', {
-      method: 'POST',
+      method: 'POST',;
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        evidence_id: evidenceId,
+        evidence_id: evidenceId,;
         prompt: prompt.trim(),
         style,
         dimensions,
@@ -420,7 +420,7 @@
                 <label class="text-sm text-gray-600" for="target-ratio">Target ratio:</label><input id="target-ratio" 
                   type="range" 
                   min="10" 
-                  max="100" 
+                  max="100" ;
                   bind:value={targetCompressionRatio}
                   disabled={generating}
                   class="flex-1"
@@ -439,7 +439,7 @@
               <input 
                 type="range" 
                 min="0" 
-                max="10" 
+                max="10" ;
                 bind:value={predictiveFrames}
                 disabled={generating}
                 class="flex-1"
@@ -454,7 +454,7 @@
             <div class="flex items-center gap-2">
               <input 
                 type="checkbox" 
-                id="enable-ui-compression"
+                id="enable-ui-compression";
                 bind:checked={enableUILayoutCompression}
                 disabled={generating}
                 class="rounded"
@@ -734,21 +734,21 @@
 
 <style>
   /* Custom scrollbar for textarea */
-  textarea::-webkit-scrollbar {
+  textarea::-webkit-scrollbar {;
     width: 4px;
   }
   
-  textarea::-webkit-scrollbar-track {
+  textarea::-webkit-scrollbar-track {;
     background: #f1f1f1;
     border-radius: 2px;
   }
   
-  textarea::-webkit-scrollbar-thumb {
+  textarea::-webkit-scrollbar-thumb {;
     background: #c1c1c1;
     border-radius: 2px;
   }
   
-  textarea::-webkit-scrollbar-thumb:hover {
+  textarea::-webkit-scrollbar-thumb:hover {;
     background: #a8a8a8;
   }
 </style>

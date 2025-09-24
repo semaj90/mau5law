@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Retro Gaming Recommendation Modal - Multi-Console CSS Styling -->
@@ -43,11 +43,11 @@ https://svelte.dev/e/attribute_duplicate -->
         border: '#D3D3D3',
         accent: '#FC0F0F',
         text: '#FFFFFF',
-        selected: '#00D4AA'
+        selected: '#00D4AA';
       },
       pixelSize: '4px',
       fontFamily: '"Courier New", monospace',
-      shadow: '4px 4px 0px #000000'
+      shadow: '4px 4px 0px #000000';
     },
     snes: {
       colors: {
@@ -55,11 +55,11 @@ https://svelte.dev/e/attribute_duplicate -->
         border: '#E4E4FF',
         accent: '#FF6B9D',
         text: '#FFFFFF',
-        selected: '#FFE066'
+        selected: '#FFE066';
       },
       pixelSize: '2px',
       fontFamily: '"Press Start 2P", monospace',
-      shadow: '2px 2px 4px rgba(0,0,0,0.7)'
+      shadow: '2px 2px 4px rgba(0,0,0,0.7)';
     },
     n64: {
       colors: {
@@ -67,11 +67,11 @@ https://svelte.dev/e/attribute_duplicate -->
         border: '#60A5FA',
         accent: '#F59E0B',
         text: '#FFFFFF',
-        selected: '#10B981'
+        selected: '#10B981';
       },
       pixelSize: '1px',
       fontFamily: '"Orbitron", monospace',
-      shadow: '0 0 20px rgba(96, 165, 250, 0.5)'
+      shadow: '0 0 20px rgba(96, 165, 250, 0.5)';
     },
     ps1: {
       colors: {
@@ -79,11 +79,11 @@ https://svelte.dev/e/attribute_duplicate -->
         border: '#6B7280',
         accent: '#EF4444',
         text: '#F3F4F6',
-        selected: '#3B82F6'
+        selected: '#3B82F6';
       },
       pixelSize: '1px',
       fontFamily: '"Share Tech Mono", monospace',
-      shadow: '0 4px 8px rgba(0,0,0,0.6)'
+      shadow: '0 4px 8px rgba(0,0,0,0.6)';
     },
     ps2: {
       colors: {
@@ -91,11 +91,11 @@ https://svelte.dev/e/attribute_duplicate -->
         border: '#3B82F6',
         accent: '#F97316',
         text: '#FFFFFF',
-        selected: '#10B981'
+        selected: '#10B981';
       },
       pixelSize: '0px',
       fontFamily: '"Exo 2", sans-serif',
-      shadow: '0 0 30px rgba(59, 130, 246, 0.6)'
+      shadow: '0 0 30px rgba(59, 130, 246, 0.6)';
     },
     yorha: {
       colors: {
@@ -103,11 +103,11 @@ https://svelte.dev/e/attribute_duplicate -->
         border: '#D4AF37',
         accent: '#00FF41',
         text: '#E0E0E0',
-        selected: '#D4AF37'
+        selected: '#D4AF37';
       },
       pixelSize: '0px',
-      fontFamily: '"Rajdhani", sans-serif',
-      shadow: '0 0 40px rgba(212, 175, 55, 0.4)'
+      fontFamily: '"Rajdhani", sans-serif',;
+      shadow: '0 0 40px rgba(212, 175, 55, 0.4)';
     }
   };
 
@@ -118,9 +118,9 @@ https://svelte.dev/e/attribute_duplicate -->
     if (!sound || !audioContext) return;
     const frequencies = {
       open: [523, 659, 784],      // C-E-G chord
-      select: [440],              // A note
-      confirm: [523, 659],        // C-E
-      close: [440, 349]           // A-F
+      select: [440],              // A note;
+      confirm: [523, 659],        // C-E;
+      close: [440, 349]           // A-F;
     };
 
     frequencies[type].forEach((freq, i) => {
@@ -184,9 +184,9 @@ https://svelte.dev/e/attribute_duplicate -->
   function getPriorityIcon(priority: string) {
     const icons = {
       low: '●',
-      medium: '◆',  
-      high: '▲',
-      critical: '⚠'
+      medium: '◆',  ;
+      high: '▲',;
+      critical: '⚠';
     };
     return icons[priority as keyof typeof icons] || '●';
   }
@@ -194,9 +194,9 @@ https://svelte.dev/e/attribute_duplicate -->
   function getTypeColor(type: string) {
     const colors = {
       detective: currentTheme.colors.accent,
-      legal: '#10B981',
-      evidence: '#F59E0B', 
-      ai: '#8B5CF6'
+      legal: '#10B981',;
+      evidence: '#F59E0B', ;
+      ai: '#8B5CF6';
     };
     return colors[type as keyof typeof colors] || currentTheme.colors.text;
   }
@@ -286,7 +286,7 @@ https://svelte.dev/e/attribute_duplicate -->
             <div 
               class="recommendation-item"
               class:selected={index === selectedIndex}
-              style:border-color={index === selectedIndex ? currentTheme.colors.selected: 'transparent'}
+              style:border-color={index === selectedIndex ? currentTheme.colors.selected: 'transparent'};
               style:background-color={index === selectedIndex ? `${currentTheme.colors.selected}20` : 'transparent'}
               role="button" 
                 onclick={() => { selectedIndex = index; rec.action?.(); handleClose(); }}
@@ -358,7 +358,7 @@ https://svelte.dev/e/attribute_duplicate -->
 {/if}
 
 <style>
-  .modal-backdrop {
+  .modal-backdrop {;
     position: fixed;
     top: 0;
     left: 0;
@@ -419,7 +419,7 @@ https://svelte.dev/e/attribute_duplicate -->
     position: relative;
   }
 
-  .retro-modal.yorha: :before {
+  .retro-modal.yorha::before {
     content: '';
     position: absolute;
     top: -2px;
@@ -577,15 +577,15 @@ https://svelte.dev/e/attribute_duplicate -->
   }
 
   /* Scrollbar styling */
-  .modal-content: :-webkit-scrollbar {
+  .modal-content::-webkit-scrollbar {
     width: 8px;
   }
 
-  .modal-content: :-webkit-scrollbar-track {
+  .modal-content::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.2);
   }
 
-  .modal-content: :-webkit-scrollbar-thumb {
+  .modal-content::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.3);
     border-radius: 4px;
   }

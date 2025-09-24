@@ -48,7 +48,7 @@ export function createEnhancedComponent(config: BitsUIEnhancedConfig) {
   return {
     ...config.component,
     theme: config.theme,
-    variant: config.variant || 'nes',
+    variant: config.variant || 'nes',;
     enhanced: true
   };
 }
@@ -73,7 +73,7 @@ export function withEnhancedStyling(
   return {
     component: Component,
     theme,
-    variant,
+    variant,;
     apply: (element: HTMLElement) => applyCustomDesign(element, theme)
   };
 }

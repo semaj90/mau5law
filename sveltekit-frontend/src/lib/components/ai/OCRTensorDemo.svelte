@@ -17,9 +17,9 @@
   let results: ProcessingResult[] = $state([]);
   let logs: string[] = $state([]);
   let cacheStats = $state({
-    hits: 0,
+    hits: 0,;
     misses: 0,
-    totalProcessingTime: 0
+    totalProcessingTime: 0;
   });
 
   // Performance metrics
@@ -33,8 +33,9 @@
   // File input reference
   let fileInput: HTMLInputElement;
 
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       addLog('🚀 Initializing OCR + Tensor Processing...');
       await ocrTensorProcessor.initialize();
       initialized = true;
@@ -42,6 +43,7 @@
     } catch (error: any) {
       addLog(`❌ Initialization failed: ${error.message}`);
     }
+    })();
   });
 
   /**
@@ -72,7 +74,7 @@
       // Process the image
       const result = await ocrTensorProcessor.processImage(uploadedFile, {
         language: 'eng',
-        useCache: true
+        useCache: true;
       });
       results = [result, ...results];
       // Update performance metrics
@@ -110,7 +112,7 @@
       await ocrTensorProcessor.storeResults(resultsToStore, {
         source: 'ocr_demo',
         user_id: 'demo_user',
-        session_id: crypto.randomUUID()
+        session_id: crypto.randomUUID();
       });
       addLog('✅ Results stored successfully');
     } catch (error: any) {
@@ -224,7 +226,7 @@
     <!-- File Upload Section -->
     <div class="upload-section">
       <h3>📁 Upload Image</h3>
-      <input
+      <input;
         bind:this={fileInput}
         type="file"
         accept="image/*"
@@ -477,17 +479,17 @@
     transition: all 0.2s;
   }
 
-  .action-buttons button:disabled {
+  .action-buttons button:disabled {;
     opacity: 0.6;
     cursor: not-allowed;
   }
 
-  .action-buttons button:first-child {
+  .action-buttons button:first-child {;
     background: #3b82f6;
     color: white;
   }
 
-  .action-buttons button:first-child:hover:not(:disabled) {
+  .action-buttons button:first-child:hover:not(:disabled) {;
     background: #2563eb;
   }
 

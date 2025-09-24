@@ -60,10 +60,10 @@ export const mcpTools: MCPTools = {
     findSimilarCases: async (embedding: number[], limit: number) => ({ success: true, data: [] }),
     getCaseAnalytics: async (userId: string) => ({ success: true, data: { totalCases: 0, activeCases: 0 } })
   },
-  
+  ;
   evidence: {
     loadEvidence: async (params: { caseId?: string; limit?: number; query?: string }) => ({ 
-      success: true, 
+      success: true, ;
       data: [] 
     }),
     createEvidence: async (evidenceData: any) => ({ success: true, data: { id: 'new-evidence-123', ...evidenceData } }),
@@ -78,7 +78,7 @@ export const mcpTools: MCPTools = {
   
   users: {
     getUserById: async (userId: string) => ({ 
-      success: true, 
+      success: true, ;
       data: { id: userId, name: 'Demo User', role: 'attorney' } 
     }),
     updateUser: async (userId: string, updates: any) => ({ success: true, data: { id: userId, ...updates } }),

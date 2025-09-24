@@ -25,7 +25,7 @@
     closeOnOutsideClick = true,
     class: className = '',
     children,
-    trigger
+    trigger;
    }: Props = $props();
 
   let contentClasses = $derived(cn(

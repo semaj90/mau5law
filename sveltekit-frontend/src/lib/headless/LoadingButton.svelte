@@ -28,7 +28,7 @@
     class: className = '',
     children,
     onclick,
-    ...rest
+    ...rest;
   }: LoadingButtonProps = $props();
 
   let isDisabled = $derived(disabled || loading);

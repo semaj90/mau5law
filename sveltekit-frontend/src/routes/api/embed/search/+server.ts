@@ -1,21 +1,21 @@
-import type { RequestHandler } from './$types.js';
-import { db, sql } from '$lib/server/db';
-import { json, error } from '@sveltejs/kit';
-import { generateEmbedding, searchSimilarChatsKeyword } from '$lib/server/services/vectorDBService';
+import type { RequestHandler } from './$types.js'
+import { db, sql } from '$lib/server/db'
+import { json, error } from '@sveltejs/kit'
+import { generateEmbedding, searchSimilarChatsKeyword } from '$lib/server/services/vectorDBService'
 
-// Use optimized embedding generation with caching;
+// Use optimized embedding generation with caching
 async function generateQueryEmbedding(query: string): Promise<number[]> {
-  const embedding = await generateEmbedding(query, true); // Use cache;
+  const embedding = await generateEmbedding(query, true); // Use cache
   if (!embedding) {
-    throw new Error('Failed to generate query embedding');
+    throw new Error('Failed to generate query embedding')
   }
-  return embedding;
+  return embedding
 }
 
-// Generate RAG response using Gemma3 legal model;
+// Generate RAG response using Gemma3 legal model
 async function generateRAGResponse(query: string, context: any[]): Promise<string> {
   try {
-    const contextText = context.map(c => `${c.chunk_text}`).join('\n\n');
+    const contextText = context.map(c => `${c.chunk_text}`).join('\n\n')
     
     const prompt = `Based on the following legal context, provide a comprehensive response to the query.
 
@@ -24,7 +24,7 @@ ${contextText}
 
 Query: ${query}
 
-Response:`;
+Response:`
 
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
@@ -39,39 +39,39 @@ Response:`;
           max_tokens: 1000
         }
       })
-    });
+    })
 
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-      throw new Error(`Ollama generation error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      throw new Error(`Ollama generation error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`)
     }
 
-    const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
-    return (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).response;
+    const result = await (response as { ok?: any; statusText?: any; json?: any }).json()
+    return (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).response
   } catch (err) {
-    console.error('RAG response generation failed:', err);
-    throw new Error('Failed to generate RAG response');
+    console.error('RAG response generation failed:', err)
+    throw new Error('Failed to generate RAG response')
   }
 }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { query, limit = 5, threshold = 0.7, includeRAGResponse = true } = await request.json();
+    const { query, limit = 5, threshold = 0.7, includeRAGResponse = true } = await request.json()
 
     if (!query) {
-      return error(400, 'Missing required field: query');
+      return error(400, 'Missing required field: query')
     }
 
     // Generate query embedding
-    const queryEmbedding = await generateQueryEmbedding(query);
+    const queryEmbedding = await generateQueryEmbedding(query)
     
     if (!queryEmbedding || queryEmbedding.length !== 768) {
-      throw new Error(`Invalid query embedding dimension: expected 768, got ${queryEmbedding?.length}`);
+      throw new Error(`Invalid query embedding dimension: expected 768, got ${queryEmbedding?.length}`)
     }
 
     // Try chat embeddings first, then fallback to document chunks if available
-    let similarChunks = [];
+    let similarChunks = []
     
-    // Search chat embeddings using optimized service;
+    // Search chat embeddings using optimized service
     try {
       const chatResults = await db.execute(
         sql`SELECT 
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
         WHERE 1 - (embedding <=> ${`[${queryEmbedding.join(',')}]`}::vector) > ${threshold}
         ORDER BY embedding <=> ${`[${queryEmbedding.join(',')}]`}::vector
         LIMIT ${limit}`
-      );
+      )
       
       similarChunks = chatResults.rows.map((row: any) => ({
         id: row.conversation_id,
@@ -95,14 +95,14 @@ export const POST: RequestHandler = async ({ request }) => {
         similarity: parseFloat(row.similarity),
         role: row.role,
         metadata: row.metadata ? JSON.parse(row.metadata) : Record<string, any>
-      });
+      })
       
-      console.log(`Found ${similarChunks.length} chat embeddings results`);
+      console.log(`Found ${similarChunks.length} chat embeddings results`)
     } catch (chatError) {
-      console.warn('Chat embeddings search failed, trying keyword fallback:', chatError);
+      console.warn('Chat embeddings search failed, trying keyword fallback:', chatError)
       
       // Fallback to keyword search
-      const keywordResults = await searchSimilarChatsKeyword(query, limit);
+      const keywordResults = await searchSimilarChatsKeyword(query, limit)
       similarChunks = keywordResults.map(result => ({
         id: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).conversationId,
         chunk_text: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).content,
@@ -112,28 +112,28 @@ export const POST: RequestHandler = async ({ request }) => {
         similarity: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).similarity,
         role: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).role,
         metadata: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).metadata
-      });
+      })
       
-      console.log(`Used keyword fallback, found ${similarChunks.length} results`);
+      console.log(`Used keyword fallback, found ${similarChunks.length} results`)
     }
 
-    let ragResponse = null;
+    let ragResponse = null
     
     if (includeRAGResponse && similarChunks.length > 0) {
-      ragResponse = await generateRAGResponse(query, similarChunks);
+      ragResponse = await generateRAGResponse(query, similarChunks)
     }
 
-    // Enhance results with conversation context;
+    // Enhance results with conversation context
     const enhancedResults = similarChunks.map(chunk => ({
       ...chunk,
-      similarity: Math.round(chunk.similarity * 1000) / 1000, // Round to 3 decimal places;
+      similarity: Math.round(chunk.similarity * 1000) / 1000, // Round to 3 decimal places
       entityInfo: {
         type: 'chat_conversation',
         conversationId: chunk.id,
         role: chunk.role || 'unknown',
         source: 'chat_embeddings'
       }
-    });
+    })
 
     return json({
       success: true,
@@ -147,10 +147,10 @@ export const POST: RequestHandler = async ({ request }) => {
         ragModel: includeRAGResponse ? 'legal:latest' : null,
         searchTime: Date.now()
       }
-    });
+    })
 
   } catch (err) {
-    console.error('Vector search error:', err);
-    return error(500, `Search failed: ${err.message}`);
+    console.error('Vector search error:', err)
+    return error(500, `Search failed: ${err.message}`)
   }
-};
+}

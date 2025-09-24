@@ -1,7 +1,7 @@
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
-<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name
+<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name;
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
@@ -87,12 +87,12 @@ https://svelte.dev/e/attribute_invalid_name -->
 
   	// Settings
   let settings = $state<ChatSettings >({
-  		model: modelName,
+  		model: modelName,;
   		temperature: 0.1,
   		maxTokens: 512,
   		topP: 0.9,
   		systemPrompt:
-  			'You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance.'
+  			'You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance.';
   	});
 
   	// Elements (nullable for binds)
@@ -114,8 +114,8 @@ https://svelte.dev/e/attribute_invalid_name -->
   How can I assist you with your legal needs today?`);
 
   			position = {
-  				x: window.innerWidth - width - 20,
-  				y: window.innerHeight - height - 20
+  				x: window.innerWidth - width - 20,;
+  				y: window.innerHeight - height - 20;
   			};
   		}
   	});
@@ -144,9 +144,9 @@ https://svelte.dev/e/attribute_invalid_name -->
   		const message: Message = {
   			id: crypto.randomUUID(),
   			role,
-  			content,
+  			content,;
   			timestamp: new Date(),
-  			...options
+  			...options;
   		};
 
   		messages = [...messages, message];
@@ -208,10 +208,10 @@ https://svelte.dev/e/attribute_invalid_name -->
 
   			try {
     const response = await fetch(apiEndpoint, {
-  				method: 'POST',
+  				method: 'POST',;
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({
-  					model: settings.model,
+  					model: settings.model,;
   					prompt: formatPromptForGemma3(message)));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -220,17 +220,17 @@ https://svelte.dev/e/attribute_invalid_name -->
     console.error('API call failed:', error);
     throw error;
   },
-  					stream: false,
+  					stream: false,;
   					options: {
   						temperature: settings.temperature,
   						num_predict: settings.maxTokens,
   						top_p: settings.topP,
   						top_k: 40,
   						repeat_penalty: 1.1,
-  						stop: ['<start_of_turn>', '<end_of_turn>']
+  						stop: ['<start_of_turn>', '<end_of_turn>'];
   					}
-  				}),
-  				signal: controller.signal
+  				}),;
+  				signal: controller.signal;
   			});
 
   			clearTimeout(timeoutId);
@@ -260,16 +260,16 @@ https://svelte.dev/e/attribute_invalid_name -->
   		try {
   			try {
     const response = await fetch(fallbackEndpoint, {
-  				method: 'POST',
+  				method: 'POST',;
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({
   					messages: [
   						{ role: 'system', content: settings.systemPrompt },
   						{ role: 'user', content: message }
   					],
-  					max_tokens: settings.maxTokens,
+  					max_tokens: settings.maxTokens,;
   					temperature: settings.temperature,
-  					top_p: settings.topP
+  					top_p: settings.topP;
   				}));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -280,7 +280,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   },
   				// AbortSignal.timeout may not be available in all runtimes; keep for modern environments
   				// If unsupported, the fetch will simply run without timeout.
-  				signal: (AbortSignal as any).timeout ? (AbortSignal as any).timeout(60000) : undefined
+  				signal: (AbortSignal as any).timeout ? (AbortSignal as any).timeout(60000) : undefined;
   			});
 
   			if (response.ok) {
@@ -342,8 +342,8 @@ https://svelte.dev/e/attribute_invalid_name -->
   		isDragging = true;
   		const rect = windowElement.getBoundingClientRect();
   		dragOffset = {
-  			x: event.clientX - rect.left,
-  			y: event.clientY - rect.top
+  			x: event.clientX - rect.left,;
+  			y: event.clientY - rect.top;
   		};
 
   		document.addEventListener('mousemove', handleDrag);
@@ -360,8 +360,8 @@ https://svelte.dev/e/attribute_invalid_name -->
   		const maxY = window.innerHeight - height;
 
   		position = {
-  			x: Math.max(0, Math.min(newX, maxX)),
-  			y: Math.max(0, Math.min(newY, maxY))
+  			x: Math.max(0, Math.min(newX, maxX)),;
+  			y: Math.max(0, Math.min(newY, maxY));
   		};
   	}
 
@@ -415,9 +415,9 @@ https://svelte.dev/e/attribute_invalid_name -->
 		role="dialog"
 		aria-labelledby="chat-window-title"
 		aria-describedby="chat-window-description"
-		class="fixed bg-yorha-bg-secondary border-2 border-yorha-primary shadow-2xl z-50 flex flex-col overflow-hidden font-mono focus-within:ring-2 focus-within:ring-yorha-primary/50"
+		class="fixed bg-yorha-bg-secondary border-2 border-yorha-primary shadow-2xl z-50 flex flex-col overflow-hidden font-mono focus-within:ring-2 focus-within:ring-yorha-primary/50";
 	 class:opacity-50={isDragging}
-		style="
+		style=";
 			width: {width}px;
 			height: {minimized ? 60 : height}px;
 			left: {position.x}px;
@@ -431,7 +431,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 			{#each Array(5) as _, i}
 				<div
 					class="absolute w-1 h-1 bg-yorha-accent rounded-full opacity-60 animate-float"
-					style="
+					style=";
 						left: {10 + (i * 20)}%;
 						animation-delay: {i * 0.8}s;
 						animation-duration: {6 + (i * 2)}s;
@@ -557,7 +557,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 						<div
 							class="max-w-[85%] border border-yorha-border p-3 relative shadow-sm"
 						 class:bg-yorha-bg-tertiary={message.role === 'user'}
-						 class:border-yorha-primary={message.role === 'user'}
+						 class:border-yorha-primary={message.role === 'user'};
 						 class:bg-yorha-bg-secondary={message.role !== 'user'}
 							role={message.role === 'system' ? 'status' : 'article'}
 						>
@@ -611,7 +611,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       }
     }}} role="search" aria-label="Send message to AI">
 					<textarea
-						bind:this={inputElement}
+						bind:this={inputElement};
 						bind:value={inputValue}
 						onkeydown={handleKeyDown}
 						oninput={(event: Event) => debounce(autoResize, 300}
@@ -650,7 +650,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 
 <style>
 	@keyframes float {
-		0%, 100% {
+		0%, 100% {;
 			transform: translateY(0) rotate(0deg);
 			opacity: 0;
 		}

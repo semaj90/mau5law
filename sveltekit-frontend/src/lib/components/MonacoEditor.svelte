@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -11,10 +11,10 @@ https://svelte.dev/e/js_parse_error -->
   // SSR safety: only run in browser
   if (typeof window !== 'undefined') {
     editor = monaco.editor.create(editorContainer, {
-      value: '// Type your code here...\n',
-      language: 'javascript',
+      value: '// Type your code here...\n',;
+      language: 'javascript',;
       theme: 'vs-dark',
-      automaticLayout: true
+      automaticLayout: true;
     }));
   }
   });
@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   /* @unocss-include */
 /* Ensure the Monaco editor fills the container */
-:global(.monaco-editor) {
+:global(.monaco-editor) {;
   border-radius: 0.5rem;
 }
 </style>

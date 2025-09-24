@@ -1,38 +1,38 @@
 // Database Integration API for Legal Documents
 // Handles storage with Drizzle ORM and PostgreSQL
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/database';
-import { documents, cases, users, userSessions } from '$lib/server/database/schema';
-import { validateAuthSession } from '$lib/server/auth';
-import { nanoid } from 'nanoid';
-import { eq, and } from 'drizzle-orm';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { db } from '$lib/server/database'
+import { documents, cases, users, userSessions } from '$lib/server/database/schema'
+import { validateAuthSession } from '$lib/server/auth'
+import { nanoid } from 'nanoid'
+import { eq, and } from 'drizzle-orm'
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const session = await validateAuthSession(request);
+    const session = await validateAuthSession(request)
     if (!session) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
+      return json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { documents: uploadResults, caseId, userId, legalContext, metadata } = await request.json();
+    const { documents: uploadResults, caseId, userId, legalContext, metadata } = await request.json()
 
     if (!uploadResults || !Array.isArray(uploadResults)) {
-      return json({ error: 'Invalid documents data' }, { status: 400 });
+      return json({ error: 'Invalid documents data' }, { status: 400 })
     }
 
     // Begin transaction for atomic operations
-    const dbOperations = [];
-    const documentIds = [];
+    const dbOperations = []
+    const documentIds = []
 
     for (const result of uploadResults) {
       if (!(result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).success) continue; // Skip failed uploads
 
-      const documentId = (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).documentId || nanoid();
-      documentIds.push(documentId);
+      const documentId = (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).documentId || nanoid()
+      documentIds.push(documentId)
 
-      // Prepare document data for database insertion;
+      // Prepare document data for database insertion
       const documentData = {
         id: documentId,
         fileName: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).fileName,
@@ -64,45 +64,45 @@ export const POST: RequestHandler = async ({ request }) => {
           }],
           analysisResults: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).aiInsights || {}
         }
-      };
+      }
 
       dbOperations.push(
         db.insert(documents).values(documentData)
-      );
+      )
     }
 
     // Execute all database operations
-    await Promise.all(dbOperations);
+    await Promise.all(dbOperations)
 
-    // Update case document count if case is specified;
+    // Update case document count if case is specified
     if (caseId) {
       try {
         // This would update case metadata with new document count
         // Implement based on your cases table structure
-        await db.update(cases);
+        await db.update(cases)
           .set({
             lastUpdated: new Date(),
             documentCount: db.select().from(documents).where(eq(documents.caseId, caseId)).then(docs => docs.length)
           })
-          .where(eq(cases.id, caseId);
+          .where(eq(cases.id, caseId)
       } catch (error) {
-        console.warn('Failed to update case metadata:', error);
+        console.warn('Failed to update case metadata:', error)
       }
     }
 
-    // Update user analytics;
+    // Update user analytics
     try {
       const userUploadStats = await db
         .select()
         .from(documents)
-        .where(eq(documents.userId, session.userId);
+        .where(eq(documents.userId, session.userId)
 
-      const totalUploads = userUploadStats.length;
-      const successfulUploads = uploadResults.filter(item => item.length);
-      const successRate = totalUploads > 0 ? successfulUploads / totalUploads : 1.0;
+      const totalUploads = userUploadStats.length
+      const successfulUploads = uploadResults.filter(item => item.length)
+      const successRate = totalUploads > 0 ? successfulUploads / totalUploads : 1.0
 
       // Update user session with analytics
-      await db.update(userSessions);
+      await db.update(userSessions)
         .set({
           lastActivity: new Date(),
           metadata: {
@@ -114,18 +114,18 @@ export const POST: RequestHandler = async ({ request }) => {
             }
           }
         })
-        .where(eq(userSessions.userId, session.userId);
+        .where(eq(userSessions.userId, session.userId)
 
     } catch (error) {
-      console.warn('Failed to update user analytics:', error);
+      console.warn('Failed to update user analytics:', error)
     }
 
-    // Generate search embeddings for successful documents (background task);
+    // Generate search embeddings for successful documents (background task)
     if (documentIds.length > 0) {
-      // This would typically be handled by a background job queue;
+      // This would typically be handled by a background job queue
       generateSearchEmbeddings(documentIds).catch(error => {
-        console.warn('Failed to generate search embeddings:', error);
-      });
+        console.warn('Failed to generate search embeddings:', error)
+      })
     }
 
     return json({
@@ -134,18 +134,18 @@ export const POST: RequestHandler = async ({ request }) => {
       documentIds: documentIds,
       caseId: caseId,
       message: `Successfully stored ${documentIds.length} documents`
-    });
+    })
 
   } catch (error) {
-    console.error('Database storage error:', error);
+    console.error('Database storage error:', error)
     return json({
       error: 'Failed to store documents',
       details: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-// Background task to generate search embeddings;
+// Background task to generate search embeddings
 async function generateSearchEmbeddings(documentIds: string[]) {
   try {
     for (const documentId of documentIds) {
@@ -154,16 +154,16 @@ async function generateSearchEmbeddings(documentIds: string[]) {
         .select()
         .from(documents)
         .where(eq(documents.id, documentId)
-        .limit(1);
+        .limit(1)
 
-      if (document.length === 0) continue;
+      if (document.length === 0) continue
 
-      const docData = document[0];
-      const textContent = docData.textContent || docData.aiAnalysis?.summary || '';
+      const docData = document[0]
+      const textContent = docData.textContent || docData.aiAnalysis?.summary || ''
 
       if (textContent.length < 10) continue; // Skip documents with minimal content
 
-      // Generate embeddings using Ollama;
+      // Generate embeddings using Ollama
       const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: {
@@ -173,12 +173,12 @@ async function generateSearchEmbeddings(documentIds: string[]) {
           model: 'mxbai-embed-large',
           prompt: textContent.slice(0, 2000) // Limit content for embedding
         })
-      });
+      })
 
       if (embeddingResponse.ok) {
-        const embeddingResult = await embeddingResponse.json();
+        const embeddingResult = await embeddingResponse.json()
 
-        // Store embedding in pgvector table;
+        // Store embedding in pgvector table
         await db.insert(embeddings).values({
           id: nanoid(),
           documentId: documentId,
@@ -190,31 +190,31 @@ async function generateSearchEmbeddings(documentIds: string[]) {
             documentType: docData.fileType,
             caseId: docData.caseId
           }
-        });
+        })
       }
     }
   } catch (error) {
-    console.error('Embedding generation failed:', error);
+    console.error('Embedding generation failed:', error)
   }
 }
 
-// Health check endpoint;
+// Health check endpoint
 export const GET: RequestHandler = async () => {
   try {
     // Test database connection
-    await db.select().from(users).limit(1);
+    await db.select().from(users).limit(1)
 
     return json({
       status: 'healthy',
       database: 'connected',
       timestamp: new Date().toISOString()
-    });
+    })
   } catch (error) {
     return json({
       status: 'unhealthy',
       database: 'disconnected',
       error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

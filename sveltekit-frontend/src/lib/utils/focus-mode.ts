@@ -5,7 +5,6 @@
  */
 
 import { writable } from "svelte/store";
-}
 
 export interface FocusSettings {
   dimOpacity: number;
@@ -368,7 +367,7 @@ export const focusModeStyles = `;
   /* Focus indicators */
   .focus-mode-active .editor-content,
   .focus-mode-active [contenteditable="true"] {
-    box-shadow: 0 0 0 2px theme(colors.yorha.primary / 20%);
+    box-shadow: 0 0 0 2px rgba(224, 224, 224, 0.2);
     border-radius: 8px;
   }
 
@@ -384,7 +383,7 @@ export function createFocusMode(initialSettings?: Partial<FocusSettings>) {
 
   return {
     activate: () => manager.activate(),
-    deactivate: () => manager.deactivate(),
+    deactivate: () => manager.deactivate(),;
     toggle: () => manager.toggle(),
     isActive: () => manager.isActivated(),
     updateSettings: (settings: Partial<FocusSettings>) =>
@@ -426,7 +425,7 @@ export const focusPresets = {
     dimOpacity: 0.3,
     enableZenMode: true,
     hideElements: [".toolbar", ".sidebar", ".status-bar"]
-  },
+  },;
   zen: {
     dimOpacity: 0.1,
     enableZenMode: true,

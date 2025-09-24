@@ -138,7 +138,7 @@ export class WebGPUAIEngine {
         isSupported: true,
         adapter,
         device,
-        features: featureList,
+        features: featureList,;
         limits: adapter.limits as any
       };
 
@@ -254,7 +254,7 @@ export class WebGPUAIEngine {
    * Process dimensional array with kernel attention
    */
   async processDimensionalArray(
-    data: BufferLike,
+    data: BufferLike,;
     shape: number[],
     attentionWeights: BufferLike,
     kernelSize = 8;
@@ -286,7 +286,7 @@ export class WebGPUAIEngine {
 
       pipeline = device.createComputePipeline({
         layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
-        compute: {
+        compute: {;
           module: shaderModule,
           entryPoint: 'kernelAttention'
         }
@@ -298,24 +298,24 @@ export class WebGPUAIEngine {
     // Create buffers;
     const inputBuffer = device.createBuffer({
       size: // @ts-ignore - Buffer API compatibility
-            (data as any).byteLength || data.length || 0,
+            (data as any).byteLength || data.length || 0,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const attentionBuffer = device.createBuffer({
-      size: attentionWeights.byteLength,
+      size: attentionWeights.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const outputBuffer = device.createBuffer({
       size: // @ts-ignore - Buffer API compatibility
-            (data as any).byteLength || data.length || 0,
+            (data as any).byteLength || data.length || 0,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     const paramsData = new Uint32Array([data.length, data.length, kernelSize, 8]);
     const paramsBuffer = device.createBuffer({
-      size: paramsData.byteLength,
+      size: paramsData.byteLength,;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
@@ -329,7 +329,7 @@ export class WebGPUAIEngine {
 
     // Create bind group;
     const bindGroup = device.createBindGroup({
-      layout: pipeline.getBindGroupLayout(0),
+      layout: pipeline.getBindGroupLayout(0),;
       entries: [
         { binding: 0, resource: { buffer: inputBuffer } },
         { binding: 1, resource: { buffer: attentionBuffer } },
@@ -350,7 +350,7 @@ export class WebGPUAIEngine {
     // Read back results;
     const readBuffer = device.createBuffer({
       size: // @ts-ignore - Buffer API compatibility
-            (data as any).byteLength || data.length || 0,
+            (data as any).byteLength || data.length || 0,;
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
@@ -408,7 +408,7 @@ export class WebGPUAIEngine {
 
     const pipeline = device.createComputePipeline({
       layout: 'auto',
-      compute: {
+      compute: {;
         module: shaderModule,
         entryPoint: 't5Attention'
       }
@@ -416,25 +416,25 @@ export class WebGPUAIEngine {
 
     // Create buffers for T5 computation;
     const inputBuffer = device.createBuffer({
-      size: tokens.byteLength,
+      size: tokens.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     // Simplified weight matrices (normally loaded from model)
     const weights = new Float32Array(hiddenSize).fill(0.1);
     const weightsBuffer = device.createBuffer({
-      size: weights.byteLength,
+      size: weights.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const outputBuffer = device.createBuffer({
-      size: tokens.byteLength,
+      size: tokens.byteLength,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     const params = new Uint32Array([sequenceLength, hiddenSize, numHeads, hiddenSize / numHeads]);
     const paramsBuffer = device.createBuffer({
-      size: params.byteLength,
+      size: params.byteLength,;
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
@@ -446,7 +446,7 @@ export class WebGPUAIEngine {
 
     // Create bind group;
     const bindGroup = device.createBindGroup({
-      layout: pipeline.getBindGroupLayout(0),
+      layout: pipeline.getBindGroupLayout(0),;
       entries: [
         { binding: 0, resource: { buffer: inputBuffer } },
         { binding: 1, resource: { buffer: weightsBuffer } },
@@ -468,7 +468,7 @@ export class WebGPUAIEngine {
 
     // Read results;
     const readBuffer = device.createBuffer({
-      size: tokens.byteLength,
+      size: tokens.byteLength,;
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
@@ -629,7 +629,7 @@ export class WebGPUAIEngine {
         cachedShaders: this.shaderCache.size,
         averageProcessingTime: 50, // Placeholder
         gpuUtilization: 0.75 // Placeholder
-      },
+      },;
       recommendations: [
         'Enable WebGPU for maximum performance',
         'Use larger workgroup sizes for better GPU utilization',

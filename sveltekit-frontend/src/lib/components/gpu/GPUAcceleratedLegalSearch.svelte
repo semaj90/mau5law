@@ -19,38 +19,40 @@
   			id: 'case-001',
   			title: 'Contract Breach - Software Licensing',
   			content: 'breach of software licensing agreement indemnification liability termination',
-  			vector: [0.8, 0.2, 0.9, 0.7, 0.3, 0.6, 0.4, 0.8]
+  			vector: [0.8, 0.2, 0.9, 0.7, 0.3, 0.6, 0.4, 0.8];
   		},
   		{
   			id: 'case-002', 
   			title: 'Employment Termination Dispute',
   			content: 'wrongful termination employment contract severance compensation',
-  			vector: [0.6, 0.7, 0.4, 0.8, 0.9, 0.3, 0.7, 0.5]
+  			vector: [0.6, 0.7, 0.4, 0.8, 0.9, 0.3, 0.7, 0.5];
   		},
   		{
   			id: 'case-003',
   			title: 'Intellectual Property Infringement',
   			content: 'patent infringement intellectual property damages royalties',
-  			vector: [0.7, 0.9, 0.6, 0.4, 0.8, 0.5, 0.9, 0.6]
+  			vector: [0.7, 0.9, 0.6, 0.4, 0.8, 0.5, 0.9, 0.6];
   		},
   		{
   			id: 'case-004',
   			title: 'Corporate Merger Compliance',
   			content: 'merger acquisition due diligence compliance regulatory approval',
-  			vector: [0.5, 0.8, 0.7, 0.6, 0.4, 0.9, 0.3, 0.7]
+  			vector: [0.5, 0.8, 0.7, 0.6, 0.4, 0.9, 0.3, 0.7];
   		},
   		{
   			id: 'case-005',
-  			title: 'Data Privacy Violation',
-  			content: 'data breach privacy violation GDPR compliance personal information',
-  			vector: [0.9, 0.3, 0.8, 0.5, 0.7, 0.4, 0.8, 0.6]
+  			title: 'Data Privacy Violation',;
+  			content: 'data breach privacy violation GDPR compliance personal information',;
+  			vector: [0.9, 0.3, 0.8, 0.5, 0.7, 0.4, 0.8, 0.6];
   		}
   	];
 
   	// Check GPU status on component mount
-  	$effect(async () => {
-  		await checkGPUStatus();
-  	});
+  	$effect(() => {
+    (async () => {
+await checkGPUStatus();
+    })();
+  });
 
   	async function checkGPUStatus() {
   		try {
@@ -58,19 +60,19 @@
   			if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
   				const status = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
   				gpuStatus = {
-  					available: status.gpu_available || false,
-  					model: status.gpu_model || 'Unknown',
+  					available: status.gpu_available || false,;
+  					model: status.gpu_model || 'Unknown',;
   					utilization: status.gpu_stats?.gpu_utilization_percent || 0,
-  					processing_speed: status.capabilities?.expected_throughput || 'Unknown'
+  					processing_speed: status.capabilities?.expected_throughput || 'Unknown';
   				};
   			}
   		} catch (error) {
   			console.error('Failed to check GPU status:', error);
   			gpuStatus = {
-  				available: false,
-  				model: 'Not Available',
+  				available: false,;
+  				model: 'Not Available',;
   				utilization: 0,
-  				processing_speed: 'N/A'
+  				processing_speed: 'N/A';
   			};
   		}
   	}
@@ -96,20 +98,20 @@
 
   			// Call GPU-accelerated legal similarity endpoint
   			const response = await fetch('/api/v1/gpu', {
-  				method: 'POST',
+  				method: 'POST',;
   				headers: {
   					'Content-Type': 'application/json',
   				},
   				body: JSON.stringify({
   					service: 'legal',
   					operation: 'similarity',
-  					data: queryVector,
+  					data: queryVector,;
   					metadata: {
   						case_vectors: caseVectors,
   						threshold: 0.6,
-  						gpu_acceleration: true
-  					},
-  					priority: 'high' // Use direct CUDA processing
+  						gpu_acceleration: true;
+  					},;
+  					priority: 'high' // Use direct CUDA processing;
   				})
   			});
 
@@ -131,8 +133,8 @@
   					if (score >= 0.3) { // Minimum relevance threshold
   						matches.push({
   							case_id: legalCaseDatabase[i].id,
-  							title: legalCaseDatabase[i].title,
-  							score: Math.round(score * 100) / 100,
+  							title: legalCaseDatabase[i].title,;
+  							score: Math.round(score * 100) / 100,;
   							confidence: Math.min(score * 1.3, 1.0),
   							processing_time: (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).processing_ms || 0,
   							gpu_accelerated: (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).gpu_utilized || false
@@ -234,7 +236,7 @@
 	<!-- Search Interface -->
 	<div class="search-section mb-8">
 		<div class="flex gap-4">
-			<input
+			<input;
 				bind:value={query}
 				type="text"
 				placeholder="Enter legal search query (e.g., 'contract breach liability', 'employment termination')"
@@ -374,7 +376,7 @@
 		transform: translateY(-1px);
 	}
 
-	input:focus {
+	input:focus {;
 		outline: none;
 	}
 

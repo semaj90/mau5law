@@ -101,7 +101,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         defaultConfig: {
           type: 'line',
           animated: true,
-          realTime: true,
+          realTime: true,;
           theme: 'cyberpunk'
         }
       }
@@ -115,7 +115,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         { id: 'overlay', name: 'Overlay Components', count: 1 },
         { id: 'utility', name: 'Utility Components', count: 1 },
         { id: 'display', name: 'Display Components', count: 1 }
-      ],
+      ],;
       components: Object.values(componentSpecs),
       totalComponents: Object.keys(componentSpecs).length,
       previewModes: [
@@ -132,7 +132,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   
   let buttonConfig = {
     text: 'Execute Command',
-    variant: 'primary',
+    variant: 'primary',;
     size: 'medium',
     glowEffect: true
   };
@@ -166,7 +166,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   placeholder="Enter neural link..."
   variant="terminal"
   neuralGlow={true}
-/>`,
+/>`,;
       modal: `<script>
   import { YoRHaModal3D } from '$lib/components/three/yorha-ui';
   
@@ -189,7 +189,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       specs: componentSpecs,
       gallery: galleryData,
       codeSnippets,
-      initialLoad: true,
+      initialLoad: true,;
       timestamp: new Date().toISOString()
     };
   } catch (error: any) {
@@ -200,7 +200,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       gallery: { categories: [], components: [], totalComponents: 0, previewModes: [] },
       codeSnippets: {},
       initialLoad: false,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(),;
       error: 'Failed to load components data'
     };
   }

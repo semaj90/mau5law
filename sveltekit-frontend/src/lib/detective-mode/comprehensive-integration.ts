@@ -10,7 +10,7 @@ import type { Case, Evidence } from '../types/api.js';
 import type { CaseScoringRequest, CaseScoringResult } from '../types/scoring.js';
 
 interface DetectiveSystemStatus {
-  grpc: {
+  grpc: {;
     connected: boolean;
     caseScoringAvailable: boolean;
     streamingActive: boolean;
@@ -33,7 +33,7 @@ export class ComprehensiveIntegration {
       connected: false,
       caseScoringAvailable: false,
       streamingActive: false
-    },
+    },;
     evidence: {
       totalItems: 0,
       processingQueue: 0,
@@ -155,7 +155,7 @@ export class ComprehensiveIntegration {
       detail: {
         timestamp: new Date(),
         totalItems: evidenceState.evidence?.length || 0,
-        isLoading: evidenceState.isLoading || false,
+        isLoading: evidenceState.isLoading || false,;
         error: evidenceState.error
       }
     });
@@ -173,7 +173,7 @@ export class ComprehensiveIntegration {
       detail: {
         timestamp: new Date(),
         caseId: update.caseId,
-        eventType: update.eventType,
+        eventType: update.eventType,;
         data: update.data
       }
     });
@@ -197,7 +197,7 @@ export class ComprehensiveIntegration {
 
     // Log system status;
     console.log('📊 Detective Mode Status:', {
-      grpc: this.systemStatus.grpc,
+      grpc: this.systemStatus.grpc,;
       evidence: this.systemStatus.evidence,
       realTime: this.systemStatus.realTime
     });
@@ -216,7 +216,7 @@ export class ComprehensiveIntegration {
         caseId: caseData.id,
         userId: 'detective-mode-user',
         title: caseData.title || caseData.name || 'Case Analysis',
-        description: caseData.description || '',
+        description: caseData.description || '',;
         metadata: caseData as Record<string, any>,
         scoring_criteria: {
           evidence_strength: 0.7,
@@ -231,7 +231,7 @@ export class ComprehensiveIntegration {
       const result = await caseScoringServiceGrpc.scoreCase(scoringRequest);
 
       console.log('✅ Case scored:', {
-        caseId: caseData.id,
+        caseId: caseData.id,;
         score: (result as { score?: any; performanceMetrics?: any }).score,
         protocol: (result as { score?: any; performanceMetrics?: any }).performanceMetrics?.protocol || 'JSON'
       });

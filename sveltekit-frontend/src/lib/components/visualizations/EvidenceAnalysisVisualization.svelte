@@ -38,9 +38,9 @@
     if (!ctx) return;
 
     const chart = new Chart(ctx, {
-      type: 'doughnut',
+      type: 'doughnut',;
       data: {
-        labels: ['Risk', 'Safe'],
+        labels: ['Risk', 'Safe'],;
         datasets: [{
           data: [analysis.riskScore * 100, (1 - analysis.riskScore) * 100],
           backgroundColor: [
@@ -53,11 +53,11 @@
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false,;
         plugins: {
           legend: { display: false },
           tooltip: {
-            callbacks: {
+            callbacks: {;
               label: (context) => `${context.label}: ${context.parsed.toFixed(1)}%`
             }
           }
@@ -77,27 +77,27 @@
     );
 
     const chart = new Chart(ctx, {
-      type: 'bar',
+      type: 'bar',;
       data: {
-        labels: entityTypes.map.toUpperCase() + t.slice(1)),
+        labels: entityTypes.map.toUpperCase() + t.slice(1)),;
         datasets: [{
           label: 'Entity Count',
           data: entityCounts,
           backgroundColor: 'rgba(99, 102, 241, 0.8)',
           borderColor: 'rgba(99, 102, 241, 1)',
-          borderWidth: 1
+          borderWidth: 1;
         }]
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false,;
         scales: {
           y: {
             beginAtZero: true,
             ticks: { precision: 0 }
           }
         },
-        plugins: {
+        plugins: {;
           legend: { display: false }
         }
       }
@@ -115,30 +115,30 @@
     );
 
     const chart = new Chart(ctx, {
-      type: 'line',
+      type: 'line',;
       data: {
-        labels: sortedEvents.map.toLocaleDateString()),
+        labels: sortedEvents.map.toLocaleDateString()),;
         datasets: [{
           label: 'Event Confidence',
           data: sortedEvents.map(e => e.confidence * 100),
           borderColor: 'rgba(168, 85, 247, 1)',
           backgroundColor: 'rgba(168, 85, 247, 0.1)',
           tension: 0.3,
-          fill: true
+          fill: true;
         }]
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false,;
         scales: {
           y: {
             beginAtZero: true,
-            max: 100,
+            max: 100,;
             title: { display: true, text: 'Confidence %' }
           }
         },
         plugins: {
-          tooltip: {
+          tooltip: {;
             callbacks: {
               afterLabel: (context) => {
                 const event = sortedEvents[context.dataIndex];
@@ -158,7 +158,7 @@
     if (!ctx) return;
 
     const chart = new Chart(ctx, {
-      type: 'radar',
+      type: 'radar',;
       data: {
         labels: analysis.correlations.map((_, i) => `Evidence ${i + 1}`),
         datasets: [{
@@ -169,16 +169,16 @@
           pointBackgroundColor: 'rgba(34, 197, 94, 1)',
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(34, 197, 94, 1)'
+          pointHoverBorderColor: 'rgba(34, 197, 94, 1)';
         }]
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false,;
         scales: {
           r: {
             beginAtZero: true,
-            max: 100,
+            max: 100,;
             ticks: { stepSize: 20 }
           }
         }
@@ -195,9 +195,9 @@
     const emotions = analysis.sentiment.emotions;
 
     const chart = new Chart(ctx, {
-      type: 'polarArea',
+      type: 'polarArea',;
       data: {
-        labels: Object.keys.map(e => e.charAt.toUpperCase() + e.slice(1)),
+        labels: Object.keys.map(e => e.charAt.toUpperCase() + e.slice(1)),;
         datasets: [{
           data: Object.values.map(v => v * 100),
           backgroundColor: [
@@ -208,21 +208,21 @@
             'rgba(236, 72, 153, 0.7)',   // surprise - pink
             'rgba(34, 197, 94, 0.7)'     // trust - green
           ],
-          borderWidth: 1
+          borderWidth: 1;
         }]
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false,;
         scales: {
           r: {
             beginAtZero: true,
-            max: 100
+            max: 100;
           }
         },
         plugins: {
-          legend: {
-            position: 'right'
+          legend: {;
+            position: 'right';
           }
         }
       }

@@ -11,19 +11,19 @@ https://svelte.dev/e/expected_token -->
 
 </script>
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Alert, AlertDescription } from '$lib/components/ui/alert';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Label } from '$lib/components/ui/label';
   import { Textarea } from '$lib/components/ui/textarea';
 
@@ -152,12 +152,12 @@ https://svelte.dev/e/expected_token -->
 
     try {
       const response = await fetch('/api/pgvector/test?action=query', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          query: testQuery,
+          query: testQuery,;
           limit: 10,
-          documentType: undefined // Search all types
+          documentType: undefined // Search all types;
         })
       });
 
@@ -193,19 +193,19 @@ https://svelte.dev/e/expected_token -->
 
         The parties agree to the following terms and conditions...
       `,
-      embedding: generateMockEmbedding(), // 1536-dimension mock embedding
+      embedding: generateMockEmbedding(), // 1536-dimension mock embedding;
       metadata: {
-        title: 'pgvector Test Document',
-        type: 'contract',
-        tags: ['test', 'sample', 'liability']
+        title: 'pgvector Test Document',;
+        type: 'contract',;
+        tags: ['test', 'sample', 'liability'];
       }
     };
 
     try {
       const response = await fetch('/api/pgvector/test?action=insert', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(sampleDoc)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(sampleDoc);
       });
 
       const result = await (response as { json?: unknown }).json();
@@ -389,7 +389,7 @@ createIndex(100, 'cosine')} disabled={isLoading}>
             <div class="flex-1">
               <Label for="query">Search Query</Label>
               <Input
-                id="query"
+                id="query";
                 bind:value={testQuery}
                 placeholder="Enter your search query..."
                 class="mt-1"
@@ -589,7 +589,7 @@ createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
 </div>
 
 <style>
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

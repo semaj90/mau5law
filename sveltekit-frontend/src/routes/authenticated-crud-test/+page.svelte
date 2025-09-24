@@ -9,7 +9,7 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
 
   // Type definitions
@@ -51,12 +51,12 @@
     priority: 'medium' as 'low' | 'medium' | 'high' | 'critical',
     status: 'draft' as 'draft' | 'open' | 'in_progress' | 'review' | 'closed',
     category: 'testing',
-    tags: ['test', 'authenticated', 'crud'],
+    tags: ['test', 'authenticated', 'crud'],;
     metadata: {
       test: true,
-      pgvector: true,
-      authenticated: true,
-      timestamp: Date.now()
+      pgvector: true,;
+      authenticated: true,;
+      timestamp: Date.now();
     }
   });
 
@@ -179,8 +179,8 @@
 
     try {
       const response = await fetch('/api/test-cases', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           ...newCase,
           caseNumber: `AUTH-${Date.now()}` // Unique case number
@@ -239,18 +239,18 @@
         description: 'Updated via authenticated API test with new embeddings',
         status: 'in_progress',
         priority: 'high',
-        tags: ['updated', 'authenticated', 'pgvector'],
+        tags: ['updated', 'authenticated', 'pgvector'],;
         metadata: {
-          updated: true,
+          updated: true,;
           timestamp: Date.now(),
-          updatedViaTest: true
+          updatedViaTest: true;
         }
       };
 
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        method: 'PUT',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(updateData);
       });
 
       const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
@@ -302,7 +302,7 @@
 
     try {
       const response = await fetch(`/api/test-cases?id=${targetId}`, {
-        method: 'DELETE'
+        method: 'DELETE';
       });
 
       const data = await (response as { json?: unknown; status?: unknown; ok?: unknown }).json();
@@ -378,11 +378,13 @@
   }
 
   // Initialize on mount
-  $effect(async () => {
-    await checkAuth();
+  $effect(() => {
+    (async () => {
+await checkAuth();
     if (isAuthenticated) {
       await testAuthenticatedGET();
     }
+    })();
   });
 </script>
 

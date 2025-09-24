@@ -195,7 +195,7 @@
 </div>
 
 <style>
-.chat-input-wrapper {
+.chat-input-wrapper {;
   position: relative;
   width: 100%;
 }
@@ -233,7 +233,7 @@
     overflow-y: auto;
     scrollbar-width: thin;
 }
-  .chat-input: :placeholder {
+  .chat-input::placeholder {
     color: var(--text-placeholder, #94a3b8);
 }
   .chat-input:disabled {
@@ -310,17 +310,17 @@
     color: var(--text-secondary, #64748b);
 }
   /* Scrollbar styling */
-  .chat-input: :-webkit-scrollbar {
+  .chat-input::-webkit-scrollbar {
     width: 4px;
 }
-  .chat-input: :-webkit-scrollbar-track {
+  .chat-input::-webkit-scrollbar-track {
     background: transparent;
 }
-  .chat-input: :-webkit-scrollbar-thumb {
+  .chat-input::-webkit-scrollbar-thumb {
     background: var(--border-color, #e2e8f0);
     border-radius: 2px;
 }
-  .chat-input: :-webkit-scrollbar-thumb:hover {
+  .chat-input::-webkit-scrollbar-thumb:hover {
     background: var(--text-muted, #94a3b8);
 }
   /* Dark mode support */

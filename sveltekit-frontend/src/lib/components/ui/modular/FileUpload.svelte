@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular File Upload Component - Bits UI + UnoCSS + Svelte 5 -->
@@ -58,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
     dragDropText = 'Drop files here or click to browse',
     browseText = 'Browse Files',
     supportedFormats = [],
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   let fileInput: HTMLInputElement;
@@ -76,23 +76,23 @@ https://svelte.dev/e/js_parse_error -->
           card: 'border-gray-200 bg-white shadow-sm hover:shadow-md dark:border-gray-700 dark:bg-gray-900',
           yorha: 'border-2 border-yellow-400/60 bg-black/90 hover:border-yellow-400 hover:bg-black/80 rounded-none',
           legal: 'border-2 border-blue-300 bg-blue-50/50 hover:border-blue-400 hover:bg-blue-50 dark:border-blue-700 dark:bg-blue-950/50',
-          evidence: 'border-2 border-orange-300 bg-orange-50/50 hover:border-orange-400 hover:bg-orange-50 dark:border-orange-700 dark:bg-orange-950/50'
+          evidence: 'border-2 border-orange-300 bg-orange-50/50 hover:border-orange-400 hover:bg-orange-50 dark:border-orange-700 dark:bg-orange-950/50';
         },
         size: {
           sm: 'p-4 min-h-24',
           default: 'p-8 min-h-32',
-          lg: 'p-12 min-h-48'
+          lg: 'p-12 min-h-48';
         }
       },
       compoundVariants: [
         {
           variant: 'yorha',
-          class: 'text-yellow-400 font-mono'
+          class: 'text-yellow-400 font-mono';
         }
       ],
       defaultVariants: {
-        variant: 'default',
-        size: 'default'
+        variant: 'default',;
+        size: 'default';
       }
     }
   );
@@ -114,9 +114,9 @@ https://svelte.dev/e/js_parse_error -->
       file,
       name: file.name,
       size: file.size,
-      type: file.type,
-      status: 'pending',
-      preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined
+      type: file.type,;
+      status: 'pending',;
+      preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined;
     };
   }
 
@@ -335,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* YoRHa-specific styling */
-  :global(.yorha-upload) {
+  :global(.yorha-upload) {;
     font-family: 'JetBrains Mono', monospace;
   }
 

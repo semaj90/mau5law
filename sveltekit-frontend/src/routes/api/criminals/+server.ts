@@ -1,31 +1,31 @@
-import { json } from "@sveltejs/kit";
-import { criminals } from "$lib/server/db/schema-postgres";
-import { db } from "$lib/server/db/index";
-import type { RequestHandler } from './$types.js';
-import { URL } from "url";
+import { json } from "@sveltejs/kit"
+import { criminals } from "$lib/server/db/schema-postgres"
+import { db } from "$lib/server/db/index"
+import type { RequestHandler } from './$types.js'
+import { URL } from "url"
 
 
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.user) {
-      return json({ error: "Not authenticated" }, { status: 401 });
+      return json({ error: "Not authenticated" }, { status: 401 })
     }
     if (!db) {
-      return json({ error: "Database not available" }, { status: 500 });
+      return json({ error: "Database not available" }, { status: 500 })
     }
-    const search = url.searchParams.get("search") || "";
-    const threatLevel = url.searchParams.get("threatLevel") || "";
-    const status = url.searchParams.get("status") || "";
-    const limit = parseInt(url.searchParams.get("limit") || "50");
-    const offset = parseInt(url.searchParams.get("offset") || "0");
-    const sortBy = url.searchParams.get("sortBy") || "updatedAt";
-    const sortOrder = url.searchParams.get("sortOrder") || "desc";
+    const search = url.searchParams.get("search") || ""
+    const threatLevel = url.searchParams.get("threatLevel") || ""
+    const status = url.searchParams.get("status") || ""
+    const limit = parseInt(url.searchParams.get("limit") || "50")
+    const offset = parseInt(url.searchParams.get("offset") || "0")
+    const sortBy = url.searchParams.get("sortBy") || "updatedAt"
+    const sortOrder = url.searchParams.get("sortOrder") || "desc"
 
     // Build query with filters
-    let query = db.select().from(criminals);
-    const filters = [];
+    let query = db.select().from(criminals)
+    const filters = []
 
-    // Add search filter;
+    // Add search filter
     if (search) {
       filters.push(
         or(
@@ -35,21 +35,21 @@ export const GET: RequestHandler = async ({ locals, url }) => {
           like(criminals.socialSecurityNumber, `%${search}%`),
           like(criminals.driversLicense, `%${search}%`),
         ),
-      );
+      )
     }
-    // Add threat level filter;
+    // Add threat level filter
     if (threatLevel) {
-      filters.push(eq(criminals.threatLevel, threatLevel);
+      filters.push(eq(criminals.threatLevel, threatLevel)
     }
-    // Add status filter;
+    // Add status filter
     if (status) {
-      filters.push(eq(criminals.status, status);
+      filters.push(eq(criminals.status, status)
     }
     // Apply filters
     let finalQuery = db
       .select()
       .from(criminals)
-      .where(filters.length > 0 ? and(...filters) : undefined);
+      .where(filters.length > 0 ? and(...filters) : undefined)
 
     // Add sorting
     const orderColumn =
@@ -64,22 +64,22 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
     finalQuery = finalQuery.orderBy(
       sortOrder === "asc" ? orderColumn : desc(orderColumn),
-    ) as any;
+    ) as any
 
     // Add pagination
-    finalQuery = finalQuery.limit(limit).offset(offset) as any;
+    finalQuery = finalQuery.limit(limit).offset(offset) as any
 
-    const criminalResults = await finalQuery;
+    const criminalResults = await finalQuery
 
     // Get total count for pagination
     let countQuery = db
       .select({ count: sql<number>`count(*)` })
-      .from(criminals);
+      .from(criminals)
     if (filters.length > 0) {
-      countQuery = countQuery.where(and(...filters)) as any;
+      countQuery = countQuery.where(and(...filters)) as any
     }
-    const totalCountResult = await countQuery;
-    const totalCount = totalCountResult[0]?.count || 0;
+    const totalCountResult = await countQuery
+    const totalCount = totalCountResult[0]?.count || 0
 
     return json({
       criminals: criminalResults,
@@ -90,31 +90,31 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         offset,
         total: totalCount
       }
-    });
+    })
   } catch (error: any) {
-    console.error("Error fetching criminals:", error);
-    return json({ error: "Failed to fetch criminals" }, { status: 500 });
+    console.error("Error fetching criminals:", error)
+    return json({ error: "Failed to fetch criminals" }, { status: 500 })
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
-      return json({ error: "Not authenticated" }, { status: 401 });
+      return json({ error: "Not authenticated" }, { status: 401 })
     }
     if (!db) {
-      return json({ error: "Database not available" }, { status: 500 });
+      return json({ error: "Database not available" }, { status: 500 })
     }
-    const data = await request.json();
+    const data = await request.json()
 
-    // Validate required fields;
+    // Validate required fields
     if (!data.firstName || !data.lastName) {
       return json(
         { error: "First name and last name are required" },)
         { status: 400 },
-      );
+      )
     }
-    // Map frontend data to schema fields;
+    // Map frontend data to schema fields
     const criminalData = {
       firstName: data.firstName.trim(),
       lastName: data.lastName.trim(),
@@ -140,16 +140,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       aiSummary: data.aiSummary?.trim() || null,
       aiTags: data.aiTags || [],
       createdBy: locals.user.id
-    };
+    }
 
     const [newCriminal] = await db
       .insert(criminals)
       .values(criminalData)
-      .returning();
+      .returning()
 
-    return json(newCriminal, { status: 201 });
+    return json(newCriminal, { status: 201 })
   } catch (error: any) {
-    console.error("Error creating criminal record:", error);
-    return json({ error: "Failed to create criminal record" }, { status: 500 });
+    console.error("Error creating criminal record:", error)
+    return json({ error: "Failed to create criminal record" }, { status: 500 })
   }
-};
+}

@@ -26,7 +26,7 @@
     children,
     disabled,
     type = 'button',
-    ...restProps
+    ...restProps;
   }: Props = $props()
 
   const buttonVariants = cva(
@@ -44,19 +44,19 @@
           legal: 'bg-blue-600 text-white border-2 border-blue-500 hover:bg-blue-700 hover:border-blue-400 shadow-md',
           evidence: 'bg-orange-600 text-white border-2 border-orange-500 hover:bg-orange-700 hover:border-orange-400 shadow-md',
           caseItem: 'bg-green-600 text-white border-2 border-green-500 hover:bg-green-700 hover:border-green-400 shadow-md',
-          nes: 'nes-btn is-primary' // 🎮 optional NES.css integration
+          nes: 'nes-btn is-primary' // 🎮 optional NES.css integration;
         },
         size: {
           default: 'h-10 px-4 py-2 text-sm rounded-md',
           sm: 'h-8 px-3 py-1.5 text-xs rounded',
           lg: 'h-12 px-6 py-3 text-base rounded-lg',
           icon: 'h-10 w-10 p-0 rounded-md',
-          xs: 'h-6 px-2 py-1 text-xs rounded'
+          xs: 'h-6 px-2 py-1 text-xs rounded';
         }
       },
       defaultVariants: {
-        variant: 'default',
-        size: 'default'
+        variant: 'default',;
+        size: 'default';
       }
     }
   )

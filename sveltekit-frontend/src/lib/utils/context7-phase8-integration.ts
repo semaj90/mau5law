@@ -63,7 +63,7 @@ export interface Phase8Recommendation {
 export interface RerankResult {
   id: string;
   content: string;
-  metadata: {
+  metadata: {;
     type: string;
     priority: string;
     confidence: number;
@@ -138,7 +138,7 @@ export class Context7Phase8Integrator {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        component: query.component,
+        component: query.component,;
         context: query.context
       })
     });
@@ -160,7 +160,7 @@ export class Context7Phase8Integrator {
           dependencies: rec.dependencies,
           timeEstimate: rec.timeEstimate
         },
-        benefits: rec.benefits || [],
+        benefits: rec.benefits || [],;
         risks: rec.risks || []
       })) || []
     );
@@ -179,7 +179,7 @@ export class Context7Phase8Integrator {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         query: ragQuery,
-        context: "legal-ai",
+        context: "legal-ai",;
         limit: 5
       })
     });
@@ -189,7 +189,7 @@ export class Context7Phase8Integrator {
     const insights = await (response as { ok?: any; json?: any }).json();
 
     return (insights.results?.map((result: any) => ({
-        type: "ai-enhancement" as const,
+        type: "ai-enhancement" as const,;
         priority: this.calculatePriorityFromScore((result as { score?: any; title?: any; content?: any }).score),
         title: `Legal AI Enhancement: ${(result as { score?: any; title?: any; content?: any }).title}`,
         description: (result as { score?: any; title?: any; content?: any }).content,
@@ -198,7 +198,7 @@ export class Context7Phase8Integrator {
         implementation: {
           component: query.component,
           timeEstimate: "2-4 hours"
-        },
+        },;
         benefits: this.extractBenefits((result as { score?: any; title?: any; content?: any }).content),
         risks: []
       })) || []
@@ -247,7 +247,7 @@ export class Context7Phase8Integrator {
           "Faster evidence upload",
           "Better user experience",
           "Reduced form abandonment"
-        ],
+        ],;
         risks: ["Browser compatibility"],
         relatedStates: ["evidenceUpload"]
       });
@@ -271,7 +271,7 @@ export class Context7Phase8Integrator {
           "Higher AI accuracy",
           "Better recommendations",
           "Improved user trust"
-        ],
+        ],;
         risks: ["Increased complexity"],
         relatedStates: ["caseDetails", "review"]
       });
@@ -306,12 +306,12 @@ export class Context7Phase8Integrator {
         context7Source: "matrix-performance",
         aiConfidence: 82,
         implementation: {
-          component: "MatrixLODSystem",
+          component: "MatrixLODSystem",;
           code: `
 // Enhanced LOD with adaptive quality;
 const adaptiveLOD = {
   low: { vertexCount: 100, shaderComplexity: 'basic' },
-  mid: { vertexCount: 500, shaderComplexity: 'standard' },
+  mid: { vertexCount: 500, shaderComplexity: 'standard' },;
   high: { vertexCount: 1000, shaderComplexity: 'advanced' }
 };`,
           timeEstimate: "4-6 hours"
@@ -320,7 +320,7 @@ const adaptiveLOD = {
           "60% performance improvement",
           "Smoother animations",
           "Better mobile experience"
-        ],
+        ],;
         risks: ["Visual quality trade-offs"],
         relatedStates: ["review", "submitting"]
       });
@@ -350,7 +350,7 @@ const adaptiveLOD = {
             context7Source: rec.context7Source || "unknown",
             aiConfidence: rec.aiConfidence || 50,
             implementation: rec.implementation || {},
-            benefits: rec.benefits || [],
+            benefits: rec.benefits || [],;
             risks: rec.risks || [],
             relatedStates: rec.relatedStates || []
           });
@@ -365,7 +365,7 @@ const adaptiveLOD = {
    * Rerank recommendations using AI context
    */
   private async rerankRecommendations(
-    recommendations: Phase8Recommendation[],
+    recommendations: Phase8Recommendation[],;
     query: Context7Phase8Query,
   ): Promise<Phase8Recommendation[]> {
     // Convert to rerank format;
@@ -379,7 +379,7 @@ const adaptiveLOD = {
         component: query.component
       },
       originalScore: rec.aiConfidence / 100,
-      rerankScore: 0,
+      rerankScore: 0,;
       confidence: rec.aiConfidence
     });
 
@@ -497,7 +497,7 @@ const adaptiveLOD = {
           component: query.component,
           timeEstimate: "1-2 hours"
         },
-        benefits: ["Improved performance"],
+        benefits: ["Improved performance"],;
         risks: [],
         relatedStates: []
       }
@@ -516,7 +516,7 @@ export const commonContext7Phase8Queries = {
     currentState?: StateValue,
   ) => ({
     component,
-    context: "legal-ai" as const,
+    context: "legal-ai" as const,;
     area: "performance" as const,
     xstateContext,
     currentState
@@ -540,7 +540,7 @@ export const commonContext7Phase8Queries = {
     currentState: StateValue,
   ) => ({
     component: "LegalFormMachine",
-    context: "legal-ai" as const,
+    context: "legal-ai" as const,;
     area: "ui-ux" as const,
     xstateContext,
     currentState
@@ -551,7 +551,7 @@ export const commonContext7Phase8Queries = {
    */;
   enhanceAIFeatures: (component: string, requirements: string) => ({
     component,
-    context: "legal-ai" as const,
+    context: "legal-ai" as const,;
     feature: "ai-enhancement",
     requirements
   })

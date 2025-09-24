@@ -52,7 +52,7 @@ const authState = writable<AuthState>({
   user: null,
   session: null,
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: false,;
   error: null,
   twoFactorRequired: false,
   machineState: 'idle',
@@ -75,7 +75,7 @@ if (browser) {
       user: state.context.user,
       session: state.context.session,
       isAuthenticated: state.context.user !== null,
-      isLoading: state.context.isLoading,
+      isLoading: state.context.isLoading,;
       error: state.context.error,
       twoFactorRequired: state.context.twoFactorRequired,
       loginAttempts: state.context.loginAttempts,
@@ -142,7 +142,7 @@ async function getDeviceFingerprint(): Promise<string> {
     onlineStatus: navigator.onLine,
     doNotTrack: navigator.doNotTrack,
     hardwareConcurrency: navigator.hardwareConcurrency,
-    deviceMemory: (navigator as any).deviceMemory || 0,
+    deviceMemory: (navigator as any).deviceMemory || 0,;
     connection: (navigator as any).connection?.effectiveType || 'unknown'
   };
   
@@ -203,7 +203,7 @@ export const authStore = {
       userAgent: navigator.userAgent,
       platform: navigator.platform,
       language: navigator.language,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,;
       fingerprint: await getDeviceFingerprint()
     };
     
@@ -226,7 +226,7 @@ export const authStore = {
           },
           config: {
             useGPU: true,
-            model: 'gemma3-legal',
+            model: 'gemma3-legal',;
             protocol: 'quic'
           }
         });
@@ -241,7 +241,7 @@ export const authStore = {
     }
     
     authActor.send({
-      type: 'START_LOGIN',
+      type: 'START_LOGIN',;
       data: {
         email,
         password,
@@ -253,7 +253,7 @@ export const authStore = {
   },
   
   // Enhanced registration with legal professional validation;
-  register: async (data: {
+  register: async (data: {;
     email: string;
     firstName: string;
     lastName: string;
@@ -270,7 +270,7 @@ export const authStore = {
       userAgent: navigator.userAgent,
       platform: navigator.platform,
       language: navigator.language,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,;
       fingerprint: await getDeviceFingerprint(),
       securityScore: 100 // Default high score for new registrations
     };
@@ -301,7 +301,7 @@ export const authStore = {
           },
           config: {
             useGPU: true,
-            model: 'gemma3-legal',
+            model: 'gemma3-legal',;
             protocol: 'quic'
           }
         });
@@ -321,7 +321,7 @@ export const authStore = {
     }
     
     authActor.send({
-      type: 'START_REGISTRATION',
+      type: 'START_REGISTRATION',;
       data: {
         ...data,
         deviceInfo
@@ -336,7 +336,7 @@ export const authStore = {
         ...state,
         user: null,
         session: null,
-        isAuthenticated: false,
+        isAuthenticated: false,;
         error: null,
         twoFactorRequired: false
       });
@@ -357,7 +357,7 @@ export const authStore = {
   submitTwoFactor: async (code: string) => {
     if (!authActor) throw new Error('Auth machine not initialized');
     authActor.send({
-      type: 'TWO_FACTOR_SUCCESS',
+      type: 'TWO_FACTOR_SUCCESS',;
       data: { code }
     });
   },
@@ -380,7 +380,7 @@ export const authStore = {
     
     try {
       const response = await fetch('/api/auth/refresh', {
-        method: 'POST',
+        method: 'POST',;
         credentials: 'include'
       });
       
@@ -388,7 +388,7 @@ export const authStore = {
         const sessionData = await response.json();
         if (authActor) {
           authActor.send({
-            type: 'SESSION_REFRESHED',
+            type: 'SESSION_REFRESHED',;
             data: sessionData
           });
         }

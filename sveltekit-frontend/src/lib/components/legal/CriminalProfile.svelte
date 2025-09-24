@@ -83,14 +83,14 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     onViewFullRecord,
     onUpdateProfile,
     onViewMugshot,
-    class: className = ''
+    class: className = '';
   }: CriminalProfileProps = $props();
 
   // Risk level configurations
   const riskConfig = {
     low: { label: 'Low Risk', class: 'bg-green-500/20 text-green-400 border-green-500/30' },
     medium: { label: 'Medium Risk', class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
-    high: { label: 'High Risk', class: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
+    high: { label: 'High Risk', class: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },;
     extreme: { label: 'Extreme Risk', class: 'bg-red-500/20 text-red-400 border-red-500/30' }
   };
 
@@ -100,7 +100,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     incarcerated: { label: 'Incarcerated', class: 'bg-gray-500/20 text-gray-400', icon: Shield },
     on_parole: { label: 'On Parole', class: 'bg-yellow-500/20 text-yellow-400', icon: Eye },
     probation: { label: 'Probation', class: 'bg-blue-500/20 text-blue-400', icon: FileText },
-    deceased: { label: 'Deceased', class: 'bg-gray-500/20 text-gray-400', icon: User },
+    deceased: { label: 'Deceased', class: 'bg-gray-500/20 text-gray-400', icon: User },;
     cleared: { label: 'Cleared', class: 'bg-green-500/20 text-green-400', icon: Shield }
   };
 
@@ -109,7 +109,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     convicted: { label: 'Convicted', class: 'bg-red-500/20 text-red-400' },
     acquitted: { label: 'Acquitted', class: 'bg-green-500/20 text-green-400' },
     dismissed: { label: 'Dismissed', class: 'bg-blue-500/20 text-blue-400' },
-    pending: { label: 'Pending', class: 'bg-yellow-500/20 text-yellow-400' },
+    pending: { label: 'Pending', class: 'bg-yellow-500/20 text-yellow-400' },;
     sealed: { label: 'Sealed', class: 'bg-gray-500/20 text-gray-400' }
   };
 
@@ -139,9 +139,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 
   function formatDate(date: Date): string {
     return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+      year: 'numeric',;
+      month: 'short',;
+      day: 'numeric';
     });
   }
 
@@ -476,7 +476,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 </div>
 
 <style>
-  .criminal-profile {
+  .criminal-profile {;
     transition: all 0.2s ease;
   }
 </style>

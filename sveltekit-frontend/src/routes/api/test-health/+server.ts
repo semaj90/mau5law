@@ -1,10 +1,10 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 
-// Simple health check endpoint without database dependencies;
+// Simple health check endpoint without database dependencies
 export const GET: RequestHandler = async () => {
   try {
-    // Test basic functionality without touching the database;
+    // Test basic functionality without touching the database
     return json({
       success: true,
       timestamp: new Date().toISOString(),
@@ -13,15 +13,15 @@ export const GET: RequestHandler = async () => {
         frontend: true,
         api: true
       }
-    });
+    })
   } catch (error) {
-    console.error('Health check error:', error);
+    console.error('Health check error:', error)
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-export const POST: RequestHandler = GET;
+export const POST: RequestHandler = GET

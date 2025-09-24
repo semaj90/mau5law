@@ -16,7 +16,7 @@ export interface VectorSimilarityRequest {
 export interface VectorSimilarityResponse {
   success: boolean;
   result: number | number[];
-  metadata: {
+  metadata: {;
     operation: string;
     vectorDimensions: number;
     vectorCount: number;
@@ -81,7 +81,7 @@ export interface MatrixBatchOperation {
 export interface MatrixResponse {
   success: boolean;
   result: number[][] | number[][][] | number[];
-  metadata: {
+  metadata: {;
     operation: string;
     inputShape: number[];
     outputShape: number[];
@@ -129,7 +129,7 @@ export interface VectorSearchResponse {
     cudaTime?: number;
     rerankTime?: number;
   };
-  query: {
+  query: {;
     original: string;
     embedding?: number[];
     filters: any;
@@ -168,10 +168,10 @@ export interface RAGChunkingOptions {
 }
 
 export interface LegalDocumentMetadata {
-  case: {
+  case: {;
     id: string;
     jurisdiction: string;
-    parties: Array<{
+    parties: Array<{;
       role: string;
       name: string;
       type: string;
@@ -195,14 +195,14 @@ export interface LegalDocumentMetadata {
 
 export interface CUDAConfig {
   url: string;
-  endpoints: {
+  endpoints: {;
     health: string;
     search: string;
     submit: string;
     workers: string;
     metrics: string;
   };
-  gpu: {
+  gpu: {;
     model: string;
     cudaCores: number;
     tensorCores: number;

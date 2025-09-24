@@ -22,8 +22,8 @@
       const newCase = await TauriAPI.createCase(data);
 
       notifications.add({
-        type: "success",
-        title: "Case Created",
+        type: "success",;
+        title: "Case Created",;
         message: `Case "${data.title}" has been created successfully.`,
       });
 
@@ -32,9 +32,9 @@
     } catch (error) {
       console.error("Failed to create caseItem:", error);
       notifications.add({
-        type: "error",
-        title: "Failed to Create Case",
-        message: "There was an error creating the case. Please try again.",
+        type: "error",;
+        title: "Failed to Create Case",;
+        message: "There was an error creating the case. Please try again.",;
       });
     } finally {
       isSubmitting = false;
@@ -77,7 +77,7 @@
       role: "admin",
       isActive: true,
       createdAt: new Date(),
-      updatedAt: new Date(),
+      updatedAt: new Date(),;
     }}
     onsubmit={handleSubmit}
     oncancel={handleCancel}

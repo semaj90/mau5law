@@ -20,11 +20,11 @@
   let searchResults = $state([]);
   let isSearching = $state(false);
   let selectedFilters = $state({
-    jurisdiction: '',
+    jurisdiction: '',;
     court: '',
     documentType: '',
     dateRange: '',
-    precedentialValue: ''
+    precedentialValue: '';
   });
   let sortBy = $state('relevance');
   let currentPage = $state(1);
@@ -34,9 +34,9 @@
   let selectedDocument = $state(null);
   let researchSession = $state({
     id: null,
-    startTime: new Date(),
-    queries: [],
-    findings: []
+    startTime: new Date(),;
+    queries: [],;
+    findings: [];
   });
 
   // Advanced search options
@@ -47,16 +47,18 @@
   
   // Filter options from database
   let filterOptions = $state({
-    jurisdictions: ['Federal', 'State', 'Local', 'International'],
+    jurisdictions: ['Federal', 'State', 'Local', 'International'],;
     courts: ['Supreme Court', 'Court of Appeals', 'District Court', 'Bankruptcy Court'],
     documentTypes: ['case', 'statute', 'regulation', 'brief', 'opinion'],
-    precedentialValues: ['High', 'Medium', 'Low', 'Informational']
+    precedentialValues: ['High', 'Medium', 'Low', 'Informational'];
   });
 
-  $effect(async () => {
-    await initializeResearchSession();
+  $effect(() => {
+    (async () => {
+await initializeResearchSession();
     await loadSavedCitations();
     await loadAISuggestions();
+    })();
   });
 
   async function initializeResearchSession() {
@@ -69,10 +71,10 @@
     
     isSearching = true;
     researchSession.queries.push({
-      query: searchQuery,
+      query: searchQuery,;
       filters: { ...selectedFilters },
-      timestamp: new Date(),
-      mode: searchMode
+      timestamp: new Date(),;
+      mode: searchMode;
     });
 
     try {
@@ -80,18 +82,18 @@
         query: searchQuery,
         mode: searchMode,
         filters: selectedFilters,
-        sort: sortBy,
-        page: currentPage,
-        limit: 20
+        sort: sortBy,;
+        page: currentPage,;
+        limit: 20;
       };
 
       // Store search pattern in CHR-ROM for fast retrieval
       await nesGPUBridge.storeCHRROMPattern(`search_${Date.now()}`, {/* JSX syntax converted to Svelte */});
 
       const response = await fetch('/api/legal/research/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(searchPayload)
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(searchPayload);
       });
 
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -133,7 +135,7 @@
         relevanceScore: 0.94,
         citedBy: 47,
         isBookmarked: false,
-        url: '/legal/documents/smith-v-johnson-2019'
+        url: '/legal/documents/smith-v-johnson-2019';
       },
       {
         id: '2', 
@@ -150,7 +152,7 @@
         relevanceScore: 0.89,
         citedBy: 234,
         isBookmarked: true,
-        url: '/legal/documents/frcp-26-b-1'
+        url: '/legal/documents/frcp-26-b-1';
       },
       {
         id: '3',
@@ -161,13 +163,13 @@
         jurisdiction: 'Federal',
         dateDecided: '2023-01-01',
         documentType: 'brief',
-        precedentialValue: 'Medium',
+        precedentialValue: 'Medium',;
         summary: 'Comprehensive template and analysis for drafting effective summary judgment motions...',
         keyTopics: ['Summary Judgment', 'Motion Practice', 'Legal Writing'],
         relevanceScore: 0.82,
         citedBy: 12,
-        isBookmarked: false,
-        url: '/legal/documents/summary-judgment-template'
+        isBookmarked: false,;
+        url: '/legal/documents/summary-judgment-template';
       }
     ];
   }
@@ -214,13 +216,13 @@
   async function saveCitation(document) {
     try {
       const response = await fetch('/api/legal/research/citations/save', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           documentId: document.id,
-          citation: document.citation,
-          title: document.title,
-          notes: ''
+          citation: document.citation,;
+          title: document.title,;
+          notes: '';
         })
       });
 
@@ -228,10 +230,10 @@
         document.isBookmarked = true;
         savedCitations = [
           { 
-            id: document.id, 
-            title: document.title, 
+            id: document.id, ;
+            title: document.title, ;
             citation: document.citation, 
-            savedAt: new Date() 
+            savedAt: new Date() ;
           },
           ...savedCitations
         ];
@@ -250,19 +252,19 @@
 
   function clearFilters() {
     selectedFilters = {
-      jurisdiction: '',
+      jurisdiction: '',;
       court: '',
       documentType: '',
       dateRange: '',
-      precedentialValue: ''
+      precedentialValue: '';
     };
   }
 
   function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+      year: 'numeric',;
+      month: 'short',;
+      day: 'numeric';
     });
   }
 
@@ -335,7 +337,7 @@
                 <Search class="h-5 w-5 text-gray-400" />
               </div>
               <input
-                type="search"
+                type="search";
                 bind:value={searchQuery}
                 onkeydown={(e) => e.key === 'Enter' && performSearch()}
                 placeholder="Search legal documents, cases, statutes, and precedents..."
@@ -486,7 +488,7 @@
                     
                     <button
                       onclick={() => saveCitation(result)}
-                      class="p-1 text-gray-400 hover:text-yellow-500 transition-colors"
+                      class="p-1 text-gray-400 hover:text-yellow-500 transition-colors";
                       class:text-yellow-500={(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).isBookmarked}
                     >
                       <Bookmark class="h-4 w-4" />
@@ -748,4 +750,4 @@
       </div>
     </div>
   {/if}
-</HeadlessDialog>
+</HeadlessDialog>;

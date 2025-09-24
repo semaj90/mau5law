@@ -4,7 +4,7 @@
 
 import context7 from '$lib/integrations/context7-wasm';
 
-export async function ensureContext7Ready(opts?: any) {
+export async function ensureContext7Ready(opts?: unknown) {
   try {
     const impl = await context7;
     if (impl && typeof impl.initialize === 'function') {
@@ -19,15 +19,15 @@ export async function ensureContext7Ready(opts?: any) {
 
 export async function performContext7Search(options: { query: string; maxResults?: number; confidenceThreshold?: number; includeCode?: boolean; includeDocs?: boolean; } ) {
   const impl = await ensureContext7Ready();
-  if (!impl || typeof (impl as any).performSearch !== 'function') {
+  if (!impl || typeof (impl as { performSearch?: (...args: unknown[]) => unknown }).performSearch !== 'function') {
     // mock fallback: do a trivial in-memory search stub
-    const results = [] as any[];
+    const results = [] as { id: string; content: string; score: number }[];
     for (let i = 0; i < (options.maxResults || 5); i++) {
       results.push({ id: `mock-${i}`, content: `Mock search result for '${options.query}' (#${i})`, score: 0.5 });
     }
     return results;
   }
-  return (impl as any).performSearch(options);
+  return (impl as { performSearch: (options: unknown) => unknown }).performSearch(options);
 }
 
 // Minimal agent orchestrator wrapper. The real implementation exposes methods like
@@ -41,12 +41,12 @@ export const context7AgentOrchestrator = {
     }
     return (impl as any).triggerAgent(trigger);
   },
-  logAuditEntry(entry: any) {
+  logAuditEntry(entry: unknown) {
     // best-effort: call real implementation or noop;
     (async () => {
       const impl = await ensureContext7Ready();
-      if (impl && typeof (impl as any).logAuditEntry === 'function') {
-        try { (impl as any).logAuditEntry(entry); } catch {}
+      if (impl && typeof (impl as { logAuditEntry?: (...args: unknown[]) => unknown }).logAuditEntry === 'function') {
+        try { (impl as unknown).logAuditEntry?.(entry); } catch { /* Intentionally ignore audit errors */ }
       }
     })();
   },

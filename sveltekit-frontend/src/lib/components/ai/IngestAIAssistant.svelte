@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
+<!-- @migration-task Error while migrating Svelte code: Attributes need to be unique;
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
@@ -67,13 +67,13 @@ https://svelte.dev/e/attribute_duplicate -->
       const request = {
         title: documentTitle,
         content: documentContent,
-        case_id: caseId || undefined,
+        case_id: caseId || undefined,;
         metadata: {
-          document_type: selectedDocumentType,
+          document_type: selectedDocumentType,;
           source: 'ai_assistant_ui',
           ai_enhanced: true,
           // Integrate with your AI agent session
-          ai_session_id: $aiAgentStore.activeSessionId,
+          ai_session_id: $aiAgentStore.activeSessionId,;
         }
       };
       currentProgress.set(30);
@@ -88,9 +88,9 @@ https://svelte.dev/e/attribute_duplicate -->
       // Update results
       ingestResults.update(results => [...results, {
         ...result,
-        title: documentTitle,
-        type: selectedDocumentType,
-        timestamp: new Date()
+        title: documentTitle,;
+        type: selectedDocumentType,;
+        timestamp: new Date();
       }]);
       // Clear form
       clearForm();
@@ -100,9 +100,9 @@ https://svelte.dev/e/attribute_duplicate -->
       console.error('Ingest failed:', error);
       errors.update(errs => [...errs, {
         id: Date.now(),
-        message: error.message,
-        timestamp: new Date(),
-        type: 'ingest_error'
+        message: error.message,;
+        timestamp: new Date(),;
+        type: 'ingest_error';
       }]);
       processingStatus.set('error');
       setTimeout(() => processingStatus.set('idle'), 3000);
@@ -116,7 +116,7 @@ https://svelte.dev/e/attribute_duplicate -->
       await aiAgentStore.sendMessage(prompt, {
         document_id: documentId,
         analysis_type: 'legal_summary',
-        source: 'ingest_assistant'
+        source: 'ingest_assistant';
       });
     } catch (error) {
       console.warn('AI summary generation failed:', error);
@@ -132,11 +132,11 @@ https://svelte.dev/e/attribute_duplicate -->
       const batchRequest = documents.map(doc => ({
         title: doc.title,
         content: doc.content,
-        case_id: doc.case_id,
+        case_id: doc.case_id,;
         metadata: {
           document_type: doc.type || 'legal',
-          batch_processing: true,
-          source: 'ai_assistant_batch'
+          batch_processing: true,;
+          source: 'ai_assistant_batch';
         }
       }));
       const result = await enhancedIngestService.ingestBatch(batchRequest);
@@ -145,7 +145,7 @@ https://svelte.dev/e/attribute_duplicate -->
       ingestResults.update(results => [...results, {
         ...result,
         is_batch: true,
-        timestamp: new Date()
+        timestamp: new Date();
       }]);
       batchDocuments.set([]);
       processingStatus.set('completed');
@@ -153,10 +153,10 @@ https://svelte.dev/e/attribute_duplicate -->
     } catch (error) {
       console.error('Batch processing failed:', error);
       errors.update(errs => [...errs, {
-        id: Date.now(),
+        id: Date.now(),;
         message: `Batch processing failed: ${error.message}`,
-        timestamp: new Date(),
-        type: 'batch_error'
+        timestamp: new Date(),;
+        type: 'batch_error';
       }]);
       processingStatus.set('error');
       setTimeout(() => processingStatus.set('idle'), 3000);
@@ -171,10 +171,10 @@ https://svelte.dev/e/attribute_duplicate -->
     if (!documentTitle.trim() || !documentContent.trim()) return;
     batchDocuments.update(docs => [...docs, {
       id: Date.now(),
-      title: documentTitle,
+      title: documentTitle,;
       content: documentContent,
-      case_id: caseId,
-      type: selectedDocumentType
+      case_id: caseId,;
+      type: selectedDocumentType;
     }]);
     clearForm();
   }
@@ -251,7 +251,7 @@ dismissError(error.id)}>
         <div class="space-y-2">
           <Label for="title">Document Title</Label>
           <Input
-            id="title"
+            id="title";
             bind:value={documentTitle}
             placeholder="Enter document title..."
             disabled={$isProcessing}
@@ -289,7 +289,7 @@ dismissError(error.id)}>
         <div class="space-y-2">
           <Label for="content">Document Content</Label>
           <Textarea
-            id="content"
+            id="content";
             bind:value={documentContent}
             placeholder="Paste or type document content here..."
             rows={8}

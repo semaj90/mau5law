@@ -120,7 +120,7 @@ export interface NoteStats {
 export const legalNotes = writable<LegalNote[]>([]);
 export const noteFilters = writable<NoteFilters>({
   search: "",
-  noteType: "",
+  noteType: "",;
   tags: [],
   caseId: undefined
 });
@@ -210,7 +210,7 @@ export const filteredNotes = derived(
 
 // Enhanced stats
 export const noteStats = derived(legalNotes, ($legalNotes): NoteStats => {
-  const stats: NoteStats = {
+  const stats: NoteStats = {;
     total: $legalNotes.length,
     byType: {},
     byRiskLevel: {},
@@ -356,7 +356,7 @@ class EnhancedNotesManager {
             note.metadata.legalCitations = analysis.citations.map((citation: any) => ({
               type: citation.type,
               citation: citation.citation,
-              relevance: citation.relevance,
+              relevance: citation.relevance,;
               snippet: citation.excerpt
             }));
           }
@@ -405,7 +405,7 @@ class EnhancedNotesManager {
           content: note.content,
           noteType: note.noteType,
           caseId: note.caseId,
-          tags: note.tags,
+          tags: note.tags,;
           metadata: note.metadata
         })
       });
@@ -432,7 +432,7 @@ class EnhancedNotesManager {
           embeddings: note.metadata.embeddings,
           metadata: {
             noteType: note.noteType,
-            caseId: note.caseId,
+            caseId: note.caseId,;
             tags: note.tags,
             riskLevel: note.metadata.riskLevel,
             practiceArea: note.metadata.practiceArea
@@ -480,7 +480,7 @@ class EnhancedNotesManager {
       tags: ['ocr', 'extracted'],
       caseId,
       userId: 'current-user', // TODO: Get from auth
-      savedAt: new Date(),
+      savedAt: new Date(),;
       metadata: {
         ocrExtracted: true,
         ocrConfidence: ocrResult.confidence,
@@ -513,7 +513,7 @@ class EnhancedNotesManager {
       savedAt: new Date(),
       metadata: {
         aiGenerated: true,
-        aiModel: analysis.model || 'gemma3:legal-latest',
+        aiModel: analysis.model || 'gemma3:legal-latest',;
         confidence: analysis.confidence,
         legalCitations: analysis.citations,
         riskLevel: analysis.riskLevel,
@@ -588,7 +588,7 @@ class EnhancedNotesManager {
     try {
       await fetch('/api/notes/sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify(note)
       });
     } catch (error) {
@@ -815,7 +815,7 @@ export function setNoteFilter(filter: Partial<NoteFilters>): void {
 export function clearNoteFilters(): void {
   noteFilters.set({
     search: "",
-    noteType: "",
+    noteType: "",;
     tags: [],
     caseId: undefined
   });

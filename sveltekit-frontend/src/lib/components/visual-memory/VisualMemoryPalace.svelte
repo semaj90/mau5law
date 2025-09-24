@@ -132,9 +132,9 @@
 
     // Calculate document priority for placement
     const priority = calculateDocumentPriority({
-      type: 'document',
+      type: 'document',;
       urgency: 'normal',
-      lastAccessed: new Date()
+      lastAccessed: new Date();
     });
 
     // Generate 3D position based on semantic clustering
@@ -146,14 +146,14 @@
       latent,
       position,
       documentId,
-      priority,
-      timestamp: Date.now(),
-      semantic: documentContent.substring(0, 100) // First 100 chars as semantic hint
+      priority,;
+      timestamp: Date.now(),;
+      semantic: documentContent.substring(0, 100) // First 100 chars as semantic hint;
     };
   }
 
   function calculateSpatialPosition(
-    latent: number[],
+    latent: number[],;
     priority: number
   ): { x: number; y: number; z: number } {
     // Use latent space to determine spatial position
@@ -392,7 +392,7 @@
 </div>
 
 <style>
-  .visual-memory-palace {
+  .visual-memory-palace {;
     display: grid;
     grid-template-columns: 200px 1fr 200px;
     gap: 1rem;

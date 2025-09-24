@@ -51,7 +51,7 @@
 
     {#if operations.length > maxVisible}
       <div
-        class="text-xs text-gray-500 dark:text-gray-400 text-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded px-2 py-1"
+        class="text-xs text-gray-500 dark:text-gray-400 text-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded px-2 py-1";
         in:fade={{ duration: 200 }}
       >
         +{operations.length - maxVisible} more operations
@@ -62,7 +62,7 @@
 
 <style>
   /* Ensure notifications don't interfere with other UI elements */
-  .pointer-events-none {
+  .pointer-events-none {;
     pointer-events: none;
   }
 

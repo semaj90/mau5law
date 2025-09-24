@@ -1,12 +1,12 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { legalAI } from '$lib/server/unified/legal-ai-service';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { legalAI } from '$lib/server/unified/legal-ai-service'
 
 export const GET: RequestHandler = async () => {
   try {
-    const health = await legalAI.healthCheck();
+    const health = await legalAI.healthCheck()
     
-    const overall = Object.values(health).every(status => status === true);
+    const overall = Object.values(health).every(status => status === true)
     
     return json({
       status: overall ? 'healthy' : 'degraded',
@@ -17,10 +17,10 @@ export const GET: RequestHandler = async () => {
       memory: process.memoryUsage()
     }, {
       status: overall ? 200 : 503
-    });
+    })
 
   } catch (error) {
-    console.error('Health check error:', error);
+    console.error('Health check error:', error)
     return json({
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
@@ -32,6 +32,6 @@ export const GET: RequestHandler = async () => {
         qdrant: false,
         neo4j: false
       }
-    }, { status: 503 });
+    }, { status: 503 })
   }
-};
+}

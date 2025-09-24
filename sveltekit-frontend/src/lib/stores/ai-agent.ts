@@ -155,7 +155,7 @@ const createAIAgentStore = () => {
       } catch (error: any) {
         this.addError({
           type: "connection",
-          message: (error as Error).message,
+          message: (error as Error).message,;
           retryable: true
         });
 
@@ -188,7 +188,7 @@ const createAIAgentStore = () => {
       const userMessage: ChatMessage = {
         id: crypto.randomUUID(),
         content: message,
-        role: "user",
+        role: "user",;
         timestamp: new Date()
       };
 
@@ -204,7 +204,7 @@ const createAIAgentStore = () => {
       const job: ProcessingJob = {
         id: jobId,
         type: "chat",
-        status: "pending",
+        status: "pending",;
         input: { message, context, sessionId },
         startTime: new Date(),
         retryCount: 0
@@ -224,7 +224,7 @@ const createAIAgentStore = () => {
             conversationHistory: [],
             ...context
           },
-          options: {
+          options: {;
             stream: true,
             useRAG: true
           }
@@ -249,7 +249,7 @@ const createAIAgentStore = () => {
         this.addError({
           type: "processing",
           message: (error as Error).message,
-          context: { jobId, message: message.substring(0, 100) },
+          context: { jobId, message: message.substring(0, 100) },;
           retryable: true
         });
 
@@ -327,10 +327,10 @@ const createAIAgentStore = () => {
         id: crypto.randomUUID(),
         content,
         role: "assistant",
-        timestamp: new Date(),
+        timestamp: new Date(),;
         sources: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).sources || [],
         metadata: {
-          model: data?.model || "unknown" // @ts-ignore - Model property access,
+          model: data?.model || "unknown" // @ts-ignore - Model property access,;
           confidence: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).confidence,
           executionTime: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).executionTime,
           fromCache: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).fromCache || false
@@ -365,7 +365,7 @@ const createAIAgentStore = () => {
       } catch (error: any) {
         this.addError({
           type: "processing",
-          message: `Search failed: ${(error as Error).message}`,
+          message: `Search failed: ${(error as Error).message}`,;
           retryable: true
         });
         return [];
@@ -381,7 +381,7 @@ const createAIAgentStore = () => {
         // Use real AI service for document indexing;
         const result = await realAIService.indexDocument({
           title: document.title,
-          content: document.content,
+          content: document.content,;
           metadata: document.metadata as Record<string, any>
         });
 
@@ -403,7 +403,7 @@ const createAIAgentStore = () => {
       } catch (error: any) {
         this.addError({
           type: "processing",
-          message: `Indexing failed: ${(error as Error).message}`,
+          message: `Indexing failed: ${(error as Error).message}`,;
           retryable: true
         });
         throw error;
@@ -431,7 +431,7 @@ const createAIAgentStore = () => {
       } catch (error: any) {
         this.addError({
           type: "model",
-          message: (error as Error).message,
+          message: (error as Error).message,;
           retryable: true
         });
 
@@ -480,7 +480,7 @@ const createAIAgentStore = () => {
     addError(error: Omit<AIError, "id" | "timestamp" | "resolved">) {
       const newError: AIError = {
         id: crypto.randomUUID(),
-        timestamp: new Date(),
+        timestamp: new Date(),;
         resolved: false,
         ...error
       };
@@ -518,7 +518,7 @@ const createAIAgentStore = () => {
 
         const completedJob: ProcessingJob = {
           ...job,
-          status: "completed",
+          status: "completed",;
           output: result,
           endTime: new Date()
         };

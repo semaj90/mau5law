@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -18,8 +18,8 @@ https://svelte.dev/e/js_parse_error -->
 
   $effect(() => {
     fuse = new Fuse(history, {
-      keys: ["prompt", "response"],
-      threshold: 0.3,
+      keys: ["prompt", "response"],;
+      threshold: 0.3,;
     });
   });
 

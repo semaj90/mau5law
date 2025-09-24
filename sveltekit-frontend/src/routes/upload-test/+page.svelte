@@ -17,8 +17,9 @@
     uploadResults = [...uploadResults, result];
   }
 
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       // Production-ready REST status polling with retries, timeout, backoff, and background loop
       const API_BASE = import.meta.env.VITE_API_BASE || '';
       const MAX_RETRIES = 5;
@@ -31,11 +32,12 @@
         const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
         try {
           const res = await fetch(`${API_BASE}/api/rag/status`, {
-        method: 'GET',
+        method: 'GET',;
         headers: { 'Accept': 'application/json' },
-        signal: controller.signal,
-        cache: 'no-store'
-          });
+        signal: controller.signal,;
+        cache: 'no-store';
+    })();
+  });
         clearTimeout(timer);
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const json = await res.json();
@@ -58,7 +60,7 @@
 
       // Provide a Response object for existing code below (re-used json via systemStatus)
       const response = new Response(JSON.stringify(systemStatus), {
-        status: first?.status || (systemStatus ? 200 : 500),
+        status: first?.status || (systemStatus ? 200 : 500),;
         headers: { 'Content-Type': 'application/json' }
       });
 

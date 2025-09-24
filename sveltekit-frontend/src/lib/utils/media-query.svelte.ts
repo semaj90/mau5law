@@ -54,7 +54,7 @@ export const breakpoints = {
   tablet: '(min-width: 768px) and (max-width: 1023px)',
   desktop: '(min-width: 1024px)',
   retina: '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)',
-  landscape: '(orientation: landscape)',
+  landscape: '(orientation: landscape)',;
   portrait: '(orientation: portrait)',
   prefersColorSchemeDark: '(prefers-color-scheme: dark)',
   prefersReducedMotion: '(prefers-reduced-motion: reduce)'

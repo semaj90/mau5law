@@ -43,7 +43,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       shadow: {
         enabled: true,
         color: YORHA_COLORS.primary.black,
-        blur: 0.5,
+        blur: 0.5,;
         intensity: 0.3,
         offsetY: -0.1,
         ...options.shadow
@@ -51,7 +51,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       // Interactive states;
       hover: {
         shadow: {
-          enabled: options.hover?.shadow?.enabled !== undefined ? options.hover.shadow.enabled: true,
+          enabled: options.hover?.shadow?.enabled !== undefined ? options.hover.shadow.enabled: true,;
           intensity: 0.4,
           offsetY: -0.15,
           ...options.hover?.shadow
@@ -131,7 +131,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const headerGeometry = new THREE.PlaneGeometry(width - 0.1, headerHeight);
     const headerMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.primary.grey,
-      transparent: true,
+      transparent: true,;
       opacity: 0.9
     });
     
@@ -142,7 +142,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     // Create title text
     const titleGeometry = new THREE.PlaneGeometry(width - 0.6, 0.2);
     const titleMaterial = new THREE.MeshBasicMaterial({
-      color: YORHA_COLORS.primary.white,
+      color: YORHA_COLORS.primary.white,;
       transparent: true
     });
     
@@ -164,7 +164,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     // Close button geometry (X shape)
     const buttonGeometry = new THREE.PlaneGeometry(buttonSize, buttonSize);
     const buttonMaterial = new THREE.MeshBasicMaterial({
-      color: YORHA_COLORS.status.error,
+      color: YORHA_COLORS.status.error,;
       transparent: true
     });
     
@@ -204,7 +204,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       contentHeight
     );
     const scrollMaterial = new THREE.MeshBasicMaterial({
-      transparent: true,
+      transparent: true,;
       opacity: 0
     });
     
@@ -223,7 +223,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const scrollBarGeometry = new THREE.PlaneGeometry(0.05, (this.style.height || 3) - 0.4);
     const scrollBarMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.primary.grey,
-      transparent: true,
+      transparent: true,;
       opacity: 0.5
     });
     
@@ -243,7 +243,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const handleGeometry = new THREE.PlaneGeometry(handleSize, handleSize);
     const handleMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.accent.gold,
-      transparent: true,
+      transparent: true,;
       opacity: 0.7
     });
     
@@ -299,7 +299,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
         textColor: YORHA_COLORS.accent.gold,
         animation: {
           type: 'scan' as const,
-          speed: 2,
+          speed: 2,;
           intensity: 0.3
         }
       }

@@ -96,7 +96,7 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
         jurisdiction: 'california',
         category: 'regulatory',
         url: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Health+and+Safety+Code',
-        fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Health+and+Safety+Code',
+        fullTextUrl: 'https://leginfo.legislature.ca.gov/faces/codes.xhtml?tocTitle=Health+and+Safety+Code',;
         code: 'HSC'
       }
     ];
@@ -108,7 +108,7 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
       quickLinks,
       laws,
       meta: {
-        title: 'Legal Resources - Laws & Regulations',
+        title: 'Legal Resources - Laws & Regulations',;
         description: 'Browse California and state laws with AI-powered search and summaries'
       }
     };

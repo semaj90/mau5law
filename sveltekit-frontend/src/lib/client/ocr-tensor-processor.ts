@@ -24,7 +24,7 @@ export interface OCRResult {
 export interface TensorData {
   embeddings: Float32Array;
   dimensions: number;
-  metadata: {
+  metadata: {;
     source: 'ocr' | 'manual' | 'api';
     processed_at: number;
     tensor_id: string;
@@ -177,7 +177,7 @@ export class OCRTensorProcessor {
       const totalTime = performance.now() - startTime;
 
       return {
-        ocr: ocrResult,
+        ocr: ocrResult,;
         embeddings: tensorData,
         searchIndex,
         processingTime: totalTime,
@@ -217,13 +217,13 @@ export class OCRTensorProcessor {
         confidence: (result as { data?: any; status?: any; value?: any }).data.confidence,
         boundingBoxes: (result as { data?: any; status?: any; value?: any }).data.words.map((word: any) => ({
           text: word.text,
-          bbox: word.bbox,
+          bbox: word.bbox,;
           confidence: word.confidence
         })
       };
 
       console.log('📝 OCR completed:', {
-        textLength: ocrResult.text.length,
+        textLength: ocrResult.text.length,;
         confidence: ocrResult.confidence,
         wordsFound: ocrResult.boundingBoxes.length
       });
@@ -242,7 +242,7 @@ export class OCRTensorProcessor {
       case 'low':
         // 8-bit NES level optimization;
         return {
-          psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8,
+          psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8,;
           oem: 1, // Original tesseract only
           tessjs_create_pdf: false,
           tessjs_create_hocr: false,
@@ -252,7 +252,7 @@ export class OCRTensorProcessor {
       case 'medium':
         // 16-bit SNES level optimization;
         return {
-          psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8,
+          psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8,;
           oem: 2, // LSTM + Original tesseract
           tessjs_create_pdf: false,
           tessjs_create_hocr: true,
@@ -262,7 +262,7 @@ export class OCRTensorProcessor {
       case 'high':
         // N64 level optimization with DNN LOD system;
         return {
-          psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13,
+          psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13,;
           oem: 3, // Default tesseract (best quality)
           tessjs_create_pdf: true,
           tessjs_create_hocr: true,
@@ -293,7 +293,7 @@ export class OCRTensorProcessor {
         return {
           model: 'gemma:270m',                // Gemma 270MB fits in cache + parallelism
           fallback: ['nomic-embed-text', 'client-autogen'],
-          useCrewAI: false,
+          useCrewAI: false,;
           parallelism: 4,                     // 4 parallel requests to prevent OOM
           cacheSize: 128                      // 128MB cache for fast responses
         };
@@ -304,7 +304,7 @@ export class OCRTensorProcessor {
         return {
           model: 'gemma3:legal-latest',       // Primary: Gemma 3 legal for best quality
           fallback: ['gemma:270m', 'nomic-embed-text'],
-          useCrewAI: false,
+          useCrewAI: false,;
           parallelism: 8,                     // High parallelism for powerful GPU
           cacheSize: 512                      // Large cache for complex models
         };
@@ -312,7 +312,7 @@ export class OCRTensorProcessor {
         return {
           model: 'gemma:270m',                // Gemma 270MB optimal for this range
           fallback: ['nomic-embed-text'],
-          useCrewAI: false,
+          useCrewAI: false,;
           parallelism: 6,                     // Balanced parallelism
           cacheSize: 256                      // Medium cache size
         };
@@ -320,7 +320,7 @@ export class OCRTensorProcessor {
         return {
           model: 'gemma:270m',                // Still use 270MB - it fits with cache
           fallback: ['nomic-embed-text', 'client-autogen'],
-          useCrewAI: false,
+          useCrewAI: false,;
           parallelism: 3,                     // Conservative parallelism
           cacheSize: 128                      // Smaller cache to prevent OOM
         };
@@ -329,7 +329,7 @@ export class OCRTensorProcessor {
         return {
           model: 'nomic-embed-text',          // Lightweight model
           fallback: ['client-autogen'],
-          useCrewAI: true,
+          useCrewAI: true,;
           parallelism: 2,                     // Minimal parallelism
           cacheSize: 64                       // Small cache
         };
@@ -340,7 +340,7 @@ export class OCRTensorProcessor {
       return {
         model: 'gemma:270m',                  // Safe default - fits in cache with parallelism
         fallback: ['nomic-embed-text', 'client-autogen'],
-        useCrewAI: true,
+        useCrewAI: true,;
         parallelism: 4,                       // Safe parallelism level
         cacheSize: 128                        // Safe cache size for 270MB model
       };
@@ -362,7 +362,7 @@ export class OCRTensorProcessor {
           save: false,
           fallback: modelConfig.fallback,
           crewai_enabled: modelConfig.useCrewAI,
-          // OOM prevention and UX optimization
+          // OOM prevention and UX optimization;
           parallelism: modelConfig.parallelism,
           cache_size_mb: modelConfig.cacheSize,
           prevent_oom: true,
@@ -397,7 +397,7 @@ export class OCRTensorProcessor {
         metadata: {
           source: 'ocr',
           processed_at: Date.now(),
-          tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,;
           confidence: 0.8
         }
       };
@@ -409,7 +409,7 @@ export class OCRTensorProcessor {
       
       // Create input buffer;
       const inputBuffer = this.webgpuDevice.createBuffer({
-        size: embeddings.byteLength,
+        size: embeddings.byteLength,;
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
@@ -424,7 +424,7 @@ export class OCRTensorProcessor {
 
       // Read results back;
       const resultBuffer = this.webgpuDevice.createBuffer({
-        size: embeddings.byteLength,
+        size: embeddings.byteLength,;
         usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
@@ -442,7 +442,7 @@ export class OCRTensorProcessor {
         metadata: {
           source: 'ocr',
           processed_at: Date.now(),
-          tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,;
           confidence: 0.9
         }
       };
@@ -456,7 +456,7 @@ export class OCRTensorProcessor {
         metadata: {
           source: 'ocr',
           processed_at: Date.now(),
-          tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,;
           confidence: 0.8
         }
       };
@@ -485,7 +485,7 @@ export class OCRTensorProcessor {
    * Asynchronous batch processing with intelligent scheduling
    */
   async batchProcessImages(
-    images: Array<ImageData | HTMLCanvasElement | File>,
+    images: Array<ImageData | HTMLCanvasElement | File>,;
     options: any = {}
   ): Promise<ProcessingResult[]> {
     const results: ProcessingResult[] = [];
@@ -617,7 +617,7 @@ export class OCRTensorProcessor {
   }
 
   private calculateProcessingPriority(
-    image: ImageData | HTMLCanvasElement | File,
+    image: ImageData | HTMLCanvasElement | File,;
     index: number;
   ): number {
     let priority = 1.0;
@@ -668,7 +668,7 @@ export class OCRTensorProcessor {
             confidence: r.ocr.confidence,
             tensor_id: r.embeddings.metadata.tensor_id,
             search_index: Array.from(r.searchIndex)
-          })),
+          })),;
           metadata: {
             ...metadata,
             processed_at: Date.now(),

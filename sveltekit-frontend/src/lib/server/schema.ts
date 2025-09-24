@@ -22,7 +22,7 @@ export const storage_files = pgTable('storage_files', {
   bucket: text('bucket').notNull(),
   user_id: text('user_id').notNull(),
   size: text('size').notNull(),
-  mime: text('mime').notNull(),
+  mime: text('mime').notNull(),;
   deleted: boolean('deleted').default(false).notNull(),
   created_at: timestamp('created_at').defaultNow().notNull()
 });
@@ -33,7 +33,7 @@ export const storage_audits = pgTable('storage_audits', {
   user_id: text('user_id').notNull(),
   target: text('target').notNull(),
   bucket: text('bucket').notNull(),
-  success: boolean('success').notNull(),
+  success: boolean('success').notNull(),;
   metadata: json('metadata'),
   created_at: timestamp('created_at').defaultNow().notNull()
 });
@@ -50,7 +50,7 @@ export const evidenceProcessTable = pgTable(
     created_at: timestamp('created_at').notNull().defaultNow(),
     started_at: timestamp('started_at'),
     finished_at: timestamp('finished_at'),
-    updated_at: timestamp('updated_at').defaultNow(),
+    updated_at: timestamp('updated_at').defaultNow(),;
     error: text('error')
   },
   (table: any) => ({
@@ -68,7 +68,7 @@ export const evidenceOcrTable = pgTable(
     id: uuid('id').primaryKey(),
     evidence_id: text('evidence_id').notNull(),
     text: text('text').notNull(),
-    confidence: decimal('confidence', { precision: 5, scale: 4 }),
+    confidence: decimal('confidence', { precision: 5, scale: 4 }),;
     metadata: jsonb('metadata'), // OCR method, page count, etc.
     created_at: timestamp('created_at').notNull().defaultNow()
   },
@@ -85,7 +85,7 @@ export const evidenceEmbeddingsTable = pgTable(
     id: uuid('id').primaryKey(),
     evidence_id: text('evidence_id').notNull(),
     model: text('model').notNull(),
-    dim: integer('dim').notNull(),
+    dim: integer('dim').notNull(),;
     metadata: jsonb('metadata'),
     created_at: timestamp('created_at').notNull().defaultNow()
   },
@@ -104,7 +104,7 @@ export const evidenceVectorsTable = pgTable(
     model: text('model').notNull(),
     dimensions: integer('dimensions').notNull(),
     // pgvector type - always present after ingest-service processes
-    vector: vector('vector', { dimensions: 1536 }).notNull(),
+    vector: vector('vector', { dimensions: 1536 }).notNull(),;
     metadata: jsonb('metadata').default({}).notNull(),
     created_at: timestamp('created_at').notNull().defaultNow(),
     updated_at: timestamp('updated_at').defaultNow()
@@ -131,7 +131,7 @@ export const evidenceAnalysisTable = pgTable(
     confidence: decimal('confidence', { precision: 5, scale: 4 }),
     snippets: jsonb('snippets'), // Key points array
     relevant_docs: jsonb('relevant_docs'), // Related evidence references
-    entities: jsonb('entities'), // Extracted entities
+    entities: jsonb('entities'), // Extracted entities;
     metadata: jsonb('metadata'),
     created_at: timestamp('created_at').notNull().defaultNow()
   },
@@ -157,7 +157,7 @@ export const evidenceTable = pgTable(
     uploaded_at: timestamp('uploaded_at').notNull().defaultNow(),
     chain_of_custody: jsonb('chain_of_custody'),
     metadata: jsonb('metadata'),
-    // Always present tags array for auto-tagging worker
+    // Always present tags array for auto-tagging worker;
     tags: jsonb('tags')
       .default(sql`'[]'::jsonb`)
       .notNull(),
@@ -185,7 +185,7 @@ export const casesTable = pgTable(
     assigned_to: text('assigned_to'),
     created_at: timestamp('created_at').notNull().defaultNow(),
     updated_at: timestamp('updated_at').defaultNow(),
-    closed_at: timestamp('closed_at'),
+    closed_at: timestamp('closed_at'),;
     metadata: jsonb('metadata')
   },
   (table: any) => ({
@@ -209,7 +209,7 @@ export const reportsTable = pgTable(
     summary: text('summary').default('').notNull(),
     created_by: text('created_by').notNull(),
     created_at: timestamp('created_at').notNull().defaultNow(),
-    updated_at: timestamp('updated_at').defaultNow(),
+    updated_at: timestamp('updated_at').defaultNow(),;
     metadata: jsonb('metadata').default({}).notNull()
   },
   (table: any) => ({
@@ -226,7 +226,7 @@ export const systemHealthTable = pgTable(
   {
     id: uuid('id').primaryKey(),
     service: text('service').notNull(), // 'worker', 'rabbitmq', 'qdrant', etc.
-    status: text('status').notNull(), // 'healthy', 'degraded', 'down'
+    status: text('status').notNull(), // 'healthy', 'degraded', 'down';
     metrics: jsonb('metrics'), // Performance metrics
     last_check: timestamp('last_check').notNull().defaultNow(),
     created_at: timestamp('created_at').notNull().defaultNow()
@@ -266,7 +266,7 @@ export const chatEmbeddings = pgTable(
     role: text('role').notNull(), // 'user' | 'assistant' | 'system'
     embedding: vector('embedding', { dimensions: 768 }),
     timestamp: timestamp('timestamp').notNull().defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow(),;
     metadata: jsonb('metadata'), // Additional metadata from the chat message
     legalDomain: text('legal_domain'), // Legal context category
   },

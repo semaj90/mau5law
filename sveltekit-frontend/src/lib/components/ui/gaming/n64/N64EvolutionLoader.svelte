@@ -36,14 +36,14 @@
       colors: ['#000', '#FFF', '#FF0000', '#00FF00'],
       dimension: '2D',
       shading: false,
-      particles: 0
+      particles: 0;
     },
     snes: {
       pixelSize: 4,
       colors: ['#000', '#FFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
       dimension: '2.5D',
       shading: true,
-      particles: 10
+      particles: 10;
     },
     n64: {
       pixelSize: 1,
@@ -52,17 +52,17 @@
       shading: true,
       particles: 50,
       fog: true,
-      antiAliasing: false // Authentic N64 look
+      antiAliasing: false // Authentic N64 look;
     },
     modern: {
       pixelSize: 0,
       colors: ['#FFD700', '#FF6B35', '#004E89', '#1A936F', '#88D4AB', '#FFFFFF', '#000000'],
       dimension: '3D',
-      shading: true,
-      particles: 100,
+      shading: true,;
+      particles: 100,;
       fog: true,
       antiAliasing: true,
-      rayTracing: true
+      rayTracing: true;
     }
   };
 
@@ -419,7 +419,7 @@
     {JSON.stringify({ 
       stage: stages[currentStageIndex], 
       progress: evolutionProgress,
-      rotation: rotation 
+      rotation: rotation ;
     })}
   </div>
 {:else}
@@ -505,7 +505,7 @@
 {/if}
 
 <style>
-  .n64-evolution-container {
+  .n64-evolution-container {;
     display: flex;
     flex-direction: column;
     align-items: center;

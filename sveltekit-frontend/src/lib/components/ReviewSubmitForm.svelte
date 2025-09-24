@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -34,31 +34,31 @@ https://svelte.dev/e/js_parse_error -->
       id: 'case_info',
       label: 'Case Information Complete',
       description: 'Title, client, case type, and description provided',
-      weight: 20
+      weight: 20;
     },
     {
       id: 'documents',
       label: 'Documents Uploaded & Processed',
       description: 'At least one document uploaded and OCR completed',
-      weight: 25
+      weight: 25;
     },
     {
       id: 'evidence',
       label: 'Evidence Analysis Complete',
       description: 'Key facts and legal issues identified',
-      weight: 25
+      weight: 25;
     },
     {
       id: 'ai_analysis',
       label: 'AI Analysis Generated',
       description: 'Case strength and recommendations provided',
-      weight: 20
+      weight: 20;
     },
     {
       id: 'review',
-      label: 'Final Review Completed',
-      description: 'All sections reviewed and quality checked',
-      weight: 10
+      label: 'Final Review Completed',;
+      description: 'All sections reviewed and quality checked',;
+      weight: 10;
     }
   ];
 
@@ -160,10 +160,10 @@ https://svelte.dev/e/js_parse_error -->
 
       // Emit success event
       onSubmit?.({
-        step: 'review',
+        step: 'review',;
         data: formData,
-        allData: allFormData,
-        success: true
+        allData: allFormData,;
+        success: true;
       });
 
     } catch (error) {
@@ -348,7 +348,7 @@ https://svelte.dev/e/js_parse_error -->
           Submission Notes (Optional)
         </label>
         <textarea
-          id="submission_notes"
+          id="submission_notes";
           bind:value={formData.submission_notes}
           rows="3"
           placeholder="Any additional notes or special instructions for case processing..."

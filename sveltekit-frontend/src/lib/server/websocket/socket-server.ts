@@ -67,7 +67,7 @@ class RealTimeServer {
     this.wss.on('connection', (ws: WebSocket, request) => {
       const clientId = this.generateClientId();
       const client: ClientConnection = {
-        ws,
+        ws,;
         subscriptions: new Set()
       };
 
@@ -77,7 +77,7 @@ class RealTimeServer {
       // Handle client messages;
       ws.on('message', (data: Buffer) => {
         try {
-          const message = JSON.parse(data.toString();
+          const message = JSON.parse(data.toString());
           this.handleClientMessage(clientId, message);
         } catch (error: any) {
           console.error('Invalid message format:', error);
@@ -93,7 +93,7 @@ class RealTimeServer {
       // Send welcome message;
       ws.send(JSON.stringify({
           type: 'connection',
-          clientId,
+          clientId,;
           timestamp: new Date().toISOString()
         })
       );
@@ -138,7 +138,7 @@ class RealTimeServer {
     const payload = JSON.stringify({
       type: 'update',
       channel,
-      data: parsedMessage,
+      data: parsedMessage,;
       timestamp: new Date().toISOString()
     });
 
@@ -171,7 +171,7 @@ class RealTimeServer {
   // Utility methods for specific updates
   public async publishEvidenceUpdate(
     evidenceId: string,
-    action: string,
+    action: string,;
     data: any,
     userId?: string;
   ) {

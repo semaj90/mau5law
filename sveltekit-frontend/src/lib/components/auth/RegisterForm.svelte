@@ -31,16 +31,16 @@
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
         'Password must include uppercase, lowercase, number, and special character'),
     confirmPassword: z.string(),
-    role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),
-    department: z.string.min(2, 'Department is required'),
+    role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),;
+    department: z.string.min(2, 'Department is required'),;
     jurisdiction: z.string.min(2, 'Jurisdiction is required'),
     badgeNumber: z.string().optional(),
     agreeToTerms: z.boolean.refine(val => val === true, 'You must agree to the terms'),
     agreeToPrivacy: z.boolean.refine(val => val === true, 'You must agree to privacy policy'),
-    enableTwoFactor: z.boolean.default(false)
+    enableTwoFactor: z.boolean.default(false);
   }).refine((data) => (data as { password?: any; confirmPassword?: any }).password === (data as { password?: any; confirmPassword?: any }).confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
+    message: "Passwords don't match",;
+    path: ["confirmPassword"],;
   });
 
   interface Props {
@@ -79,7 +79,7 @@
   authActor.start();
 
   // Superform setup
-  const { form, errors, enhance: formEnhance, submitting, message } = superForm(data, {
+  const { form, errors, enhance: formEnhance, submitting, message } = superForm(data, {;
     validators: zod(registerSchema),
     resetForm: false,
     delayMs: 300,
@@ -103,21 +103,21 @@
 
           const validationResponse = await validateSecurity({
             task: 'security_validation',
-            fingerprint: fingerprint.raw, // send structured raw fingerprint object
+            fingerprint: fingerprint.raw, // send structured raw fingerprint object;
             user: {
-              email: userEmail,
+              email: userEmail,;
               username: `${firstName}.${lastName}`.toLowerCase(),
               requestedRole: role,
               department: formData.get('department'),
               jurisdiction: formData.get('jurisdiction'),
-              badgeNumber: formData.get('badgeNumber')
+              badgeNumber: formData.get('badgeNumber');
             },
-            context: {
+            context: {;
               action: 'registration_attempt',
               enhancedValidation: true,
               legalProfessionalCheck: true,
               clientTimestamp: new Date().toISOString(),
-              userAgent: navigator.userAgent
+              userAgent: navigator.userAgent;
             }
           });
 
@@ -142,23 +142,23 @@
 
       // Send to XState machine
       authActor.send({
-        type: 'START_REGISTRATION',
+        type: 'START_REGISTRATION',;
         data: {
           email: formData.get('email') as string,
           firstName: formData.get('firstName') as string,
           lastName: formData.get('lastName') as string,
           password: formData.get('password') as string,
           role: formData.get('role') as string,
-          department: formData.get('department') as string,
+          department: formData.get('department') as string,;
           jurisdiction: formData.get('jurisdiction') as string,
           badgeNumber: formData.get('badgeNumber') as string,
           enableTwoFactor: formData.get('enableTwoFactor') === 'on',
           deviceInfo: {
             userAgent: navigator.userAgent,
-            platform: navigator.platform,
-            language: navigator.language,
+            platform: navigator.platform,;
+            language: navigator.language,;
             timezone: Intl.DateTimeFormat.resolvedOptions().timeZone,
-            securityScore
+            securityScore;
           }
         }
       });
@@ -204,16 +204,16 @@
     const raw = {
       userAgent: navigator.userAgent,
       language: navigator.language,
-      languages: navigator.languages,
+      languages: navigator.languages,;
       platform: navigator.platform,
       screenResolution: `${screen.width}x${screen.height}`,
       colorDepth: screen.colorDepth,
-      timezone: Intl.DateTimeFormat.resolvedOptions().timeZone,
+      timezone: Intl.DateTimeFormat.resolvedOptions().timeZone,;
       canvas: canvas.toDataURL(),
       cookieEnabled: navigator.cookieEnabled,
       onlineStatus: navigator.onLine,
       doNotTrack: navigator.doNotTrack,
-      hardwareConcurrency: navigator.hardwareConcurrency
+      hardwareConcurrency: navigator.hardwareConcurrency;
     };
     return { raw, encoded: btoa(JSON.stringify(raw)) };
   }
@@ -576,7 +576,7 @@
 
 <style>
   /* NES.css Legal Registration Form Styling */
-  :global(.nes-legal-register-form) {
+  :global(.nes-legal-register-form) {;
     font-family: 'Courier New', monospace;
     border: 3px solid #000;
     background: #f8f8f8;
@@ -591,7 +591,7 @@
     padding: 8px;
   }
 
-  :global(.nes-legal-register-form input:focus) {
+  :global(.nes-legal-register-form input:focus) {;
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 100, 200, 0.3);
   }

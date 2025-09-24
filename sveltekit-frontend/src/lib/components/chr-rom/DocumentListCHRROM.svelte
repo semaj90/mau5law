@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -49,8 +49,9 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Initialize CHR-ROM system and load patterns
    */
-  $effect(async () => {
-    console.log('🎮 Initializing CHR-ROM Document List...');
+  $effect(() => {
+    (async () => {
+console.log('🎮 Initializing CHR-ROM Document List...');
     
     try {
       // Initialize the Drizzle bridge
@@ -64,10 +65,11 @@ https://svelte.dev/e/js_parse_error -->
           return {
             id,
             title: doc?.title || `Document ${id}`,
-            type: doc?.document_type || 'unknown',
-            status: doc?.processing_status || 'pending'
+            type: doc?.document_type || 'unknown',;
+            status: doc?.processing_status || 'pending';
           };
-        });
+    })();
+  });
       }
       
       // Prefetch patterns for all visible documents
@@ -105,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
       // Store results in reactive state
       for (const result of batchResults) {
         if (!documentPatterns.has.docId)) {
-          documentPatterns.set.docId, new Map());
+          documentPatterns.set(docId), new Map());
         }
         
         documentPatterns.get.docId)!.set.patternType, (result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).pattern);
@@ -342,7 +344,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .chr-rom-document-list {
+  .chr-rom-document-list {;
     padding: 1rem;
     font-family: system-ui, sans-serif;
   }

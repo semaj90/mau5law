@@ -27,7 +27,7 @@
     avoidCollisions = true,
     collisionBoundary,
     collisionPadding = 8,
-    sticky = 'partial'
+    sticky = 'partial';
   }: Props = $props();
 
   let contentClasses = $derived(cn(

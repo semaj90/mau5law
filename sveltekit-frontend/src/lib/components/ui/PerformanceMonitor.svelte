@@ -35,15 +35,15 @@
     gpuUsage: 0,
     webGPUActive: false,
     activeOperations: 0,
-    responseTime: 0,
-    timestamp: Date.now()
+    responseTime: 0,;
+    timestamp: Date.now();
   });
 
   let performanceObserver: PerformanceObserver | null = null;
   let frameCount = 0;
   let lastFrameTime = performance.now();
   let intervalId: number;
-  let isVisible = showOverlay;
+  let isVisible = $state(showOverlay);
 
   // Performance tracking
   function updateMetrics() {
@@ -66,8 +66,8 @@
     const webGPUActive = typeof navigator !== 'undefined' && 'gpu' in navigator;
 
     // Get performance entries for response time
-    const entries = performance.getEntriesByType('navigation');
-    const responseTime = entries.length > 0 ? Math.round(entries[0].responseStart) : 0;
+    const entries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
+    const responseTime = entries.length > 0 && 'responseStart' in entries[0] ? Math.round(entries[0].responseStart) : 0;
 
     metrics.set({
       fps: isNaN(fps) ? 60 : Math.min(fps, 120),
@@ -76,8 +76,8 @@
       gpuUsage: webGPUActive ? Math.random() * 30 + 5 : 0,
       webGPUActive,
       activeOperations: getActiveOperationsCount(),
-      responseTime,
-      timestamp: now
+      responseTime,;
+      timestamp: now;
     });
   }
 
@@ -284,7 +284,7 @@
 {/if}
 
 <style>
-  .performance-monitor {
+  .performance-monitor {;
     user-select: none;
     pointer-events: auto;
   }

@@ -6,7 +6,7 @@
 
   interface CaseScore {
     score: number;
-    breakdown: {
+    breakdown: {;
       admissibility: number;
       relevance: number;
       quality: number;
@@ -43,8 +43,8 @@
 
     try {
       const response = await fetch("/api/ai/case-scoring", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST",;
+        headers: { "Content-Type": "application/json" },;
         body: JSON.stringify({
           content,
           evidenceType,
@@ -231,7 +231,7 @@
 </div>
 
 <style>
-  .case-scoring-card {
+  .case-scoring-card {;
     min-height: 280px;
   }
 

@@ -70,7 +70,7 @@ export class LLVMWASMBridge {
       memoryRequired: 32 * 1024 * 1024 // 32MB
     },
     legalAnalyzer: {
-      sources: ['legal_analyzer.cpp', 'contract_parser.cpp', 'risk_assessor.cpp'],
+      sources: ['legal_analyzer.cpp', 'contract_parser.cpp', 'risk_assessor.cpp'],;
       exports: ['analyzeContract', 'assessRisk', 'identifyObligations'],
       memoryRequired: 12 * 1024 * 1024 // 12MB
     }
@@ -115,7 +115,7 @@ export class LLVMWASMBridge {
         initial: 256, // 16MB initial
         maximum: 1024, // 64MB maximum
         shared: false
-      }),
+      }),;
       exports: new Map()
     };
   }
@@ -140,7 +140,7 @@ export class LLVMWASMBridge {
 
   async compileLegalModule(
     moduleId: string,
-    name: string,
+    name: string,;
     config: any;
   ): Promise<LLVMModule | null> {
     const startTime = performance.now();
@@ -148,7 +148,7 @@ export class LLVMWASMBridge {
     try {
       // Mock C++ source files for legal processing;
       const cppSources = config.sources.map((filename: string) => ({
-        name: filename,
+        name: filename,;
         content: this.generateMockCppSource(filename, name)
       });
 
@@ -172,7 +172,7 @@ export class LLVMWASMBridge {
         compiledWasm: compilationResult.wasmBinary,
         exports: Record<string, any>,
         memory: null,
-        isLoaded: false,
+        isLoaded: false,;
         performance: {
           compileTimeMs: performance.now() - startTime,
           loadTimeMs: 0,
@@ -326,7 +326,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
   }
 
   private async compileToWASM(
-    sources: Array<any>,
+    sources: Array<any>,;
     options: LLVMCompileOptions;
   ): Promise<CompilationResult> {
     // Mock LLVM compilation process
@@ -353,7 +353,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         compileTime,
         memoryUsage: options.memorySize || 1024 * 1024,
         optimizations: options.features || [],
-        warnings: [],
+        warnings: [],;
         error: null
       };
     } catch (error: any) {
@@ -364,14 +364,14 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         compileTime: performance.now() - startTime,
         memoryUsage: 0,
         optimizations: [],
-        warnings: [],
+        warnings: [],;
         error: error instanceof Error ? error.message: 'Unknown compilation error'
       };
     }
   }
 
   private generateMockWASMBinary(
-    sources: Array<any>,
+    sources: Array<any>,;
     options: LLVMCompileOptions;
   ): ArrayBuffer {
     // Generate a minimal WASM binary that can be instantiated
@@ -442,14 +442,14 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       // Create memory for the module
       const memoryPages = Math.ceil(this.legalModules[module.name.replace('legal_', '')]?.memoryRequired || (1024 * 1024) / (64 * 1024);
       module.memory = new WebAssembly.Memory({
-        initial: memoryPages,
+        initial: memoryPages,;
         maximum: memoryPages * 2
       });
 
       // Instantiate the WASM module;
       const wasmModule = await WebAssembly.instantiate(module.compiledWasm, {
         env: {
-          memory: module.memory,
+          memory: module.memory,;
           abort: (msg: number, file: number, line: number, column: number) => {
             console.error(`WASM abort in ${module.name}:`, { msg, file, line, column });
           },
@@ -467,7 +467,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
           cos: Math.cos,
           tan: Math.tan,
           sqrt: Math.sqrt,
-          exp: Math.exp,
+          exp: Math.exp,;
           log: Math.log
         }
       });
@@ -663,7 +663,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         name: module.name,
         isLoaded: module.isLoaded,
         sourceFiles: module.sourceFiles.length,
-        exports: Object.keys(module.exports).length,
+        exports: Object.keys(module.exports).length,;
         performance: module.performance
       };
     }

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -39,9 +39,9 @@ https://svelte.dev/e/js_parse_error -->
         const mod = await import('fabric');
         const fabric = mod.fabric || mod.default || mod;
         fabricCanvas = new fabric.Canvas(canvasEl, {
-        width: size.width - 20,
+        width: size.width - 20,;
         height: size.height - 80,
-        backgroundColor: 'white'
+        backgroundColor: 'white';
       });
 
       // Load background image if provided
@@ -56,9 +56,9 @@ https://svelte.dev/e/js_parse_error -->
           img.scale(scale);
           img.set({
             left: 0,
-            top: 0,
-            selectable: false,
-            evented: false
+            top: 0,;
+            selectable: false,;
+            evented: false;
           });
           (fabricCanvas as any)?.setBackgroundImage?.(img, () => (fabricCanvas as any)?.renderAll?.());
         });
@@ -107,10 +107,10 @@ https://svelte.dev/e/js_parse_error -->
           left: 50,
           top: 50,
           width: 100,
-          height: 60,
-          fill: 'transparent',
+          height: 60,;
+          fill: 'transparent',;
           stroke: '#ef4444',
-          strokeWidth: 2
+          strokeWidth: 2;
         });
         fabricCanvas.add(rect);
         break;
@@ -118,27 +118,27 @@ https://svelte.dev/e/js_parse_error -->
         const circle = new fabric.Circle({
           left: 50,
           top: 50,
-          radius: 30,
-          fill: 'transparent',
+          radius: 30,;
+          fill: 'transparent',;
           stroke: '#22c55e',
-          strokeWidth: 2
+          strokeWidth: 2;
         });
         fabricCanvas.add(circle);
         break;
       case 'arrow':
         const line = new fabric.Line([50, 50, 150, 100], {
           stroke: '#3b82f6',
-          strokeWidth: 3,
-          selectable: true
+          strokeWidth: 3,;
+          selectable: true;
         });
         fabricCanvas.add(line);
         break;
       case 'text':
         const text = new fabric.IText('Click to edit', {
-          left: 50,
+          left: 50,;
           top: 50,
-          fontSize: 16,
-          fill: '#1f2937'
+          fontSize: 16,;
+          fill: '#1f2937';
         });
         fabricCanvas.add(text);
         break;
@@ -180,8 +180,8 @@ https://svelte.dev/e/js_parse_error -->
       // Resize fabric canvas
       if (fabricCanvas) {
         fabricCanvas.setDimensions({
-          width: newWidth - 20,
-          height: newHeight - 80
+          width: newWidth - 20,;
+          height: newHeight - 80;
         });
   }}
     function onMouseUp() {

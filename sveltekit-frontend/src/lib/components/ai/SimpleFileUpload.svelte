@@ -45,7 +45,7 @@
     enableAutoTags = true,
     enableWebGPU = false,
     class: classNameVar = '',
-    caseId = null,
+    caseId = null,;
   }: Props = $props();
 
   // Enhanced state variables
@@ -55,28 +55,28 @@
   let fileInput: HTMLInputElement | undefined = $state();
   let systemStatus = $state<any>({
     services: ,
-    performance: ,
-    queues: ,
+    performance: ,;
+    queues: ,;
     storage: });
   let uploadMachine = $state<ActorRefFrom<typeof fileUploadMachine>(null) | null >(null);
 
   // XState Machine for Upload Management
   const fileUploadMachine = createMachine({
     id: 'fileUpload',
-    initial: 'idle',
+    initial: 'idle',;
     context: {
       files: [],
       currentFile: null,
       progress: 0,
       error: null,
-      results: [],
+      results: [],;
       services: {
         postgresql: false,
         minio: false,
         qdrant: false,
         redis: false,
         rabbitmq: false,
-        ollama: false
+        ollama: false;
       }
     },
     states: {
@@ -84,10 +84,10 @@
         on: {
           UPLOAD_FILES: {
             target: 'validating',
-            actions: 'setFiles'
+            actions: 'setFiles';
           },
           CHECK_SERVICES: {
-            target: 'checkingServices'
+            target: 'checkingServices';
           }
         }
       },
@@ -96,11 +96,11 @@
           src: 'checkAllServices',
           onDone: {
             target: 'idle',
-            actions: 'updateServiceStatus'
+            actions: 'updateServiceStatus';
           },
           onError: {
             target: 'idle',
-            actions: 'setError'
+            actions: 'setError';
           }
         }
       },
@@ -109,11 +109,11 @@
           src: 'validateFiles',
           onDone: {
             target: 'uploading',
-            actions: 'setValidFiles'
+            actions: 'setValidFiles';
           },
           onError: {
             target: 'error',
-            actions: 'setError'
+            actions: 'setError';
           }
         }
       },
@@ -122,16 +122,16 @@
           src: 'processUpload',
           onDone: {
             target: 'processing',
-            actions: 'setUploadComplete'
+            actions: 'setUploadComplete';
           },
           onError: {
             target: 'error',
-            actions: 'setError'
+            actions: 'setError';
           }
         },
         on: {
           PROGRESS_UPDATE: {
-            actions: 'updateProgress'
+            actions: 'updateProgress';
           }
         }
       },
@@ -140,11 +140,11 @@
           src: 'processWithAI',
           onDone: {
             target: 'completed',
-            actions: 'setProcessingComplete'
+            actions: 'setProcessingComplete';
           },
           onError: {
             target: 'error',
-            actions: 'setError'
+            actions: 'setError';
           }
         }
       },
@@ -152,18 +152,18 @@
         on: {
           RESET: {
             target: 'idle',
-            actions: 'reset'
+            actions: 'reset';
           }
         }
       },
       error: {
         on: {
           RETRY: {
-            target: 'validating'
+            target: 'validating';
           },
           RESET: {
-            target: 'idle',
-            actions: 'reset'
+            target: 'idle',;
+            actions: 'reset';
           }
         }
       }
@@ -171,7 +171,7 @@
   });
 
   // System status check on mount
-  $effect(async () => {
+  $effect(() => {
     uploadMachine = interpret(fileUploadMachine).start();
     uploadMachine.send({ type: 'CHECK_SERVICES' });
 
@@ -188,10 +188,10 @@
           redis: ragStatus.redis || false,
           rabbitmq: ragStatus.rabbitmq || false,
           ollama: ragStatus.ollama || false,
-          webgpu: enableWebGPU && (await checkWebGPUSupport())
+          webgpu: enableWebGPU && (await checkWebGPUSupport());
         },
-        performance: systemHealth.performance || ,
-        queues: ragStatus.queues || ,
+        performance: systemHealth.performance || ,;
+        queues: ragStatus.queues || ,;
         storage: ragStatus.storage || };
     } catch (error) {
       console.error('Failed to fetch system status:', error);
@@ -237,8 +237,8 @@
 
   function handleFiles(newFiles: File[]) {
     uploadMachine?.send({
-      type: 'UPLOAD_FILES',
-      files: newFiles
+      type: 'UPLOAD_FILES',;
+      files: newFiles;
     });
   }
 
@@ -252,7 +252,7 @@
       progress: 0,
       fileName: file.name,
       fileSize: file.size,
-      fileType: file.type,
+      fileType: file.type,;
       stages: {
         validation: 'pending',
         storage: 'pending',
@@ -261,15 +261,15 @@
         vectorization: enableEmbedding ? 'pending' : 'skipped',
         indexing: 'pending',
         tagging: enableAutoTags ? 'pending' : 'skipped',
-        caching: 'pending'
+        caching: 'pending';
       },
       results: {
         documentId: null,
         minioPath: null,
         embeddingId: null,
         vectorId: null,
-        tags: [],
-        metadata: },
+        tags: [],;
+        metadata: },;
       performance: {
         startTime: Date.now(),
         endTime: null,
@@ -422,8 +422,8 @@
       try {
         const endpoint = `/api/v1/storage/${protocol}/upload`;
         const response = await fetch(endpoint, {
-          method: 'POST',
-          body: formData,
+          method: 'POST',;
+          body: formData,;
           headers: {
             'X-Upload-Protocol': protocol.toUpperCase()
           }
@@ -448,27 +448,27 @@
       fileType: file.type,
       minioPath: storageResult.path,
       uploadId: fileId,
-      caseId: caseId,
+      caseId: caseId,;
       metadata: {
         originalName: file.name,
         uploadTime: new Date().toISOString(),
         userAgent: navigator.userAgent,
         enabledFeatures: {
           ocr: enableOCR,
-          embedding: enableEmbedding,
+          embedding: enableEmbedding,;
           rag: enableRAG,
-          autoTags: enableAutoTags,
-          webgpu: enableWebGPU
+          autoTags: enableAutoTags,;
+          webgpu: enableWebGPU;
         }
       }
     };
 
     const response = await fetch('/api/v1/documents', {
-      method: 'POST',
+      method: 'POST',;
       headers: {
         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(documentData)
+      },;
+      body: JSON.stringify(documentData);
     });
 
     if (!(response as { ok?: any; json?: any }).ok) {
@@ -484,8 +484,8 @@
     formData.append('fileId', fileId);
 
     const response = await fetch('/api/v1/ocr/extract', {
-      method: 'POST',
-      body: formData
+      method: 'POST',;
+      body: formData;
     });
 
     if (!(response as { ok?: any; json?: any }).ok) {
@@ -506,14 +506,14 @@
 
     // Fallback to Ollama embeddings
     const response = await fetch('/api/v1/ollama/embeddings', {
-      method: 'POST',
+      method: 'POST',;
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'nomic-embed-text',
+        model: 'nomic-embed-text',;
         prompt: content,
-        fileId: fileId
+        fileId: fileId;
       })
     });
 
@@ -527,14 +527,14 @@
   async function generateWebGPUEmbeddings(content: string, fileId: string): Promise<any> {
     // WebGPU-accelerated embeddings processing
     const response = await fetch('/api/v1/webgpu/embeddings', {
-      method: 'POST',
+      method: 'POST',;
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         content: content,
-        fileId: fileId,
-        model: 'webgpu-transformer'
+        fileId: fileId,;
+        model: 'webgpu-transformer';
       })
     });
 
@@ -548,24 +548,24 @@
   async function storeInQdrant(embeddingResult: any, documentRecord: any, fileId: string): Promise<any> {
     const vectorData = {
       id: documentRecord.id,
-      vector: embeddingResult.embedding,
+      vector: embeddingResult.embedding,;
       payload: {
         fileName: documentRecord.fileName,
         fileType: documentRecord.fileType,
         caseId: documentRecord.caseId,
-        uploadId: fileId,
-        timestamp: new Date().toISOString()
+        uploadId: fileId,;
+        timestamp: new Date().toISOString();
       }
     };
 
     const response = await fetch('/api/v1/qdrant/points/upsert', {
-      method: 'POST',
+      method: 'POST',;
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        collection: 'legal-documents',
-        points: [vectorData]
+        collection: 'legal-documents',;
+        points: [vectorData];
       })
     });
 
@@ -580,15 +580,15 @@
     const content = extractedText || file.name;
 
     const response = await fetch('/api/v1/ai/auto-tags', {
-      method: 'POST',
+      method: 'POST',;
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
+      body: JSON.stringify({;
         content: content,
         fileName: file.name,
         fileType: file.type,
-        fileId: fileId
+        fileId: fileId;
       })
     });
 
@@ -617,19 +617,19 @@
       documentId: documentRecord.id,
       fileName: documentRecord.fileName,
       caseId: documentRecord.caseId,
-      uploadId: fileId,
-      timestamp: new Date().toISOString()
+      uploadId: fileId,;
+      timestamp: new Date().toISOString();
     };
 
     await fetch('/api/v1/rabbitmq/publish', {
-      method: 'POST',
+      method: 'POST',;
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         exchange: 'legal-events',
-        routingKey: 'document.uploaded',
-        message: event
+        routingKey: 'document.uploaded',;
+        message: event;
       })
     });
   }
@@ -764,7 +764,7 @@
       </p>
     </div>
 
-    <input
+    <input;
       bind:this={fileInput}
       type="file"
       multiple
@@ -993,7 +993,7 @@
 </div>
 
 <style>
-  pre {
+  pre {;
     max-height: 200px;
     overflow-y: auto;
     white-space: pre-wrap;

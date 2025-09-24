@@ -72,7 +72,7 @@ const createAnalyticsStore = () => {
       const fullEvent: AnalyticsEvent = {
         ...event,
         id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        timestamp: new Date(),
+        timestamp: new Date(),;
         url: browser ? window.location.href : undefined,
         userAgent: browser ? navigator.userAgent : undefined
       };
@@ -110,7 +110,7 @@ const createAnalyticsStore = () => {
             'X-Analytics-Batch': 'true'
           },
           body: JSON.stringify({
-            events: eventsToFlush,
+            events: eventsToFlush,;
             timestamp: new Date().toISOString(),
             batchSize: eventsToFlush.length
           })
@@ -138,7 +138,7 @@ const createAnalyticsStore = () => {
     logPageView: (page: string, metadata?: Record<string, any>) => {
       return analyticsStore.logEvent({
         type: 'page_view',
-        action: 'page_view',
+        action: 'page_view',;
         metadata: {
           page,
           ...metadata
@@ -158,7 +158,7 @@ const createAnalyticsStore = () => {
       return analyticsStore.logEvent({
         type: 'ai_interaction',
         action,
-        metadata: {
+        metadata: {;
           timestamp: new Date().toISOString(),
           ...metadata
         }
@@ -168,7 +168,7 @@ const createAnalyticsStore = () => {
     logDocumentUpload: (fileName: string, fileSize: number, metadata?: Record<string, any>) => {
       return analyticsStore.logEvent({
         type: 'document_upload',
-        action: 'upload',
+        action: 'upload',;
         metadata: {
           fileName,
           fileSize,
@@ -180,7 +180,7 @@ const createAnalyticsStore = () => {
     logSearch: (query: string, resultsCount: number, metadata?: Record<string, any>) => {
       return analyticsStore.logEvent({
         type: 'search',
-        action: 'search_query',
+        action: 'search_query',;
         metadata: {
           query,
           resultsCount,
@@ -196,7 +196,7 @@ const createAnalyticsStore = () => {
       return analyticsStore.logEvent({
         type: 'error',
         action: 'error_occurred',
-        metadata: {
+        metadata: {;
           error: errorMessage,
           stack,
           ...metadata
@@ -205,7 +205,7 @@ const createAnalyticsStore = () => {
     },
 
     logPerformance: (action: string, duration: number, metadata?: Record<string, any>) => {
-      return analyticsStore.logEvent({
+      return analyticsStore.logEvent({;
         type: 'performance',
         action,
         duration,
@@ -316,6 +316,6 @@ export const analyticsActions = {
   setSessionId: analyticsStore.setSessionId,
   getEvents: analyticsStore.getEvents,
   getEventsSince: analyticsStore.getEventsSince,
-  getStats: analyticsStore.getStats,
+  getStats: analyticsStore.getStats,;
   clear: analyticsStore.clear
 };

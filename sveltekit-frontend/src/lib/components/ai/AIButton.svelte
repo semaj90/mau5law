@@ -1,10 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  interface Props {
+  interface Props {;
     position: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' ;
     size: 'sm' | 'md' | 'lg' ;
     variant: 'primary' | 'secondary' | 'accent' ;
@@ -40,9 +40,9 @@ https://svelte.dev/e/js_parse_error -->
   let showTooltip = $state(false);
   let buttonElement = $state<HTMLButtonElement// Size configurations
   	const sizeClasses  | null>(null); const data = {
-  		sm: 'w-12 h-12 text-sm',
-  		md: 'w-16 h-16 text-base',
-  		lg: 'w-20 h-20 text-lg'
+  		sm: 'w-12 h-12 text-sm',;
+  		md: 'w-16 h-16 text-base',;
+  		lg: 'w-20 h-20 text-lg';
   	});
   	// Position configurations
   	const positionClasses = {
@@ -53,9 +53,9 @@ https://svelte.dev/e/js_parse_error -->
   	};
   	// Variant configurations
   	const variantClasses = {
-  		primary: 'bg-gradient-to-br from-yorha-primary to-yorha-secondary hover:from-yorha-secondary hover:to-yorha-primary border-yorha-primary',
-  		secondary: 'bg-gradient-to-br from-yorha-bg-secondary to-yorha-bg-tertiary hover:from-yorha-bg-tertiary hover:to-yorha-bg-secondary border-yorha-border',
-  		accent: 'bg-gradient-to-br from-yorha-accent to-blue-400 hover:from-blue-400 hover:to-yorha-accent border-yorha-accent'
+  		primary: 'bg-gradient-to-br from-yorha-primary to-yorha-secondary hover:from-yorha-secondary hover:to-yorha-primary border-yorha-primary',;
+  		secondary: 'bg-gradient-to-br from-yorha-bg-secondary to-yorha-bg-tertiary hover:from-yorha-bg-tertiary hover:to-yorha-bg-secondary border-yorha-border',;
+  		accent: 'bg-gradient-to-br from-yorha-accent to-blue-400 hover:from-blue-400 hover:to-yorha-accent border-yorha-accent';
   	};
   	// Handle button click
   	function handleClick() {
@@ -127,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
 				shadow-lg
 				transition-all duration-300 ease-in-out
 				transform-gpu
-				focus:outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 focus:ring-offset-yorha-bg-primary
+				focus:outline-none focus:ring-2 focus:ring-yorha-primary focus:ring-offset-2 focus:ring-offset-yorha-bg-primary;
 				active:scale-95
 				group
 				{disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 hover:shadow-xl hover:shadow-yorha-primary/20'}
@@ -151,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
 				{#each Array(3) as _, i}
 					<div
 						class="absolute w-1 h-1 bg-white/40 rounded-full animate-float"
-						style="
+						style=";
 							left: {20 + (i * 30)}%;
 							animation-delay: {i * 0.5}s;
 							animation-duration: {3 + (i * 0.5)}s;
@@ -197,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
 	@keyframes float {
-		0%, 100% {
+		0%, 100% {;
 			transform: translateY(0) rotate(0deg);
 			opacity: 0;
 		}

@@ -24,11 +24,11 @@ function createRuntimeConnection() {
 			prepare: !isDev, // Disable in isDev for better DX with schema changes
 			// SSL settings (disable for local isDev)
 			ssl: false,
-			// Transform settings for compatibility;
+			// Transform settings for compatibility
 			transform: {
 				undefined: null
 			},
-			// Debug in isDevelopment;
+			// Debug in isDevelopment
 			debug: isDev ? (connection, query, parameters) => {
 				console.log('🐘 PostgreSQL Query:', query);
 				if (parameters?.length) {
@@ -63,7 +63,7 @@ function createAdminConnection() {
 	return adminConnectionSingleton;
 }
 
-// Create Drizzle clients with role separation;
+// Create Drizzle clients with role separation
 export const db = drizzle(createRuntimeConnection(), { 
 	schema,
 	logger: isDev
@@ -90,7 +90,7 @@ async function initializeDatabase() {
 	}
 }
 
-// Auto-initialize in production, skip in isDev;
+// Auto-initialize in production, skip in isDev
 if (!isDev) {
 	initializeDatabase();
 }
@@ -98,7 +98,7 @@ if (!isDev) {
 // Export schema for type safety
 export * from './schema-postgres.js';
 
-// Health check utilities;
+// Health check utilities
 export async function testRuntimeConnection(): Promise<boolean> {
 	try {
 		const result = await db.execute('SELECT 1 as test');
@@ -124,7 +124,7 @@ export async function testAdminConnection(): Promise<boolean> {
 // Legacy alias for backward compatibility
 export const testConnection = testRuntimeConnection;
 
-// Graceful shutdown for both connections;
+// Graceful shutdown for both connections
 export function closeConnections() {
 	if (runtimeConnectionSingleton) {
 		runtimeConnectionSingleton.end();

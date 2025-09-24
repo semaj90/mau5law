@@ -24,18 +24,18 @@
     menu: 'from-slate-800/95 to-slate-900/95 border-blue-400/80',
     info: 'from-blue-800/95 to-blue-900/95 border-cyan-400/80',
     stats: 'from-green-800/95 to-green-900/95 border-green-400/80',
-    inventory: 'from-amber-800/95 to-amber-900/95 border-yellow-400/80',
-    battle: 'from-red-800/95 to-red-900/95 border-red-400/80',
-    magic: 'from-purple-800/95 to-purple-900/95 border-purple-400/80'
+    inventory: 'from-amber-800/95 to-amber-900/95 border-yellow-400/80',;
+    battle: 'from-red-800/95 to-red-900/95 border-red-400/80',;
+    magic: 'from-purple-800/95 to-purple-900/95 border-purple-400/80';
   };
 
   const glowColors = {
     menu: 'shadow-blue-500/30',
     info: 'shadow-cyan-500/30',
     stats: 'shadow-green-500/30',
-    inventory: 'shadow-yellow-500/30',
-    battle: 'shadow-red-500/30',
-    magic: 'shadow-purple-500/30'
+    inventory: 'shadow-yellow-500/30',;
+    battle: 'shadow-red-500/30',;
+    magic: 'shadow-purple-500/30';
   };
 </script>
 
@@ -86,7 +86,7 @@
 </div>
 
 <style>
-  .ff-container {
+  .ff-container {;
     backdrop-filter: blur(8px);
   }
 
@@ -97,7 +97,7 @@ clip-path: polygon( 0% 8px, 8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100
   .text-shadow-lg {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   }
-/* Subtle background pattern */ .ff-container: :before {
+/* Subtle background pattern */ .ff-container::before {
     content: '';
     position: absolute;
     inset: 0;

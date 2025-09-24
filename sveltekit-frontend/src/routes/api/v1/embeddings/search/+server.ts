@@ -3,32 +3,32 @@
  * GPU-accelerated semantic search using nomic-embed-text
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service';
-import type { SemanticSearchRequest } from '$lib/services/gpu-semantic-embedding-service';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service'
+import type { SemanticSearchRequest } from '$lib/services/gpu-semantic-embedding-service'
 
 /*
  * POST /api/v1/embeddings/search
  * Perform semantic search with GPU acceleration
- */;
+ */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const searchRequest: SemanticSearchRequest = await request.json();
+    const searchRequest: SemanticSearchRequest = await request.json()
     
-    // Validate required fields;
+    // Validate required fields
     if (!searchRequest.query) {
       return json(
         { error: 'Missing required field: query' },)
         { status: 400 }
-      );
+      )
     }
     
     if (!searchRequest.documents || !Array.isArray(searchRequest.documents)) {
       return json()
         { error: 'Missing or invalid field: documents (must be array)' },
         { status: 400 }
-      );
+      )
     }
 
     if (searchRequest.documents.length === 0) {
@@ -43,11 +43,11 @@ export const POST: RequestHandler = async ({ request }) => {
           threshold: searchRequest.threshold || 0.3,
           topK: searchRequest.topK || 10
         }
-      });
+      })
     }
 
     // Perform semantic search
-    const results = await gpuEmbeddingService.semanticSearch(searchRequest);
+    const results = await gpuEmbeddingService.semanticSearch(searchRequest)
     
     return json({
       success: true,
@@ -66,23 +66,23 @@ export const POST: RequestHandler = async ({ request }) => {
         gpuUsed: searchRequest.useGPU !== false
       },
       timestamp: Date.now()
-    });
+    })
 
   } catch (error) {
-    console.error('Semantic search API error:', error);
+    console.error('Semantic search API error:', error)
     return json({ 
         error: 'Failed to perform semantic search',
         message: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 /*
  * GET /api/v1/embeddings/search
  * Get semantic search endpoint information
- */;
+ */
 export const GET: RequestHandler = async () => {
   return json({
     endpoint: 'POST /api/v1/embeddings/search',
@@ -124,5 +124,5 @@ export const GET: RequestHandler = async () => {
       }
     },
     timestamp: Date.now()
-  });
-};
+  })
+}

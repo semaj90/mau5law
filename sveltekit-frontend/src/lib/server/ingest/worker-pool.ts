@@ -279,7 +279,7 @@ export class AdvancedWorkerPool extends EventEmitter {
 
   async processJob(
     type: WorkerJobData['type'],
-    payload: any,
+    payload: any,;
     options: JobOptions = {}
   ): Promise<WorkerJobResult> {
     if (this.isShuttingDown) {
@@ -354,7 +354,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       this.emit('jobFailed', {
         jobId: jobData.id,
         type: jobData.type,
-        workerId: availableWorker.id,
+        workerId: availableWorker.id,;
         error: error instanceof Error ? error.message: String(error)
       });
 

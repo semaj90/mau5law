@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Legal Case Manager with Production Features -->
@@ -64,25 +64,25 @@ https://svelte.dev/e/js_parse_error -->
     // Case data with enhanced tracking using Svelte 5 runes
     let caseData = $state<ExtendedCaseData>({
         id: '',
-        title: '',
+        title: '',;
         description: '',
         clientInfo: {
             name: '',
             email: '',
             phone: '',
-            address: ''
+            address: '';
         },
         documents: [],
         evidence: [],
         aiAnalysis: null,
         status: 'draft',
         priority: 'medium',
-        tags: [],
+        tags: [],;
         metadata: {
             createdAt: new Date(),
             updatedAt: new Date(),
-            version: 1,
-            workflow: 'standard'
+            version: 1,;
+            workflow: 'standard';
         }
     });
 
@@ -94,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
             description: 'Basic case details and client information',
             component: CaseInfoForm,
             required: true,
-            estimatedTime: 5
+            estimatedTime: 5;
         },
         {
             id: 'document-upload',
@@ -102,7 +102,7 @@ https://svelte.dev/e/js_parse_error -->
             description: 'Upload and process case documents',
             component: DocumentUploadForm,
             required: true,
-            estimatedTime: 10
+            estimatedTime: 10;
         },
         {
             id: 'evidence-analysis',
@@ -110,7 +110,7 @@ https://svelte.dev/e/js_parse_error -->
             description: 'Analyze and categorize evidence',
             component: EvidenceAnalysisForm,
             required: false,
-            estimatedTime: 15
+            estimatedTime: 15;
         },
         {
             id: 'ai-analysis',
@@ -118,15 +118,15 @@ https://svelte.dev/e/js_parse_error -->
             description: 'AI-powered case analysis and recommendations',
             component: AIAnalysisForm,
             required: false,
-            estimatedTime: 8
+            estimatedTime: 8;
         },
         {
             id: 'review-submit',
             title: 'Review & Submit',
-            description: 'Final review and case submission',
-            component: ReviewSubmitForm,
+            description: 'Final review and case submission',;
+            component: ReviewSubmitForm,;
             required: true,
-            estimatedTime: 5
+            estimatedTime: 5;
         }
     ];
 
@@ -158,17 +158,17 @@ https://svelte.dev/e/js_parse_error -->
             await caseStore.updateCase(caseData.id, caseData);
             notifications.add({
                 type: 'info',
-                title: 'Auto-save',
-                message: 'Progress auto-saved',
-                duration: 2000
+                title: 'Auto-save',;
+                message: 'Progress auto-saved',;
+                duration: 2000;
             });
         } catch (error) {
             console.error('Auto-save failed:', error);
             notifications.add({
                 type: 'error',
-                title: 'Auto-save Error',
-                message: 'Auto-save failed. Please save manually.',
-                duration: 5000
+                title: 'Auto-save Error',;
+                message: 'Auto-save failed. Please save manually.',;
+                duration: 5000;
             });
         }
     }
@@ -177,8 +177,8 @@ https://svelte.dev/e/js_parse_error -->
         const stepConfig = currentStepConfig;
         const result: ValidationResult = {
             isValid: true,
-            errors: [],
-            warnings: []
+            errors: [],;
+            warnings: [];
         };
 
         switch (stepConfig.id) {
@@ -238,9 +238,9 @@ https://svelte.dev/e/js_parse_error -->
             if (!validation.isValid) {
                 notifications.add({
                     type: 'error',
-                    title: 'Validation Error',
-                    message: `Please fix errors: ${validation.errors.join(', ')}`,
-                    duration: 5000
+                    title: 'Validation Error',;
+                    message: `Please fix errors: ${validation.errors.join(', ')}`,;
+                    duration: 5000;
                 });
                 return;
             }
@@ -249,9 +249,9 @@ https://svelte.dev/e/js_parse_error -->
             if (validation.warnings.length > 0) {
                 notifications.add({
                     type: 'warning',
-                    title: 'Validation Warning',
-                    message: `Warnings: ${validation.warnings.join(', ')}`,
-                    duration: 4000
+                    title: 'Validation Warning',;
+                    message: `Warnings: ${validation.warnings.join(', ')}`,;
+                    duration: 4000;
                 });
             }
 
@@ -260,10 +260,10 @@ https://svelte.dev/e/js_parse_error -->
 
             // Track analytics
             analyticsStore.logEvent({
-                type: 'case_step_completed',
+                type: 'case_step_completed',;
                 step: currentStep,
                 stepId: currentStepConfig.id,
-                caseId: caseData.id
+                caseId: caseData.id;
             });
 
             // Move to next step
@@ -279,9 +279,9 @@ https://svelte.dev/e/js_parse_error -->
             console.error('Error advancing to next step:', error);
             notifications.add({
                 type: 'error',
-                title: 'Step Error',
-                message: 'Failed to advance to next step',
-                duration: 5000
+                title: 'Step Error',;
+                message: 'Failed to advance to next step',;
+                duration: 5000;
             });
         } finally {
             isProcessing = false;
@@ -308,9 +308,9 @@ https://svelte.dev/e/js_parse_error -->
                 if (!validation.isValid && steps[i].required) {
                     notifications.add({
                         type: 'error',
-                        title: 'Step Required',
-                        message: `Cannot skip required step: ${steps[i].title}`,
-                        duration: 5000
+                        title: 'Step Required',;
+                        message: `Cannot skip required step: ${steps[i].title}`,;
+                        duration: 5000;
                     });
                     canJump = false;
                     break;
@@ -345,11 +345,11 @@ https://svelte.dev/e/js_parse_error -->
 
             // Submit to backend
             const response = await fetch('/api/cases/submit', {
-                method: 'POST',
+                method: 'POST',;
                 headers: {
                     'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(caseData)
+                },;
+                body: JSON.stringify(caseData);
             });
 
             if (!(response as { ok?: unknown; json?: unknown }).ok) {
@@ -368,9 +368,9 @@ https://svelte.dev/e/js_parse_error -->
             // Show success notification
             notifications.add({
                 type: 'success',
-                title: 'Success',
-                message: 'Case submitted successfully!',
-                duration: 5000
+                title: 'Success',;
+                message: 'Case submitted successfully!',;
+                duration: 5000;
             });
 
             // Redirect to case view
@@ -380,9 +380,9 @@ https://svelte.dev/e/js_parse_error -->
             console.error('Case submission failed:', error);
             notifications.add({
                 type: 'error',
-                title: 'Submission Error',
-                message: 'Failed to submit case. Please try again.',
-                duration: 5000
+                title: 'Submission Error',;
+                message: 'Failed to submit case. Please try again.',;
+                duration: 5000;
             });
         } finally {
             isProcessing = false;
@@ -396,9 +396,9 @@ https://svelte.dev/e/js_parse_error -->
             caseData.description = '';
             caseData.clientInfo = {
                 name: '',
-                email: '',
-                phone: '',
-                address: ''
+                email: '',;
+                phone: '',;
+                address: '';
             };
             caseData.documents = [];
             caseData.evidence = [];
@@ -409,17 +409,17 @@ https://svelte.dev/e/js_parse_error -->
             caseData.metadata = {
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                version: 1,
-                workflow: 'standard'
+                version: 1,;
+                workflow: 'standard';
             };
 
             currentStep = 0;
             validationResults = {};
             notifications.add({
                 type: 'info',
-                title: 'Reset',
-                message: 'Case data reset',
-                duration: 3000
+                title: 'Reset',;
+                message: 'Case data reset',;
+                duration: 3000;
             });
         }
     }
@@ -501,7 +501,7 @@ https://svelte.dev/e/js_parse_error -->
     }
 
     // Lifecycle
-    $effect(async () => {
+    $effect(() => {
         // Initialize OCR processor
         ocrProcessor.on('initialized', (message) => {
             console.log('OCR Service:', message);
@@ -532,9 +532,9 @@ https://svelte.dev/e/js_parse_error -->
                     caseData = existingCase;
                     notifications.add({
                         type: 'info',
-                        title: 'Case Loaded',
-                        message: 'Loaded existing case for editing',
-                        duration: 3000
+                        title: 'Case Loaded',;
+                        message: 'Loaded existing case for editing',;
+                        duration: 3000;
                     });
                 }
             } catch (error) {
@@ -572,7 +572,7 @@ https://svelte.dev/e/js_parse_error -->
                     {#if recognition}
                         <button
                             onclick={toggleVoiceListening}
-                            class="p-2 rounded-lg border border-gray-300 dark:border-gray-600
+                            class="p-2 rounded-lg border border-gray-300 dark:border-gray-600;
                                    hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors
                                    {isListening ? 'bg-red-50 border-red-300 text-red-600' : ''}"
                             title="Toggle voice commands"
@@ -649,7 +649,7 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
                 {:else}
                     {@const Component = currentStepConfig.component}
-                    <Component
+                    <Component;
                         bind:caseData={caseData}
                         validationresult={validationResults[currentStep]}
                         data-changed={() => {
@@ -671,7 +671,7 @@ https://svelte.dev/e/js_parse_error -->
                                    rounded-md shadow-sm text-sm font-medium
                                    text-gray-700 dark:text-gray-300
                                    bg-white dark:bg-gray-700
-                                   hover:bg-gray-50 dark:hover:bg-gray-600
+                                   hover:bg-gray-50 dark:hover:bg-gray-600;
                                    disabled:opacity-50 disabled:cursor-not-allowed
                                    transition-colors"
                         >
@@ -685,7 +685,7 @@ https://svelte.dev/e/js_parse_error -->
                                    rounded-md shadow-sm text-sm font-medium
                                    text-red-700 dark:text-red-300
                                    bg-white dark:bg-gray-700
-                                   hover:bg-red-50 dark:hover:bg-red-900/20
+                                   hover:bg-red-50 dark:hover:bg-red-900/20;
                                    disabled:opacity-50 disabled:cursor-not-allowed
                                    transition-colors"
                         >
@@ -701,7 +701,7 @@ https://svelte.dev/e/js_parse_error -->
                                    rounded-md shadow-sm text-sm font-medium
                                    text-gray-700 dark:text-gray-300
                                    bg-white dark:bg-gray-700
-                                   hover:bg-gray-50 dark:hover:bg-gray-600
+                                   hover:bg-gray-50 dark:hover:bg-gray-600;
                                    disabled:opacity-50 disabled:cursor-not-allowed
                                    transition-colors"
                         >
@@ -715,7 +715,7 @@ https://svelte.dev/e/js_parse_error -->
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium
                                        text-white bg-blue-600
-                                       hover:bg-blue-700
+                                       hover:bg-blue-700;
                                        disabled:opacity-50 disabled:cursor-not-allowed
                                        transition-colors"
                             >
@@ -728,7 +728,7 @@ https://svelte.dev/e/js_parse_error -->
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium
                                        text-white bg-blue-600
-                                       hover:bg-blue-700
+                                       hover:bg-blue-700;
                                        disabled:opacity-50 disabled:cursor-not-allowed
                                        transition-colors"
                             >
@@ -749,7 +749,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-    .legal-case-manager {
+    .legal-case-manager {;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     }
 

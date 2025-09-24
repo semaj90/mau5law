@@ -54,7 +54,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     onViewFull,
     onAddToCase,
     onViewRelated,
-    class: className = ''
+    class: className = '';
   }: LegalPrecedentCardProps = $props();
 
   let expanded = $state(false);
@@ -64,17 +64,17 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     binding: { 
       label: 'Binding Precedent', 
       class: 'bg-green-500/20 text-green-400 border-green-500/30',
-      priority: 1
+      priority: 1;
     },
     persuasive: { 
       label: 'Persuasive Authority', 
       class: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-      priority: 2
+      priority: 2;
     },
     distinguishable: { 
-      label: 'Distinguishable', 
-      class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-      priority: 3
+      label: 'Distinguishable', ;
+      class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',;
+      priority: 3;
     }
   };
 
@@ -82,7 +82,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   const jurisdictionConfig = {
     federal: { label: 'Federal', icon: Scale, color: 'text-blue-400' },
     state: { label: 'State', icon: MapPin, color: 'text-green-400' },
-    local: { label: 'Local', icon: MapPin, color: 'text-yellow-400' },
+    local: { label: 'Local', icon: MapPin, color: 'text-yellow-400' },;
     international: { label: 'International', icon: Scale, color: 'text-purple-400' }
   };
 
@@ -103,9 +103,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 
   function formatDate(date: Date): string {
     return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+      year: 'numeric',;
+      month: 'long',;
+      day: 'numeric';
     });
   }
 
@@ -387,7 +387,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 </div>
 
 <style>
-  .legal-precedent-card {
+  .legal-precedent-card {;
     transition: all 0.2s ease;
   }
 </style>

@@ -43,7 +43,7 @@
 
 
   <aside
-    class="app-sidebar transition-transform duration-300"
+    class="app-sidebar transition-transform duration-300";
     class:sidebar-hidden={!sidebarOpen}
     style="grid-area: sidebar;"
   >
@@ -127,7 +127,7 @@ grid-template-areas:
       transform: translateX(-100%);
     }
 
-    .app-sidebar: not(.sidebar-hidden) {
+    .app-sidebar:not(.sidebar-hidden) {
       transform: translateX(0);
     }
 

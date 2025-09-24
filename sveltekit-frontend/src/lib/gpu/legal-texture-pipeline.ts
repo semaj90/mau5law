@@ -11,7 +11,7 @@ export interface EvidencePhoto {
   caseId: string;
   filename: string;
   url: string;
-  metadata: {
+  metadata: {;
     timestamp: Date;
     location?: string;
     photographer?: string;
@@ -211,7 +211,7 @@ export class LegalDocumentTexturePipeline {
    */;
   private async applyForensicEnhancement(texture: LegalDocumentTexture, photo: EvidencePhoto): Promise<LegalDocumentTexture> {
     const enhancedChunks = texture.chunks.map(chunk => ({
-      ...chunk,
+      ...chunk,;
       data: this.enhanceForensicVisibility(chunk.data, photo.analysis)
     });
 
@@ -219,7 +219,7 @@ export class LegalDocumentTexturePipeline {
       ...texture,
       chunks: enhancedChunks,
       metadata: {
-        ...texture.metadata,
+        ...texture.metadata,;
         enhancement: 'forensic',
         analysisApplied: photo.analysis
       }
@@ -231,7 +231,7 @@ export class LegalDocumentTexturePipeline {
    */;
   private async applyDocumentEnhancement(texture: LegalDocumentTexture, scan: DocumentScan): Promise<LegalDocumentTexture> {
     const enhancedChunks = texture.chunks.map(chunk => ({
-      ...chunk,
+      ...chunk,;
       data: this.enhanceDocumentClarity(chunk.data, scan.metadata.quality)
     });
 
@@ -239,7 +239,7 @@ export class LegalDocumentTexturePipeline {
       ...texture,
       chunks: enhancedChunks,
       metadata: {
-        ...texture.metadata,
+        ...texture.metadata,;
         enhancement: 'document_clarity',
         originalQuality: scan.metadata.quality
       }
@@ -276,7 +276,7 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         caseId: visualization.caseId,
         evidenceType: '3d_scene',
-        timestamp: new Date(),
+        timestamp: new Date(),;
         visualization: visualization.metadata
       }
     };
@@ -314,7 +314,7 @@ export class LegalDocumentTexturePipeline {
       chunks,
       metadata: {
         caseId: visualization.caseId,
-        evidenceType: 'timeline',
+        evidenceType: 'timeline',;
         timestamp: new Date()
       }
     };
@@ -358,7 +358,7 @@ export class LegalDocumentTexturePipeline {
       chunks,
       metadata: {
         caseId: visualization.caseId,
-        evidenceType: 'relationship_map',
+        evidenceType: 'relationship_map',;
         timestamp: new Date()
       }
     };
@@ -393,7 +393,7 @@ export class LegalDocumentTexturePipeline {
       chunks,
       metadata: {
         caseId: visualization.caseId,
-        evidenceType: 'evidence_flow',
+        evidenceType: 'evidence_flow',;
         timestamp: new Date()
       }
     };
@@ -404,7 +404,7 @@ export class LegalDocumentTexturePipeline {
    */;
   private async optimizeForCourtroom(texture: LegalDocumentTexture, settings: any): Promise<LegalDocumentTexture> {
     const optimizedChunks = texture.chunks.map(chunk => ({
-      ...chunk,
+      ...chunk,;
       data: this.applyCourtroomOptimization(chunk.data, settings)
     });
 
@@ -414,7 +414,7 @@ export class LegalDocumentTexturePipeline {
       chunks: optimizedChunks,
       metadata: {
         ...texture.metadata,
-        courtroomSettings: settings,
+        courtroomSettings: settings,;
         optimized: true
       }
     };
@@ -634,7 +634,7 @@ export class LegalDocumentTexturePipeline {
         try {
           const response = await fetch(`${this.legalAIEndpoint}/analyze`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify({ documentId, type, data })
           });
 
@@ -657,7 +657,7 @@ export class LegalDocumentTexturePipeline {
   private queueOCRProcessing(documentId: string, imageData: ImageData, scan: DocumentScan): void {
     this.streamingQueue.push({
       id: `ocr_${documentId}`,
-      priority: 3,
+      priority: 3,;
       callback: async () => {
         try {
           // Convert ImageData to base64 for transmission
@@ -673,7 +673,7 @@ export class LegalDocumentTexturePipeline {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              documentId,
+              documentId,;
               image: base64,
               documentType: scan.documentType
             })

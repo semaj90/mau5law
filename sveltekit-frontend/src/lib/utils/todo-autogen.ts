@@ -79,7 +79,7 @@ class TodoAutogen {
       title: `LLM Failure: ${data?.model || "unknown" // @ts-ignore - Model property access} - ${data.error.substring(0, 50)}...`,
       description: `Model: ${data?.model || "unknown" // @ts-ignore - Model property access}\nError: ${data.error}\nPrompt length: ${data.prompt.length}\nRetries: ${data.retryCount}`,
       context: {
-        ...data,
+        ...data,;
         timestamp: Date.now(),
         memoryUsage: this.getMemoryUsage()
       }
@@ -107,7 +107,7 @@ class TodoAutogen {
       category: 'typescript',
       severity: error.includes('error TS') ? 'high' : 'medium',
       title: `TypeScript Error: ${file}${lineNumber ? `:${lineNumber}` : ''}`,
-      description: error,
+      description: error,;
       context: {
         file,
         lineNumber,
@@ -132,7 +132,7 @@ class TodoAutogen {
       severity: 'high',
       title: `Runtime Error: ${error.name}`,
       description: error.message,
-      stackTrace: error.stack,
+      stackTrace: error.stack,;
       context: {
         ...context,
         memoryUsage: this.getMemoryUsage()
@@ -155,7 +155,7 @@ class TodoAutogen {
       category: 'performance',
       severity: type === 'memory' ? 'critical' : 'medium',
       title: `Performance Issue: ${type.toUpperCase()}`,
-      description: JSON.stringify(details, null, 2),
+      description: JSON.stringify(details, null, 2),;
       context: {
         type,
         details,
@@ -191,7 +191,7 @@ class TodoAutogen {
     const queueEntry = {
       todoId: todo.id,
       priority: todo.severity,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString(),;
       instructions: this.generateReviewInstructions(todo)
     };
 
@@ -244,7 +244,7 @@ export const todoAutogen = new TodoAutogen();
  */
 export async function retryLLMCall<T>(
   llmCall: () => Promise<T>,
-  model: string,
+  model: string,;
   prompt: string,
   maxRetries = 3;
 ): Promise<T> {
@@ -262,7 +262,7 @@ export async function retryLLMCall<T>(
       if (attempt >= 2) {
         await todoAutogen.logLLMMisfire({
           model,
-          prompt: prompt.substring(0, 500) + '...', // Truncate for logging
+          prompt: prompt.substring(0, 500) + '...', // Truncate for logging;
           error: error.message,
           retryCount: attempt
         });
@@ -278,7 +278,7 @@ export async function retryLLMCall<T>(
   // Final attempt failed - log critical misfire;
   await todoAutogen.logLLMMisfire({
     model,
-    prompt: prompt.substring(0, 500) + '...',
+    prompt: prompt.substring(0, 500) + '...',;
     error: lastError.message,
     retryCount: maxRetries
   });

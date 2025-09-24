@@ -1,5 +1,5 @@
-import cluster from "node:cluster";
-import type { RequestHandler } from './$types.js';
+import cluster from "node:cluster"
+import type { RequestHandler } from './$types.js'
 
 
 /*
@@ -10,58 +10,58 @@ import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    // Verify we're in primary process;
+    // Verify we're in primary process
     if (!cluster.isPrimary) {
       return json({
         error: 'Cluster scaling only available from primary process'
-      }, { status: 403 });
+      }, { status: 403 })
     }
 
     // Parse request body
-    const { workers } = await request.json();
+    const { workers } = await request.json()
     
-    // Validate input;
+    // Validate input
     if (!Number.isInteger(workers) || workers < 1 || workers > 16) {
       return json({
         error: 'Invalid worker count. Must be between 1 and 16.'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Get cluster manager instance
-    const clusterManager = globalThis.clusterManager;
+    const clusterManager = globalThis.clusterManager
     
     if (!clusterManager) {
       return json({
         error: 'Cluster manager not available'
-      }, { status: 503 });
+      }, { status: 503 })
     }
 
     // Get current state
-    const currentWorkers = clusterManager.getWorkerMetrics().length;
+    const currentWorkers = clusterManager.getWorkerMetrics().length
     
     if (workers === currentWorkers) {
       return json({
         message: 'No scaling needed',
         currentWorkers,
         targetWorkers: workers
-      });
+      })
     }
 
     // Perform scaling operation
-    console.log(`📊 Scaling cluster from ${currentWorkers} to ${workers} workers`);
+    console.log(`📊 Scaling cluster from ${currentWorkers} to ${workers} workers`)
     
-    await clusterManager.scaleCluster(workers);
+    await clusterManager.scaleCluster(workers)
     
-    // Log scaling action for audit;
+    // Log scaling action for audit
     const auditLog = {
       timestamp: new Date().toISOString(),
       action: 'cluster_scale',
       previousWorkers: currentWorkers,
       newWorkers: workers,
       initiator: 'admin_api'
-    };
+    }
     
-    console.log('📝 Scaling audit log:', auditLog);
+    console.log('📝 Scaling audit log:', auditLog)
 
     return json({
       success: true,
@@ -69,31 +69,31 @@ export const POST: RequestHandler = async ({ request }) => {
       previousWorkers: currentWorkers,
       targetWorkers: workers,
       timestamp: Date.now()
-    });
+    })
 
   } catch (error: any) {
-    console.error('Cluster scaling error:', error);
+    console.error('Cluster scaling error:', error)
     
     return json({
       error: 'Failed to scale cluster',
       message: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async () => {
   try {
     // Get current scaling configuration
-    const clusterManager = globalThis.clusterManager;
+    const clusterManager = globalThis.clusterManager
     
     if (!clusterManager) {
       return json({
         error: 'Cluster manager not available'
-      }, { status: 503 });
+      }, { status: 503 })
     }
 
-    const workers = clusterManager.getWorkerMetrics();
-    const health = clusterManager.getHealth();
+    const workers = clusterManager.getWorkerMetrics()
+    const health = clusterManager.getHealth()
 
     return json({
       currentWorkers: workers.length,
@@ -113,14 +113,14 @@ export const GET: RequestHandler = async () => {
         memoryUsage: w.memoryUsage.heapUsed,
         connections: w.connections
       })
-    });
+    })
 
   } catch (error: any) {
-    console.error('Cluster scaling info error:', error);
+    console.error('Cluster scaling info error:', error)
     
     return json({
       error: 'Failed to get scaling information',
       message: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

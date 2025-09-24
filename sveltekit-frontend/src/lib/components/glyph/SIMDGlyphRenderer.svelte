@@ -107,16 +107,16 @@ https://svelte.dev/e/expected_token -->
     
     const presentationFormat = navigator.gpu.getPreferredCanvasFormat();
     context.configure({
-      device: webgpuDevice,
-      format: presentationFormat,
+      device: webgpuDevice,;
+      format: presentationFormat,;
     });
     
     // Create texture from tiled data
     const tiledData = glyphResult.simd_shader_data.tiled_data;
     const texture = webgpuDevice.createTexture({
       size: { width, height },
-      format: 'rgba8unorm',
-      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+      format: 'rgba8unorm',;
+      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,;
     });
     
     // Upload tiled data to texture
@@ -397,7 +397,7 @@ https://svelte.dev/e/expected_token -->
       Stop
     </button>
     
-    <select 
+    <select ;
       bind:value={renderMode}
       class="px-2 py-1 bg-gray-700 border border-gray-600 rounded text-white text-sm"
     >

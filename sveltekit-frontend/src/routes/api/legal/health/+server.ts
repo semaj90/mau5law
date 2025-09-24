@@ -4,23 +4,23 @@
  * Provides comprehensive health status for all legal AI processing systems
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { unifiedLegalOrchestrationService } from '$lib/services/unified-legal-orchestration-service.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { unifiedLegalOrchestrationService } from '$lib/services/unified-legal-orchestration-service.js'
 
 export const GET: RequestHandler = async () => {
 	try {
 		// Initialize service if needed
-		await unifiedLegalOrchestrationService.initialize();
+		await unifiedLegalOrchestrationService.initialize()
 
 		// Get comprehensive system health
-		const systemHealth = await unifiedLegalOrchestrationService.getSystemHealth();
+		const systemHealth = await unifiedLegalOrchestrationService.getSystemHealth()
 
 		// Calculate overall system status
 		const overallHealthy = 
 			systemHealth.orchestrator.isHealthy &&
 			systemHealth.queueManager.isHealthy &&
-			systemHealth.stateManager.isHealthy;
+			systemHealth.stateManager.isHealthy
 
 		const response = {
 			status: overallHealthy ? 'healthy' : 'degraded',
@@ -85,17 +85,17 @@ export const GET: RequestHandler = async () => {
 				status: '/api/legal/status/{jobId}',
 				health: '/api/legal/health'
 			}
-		};
+		}
 
 		return json(response, {
 			headers: {
 				'Cache-Control': 'no-cache',
 				'X-System-Health': overallHealthy ? 'healthy' : 'degraded'
 			}
-		});
+		})
 
 	} catch (error) {
-		console.error('Legal system health check failed:', error);
+		console.error('Legal system health check failed:', error)
 		
 		return json({
 			status: 'unhealthy',
@@ -111,6 +111,6 @@ export const GET: RequestHandler = async () => {
 			headers: {
 				'X-System-Health': 'unhealthy'
 			}
-		});
+		})
 	}
-};
+}

@@ -100,7 +100,7 @@ export class SOMGrid {
       for (let j = 0; j < width; j++) {
         this.grid[i][j] = {
           x: j,
-          y: i,
+          y: i,;
           intent: "unknown"
         };
       }

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Complex binding patterns require an initialization value
+<!-- @migration-task Error while migrating Svelte code: Complex binding patterns require an initialization value;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Complex binding patterns require an initialization value -->
 <script lang="ts">
@@ -16,8 +16,8 @@ https://svelte.dev/e/js_parse_error -->
     sending = true;
     try {
       const res = await fetch('/api/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({
           sessionId,
           query,

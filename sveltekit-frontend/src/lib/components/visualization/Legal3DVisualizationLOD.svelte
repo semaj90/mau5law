@@ -106,9 +106,9 @@
     position: { x: 0, y: 5, z: 15 },
     target: { x: 0, y: 0, z: 0 },
     up: { x: 0, y: 1, z: 0 },
-    fov: 45,
-    near: 0.1,
-    far: 100
+    fov: 45,;
+    near: 0.1,;
+    far: 100;
   });
   
   let isLoading = $state(false);
@@ -137,7 +137,7 @@
       fogStart: 20,
       fogEnd: 25,
       description: 'Ultra High (Full Detail)',
-      renderComplexity: 1.0
+      renderComplexity: 1.0;
     },
     1: {
       maxPolygons: 5000,
@@ -146,7 +146,7 @@
       fogStart: 40,
       fogEnd: 50,
       description: 'High Detail',
-      renderComplexity: 0.7
+      renderComplexity: 0.7;
     },
     2: {
       maxPolygons: 1000,
@@ -155,16 +155,16 @@
       fogStart: 60,
       fogEnd: 75,
       description: 'Medium Detail',
-      renderComplexity: 0.4
+      renderComplexity: 0.4;
     },
     3: {
       maxPolygons: 500,
       minImportance: 0.7,
       maxDistance: 100,
       fogStart: 70,
-      fogEnd: 100,
+      fogEnd: 100,;
       description: 'Low Poly (N64 Style)',
-      renderComplexity: 0.2
+      renderComplexity: 0.2;
     }
   };
 
@@ -206,8 +206,9 @@
   });
 
   // Initialize 3D scene
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
     
     try {
       if (enableWebGPU) {
@@ -220,6 +221,7 @@
       console.error('[Legal3DVisualizationLOD] Initialization failed:', error);
       await initializeCanvas3DFallback();
     }
+    })();
   });
 
   onDestroy(() => {
@@ -253,10 +255,10 @@
     if (!context) throw new Error('WebGPU context creation failed');
 
     context.configure({
-      device: gpuDevice,
+      device: gpuDevice,;
       format: 'bgra8unorm',
-      alphaMode: 'premultiplied',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT
+      alphaMode: 'premultiplied',;
+      usage: GPUTextureUsage.RENDER_ATTACHMENT;
     });
 
     isWebGPUReady = true;
@@ -342,10 +344,10 @@
 
     // Create render pipeline
     renderPipeline = gpuDevice.createRenderPipeline({
-      layout: 'auto',
+      layout: 'auto',;
       vertex: {
         module: vertexShader,
-        entryPoint: 'main',
+        entryPoint: 'main',;
         buffers: [{
           arrayStride: 7 * 4, // 3 position + 4 color floats
           attributes: [
@@ -356,31 +358,31 @@
       },
       fragment: {
         module: fragmentShader,
-        entryPoint: 'main',
+        entryPoint: 'main',;
         targets: [{ format: 'bgra8unorm' }]
       },
       primitive: {
         topology: 'triangle-list',
-        cullMode: 'back'
+        cullMode: 'back';
       },
       depthStencil: {
         depthWriteEnabled: true,
-        depthCompare: 'less',
-        format: 'depth24plus'
+        depthCompare: 'less',;
+        format: 'depth24plus';
       }
     });
 
     // Create uniform buffer
     uniformBuffer = gpuDevice.createBuffer({
-      size: 4 * 16 + 4 * 4, // mat4x4 + 4 floats
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
+      size: 4 * 16 + 4 * 4, // mat4x4 + 4 floats;
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
     });
 
     // Create bind group
     bindGroup = gpuDevice.createBindGroup({
-      layout: renderPipeline.getBindGroupLayout(0),
+      layout: renderPipeline.getBindGroupLayout(0),;
       entries: [{
-        binding: 0,
+        binding: 0,;
         resource: { buffer: uniformBuffer }
       }]
     });
@@ -430,8 +432,8 @@
       for (let lod = 0; lod < 4; lod++) {
         const mesh = generateMeshForLOD(entity, lod);
         const buffer = gpuDevice.createBuffer({
-          size: mesh.vertices.byteLength + mesh.indices.byteLength,
-          usage: GPUBufferUsage.VERTEX | GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST
+          size: mesh.vertices.byteLength + mesh.indices.byteLength,;
+          usage: GPUBufferUsage.VERTEX | GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST;
         });
         
         // Upload mesh data
@@ -492,11 +494,11 @@
     ];
     
     return {
-      vertices: new Float32Array(cubeVertices),
+      vertices: new Float32Array(cubeVertices),;
       indices: new Uint16Array(cubeIndices),
       vertexCount: cubeVertices.length / 7,
       triangleCount: cubeIndices.length / 3,
-      complexity
+      complexity;
     };
   }
 
@@ -539,11 +541,11 @@
     }
     
     return {
-      vertices: new Float32Array(vertices),
+      vertices: new Float32Array(vertices),;
       indices: new Uint16Array(indices),
       vertexCount: vertices.length / 7,
       triangleCount: indices.length / 3,
-      complexity
+      complexity;
     };
   }
 
@@ -567,11 +569,11 @@
     ];
     
     return {
-      vertices: new Float32Array(vertices),
+      vertices: new Float32Array(vertices),;
       indices: new Uint16Array(indices),
       vertexCount: vertices.length / 7,
       triangleCount: indices.length / 3,
-      complexity
+      complexity;
     };
   }
 
@@ -607,11 +609,11 @@
     }
     
     return {
-      vertices: new Float32Array(vertices),
+      vertices: new Float32Array(vertices),;
       indices: new Uint16Array(indices),
       vertexCount: vertices.length / 7,
       triangleCount: indices.length / 3,
-      complexity
+      complexity;
     };
   }
 
@@ -685,8 +687,8 @@
     // Create depth texture
     const depthTexture = gpuDevice.createTexture({
       size: { width: canvasElement?.width || 800, height: canvasElement?.height || 600 },
-      format: 'depth24plus',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT
+      format: 'depth24plus',;
+      usage: GPUTextureUsage.RENDER_ATTACHMENT;
     });
 
     // Begin render pass
@@ -696,11 +698,11 @@
         loadOp: 'clear',
         storeOp: 'store'
       }],
-      depthStencilAttachment: {
+      depthStencilAttachment: {;
         view: depthTexture.createView(),
         depthClearValue: 1.0,
         depthLoadOp: 'clear',
-        depthStoreOp: 'store'
+        depthStoreOp: 'store';
       }
     });
 
@@ -745,9 +747,9 @@
     const verticalRad = (cameraRotation.vertical * Math.PI) / 180;
     
     camera.position = {
-      x: Math.sin(horizontalRad) * Math.cos(verticalRad) * distance,
-      y: Math.sin(verticalRad) * distance,
-      z: Math.cos(horizontalRad) * Math.cos(verticalRad) * distance
+      x: Math.sin(horizontalRad) * Math.cos(verticalRad) * distance,;
+      y: Math.sin(verticalRad) * distance,;
+      z: Math.cos(horizontalRad) * Math.cos(verticalRad) * distance;
     };
     
     onCameraChange?.(camera);
@@ -828,28 +830,28 @@
     const demoEntities: Legal3DEntity[] = [
       {
         id: 'person_1',
-        type: 'person',
+        type: 'person',;
         position: { x: 0, y: 0, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
         rotation: { x: 0, y: 0, z: 0 },
         importance: 0.9,
         connections: ['org_1'],
-        meshType: 'sphere',
+        meshType: 'sphere',;
         color: { r: 1, g: 0, b: 0, a: 1 },
-        label: 'John Doe',
+        label: 'John Doe',;
         metadata: { role: 'plaintiff' }
       },
       {
         id: 'org_1',
-        type: 'organization',
+        type: 'organization',;
         position: { x: 3, y: 0, z: 0 },
         scale: { x: 1.5, y: 1.5, z: 1.5 },
         rotation: { x: 0, y: 45, z: 0 },
         importance: 0.8,
         connections: ['person_1'],
-        meshType: 'cube',
+        meshType: 'cube',;
         color: { r: 0, g: 1, b: 0, a: 1 },
-        label: 'ABC Corp',
+        label: 'ABC Corp',;
         metadata: { type: 'corporation' }
       }
     ];
@@ -859,8 +861,8 @@
         id: 'conn_1',
         source: 'person_1',
         target: 'org_1',
-        type: 'business',
-        strength: 0.8,
+        type: 'business',;
+        strength: 0.8,;
         color: { r: 1, g: 1, b: 0, a: 1 }
       }
     ];
@@ -1008,7 +1010,7 @@
 </div>
 
 <style>
-  .legal-3d-visualization-lod {
+  .legal-3d-visualization-lod {;
     background: linear-gradient(135deg, #0f0f23, #1a1a2e);
     color: #fff;
     min-height: 800px;

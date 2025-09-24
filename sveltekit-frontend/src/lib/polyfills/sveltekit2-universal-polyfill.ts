@@ -43,7 +43,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
     indexedDB: false,
     webWorkers: false,
     sharedArrayBuffer: false,
-    atomics: false,
+    atomics: false,;
     streams: false
   };
 
@@ -84,7 +84,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
         indexedDB: 'indexedDB' in window,
         webWorkers: typeof Worker !== 'undefined',
         sharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined',
-        atomics: typeof Atomics !== 'undefined',
+        atomics: typeof Atomics !== 'undefined',;
         streams: typeof ReadableStream !== 'undefined'
       };
     }
@@ -129,7 +129,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
           argv: [],
           cwd: () => '/',
           chdir: () => {},
-          exit: () => {},
+          exit: () => {},;
           hrtime: (previousTimestamp?: [number, number]) => {
             const now = performance.now();
             const seconds = Math.floor(now / 1000);
@@ -247,7 +247,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
           legal_ai: {
             log: (ptr: number) => console.log('WASM Legal AI:', ptr),
             error: (ptr: number) => console.error('WASM Legal AI Error:', ptr),
-            performance_now: () => performance.now(),
+            performance_now: () => performance.now(),;
             random: () => Math.random(),
             // Legal-specific functions;
             jurisdiction_lookup: (code: number) => {
@@ -312,12 +312,12 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
                   writeBuffer: () => {}
                 },
                 features: new Set(),
-                limits: Record<string, any>,
+                limits: Record<string, any>,;
                 destroy: () => {}
               };
             },
             features: new Set(),
-            limits: Record<string, any>,
+            limits: Record<string, any>,;
             info: { vendor: 'polyfill', architecture: 'fallback' }
           };
         }
@@ -362,7 +362,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
                 }),
                 oncomplete: null,
                 onerror: null
-              }),
+              }),;
               close: () => {}
             }
           })
@@ -402,7 +402,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
     try {
       // Register service worker with WASM caching support;
       const registration = await navigator.serviceWorker.register('/service-worker.js', {
-        scope: '/',
+        scope: '/',;
         type: 'module'
       });
 
@@ -426,7 +426,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       // Send initialization message to service worker;
       if (registration.active) {
         registration.active.postMessage({
-          type: 'init-legal-ai',
+          type: 'init-legal-ai',;
           config: {
             enableWASMCache: true,
             enableVectorCache: true,
@@ -490,7 +490,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       isInitialized: this.isInitialized,
       serviceWorkerReady: this.serviceWorkerReady,
       webgpu: this.capabilities.webgpu ? webgpuPolyfill.getPerformanceStats() : null,
-      wasm: this.capabilities.webassembly ? llvmWasmBridge.getModuleStats() : null,
+      wasm: this.capabilities.webassembly ? llvmWasmBridge.getModuleStats() : null,;
       cache: browser ? lokiRedisCache.getStats() : null
     };
   }

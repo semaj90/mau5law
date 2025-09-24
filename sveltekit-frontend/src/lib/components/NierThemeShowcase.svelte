@@ -26,7 +26,7 @@
     priority: 'critical',
     created: '2025-07-16',
     evidence: 12,
-    witnesses: 5
+    witnesses: 5;
   }
   const statuses = ['active', 'pending', 'closed', 'archived']
   const priorities = ['critical', 'high', 'medium', 'low']
@@ -249,7 +249,7 @@
               <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver" for="-case-title-">
                 Case Title
               </label><input id="-case-title-"
-                type="text"
+                type="text";
                 bind:value={inputValue}
                 placeholder="Enter case title..."
                 class="nier-input"
@@ -260,7 +260,7 @@
             <div>
               <label class="block text-sm font-medium mb-2 text-nier-gray dark:text-nier-silver" for="-status-">
                 Status
-              </label><select id="-status-"
+              </label><select id="-status-";
                 bind:value={selectedStatus}
                 class="nier-input"
               >
@@ -424,7 +424,7 @@
 <style>
   /* @unocss-include */
   /* Add any component-specific styles here */
-  :global(body) {
+  :global(body) {;
     transition: background-color 0.5s ease;
   }
   

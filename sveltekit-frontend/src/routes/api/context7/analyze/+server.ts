@@ -1,21 +1,21 @@
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema-postgres-enhanced';
-import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { db } from '$lib/server/db'
+import { evidence } from '$lib/server/db/schema-postgres-enhanced'
+import { eq } from 'drizzle-orm'
+import type { RequestHandler } from './$types.js'
 
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { evidenceId, content, type } = await request.json();
+    const { evidenceId, content, type } = await request.json()
 
     if (!evidenceId || !content) {
       return json({ 
         error: 'Missing required fields: evidenceId and content' 
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
-    // Mock Context7 analysis for now;
+    // Mock Context7 analysis for now
     const context7Analysis = {
       id: evidenceId,
       type: type || 'legal_evidence',
@@ -53,28 +53,28 @@ export const POST: RequestHandler = async ({ request }) => {
       confidence: 0.87,
       processingTime: Math.floor(Math.random() * 3000) + 500, // 500-3500ms
       timestamp: new Date().toISOString()
-    };
+    }
 
-    // Update evidence record with Context7 analysis;
+    // Update evidence record with Context7 analysis
     if (evidenceId) {
       try {
         await db
-          .update(evidence);
+          .update(evidence)
           .set({
             aiAnalysis: context7Analysis as any
           })
-          .where(eq(evidence.id, evidenceId);
+          .where(eq(evidence.id, evidenceId)
       } catch (updateError) {
-        console.warn('Failed to update evidence with Context7 analysis:', updateError);
+        console.warn('Failed to update evidence with Context7 analysis:', updateError)
       }
     }
 
-    return json(context7Analysis, { status: 200 });
+    return json(context7Analysis, { status: 200 })
   } catch (error: any) {
-    console.error('Context7 analysis error:', error);
+    console.error('Context7 analysis error:', error)
     return json({ 
       error: 'Analysis failed',
       status: 'error' 
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

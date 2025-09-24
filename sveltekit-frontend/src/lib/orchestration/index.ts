@@ -42,7 +42,7 @@ export const soraMoogleIntegration: SoraMoogleIntegration = {
     return {
       id: doc.id,
       processed: true,
-      analysis: 'Mock analysis result',
+      analysis: 'Mock analysis result',;
       confidence: 0.85
     };
   },
@@ -61,7 +61,7 @@ export const soraGraphTraversal: SoraGraphTraversal = {
     console.log('[SoraGraph] Building user journey graphs');
     return {
       nodes: ['start', 'process', 'end'],
-      edges: [['start', 'process'], ['process', 'end']],
+      edges: [['start', 'process'], ['process', 'end']],;
       metadata: options || {}
     };
   },

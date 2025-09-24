@@ -39,7 +39,7 @@
   		trigger,
   		children,
   		footer,
-  		onClose
+  		onClose;
   	}: Props = $props();
   	
 

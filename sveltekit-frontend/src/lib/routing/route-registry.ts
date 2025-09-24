@@ -33,7 +33,7 @@ export class RouteRegistry {
     routes: new Map(),
     dynamicRoutes: new Map(),
     currentRoute: null,
-    routeHistory: [],
+    routeHistory: [],;
     favorites: new Set(),
     recentRoutes: []
   });
@@ -122,7 +122,7 @@ export class RouteRegistry {
    */
   public registerDynamicRoute(
     id: string,
-    path: string,
+    path: string,;
     config: Partial<DynamicRouteConfig> = {}
   ): GeneratedRoute {
     const generatedRoute = dynamicRouteGenerator.generateRoute(id, path, config);
@@ -327,7 +327,7 @@ export class RouteRegistry {
       total: state.routes.size + state.dynamicRoutes.size,
       static: state.routes.size,
       dynamic: state.dynamicRoutes.size,
-      favorites: state.favorites.size,
+      favorites: state.favorites.size,;
       recent: state.recentRoutes.length,
       categories
     };
@@ -484,7 +484,7 @@ export const routeStatistics = derived(routeRegistry.getState(), state => {
     total: state.routes.size + state.dynamicRoutes.size,
     static: state.routes.size,
     dynamic: state.dynamicRoutes.size,
-    favorites: state.favorites.size,
+    favorites: state.favorites.size,;
     recent: state.recentRoutes.length,
     categories
   };
@@ -496,7 +496,7 @@ export function registerRoute(route: RouteDefinition): void {
 }
 
 export function registerDynamicRoute(
-  id: string,
+  id: string,;
   path: string,
   config?: Partial<DynamicRouteConfig>;
 ): GeneratedRoute {

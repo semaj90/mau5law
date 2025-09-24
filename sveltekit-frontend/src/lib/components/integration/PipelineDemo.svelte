@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here
+<!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here;
 https://svelte.dev/e/unexpected_reserved_word -->
 <!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here -->
 {#snippet default}
@@ -42,7 +42,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         type: selectedPipeline,
         enableGPU: true,
         enableConcurrency: true,
-        enableMemoryOptimization: true
+        enableMemoryOptimization: true;
       });
       results = [result, ...results.slice(0, 9)]; // Keep last 10 results
       updateMetrics();
@@ -191,7 +191,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       <!-- Pipeline Selection -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="block text-sm font-medium mb-2" for="pipeline-type">Pipeline Type</label><select id="pipeline-type" 
+          <label class="block text-sm font-medium mb-2" for="pipeline-type">Pipeline Type</label><select id="pipeline-type" ;
             bind:value={selectedPipeline}
             class="w-full p-2 border rounded-md"
             disabled={isProcessing}
@@ -269,7 +269,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     <div class="yorha-panel-content">
       <div class="flex gap-2">
         <input 
-          type="text" 
+          type="text" ;
           bind:value={searchQuery}
           class="flex-1 p-2 border rounded-md"
           placeholder="Search across all pipelines..."

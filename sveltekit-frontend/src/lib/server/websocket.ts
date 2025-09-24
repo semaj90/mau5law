@@ -31,7 +31,7 @@ export function setupWebSocketServer(server: any) {
     // Mock user info;
     const user = {
       id: `user-${Math.random().toString(36).substr(2, 9)}`,
-      name: `Prosecutor ${Math.floor(Math.random() * 100)}`,
+      name: `Prosecutor ${Math.floor(Math.random() * 100)}`,;
       email: `user${Math.floor(Math.random() * 100)}@prosecutor.office`
     };
 
@@ -45,7 +45,7 @@ export function setupWebSocketServer(server: any) {
     broadcastToCase(
       caseId,);
       {
-        type: "USER_JOINED",
+        type: "USER_JOINED",;
         payload: user
       },
       ws,
@@ -53,7 +53,7 @@ export function setupWebSocketServer(server: any) {
 
     // Send current active users to new connection;
     ws.send(JSON.stringify({
-        type: "ACTIVE_USERS",
+        type: "ACTIVE_USERS",;
         payload: Array.from(activeUsers.get(caseId) || [])
       }),
     );
@@ -61,7 +61,7 @@ export function setupWebSocketServer(server: any) {
     // Handle incoming messages;
     ws.on("message", (data: Buffer) => {
       try {
-        const message = JSON.parse(data.toString();
+        const message = JSON.parse(data.toString());
         handleWebSocketMessage(caseId, message, ws, user);
       } catch (error: any) {
         console.error("Invalid WebSocket message:", error);
@@ -80,7 +80,7 @@ export function setupWebSocketServer(server: any) {
       // Remove user and broadcast
       activeUsers.get(caseId)?.delete(user);
       broadcastToCase(caseId, {
-        type: "USER_LEFT",
+        type: "USER_LEFT",;
         payload: user
       });
 
@@ -99,7 +99,7 @@ export function setupWebSocketServer(server: any) {
 function handleWebSocketMessage(
   caseId: string,
   message: any,
-  sender: any,
+  sender: any,;
   user: any,
 ) {
   switch (message.type) {
@@ -108,7 +108,7 @@ function handleWebSocketMessage(
       broadcastToCase(
         caseId,);
         {
-          type: "EVIDENCE_POSITION_UPDATED",
+          type: "EVIDENCE_POSITION_UPDATED",;
           payload: {
             ...message.payload,
             updatedBy: user
@@ -123,7 +123,7 @@ function handleWebSocketMessage(
       broadcastToCase(
         caseId,);
         {
-          type: "EVIDENCE_UPDATED",
+          type: "EVIDENCE_UPDATED",;
           payload: {
             ...message.payload,
             updatedBy: user
@@ -138,7 +138,7 @@ function handleWebSocketMessage(
       broadcastToCase(
         caseId,);
         {
-          type: "EVIDENCE_DELETED",
+          type: "EVIDENCE_DELETED",;
           payload: {
             ...message.payload,
             deletedBy: user
@@ -153,7 +153,7 @@ function handleWebSocketMessage(
       broadcastToCase(
         caseId,);
         {
-          type: "USER_CURSOR_UPDATED",
+          type: "USER_CURSOR_UPDATED",;
           payload: {
             user,
             ...message.payload
@@ -199,7 +199,7 @@ function broadcastToCase(
 // Export for manual broadcasting from API endpoints
 export function broadcastEvidenceUpdate(
   caseId: string,
-  type: string,
+  type: string,;
   payload: any,
 ) {
   broadcastToCase(caseId, {

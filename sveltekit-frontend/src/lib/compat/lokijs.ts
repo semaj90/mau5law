@@ -69,7 +69,7 @@ class Loki {
 		return (this.collections.get(name) as MemoryCollection<T>) || null;
 	}
 	getCollections(): MemoryCollection<any>[] {
-		return Array.from(this.collections.values();
+		return Array.from(this.collections.values());
 	}
 	removeCollection(name: string) {
 		this.collections.delete(name);

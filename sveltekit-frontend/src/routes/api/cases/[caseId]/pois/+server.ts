@@ -1,38 +1,38 @@
 
-import { json } from '@sveltejs/kit';
-import { personsOfInterest } from "$lib/server/db/schema-postgres";
-import { db } from "$lib/server/db/connection";
-import { eq } from "drizzle-orm";
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { personsOfInterest } from "$lib/server/db/schema-postgres"
+import { db } from "$lib/server/db/connection"
+import { eq } from "drizzle-orm"
+import type { RequestHandler } from './$types.js'
 
 
 export const GET: RequestHandler = async ({ params }) => {
   try {
-    const caseId = params.caseId;
+    const caseId = params.caseId
 
     const pois = await db
       .select()
       .from(personsOfInterest)
-      .where(eq(personsOfInterest.caseId, caseId);
+      .where(eq(personsOfInterest.caseId, caseId)
 
-    return json(pois);
+    return json(pois)
   } catch (error: any) {
-    console.error("Error fetching POIs:", error);
+    console.error("Error fetching POIs:", error)
     return json(
       { error: "Failed to fetch persons of interest" },)
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request, params }) => {
   try {
-    const caseId = params.caseId;
-    const data = await request.json();
+    const caseId = params.caseId
+    const data = await request.json()
 
     // Remove posX/posY, use position object if needed
     const [poi] = await db
-      .insert(personsOfInterest);
+      .insert(personsOfInterest)
       .values({
         caseId,
         name: data.name || "New Person of Interest",
@@ -50,14 +50,14 @@ export const POST: RequestHandler = async ({ request, params }) => {
         tags: data.tags || [],
         createdBy: data.createdBy || "system", // TODO: Get from session
       })
-      .returning();
+      .returning()
 
-    return json(poi, { status: 201 });
+    return json(poi, { status: 201 })
   } catch (error: any) {
-    console.error("Error creating POI:", error);
+    console.error("Error creating POI:", error)
     return json(
       { error: "Failed to create person of interest" },)
       { status: 500 }
-    );
+    )
   }
-};
+}

@@ -159,7 +159,7 @@ export interface ExecutionPhase {
  * Main Copilot self-prompting function with comprehensive AI orchestration
  */
 export async function copilotSelfPrompt(
-  prompt: string,
+  prompt: string,;
   options: CopilotSelfPromptOptions = {}
 ): Promise<CopilotSelfPromptResult> {
   const startTime = Date.now();
@@ -204,7 +204,7 @@ export async function copilotSelfPrompt(
     if (useAutonomousEngineering) {
       engineeringAnalysis = await autonomousEngineeringSystem.solveProblemAutonomously(prompt, {
         projectPath: context.projectPath,
-        platform: context.platform || 'webapp',
+        platform: context.platform || 'webapp',;
         urgency: context.urgency || 'medium',
         includeTests: context.includeTests || true
       });
@@ -252,7 +252,7 @@ export async function copilotSelfPrompt(
       executionPlan,
       metadata: {
         processingTime,
-        confidence: calculateConfidence(contextResults, agentResults, engineeringAnalysis),
+        confidence: calculateConfidence(contextResults, agentResults, engineeringAnalysis),;
         sources: extractSources(contextResults, memoryResults, agentResults),
         tokensUsed
       }
@@ -287,7 +287,7 @@ async function performSemanticSearch(prompt: string, context: any): Promise<any[
         body: JSON.stringify({
           query: prompt,
           context: context.projectPath || process.cwd(),
-          limit: 20,
+          limit: 20,;
           threshold: 0.7,
           includeCode: true,
           includeDocs: true
@@ -329,7 +329,7 @@ export async function accessMemoryMCP(prompt: string, context: any): Promise<any
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal,
         body: JSON.stringify({
-          query: prompt,
+          query: prompt,;
           context: context,
           includeGraph: true,
           includeHistory: true
@@ -369,7 +369,7 @@ async function orchestrateMultiAgentAnalysis(prompt: string, context: any): Prom
       context
     );
     results.push({
-      source: 'autogen',
+      source: 'autogen',;
       type: 'conversational_analysis',
       ...autogenResult
     });
@@ -380,7 +380,7 @@ async function orchestrateMultiAgentAnalysis(prompt: string, context: any): Prom
       context.jurisdiction || 'federal'
     );
     results.push({
-      source: 'crewai',
+      source: 'crewai',;
       type: 'task_based_analysis',
       ...crewaiResult
     });
@@ -439,7 +439,7 @@ Format your response as a structured analysis with clear sections and actionable
       model: 'gemma3-legal',
       prompt: synthesisPrompt,
       timestamp: Date.now(),
-      priority: 'high',
+      priority: 'high',;
       temperature: 0.2,
       maxTokens: 3072
     };
@@ -495,7 +495,7 @@ ${prompt}
  * Generate actionable next steps
  */
 async function generateNextActions(
-  prompt: string,
+  prompt: string,;
   synthesis: string,
   engineeringAnalysis: any;
 ): Promise<NextAction[]> {
@@ -512,7 +512,7 @@ async function generateNextActions(
           description: step.description || step.action,
           commands: step.commands || [],
           targetFiles: step.targetFiles || [],
-          estimatedTime: Math.floor(solution.estimatedTime / solution.steps.length),
+          estimatedTime: Math.floor(solution.estimatedTime / solution.steps.length),;
           dependencies: step.dependencies || []
         });
       });
@@ -526,7 +526,7 @@ async function generateNextActions(
       type: 'research',
       priority: 'medium',
       description: 'Investigate the reported issue or request',
-      estimatedTime: 15,
+      estimatedTime: 15,;
       dependencies: []
     });
   }
@@ -550,7 +550,7 @@ async function generateRecommendations(
         title: rec.title,
         description: rec.description,
         impact: rec.impact || 'medium',
-        effort: rec.effort || 'medium',
+        effort: rec.effort || 'medium',;
         priority: rec.priority || 50
       });
     });
@@ -563,7 +563,7 @@ async function generateRecommendations(
       title: 'Cross-Platform Compatibility',
       description: 'Ensure solutions work across webapp, desktop, and mobile platforms',
       impact: 'high',
-      effort: 'medium',
+      effort: 'medium',;
       priority: 80
     });
   }
@@ -575,7 +575,7 @@ async function generateRecommendations(
  * Create execution plan from actions and recommendations
  */
 async function createExecutionPlan(
-  actions: NextAction[],
+  actions: NextAction[],;
   recommendations: Recommendation[];
 ): Promise<ExecutionPlan> {
   const phases: ExecutionPhase[] = [];
@@ -592,7 +592,7 @@ async function createExecutionPlan(
     phases.push({
       id: `phase-${phaseOrder}`,
       name: 'Critical Issues',
-      actions: criticalActions.map((a) => a.id),
+      actions: criticalActions.map((a) => a.id),;
       order: phaseOrder++,
       canRunInParallel: false
     });
@@ -602,7 +602,7 @@ async function createExecutionPlan(
     phases.push({
       id: `phase-${phaseOrder}`,
       name: 'High Priority Tasks',
-      actions: highActions.map((a) => a.id),
+      actions: highActions.map((a) => a.id),;
       order: phaseOrder++,
       canRunInParallel: true
     });
@@ -612,7 +612,7 @@ async function createExecutionPlan(
     phases.push({
       id: `phase-${phaseOrder}`,
       name: 'Medium Priority Tasks',
-      actions: mediumActions.map((a) => a.id),
+      actions: mediumActions.map((a) => a.id),;
       order: phaseOrder++,
       canRunInParallel: true
     });
@@ -622,7 +622,7 @@ async function createExecutionPlan(
     phases.push({
       id: `phase-${phaseOrder}`,
       name: 'Low Priority Tasks',
-      actions: lowActions.map((a) => a.id),
+      actions: lowActions.map((a) => a.id),;
       order: phaseOrder++,
       canRunInParallel: true
     });
@@ -649,7 +649,7 @@ async function createExecutionPlan(
 function generateCopilotSelfPrompt(
   originalPrompt: string,
   synthesis: string,
-  nextActions: NextAction[],
+  nextActions: NextAction[],;
   recommendations: Recommendation[],
   outputFormat: string;
 ): string {
@@ -829,7 +829,7 @@ export class RLRankingDatastore {
     const summary: RLRankingSummary = {
       id: crypto.randomUUID(),
       timestamp: Date.now(),
-      prompt,
+      prompt,;
       confidence: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).metadata.confidence,
       tokensUsed: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).metadata.tokensUsed,
       processingTime: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).metadata.processingTime,
@@ -935,7 +935,7 @@ export class RLRankingDatastore {
 export const rlRankingDatastore = new RLRankingDatastore();
 // Update copilotSelfPrompt to use RL ranking
 export async function enhancedCopilotSelfPromptWithRL(
-  prompt: string,
+  prompt: string,;
   options: CopilotSelfPromptOptions = {}
 ): Promise<CopilotSelfPromptResult> {
   const result = await copilotSelfPrompt(prompt, options);

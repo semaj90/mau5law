@@ -90,7 +90,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         tool: 'get-library-docs',
         confidence: 0.9,
         reasoning: 'XState error detected - suggesting library documentation',
-        args: { context7CompatibleLibraryID: 'xstate', topic: 'v5-migration' },
+        args: { context7CompatibleLibraryID: 'xstate', topic: 'v5-migration' },;
         priority: 'high',
         expectedOutput: 'XState v5 migration guide and best practices'
       });
@@ -101,7 +101,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         tool: 'analyze-stack',
         confidence: 0.85,
         reasoning: 'Drizzle ORM error detected - analyzing database stack',
-        args: { component: 'drizzle', context: 'legal-ai' },
+        args: { component: 'drizzle', context: 'legal-ai' },;
         priority: 'high',
         expectedOutput: 'Drizzle ORM setup analysis and recommendations'
       });
@@ -112,7 +112,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         tool: 'generate-best-practices',
         confidence: 0.8,
         reasoning: 'SvelteKit error detected - suggesting best practices',
-        args: { area: 'performance' },
+        args: { area: 'performance' },;
         priority: 'medium',
         expectedOutput: 'SvelteKit performance optimization guidelines'
       });
@@ -123,7 +123,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         tool: 'suggest-integration',
         confidence: 0.75,
         reasoning: 'Environment configuration error detected',
-        args: { feature: 'environment-setup', requirements: 'sveltekit server-side' },
+        args: { feature: 'environment-setup', requirements: 'sveltekit server-side' },;
         priority: 'medium',
         expectedOutput: 'Environment variable setup recommendations'
       });
@@ -159,7 +159,7 @@ export function analyzeFilesForStackSuggestions(activeFiles: string[]): AutoMCPS
       tool: 'analyze-stack',
       confidence: 0.7,
       reasoning: `${tech} files detected in workspace`,
-      args: { component: tech, context: 'legal-ai' },
+      args: { component: tech, context: 'legal-ai' },;
       priority: 'medium',
       expectedOutput: `${tech} analysis and optimization recommendations`
     });
@@ -180,7 +180,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         tool: 'generate-best-practices',
         confidence: 0.9,
         reasoning: 'User explicitly mentioned best practices or optimization',
-        args: { area: detectArea(lowerPrompt) },
+        args: { area: detectArea(lowerPrompt) },;
         priority: 'high',
         expectedOutput: 'Customized best practices for current context'
       });
@@ -191,7 +191,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         tool: 'suggest-integration',
         confidence: 0.85,
         reasoning: 'User asking for integration guidance',
-        args: { feature: extractFeature(lowerPrompt) },
+        args: { feature: extractFeature(lowerPrompt) },;
         priority: 'high',
         expectedOutput: 'Integration patterns and implementation guide'
       });
@@ -202,7 +202,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         tool: 'get-library-docs',
         confidence: 0.8,
         reasoning: 'User requesting documentation',
-        args: { context7CompatibleLibraryID: extractLibrary(lowerPrompt) },
+        args: { context7CompatibleLibraryID: extractLibrary(lowerPrompt) },;
         priority: 'medium',
         expectedOutput: 'Relevant library documentation and examples'
       });
@@ -271,7 +271,7 @@ export async function resolveLibraryId(libraryName: string): Promise<string> {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        tool: "resolve-library-id",
+        tool: "resolve-library-id",;
         arguments: { libraryName }
       })
     });
@@ -297,7 +297,7 @@ export async function getLibraryDocs(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        tool: "get-library-docs",
+        tool: "get-library-docs",;
         arguments: { context7CompatibleLibraryID, topic, tokens }
       })
     });
@@ -314,7 +314,7 @@ export async function semanticSearch(query: string): Promise<any[]> {
   try {
     const response = await fetch("http://localhost:3000/api/semantic-search", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },;
       body: JSON.stringify({ query })
     });
     if (!response.ok) {
@@ -340,7 +340,7 @@ export async function callContext7Tool(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        tool: toolName,
+        tool: toolName,;
         arguments: {
           ...args,
           // Inject Copilot architecture context if requested;

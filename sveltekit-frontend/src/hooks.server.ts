@@ -72,7 +72,7 @@ export const handle: Handle = async ({ event, resolve }) => {
   event.locals.user = user
     ? {
         id: user.id,
-        email: user.email,
+        email: user.email,;
         role:
           ((user as DatabaseUser).role as
             | 'admin'

@@ -67,8 +67,9 @@
   /**
    * Initialize the component
    */
-  $effect(async () => {
-    // Load initial evidence if caseId provided
+  $effect(() => {
+    (async () => {
+// Load initial evidence if caseId provided
     if (caseId && !initialEvidence.length) {
       await loadCaseEvidence();
     }
@@ -77,6 +78,7 @@
     await initializeCollaboration();
     
     console.log('[ContextualDetectiveBoard] Initialized for case:', caseId);
+    })();
   });
   
   /**
@@ -203,8 +205,8 @@
     }
     
     ondispatch?.({
-      prompts: contextualPrompts,
-      context: event.detail.context
+      prompts: contextualPrompts,;
+      context: event.detail.context;
     });
   }
   
@@ -226,14 +228,14 @@
     try {
       // Use MCP server for semantic analysis of user input
       const response = await fetch(`${mcpEndpoint}/mcp/detective-analyze`, {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: userInput,
-          caseId,
+          caseId,;
           evidence: evidenceList,
           analysisType: 'contextual_detective',
-          useGemmaEmbeddings: true
+          useGemmaEmbeddings: true;
         })
       });
       
@@ -259,7 +261,7 @@
     
     try {
       const response = await fetch('/api/v1/detective/connections', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
@@ -269,8 +271,8 @@
           options: {
             includeWeakConnections: true,
             includePredictedConnections: true,
-            clusterSimilar: true,
-            layout: 'force'
+            clusterSimilar: true,;
+            layout: 'force';
           }
         })
       });
@@ -285,7 +287,7 @@
         }
         
         ondispatch?.({
-          map: connectionMap,
+          map: connectionMap,;
           metadata: (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).data.metadata
         });
       }
@@ -504,7 +506,7 @@
 </div>
 
 <style>
-  .contextual-detective-board {
+  .contextual-detective-board {;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -652,26 +654,26 @@
     transition: all 0.2s;
   }
 
-  .input-actions button:first-child {
+  .input-actions button:first-child {;
     background: #3b82f6;
     color: white;
   }
 
-  .input-actions button:first-child:hover:not(:disabled) {
+  .input-actions button:first-child:hover:not(:disabled) {;
     background: #2563eb;
   }
 
-  .input-actions button:first-child:disabled {
+  .input-actions button:first-child:disabled {;
     background: #9ca3af;
     cursor: not-allowed;
   }
 
-  .input-actions button:last-child {
+  .input-actions button:last-child {;
     background: #f3f4f6;
     color: #374151;
   }
 
-  .input-actions button:last-child:hover {
+  .input-actions button:last-child:hover {;
     background: #e5e7eb;
   }
 

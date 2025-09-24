@@ -10,7 +10,7 @@
       status: 'active',
       progress: 75,
       evidenceCount: 12,
-      lastUpdate: '2 hours ago'
+      lastUpdate: '2 hours ago';
     },
     {
       id: '002',
@@ -18,15 +18,15 @@
       status: 'pending',
       progress: 45,
       evidenceCount: 8,
-      lastUpdate: '1 day ago'
+      lastUpdate: '1 day ago';
     },
     {
       id: '003',
-      title: 'Security Breach Analysis',
-      status: 'active',
+      title: 'Security Breach Analysis',;
+      status: 'active',;
       progress: 90,
       evidenceCount: 15,
-      lastUpdate: '30 min ago'
+      lastUpdate: '30 min ago';
     }
   ]);
 
@@ -89,7 +89,7 @@
 </div>
 
 <style>
-  .cases-dashboard {
+  .cases-dashboard {;
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;

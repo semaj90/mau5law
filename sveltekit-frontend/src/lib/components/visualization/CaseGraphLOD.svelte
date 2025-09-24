@@ -110,9 +110,9 @@
   let nodeTypeFilters = $state({
     person: true,
     entity: true,
-    document: true,
-    event: true,
-    location: true
+    document: true,;
+    event: true,;
+    location: true;
   });
   let importanceThreshold = $state(0.1);
 
@@ -124,7 +124,7 @@
       minImportance: 0.0, 
       clusterDistance: 0,
       description: 'Ultra High (All Nodes)',
-      renderComplexity: 1.0
+      renderComplexity: 1.0;
     },
     1: { 
       maxNodes: 500, 
@@ -132,7 +132,7 @@
       minImportance: 0.2, 
       clusterDistance: 5,
       description: 'High Detail',
-      renderComplexity: 0.7
+      renderComplexity: 0.7;
     },
     2: { 
       maxNodes: 200, 
@@ -140,15 +140,15 @@
       minImportance: 0.4, 
       clusterDistance: 15,
       description: 'Medium Detail',
-      renderComplexity: 0.4
+      renderComplexity: 0.4;
     },
     3: { 
       maxNodes: 50, 
       maxEdges: 100, 
       minImportance: 0.7, 
-      clusterDistance: 30,
+      clusterDistance: 30,;
       description: 'Low Detail (N64 Style)',
-      renderComplexity: 0.2
+      renderComplexity: 0.2;
     }
   };
 
@@ -173,13 +173,14 @@
       maxNodes: config?.maxNodes || 50,
       renderComplexity: config?.renderComplexity || 0.2,
       memoryUsage: calculateMemoryUsage(),
-      frameTime: estimateFrameTime()
+      frameTime: estimateFrameTime();
     };
   });
 
   // Initialize WebGPU and load graph data
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
     
     try {
       if (enableWebGPU) {
@@ -191,6 +192,7 @@
       console.error('[CaseGraphLOD] Initialization failed:', error);
       await initializeCanvas2DFallback();
     }
+    })();
   });
 
   onDestroy(() => {
@@ -220,10 +222,10 @@
     if (!context) throw new Error('WebGPU context creation failed');
 
     context.configure({
-      device: gpuDevice,
+      device: gpuDevice,;
       format: 'bgra8unorm',
-      alphaMode: 'premultiplied',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT
+      alphaMode: 'premultiplied',;
+      usage: GPUTextureUsage.RENDER_ATTACHMENT;
     });
 
     isWebGPUReady = true;
@@ -286,9 +288,9 @@
     const typeWeights = {
       person: 0.9,     // People are usually most important
       entity: 0.8,     // Organizations, companies
-      document: 0.6,   // Evidence, contracts
-      event: 0.7,      // Timeline events
-      location: 0.5    // Places, addresses
+      document: 0.6,   // Evidence, contracts;
+      event: 0.7,      // Timeline events;
+      location: 0.5    // Places, addresses;
     };
     return typeWeights[type as keyof typeof typeWeights] || 0.5;
   }
@@ -315,7 +317,7 @@
         nodes: nodes.map(n => n.id),
         center,
         radius,
-        importance,
+        importance,;
         label: `${type.charAt.toUpperCase() + type.slice(1)}s (${nodes.length})`
       };
     });
@@ -376,9 +378,9 @@
         const angle = (index / visibleNodes.length) * Math.PI * 2;
         const radius = Math.sqrt(visibleNodes.length) * 20;
         node.position = {
-          x: Math.cos(angle) * radius,
-          y: Math.sin(angle) * radius,
-          z: node.position.z || 0
+          x: Math.cos(angle) * radius,;
+          y: Math.sin(angle) * radius,;
+          z: node.position.z || 0;
         };
       }
     });
@@ -465,7 +467,7 @@
     // - Instanced rendering for nodes (using GPU buffers)
     // - Line rendering for edges with bundling
     // - LOD-based shader switching
-    // - N64-style effects for distant nodes
+    // - N64-style effects for distant nodes;
   }
 
   async function renderCanvas2D(): Promise<void> {
@@ -659,10 +661,10 @@
         type: 'person',
         label: 'John Doe',
         importance: 0.9,
-        connections: ['entity_1', 'document_1'],
+        connections: ['entity_1', 'document_1'],;
         position: { x: 0, y: 0 },
         size: 15,
-        color: '#4ade80',
+        color: '#4ade80',;
         metadata: { role: 'defendant' }
       },
       {
@@ -670,10 +672,10 @@
         type: 'entity',
         label: 'ABC Corp',
         importance: 0.8,
-        connections: ['person_1', 'document_2'],
+        connections: ['person_1', 'document_2'],;
         position: { x: 50, y: 50 },
-        size: 12,
-        color: '#3b82f6',
+        size: 12,;
+        color: '#3b82f6',;
         metadata: { type: 'corporation' }
       }
     ];
@@ -684,8 +686,8 @@
         source: 'person_1',
         target: 'entity_1',
         type: 'relationship',
-        strength: 0.8,
-        color: '#6b7280',
+        strength: 0.8,;
+        color: '#6b7280',;
         metadata: { relationship: 'employee' }
       }
     ];
@@ -854,7 +856,7 @@
 </div>
 
 <style>
-  .case-graph-lod {
+  .case-graph-lod {;
     background: linear-gradient(135deg, #0f0f23, #1a1a2e);
     color: #fff;
     min-height: 700px;

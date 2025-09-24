@@ -68,7 +68,7 @@ export const agentShellMachineMCP = createMachine({
       mcpDatabase: false
     }
   },
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: AgentShellContext;
     events: AgentShellEvent;
   },
@@ -98,7 +98,7 @@ export const agentShellMachineMCP = createMachine({
             caseId: ({ event }) => (event as any).caseId
           })
         },
-        CHECK_HEALTH: {
+        CHECK_HEALTH: {;
           target: "checkingHealth"
         },
         // MCP operations;
@@ -238,7 +238,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({
+          actions: assign({;
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Health check error" : "Unknown error")
           })
         }
@@ -425,7 +425,7 @@ export const agentShellMachineMCP = createMachine({
         },
         onError: {
           target: "idle",
-          actions: assign({
+          actions: assign({;
             error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP analytics error" : "Unknown error")
           })
         }
@@ -525,7 +525,7 @@ export const agentShellServicesMCP = {
           caseId,
           title: file.name,
           description: `Uploaded file: ${file.name}`,
-          evidenceType: 'document',
+          evidenceType: 'document',;
           tags: ['uploaded']
         });
 
@@ -554,7 +554,7 @@ export const agentShellServicesMCP = {
       ]);
 
       return {
-        production: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value: null,
+        production: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value: null,;
         legacy: healthChecks[1].status === 'fulfilled' ? healthChecks[1].value : null,
         mcpDatabase: healthChecks[2].status === 'fulfilled' ? true : false
       };
@@ -605,7 +605,7 @@ export const agentShellServicesMCP = {
     const result = await mcpTools.evidence.findSimilarEvidence({
       embedding,
       caseId,
-      limit: 10,
+      limit: 10,;
       threshold: 0.7
     });
     return result;
@@ -622,7 +622,7 @@ export const agentShellServicesMCP = {
 
     return {
       cases: caseAnalytics.status === 'fulfilled' ? caseAnalytics.value: null,
-      evidence: evidenceAnalytics.status === 'fulfilled' ? evidenceAnalytics.value : null,
+      evidence: evidenceAnalytics.status === 'fulfilled' ? evidenceAnalytics.value : null,;
       users: userAnalytics.status === 'fulfilled' ? userAnalytics.value : null
     };
   },

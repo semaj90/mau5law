@@ -18,7 +18,7 @@ export interface SystemHealthData {
 }
 
 export interface UserSession {
-  user: {
+  user: {;
     id: string;
     email: string;
     firstName?: string;

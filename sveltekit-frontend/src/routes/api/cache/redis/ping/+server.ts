@@ -3,16 +3,16 @@
  * Test Redis connectivity for SOM cache integration
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const config = await request.json();
+    const config = await request.json()
     
     // For development, always return success
     // In production, this would test actual Redis connection
-    const isConnected = process.env.REDIS_URL || process.env.NODE_ENV === 'development';
+    const isConnected = process.env.REDIS_URL || process.env.NODE_ENV === 'development'
     
     if (isConnected) {
       return json({
@@ -23,19 +23,19 @@ export const POST: RequestHandler = async ({ request }) => {
           port: config.port,
           keyPrefix: config.keyPrefix
         }
-      });
+      })
     } else {
       return json({
         success: false,
         message: 'Redis connection failed',
         error: 'Redis not available'
-      }, { status: 503 });
+      }, { status: 503 })
     }
     
   } catch (error: any) {
     return json({
       success: false,
       error: error.message
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

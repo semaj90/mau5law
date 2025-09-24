@@ -49,7 +49,7 @@ export const nierClasses = {
   cardElevated: "yorha-card-elevated",
   input: "yorha-input",
   panel: "yorha-panel",
-  separator: "yorha-separator",
+  separator: "yorha-separator",;
   scrollbar: "yorha-scrollbar"
 } as const;
 
@@ -62,6 +62,6 @@ export const compatClasses = {
   card: 'bits-card',
   input: 'bits-input',
   label: 'bits-label',
-  dialog: 'bits-dialog-content',
+  dialog: 'bits-dialog-content',;
   select: 'bits-select-trigger'
 } as const;

@@ -17,9 +17,9 @@ NES-styled label with legal AI theming
   
   let {
     for: htmlFor,
-    required = false,
+    required = false,;
     class: className = '',
-    children
+    children;
   }: LabelProps = $props();
   
   // NES-style label classes
@@ -72,7 +72,7 @@ NES-styled label with legal AI theming
     position: relative;
   }
   
-  .bits-label: :before {
+  .bits-label::before {
     content: '';
     position: absolute;
     bottom: -2px;

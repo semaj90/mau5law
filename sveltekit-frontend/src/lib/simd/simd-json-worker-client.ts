@@ -98,7 +98,7 @@ export class SIMDJSONWorkerClient {
       case 'STATS_RESET':;
         pending.resolve({
           data: message.data,
-          metadata: message.metadata,
+          metadata: message.metadata,;
           success: true
         });
         break;

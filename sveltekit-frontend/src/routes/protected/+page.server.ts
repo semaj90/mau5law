@@ -9,7 +9,7 @@ export async function load(event) {
     return {
       user: user,
       session: {
-        id: session.id,
+        id: session.id,;
         fresh: session.fresh,
         expiresAt: session.expiresAt
       }

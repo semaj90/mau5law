@@ -4,14 +4,14 @@
   import {  ,   } from "svelte";
 
 
-  	
-  
+
+
   	import { aiStore } from "../stores/canvas";
   	import Dialog from './Dialog.svelte';
 
   	import { Sparkles, Bot } from 'lucide-svelte';
 
-  	
+
 
   	// Reactive state
   	let dialogOpen = $derived($aiStore.dialogOpen);
@@ -59,7 +59,7 @@
 {/if}
 
 <style>
-	.ai-fab-button {
+	.ai-fab-button {;
 		position: fixed;
 		bottom: 2rem;
 		right: 2rem;
@@ -141,7 +141,7 @@
 			height: 56px;
 		}
 
-		.fab-icon: global(svg) {
+		.fab-icon :global(svg) {
 			width: 20px;
 			height: 20px;
 		}

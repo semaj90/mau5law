@@ -4,11 +4,11 @@
  * Achieves 150 GFLOPS with 4-bit quantization and 50:1 compression
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { rtxSystemMonitor, type RTXSystemStatus, type PipelineMetrics } from '$lib/services/rtx-system-monitor';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { rtxSystemMonitor, type RTXSystemStatus, type PipelineMetrics } from '$lib/services/rtx-system-monitor'
 
-// Pipeline configuration matching your architecture;
+// Pipeline configuration matching your architecture
 const PIPELINE_CONFIG = {
   svelteKitPort: 5173,
   goMicroservicePort: 8080,
@@ -18,94 +18,94 @@ const PIPELINE_CONFIG = {
   rtx3060TiOptimization: true,
   flashAttention2: true,
   tensorCoreAcceleration: true
-};
+}
 
-// Benchmark targets from your specifications;
+// Benchmark targets from your specifications
 const BENCHMARK_TARGETS = {
   tensorCorePerformance: 150, // GFLOPS
   averageOperationTime: 200,  // μs
   compressionRatio: 50,       // 50:1,
   searchThroughput: 10000000  // 10M nodes/sec
-};
+}
 
 export const GET: RequestHandler = async ({ url, request }) => {
-  const action = url.searchParams.get('action') || 'status';
+  const action = url.searchParams.get('action') || 'status'
 
   try {
     switch (action) {
       case 'status':
-        return await handleStatusRequest();
+        return await handleStatusRequest()
 
       case 'benchmark':
-        return await handleBenchmarkRequest();
+        return await handleBenchmarkRequest()
 
       case 'pipeline':
-        return await handlePipelineRequest();
+        return await handlePipelineRequest()
 
       case 'health':
-        return await handleHealthRequest();
+        return await handleHealthRequest()
 
       case 'metrics':
-        return await handleMetricsRequest();
+        return await handleMetricsRequest()
 
-      default:;
+      default:
         return json({
           error: 'Invalid action',
           availableActions: ['status', 'benchmark', 'pipeline', 'health', 'metrics']
-        }, { status: 400 });
+        }, { status: 400 })
     }
   } catch (error) {
-    console.error('❌ RTX API Error:', error);
+    console.error('❌ RTX API Error:', error)
     return json({
       error: 'RTX system error',
       message: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const POST: RequestHandler = async ({ request, url }) => {
-  const action = url.searchParams.get('action') || 'process';
+  const action = url.searchParams.get('action') || 'process'
 
   try {
     switch (action) {
       case 'process':
-        return await handleProcessRequest(request);
+        return await handleProcessRequest(request)
 
       case 'configure':
-        return await handleConfigureRequest(request);
+        return await handleConfigureRequest(request)
 
       case 'benchmark-run':
-        return await handleRunBenchmarkRequest(request);
+        return await handleRunBenchmarkRequest(request)
 
-      default:;
+      default:
         return json({
           error: 'Invalid POST action',
           availableActions: ['process', 'configure', 'benchmark-run']
-        }, { status: 400 });
+        }, { status: 400 })
     }
   } catch (error) {
-    console.error('❌ RTX POST Error:', error);
+    console.error('❌ RTX POST Error:', error)
     return json({
       error: 'RTX processing error',
       message: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 async function handleStatusRequest() {
-  console.log('📊 RTX Status Request');
+  console.log('📊 RTX Status Request')
 
-  // Initialize if not already done;
+  // Initialize if not already done
   try {
-    await rtxSystemMonitor.initialize();
+    await rtxSystemMonitor.initialize()
   } catch (error) {
-    console.warn('RTX Monitor initialization issue:', error);
+    console.warn('RTX Monitor initialization issue:', error)
   }
 
-  const status = rtxSystemMonitor.getCurrentStatus();
-  const systemInfo = rtxSystemMonitor.getCurrentMetrics();
+  const status = rtxSystemMonitor.getCurrentStatus()
+  const systemInfo = rtxSystemMonitor.getCurrentMetrics()
 
   return json({
     rtx3060Ti: {
@@ -140,19 +140,19 @@ async function handleStatusRequest() {
       }
     },
     timestamp: new Date().toISOString()
-  });
+  })
 }
 
 async function handleBenchmarkRequest() {
-  console.log('🔬 RTX Benchmark Request');
+  console.log('🔬 RTX Benchmark Request')
 
-  const benchmarkResults = await rtxSystemMonitor.triggerBenchmark();
+  const benchmarkResults = await rtxSystemMonitor.triggerBenchmark()
 
   if (!benchmarkResults) {
     return json({
       error: 'Benchmark failed',
       message: 'Unable to run RTX benchmark'
-    }, { status: 500 });
+    }, { status: 500 })
   }
 
   return json({
@@ -192,17 +192,17 @@ async function handleBenchmarkRequest() {
     },
     conclusion: `The FlashAttention2 RTX 3060 Ti integration is fully operational with multi-language CUDA bridging (Python ↔ Go ↔ CUDA C++), optimized batch processing, and real-time GPU monitoring. The system achieves ~${benchmarkResults.tensorCorePerformance} GFLOPS performance with ${benchmarkResults.compressionRatio}:1 compression ratios for legal document processing.`,
     timestamp: new Date().toISOString()
-  });
+  })
 }
 
 async function handlePipelineRequest() {
-  console.log('🏗️ RTX Pipeline Status Request');
+  console.log('🏗️ RTX Pipeline Status Request')
 
-  const status = rtxSystemMonitor.getCurrentStatus();
-  const metrics = rtxSystemMonitor.getCurrentMetrics();
+  const status = rtxSystemMonitor.getCurrentStatus()
+  const metrics = rtxSystemMonitor.getCurrentMetrics()
 
   // Test pipeline components
-  const pipelineHealth = await testPipelineComponents();
+  const pipelineHealth = await testPipelineComponents()
 
   return json({
     pipeline: {
@@ -232,16 +232,16 @@ async function handlePipelineRequest() {
       totalPipelineTime: `${Math.round(metrics.totalPipelineTime)}ms`
     },
     timestamp: new Date().toISOString()
-  });
+  })
 }
 
 async function handleHealthRequest() {
-  console.log('🏥 RTX Health Check Request');
+  console.log('🏥 RTX Health Check Request')
 
-  const status = rtxSystemMonitor.getCurrentStatus();
+  const status = rtxSystemMonitor.getCurrentStatus()
   const isHealthy = status.pipelineStatus === 'active' &&
                    status.tensorCorePerformance > 100 &&
-                   status.gpuUtilization < 95;
+                   status.gpuUtilization < 95
 
   return json({
     health: isHealthy ? 'healthy' : 'degraded',
@@ -254,14 +254,14 @@ async function handleHealthRequest() {
     },
     recommendations: generateHealthRecommendations(status),
     timestamp: new Date().toISOString()
-  });
+  })
 }
 
 async function handleMetricsRequest() {
-  console.log('📈 RTX Metrics Request');
+  console.log('📈 RTX Metrics Request')
 
-  const status = rtxSystemMonitor.getCurrentStatus();
-  const metrics = rtxSystemMonitor.getCurrentMetrics();
+  const status = rtxSystemMonitor.getCurrentStatus()
+  const metrics = rtxSystemMonitor.getCurrentMetrics()
 
   return json({
     rtxMetrics: {
@@ -295,28 +295,28 @@ async function handleMetricsRequest() {
       compressionEfficiency: Math.round((status.compressionRatio / BENCHMARK_TARGETS.compressionRatio) * 100) / 100
     },
     timestamp: new Date().toISOString()
-  });
+  })
 }
 
 async function handleProcessRequest(request: Request) {
-  console.log('🔄 RTX Document Processing Request');
+  console.log('🔄 RTX Document Processing Request')
 
   try {
-    const body = await request.json();
-    const { document, options = {} } = body;
+    const body = await request.json()
+    const { document, options = {} } = body
 
     if (!document) {
       return json({
         error: 'Missing document data',
         message: 'Document content is required for processing'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Convert document to ArrayBuffer for processing
-    const documentBuffer = new TextEncoder().encode(JSON.stringify(document)).buffer;
+    const documentBuffer = new TextEncoder().encode(JSON.stringify(document)).buffer
 
     // Process with RTX acceleration
-    const result = await rtxSystemMonitor.processLegalDocument(documentBuffer);
+    const result = await rtxSystemMonitor.processLegalDocument(documentBuffer)
 
     return json({
       processing: {
@@ -339,7 +339,7 @@ async function handleProcessRequest(request: Request) {
         webGPU: '✅ Real-time visualization ready'
       },
       timestamp: new Date().toISOString()
-    });
+    })
 
   } catch (error) {
     return json({
@@ -352,36 +352,36 @@ async function handleProcessRequest(request: Request) {
         postgresql: '❌ Not reached',
         webGPU: '❌ Not rendered'
       }
-    }, { status: 500 });
+    }, { status: 500 })
   }
 }
 
 async function handleConfigureRequest(request: Request) {
-  console.log('🔧 RTX Configuration Request');
+  console.log('🔧 RTX Configuration Request')
 
   try {
-    const body = await request.json();
-    const { quantization, flashAttention2, neuralSprites } = body;
+    const body = await request.json()
+    const { quantization, flashAttention2, neuralSprites } = body
 
     if (quantization && ['4bit', '8bit', '16bit'].includes(quantization)) {
-      rtxSystemMonitor.updateQuantizationMode(quantization);
+      rtxSystemMonitor.updateQuantizationMode(quantization)
     }
 
     if (typeof flashAttention2 === 'boolean') {
-      const current = rtxSystemMonitor.getCurrentStatus().flashAttention2Active;
+      const current = rtxSystemMonitor.getCurrentStatus().flashAttention2Active
       if (current !== flashAttention2) {
-        rtxSystemMonitor.toggleFlashAttention2();
+        rtxSystemMonitor.toggleFlashAttention2()
       }
     }
 
     if (typeof neuralSprites === 'boolean') {
-      const current = rtxSystemMonitor.getCurrentStatus().neuralSpriteProcessing;
+      const current = rtxSystemMonitor.getCurrentStatus().neuralSpriteProcessing
       if (current !== neuralSprites) {
-        rtxSystemMonitor.toggleNeuralSpriteProcessing();
+        rtxSystemMonitor.toggleNeuralSpriteProcessing()
       }
     }
 
-    const updatedStatus = rtxSystemMonitor.getCurrentStatus();
+    const updatedStatus = rtxSystemMonitor.getCurrentStatus()
 
     return json({
       configuration: {
@@ -396,29 +396,29 @@ async function handleConfigureRequest(request: Request) {
         }
       },
       timestamp: new Date().toISOString()
-    });
+    })
 
   } catch (error) {
     return json({
       error: 'Configuration failed',
       message: error instanceof Error ? error.message: 'Unknown configuration error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
 }
 
 async function handleRunBenchmarkRequest(request: Request) {
-  console.log('🚀 RTX Benchmark Run Request');
+  console.log('🚀 RTX Benchmark Run Request')
 
   try {
-    const body = await request.json();
-    const { iterations = 100, testSize = 1024 * 1024 } = body;
+    const body = await request.json()
+    const { iterations = 100, testSize = 1024 * 1024 } = body
 
-    console.log(`Running benchmark: ${iterations} iterations, ${testSize} bytes test size`);
+    console.log(`Running benchmark: ${iterations} iterations, ${testSize} bytes test size`)
 
-    const benchmarkResults = await rtxSystemMonitor.triggerBenchmark();
+    const benchmarkResults = await rtxSystemMonitor.triggerBenchmark()
 
     if (!benchmarkResults) {
-      throw new Error('Benchmark execution failed');
+      throw new Error('Benchmark execution failed')
     }
 
     return json({
@@ -442,82 +442,82 @@ async function handleRunBenchmarkRequest(request: Request) {
         }
       },
       timestamp: new Date().toISOString()
-    });
+    })
 
   } catch (error) {
     return json({
       error: 'Benchmark run failed',
       message: error instanceof Error ? error.message: 'Unknown benchmark error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
 }
 
 async function testPipelineComponents(): Promise<Record<string, string> {
-  const health: Record<string, string> = {};
+  const health: Record<string, string> = {}
 
   try {
     // Test SvelteKit (self)
-    health.svelteKit = '✅ Operational';
+    health.svelteKit = '✅ Operational'
 
-    // Test Go Microservice (simplified check);
+    // Test Go Microservice (simplified check)
     try {
       const response = await fetch(`http://localhost:${PIPELINE_CONFIG.goMicroservicePort}/health`, {
         signal: AbortSignal.timeout(3000)
-      });
-      health.goMicroservice = (response as { ok?: any }).ok ? '✅ Operational' : '⚠️ Degraded';
+      })
+      health.goMicroservice = (response as { ok?: any }).ok ? '✅ Operational' : '⚠️ Degraded'
     } catch {
-      health.goMicroservice = '❌ Unavailable';
+      health.goMicroservice = '❌ Unavailable'
     }
 
-    // Test CUDA Worker (simplified check);
+    // Test CUDA Worker (simplified check)
     try {
       const response = await fetch(`http://localhost:${PIPELINE_CONFIG.cudaWorkerPort}`, {
         signal: AbortSignal.timeout(3000)
-      });
-      health.cudaWorker = (response as { ok?: any }).ok ? '✅ Operational' : '⚠️ Degraded';
+      })
+      health.cudaWorker = (response as { ok?: any }).ok ? '✅ Operational' : '⚠️ Degraded'
     } catch {
-      health.cudaWorker = '❌ Unavailable';
+      health.cudaWorker = '❌ Unavailable'
     }
 
     // PostgreSQL check (simplified)
-    health.postgresql = '✅ Assumed Operational';
+    health.postgresql = '✅ Assumed Operational'
 
     // WebGPU check
-    health.webGPU = PIPELINE_CONFIG.webGPUEnabled ? '✅ Enabled' : '❌ Disabled';
+    health.webGPU = PIPELINE_CONFIG.webGPUEnabled ? '✅ Enabled' : '❌ Disabled'
 
   } catch (error) {
-    health.error = `Pipeline test failed: ${error}`;
+    health.error = `Pipeline test failed: ${error}`
   }
 
-  return health;
+  return health
 }
 
 function generateHealthRecommendations(status: RTXSystemStatus): string[] {
-  const recommendations: string[] = [];
+  const recommendations: string[] = []
 
   if (status.gpuUtilization > 90) {
-    recommendations.push('🔧 High GPU utilization detected. Consider batch size optimization.');
+    recommendations.push('🔧 High GPU utilization detected. Consider batch size optimization.')
   }
 
   if (status.tensorCorePerformance < 100) {
-    recommendations.push('⚡ Tensor Core performance below optimal. Check CUDA drivers and power settings.');
+    recommendations.push('⚡ Tensor Core performance below optimal. Check CUDA drivers and power settings.')
   }
 
   if (!status.flashAttention2Active) {
-    recommendations.push('🚀 Enable FlashAttention2 for 15% performance improvement.');
+    recommendations.push('🚀 Enable FlashAttention2 for 15% performance improvement.')
   }
 
   if (status.averageOperationTime > 300) {
-    recommendations.push('⏱️ High operation time. Consider reducing quantization or batch size.');
+    recommendations.push('⏱️ High operation time. Consider reducing quantization or batch size.')
   }
 
   if (status.pipelineStatus !== 'active') {
-    recommendations.push('🔄 Pipeline not active. Check Go microservice and CUDA worker connections.');
+    recommendations.push('🔄 Pipeline not active. Check Go microservice and CUDA worker connections.')
   }
 
   if (recommendations.length === 0) {
-    recommendations.push('✅ RTX 3060 Ti system is operating optimally!');
+    recommendations.push('✅ RTX 3060 Ti system is operating optimally!')
   }
 
-  return recommendations;
+  return recommendations
 }

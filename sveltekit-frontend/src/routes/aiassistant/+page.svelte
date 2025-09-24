@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Svelte 5 runes are built-in, no import needed
   // Web Speech API type declarations
-  interface SpeechRecognition extends EventTarget {
+  interface SpeechRecognition extends EventTarget {;
     continuous: boolean;
     interimResults: boolean;
     lang: string;
@@ -51,17 +51,17 @@ https://svelte.dev/e/js_parse_error -->
 
   // TODO: Replace with melt-ui equivalent when available
   // import { Tabs } from 'bits-ui';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea/index.js';
 
   // Real-time search integration
@@ -104,7 +104,7 @@ https://svelte.dev/e/js_parse_error -->
   let panelLayout = $state<PanelLayout>({
     reports: { width: 25, collapsed: false },
     summaries: { width: 25, collapsed: false },
-    citations: { width: 25, collapsed: false },
+    citations: { width: 25, collapsed: false },;
     chat: { width: 25, collapsed: false },
   });
 
@@ -118,7 +118,7 @@ https://svelte.dev/e/js_parse_error -->
   // XState Machine for AI Assistant
   const aiAssistantMachine = createMachine({
     id: 'aiAssistant',
-    initial: 'idle',
+    initial: 'idle',;
     states: {
       idle: {
         on: {
@@ -151,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
           ERROR: 'error',
         },
       },
-      error: {
+      error: {;
         on: {
           RETRY: 'idle',
           RESET: 'idle',
@@ -206,9 +206,9 @@ https://svelte.dev/e/js_parse_error -->
   // Enhanced AI suggestions from real-time search
   let searchSuggestions = $state<string[]>([]);
 
-  $effect(async () => {
+  $effect(() => {
     aiService.start();
-    await loadInitialData();
+    loadInitialData();
     initializeWebSpeech();
     startRealTimeUpdates();
   });
@@ -254,9 +254,9 @@ https://svelte.dev/e/js_parse_error -->
 
     const userMessage: ChatMessage = {
       id: `msg_${Date.now()}`,
-      type: 'user',
-      content: currentMessage,
-      timestamp: new Date(),
+      type: 'user',;
+      content: currentMessage,;
+      timestamp: new Date(),;
     };
 
     chatMessages = [...chatMessages, userMessage];
@@ -276,16 +276,16 @@ https://svelte.dev/e/js_parse_error -->
           const searchResults = await performSearch(messageToSend, {
             categories: ['cases', 'evidence', 'precedents'],
             vectorSearch: true,
-            includeAI: true
+            includeAI: true;
           });
 
           enhancedContext = {
             ...enhancedContext,
             searchResults: searchResults.slice(0, 5), // Top 5 relevant results
             searchMetadata: {
-              query: messageToSend,
+              query: messageToSend,;
               timestamp: new Date(),
-              resultCount: searchResults.length
+              resultCount: searchResults.length;
             }
           };
         } catch (searchError) {
@@ -294,12 +294,12 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       const response = await fetch('/api/ai/chat', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: messageToSend,
+          message: messageToSend,;
           context: enhancedContext,
-          chatHistory: chatMessages.slice(-10),
+          chatHistory: chatMessages.slice(-10),;
         }),
       });
 
@@ -308,9 +308,9 @@ https://svelte.dev/e/js_parse_error -->
 
         const assistantMessage: ChatMessage = {
           id: `msg_${Date.now()}_ai`,
-          type: 'assistant',
+          type: 'assistant',;
           content: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).response,
-          timestamp: new Date(),
+          timestamp: new Date(),;
           suggestions: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).suggestions || [],
           metadata: (data as { response?: unknown; suggestions?: unknown; metadata?: unknown }).metadata,
         };
@@ -327,9 +327,9 @@ https://svelte.dev/e/js_parse_error -->
 
       const errorMessage: ChatMessage = {
         id: `msg_${Date.now()}_error`,
-        type: 'system',
-        content: 'Sorry, I encountered an error. Please try again.',
-        timestamp: new Date(),
+        type: 'system',;
+        content: 'Sorry, I encountered an error. Please try again.',;
+        timestamp: new Date(),;
       };
 
       chatMessages = [...chatMessages, errorMessage];
@@ -442,9 +442,9 @@ https://svelte.dev/e/js_parse_error -->
 
   async function exportChatHistory() {
     const data = {
-      messages: chatMessages,
-      timestamp: new Date(),
-      context: getRelevantContext(),
+      messages: chatMessages,;
+      timestamp: new Date(),;
+      context: getRelevantContext(),;
     };
 
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -605,7 +605,7 @@ togglePanel('citations')}>
 
     <!-- AI Chat Panel -->
     <div
-      class="bg-white transition-all duration-300 flex flex-col"
+      class="bg-white transition-all duration-300 flex flex-col";
       style:width={panelLayout.chat.collapsed ? '0px' : `${panelLayout.chat.width}%`}>
       {#if !panelLayout.chat.collapsed}
         <!-- Chat Header -->
@@ -757,7 +757,7 @@ togglePanel('chat')}>
 </div>
 
 <style>
-  .line-clamp-2 {
+  .line-clamp-2 {;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;

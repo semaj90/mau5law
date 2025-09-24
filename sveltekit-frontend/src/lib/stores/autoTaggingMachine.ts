@@ -127,7 +127,7 @@ export const autoTaggingMachine = createMachine();
         const response = await fetch("/api/ai/tag", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+          body: JSON.stringify({;
             content: input.content,
             fileName: input.fileName,
             fileType: input.fileType

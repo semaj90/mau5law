@@ -1,6 +1,6 @@
-import { EventEmitter } from "events";
-import type { RequestHandler } from './$types.js';
-import cluster from 'node:cluster';
+import { EventEmitter } from "events"
+import type { RequestHandler } from './$types.js'
+import cluster from 'node:cluster'
 
 /*
  * Cluster Events API Endpoint (Server-Sent Events)
@@ -8,19 +8,19 @@ import cluster from 'node:cluster';
  */
 
 export interface Worker {
-  id: string;
-  status: string;
-  metrics: any;
+  id: string
+  status: string
+  metrics: any
 }
 
 export const GET: RequestHandler = async ({ request }) => {
   // Check if client accepts text/event-stream
-  const acceptHeader = request.headers.get('accept');
+  const acceptHeader = request.headers.get('accept')
   if (!acceptHeader?.includes('text/event-stream')) {
     return new Response('SSE endpoint - use Accept: text/event-stream', {
       status: 400,
       headers: { 'Content-Type': 'text/plain' }
-    });
+    })
   }
 
   // Only available from primary process
@@ -32,28 +32,28 @@ export const GET: RequestHandler = async ({ request }) => {
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive'
       }
-    });
+    })
   }
 
   // Create readable stream for SSE
   const stream = new ReadableStream({
     start(controller) {
-      console.log('📡 SSE client connected to cluster monitoring');
+      console.log('📡 SSE client connected to cluster monitoring')
 
       // Send initial connection event
       sendSSEEvent(controller, 'connected', {
         timestamp: Date.now(),
         message: 'Connected to cluster monitoring'
-      });
+      })
 
       // Get cluster manager instance
-      const clusterManager = globalThis.clusterManager;
+      const clusterManager = globalThis.clusterManager
       
       if (!clusterManager) {
         sendSSEEvent(controller, 'error', {
           error: 'Cluster manager not available',
           fallback: true
-        });
+        })
         
         // Send fallback single-process data every 5 seconds
         const fallbackInterval = setInterval(() => {
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ request }) => {
                 average: 0
               },
               errors: { total: 0, rate: 0 }
-            });
+            })
 
             sendSSEEvent(controller, 'workers', [{
               workerId: 1,
@@ -86,80 +86,80 @@ export const GET: RequestHandler = async ({ request }) => {
               lastHealthCheck: Date.now(),
               errors: 0,
               uptime: process.uptime()
-            }]);
+            }])
 
           } catch (error: any) {
-            console.error('SSE fallback error:', error);
+            console.error('SSE fallback error:', error)
           }
-        }, 5000);
+        }, 5000)
 
         // Store interval for cleanup
-        globalThis.sseCleanupTasks = globalThis.sseCleanupTasks || [];
-        globalThis.sseCleanupTasks.push(() => clearInterval(fallbackInterval));
+        globalThis.sseCleanupTasks = globalThis.sseCleanupTasks || []
+        globalThis.sseCleanupTasks.push(() => clearInterval(fallbackInterval))
 
-        return;
+        return
       }
 
       // Send initial data
       try {
-        const health = clusterManager.getHealth();
-        const workers = clusterManager.getWorkerMetrics();
+        const health = clusterManager.getHealth()
+        const workers = clusterManager.getWorkerMetrics()
         
-        sendSSEEvent(controller, 'health', health);
-        sendSSEEvent(controller, 'workers', workers);
+        sendSSEEvent(controller, 'health', health)
+        sendSSEEvent(controller, 'workers', workers)
       } catch (error: any) {
-        console.error('SSE initial data error:', error);
+        console.error('SSE initial data error:', error)
         sendSSEEvent(controller, 'error', {
           error: 'Failed to get initial cluster data'
-        });
+        })
       }
 
       // Setup periodic updates
       const updateInterval = setInterval(() => {
         try {
-          if (!clusterManager) return;
+          if (!clusterManager) return
 
-          const health = clusterManager.getHealth();
-          const workers = clusterManager.getWorkerMetrics();
+          const health = clusterManager.getHealth()
+          const workers = clusterManager.getWorkerMetrics()
           
-          sendSSEEvent(controller, 'health', health);
-          sendSSEEvent(controller, 'workers', workers);
+          sendSSEEvent(controller, 'health', health)
+          sendSSEEvent(controller, 'workers', workers)
 
           // Send heartbeat
           sendSSEEvent(controller, 'heartbeat', {
             timestamp: Date.now(),
             uptime: process.uptime()
-          });
+          })
 
         } catch (error: any) {
-          console.error('SSE update error:', error);
+          console.error('SSE update error:', error)
           sendSSEEvent(controller, 'error', {
             error: 'Failed to update cluster data',
             timestamp: Date.now()
-          });
+          })
         }
       }, 5000); // Update every 5 seconds
 
       // Setup cluster event listeners
-      const clusterEventHandlers = setupClusterEventListeners(controller);
+      const clusterEventHandlers = setupClusterEventListeners(controller)
 
       // Store cleanup tasks
-      globalThis.sseCleanupTasks = globalThis.sseCleanupTasks || [];
+      globalThis.sseCleanupTasks = globalThis.sseCleanupTasks || []
       globalThis.sseCleanupTasks.push(() => {
-        clearInterval(updateInterval);
-        clusterEventHandlers.cleanup();
-        console.log('📡 SSE client disconnected from cluster monitoring');
-      });
+        clearInterval(updateInterval)
+        clusterEventHandlers.cleanup()
+        console.log('📡 SSE client disconnected from cluster monitoring')
+      })
     },
 
     cancel() {
       // Cleanup when client disconnects
       if (globalThis.sseCleanupTasks) {
-        globalThis.sseCleanupTasks.forEach((cleanup: any) => cleanup());
-        globalThis.sseCleanupTasks = [];
+        globalThis.sseCleanupTasks.forEach((cleanup: any) => cleanup())
+        globalThis.sseCleanupTasks = []
       }
     }
-  });
+  })
 
   return new Response(stream, {
     headers: {
@@ -170,22 +170,22 @@ export const GET: RequestHandler = async ({ request }) => {
       'Access-Control-Allow-Headers': 'Accept, Cache-Control',
       'X-Accel-Buffering': 'no' // Disable Nginx buffering
     }
-  });
-};
+  })
+}
 
 /*
  * Send Server-Sent Event
  */
 function sendSSEEvent(
   controller: ReadableStreamDefaultController, 
-  type: string, 
+  type: string,
   data: any
 ): void {
   try {
-    const event = `event: ${type}\ndata: ${JSON.stringify(data)}\n\n`;
-    controller.enqueue(new TextEncoder().encode(event));
+    const event = `event: ${type}\ndata: ${JSON.stringify(data)}\n\n`
+    controller.enqueue(new TextEncoder().encode(event))
   } catch (error: any) {
-    console.error('Failed to send SSE event:', error);
+    console.error('Failed to send SSE event:', error)
   }
 }
 
@@ -193,7 +193,7 @@ function sendSSEEvent(
  * Setup cluster event listeners for real-time updates
  */
 function setupClusterEventListeners(controller: ReadableStreamDefaultController) {
-  const handlers: { [key: string]: (...args: any[]) => void } = {};
+  const handlers: { [key: string]: (...args: any[]) => void } = {}
 
   // Worker online event
   handlers.online = (worker: any) => {
@@ -201,8 +201,8 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
       workerId: worker.id,
       pid: worker.process?.pid,
       timestamp: Date.now()
-    });
-  };
+    })
+  }
 
   // Worker disconnect event
   handlers.disconnect = (worker: any) => {
@@ -210,8 +210,8 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
       workerId: worker.id,
       pid: worker.process?.pid,
       timestamp: Date.now()
-    });
-  };
+    })
+  }
 
   // Worker exit event
   handlers.exit = (worker: any, code: number, signal: string) => {
@@ -221,8 +221,8 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
       code,
       signal,
       timestamp: Date.now()
-    });
-  };
+    })
+  }
 
   // Worker fork event
   handlers.fork = (worker: any) => {
@@ -230,18 +230,18 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
       workerId: worker.id,
       pid: worker.process?.pid,
       timestamp: Date.now()
-    });
-  };
+    })
+  }
 
   // Register all handlers
   Object.entries(handlers).forEach(([event, handler]) => {
-    cluster.on(event as any, handler);
-  });
+    cluster.on(event as any, handler)
+  })
 
   // Setup process monitoring
   const processMonitor = setInterval(() => {
-    const memoryUsage = process.memoryUsage();
-    const cpuUsage = process.cpuUsage();
+    const memoryUsage = process.memoryUsage()
+    const cpuUsage = process.cpuUsage()
 
     sendSSEEvent(controller, 'process_stats', {
       pid: process.pid,
@@ -257,33 +257,33 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
       },
       uptime: process.uptime(),
       timestamp: Date.now()
-    });
+    })
   }, 10000); // Every 10 seconds
 
   // Custom cluster events (if cluster manager supports them)
-  const clusterManager = globalThis.clusterManager;
+  const clusterManager = globalThis.clusterManager
   if (clusterManager && typeof clusterManager.on === 'function') {
     const customHandlers = {
       'worker-health-critical': (data: any) => {
-        sendSSEEvent(controller, 'worker_health_critical', data);
+        sendSSEEvent(controller, 'worker_health_critical', data)
       },
       'scaling-started': (data: any) => {
-        sendSSEEvent(controller, 'scaling_started', data);
+        sendSSEEvent(controller, 'scaling_started', data)
       },
       'scaling-completed': (data: any) => {
-        sendSSEEvent(controller, 'scaling_completed', data);
+        sendSSEEvent(controller, 'scaling_completed', data)
       },
       'restart-started': (data: any) => {
-        sendSSEEvent(controller, 'restart_started', data);
+        sendSSEEvent(controller, 'restart_started', data)
       },
       'restart-completed': (data: any) => {
-        sendSSEEvent(controller, 'restart_completed', data);
+        sendSSEEvent(controller, 'restart_completed', data)
       }
-    };
+    }
 
     Object.entries(customHandlers).forEach(([event, handler]) => {
-      clusterManager.on(event, handler);
-    });
+      clusterManager.on(event, handler)
+    })
   }
 
   // Return cleanup function
@@ -291,16 +291,16 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
     cleanup: () => {
       // Remove cluster event listeners
       Object.entries(handlers).forEach(([event, handler]) => {
-        cluster.removeListener(event as any, handler);
-      });
+        cluster.removeListener(event as any, handler)
+      })
 
       // Clear process monitor
-      clearInterval(processMonitor);
+      clearInterval(processMonitor)
 
       // Remove custom event listeners
       if (clusterManager && typeof clusterManager.removeAllListeners === 'function') {
-        clusterManager.removeAllListeners();
+        clusterManager.removeAllListeners()
       }
     }
-  };
+  }
 }

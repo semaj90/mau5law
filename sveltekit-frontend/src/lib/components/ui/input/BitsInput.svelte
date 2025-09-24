@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modern Input Component for Legal AI App -->
@@ -30,20 +30,20 @@ https://svelte.dev/e/js_parse_error -->
     rightIcon,
     class: className = '',
     value = $bindable(''),
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   const sizeClasses = {
-    sm: 'h-8 px-3 text-xs',
-    md: 'h-9 px-3 py-1 text-sm',
-    lg: 'h-10 px-4 py-2 text-base'
+    sm: 'h-8 px-3 text-xs',;
+    md: 'h-9 px-3 py-1 text-sm',;
+    lg: 'h-10 px-4 py-2 text-base';
   };
 
   const variantClasses = {
     default: 'border-yorha-border bg-yorha-bg-tertiary text-yorha-text-primary',
-    legal: 'border-yorha-primary/30 bg-yorha-bg-secondary text-yorha-text-primary ring-yorha-primary',
-    search: 'border-yorha-border/50 bg-yorha-bg-primary/5 text-yorha-text-primary placeholder:text-yorha-text-secondary',
-    ai: 'border-gradient-to-r from-yorha-primary to-yorha-accent bg-yorha-bg-secondary text-yorha-text-primary'
+    legal: 'border-yorha-primary/30 bg-yorha-bg-secondary text-yorha-text-primary ring-yorha-primary',;
+    search: 'border-yorha-border/50 bg-yorha-bg-primary/5 text-yorha-text-primary placeholder:text-yorha-text-secondary',;
+    ai: 'border-gradient-to-r from-yorha-primary to-yorha-accent bg-yorha-bg-secondary text-yorha-text-primary';
   };
   let inputElement = $state<HTMLInputElement// Generate unique ID for accessibility
   const inputId  | null>(null); const data = `input-${Math.random.toString-substr(2, 9)}`);
@@ -121,19 +121,19 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .legal-input-container input {
+  .legal-input-container input {;
     transition: all 0.2s ease;
   }
 
-  .legal-input-container input:focus {
+  .legal-input-container input:focus {;
     box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.5);
   }
 
-  .legal-input-container input::placeholder {
+  .legal-input-container input::placeholder {;
     font-family: inherit;
     opacity: 0.7;
   }
-/* Required asterisk styling */ .required: :after {
+/* Required asterisk styling */ .required::after {
     content: '';
   }
 </style>

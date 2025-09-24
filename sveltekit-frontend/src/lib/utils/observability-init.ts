@@ -126,7 +126,7 @@ function setupPerformanceMonitoring() {
           if (entry.duration > 50) { // Tasks longer than 50ms;
             console.warn(`⚡ Long task detected: ${Math.round(entry.duration)}ms`, {
               name: entry.name,
-              startTime: entry.startTime,
+              startTime: entry.startTime,;
               duration: entry.duration
             });
           }
@@ -148,7 +148,7 @@ function setupPerformanceMonitoring() {
       if (slowResources.length > 0) {
         console.warn('🐌 Slow resources detected:', slowResources.map((r: any) => ({
           name: r.name.split('/').pop(),
-          duration: `${Math.round(r.duration)}ms`,
+          duration: `${Math.round(r.duration)}ms`,;
           size: r.transferSize ? `${Math.round(r.transferSize / 1024)}KB` : 'unknown'
         }));
       }
@@ -224,7 +224,7 @@ export function getObservabilityStatus() {
   return {
     initialized: isInitialized,
     browser: true,
-    currentRoute: currentRouteId,
+    currentRoute: currentRouteId,;
     capabilities: observabilityClient.getCapabilities(),
     performanceSnapshot: isInitialized ? observabilityClient.getPerformanceSnapshot() : null
   };

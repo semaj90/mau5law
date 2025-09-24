@@ -1,54 +1,54 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 
 /*
  * RAG Search API - Semantic search across processed documents
  */
-import { db } from '$lib/server/database';
-import { documents, embeddings, searchSessions } from '$lib/server/db/schema-postgres';
-import { readBodyFastWithMetrics, parseVectorData } from '$lib/simd/simd-json-integration';
-import { fastStringify, fastParse } from '$lib/utils/fast-json';
+import { db } from '$lib/server/database'
+import { documents, embeddings, searchSessions } from '$lib/server/db/schema-postgres'
+import { readBodyFastWithMetrics, parseVectorData } from '$lib/simd/simd-json-integration'
+import { fastStringify, fastParse } from '$lib/utils/fast-json'
 
-import { desc, eq, sql } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm'
 
 // Generate embedding for search query with improved error handling
 async function generateQueryEmbedding(
   query: string,
   fetchFn: typeof fetch,
   model?: string,
-  origin?: string;
+  origin?: string
 ): Promise<number[] | null> {
   try {
-    const endpoint = origin ? `${origin}/api/ai/embeddings` : '/api/ai/embeddings';
+    const endpoint = origin ? `${origin}/api/ai/embeddings` : '/api/ai/embeddings'
     const resp = await fetchFn(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: fastStringify({ text: query, model: model || 'embeddinggemma:latest', save: false }),
       signal: AbortSignal.timeout(30000)
-    });
+    })
 
     if (!resp.ok) {
-      const txt = await resp.text();
-      throw new Error(`Embedding API failed: ${resp.status} - ${txt}`);
+      const txt = await resp.text()
+      throw new Error(`Embedding API failed: ${resp.status} - ${txt}`)
     }
 
-    const payload = await fastParse(await resp.text();
+    const payload = await fastParse(await resp.text()
     if (!payload?.embedding || !Array.isArray(payload.embedding)) {
-      throw new Error('Invalid embedding format received');
+      throw new Error('Invalid embedding format received')
     }
 
-    return payload.embedding;
+    return payload.embedding
   } catch (err: any) {
-    console.error('Failed to generate query embedding:', err);
+    console.error('Failed to generate query embedding:', err)
     if (!model || model === 'embeddinggemma:latest') {
-      // Try a single fallback model once;
+      // Try a single fallback model once
       try {
-        return await generateQueryEmbedding(query, fetchFn, 'nomic-embed-text', origin);
+        return await generateQueryEmbedding(query, fetchFn, 'nomic-embed-text', origin)
       } catch (e) {
-        console.warn('Fallback embedding also failed:', e);
+        console.warn('Fallback embedding also failed:', e)
       }
     }
-    return null;
+    return null
   }
 }
 
@@ -58,14 +58,14 @@ async function vectorSearch(
   limit: number,
   threshold: number,
   filters?: {
-    caseId?: string;
-    documentTypes?: string[];
-    dateRange?: { start?: string; end?: string };
-    confidenceMin?: number;
+    caseId?: string
+    documentTypes?: string[]
+    dateRange?: { start?: string; end?: string }
+    confidenceMin?: number
   }
 ): Promise<any[]> {
   try {
-    let q = db;
+    let q = db
       .select({
         id: embeddings.id,
         documentId: embeddings.documentId,
@@ -85,38 +85,38 @@ async function vectorSearch(
       .innerJoin(documents, eq(embeddings.documentId, documents.id)
       .where(
         sql`1 - (${embeddings.embedding} <=> ${fastStringify(queryEmbedding)}::vector) > ${threshold}`
-      );
+      )
 
     if (filters) {
-      if (filters.caseId) q = q.where(sql`${documents.metadata}->>'caseId' = ${filters.caseId}`);
+      if (filters.caseId) q = q.where(sql`${documents.metadata}->>'caseId' = ${filters.caseId}`)
       if (filters.documentTypes && filters.documentTypes.length > 0)
-        q = q.where(sql`${documents.metadata}->>'documentType' = ANY(${filters.documentTypes})`);
+        q = q.where(sql`${documents.metadata}->>'documentType' = ANY(${filters.documentTypes})`)
       if (filters.dateRange?.start)
-        q = q.where(sql`${documents.createdAt} >= ${filters.dateRange.start}`);
+        q = q.where(sql`${documents.createdAt} >= ${filters.dateRange.start}`)
       if (filters.dateRange?.end)
-        q = q.where(sql`${documents.createdAt} <= ${filters.dateRange.end}`);
+        q = q.where(sql`${documents.createdAt} <= ${filters.dateRange.end}`)
       if (filters.confidenceMin)
-        q = q.where(sql`${documents.confidence} >= ${filters.confidenceMin}`);
+        q = q.where(sql`${documents.confidence} >= ${filters.confidenceMin}`)
     }
 
     const rows = await q
       .orderBy(
         desc(sql`1 - (${embeddings.embedding} <=> ${fastStringify(queryEmbedding)}::vector)`)
       )
-      .limit(limit);
+      .limit(limit)
 
-    return rows.map((r: any) => ({ ...r, searchType: 'semantic', score: r.similarity });
+    return rows.map((r: any) => ({ ...r, searchType: 'semantic', score: r.similarity })
   } catch (err: any) {
-    console.error('Vector search failed:', err);
+    console.error('Vector search failed:', err)
     if (filters) {
-      console.log('Retrying vector search without filters');
+      console.log('Retrying vector search without filters')
       try {
-        return await vectorSearch(queryEmbedding, limit, threshold);
+        return await vectorSearch(queryEmbedding, limit, threshold)
       } catch {
-        return [];
+        return []
       }
     }
-    return [];
+    return []
   }
 }
 
@@ -125,14 +125,14 @@ async function textSearch(
   query: string,
   limit: number,
   filters?: {
-    caseId?: string;
-    documentTypes?: string[];
-    dateRange?: { start?: string; end?: string };
-    confidenceMin?: number;
+    caseId?: string
+    documentTypes?: string[]
+    dateRange?: { start?: string; end?: string }
+    confidenceMin?: number
   }
 ): Promise<any[]> {
   try {
-    let q = db;
+    let q = db
       .select({
         id: documents.id,
         filename: documents.filename,
@@ -148,18 +148,18 @@ async function textSearch(
       .from(documents)
       .where(
         sql`to_tsvector('english', ${documents.content}) @@ plainto_tsquery('english', ${query})`
-      );
+      )
 
     if (filters) {
-      if (filters.caseId) q = q.where(sql`${documents.metadata}->>'caseId' = ${filters.caseId}`);
+      if (filters.caseId) q = q.where(sql`${documents.metadata}->>'caseId' = ${filters.caseId}`)
       if (filters.documentTypes && filters.documentTypes.length > 0)
-        q = q.where(sql`${documents.metadata}->>'documentType' = ANY(${filters.documentTypes})`);
+        q = q.where(sql`${documents.metadata}->>'documentType' = ANY(${filters.documentTypes})`)
       if (filters.dateRange?.start)
-        q = q.where(sql`${documents.createdAt} >= ${filters.dateRange.start}`);
+        q = q.where(sql`${documents.createdAt} >= ${filters.dateRange.start}`)
       if (filters.dateRange?.end)
-        q = q.where(sql`${documents.createdAt} <= ${filters.dateRange.end}`);
+        q = q.where(sql`${documents.createdAt} <= ${filters.dateRange.end}`)
       if (filters.confidenceMin)
-        q = q.where(sql`${documents.confidence} >= ${filters.confidenceMin}`);
+        q = q.where(sql`${documents.confidence} >= ${filters.confidenceMin}`)
     }
 
     const rows = await q
@@ -168,18 +168,18 @@ async function textSearch(
           sql`ts_rank(to_tsvector('english', ${documents.content}), plainto_tsquery('english', ${query}))`
         )
       )
-      .limit(limit);
+      .limit(limit)
 
     return rows.map((r: any) => ({
       ...r,
       similarity: Math.min(r.rank * 2, 1.0),
       searchType: 'text',
       score: r.rank
-    });
+    })
   } catch (err: any) {
-    console.error('Text search failed:', err);
+    console.error('Text search failed:', err)
     try {
-      const fallback = await db;
+      const fallback = await db
         .select({
           id: documents.id,
           filename: documents.filename,
@@ -192,19 +192,19 @@ async function textSearch(
         .from(documents)
         .where(sql`${documents.content} ILIKE ${`%${query}%`}`)
         .orderBy(desc(documents.createdAt)
-        .limit(limit);
+        .limit(limit)
 
-      return fallback.map((r: any) => ({ ...r, similarity: 0.7, searchType: 'text', score: 0.7 });
+      return fallback.map((r: any) => ({ ...r, similarity: 0.7, searchType: 'text', score: 0.7 })
     } catch (fallbackErr) {
-      console.error('Fallback text search failed:', fallbackErr);
-      return [];
+      console.error('Fallback text search failed:', fallbackErr)
+      return []
     }
   }
 }
 
 export const POST: RequestHandler = async ({ request, fetch, url }) => {
-  const startTime = Date.now();
-  let queryEmbedding: number[] | null = null;
+  const startTime = Date.now()
+  let queryEmbedding: number[] | null = null
 
   try {
     const {
@@ -219,32 +219,32 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
       model,
       includeMetadata = true,
       includeContent = true
-    } = await readBodyFastWithMetrics(request);
+    } = await readBodyFastWithMetrics(request)
 
-    if (!query) return json({ error: 'Query is required' }, { status: 400 });
+    if (!query) return json({ error: 'Query is required' }, { status: 400 })
 
-    const filters = { caseId, documentTypes, dateRange, confidenceMin };
-    let results: any[] = [];
+    const filters = { caseId, documentTypes, dateRange, confidenceMin }
+    let results: any[] = []
 
     if (searchType === 'semantic' || searchType === 'hybrid') {
-      queryEmbedding = await generateQueryEmbedding(query, fetch, model, url.origin);
+      queryEmbedding = await generateQueryEmbedding(query, fetch, model, url.origin)
       if (queryEmbedding) {
-        const vectorResults = await vectorSearch(queryEmbedding, limit, threshold, filters);
-        results = results.concat(vectorResults);
+        const vectorResults = await vectorSearch(queryEmbedding, limit, threshold, filters)
+        results = results.concat(vectorResults)
       }
     }
 
     if (searchType === 'text' || searchType === 'hybrid') {
-      const textResults = await textSearch(query, limit, filters);
-      results = results.concat(textResults);
+      const textResults = await textSearch(query, limit, filters)
+      results = results.concat(textResults)
     }
 
     const uniqueResults = results
-      .filter((r, i, arr) => i === arr.findIndex((x) => x.id === r.id);
+      .filter((r, i, arr) => i === arr.findIndex((x) => x.id === r.id)
       .map((result) => {
-        const baseScore = (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).similarity || (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).score || 0;
-        const confidenceBoost = (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).confidence ? (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).confidence * 0.2 : 0;
-        const combinedScore = Math.min(baseScore + confidenceBoost, 1.0);
+        const baseScore = (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).similarity || (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).score || 0
+        const confidenceBoost = (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).confidence ? (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).confidence * 0.2 : 0
+        const combinedScore = Math.min(baseScore + confidenceBoost, 1.0)
 
         return {
           id: (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).id,
@@ -260,12 +260,12 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
           legalAnalysis: includeMetadata ? (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).legalAnalysis: undefined,
           createdAt: (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).createdAt,
           rank: results.indexOf(result) + 1
-        };
+        }
       })
       .sort((a, b) => b.score - a.score)
-      .slice(0, limit);
+      .slice(0, limit)
 
-    const processingTime = Date.now() - startTime;
+    const processingTime = Date.now() - startTime
 
     if (queryEmbedding && uniqueResults.length > 0) {
       try {
@@ -275,9 +275,9 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
           results: uniqueResults,
           searchType,
           resultCount: uniqueResults.length
-        });
+        })
       } catch (e) {
-        console.error('Failed to save search session:', e);
+        console.error('Failed to save search session:', e)
       }
     }
 
@@ -292,10 +292,10 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
         hasEmbedding: !!queryEmbedding
       },
       timestamp: new Date().toISOString()
-    });
+    })
   } catch (error: any) {
-    console.error('Enhanced RAG search error:', error);
-    return json();
+    console.error('Enhanced RAG search error:', error)
+    return json()
       {
         error: 'Search failed',
         details: error instanceof Error ? error.message: 'Unknown error',
@@ -303,19 +303,19 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
         timestamp: new Date().toISOString()
       },
       { status: 500 }
-    );
+    )
   }
-};
+}
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action') || 'health';
+    const action = url.searchParams.get('action') || 'health'
 
     switch (action) {
       case 'health': {
-        const startTime = Date.now();
-        const dbTest = await db.select({ count: sql<number>`count(*)` }).from(documents);
-        const processingTime = Date.now() - startTime;
+        const startTime = Date.now()
+        const dbTest = await db.select({ count: sql<number>`count(*)` }).from(documents)
+        const processingTime = Date.now() - startTime
 
         return json({
           success: true,
@@ -326,7 +326,7 @@ export const GET: RequestHandler = async ({ url }) => {
             responseTime: `${processingTime}ms`
           },
           timestamp: new Date().toISOString()
-        });
+        })
       }
 
       case 'stats': {
@@ -334,24 +334,24 @@ export const GET: RequestHandler = async ({ url }) => {
           db.select({ count: sql<number>`count(*)` }).from(documents),
           db.select({ count: sql<number>`count(*)` }).from(embeddings),
           db.select({ count: sql<number>`count(*)` }).from(searchSessions)
-        ]);
+        ])
 
         return json({
           docCount: docStats[0]?.count || 0,
           embeddingCount: embeddingStats[0]?.count || 0,
           sessionCount: sessionStats[0]?.count || 0
-        });
+        })
       }
 
       default:
-        return json({ success: true, action });
+        return json({ success: true, action })
     }
   } catch (err: any) {
-    console.error('GET /api/rag/search error:', err);
+    console.error('GET /api/rag/search error:', err)
     return json()
       { error: 'Failed', details: err instanceof Error ? err.message: String(err) },
       { status: 500 }
-    );
+    )
   }
-};
+}
 

@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { withSSRHandler, createSSRResponse, createSSRErrorResponse } from '$lib/server/api-ssr-helpers.js';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
+import { withSSRHandler, createSSRResponse, createSSRErrorResponse } from '$lib/server/api-ssr-helpers.js'
 
 /*
  * Legal AI Orchestrator - Central API Router
@@ -9,74 +9,74 @@ import { withSSRHandler, createSSRResponse, createSSRErrorResponse } from '$lib/
  */
 
 interface OrchestrationRequest {
-  workflow: 'legal-research' | 'document-processing' | 'case-creation' | 'evidence-analysis';
-  parameters: Record<string, any>;
+  workflow: 'legal-research' | 'document-processing' | 'case-creation' | 'evidence-analysis'
+  parameters: Record<string, any>
   options?: {
-    useGPU?: boolean;
-    cacheResults?: boolean;
-    priority?: 'low' | 'medium' | 'high';
-    timeout?: number;
-  };
+    useGPU?: boolean
+    cacheResults?: boolean
+    priority?: 'low' | 'medium' | 'high'
+    timeout?: number
+  }
 }
 
 interface OrchestrationResult {
-  workflowId: string;
-  workflow: string;
-  status: 'processing' | 'completed' | 'failed';
-  steps: WorkflowStep[];
-  result?: any;
-  error?: string;
+  workflowId: string
+  workflow: string
+  status: 'processing' | 'completed' | 'failed'
+  steps: WorkflowStep[]
+  result?: any
+  error?: string
   metrics: {
-    totalTime: number;
-    apiCalls: number;
-    cacheHits: number;
-    gpuAccelerated: boolean;
-  };
+    totalTime: number
+    apiCalls: number
+    cacheHits: number
+    gpuAccelerated: boolean
+  }
 }
 
 interface WorkflowStep {
-  name: string;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  result?: any;
-  error?: string;
-  duration: number;
-  apiEndpoint: string;
+  name: string
+  status: 'pending' | 'processing' | 'completed' | 'failed'
+  result?: any
+  error?: string
+  duration: number
+  apiEndpoint: string
 }
 
-// Workflow orchestration class;
+// Workflow orchestration class
 class LegalAIOrchestrator {
-  private activeWorkflows = new Map<string, OrchestrationResult>();
-  private stepExecutors = new Map<string, (params: any, options?: any) => Promise<any>();
+  private activeWorkflows = new Map<string, OrchestrationResult>()
+  private stepExecutors = new Map<string, (params: any, options?: any) => Promise<any>()
 
   constructor() {
-    this.initializeStepExecutors();
+    this.initializeStepExecutors()
   }
 
   private initializeStepExecutors() {
     // Legal research workflow steps
-    this.stepExecutors.set('search-legal-documents', this.executeSearchLegalDocuments.bind(this);
-    this.stepExecutors.set('analyze-precedents', this.executeAnalyzePrecedents.bind(this);
-    this.stepExecutors.set('generate-research-summary', this.executeGenerateResearchSummary.bind(this);
+    this.stepExecutors.set('search-legal-documents', this.executeSearchLegalDocuments.bind(this)
+    this.stepExecutors.set('analyze-precedents', this.executeAnalyzePrecedents.bind(this)
+    this.stepExecutors.set('generate-research-summary', this.executeGenerateResearchSummary.bind(this)
     
     // Document processing workflow steps  
-    this.stepExecutors.set('extract-document-entities', this.executeExtractDocumentEntities.bind(this);
-    this.stepExecutors.set('analyze-document-content', this.executeAnalyzeDocumentContent.bind(this);
-    this.stepExecutors.set('generate-document-summary', this.executeGenerateDocumentSummary.bind(this);
+    this.stepExecutors.set('extract-document-entities', this.executeExtractDocumentEntities.bind(this)
+    this.stepExecutors.set('analyze-document-content', this.executeAnalyzeDocumentContent.bind(this)
+    this.stepExecutors.set('generate-document-summary', this.executeGenerateDocumentSummary.bind(this)
     
     // Case creation workflow steps
-    this.stepExecutors.set('score-case-strength', this.executeScoreCaseStrength.bind(this);
-    this.stepExecutors.set('suggest-research-topics', this.executeSuggestResearchTopics.bind(this);
-    this.stepExecutors.set('create-case-timeline', this.executeCreateCaseTimeline.bind(this);
+    this.stepExecutors.set('score-case-strength', this.executeScoreCaseStrength.bind(this)
+    this.stepExecutors.set('suggest-research-topics', this.executeSuggestResearchTopics.bind(this)
+    this.stepExecutors.set('create-case-timeline', this.executeCreateCaseTimeline.bind(this)
     
     // Evidence analysis workflow steps
-    this.stepExecutors.set('process-evidence-metadata', this.executeProcessEvidenceMetadata.bind(this);
-    this.stepExecutors.set('analyze-evidence-relevance', this.executeAnalyzeEvidenceRelevance.bind(this);
-    this.stepExecutors.set('generate-evidence-report', this.executeGenerateEvidenceReport.bind(this);
+    this.stepExecutors.set('process-evidence-metadata', this.executeProcessEvidenceMetadata.bind(this)
+    this.stepExecutors.set('analyze-evidence-relevance', this.executeAnalyzeEvidenceRelevance.bind(this)
+    this.stepExecutors.set('generate-evidence-report', this.executeGenerateEvidenceReport.bind(this)
   }
 
   async executeWorkflow(request: OrchestrationRequest): Promise<OrchestrationResult> {
-    const workflowId = this.generateWorkflowId();
-    const startTime = Date.now();
+    const workflowId = this.generateWorkflowId()
+    const startTime = Date.now()
     
     const result: OrchestrationResult = {
       workflowId,
@@ -89,12 +89,12 @@ class LegalAIOrchestrator {
         cacheHits: 0,
         gpuAccelerated: request.options?.useGPU || false
       }
-    };
+    }
 
-    this.activeWorkflows.set(workflowId, result);
+    this.activeWorkflows.set(workflowId, result)
 
     try {
-      const workflowSteps = this.getWorkflowSteps(request.workflow);
+      const workflowSteps = this.getWorkflowSteps(request.workflow)
       
       for (const stepConfig of workflowSteps) {
         const step: WorkflowStep = {
@@ -102,53 +102,53 @@ class LegalAIOrchestrator {
           status: 'processing',
           duration: 0,
           apiEndpoint: stepConfig.endpoint
-        };
+        }
         
-        (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).steps.push(step);
-        (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).metrics.apiCalls++;
+        (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).steps.push(step)
+        (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).metrics.apiCalls++
 
-        const stepStartTime = Date.now();
+        const stepStartTime = Date.now()
         
         try {
-          const executor = this.stepExecutors.get(stepConfig.name);
+          const executor = this.stepExecutors.get(stepConfig.name)
           if (!executor) {
-            throw new Error(`No executor found for step: ${stepConfig.name}`);
+            throw new Error(`No executor found for step: ${stepConfig.name}`)
           }
 
           step.result = await executor()
             { ...request.parameters, previousResults: this.getPreviousResults((result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).steps) },
             request.options
-          );
-          step.status = 'completed';
+          )
+          step.status = 'completed'
           
         } catch (error) {
-          step.status = 'failed';
-          step.error = error instanceof Error ? error.message: String(error);
-          (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status = 'failed';
-          (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).error = `Workflow failed at step: ${stepConfig.name}`;
-          break;
+          step.status = 'failed'
+          step.error = error instanceof Error ? error.message: String(error)
+          (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status = 'failed'
+          (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).error = `Workflow failed at step: ${stepConfig.name}`
+          break
         }
         
-        step.duration = Date.now() - stepStartTime;
+        step.duration = Date.now() - stepStartTime
       }
 
       if ((result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status !== 'failed') {
-        (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status = 'completed';
-        (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).result = this.aggregateWorkflowResults((result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).steps, request.workflow);
+        (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status = 'completed'
+        (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).result = this.aggregateWorkflowResults((result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).steps, request.workflow)
       }
 
     } catch (error) {
-      (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status = 'failed';
-      (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).error = error instanceof Error ? error.message: String(error);
+      (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status = 'failed'
+      (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).error = error instanceof Error ? error.message: String(error)
     }
 
-    (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).metrics.totalTime = Date.now() - startTime;
-    this.activeWorkflows.set(workflowId, result);
+    (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).metrics.totalTime = Date.now() - startTime
+    this.activeWorkflows.set(workflowId, result)
     
-    return result;
+    return result
   }
 
-  // Step executor implementations;
+  // Step executor implementations
   private async executeSearchLegalDocuments(params: any, options?: any): Promise<any> {
     const response = await fetch('/api/ai/enhanced-legal-search', {
       method: 'POST',
@@ -159,17 +159,17 @@ class LegalAIOrchestrator {
         maxResults: params.maxResults || 20,
         useAI: true
       })
-    });
+    })
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Search failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      throw new Error(`Search failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
 
-    return await (response as { ok?: any; status?: any; json?: any }).json();
+    return await (response as { ok?: any; status?: any; json?: any }).json()
   }
 
   private async executeAnalyzePrecedents(params: any, options?: any): Promise<any> {
-    const searchResults = params.previousResults?.find((r: any) => r?.results)?.results || [];
+    const searchResults = params.previousResults?.find((r: any) => r?.results)?.results || []
     
     const response = await fetch('/api/ai/legal-research', {
       method: 'POST', 
@@ -181,17 +181,17 @@ class LegalAIOrchestrator {
         includeAnalysis: true,
         userRole: params.userRole
       })
-    });
+    })
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Precedent analysis failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      throw new Error(`Precedent analysis failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
 
-    return await (response as { ok?: any; status?: any; json?: any }).json();
+    return await (response as { ok?: any; status?: any; json?: any }).json()
   }
 
   private async executeGenerateResearchSummary(params: any, options?: any): Promise<any> {
-    const precedentData = params.previousResults?.find((r: any) => r?.analysis)?.analysis || '';
+    const precedentData = params.previousResults?.find((r: any) => r?.analysis)?.analysis || ''
     
     const response = await fetch('/api/ai/chat', {
       method: 'POST',
@@ -201,13 +201,13 @@ class LegalAIOrchestrator {
         model: 'gemma3-legal:latest',
         temperature: 0.3
       })
-    });
+    })
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Summary generation failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      throw new Error(`Summary generation failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
 
-    return await (response as { ok?: any; status?: any; json?: any }).json();
+    return await (response as { ok?: any; status?: any; json?: any }).json()
   }
 
   private async executeExtractDocumentEntities(params: any, options?: any): Promise<any> {
@@ -220,13 +220,13 @@ class LegalAIOrchestrator {
         extractEntities: true,
         includeKeyTerms: true
       })
-    });
+    })
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Entity extraction failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      throw new Error(`Entity extraction failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
 
-    return await (response as { ok?: any; status?: any; json?: any }).json();
+    return await (response as { ok?: any; status?: any; json?: any }).json()
   }
 
   private async executeAnalyzeDocumentContent(params: any, options?: any): Promise<any> {
@@ -238,13 +238,13 @@ class LegalAIOrchestrator {
         analysisType: 'legal_document',
         includeMetadata: true
       })
-    });
+    })
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Document analysis failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      throw new Error(`Document analysis failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
 
-    return await (response as { ok?: any; status?: any; json?: any }).json();
+    return await (response as { ok?: any; status?: any; json?: any }).json()
   }
 
   private async executeGenerateDocumentSummary(params: any, options?: any): Promise<any> {
@@ -257,13 +257,13 @@ class LegalAIOrchestrator {
         includeKeyPoints: true,
         legalFocus: true
       })
-    });
+    })
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Document summarization failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      throw new Error(`Document summarization failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
 
-    return await (response as { ok?: any; status?: any; json?: any }).json();
+    return await (response as { ok?: any; status?: any; json?: any }).json()
   }
 
   private async executeScoreCaseStrength(params: any, options?: any): Promise<any> {
@@ -276,13 +276,13 @@ class LegalAIOrchestrator {
         caseType: params.caseType,
         jurisdiction: params.jurisdiction
       })
-    });
+    })
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Case scoring failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      throw new Error(`Case scoring failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
 
-    return await (response as { ok?: any; status?: any; json?: any }).json();
+    return await (response as { ok?: any; status?: any; json?: any }).json()
   }
 
   private async executeSuggestResearchTopics(params: any, options?: any): Promise<any> {
@@ -294,17 +294,17 @@ class LegalAIOrchestrator {
         suggestionType: 'research',
         maxSuggestions: 10
       })
-    });
+    })
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Research suggestions failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      throw new Error(`Research suggestions failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
 
-    return await (response as { ok?: any; status?: any; json?: any }).json();
+    return await (response as { ok?: any; status?: any; json?: any }).json()
   }
 
   private async executeCreateCaseTimeline(params: any, options?: any): Promise<any> {
-    // This would typically integrate with a calendar/timeline service;
+    // This would typically integrate with a calendar/timeline service
     const timeline = {
       milestones: [
         { name: 'Case Created', date: new Date(), type: 'created' },
@@ -312,9 +312,9 @@ class LegalAIOrchestrator {
         { name: 'Discovery Phase', date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), type: 'phase' }
       ],
       generated: new Date()
-    };
+    }
 
-    return timeline;
+    return timeline
   }
 
   private async executeProcessEvidenceMetadata(params: any, options?: any): Promise<any> {
@@ -326,13 +326,13 @@ class LegalAIOrchestrator {
         metadata: params.metadata,
         extractAdditional: true
       })
-    });
+    })
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Evidence metadata processing failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      throw new Error(`Evidence metadata processing failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
 
-    return await (response as { ok?: any; status?: any; json?: any }).json();
+    return await (response as { ok?: any; status?: any; json?: any }).json()
   }
 
   private async executeAnalyzeEvidenceRelevance(params: any, options?: any): Promise<any> {
@@ -344,17 +344,17 @@ class LegalAIOrchestrator {
         evidenceItems: [params.evidenceId],
         analysisDepth: 'comprehensive'
       })
-    });
+    })
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Evidence relevance analysis failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      throw new Error(`Evidence relevance analysis failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
 
-    return await (response as { ok?: any; status?: any; json?: any }).json();
+    return await (response as { ok?: any; status?: any; json?: any }).json()
   }
 
   private async executeGenerateEvidenceReport(params: any, options?: any): Promise<any> {
-    const relevanceData = params.previousResults?.find((r: any) => r?.relevanceScore)?.relevanceScore || 0.5;
+    const relevanceData = params.previousResults?.find((r: any) => r?.relevanceScore)?.relevanceScore || 0.5
     
     const response = await fetch('/api/ai/generate-report', {
       method: 'POST',
@@ -365,16 +365,16 @@ class LegalAIOrchestrator {
         relevanceScore: relevanceData,
         includeRecommendations: true
       })
-    });
+    })
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Evidence report generation failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+      throw new Error(`Evidence report generation failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)
     }
 
-    return await (response as { ok?: any; status?: any; json?: any }).json();
+    return await (response as { ok?: any; status?: any; json?: any }).json()
   }
 
-  // Helper methods;
+  // Helper methods
   private getWorkflowSteps(workflow: string) {
     const workflows = {
       'legal-research': [
@@ -397,137 +397,137 @@ class LegalAIOrchestrator {
         { name: 'analyze-evidence-relevance', endpoint: '/api/ai/evidence-search' },
         { name: 'generate-evidence-report', endpoint: '/api/ai/generate-report' }
       ]
-    };
+    }
 
-    return workflows[workflow] || [];
+    return workflows[workflow] || []
   }
 
   private getPreviousResults(steps: WorkflowStep[]): any[] {
     return steps
       .filter(step => step.status === 'completed' && step.result)
-      .map(step => step.result);
+      .map(step => step.result)
   }
 
   private aggregateWorkflowResults(steps: WorkflowStep[], workflow: string): any {
-    const results = this.getPreviousResults(steps);
+    const results = this.getPreviousResults(steps)
     const baseResult = {
       workflow,
       completedSteps: steps.filter(item => item.length),
       totalSteps: steps.length,
       timestamp: new Date()
-    };
+    }
 
     switch (workflow) {
-      case 'legal-research':;
+      case 'legal-research':
         return {
           ...baseResult,
           searchResults: results[0]?.results || [],
           precedentAnalysis: results[1]?.analysis || '',
           summary: results[2]?.response || '',
           recommendations: results[1]?.recommendations || []
-        };
+        }
 
-      case 'document-processing':;
+      case 'document-processing':
         return {
           ...baseResult,
           entities: results[0]?.entities || [],
           analysis: results[1]?.analysis || {},
           summary: results[2]?.summary || '',
           keyTerms: results[2]?.keyTerms || []
-        };
+        }
 
-      case 'case-creation':;
+      case 'case-creation':
         return {
           ...baseResult,
           caseScore: results[0]?.score || 0,
           researchSuggestions: results[1]?.suggestions || [],
           timeline: results[2] || {}
-        };
+        }
 
-      case 'evidence-analysis':;
+      case 'evidence-analysis':
         return {
           ...baseResult,
           metadata: results[0] || {},
           relevanceAnalysis: results[1] || {},
           report: results[2]?.report || ''
-        };
+        }
 
       default:
-        return { ...baseResult, results };
+        return { ...baseResult, results }
     }
   }
 
   private generateWorkflowId(): string {
-    return `workflow_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `workflow_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   }
 
   getWorkflowStatus(workflowId: string): OrchestrationResult | null {
-    return this.activeWorkflows.get(workflowId) || null;
+    return this.activeWorkflows.get(workflowId) || null
   }
 
   listActiveWorkflows(): OrchestrationResult[] {
-    return Array.from(this.activeWorkflows.values()).filter(w => w.status === 'processing');
+    return Array.from(this.activeWorkflows.values()).filter(w => w.status === 'processing')
   }
 }
 
 // Global orchestrator instance
-const orchestrator = new LegalAIOrchestrator();
+const orchestrator = new LegalAIOrchestrator()
 
-// API handlers;
+// API handlers
 export const POST: RequestHandler = withSSRHandler(async ({ request }) => {
-  const requestData: OrchestrationRequest = await request.json();
+  const requestData: OrchestrationRequest = await request.json()
 
-  // Validate request;
+  // Validate request
   if (!requestData.workflow || !requestData.parameters) {
-    return createSSRErrorResponse('Missing required fields: workflow and parameters', 400);
+    return createSSRErrorResponse('Missing required fields: workflow and parameters', 400)
   }
 
-  const validWorkflows = ['legal-research', 'document-processing', 'case-creation', 'evidence-analysis'];
+  const validWorkflows = ['legal-research', 'document-processing', 'case-creation', 'evidence-analysis']
   if (!validWorkflows.includes(requestData.workflow)) {
-    return createSSRErrorResponse(`Invalid workflow. Must be one of: ${validWorkflows.join(', ')}`, 400);
+    return createSSRErrorResponse(`Invalid workflow. Must be one of: ${validWorkflows.join(', ')}`, 400)
   }
 
   try {
-    const result = await orchestrator.executeWorkflow(requestData);
+    const result = await orchestrator.executeWorkflow(requestData)
     return createSSRResponse(result, {
       gpuAccelerated: requestData.options?.useGPU,
       cacheKey: requestData.options?.cacheResults ? `orchestrator_${(result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).workflowId}` : undefined
-    });
+    })
   } catch (error) {
     return createSSRErrorResponse(
       `Orchestration failed: ${error instanceof Error ? error.message: 'Unknown error'}`,
       500
-    );
+    )
   }
 }, {
   gpuAccelerated: true,
   cacheKey: (event) => {
-    const url = new URL(event.request.url);
-    return `orchestrator_${url.searchParams.get('workflow')}_${Date.now()}`;
+    const url = new URL(event.request.url)
+    return `orchestrator_${url.searchParams.get('workflow')}_${Date.now()}`
   }
-});
+})
 
 export const GET: RequestHandler = withSSRHandler(async ({ url }) => {
-  const workflowId = url.searchParams.get('workflowId');
+  const workflowId = url.searchParams.get('workflowId')
   
   if (workflowId) {
-    const workflow = orchestrator.getWorkflowStatus(workflowId);
+    const workflow = orchestrator.getWorkflowStatus(workflowId)
     if (!workflow) {
-      return createSSRErrorResponse('Workflow not found', 404);
+      return createSSRErrorResponse('Workflow not found', 404)
     }
-    return createSSRResponse(workflow);
+    return createSSRResponse(workflow)
   }
 
   // List active workflows
-  const activeWorkflows = orchestrator.listActiveWorkflows();
+  const activeWorkflows = orchestrator.listActiveWorkflows()
   return createSSRResponse({
     activeWorkflows,
     total: activeWorkflows.length,
     timestamp: new Date().toISOString()
-  });
-});
+  })
+})
 
-// Health check;
+// Health check
 export const OPTIONS: RequestHandler = withSSRHandler(async () => {
   return createSSRResponse({
     service: 'legal-ai-orchestrator',
@@ -541,5 +541,5 @@ export const OPTIONS: RequestHandler = withSSRHandler(async () => {
       'Progress tracking'
     ],
     version: '1.0.0'
-  });
-});
+  })
+})

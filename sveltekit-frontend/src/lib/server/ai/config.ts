@@ -275,7 +275,7 @@ class CircuitBreaker {
 
   getState(): { state: string; failures: number; lastFailureTime: number } {
     return {
-      state: this.state,
+      state: this.state,;
       failures: this.failures,
       lastFailureTime: this.lastFailureTime
     };
@@ -285,7 +285,7 @@ class CircuitBreaker {
 // Create circuit breakers for external services;
 export const circuitBreakers = {
   ollama: new CircuitBreaker(5, 60000, 'Ollama'),
-  database: new CircuitBreaker(3, 30000, 'Database'),
+  database: new CircuitBreaker(3, 30000, 'Database'),;
   redis: new CircuitBreaker(3, 30000, 'Redis')
 };
 
@@ -449,7 +449,7 @@ export async function checkServiceHealth(name: string, checkFn: () => Promise<an
     await withTimeout(checkFn(), 5000, `${name} health check timed out`);
 
     return {
-      service: name,
+      service: name,;
       status: 'healthy',
       responseTime: Date.now() - start
 };
@@ -457,7 +457,7 @@ export async function checkServiceHealth(name: string, checkFn: () => Promise<an
     return {
       service: name,
       status: 'unhealthy',
-      responseTime: Date.now() - start,
+      responseTime: Date.now() - start,;
       error: error instanceof Error ? error.message: 'Unknown error'
 };
   }

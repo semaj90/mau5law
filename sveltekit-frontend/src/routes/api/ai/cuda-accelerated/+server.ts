@@ -19,108 +19,108 @@
 // Enhanced CUDA-Accelerated Legal AI API
 // Bridges SvelteKit frontend with Go CUDA server for maximum performance
 
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 
 const CUDA_SERVER_URL = 'http://localhost:8097'; // Updated to enhanced CUDA service worker
 const CUDA_TIMEOUT = 30000; // 30 seconds for complex inference
 
 interface CudaInferenceRequest {
-	query: string;
-	max_tokens?: number;
-	temperature?: number;
-	top_p?: number;
-	enable_grpo?: boolean;
-	legal_domain?: string;
-	user_id?: string;
-	session_id?: string;
-	enable_streaming?: boolean;
-	context_documents?: string[];
-	metadata?: Record<string, any>;
+	query: string
+	max_tokens?: number
+	temperature?: number
+	top_p?: number
+	enable_grpo?: boolean
+	legal_domain?: string
+	user_id?: string
+	session_id?: string
+	enable_streaming?: boolean
+	context_documents?: string[]
+	metadata?: Record<string, any>
 }
 
 interface CudaInferenceResponse {
-	success: boolean;
-	response?: string;
-	thinking_content?: string;
-	confidence?: number;
-	processing_time_ms: number;
-	tokens_per_second: number;
+	success: boolean
+	response?: string
+	thinking_content?: string
+	confidence?: number
+	processing_time_ms: number
+	tokens_per_second: number
 	gpu_metrics?: {
-		gpu_utilization: number;
-		memory_utilization: number;
-		temperature: number;
-		active_streams: number;
-		vram_used_mb: number;
-		vram_total_mb: number;
-	};
+		gpu_utilization: number
+		memory_utilization: number
+		temperature: number
+		active_streams: number
+		vram_used_mb: number
+		vram_total_mb: number
+	}
 	grpo?: {
-		structured_reasoning: Record<string, any>;
-		reasoning_steps: string[];
-		temporal_score: number;
-		recommendations: Array<any>;
-	error?: string;
-	job_id?: string;
+		structured_reasoning: Record<string, any>
+		reasoning_steps: string[]
+		temporal_score: number
+		recommendations: Array<any>
+	error?: string
+	job_id?: string
 }
 
 interface VectorSearchRequest {
-	query_vector: number[];
-	top_k?: number;
-	threshold?: number;
-	legal_domain?: string;
-	include_metadata?: boolean;
+	query_vector: number[]
+	top_k?: number
+	threshold?: number
+	legal_domain?: string
+	include_metadata?: boolean
 }
 
 interface BatchInferenceRequest {
-	queries: CudaInferenceRequest[];
+	queries: CudaInferenceRequest[]
 }
 
-// Health check for CUDA server;
+// Health check for CUDA server
 async function checkCudaServerHealth(): Promise<boolean> {
 	try {
 		const response = await fetch(`${CUDA_SERVER_URL}/health`, {
 			method: 'GET',
 			signal: AbortSignal.timeout(5000)
-		});
+		})
 		
-		if (!(response as { ok?: any; json?: any; status?: any }).ok) return false;
+		if (!(response as { ok?: any; json?: any; status?: any }).ok) return false
 		
-		const health = await (response as { ok?: any; json?: any; status?: any }).json();
-		return health.status === 'healthy' && health.cuda_ready === true;
+		const health = await (response as { ok?: any; json?: any; status?: any }).json()
+		return health.status === 'healthy' && health.cuda_ready === true
 	} catch (error) {
-		console.error('CUDA server health check failed:', error);
-		return false;
+		console.error('CUDA server health check failed:', error)
+		return false
 	}
 }
 
-// POST endpoint for CUDA-accelerated inference;
+// POST endpoint for CUDA-accelerated inference
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
 	try {
-		const startTime = Date.now();
-		const requestData: CudaInferenceRequest = await request.json();
+		const startTime = Date.now()
+		const requestData: CudaInferenceRequest = await request.json()
 
-		// Validate required fields;
+		// Validate required fields
 		if (!requestData.query?.trim()) {
 			return json({
 				success: false,
 				error: 'Query is required',
 				processing_time_ms: Date.now() - startTime
-			}, { status: 400 });
+			}, { status: 400 })
 		}
 
 		// Check CUDA server health first
-		const isHealthy = await checkCudaServerHealth();
+		const isHealthy = await checkCudaServerHealth()
 		if (!isHealthy) {
 			return json({
 				success: false,
 				error: 'CUDA server is not available',
 				fallback_available: true,
 				processing_time_ms: Date.now() - startTime
-			}, { status: 503 });
+			}, { status: 503 })
 		}
 
-		// Prepare CUDA inference request;
+		// Prepare CUDA inference request
 		const cudaRequest = {
 			query: requestData.query.trim(),
 			max_tokens: requestData.max_tokens || 2048,
@@ -138,9 +138,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 				client_type: 'web',
 				performance_target: 'rtx_3060_ti'
 			}
-		};
+		}
 
-		// Make request to CUDA server;
+		// Make request to CUDA server
 		const cudaResponse = await fetch(`${CUDA_SERVER_URL}/api/legal/inference`, {
 			method: 'POST',
 			headers: {
@@ -150,17 +150,17 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			},
 			body: JSON.stringify(cudaRequest),
 			signal: AbortSignal.timeout(CUDA_TIMEOUT)
-		});
+		})
 
 		if (!cudaResponse.ok) {
-			const errorText = await cudaResponse.text();
-			throw new Error(`CUDA server error ${cudaResponse.status}: ${errorText}`);
+			const errorText = await cudaResponse.text()
+			throw new Error(`CUDA server error ${cudaResponse.status}: ${errorText}`)
 		}
 
-		const result: CudaInferenceResponse = await cudaResponse.json();
+		const result: CudaInferenceResponse = await cudaResponse.json()
 		
 		// Add frontend processing metrics
-		const totalProcessingTime = Date.now() - startTime;
+		const totalProcessingTime = Date.now() - startTime
 		
 		const response = {
 			...result,
@@ -173,14 +173,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 				memory_efficient: (result as { processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any }).gpu_metrics?.memory_utilization < 0.9,
 				temperature_safe: (result as { processing_time_ms?: any; tokens_per_second?: any; gpu_metrics?: any }).gpu_metrics?.temperature < 80
 			}
-		};
+		}
 
-		return json(response);
+		return json(response)
 
 	} catch (error: any) {
-		const processingTime = Date.now() - performance.now();
+		const processingTime = Date.now() - performance.now()
 		
-		console.error('CUDA-accelerated inference failed:', error);
+		console.error('CUDA-accelerated inference failed:', error)
 		
 		return json({
 			success: false,
@@ -189,19 +189,19 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			cuda_acceleration: false,
 			processing_time_ms: processingTime,
 			fallback_required: true
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}
 
-// GET endpoint for CUDA server status and metrics;
+// GET endpoint for CUDA server status and metrics
 const originalGETHandler: RequestHandler = async ({ url }) => {
 	try {
-		const operation = url.searchParams.get('operation') || 'status';
+		const operation = url.searchParams.get('operation') || 'status'
 		
 		switch (operation) {
 			case 'status':
-				const healthResponse = await fetch(`${CUDA_SERVER_URL}/health`);
-				const healthData = await healthResponse.json();
+				const healthResponse = await fetch(`${CUDA_SERVER_URL}/health`)
+				const healthData = await healthResponse.json()
 				
 				return json({
 					success: true,
@@ -215,11 +215,11 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 						stream: `${CUDA_SERVER_URL}/api/legal/stream`,
 						batch: `${CUDA_SERVER_URL}/api/legal/batch`
 					}
-				});
+				})
 
 			case 'metrics':
-				const metricsResponse = await fetch(`${CUDA_SERVER_URL}/metrics`);
-				const metricsData = await metricsResponse.json();
+				const metricsResponse = await fetch(`${CUDA_SERVER_URL}/metrics`)
+				const metricsData = await metricsResponse.json()
 				
 				return json({
 					success: true,
@@ -230,18 +230,18 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 						compute_capability: '8.6',
 						memory_bandwidth: '448 GB/s'
 					}
-				});
+				})
 
 			case 'gpu-status':
-				const gpuResponse = await fetch(`${CUDA_SERVER_URL}/api/gpu/status`);
-				const gpuData = await gpuResponse.json();
+				const gpuResponse = await fetch(`${CUDA_SERVER_URL}/api/gpu/status`)
+				const gpuData = await gpuResponse.json()
 				
 				return json({
 					success: true,
 					...gpuData
-				});
+				})
 
-			default:;
+			default:
 				return json({
 					success: true,
 					message: 'CUDA-accelerated Legal AI API',
@@ -252,38 +252,38 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 						max_inference_time_ms: 2000,
 						memory_efficiency: 0.85
 					}
-				});
+				})
 		}
 
 	} catch (error: any) {
-		console.error('CUDA status check failed:', error);
+		console.error('CUDA status check failed:', error)
 		
 		return json({
 			success: false,
 			error: 'Failed to get CUDA server status',
 			details: error.message,
 			cuda_available: false
-		}, { status: 503 });
+		}, { status: 503 })
 	}
-};
+}
 
-// PATCH endpoint for vector search;
+// PATCH endpoint for vector search
 const originalPATCHHandler: RequestHandler = async ({ request }) => {
 	try {
-		const searchRequest: VectorSearchRequest = await request.json();
+		const searchRequest: VectorSearchRequest = await request.json()
 
 		if (!searchRequest.query_vector || !Array.isArray(searchRequest.query_vector)) {
 			return json({
 				success: false,
 				error: 'query_vector array is required'
-			}, { status: 400 });
+			}, { status: 400 })
 		}
 
 		if (searchRequest.query_vector.length !== 768) {
 			return json({
 				success: false,
 				error: 'query_vector must be 768-dimensional for compatibility with nomic-embed-text'
-			}, { status: 400 });
+			}, { status: 400 })
 		}
 
 		const vectorSearchRequest = {
@@ -292,57 +292,57 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 			threshold: searchRequest.threshold || 0.5,
 			legal_domain: searchRequest.legal_domain || 'general',
 			include_metadata: searchRequest.include_metadata ?? true
-		};
+		}
 
 		const response = await fetch(`${CUDA_SERVER_URL}/api/legal/vector-search`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(vectorSearchRequest),
 			signal: AbortSignal.timeout(15000) // Vector search timeout
-		});
+		})
 
 		if (!(response as { ok?: any; json?: any; status?: any }).ok) {
-			throw new Error(`Vector search failed: ${(response as { ok?: any; json?: any; status?: any }).status}`);
+			throw new Error(`Vector search failed: ${(response as { ok?: any; json?: any; status?: any }).status}`)
 		}
 
-		const result = await (response as { ok?: any; json?: any; status?: any }).json();
+		const result = await (response as { ok?: any; json?: any; status?: any }).json()
 		
 		return json({
 			...result,
 			cuda_accelerated: true,
 			vector_dimensions: 768,
 			search_algorithm: 'cuda_optimized_cosine_similarity'
-		});
+		})
 
 	} catch (error: any) {
 		return json({
 			success: false,
 			error: 'CUDA vector search failed',
 			details: error.message
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}
 
-// PUT endpoint for batch inference;
+// PUT endpoint for batch inference
 const originalPUTHandler: RequestHandler = async ({ request }) => {
 	try {
-		const batchRequest: BatchInferenceRequest = await request.json();
+		const batchRequest: BatchInferenceRequest = await request.json()
 
 		if (!batchRequest.queries || !Array.isArray(batchRequest.queries)) {
 			return json({
 				success: false,
 				error: 'queries array is required'
-			}, { status: 400 });
+			}, { status: 400 })
 		}
 
 		if (batchRequest.queries.length > 16) {
 			return json({
 				success: false,
 				error: 'Maximum batch size is 16 queries for RTX 3060 Ti optimization'
-			}, { status: 400 });
+			}, { status: 400 })
 		}
 
-		// Convert to CUDA server format;
+		// Convert to CUDA server format
 		const cudaBatchRequest = batchRequest.queries.map(query => ({
 			query: query.query,
 			max_tokens: query.max_tokens || 2048,
@@ -357,69 +357,69 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 				batch_processing: true,
 				rtx_3060_ti_optimized: true
 			}
-		});
+		})
 
 		const response = await fetch(`${CUDA_SERVER_URL}/api/legal/batch`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(cudaBatchRequest),
 			signal: AbortSignal.timeout(60000) // Extended timeout for batch
-		});
+		})
 
 		if (!(response as { ok?: any; json?: any; status?: any }).ok) {
-			throw new Error(`Batch inference failed: ${(response as { ok?: any; json?: any; status?: any }).status}`);
+			throw new Error(`Batch inference failed: ${(response as { ok?: any; json?: any; status?: any }).status}`)
 		}
 
-		const result = await (response as { ok?: any; json?: any; status?: any }).json();
+		const result = await (response as { ok?: any; json?: any; status?: any }).json()
 		
 		return json({
 			...result,
 			cuda_batch_processing: true,
 			parallel_streams: 8,
 			rtx_3060_ti_optimized: true
-		});
+		})
 
 	} catch (error: any) {
 		return json({
 			success: false,
 			error: 'CUDA batch inference failed',
 			details: error.message
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}
 
-// DELETE endpoint for cleanup and memory optimization;
+// DELETE endpoint for cleanup and memory optimization
 const originalDELETEHandler: RequestHandler = async () => {
 	try {
 		const response = await fetch(`${CUDA_SERVER_URL}/api/gpu/optimize`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ force_cleanup: true })
-		});
+		})
 
 		if (!(response as { ok?: any; json?: any; status?: any }).ok) {
-			throw new Error(`Memory optimization failed: ${(response as { ok?: any; json?: any; status?: any }).status}`);
+			throw new Error(`Memory optimization failed: ${(response as { ok?: any; json?: any; status?: any }).status}`)
 		}
 
-		const result = await (response as { ok?: any; json?: any; status?: any }).json();
+		const result = await (response as { ok?: any; json?: any; status?: any }).json()
 		
 		return json({
 			...result,
 			message: 'GPU memory optimization completed',
 			rtx_3060_ti_memory: '8GB VRAM optimized'
-		});
+		})
 
 	} catch (error: any) {
 		return json({
 			success: false,
 			error: 'Memory optimization failed',
 			details: error.message
-		}, { status: 500 });
+		}, { status: 500 })
 	}
-};
+}
 
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
-export const GET = redisOptimized.aiAnalysis(originalGETHandler);
-export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler);
-export const PUT = redisOptimized.aiAnalysis(originalPUTHandler);
-export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const GET = redisOptimized.aiAnalysis(originalGETHandler)
+export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler)
+export const PUT = redisOptimized.aiAnalysis(originalPUTHandler)
+export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler)

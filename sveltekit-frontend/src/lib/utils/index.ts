@@ -15,7 +15,7 @@ export function cn(...inputs: ClassValue[]): string {
 // ===== NETWORK UTILITIES =====
 
 export async function fetchWithTimeout(
-  resource: RequestInfo | URL,
+  resource: RequestInfo | URL,;
   options: RequestInit & { timeout?: number } = {}
 ): Promise<Response> {
   const { timeout = 8000, ...fetchOptions } = options;
@@ -56,7 +56,7 @@ export function formatDate(date: Date | string): string {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
-    hour: '2-digit',
+    hour: '2-digit',;
     minute: '2-digit'
   });
 }
@@ -76,7 +76,7 @@ export function generateId(): string {
 // ===== PERFORMANCE UTILITIES =====
 
 export function debounce<T extends (...args: any[]) => any>(
-  func: T,
+  func: T,;
   wait: number;
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
@@ -87,7 +87,7 @@ export function debounce<T extends (...args: any[]) => any>(
 }
 
 export function throttle<T extends (...args: any[]) => any>(
-  func: T,
+  func: T,;
   limit: number;
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;

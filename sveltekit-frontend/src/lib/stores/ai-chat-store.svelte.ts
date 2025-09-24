@@ -65,7 +65,7 @@ const defaultPreferences: UserPreferences = {
 // Initialize chat state
 const initialState: ChatState = {
   currentSession: null,
-  sessions: [],
+  sessions: [],;
   preferences: defaultPreferences,
   isLoading: false,
   connectionStatus: 'disconnected',
@@ -106,7 +106,7 @@ const createChatStore = () => {
         title: title || `YoRHa Session ${new Date().toLocaleString()}`,
         messages: [],
         created_at: new Date(),
-        updated_at: new Date(),
+        updated_at: new Date(),;
         tags: ['yorha', 'legal-ai']
       };
 
@@ -146,7 +146,7 @@ const createChatStore = () => {
     addMessage: (message: Omit<ChatMessage, 'id'>): ChatMessage => {
       const fullMessage: ChatMessage = {
         ...message,
-        id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,;
         timestamp: message.timestamp || new Date()
       };
 
@@ -221,7 +221,7 @@ const createChatStore = () => {
             user_id: 'yorha-user',
             session_id: chatState.currentSession?.id || 'default',
             include_vector_search: true,
-            max_tokens: 1000,
+            max_tokens: 1000,;
             temperature: 0.7
           })
         });
@@ -254,7 +254,7 @@ const createChatStore = () => {
         let response: Response;
         try {
           response = await fetch(`${RAG_SERVICE_URL}/health`, {
-            method: 'GET',
+            method: 'GET',;
             timeout: 5000
           } as any);
           if (!response.ok) {
@@ -345,7 +345,7 @@ const createChatStore = () => {
           created_at: s.created_at.toISOString(),
           updated_at: s.updated_at.toISOString(),
           messages: s.messages.map(m => ({
-            ...m,
+            ...m,;
             timestamp: m.timestamp.toISOString()
           }))
         }))));
@@ -379,7 +379,7 @@ const createChatStore = () => {
           created_at: new Date(s.created_at),
           updated_at: new Date(s.updated_at),
           messages: s.messages.map((m: any) => ({
-            ...m,
+            ...m,;
             timestamp: new Date(m.timestamp)
           }))
         }));

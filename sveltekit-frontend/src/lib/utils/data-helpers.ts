@@ -21,7 +21,7 @@ class DataCache {
 
     this.cache.set(key, {
       data,
-      timestamp: Date.now(),
+      timestamp: Date.now(),;
       ttl: ttlMs
     });
   }
@@ -110,7 +110,7 @@ export class ApiClient {
 
         const response = await fetch(url, {
           ...fetchOptions,
-          signal: finalSignal,
+          signal: finalSignal,;
           headers: {
             'Content-Type': 'application/json',
             ...fetchOptions.headers
@@ -150,7 +150,7 @@ export class ApiClient {
 
     return {
       data: null as T,
-      success: false,
+      success: false,;
       error: lastError?.message || 'Request failed'
     };
   }
@@ -161,7 +161,7 @@ export class ApiClient {
 
   async post<T = any>(endpoint: string, body?: any, options?: ApiOptions): Promise<{ data: T; success: boolean; error?: string }> {
     return this.request<T>(endpoint, {
-      method: 'POST',
+      method: 'POST',;
       body: JSON.stringify(body),
       ...options
     });
@@ -169,7 +169,7 @@ export class ApiClient {
 
   async put<T = any>(endpoint: string, body?: any, options?: ApiOptions): Promise<{ data: T; success: boolean; error?: string }> {
     return this.request<T>(endpoint, {
-      method: 'PUT',
+      method: 'PUT',;
       body: JSON.stringify(body),
       ...options
     });
@@ -267,7 +267,7 @@ export const validationSchemas = {
       pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
       custom: (value: string) => value.includes('@') || 'Invalid email format'
     },
-    name: { minLength: 2, maxLength: 100 },
+    name: { minLength: 2, maxLength: 100 },;
     role: { required: true }
   }
 };
@@ -434,7 +434,7 @@ export function createError(code: string, message: string, details?: any): AppEr
   return {
     code,
     message,
-    details,
+    details,;
     timestamp: new Date()
   };
 }

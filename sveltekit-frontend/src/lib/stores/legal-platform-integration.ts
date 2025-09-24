@@ -150,7 +150,7 @@ type PlatformEvent =
 export const legalPlatformMachine = createMachine(
   {
     id: 'legalPlatform',
-    types: {} as {
+    types: {} as {;
       context: PlatformContext;
       events: PlatformEvent;
     },
@@ -344,7 +344,7 @@ export const legalPlatformMachine = createMachine(
       // Load complete case with all linked entities
       loadLegalCase: fromPromise(
         async ({ input }: { input: { caseId: string } }) => {
-          const response = await fetch(`/api/cases/${input.caseId}`, {
+          const response = await fetch(`/api/cases/${input.caseId}`, {;
             headers: { 'Content-Type': 'application/json' }
           });
 
@@ -378,7 +378,7 @@ export const legalPlatformMachine = createMachine(
         async ({ input }: { input: { caseData: Omit<LegalCase, 'id' | 'createdAt' | 'updatedAt'> } }) => {
           const response = await fetch('/api/cases', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify(input.caseData)
           });
 
@@ -395,7 +395,7 @@ export const legalPlatformMachine = createMachine(
         async ({ input }: { input: { caseId: string; entityType: string; entityId: string } }) => {
           const response = await fetch(`/api/cases/${input.caseId}/link`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify({
               entityType: input.entityType,
               entityId: input.entityId
@@ -414,7 +414,7 @@ export const legalPlatformMachine = createMachine(
       analyzeCrossSystemInsights: fromPromise(
         async () => {
           const response = await fetch('/api/platform/insights', {
-            method: 'POST',
+            method: 'POST',;
             headers: { 'Content-Type': 'application/json' }
           });
 
@@ -430,7 +430,7 @@ export const legalPlatformMachine = createMachine(
       syncAllSystems: fromPromise(
         async () => {
           const response = await fetch('/api/platform/sync', {
-            method: 'POST',
+            method: 'POST',;
             headers: { 'Content-Type': 'application/json' }
           });
 
@@ -447,7 +447,7 @@ export const legalPlatformMachine = createMachine(
         async ({ input }: { input: { type: string; entityIds: string[] } }) => {
           const response = await fetch('/api/ai/process', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },;
             body: JSON.stringify({
               taskType: input.type,
               entityIds: input.entityIds
@@ -515,7 +515,7 @@ export const dashboardStore = derived(
       linkedCitations: $platform.context.activeCitations.length,
       linkedReports: $platform.context.activeReports.length,
       linkedPOIs: $platform.context.activePOIs.length,
-      riskScore: $platform.context.currentCase.aiInsights.riskScore,
+      riskScore: $platform.context.currentCase.aiInsights.riskScore,;
       status: $platform.context.currentCase.status
     } : null,
 
@@ -536,7 +536,7 @@ export async function unifiedSearch(query: string, systems: ('citations' | 'repo
     searchPromises.push(
       fetch('/api/citations/search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ query, type: 'citations' })
       }).then(res => res.json()).then(data => ({ type: 'citations', results: data }))
     );
@@ -546,7 +546,7 @@ export async function unifiedSearch(query: string, systems: ('citations' | 'repo
     searchPromises.push(
       fetch('/api/reports/search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ query, type: 'reports' })
       }).then(res => res.json()).then(data => ({ type: 'reports', results: data }))
     );
@@ -556,7 +556,7 @@ export async function unifiedSearch(query: string, systems: ('citations' | 'repo
     searchPromises.push(
       fetch('/api/poi/search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ query, type: 'poi' })
       }).then(res => res.json()).then(data => ({ type: 'poi', results: data }))
     );
@@ -573,7 +573,7 @@ export async function unifiedSearch(query: string, systems: ('citations' | 'repo
 export async function mapEntityRelationships(entityIds: string[], types: string[]) {
   const response = await fetch('/api/platform/relationships', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify({ entityIds, types })
   });
 
@@ -587,7 +587,7 @@ export async function mapEntityRelationships(entityIds: string[], types: string[
 // AI-Powered Case Recommendations
 export async function generateCaseRecommendations(caseId: string) {
   const response = await fetch(`/api/cases/${caseId}/recommendations`, {
-    method: 'POST',
+    method: 'POST',;
     headers: { 'Content-Type': 'application/json' }
   });
 
@@ -602,7 +602,7 @@ export async function generateCaseRecommendations(caseId: string) {
 export async function bulkCrossSystemOperation(operation: string, entities: Array<{ type: string; id: string }>) {
   const response = await fetch('/api/platform/bulk', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },;
     body: JSON.stringify({ operation, entities })
   });
 

@@ -6,18 +6,19 @@
   let systemInfo = $state({
     platform: '',
     gpuInfo: '',
-    memoryUsage: '',
-    services: [],
-    port: 5173
+    memoryUsage: '',;
+    services: [],;
+    port: 5173;
   });
   let performanceMetrics = $state({
-    fps: 0,
-    latency: 0,
+    fps: 0,;
+    latency: 0,;
     throughput: 0,
-    gpuUtilization: 0
+    gpuUtilization: 0;
   });
-  $effect(async () => {
-    // Get system information with port detection
+  $effect(() => {
+    (async () => {
+// Get system information with port detection
     try {
       // Try primary port first
   let port = $state(5173);
@@ -47,6 +48,7 @@
     }
     // Monitor performance metrics
     setInterval(updatePerformanceMetrics, 1000);
+    })();
   });
   async function updatePerformanceMetrics() {
     // Calculate FPS
@@ -157,7 +159,7 @@
 </div>
 
 <style>
-  .gpu-chat-page {
+  .gpu-chat-page {;
     position: relative;
     height: 100vh;
     overflow: hidden;

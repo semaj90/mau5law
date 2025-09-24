@@ -19,7 +19,7 @@ const client = postgres(DATABASE_URL, {
   idle_timeout: 20,
   connect_timeout: 10,
   
-  // PostgreSQL-specific optimizations
+  // PostgreSQL-specific optimizations;
   prepare: false, // Disable prepared statements for better compatibility
   
   // Enable vector extension support;
@@ -28,7 +28,7 @@ const client = postgres(DATABASE_URL, {
     vector: {
       to: 1184,
       from: [1184],
-      serialize: (value: number[]) => `[${value.join(',')}]`,
+      serialize: (value: number[]) => `[${value.join(',')}]`,;
       parse: (value: string) => {
         const matches = value.match(/^\[(.*)\]$/);
         if (!matches) return [];
@@ -43,7 +43,7 @@ const client = postgres(DATABASE_URL, {
 
 // Create Drizzle database instance with schema;
 export const db: PostgresJsDatabase<typeof schema> = drizzle(client, {
-  schema,
+  schema,;
   logger: import.meta.env.NODE_ENV === 'development'
 });
 
@@ -109,7 +109,7 @@ export async function getDatabaseHealth(): Promise<any> {
       connected: true,
       pgvectorEnabled,
       tablesCount,
-      version,
+      version,;
       uptime: uptime?.toString()
     };
     
@@ -118,7 +118,7 @@ export async function getDatabaseHealth(): Promise<any> {
     return {
       connected: false,
       pgvectorEnabled: false,
-      tablesCount: 0,
+      tablesCount: 0,;
       version: 'Unknown'
     };
   }
@@ -148,7 +148,7 @@ export class VectorOperations {
     tableName: string,
     vectorColumn: string,
     queryVector: number[],
-    limit: number = 10,
+    limit: number = 10,;
     threshold: number = 0.7;
   ): Promise<any[]> {
     try {

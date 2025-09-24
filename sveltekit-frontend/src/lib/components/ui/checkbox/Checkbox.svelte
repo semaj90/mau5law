@@ -15,7 +15,7 @@
     name = undefined,
     value = undefined,
     ariaLabel = undefined,
-    class: className = ''
+    class: className = '';
   }: Props = $props();
 </script>
 

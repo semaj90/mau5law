@@ -29,14 +29,16 @@
   let fps = $state(60);
   let frameCount = $state(0);
   let lastTime = $state(0);
-  $effect(async () => {
-    // Initialize WebGPU capability service first
+  $effect(() => {
+    (async () => {
+// Initialize WebGPU capability service first
     await webgpuCapability.initialize();
     await initializeWebGPU();
     if (isInitialized) {
       generateVisualizationData();
       startAnimation();
     }
+    })();
   });
   onDestroy(() => {
     if (animationFrame) {
@@ -59,8 +61,8 @@
       }
       const presentationFormat = navigator.gpu!.getPreferredCanvasFormat();
       context.configure({
-        device: gpu,
-        format: presentationFormat,
+        device: gpu,;
+        format: presentationFormat,;
       });
       isInitialized = true;
       console.log(`🎮 WebGPU visualization initialized successfully (${capabilities.supportLevel} support)`);
@@ -105,10 +107,10 @@
           id: nodeId++,
           x: (layer + 1) * (width / (layers.length + 1)),
           y: (node + 1) * (height / (layers[layer] + 1)),
-          layer,
-          activation: Math.random(),
+          layer,;
+          activation: Math.random(),;
           size: 4 + Math.random() * 8,
-          pulsePhase: Math.random() * Math.PI * 2
+          pulsePhase: Math.random() * Math.PI * 2;
         });
       }
     }
@@ -121,9 +123,9 @@
           if (Math.random() > 0.3) { // 70% connection probability
             connections.push({
               from: current,
-              to: next,
-              weight: Math.random(),
-              active: Math.random() > 0.5
+              to: next,;
+              weight: Math.random(),;
+              active: Math.random() > 0.5;
             });
           }
         }
@@ -140,9 +142,9 @@
         vy: (Math.random() - 0.5) * 2,
         phase: Math.random() * Math.PI * 2,
         frequency: 0.02 + Math.random() * 0.05,
-        amplitude: 5 + Math.random() * 15,
-        quantum: Math.random(),
-        entangled: Math.random() > 0.8
+        amplitude: 5 + Math.random() * 15,;
+        quantum: Math.random(),;
+        entangled: Math.random() > 0.8;
       });
     }
   }
@@ -162,9 +164,9 @@
           y: centerY + Math.sin(angle) * distance,
           cluster,
           awareness: Math.random(),
-          growth: Math.random() * 0.02,
-          connections: Math.floor(Math.random() * 5),
-          luminosity: Math.random()
+          growth: Math.random() * 0.02,;
+          connections: Math.floor(Math.random() * 5),;
+          luminosity: Math.random();
         });
       }
     }
@@ -176,9 +178,9 @@
         x: Math.random() * width,
         y: -Math.random() * height,
         speed: 1 + Math.random() * 3,
-        characters: generateMatrixString(20),
-        opacity: 0.5 + Math.random() * 0.5,
-        width: 12 + Math.random() * 8
+        characters: generateMatrixString(20),;
+        opacity: 0.5 + Math.random() * 0.5,;
+        width: 12 + Math.random() * 8;
       });
     }
   }

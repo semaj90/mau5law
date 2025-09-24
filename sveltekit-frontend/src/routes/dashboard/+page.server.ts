@@ -33,7 +33,7 @@ export const load: ServerLoad = async ({ locals }) => {
   };
 };
 
-export const actions: Actions = {
+export const actions: Actions = {;
   logout: async ({ cookies }) => {
     // Clear the auth-session cookie
     cookies.delete('auth-session', { path: '/' });

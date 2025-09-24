@@ -8,7 +8,7 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { MessageSquare, Brain, Zap, Cpu } from 'lucide-svelte';
 
@@ -30,9 +30,9 @@
   // System status
   let systemStatus = $state({
     webgpu: false,
-    webasm: false,
-    model: false,
-    adapter: false
+    webasm: false,;
+    model: false,;
+    adapter: false;
   });
 
   // Quick prompts
@@ -52,9 +52,9 @@
         const health = webAssemblyAIAdapter.getHealthStatus();
         systemStatus = {
           webgpu: health.webgpuEnabled || false,
-          webasm: health.wasmSupported || false,
-          model: health.modelLoaded || false,
-          adapter: health.initialized || false
+          webasm: health.wasmSupported || false,;
+          model: health.modelLoaded || false,;
+          adapter: health.initialized || false;
         };
         
         isInitialized = true;
@@ -63,9 +63,9 @@
         // Add welcome message
         messages.push({
           id: 'welcome',
-          role: 'assistant',
-          content: 'Hello! I\'m running locally in your browser using WebAssembly and the Gemma 270MB model. Ask me anything about legal AI, compliance, or contract analysis.',
-          timestamp: Date.now()
+          role: 'assistant',;
+          content: 'Hello! I\'m running locally in your browser using WebAssembly and the Gemma 270MB model. Ask me anything about legal AI, compliance, or contract analysis.',;
+          timestamp: Date.now();
         });
       } else {
         throw new Error('Failed to initialize AI adapter');
@@ -82,9 +82,9 @@
     
     const userMessage = {
       id: `user_${Date.now()}`,
-      role: 'user' as const,
-      content: message,
-      timestamp: Date.now()
+      role: 'user' as const,;
+      content: message,;
+      timestamp: Date.now();
     };
     
     messages.push(userMessage);
@@ -100,25 +100,25 @@
       console.log('🚀 Processing:', message);
       
       const response = await webAssemblyAIAdapter.sendMessage.map(msg => ({
-          type: msg.role,
-          content: msg.content,
-          timestamp: msg.timestamp
+          type: msg.role,;
+          content: msg.content,;
+          timestamp: msg.timestamp;
         }))
       });
       
       const assistantMessage = {
         id: `assistant_${Date.now()}`,
-        role: 'assistant' as const,
-        content: response.content,
-        timestamp: Date.now()
+        role: 'assistant' as const,;
+        content: response.content,;
+        timestamp: Date.now();
       };
       
       messages.push(assistantMessage);
       messages = [...messages]; // Trigger reactivity
       
-      console.log('✅ Response generated:', {
+      console.log('✅ Response generated:', {;
         method: response.metadata?.method,
-        processingTime: response.metadata?.processingTime
+        processingTime: response.metadata?.processingTime;
       });
       
     } catch (err) {
@@ -132,9 +132,9 @@
   function clearChat() {
     messages = [{
       id: 'welcome',
-      role: 'assistant',
-      content: 'Chat cleared. How can I help you with legal AI questions?',
-      timestamp: Date.now()
+      role: 'assistant',;
+      content: 'Chat cleared. How can I help you with legal AI questions?',;
+      timestamp: Date.now();
     }];
     error = null;
   }
@@ -306,7 +306,7 @@
 </div>
 
 <style>
-  .client-ai-chat {
+  .client-ai-chat {;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     max-width: 320px;
   }
@@ -320,15 +320,15 @@
     scrollbar-color: #4B5563 transparent;
   }
 
-  .messages-container: :-webkit-scrollbar {
+  .messages-container::-webkit-scrollbar {
     width: 4px;
   }
 
-  .messages-container: :-webkit-scrollbar-track {
+  .messages-container::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .messages-container: :-webkit-scrollbar-thumb {
+  .messages-container::-webkit-scrollbar-thumb {
     background: #4B5563;
     border-radius: 2px;
   }
@@ -394,11 +394,11 @@
     animation: typing 1.4s ease-in-out infinite;
   }
 
-  .typing-indicator span:nth-child(2) {
+  .typing-indicator span:nth-child(2) {;
     animation-delay: 0.2s;
   }
 
-  .typing-indicator span:nth-child(3) {
+  .typing-indicator span:nth-child(3) {;
     animation-delay: 0.4s;
   }
 
@@ -418,7 +418,7 @@
     transition: all 0.2s ease;
   }
 
-  .quick-prompts button:hover:not(:disabled) {
+  .quick-prompts button:hover:not(:disabled) {;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }

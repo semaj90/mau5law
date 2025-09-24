@@ -84,7 +84,7 @@ export async function vectorSearch(
       id: row.id,
       content: row.content,
       metadata: row.metadata,
-      similarity: parseFloat(row.similarity),
+      similarity: parseFloat(row.similarity),;
       score: parseFloat(row.similarity) // Alias for compatibility
     }));
 
@@ -97,7 +97,7 @@ export async function vectorSearch(
       threshold,
       embedding: {
         dimensions: queryEmbedding.length,
-        model: 'gemma',
+        model: 'gemma',;
         format: 'float32'
       }
     };
@@ -143,7 +143,7 @@ export async function getVectorSearchStats() {
  * Batch insert embeddings for multiple documents
  */
 export async function batchInsertEmbeddings(
-  documents: Array<{
+  documents: Array<{;
     id: string;
     content: string;
     embedding: number[];
@@ -203,7 +203,7 @@ export async function optimizeVectorIndex() {
     return {
       success: true,
       indexType: 'ivfflat',
-      lists: 100,
+      lists: 100,;
       operation: 'cosine_similarity'
     };
 
@@ -235,7 +235,7 @@ export async function vectorSearchHealthCheck() {
       healthy: true,
       vectorExtension: info.vector_version || 'not_found',
       extensionLoaded: vectorLoaded,
-      database: 'postgresql',
+      database: 'postgresql',;
       capabilities: [
         'cosine_similarity',
         'euclidean_distance',
@@ -247,7 +247,7 @@ export async function vectorSearchHealthCheck() {
   } catch (error) {
     console.error('Vector health check failed:', error);
     return {
-      healthy: false,
+      healthy: false,;
       error: error instanceof Error ? error.message : 'Unknown error',
       vectorExtension: 'unknown',
       extensionLoaded: false

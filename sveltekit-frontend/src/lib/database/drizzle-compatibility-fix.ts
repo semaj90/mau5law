@@ -42,7 +42,7 @@ export const handleQueryResult = <T>(result: any): T[] => {
         user_id: null,
         message: '',
         content: '',
-        metadata: Record<string, any>,
+        metadata: Record<string, any>,;
         sources: []
       });
       return enhancedRow;
@@ -60,7 +60,7 @@ export const handleQueryResult = <T>(result: any): T[] => {
       user_id: null,
       message: '',
       content: '',
-      metadata: Record<string, any>,
+      metadata: Record<string, any>,;
       sources: []
     });
     return [enhancedResult];
@@ -223,7 +223,7 @@ export const entityEnhancers = {
     document_type: 'document',
     file_path: null,
     metadata: Record<string, any>,
-    user_id: null,
+    user_id: null,;
     status: 'pending',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
@@ -237,7 +237,7 @@ export const entityEnhancers = {
     conversation_id: null,
     user_id: null,
     timestamp: new Date().toISOString(),
-    sources: [],
+    sources: [],;
     metadata: Record<string, any>,
     created_at: new Date().toISOString()
   }),
@@ -250,7 +250,7 @@ export const entityEnhancers = {
     expiresAt: Date.now() + 3600000,
     lastAccessed: Date.now(),
     accessCount: 0,
-    size: 0,
+    size: 0,;
     version: 1
   }),
 
@@ -264,7 +264,7 @@ export const entityEnhancers = {
     status: 'pending',
     started_at: null,
     completed_at: null,
-    error_message: null,
+    error_message: null,;
     metadata: Record<string, any>
   })
 };

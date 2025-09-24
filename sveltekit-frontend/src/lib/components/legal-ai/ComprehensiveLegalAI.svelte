@@ -67,7 +67,7 @@
     recommendationStore.send({
       type: 'START_SESSION',
       userId: 'user_' + Date.now(),
-      caseId
+      caseId;
     });
 
     // Update system stats periodically
@@ -86,9 +86,9 @@
       const simdStatus = simdCache?.getSIMDStatus() || {};
 
       systemStats = {
-        workers: workerStats,
-        cache: cacheStats,
-        simd: simdStatus
+        workers: workerStats,;
+        cache: cacheStats,;
+        simd: simdStatus;
       };
 
       performanceMetrics.workerUtilization = workerStats.totalWorkers > 0
@@ -107,10 +107,10 @@
     try {
       // Start enhanced upload machine
       enhancedUploadStore.send({
-        type: 'UPLOAD_FILES',
+        type: 'UPLOAD_FILES',;
         files: Array.from(selectedFiles),
         caseId,
-        documentType
+        documentType;
       });
 
       // Subscribe to upload progress
@@ -134,7 +134,7 @@
       recommendationStore.send({
         type: 'ANALYZE_DOCUMENT',
         documentId: 'doc_' + Date.now(),
-        documentType
+        documentType;
       });
 
     } catch (error) {
@@ -156,7 +156,7 @@
         // Enhance OCR with worker pool
         const enhancedOCR = await workerPool.processOCR(ocrData, {
           language: 'eng+fra',
-          confidenceThreshold: 0.8
+          confidenceThreshold: 0.8;
         });
 
         processedResults.enhancedOCR = enhancedOCR;
@@ -189,8 +189,8 @@
         document: {
           text: context.results?.extractedText,
           type: documentType,
-          caseId
-        },
+          caseId;
+        },;
         user: { preferences: { priority: 'accuracy' } }
       };
 
@@ -218,10 +218,10 @@
     const testData = {
       legal: {
         case: 'Test vs Example',
-        parties: ['Plaintiff', 'Defendant'],
+        parties: ['Plaintiff', 'Defendant'],;
         evidence: Array.from({ length: 100 }, (_, i) => ({
-          id: i,
-          type: 'document',
+          id: i,;
+          type: 'document',;
           description: `Evidence item ${i} with detailed legal content and metadata`
         }))
       }
@@ -354,7 +354,7 @@
         <div>
           <label class="block text-sm font-medium mb-2">Case ID</label>
           <input
-            type="text"
+            type="text";
             bind:value={caseId}
             class="w-full p-2 border rounded"
             placeholder="Enter case ID"
@@ -561,4 +561,4 @@
       </div>
     </CardContent>
   </Card>
-</div>
+</div>;

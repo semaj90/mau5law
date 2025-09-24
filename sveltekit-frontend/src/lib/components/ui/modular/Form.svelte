@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular Form Component - Bits UI + UnoCSS + Svelte 5 -->
@@ -40,7 +40,7 @@ https://svelte.dev/e/js_parse_error -->
     target,
     novalidate = false,
     autocomplete = 'on',
-    ...restProps
+    ...restProps;
   }: Props = $props();
 
   // UnoCSS-based form variants
@@ -55,17 +55,17 @@ https://svelte.dev/e/js_parse_error -->
           inline: 'flex items-center gap-4 space-y-0',
           modal: 'space-y-6 p-8',
           yorha: 'space-y-6 p-6 bg-black/90 border-2 border-yellow-400/60 rounded-none font-mono text-yellow-400',
-          legal: 'space-y-4 p-6 bg-blue-50 border-2 border-blue-200 rounded-lg dark:bg-blue-950 dark:border-blue-800'
+          legal: 'space-y-4 p-6 bg-blue-50 border-2 border-blue-200 rounded-lg dark:bg-blue-950 dark:border-blue-800';
         },
         size: {
           sm: 'text-sm space-y-3',
           default: 'text-sm space-y-4',
-          lg: 'text-base space-y-6'
+          lg: 'text-base space-y-6';
         }
       },
       defaultVariants: {
-        variant: 'default',
-        size: 'default'
+        variant: 'default',;
+        size: 'default';
       }
     }
   );
@@ -117,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
     color: rgb(212, 175, 55);
     font-family: 'JetBrains Mono', monospace;
   }
-:global(.yorha-form input:focus), :global(.yorha-form textarea:focus), :global(.yorha-form select:focus) {
+:global(.yorha-form input:focus), :global(.yorha-form textarea:focus), :global(.yorha-form select:focus) {;
     border-color: rgb(212, 175, 55);
     box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
   }
@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
     color: rgb(29, 78, 216);
     font-weight: 600;
   }
-:global(.legal-form input[required] + label::after), :global(.legal-form textarea[required] + label::after), :global(.legal-form select[required] + label::after) {
+:global(.legal-form input[required] + label::after), :global(.legal-form textarea[required] + label::after), :global(.legal-form select[required] + label::after) {;
     content: ' *';
     color: rgb(239, 68, 68);
   }

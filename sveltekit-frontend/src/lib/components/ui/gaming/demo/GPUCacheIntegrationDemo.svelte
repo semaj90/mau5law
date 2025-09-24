@@ -76,10 +76,10 @@
         // Simulate cache hits/misses
         if (Math.random() > 0.3) {
           cacheActor.send({ 
-            type: 'CACHE_HIT', 
+            type: 'CACHE_HIT', ;
             result: { demo: true }, 
-            source: 'indexeddb_cache',
-            latency: Math.random() * 50 + 10
+            source: 'indexeddb_cache',;
+            latency: Math.random() * 50 + 10;
           });
         } else {
           cacheActor.send({ type: 'CACHE_MISS', queryHash: `hash-${Date.now()}` });
@@ -88,7 +88,7 @@
         // Update NES memory visualization
         nesMemoryBanks = nesMemoryBanks.map(bank => ({
           ...bank,
-          utilization: Math.min(100, Math.max(10, bank.utilization + (Math.random() - 0.5) * 10))
+          utilization: Math.min(100, Math.max(10, bank.utilization + (Math.random() - 0.5) * 10));
         }));
       }, 2000);
 

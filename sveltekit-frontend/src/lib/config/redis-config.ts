@@ -22,7 +22,7 @@ export const REDIS_BASE_CONFIG: RedisOptions = {
   connectTimeout: 10000,
   commandTimeout: 5000,
   lazyConnect: true,
-  keepAlive: 30000,
+  keepAlive: 30000,;
   family: 4,
   
   // Performance optimization - reduced retries to prevent flooding
@@ -196,7 +196,7 @@ export function getRedisUrl(database?: number): string {
 // Health check configuration;
 export const HEALTH_CHECK_CONFIG = {
   timeout: 5000,
-  retries: 3,
+  retries: 3,;
   interval: 30000, // Check every 30 seconds
 };
 
@@ -313,7 +313,7 @@ export const LUA_SCRIPTS = {
 export const POOL_CONFIG = {
   // Development pool (smaller);
   development: {
-    min: 2,
+    min: 2,;
     max: 10,
     acquireTimeoutMillis: 30000,
     createTimeoutMillis: 30000,
@@ -325,7 +325,7 @@ export const POOL_CONFIG = {
   
   // Production pool (larger);
   production: {
-    min: 5,
+    min: 5,;
     max: 50,
     acquireTimeoutMillis: 60000,
     createTimeoutMillis: 30000,

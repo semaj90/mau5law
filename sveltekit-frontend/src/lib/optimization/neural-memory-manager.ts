@@ -108,7 +108,7 @@ export class NeuralMemoryManager extends EventEmitter {
       memoryLimit: 512,
       quality: 0.3,
       compressionRatio: 0.3,
-      cacheSize: 128,
+      cacheSize: 128,;
       features: {
         webAssembly: false,
         vectorProcessing: false,
@@ -176,7 +176,7 @@ export class NeuralMemoryManager extends EventEmitter {
       },
       {
         id: "emergency_pool",
-        type: "emergency" as const,
+        type: "emergency" as const,;
         size: this.currentLOD.memoryLimit * 0.1,
         resourceType: "cache" as const
       }
@@ -187,7 +187,7 @@ export class NeuralMemoryManager extends EventEmitter {
         id: config.id,
         size: config.size,
         used: 0,
-        type: config.type,
+        type: config.type,;
         priority: config.type === "high" ? 3 : config.type === "medium" ? 2 : 1,
         lastAccessed: Date.now(),
         resourceType: config.resourceType
@@ -231,7 +231,7 @@ export class NeuralMemoryManager extends EventEmitter {
 
     this.usageHistory.push({
       timestamp: Date.now(),
-      memory: totalUsed,
+      memory: totalUsed,;
       operations: operationsCount
     });
 
@@ -245,7 +245,7 @@ export class NeuralMemoryManager extends EventEmitter {
     if (memoryPressure > 0.8) {
       this.emit("memory_pressure", {
         level: memoryPressure,
-        used: totalUsed,
+        used: totalUsed,;
         limit: this.currentLOD.memoryLimit
       });
     }
@@ -270,7 +270,7 @@ export class NeuralMemoryManager extends EventEmitter {
     clusters.forEach((cluster, index) => {
       const clusterKey = `memory_cluster_${index}`;
       this.clusters.set(clusterKey, {
-        centroid: cluster.centroid,
+        centroid: cluster.centroid,;
         documents: cluster.points.map((p) => p.toString()),
         memoryFootprint: cluster.centroid[0],
         accessFrequency: cluster.points.length,
@@ -288,7 +288,7 @@ export class NeuralMemoryManager extends EventEmitter {
    * K-means clustering implementation
    */
   private async kMeansCluster(
-    points: number[][],
+    points: number[][],;
     k: number;
   ): Promise<Array<any> {
     const dimensions = points[0].length;
@@ -298,7 +298,7 @@ export class NeuralMemoryManager extends EventEmitter {
 
     for (let iteration = 0; iteration < 20; iteration++) {
       const clusters = Array.from({ length: k }, () => ({
-        centroid: [] as number[],
+        centroid: [] as number[],;
         points: [] as number[][]
       });
 
@@ -342,7 +342,7 @@ export class NeuralMemoryManager extends EventEmitter {
     }
 
     return Array.from({ length: k }, (_, i) => ({
-      centroid: centroids[i],
+      centroid: centroids[i],;
       points: points.filter((point) => {
         let minDistance = Infinity;
         let closestCluster = 0;
@@ -405,7 +405,7 @@ export class NeuralMemoryManager extends EventEmitter {
         expectedUsage: this.getCurrentMemoryUsage(),
         confidence: 0.1,
         timeHorizon: timeHorizonMinutes,
-        recommendations: ["Insufficient data for prediction"],
+        recommendations: ["Insufficient data for prediction"],;
         optimizations: []
       };
     }
@@ -508,7 +508,7 @@ export class NeuralMemoryManager extends EventEmitter {
       lodLevel: this.currentLOD,
       poolUtilization,
       clusterCount: this.clusters.size,
-      predictions: await this.predictMemoryUsage(),
+      predictions: await this.predictMemoryUsage(),;
       recommendations: this.generateSystemRecommendations()
     };
   }
@@ -580,7 +580,7 @@ export class NeuralMemoryManager extends EventEmitter {
 
   private backwardPass(
     input: number[],
-    prediction: number[],
+    prediction: number[],;
     target: number[];
   ): void {
     // Simplified backpropagation - in real implementation would need proper gradient calculation
@@ -642,7 +642,7 @@ export class NeuralMemoryManager extends EventEmitter {
         estimatedSavings: expectedUsage * 0.2
       },
       {
-        type: "cluster" as const,
+        type: "cluster" as const,;
         priority: 2,
         estimatedSavings: expectedUsage * 0.1
       }

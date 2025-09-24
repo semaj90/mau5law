@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa System Dashboard -->
@@ -34,7 +34,7 @@ https://svelte.dev/e/js_parse_error -->
     cpuHistory: [] as number[],
     memoryHistory: [] as number[],
     networkHistory: [] as number[],
-    timestamp: Date.now()
+    timestamp: Date.now();
   });
 
   let isLoading = $state(!data.initialLoad);
@@ -71,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
         cpuHistory: generateHistoryData(systemMetrics.backend.cpuUsage),
         memoryHistory: generateHistoryData(systemMetrics.backend.memoryUsage),
         networkHistory: generateHistoryData(systemMetrics.database.latency),
-        timestamp: Date.now()
+        timestamp: Date.now();
       };
 
       isLoading = false;
@@ -84,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
         cpuHistory: generateHistoryData(45),
         memoryHistory: generateHistoryData(62),
         networkHistory: generateHistoryData(23),
-        timestamp: Date.now()
+        timestamp: Date.now();
       };
       isLoading = false;
     }
@@ -107,9 +107,9 @@ https://svelte.dev/e/js_parse_error -->
             memoryUsage: Math.max(30, Math.min(85, systemMetrics.backend.memoryUsage + (Math.random() - 0.5) * 8))
           },
           database: {
-            ...systemMetrics.database,
+            ...systemMetrics.database,;
             latency: Math.max(10, Math.min(100, systemMetrics.database.latency + (Math.random() - 0.5) * 5)),
-            queryCount: systemMetrics.database.queryCount + Math.floor(Math.random() * 5)
+            queryCount: systemMetrics.database.queryCount + Math.floor(Math.random() * 5);
           }
         };
         lastUpdate = new Date();
@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
         cpuHistory: [...realtimeData.cpuHistory.slice(-29), systemMetrics.backend.cpuUsage],
         memoryHistory: [...realtimeData.memoryHistory.slice(-29), systemMetrics.backend.memoryUsage],
         networkHistory: [...realtimeData.networkHistory.slice(-29), systemMetrics.database.latency],
-        timestamp: Date.now()
+        timestamp: Date.now();
       };
     }, 2000);
   }
@@ -140,15 +140,15 @@ https://svelte.dev/e/js_parse_error -->
         connected: true,
         latency: 23,
         activeConnections: 12,
-        queryCount: 15847
+        queryCount: 15847;
       },
       backend: {
         healthy: true,
         uptime: 98.7,
         activeServices: 8,
         cpuUsage: 45,
-        memoryUsage: 62
-      },
+        memoryUsage: 62;
+      },;
       frontend: {
         renderFPS: 60,
         componentCount: 127,
@@ -164,34 +164,34 @@ https://svelte.dev/e/js_parse_error -->
         {
           id: 'postgres',
           type: 'database',
-          label: 'PostgreSQL',
+          label: 'PostgreSQL',;
           position: { x: 0, y: 0, z: 0 },
           metrics: { connections: 12, queries: 15847 },
-          status: 'healthy'
+          status: 'healthy';
         },
         {
           id: 'redis',
           type: 'database',
-          label: 'Redis',
+          label: 'Redis',;
           position: { x: 1, y: 0, z: 0 },
           metrics: { memory: '2.1GB', keys: 45823 },
-          status: 'healthy'
+          status: 'healthy';
         },
         {
           id: 'ollama',
           type: 'service',
-          label: 'Ollama AI',
+          label: 'Ollama AI',;
           position: { x: 0, y: 1, z: 0 },
           metrics: { models: 3, requests: 1847 },
-          status: 'healthy'
+          status: 'healthy';
         },
         {
           id: 'sveltekit',
           type: 'component',
-          label: 'SvelteKit',
+          label: 'SvelteKit',;
           position: { x: 1, y: 1, z: 0 },
           metrics: { components: 127, fps: 60 },
-          status: 'healthy'
+          status: 'healthy';
         }
       ],
       edges: [
@@ -200,21 +200,21 @@ https://svelte.dev/e/js_parse_error -->
           to: 'postgres',
           type: 'api',
           traffic: 85,
-          latency: 23
+          latency: 23;
         },
         {
           from: 'sveltekit',
           to: 'redis',
           type: 'api',
           traffic: 65,
-          latency: 12
+          latency: 12;
         },
         {
           from: 'postgres',
           to: 'ollama',
-          type: 'data',
-          traffic: 45,
-          latency: 34
+          type: 'data',;
+          traffic: 45,;
+          latency: 34;
         }
       ]
     };

@@ -7,7 +7,7 @@ export const cases = writable<any[]>([]);
 // Search and filter state
 export const caseSearch = writable("");
 export const caseFilters = writable({
-  status: "",
+  status: "",;
   priority: "",
   dateRange: { start: "", end: "" }
 });

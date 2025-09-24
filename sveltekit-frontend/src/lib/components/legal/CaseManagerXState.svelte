@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 /// <reference types="vite/client" />
@@ -61,20 +61,20 @@ https://svelte.dev/e/js_parse_error -->
 
     // Update form data first, then create case
     send({
-      type: 'UPDATE_CASE_FORM',
+      type: 'UPDATE_CASE_FORM',;
       data: {
-        title: newCaseTitle,
+        title: newCaseTitle,;
         description: newCaseDescription,
-        caseNumber: newCaseNumber,
-        status: 'active'
+        caseNumber: newCaseNumber,;
+        status: 'active';
       }
     });
 
     send({ type: 'CREATE_CASE', caseData: {
-      title: newCaseTitle,
+      title: newCaseTitle,;
       description: newCaseDescription,
-      caseNumber: newCaseNumber,
-      status: 'active'
+      caseNumber: newCaseNumber,;
+      status: 'active';
     }});
 
     // Clear form
@@ -178,7 +178,7 @@ Dismiss
             <label for="case-number" class="block text-sm font-medium mb-2">Case Number</label>
             <input
               id="case-number"
-              type="text"
+              type="text";
               bind:value={newCaseNumber}
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter case number..."
@@ -188,7 +188,7 @@ Dismiss
           <div>
             <label for="case-description" class="block text-sm font-medium mb-2">Description</label>
             <textarea
-              id="case-description"
+              id="case-description";
               bind:value={newCaseDescription}
               rows="4"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -297,7 +297,7 @@ Create Case
                 <h3 class="text-lg font-semibold mb-4">Upload Evidence</h3>
                 <input
                   type="file"
-                  multiple
+                  multiple;
                   bind:this={fileInput} onchange={onFileChange}
                   class="hidden"
                 />
@@ -435,7 +435,7 @@ Search
 </div>
 
 <style>
-  .case-manager-xstate {
+  .case-manager-xstate {;
     min-height: 100vh;
   }
   

@@ -57,7 +57,7 @@ class XStateStoreManager {
   private constructor(config: XStateStoreConfig = {}) {
     this.config = {
       persist: true,
-      persistKey: 'legal-ai-state',
+      persistKey: 'legal-ai-state',;
       devtools: browser && import.meta.env.NODE_ENV === 'development',
       logTransitions: browser && import.meta.env.NODE_ENV === 'development',
       syncAcrossTabs: true,
@@ -132,7 +132,7 @@ class XStateStoreManager {
     // Create app actor with persistence;
     this.appActor = createActor(appMachine, {
       snapshot: persistedState?.appState,
-      // Add devtools inspection
+      // Add devtools inspection;
       inspect: this.config.devtools ? this.createDevtoolsInspector('app') : undefined
     });
 
@@ -149,7 +149,7 @@ class XStateStoreManager {
         // Broadcast to other tabs;
         if (this.syncChannel) {
           this.syncChannel.postMessage({
-            type: 'app-state-change',
+            type: 'app-state-change',;
             state: state
           });
         }
@@ -198,7 +198,7 @@ class XStateStoreManager {
     
     // Create legal case actor;
     this.legalCaseActor = createActor(legalCaseMachine, {
-      snapshot: persistedState?.legalCaseState,
+      snapshot: persistedState?.legalCaseState,;
       inspect: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined
     });
 
@@ -215,7 +215,7 @@ class XStateStoreManager {
         // Broadcast to other tabs;
         if (this.syncChannel) {
           this.syncChannel.postMessage({
-            type: 'legal-case-state-change',
+            type: 'legal-case-state-change',;
             state: state
           });
         }
@@ -277,7 +277,7 @@ class XStateStoreManager {
       websocketStatus: derived(appStore, ($app) => appSelectors.getWebSocketStatus($app)),
       
       // Navigation
-      currentRoute: derived(appStore, ($app) => appSelectors.getCurrentRoute($app)),
+      currentRoute: derived(appStore, ($app) => appSelectors.getCurrentRoute($app)),;
       breadcrumbs: derived(appStore, ($app) => appSelectors.getBreadcrumbs($app)
     };
   }
@@ -300,7 +300,7 @@ class XStateStoreManager {
         
         info: (title: string, message: string) => 
           appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'info', title, message } }),
-        
+        ;
         dismiss: (id: string) => 
           appSend({ type: 'DISMISS_NOTIFICATION', id })
       },
@@ -322,7 +322,7 @@ class XStateStoreManager {
       // Error helpers;
       error: {
         set: (error: AppContext['error']) => appSend({ type: 'SET_ERROR', error }),
-        clear: () => appSend({ type: 'CLEAR_ERROR' }),
+        clear: () => appSend({ type: 'CLEAR_ERROR' }),;
         retry: () => appSend({ type: 'RETRY_FAILED_ACTION' })
       },
 
@@ -332,14 +332,14 @@ class XStateStoreManager {
         stop: () => appSend({ type: 'GLOBAL_LOADING_COMPLETE' })
       },
 
-      // Navigation helpers
+      // Navigation helpers;
       navigate: (path: string, title?: string) => 
         appSend({ type: 'NAVIGATE', path, title }),
 
       // Settings helpers;
       }); const settings = {
         update: (settings: Partial<AppContext['settings']>) => 
-          appSend({ type: 'UPDATE_SETTINGS', settings }),
+          appSend({ type: 'UPDATE_SETTINGS', settings }),;
         reset: () => appSend({ type: 'RESET_SETTINGS' })
       }
     };
@@ -351,7 +351,7 @@ class XStateStoreManager {
     return (inspectionEvent: any) => {
       if (typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION__) {
         const devtools = (window as any).__REDUX_DEVTOOLS_EXTENSION__.connect({
-          name: `XState: ${machineId}`,
+          name: `XState: ${machineId}`,;
           trace: true
         });
 
@@ -373,7 +373,7 @@ class XStateStoreManager {
     try {
       const state: StoreState = {
         appState: this.appActor?.getSnapshot(),
-        legalCaseState: this.legalCaseActor?.getSnapshot(),
+        legalCaseState: this.legalCaseActor?.getSnapshot(),;
         timestamp: Date.now()
       };
 
@@ -426,7 +426,7 @@ class XStateStoreManager {
           if (entry.entryType === 'navigation') {
             const navEntry = entry as PerformanceNavigationTiming;
             this.appActor?.send({
-              type: 'UPDATE_PERFORMANCE_METRICS',
+              type: 'UPDATE_PERFORMANCE_METRICS',;
               metrics: {
                 pageLoadTime: navEntry.loadEventEnd - navEntry.loadEventStart
               }
@@ -442,7 +442,7 @@ class XStateStoreManager {
         setInterval(() => {
           const memory = (performance as any).memory;
           this.appActor?.send({
-            type: 'UPDATE_PERFORMANCE_METRICS',
+            type: 'UPDATE_PERFORMANCE_METRICS',;
             metrics: {
               memoryUsage: memory.usedJSHeapSize
             }

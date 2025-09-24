@@ -16,16 +16,16 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
-import { json } from '@sveltejs/kit';
-import { URL } from "url";
+import { json } from '@sveltejs/kit'
+import { URL } from "url"
 
-import { ContextService } from "$lib/services/context-service";
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { ContextService } from "$lib/services/context-service"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 
 
 // Environment variables fallback
-const env = process.env || {};
+const env = process.env || {}
 
 /*
  * AI Context API Server
@@ -33,23 +33,23 @@ const env = process.env || {};
  * Integrates with enhanced legal AI index and documentation system
  *
  * @type {import('./$types').RequestHandler}
- */;
+ */
 export async function GET({ url }): Promise<any> {
   try {
     // Get query parameters for context filtering
-    const contextType = url.searchParams.get("type") || "legal";
-    const includeDocumentation = url.searchParams.get("docs") === "true";
-    const includeCaseData = url.searchParams.get("cases") === "true";
+    const contextType = url.searchParams.get("type") || "legal"
+    const includeDocumentation = url.searchParams.get("docs") === "true"
+    const includeCaseData = url.searchParams.get("cases") === "true"
 
     // Get current application context
-    const currentContext = await ContextService.getCurrentContext();
+    const currentContext = await ContextService.getCurrentContext()
 
-    // Enhanced context for Gemma3 Legal LLM;
+    // Enhanced context for Gemma3 Legal LLM
     const enhancedContext: any = {
       // Core application context
       application: currentContext,
 
-      // AI Model configuration;
+      // AI Model configuration
       aiModel: {
         name: "gemma3-legal",
         endpoint: env.OLLAMA_URL || "http://ollama:11434",
@@ -69,7 +69,7 @@ export async function GET({ url }): Promise<any> {
         }
       },
 
-      // System architecture context;
+      // System architecture context
       architecture: {
         frontend: "SvelteKit 2 with Svelte 5 runes",
         backend: "Drizzle ORM + PostgreSQL",
@@ -79,7 +79,7 @@ export async function GET({ url }): Promise<any> {
         messaging: "RabbitMQ"
       },
 
-      // Development guidelines;
+      // Development guidelines
       guidelines: {
         svelte: {
           runesRequired: true,
@@ -94,18 +94,18 @@ export async function GET({ url }): Promise<any> {
           fallbackChain: ["gemma3-legal", "gemma3:12b", "mock"]
         }
       }
-    };
+    }
 
-    // Add documentation context if requested;
+    // Add documentation context if requested
     if (includeDocumentation) {
       enhancedContext.documentation = {
         copilotContext: "Enhanced Legal AI Index with Context7 MCP",
         claudeContext: "Comprehensive legal AI system documentation",
         errorResolution: "SvelteKit troubleshooting and best practices"
-      };
+      }
     }
 
-    // Add case-specific context if requested;
+    // Add case-specific context if requested
     if (includeCaseData && contextType === "legal") {
       enhancedContext.legalDomain = {
         focus: "prosecutor_case_management",
@@ -117,7 +117,7 @@ export async function GET({ url }): Promise<any> {
           "compliance_verification"
         ],
         aiPromptTemplate: "specialized_legal_assistant_prompt"
-      };
+      }
     }
 
     return json({
@@ -125,45 +125,45 @@ export async function GET({ url }): Promise<any> {
       context: enhancedContext,
       timestamp: new Date().toISOString(),
       version: "1.0.0"
-    });
+    })
   } catch (error: any) {
-    console.error("Context API error:", error);
+    console.error("Context API error:", error)
     return json({
         success: false,
         error: "Failed to retrieve AI context",
         message: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
-    );
+    )
   }
 }
 
 /*
  * POST endpoint for updating context with AI interactions
- */;
+ */
 export async function POST({ request }): Promise<any> {
   try {
-    const { contextUpdate, interactionType } = await request.json();
+    const { contextUpdate, interactionType } = await request.json()
 
-    // Update context based on AI interaction;
+    // Update context based on AI interaction
     if (interactionType === "chat_message") {
-      await ContextService.updateChatContext(contextUpdate);
+      await ContextService.updateChatContext(contextUpdate)
     } else if (interactionType === "case_analysis") {
-      await ContextService.updateCaseContext(contextUpdate);
+      await ContextService.updateCaseContext(contextUpdate)
     }
 
     return json({
       success: true,
       message: "Context updated successfully"
-    });
+    })
   } catch (error: any) {
-    console.error("Context update error:", error);
+    console.error("Context update error:", error)
     return json({
         success: false,
         error: "Failed to update context"
       },)
       { status: 500 },
-    );
+    )
   }
 }
 

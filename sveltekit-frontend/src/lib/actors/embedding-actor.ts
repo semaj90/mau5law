@@ -49,7 +49,7 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(async
       // Validate input;
       if (!input.text || input.text.trim().length === 0) {
         throw {
-          message: 'Text input cannot be empty',
+          message: 'Text input cannot be empty',;
           code: 'INVALID_INPUT'
         } as EmbeddingError;
       }
@@ -64,7 +64,7 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(async
 
       if (!embedding || embedding.length === 0) {
         throw {
-          message: 'Failed to generate embedding - empty result',
+          message: 'Failed to generate embedding - empty result',;
           code: 'MODEL_ERROR'
         } as EmbeddingError;
       }
@@ -73,7 +73,7 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(async
 
       return {
         embedding,
-        dimension: embedding.length,
+        dimension: embedding.length,;
         model: 'nomic-embed-text', // Default embedding model;
         metadata: {
           textLength: input.text.length,
@@ -81,7 +81,7 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(async
           caseId: input.context?.caseId,
           evidenceId: input.context?.evidenceId,
           documentType: input.context?.documentType,
-          priority: input.context?.priority,
+          priority: input.context?.priority,;
           timestamp: new Date()
         }
       };
@@ -94,7 +94,7 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(async
       if (error.message?.includes('fetch')) {
         throw {
           message: 'Ollama service unavailable',
-          code: 'OLLAMA_UNAVAILABLE',
+          code: 'OLLAMA_UNAVAILABLE',;
           details: error
         } as EmbeddingError;
       }
@@ -102,14 +102,14 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(async
       if (error.message?.includes('timeout')) {
         throw {
           message: 'Embedding generation timed out',
-          code: 'TIMEOUT',
+          code: 'TIMEOUT',;
           details: error
         } as EmbeddingError;
       }
 
       throw {
         message: `Embedding generation failed: ${error.message || 'Unknown error'}`,
-        code: 'MODEL_ERROR',
+        code: 'MODEL_ERROR',;
         details: error
       } as EmbeddingError;
     }
@@ -143,7 +143,7 @@ export const batchEmbeddingActor = fromPromise<EmbeddingOutput[], EmbeddingInput
     } catch (error: any) {
       throw {
         message: `Batch embedding failed: ${error.message || 'Unknown error'}`,
-        code: 'MODEL_ERROR',
+        code: 'MODEL_ERROR',;
         details: error
       } as EmbeddingError;
     }
@@ -184,7 +184,7 @@ export async function generateLegalDocumentEmbedding(
     context: {
       caseId,
       evidenceId,
-      documentType,
+      documentType,;
       priority: 'high' // Legal documents are high priority
     }
   });

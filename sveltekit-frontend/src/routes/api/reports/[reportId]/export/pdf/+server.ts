@@ -1,35 +1,35 @@
-import { reports } from '$lib/server/db/schema-postgres';
-import { db } from '$lib/server/db/index';
-import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
+import { reports } from '$lib/server/db/schema-postgres'
+import { db } from '$lib/server/db/index'
+import { eq } from 'drizzle-orm'
+import type { RequestHandler } from './$types.js'
 
 
 export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals.user) {
-      return json({ error: "Not authenticated" }, { status: 401 });
+      return json({ error: "Not authenticated" }, { status: 401 })
     }
     if (!db) {
-      return json({ error: "Database not available" }, { status: 500 });
+      return json({ error: "Database not available" }, { status: 500 })
     }
-    const reportId = params.reportId;
+    const reportId = params.reportId
     if (!reportId) {
-      return json({ error: "Report ID is required" }, { status: 400 });
+      return json({ error: "Report ID is required" }, { status: 400 })
     }
     // Check if report exists
     const reportResult = await db
       .select()
       .from(reports)
       .where(eq(reports.id, reportId)
-      .limit(1);
+      .limit(1)
 
     if (!reportResult.length) {
-      return json({ error: "Report not found" }, { status: 404 });
+      return json({ error: "Report not found" }, { status: 404 })
     }
-    const report = reportResult[0];
-    const data = await request.json();
+    const report = reportResult[0]
+    const data = await request.json()
 
-    // PDF export options;
+    // PDF export options
     const exportOptions = {
       format: data.format || "legal-brief",
       includeMetadata: data.includeMetadata || true,
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       watermark: data.watermark || "",
       orientation: data.orientation || "portrait",
       margins: data.margins || { top: 1, right: 1, bottom: 1, left: 1 }
-    };
+    }
 
     // For now, return a success response indicating PDF would be generated
     // In a real implementation, this would:
@@ -56,16 +56,16 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       estimatedPages: 10, // Rough estimate
       fileSize: "~2.5MB", // Placeholder
       downloadUrl: `/api/reports/${reportId}/export/pdf/download?token=${Date.now()}`, // Placeholder URL
-    };
+    }
 
     return json({
       success: true,
       message: "PDF export initiated successfully",
       metadata: pdfMetadata,
       note: "This is a mock response. In production, actual PDF generation would occur here."
-    });
+    })
   } catch (error: any) {
-    console.error("Error initiating PDF export:", error);
-    return json({ error: "Failed to initiate PDF export" }, { status: 500 });
+    console.error("Error initiating PDF export:", error)
+    return json({ error: "Failed to initiate PDF export" }, { status: 500 })
   }
-};
+}

@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { glyphDiffusionService, type GlyphRequest } from '$lib/services/glyph-diffusion-service.js';
-import { PNGEmbedExtractor, type LegalAIMetadata } from '$lib/services/png-embed-extractor.js';
-import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { glyphDiffusionService, type GlyphRequest } from '$lib/services/glyph-diffusion-service.js'
+import { PNGEmbedExtractor, type LegalAIMetadata } from '$lib/services/png-embed-extractor.js'
+import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations.js'
 
 /*
  * Glyph Generation API
@@ -13,14 +13,14 @@ import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/ve
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json();
-    const startTime = Date.now();
+    const body = await request.json()
+    const startTime = Date.now()
     
     // Extract GRPMO context if provided
-    const grpmoContext = body.grpmo_context;
-    const hasExtendedThinking = !!grpmoContext;
+    const grpmoContext = body.grpmo_context
+    const hasExtendedThinking = !!grpmoContext
 
-    // Validate request;
+    // Validate request
     const glyphRequest: GlyphRequest = {
       evidence_id: body.evidence_id,
       prompt: body.prompt || 'Legal evidence visualization',
@@ -29,39 +29,39 @@ export const POST: RequestHandler = async ({ request }) => {
       seed: body.seed,
       conditioning_tensors: body.conditioning_tensors,
       neural_sprite_config: body.neural_sprite_config
-    };
+    }
 
-    // Validate required fields;
+    // Validate required fields
     if (!glyphRequest.evidence_id || !glyphRequest.prompt) {
       return json({
         success: false,
         error: 'evidence_id and prompt are required'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Validate style
-    const validStyles = ['detective', 'corporate', 'forensic', 'legal'];
+    const validStyles = ['detective', 'corporate', 'forensic', 'legal']
     if (!validStyles.includes(glyphRequest.style)) {
       return json({
         success: false,
         error: `Invalid style. Must be one of: ${validStyles.join(', ')}`
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
-    // Validate dimensions;
+    // Validate dimensions
     if (!Array.isArray(glyphRequest.dimensions) || glyphRequest.dimensions.length !== 2) {
       return json({
         success: false,
         error: 'dimensions must be [width, height] array'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
-    const [width, height] = glyphRequest.dimensions;
+    const [width, height] = glyphRequest.dimensions
     if (width < 64 || width > 2048 || height < 64 || height > 2048) {
       return json({
         success: false,
         error: 'dimensions must be between 64x64 and 2048x2048'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     console.log(`🎨 Generating ${hasExtendedThinking ? 'GRPMO-enhanced' : 'standard'} glyph for evidence ${glyphRequest.evidence_id}:`, {
@@ -69,16 +69,16 @@ export const POST: RequestHandler = async ({ request }) => {
       style: glyphRequest.style,
       dimensions: glyphRequest.dimensions,
       grpmo_enabled: hasExtendedThinking
-    });
+    })
 
-    let result: any;
-    let grpmoMetadata: any = null;
+    let result: any
+    let grpmoMetadata: any = null
     
     if (hasExtendedThinking && grpmoContext) {
       // GRPMO-Enhanced generation with extended thinking
-      console.log('🧠 Processing with GRPMO Extended Thinking...');
+      console.log('🧠 Processing with GRPMO Extended Thinking...')
       
-      // Use GRPMO context to enhance the generation;
+      // Use GRPMO context to enhance the generation
       const enhancedRequest = {
         ...glyphRequest,
         prompt: enhancePromptWithGRPMO(glyphRequest.prompt, grpmoContext),
@@ -86,12 +86,12 @@ export const POST: RequestHandler = async ({ request }) => {
           ...glyphRequest.conditioning_tensors || [],
           ...extractConditioningFromGRPMO(grpmoContext)
         ]
-      };
+      }
       
       // Generate with enhanced context
-      result = await glyphDiffusionService.generateGlyph(enhancedRequest);
+      result = await glyphDiffusionService.generateGlyph(enhancedRequest)
       
-      // Compile GRPMO metadata;
+      // Compile GRPMO metadata
       grpmoMetadata = {
         extended_thinking_enabled: true,
         thinking_stages: grpmoContext.thinking_stages || [],
@@ -100,28 +100,28 @@ export const POST: RequestHandler = async ({ request }) => {
         glyph_embedding_dimensions: grpmoContext.glyph_embedding?.length || 0,
         enhancement_applied: true,
         context_integration_time_ms: Date.now() - startTime
-      };
+      }
       
-      console.log(`🧠 GRPMO context applied: ${grpmoMetadata.similar_context_used} similar items, ${grpmoMetadata.thinking_stages.length} thinking stages`);
+      console.log(`🧠 GRPMO context applied: ${grpmoMetadata.similar_context_used} similar items, ${grpmoMetadata.thinking_stages.length} thinking stages`)
     } else {
       // Standard generation
-      result = await glyphDiffusionService.generateGlyph(glyphRequest);
+      result = await glyphDiffusionService.generateGlyph(glyphRequest)
     }
 
-    console.log(`✅ Glyph generated in ${(result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).generation_time_ms}ms (${(result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).cache_hits} cache hits)`);
+    console.log(`✅ Glyph generated in ${(result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).generation_time_ms}ms (${(result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).cache_hits} cache hits)`)
 
     // Create enhanced portable artifact with embedded metadata if Neural Sprite was used
-    let enhancedArtifactUrl = (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).glyph_url;
+    let enhancedArtifactUrl = (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).glyph_url
 
     if ((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).neural_sprite_results) {
       try {
-        console.log('🧬 Creating portable artifact with Neural Sprite metadata...');
+        console.log('🧬 Creating portable artifact with Neural Sprite metadata...')
 
         // Fetch the generated glyph image
-        const glyphResponse = await fetch((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).glyph_url);
-        const glyphBuffer = await glyphResponse.arrayBuffer();
+        const glyphResponse = await fetch((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).glyph_url)
+        const glyphBuffer = await glyphResponse.arrayBuffer()
 
-        // Create comprehensive legal AI metadata with GRPMO integration;
+        // Create comprehensive legal AI metadata with GRPMO integration
         const legalMetadata: LegalAIMetadata = {
           version: '2.1-grpmo',
           created_at: new Date().toISOString(),
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
               'ai_generated',
               ...(hasExtendedThinking ? ['grpmo_enhanced', 'extended_thinking'] : [])
             ],
-            entities: [;
+            entities: [
               {
                 type: 'style',
                 value: glyphRequest.style,
@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
             tensor_urls: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).tensor_ids.map(id => `/api/tensors/${id}`),
             predictive_frames: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).neural_sprite_results.predictive_frames || []
           },
-          processing_chain: [;
+          processing_chain: [
             ...(hasExtendedThinking ? [{
               step: 'grpmo_context_analysis',
               duration_ms: grpmoMetadata?.context_integration_time_ms || 0,
@@ -205,7 +205,7 @@ export const POST: RequestHandler = async ({ request }) => {
               }
             }
           ]
-        };
+        }
 
         // Create portable artifact with embedded metadata
         const enhancedPNGBuffer = await PNGEmbedExtractor.createPortableArtifact(
@@ -216,15 +216,15 @@ export const POST: RequestHandler = async ({ request }) => {
             neural_sprite_data: legalMetadata.neural_sprite_data,
             processing_chain: legalMetadata.processing_chain
           }
-        );
+        )
 
         // Convert to data URL for immediate use
-        enhancedArtifactUrl = `data:image/png;base64,${Buffer.from(enhancedPNGBuffer).toString('base64')}`;
+        enhancedArtifactUrl = `data:image/png;base64,${Buffer.from(enhancedPNGBuffer).toString('base64')}`
 
-        console.log(`🎨 Enhanced PNG created: ${glyphBuffer.byteLength} -> ${enhancedPNGBuffer.byteLength} bytes`);
+        console.log(`🎨 Enhanced PNG created: ${glyphBuffer.byteLength} -> ${enhancedPNGBuffer.byteLength} bytes`)
 
       } catch (embeddingError) {
-        console.warn('PNG metadata embedding failed:', embeddingError);
+        console.warn('PNG metadata embedding failed:', embeddingError)
         // Continue with original PNG if embedding fails
       }
     }
@@ -251,61 +251,61 @@ export const POST: RequestHandler = async ({ request }) => {
           total_processing_time_ms: Date.now() - startTime
         }
       }
-    });
+    })
 
   } catch (error) {
-    console.error('Glyph generation error:', error);
+    console.error('Glyph generation error:', error)
 
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error occurred',
       grpmo_context_provided: !!body.grpmo_context
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-// Helper functions for GRPMO integration;
+// Helper functions for GRPMO integration
 function enhancePromptWithGRPMO(originalPrompt: string, grpmoContext: any): string {
-  if (!grpmoContext.similar_results?.length) return originalPrompt;
+  if (!grpmoContext.similar_results?.length) return originalPrompt
   
   const similarKeywords = grpmoContext.similar_results
     .slice(0, 3)
     .map((r: any) => r.metadata?.keywords?.[0])
-    .filter(Boolean);
+    .filter(Boolean)
     
-  if (similarKeywords.length === 0) return originalPrompt;
+  if (similarKeywords.length === 0) return originalPrompt
   
-  return `${originalPrompt} (contextual themes: ${similarKeywords.join(', ')})`;
+  return `${originalPrompt} (contextual themes: ${similarKeywords.join(', ')})`
 }
 
 function extractConditioningFromGRPMO(grpmoContext: any): string[] {
-  const conditioning: string[] = [];
+  const conditioning: string[] = []
   
   // Add cache layer as conditioning
   const cacheTypes = Object.entries(grpmoContext.cache_performance || {})
     .filter(([k, v]) => (v as number) > 0)
-    .map(([k, v]) => k);
+    .map(([k, v]) => k)
     
   if (cacheTypes.length > 0) {
-    conditioning.push(`cache_profile_${cacheTypes.join('_')}`);
+    conditioning.push(`cache_profile_${cacheTypes.join('_')}`)
   }
   
-  // Add similarity context;
+  // Add similarity context
   if (grpmoContext.similar_results?.length > 0) {
     const avgSimilarity = grpmoContext.similar_results
-      .reduce((sum: number, r: any) => sum + r.similarity, 0) / grpmoContext.similar_results.length;
-    conditioning.push(`similarity_context_${Math.round(avgSimilarity * 100)}`);
+      .reduce((sum: number, r: any) => sum + r.similarity, 0) / grpmoContext.similar_results.length
+    conditioning.push(`similarity_context_${Math.round(avgSimilarity * 100)}`)
   }
   
-  return conditioning;
+  return conditioning
 }
 
 /*
  * Health check endpoint
- */;
+ */
 export const GET: RequestHandler = async () => {
   try {
-    // Check service health;
+    // Check service health
     const stats = {
       service: 'glyph-diffusion',
       status: 'healthy',
@@ -334,17 +334,17 @@ export const GET: RequestHandler = async () => {
         ui_layout_compression: 'Demo compression of UI layout states',
         metadata_embedding: 'Legal AI metadata embedded in PNG files'
       }
-    };
+    }
 
     return json({
       success: true,
       data: stats
-    });
+    })
 
   } catch (error) {
     return json({
       success: false,
       error: 'Service unavailable'
-    }, { status: 503 });
+    }, { status: 503 })
   }
-};
+}

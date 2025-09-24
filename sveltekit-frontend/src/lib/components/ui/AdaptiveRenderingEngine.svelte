@@ -70,7 +70,7 @@ let currentQuality = $state<QualityConfig>({
   chrRomCacheSize: 50,
   antiAliasing: false,
   particleEffects: false,
-  advancedLighting: false
+  advancedLighting: false;
 });
 
 let systemMetrics = $state<SystemMetrics>({
@@ -79,7 +79,7 @@ let systemMetrics = $state<SystemMetrics>({
   memoryUsage: 50,
   cacheHitRate: 80,
   gpuUtilization: 30,
-  drawCalls: 100
+  drawCalls: 100;
 });
 
 let isMonitoring = $state(false);
@@ -95,10 +95,12 @@ let fpsHistory: number[] = [];
 let monitoringInterval: NodeJS.Timeout;
 let qualityAdjustmentTimer: NodeJS.Timeout;
 
-$effect(async () => {
-  await initializeRenderingEngine();
+$effect(() => {
+    (async () => {
+await initializeRenderingEngine();
   startPerformanceMonitoring();
-});
+    })();
+  });
 
 onDestroy(() => {
   stopPerformanceMonitoring();
@@ -163,7 +165,7 @@ function create8BitConfig(): QualityConfig {
     chrRomCacheSize: 50,
     antiAliasing: false,
     particleEffects: false,
-    advancedLighting: false
+    advancedLighting: false;
   };
 }
 
@@ -177,7 +179,7 @@ function create16BitConfig(): QualityConfig {
     chrRomCacheSize: 100,
     antiAliasing: true,
     particleEffects: true,
-    advancedLighting: false
+    advancedLighting: false;
   };
 }
 
@@ -191,7 +193,7 @@ function create64BitConfig(): QualityConfig {
     chrRomCacheSize: 200,
     antiAliasing: true,
     particleEffects: true,
-    advancedLighting: true
+    advancedLighting: true;
   };
 }
 
@@ -251,7 +253,7 @@ function updateSystemMetrics(): void {
     memoryUsage: getMemoryUsage(),
     cacheHitRate: getCacheHitRate(),
     gpuUtilization: estimateGPUUtilization(),
-    drawCalls: estimateDrawCalls()
+    drawCalls: estimateDrawCalls();
   };
 }
 
@@ -313,10 +315,10 @@ function adjustQualityBasedOnPerformance(): void {
   // Record interaction for HMM-SOM prediction
   if (hmmPredictor) {
     hmmPredictor.recordInteraction('quality_adjustment', {
-      tier: currentQuality.tier,
+      tier: currentQuality.tier,;
       fps: systemMetrics.fps,
       memoryUsage: systemMetrics.memoryUsage,
-      assetType
+      assetType;
     });
   }
 }
@@ -570,7 +572,7 @@ export function setQuality(tier: QualityTier) {
 </div>
 
 <style>
-.adaptive-rendering-container {
+.adaptive-rendering-container {;
   position: relative;
   display: inline-block;
   border-radius: 4px;

@@ -41,19 +41,19 @@
     label,
     description,
     errorMessage,
-    class: className = ''
+    class: className = '';
   }: Props = $props();
 
   const sizeClasses = {
-    sm: "px-3 py-2 text-sm rounded-md",
-    md: "px-4 py-3 text-base rounded-lg",
-    lg: "px-6 py-4 text-lg rounded-xl"
+    sm: "px-3 py-2 text-sm rounded-md",;
+    md: "px-4 py-3 text-base rounded-lg",;
+    lg: "px-6 py-4 text-lg rounded-xl";
   };
 
   const variantClasses = {
-    default: "bg-slate-800/60 border border-slate-600/50 focus:border-amber-500",
-    filled: "bg-slate-800/80 border-0",
-    outlined: "bg-transparent border-2 border-slate-600/50 focus:border-amber-500"
+    default: "bg-slate-800/60 border border-slate-600/50 focus:border-amber-500",;
+    filled: "bg-slate-800/80 border-0",;
+    outlined: "bg-transparent border-2 border-slate-600/50 focus:border-amber-500";
   };
 
   const stateClasses = error
@@ -179,7 +179,7 @@
 </div>
 
 <style>
-  :global(.legal-ai-select-trigger) {
+  :global(.legal-ai-select-trigger) {;
     font-family: var(--legal-ai-font-family-sans);
     color: var(--legal-ai-text-primary);
   }

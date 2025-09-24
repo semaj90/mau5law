@@ -26,7 +26,7 @@ export interface ProductionConfig {
   };
 
   // Cache Settings;
-  cache: {
+  cache: {;
     redis: {
       maxMemory: string;
       ttl: number; // seconds
@@ -152,7 +152,7 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
     batchProcessing: true,
     maxBatchSize: 10
   },
-
+;
   minio: {
     maxFileSize: 100 * 1024 * 1024, // 100MB
     allowedMimeTypes: [
@@ -196,7 +196,7 @@ export const DEVELOPMENT_CONFIG: ProductionConfig = {
     corsOrigins: ['http://localhost:*', 'http://127.0.0.1:*'],
     enableCsrfProtection: false, // Disable for development
   },
-
+;
   monitoring: {
     ...PRODUCTION_CONFIG.monitoring,
     logLevel: 'debug', // Full logging in development

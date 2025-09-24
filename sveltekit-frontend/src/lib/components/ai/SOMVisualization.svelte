@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class'
+<!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class';
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword 'class' -->
 <script lang="ts">
@@ -28,14 +28,14 @@ https://svelte.dev/e/js_parse_error -->
   let visualizationData = $state<unknown[]>([]);
   let stats = $state<IngestionStats & { queue_size: number; is_processing: booleansom_visualization: any }  | null>(null); const data = {
     total_processed: 0,
-    successful: 0,
+    successful: 0,;
     failed: 0,
     avg_processing_time: 0,
     cluster_distribution: ,
     evidence_type_distribution: ,
     queue_size: 0,
     is_processing: false,
-    som_visualization: []
+    som_visualization: [];
   });
   // Configuration
   let somConfig: SOMConfig = $state({
@@ -45,64 +45,66 @@ https://svelte.dev/e/js_parse_error -->
     learningRate: 0.1,
     neighborhoodRadius: 3,
     maxEpochs: 500,
-    clusterCount: 8
+    clusterCount: 8;
   });
   // Sample legal documents for demo
   const sampleDocuments = [
     {
       id: 'doc-1',
-      content: 'Forensic DNA analysis shows conclusive match with suspect blood sample found at crime scene.',
+      content: 'Forensic DNA analysis shows conclusive match with suspect blood sample found at crime scene.',;
       metadata: {
         filename: 'forensic-dna-report.pdf',
         evidence_type: 'forensic' as const,
         legal_category: 'physical-evidence',
         upload_timestamp: Date.now() - 86400000,
         file_size: 1024,
-        mime_type: 'application/pdf'
+        mime_type: 'application/pdf';
       }
     },
     {
       id: 'doc-2', 
-      content: 'Witness testimony confirms defendant was present at location during incident timeframe.',
+      content: 'Witness testimony confirms defendant was present at location during incident timeframe.',;
       metadata: {
         filename: 'witness-statement-001.doc',
         evidence_type: 'testimony' as const,
         legal_category: 'witness-statement',
         upload_timestamp: Date.now() - 172800000,
         file_size: 512,
-        mime_type: 'application/msword'
+        mime_type: 'application/msword';
       }
     },
     {
       id: 'doc-3',
-      content: 'Digital forensics recovered deleted emails containing evidence of fraudulent activity.',
+      content: 'Digital forensics recovered deleted emails containing evidence of fraudulent activity.',;
       metadata: {
         filename: 'email-recovery-log.txt',
         evidence_type: 'digital' as const,
         legal_category: 'digital-evidence',
         upload_timestamp: Date.now() - 259200000,
         file_size: 2048,
-        mime_type: 'text/plain'
+        mime_type: 'text/plain';
       }
     },
     {
       id: 'doc-4',
-      content: 'Physical evidence bag containing weapon used in assault, properly chain of custody maintained.',
-      metadata: {
+      content: 'Physical evidence bag containing weapon used in assault, properly chain of custody maintained.',;
+      metadata: {;
         filename: 'evidence-bag-047.pdf',
         evidence_type: 'physical' as const,
         legal_category: 'physical-evidence',
         upload_timestamp: Date.now() - 345600000,
         file_size: 768,
-        mime_type: 'application/pdf'
+        mime_type: 'application/pdf';
       }
     }
   ];
 
-  $effect(async () => {
-    await initializeSOMSystem();
+  $effect(() => {
+    (async () => {
+await initializeSOMSystem();
     setupCanvas();
     startVisualizationLoop();
+    })();
   });
 
   async function initializeSOMSystem(): Promise<void> {
@@ -287,14 +289,14 @@ https://svelte.dev/e/js_parse_error -->
     if (!isInitialized || isTraining) return;
     const testDoc = {
       id: `test-${Date.now()}`,
-      content: 'Test forensic analysis report with high confidence DNA match and chain of custody documentation.',
-      metadata: {
+      content: 'Test forensic analysis report with high confidence DNA match and chain of custody documentation.',;
+      metadata: {;
         filename: 'test-document.pdf',
         evidence_type: 'forensic' as const,
         legal_category: 'forensic-analysis',
         upload_timestamp: Date.now(),
         file_size: 1024,
-        mime_type: 'application/pdf'
+        mime_type: 'application/pdf';
       }
     };
     try {
@@ -343,7 +345,7 @@ https://svelte.dev/e/js_parse_error -->
         <div>
           <label class="block text-sm text-gray-300 mb-1">Map Size</label>
           <div class="flex gap-2">
-            <input 
+            <input ;
               bind:value={somConfig.mapWidth} onchange={updateSOMConfig}
               type="number" 
               min="5" 
@@ -432,7 +434,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
       
-      {#if Object.keys.length > 0}
+      {#if Object.keys(errors).length > 0}
         <div class="mt-4">
           <h4 class="text-sm font-medium text-gray-300 mb-2">Evidence Types</h4>
           {#each Object.entries(stats.evidence_type_distribution) as [type, count]}
@@ -496,7 +498,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
     
     <div class="canvas-wrapper relative bg-black border border-gray-700 rounded">
-      <canvas 
+      <canvas ;
         bind:this={canvas as any}
         {width}
         {height}

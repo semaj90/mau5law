@@ -1,11 +1,11 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
-// Full-Stack Integration Status Endpoint;
+// Full-Stack Integration Status Endpoint
 export const GET: RequestHandler = async ({ fetch }) => {
   try {
     // Test all integration points
-    const [aiTest, context7Test] = await Promise.all([;
+    const [aiTest, context7Test] = await Promise.all([
       fetch('/api/ai/unified', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -17,13 +17,13 @@ export const GET: RequestHandler = async ({ fetch }) => {
       fetch('/api/test-context7')
         .then((r) => r.json()
         .catch((e) => ({ error: e.message }))
-    ]);
+    ])
 
     const integrationStatus = {
       success: true,
       timestamp: new Date().toISOString(),
 
-      // Component Integration Status;
+      // Component Integration Status
       components: {
         syntax_errors_fixed: true,
         melt_actions_repaired: true,
@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         status: 'operational_with_warnings'
       },
 
-      // AI Service Modes;
+      // AI Service Modes
       ai_services: {
         unified_ai: {
           status: aiTest.success ? 'operational' : 'error',
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         }
       },
 
-      // Context7 MCP Integration;
+      // Context7 MCP Integration
       context7_mcp: {
         status:
           context7Test.success && context7Test.summary?.successful === 4
@@ -71,7 +71,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         enhanced_documentation: true
       },
 
-      // Full-Stack Workflow;
+      // Full-Stack Workflow
       full_stack: {
         frontend: {
           sveltekit: 'operational',
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         }
       },
 
-      // Development Status;
+      // Development Status
       development: {
         overall_health: 'good',
         critical_issues: [
@@ -115,17 +115,17 @@ export const GET: RequestHandler = async ({ fetch }) => {
           'Production deployment testing'
         ]
       }
-    };
+    }
 
-    return json(integrationStatus);
+    return json(integrationStatus)
 
   } catch (error: any) {
-    console.error('Integration status check failed:', error);
+    console.error('Integration status check failed:', error)
 
     return json({
       success: false,
       error: error.message || 'Integration status check failed',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

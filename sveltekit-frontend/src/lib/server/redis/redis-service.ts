@@ -22,7 +22,7 @@ class RedisService {
   }
   private async initializeClients() {
     const config: RedisConfig = {
-      // Standardize on port 4005 across the platform
+      // Standardize on port 4005 across the platform;
       url: import.meta.env.REDIS_URL || 'redis://127.0.0.1:4005',
       // retryDelayOnFailover: 100, // removed - deprecated
       maxRetriesPerRequest: 3
@@ -63,7 +63,7 @@ class RedisService {
       type: 'EVIDENCE_CREATED',
       evidenceId,
       data: evidenceData,
-      userId,
+      userId,;
       timestamp: new Date().toISOString()
     });
   }
@@ -72,7 +72,7 @@ class RedisService {
       type: 'EVIDENCE_UPDATED',
       evidenceId,
       changes,
-      userId,
+      userId,;
       timestamp: new Date().toISOString()
     });
   }
@@ -80,7 +80,7 @@ class RedisService {
     await this.publish('evidence_update', {
       type: 'EVIDENCE_DELETED',
       evidenceId,
-      userId,
+      userId,;
       timestamp: new Date().toISOString()
     });
   }
@@ -90,7 +90,7 @@ class RedisService {
       type: 'CASE_UPDATED',
       caseId,
       changes,
-      userId,
+      userId,;
       timestamp: new Date().toISOString()
     });
   }
@@ -105,7 +105,7 @@ class RedisService {
       caseId,
       oldStatus,
       newStatus,
-      userId,
+      userId,;
       timestamp: new Date().toISOString()
     });
   }
@@ -121,7 +121,7 @@ class RedisService {
       caseId,
       nodeId,
       position,
-      userId,
+      userId,;
       timestamp: new Date().toISOString()
     });
   }
@@ -130,7 +130,7 @@ class RedisService {
       type: 'CANVAS_NODE_ADDED',
       caseId,
       nodeData,
-      userId,
+      userId,;
       timestamp: new Date().toISOString()
     });
   }
@@ -139,7 +139,7 @@ class RedisService {
       type: 'CANVAS_STATE_CHANGED',
       caseId,
       state,
-      userId,
+      userId,;
       timestamp: new Date().toISOString()
     });
   }
@@ -149,7 +149,7 @@ class RedisService {
       type: 'POI_UPDATED',
       poiId,
       changes,
-      userId,
+      userId,;
       timestamp: new Date().toISOString()
     });
   }
@@ -159,7 +159,7 @@ class RedisService {
       type: 'REPORT_UPDATED',
       reportId,
       changes,
-      userId,
+      userId,;
       timestamp: new Date().toISOString()
     });
   }
@@ -169,7 +169,7 @@ class RedisService {
       type: 'USER_ACTIVITY',
       userId,
       activity,
-      metadata,
+      metadata,;
       timestamp: new Date().toISOString()
     });
   }
@@ -223,7 +223,7 @@ class RedisService {
       type: 'EVIDENCE_BULK_UPDATE',
       evidenceIds,
       action,
-      userId,
+      userId,;
       timestamp: new Date().toISOString()
     });
   }
@@ -232,7 +232,7 @@ class RedisService {
     await this.publish('analytics', {
       event,
       data,
-      userId,
+      userId,;
       timestamp: new Date().toISOString()
     });
   }
@@ -248,7 +248,7 @@ class RedisService {
   // Provide lightweight stats similar to primary redis-service singleton;
   public getStats() {
     return {
-      connected: this.isConnected,
+      connected: this.isConnected,;
       status: this.isConnected ? 'connected' : 'disconnected'
     };
   }

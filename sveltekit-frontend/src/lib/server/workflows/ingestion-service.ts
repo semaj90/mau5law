@@ -115,7 +115,7 @@ export class IngestionService {
     } catch (error) {
       console.error('❌ Failed to submit document:', error);
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: String(error)
       };
     }
@@ -133,7 +133,7 @@ export class IngestionService {
           metadata: {
             ...job.metadata,
             totalChunks: job.chunks.length,
-            priority: job.metadata.priority,
+            priority: job.metadata.priority,;
             timestamp: new Date().toISOString()
           }
         };
@@ -167,7 +167,7 @@ export class IngestionService {
           metadata: {
             ...job.metadata,
             totalChunks: job.chunks.length,
-            priority: job.metadata.priority,
+            priority: job.metadata.priority,;
             timestamp: new Date().toISOString()
           }
         };
@@ -200,7 +200,7 @@ export class IngestionService {
     if (currentJob) {
       jobTracker.updateJob(currentJob.id, {
         state: this.mapWorkflowStateToJobState(state.value),
-        progress: this.calculateJobProgress(currentJob, context),
+        progress: this.calculateJobProgress(currentJob, context),;
         metadata: {
           ...currentJob.metadata,
           workflowState: state.value,
@@ -246,7 +246,7 @@ export class IngestionService {
       queueLength: context.jobQueue?.length || 0,
       currentJobId: context.currentJob?.id,
       concurrency: context.concurrency,
-      stats: context.stats,
+      stats: context.stats,;
       timestamp: new Date().toISOString()
     });
   }
@@ -270,7 +270,7 @@ export class IngestionService {
 
       return {
         success: true,
-        job,
+        job,;
         workflow: {
           isCurrentJob,
           currentState: (workflowState as any).value,
@@ -280,7 +280,7 @@ export class IngestionService {
       };
     } catch (error) {
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: String(error)
       };
     }
@@ -297,7 +297,7 @@ export class IngestionService {
         jobTracker.updateJob(jobId, {
           state: 'queued',
           error: undefined,
-          retryCount: (currentJob.retryCount || 0) + 1,
+          retryCount: (currentJob.retryCount || 0) + 1,;
           metadata: {
             ...currentJob.metadata,
             retriedAt: new Date().toISOString()
@@ -313,12 +313,12 @@ export class IngestionService {
       }
 
       return {
-        success: true,
+        success: true,;
         message: `Job ${jobId} queued for retry`
       };
     } catch (error) {
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: String(error)
       };
     }
@@ -331,18 +331,18 @@ export class IngestionService {
 
       // Update tracking;
       jobTracker.updateJob(jobId, {
-        state: 'failed',
+        state: 'failed',;
         error: 'Cancelled by user',
         completedAt: new Date().toISOString()
       });
 
       return {
-        success: true,
+        success: true,;
         message: `Job ${jobId} cancelled`
       };
     } catch (error) {
       return {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: String(error)
       };
     }
@@ -362,14 +362,14 @@ export class IngestionService {
   async setConcurrency(concurrency: number): Promise<any> {
     if (concurrency < 1 || concurrency > 10) {
       return {
-        success: false,
+        success: false,;
         error: 'Concurrency must be between 1 and 10'
       };
     }
 
     this.workflowActor.send({ type: 'SET_CONCURRENCY', concurrency });
     return {
-      success: true,
+      success: true,;
       message: `Concurrency set to ${concurrency}`
     };
   }
@@ -393,7 +393,7 @@ export class IngestionService {
       system: {
         uptime: process.uptime(),
         memory: process.memoryUsage(),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString(),;
         config: {
           enableRabbitMQ: this.config.enableRabbitMQ,
           enableRedisQueues: this.config.enableRedisQueues,
@@ -409,7 +409,7 @@ export class IngestionService {
     const cleared = jobTracker.clearCompletedJobs();
 
     return {
-      success: true,
+      success: true,;
       message: `Cleared ${cleared} completed jobs`
     };
   }
@@ -419,7 +419,7 @@ export class IngestionService {
     jobTracker.reset();
 
     return {
-      success: true,
+      success: true,;
       message: 'Statistics reset'
     };
   }

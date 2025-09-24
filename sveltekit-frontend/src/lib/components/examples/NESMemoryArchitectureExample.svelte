@@ -46,7 +46,7 @@
       activeReview: true,
       lastAccessed: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
       fileSize: 2.5 * 1024 * 1024, // 2.5MB
-      isEvidenceCritical: true
+      isEvidenceCritical: true;
     },
     {
       id: 'evidence_email_chain_042',
@@ -57,7 +57,7 @@
       activeReview: true,
       lastAccessed: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
       fileSize: 800 * 1024, // 800KB
-      isEvidenceCritical: true
+      isEvidenceCritical: true;
     },
     {
       id: 'motion_summary_judgment',
@@ -68,18 +68,18 @@
       activeReview: false,
       lastAccessed: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
       fileSize: 1.2 * 1024 * 1024, // 1.2MB
-      isEvidenceCritical: false
+      isEvidenceCritical: false;
     },
     {
       id: 'correspondence_client_001',
       type: 'correspondence', 
-      category: 'corporate',
-      urgency: 'low',
+      category: 'corporate',;
+      urgency: 'low',;
       complexity: 'simple',
       activeReview: false,
       lastAccessed: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
       fileSize: 150 * 1024, // 150KB
-      isEvidenceCritical: false
+      isEvidenceCritical: false;
     }
   ];
   
@@ -97,24 +97,24 @@
   const caseContext: CaseContext = {
     caseId: 'case_2024_015',
     caseType: 'litigation',
-    urgency: 'high',
+    urgency: 'high',;
     documents: sampleDocuments,
     relatedCases: ['case_2024_009', 'case_2024_012'],
     upcomingDeadlines: [
       new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
       new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)  // 1 week from now
-    ]
+    ];
   };
   
   // Component priorities for demo
   let documentPriorities = $derived(sampleDocuments.map(doc => ({
-    document: doc,
+    document: doc,;
     priority: calculateDocumentPriority(doc),
-    memoryBank: selectMemoryBank(calculateDocumentPriority(doc)),
-    analysis: analyzePriority(doc)
+    memoryBank: selectMemoryBank(calculateDocumentPriority(doc)),;
+    analysis: analyzePriority(doc);
   })));
   
-  $effect(async () => {
+  $effect(() => {
     if (!browser) return;
     
     try {
@@ -131,7 +131,7 @@
         sharingPolicy: 'shared',
         updateFrequency: 'periodic',
         priority: 150,
-        estimatedUsage: 512 * 1024 // 512KB
+        estimatedUsage: 512 * 1024 // 512KB;
       });
       
       if (registered) {
@@ -190,7 +190,7 @@
       
       const result = await cacheWarmer.warmCacheForSession(userProfile, {
         ...caseContext,
-        urgency: strategyName === 'litigation_emergency' ? 'critical' : caseContext.urgency
+        urgency: strategyName === 'litigation_emergency' ? 'critical' : caseContext.urgency;
       });
       
       lastWarmingResult = result;
@@ -456,7 +456,7 @@
 </div>
 
 <style>
-  .nes-container {
+  .nes-container {;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;

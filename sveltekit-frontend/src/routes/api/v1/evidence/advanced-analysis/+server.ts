@@ -3,49 +3,49 @@
  * Integrates with AdvancedEvidenceAnalyzer for comprehensive AI-powered analysis
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { AdvancedEvidenceAnalyzer } from '$lib/services/ai/advanced-evidence-analyzer';
-import { websocketBroadcast } from '$lib/services/websocket-manager';
-import { dbClient } from '$lib/server/db/drizzle-config';
-import { evidence, analysisResults } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types'
+import { AdvancedEvidenceAnalyzer } from '$lib/services/ai/advanced-evidence-analyzer'
+import { websocketBroadcast } from '$lib/services/websocket-manager'
+import { dbClient } from '$lib/server/db/drizzle-config'
+import { evidence, analysisResults } from '$lib/server/db/schema'
+import { eq } from 'drizzle-orm'
 
-const analyzer = new AdvancedEvidenceAnalyzer();
+const analyzer = new AdvancedEvidenceAnalyzer()
 
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
-    const action = url.searchParams.get('action') || 'analyze';
-    const data = await request.json();
+    const action = url.searchParams.get('action') || 'analyze'
+    const data = await request.json()
 
     switch (action) {
       case 'analyze':
-        return await handleAnalyzeEvidence(data);
+        return await handleAnalyzeEvidence(data)
       case 'batch_analyze':
-        return await handleBatchAnalyze(data);
+        return await handleBatchAnalyze(data)
       case 'get_analysis':
-        return await handleGetAnalysis(data);
+        return await handleGetAnalysis(data)
       case 'synthesis':
-        return await handleSynthesis(data);
+        return await handleSynthesis(data)
       case 'real_time':
-        return await handleRealTimeAnalysis(data);
+        return await handleRealTimeAnalysis(data)
       default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+        return json({ error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
-    console.error('Advanced evidence analysis error:', error);
+    console.error('Advanced evidence analysis error:', error)
     return json({
       error: 'Analysis failed',
       details: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 async function handleAnalyzeEvidence(data: any) {
-  const { evidenceId, analysisTypes, caseId, options = {} } = data;
+  const { evidenceId, analysisTypes, caseId, options = {} } = data
 
   if (!evidenceId) {
-    return json({ error: 'Evidence ID required' }, { status: 400 });
+    return json({ error: 'Evidence ID required' }, { status: 400 })
   }
 
   // Get evidence from database
@@ -53,18 +53,18 @@ async function handleAnalyzeEvidence(data: any) {
     .select()
     .from(evidence)
     .where(eq(evidence.id, evidenceId)
-    .limit(1);
+    .limit(1)
 
   if (evidenceRecord.length === 0) {
-    return json({ error: 'Evidence not found' }, { status: 404 });
+    return json({ error: 'Evidence not found' }, { status: 404 })
   }
 
-  const evidenceData = evidenceRecord[0];
+  const evidenceData = evidenceRecord[0]
 
   // Start analysis with progress tracking
-  const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
-  // Broadcast analysis start;
+  // Broadcast analysis start
   if (caseId) {
     websocketBroadcast(caseId, {
       type: 'analysis_started',
@@ -74,14 +74,14 @@ async function handleAnalyzeEvidence(data: any) {
         analysisTypes: analysisTypes || ['all'],
         timestamp: new Date().toISOString()
       }
-    });
+    })
   }
 
   try {
     // Run analysis
     const analysisResult = await analyzer.analyzeEvidence(
       evidenceData,
-      analysisTypes || ['all'],);
+      analysisTypes || ['all'],)
       {
         ...options,
         onProgress: (progress) => {
@@ -95,16 +95,16 @@ async function handleAnalyzeEvidence(data: any) {
                 currentTask: progress.task,
                 timestamp: new Date().toISOString()
               }
-            });
+            })
           }
         }
       }
-    );
+    )
 
     // Store analysis results in database
-    await storeAnalysisResult(evidenceId, analysisResult, analysisId);
+    await storeAnalysisResult(evidenceId, analysisResult, analysisId)
 
-    // Broadcast completion;
+    // Broadcast completion
     if (caseId) {
       websocketBroadcast(caseId, {
         type: 'analysis_completed',
@@ -114,7 +114,7 @@ async function handleAnalyzeEvidence(data: any) {
           results: analysisResult,
           timestamp: new Date().toISOString()
         }
-      });
+      })
     }
 
     return json({
@@ -123,10 +123,10 @@ async function handleAnalyzeEvidence(data: any) {
       results: analysisResult,
       evidenceId,
       timestamp: new Date().toISOString()
-    });
+    })
 
   } catch (error) {
-    // Broadcast error;
+    // Broadcast error
     if (caseId) {
       websocketBroadcast(caseId, {
         type: 'analysis_error',
@@ -136,25 +136,25 @@ async function handleAnalyzeEvidence(data: any) {
           error: error instanceof Error ? error.message: 'Analysis failed',
           timestamp: new Date().toISOString()
         }
-      });
+      })
     }
 
-    throw error;
+    throw error
   }
 }
 
 async function handleBatchAnalyze(data: any) {
-  const { evidenceIds, analysisTypes, caseId, options = {} } = data;
+  const { evidenceIds, analysisTypes, caseId, options = {} } = data
 
   if (!evidenceIds || !Array.isArray(evidenceIds)) {
-    return json({ error: 'Evidence IDs array required' }, { status: 400 });
+    return json({ error: 'Evidence IDs array required' }, { status: 400 })
   }
 
-  const batchId = `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  const results = [];
-  const errors = [];
+  const batchId = `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  const results = []
+  const errors = []
 
-  // Broadcast batch start;
+  // Broadcast batch start
   if (caseId) {
     websocketBroadcast(caseId, {
       type: 'batch_analysis_started',
@@ -165,11 +165,11 @@ async function handleBatchAnalyze(data: any) {
         analysisTypes: analysisTypes || ['all'],
         timestamp: new Date().toISOString()
       }
-    });
+    })
   }
 
   for (let i = 0; i < evidenceIds.length; i++) {
-    const evidenceId = evidenceIds[i];
+    const evidenceId = evidenceIds[i]
 
     try {
       // Get evidence from database
@@ -177,19 +177,19 @@ async function handleBatchAnalyze(data: any) {
         .select()
         .from(evidence)
         .where(eq(evidence.id, evidenceId)
-        .limit(1);
+        .limit(1)
 
       if (evidenceRecord.length === 0) {
-        errors.push({ evidenceId, error: 'Evidence not found' });
-        continue;
+        errors.push({ evidenceId, error: 'Evidence not found' })
+        continue
       }
 
-      const evidenceData = evidenceRecord[0];
+      const evidenceData = evidenceRecord[0]
 
       // Run analysis
       const analysisResult = await analyzer.analyzeEvidence(
         evidenceData,
-        analysisTypes || ['all'],)>;
+        analysisTypes || ['all'],)>
         {
           ...options,
           onProgress: (progress) => {
@@ -206,32 +206,32 @@ async function handleBatchAnalyze(data: any) {
                   totalItems: evidenceIds.length,
                   timestamp: new Date().toISOString()
                 }
-              });
+              })
             }
           }
         }
-      );
+      )
 
       // Store analysis results
-      const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      await storeAnalysisResult(evidenceId, analysisResult, analysisId);
+      const analysisId = `analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      await storeAnalysisResult(evidenceId, analysisResult, analysisId)
 
       results.push({
         evidenceId,
         analysisId,
         results: analysisResult,
         success: true
-      });
+      })
 
     } catch (error) {
       errors.push({
         evidenceId,
         error: error instanceof Error ? error.message: 'Analysis failed'
-      });
+      })
     }
   }
 
-  // Broadcast batch completion;
+  // Broadcast batch completion
   if (caseId) {
     websocketBroadcast(caseId, {
       type: 'batch_analysis_completed',
@@ -244,7 +244,7 @@ async function handleBatchAnalyze(data: any) {
         errors,
         timestamp: new Date().toISOString()
       }
-    });
+    })
   }
 
   return json({
@@ -259,25 +259,25 @@ async function handleBatchAnalyze(data: any) {
       successRate: ((results.length / evidenceIds.length) * 100).toFixed(1)
     },
     timestamp: new Date().toISOString()
-  });
+  })
 }
 
 async function handleGetAnalysis(data: any) {
-  const { evidenceId, analysisId } = data;
+  const { evidenceId, analysisId } = data
 
   if (!evidenceId && !analysisId) {
-    return json({ error: 'Evidence ID or Analysis ID required' }, { status: 400 });
+    return json({ error: 'Evidence ID or Analysis ID required' }, { status: 400 })
   }
 
-  let query = dbClient.select().from(analysisResults);
+  let query = dbClient.select().from(analysisResults)
 
   if (analysisId) {
-    query = query.where(eq(analysisResults.analysisId, analysisId);
+    query = query.where(eq(analysisResults.analysisId, analysisId)
   } else if (evidenceId) {
-    query = query.where(eq(analysisResults.evidenceId, evidenceId);
+    query = query.where(eq(analysisResults.evidenceId, evidenceId)
   }
 
-  const results = await query.limit(10);
+  const results = await query.limit(10)
 
   return json({
     success: true,
@@ -288,19 +288,19 @@ async function handleGetAnalysis(data: any) {
       createdAt: result.createdAt,
       analysisTypes: result.analysisTypes
     })
-  });
+  })
 }
 
 async function handleSynthesis(data: any) {
-  const { evidenceIds, caseId, synthesisType = 'comprehensive', options = {} } = data;
+  const { evidenceIds, caseId, synthesisType = 'comprehensive', options = {} } = data
 
   if (!evidenceIds || !Array.isArray(evidenceIds)) {
-    return json({ error: 'Evidence IDs array required' }, { status: 400 });
+    return json({ error: 'Evidence IDs array required' }, { status: 400 })
   }
 
-  const synthesisId = `synthesis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const synthesisId = `synthesis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
-  // Broadcast synthesis start;
+  // Broadcast synthesis start
   if (caseId) {
     websocketBroadcast(caseId, {
       type: 'synthesis_started',
@@ -310,7 +310,7 @@ async function handleSynthesis(data: any) {
         synthesisType,
         timestamp: new Date().toISOString()
       }
-    });
+    })
   }
 
   try {
@@ -323,12 +323,12 @@ async function handleSynthesis(data: any) {
     const analysisData = analysisRecords.map(record => ({
       evidenceId: record.evidenceId,
       results: record.results
-    });
+    })
 
     // Run synthesis
     const synthesisResult = await analyzer.synthesizeAnalyses(
       analysisData,
-      synthesisType,);
+      synthesisType,)
       {
         ...options,
         onProgress: (progress) => {
@@ -341,13 +341,13 @@ async function handleSynthesis(data: any) {
                 currentTask: progress.task,
                 timestamp: new Date().toISOString()
               }
-            });
+            })
           }
         }
       }
-    );
+    )
 
-    // Broadcast completion;
+    // Broadcast completion
     if (caseId) {
       websocketBroadcast(caseId, {
         type: 'synthesis_completed',
@@ -356,7 +356,7 @@ async function handleSynthesis(data: any) {
           results: synthesisResult,
           timestamp: new Date().toISOString()
         }
-      });
+      })
     }
 
     return json({
@@ -365,10 +365,10 @@ async function handleSynthesis(data: any) {
       results: synthesisResult,
       evidenceIds,
       timestamp: new Date().toISOString()
-    });
+    })
 
   } catch (error) {
-    // Broadcast error;
+    // Broadcast error
     if (caseId) {
       websocketBroadcast(caseId, {
         type: 'synthesis_error',
@@ -377,18 +377,18 @@ async function handleSynthesis(data: any) {
           error: error instanceof Error ? error.message: 'Synthesis failed',
           timestamp: new Date().toISOString()
         }
-      });
+      })
     }
 
-    throw error;
+    throw error
   }
 }
 
 async function handleRealTimeAnalysis(data: any) {
-  const { evidenceId, caseId, analysisTypes = ['quick_summary'] } = data;
+  const { evidenceId, caseId, analysisTypes = ['quick_summary'] } = data
 
   if (!evidenceId || !caseId) {
-    return json({ error: 'Evidence ID and Case ID required' }, { status: 400 });
+    return json({ error: 'Evidence ID and Case ID required' }, { status: 400 })
   }
 
   // Get evidence from database
@@ -396,21 +396,21 @@ async function handleRealTimeAnalysis(data: any) {
     .select()
     .from(evidence)
     .where(eq(evidence.id, evidenceId)
-    .limit(1);
+    .limit(1)
 
   if (evidenceRecord.length === 0) {
-    return json({ error: 'Evidence not found' }, { status: 404 });
+    return json({ error: 'Evidence not found' }, { status: 404 })
   }
 
-  const evidenceData = evidenceRecord[0];
+  const evidenceData = evidenceRecord[0]
 
   // Run quick analysis for real-time display
   const quickAnalysis = await analyzer.analyzeEvidence(
     evidenceData,
-    analysisTypes,);
+    analysisTypes,)
     {
       realTime: true,
-      maxProcessingTime: 5000, // 5 seconds max for real-time;
+      maxProcessingTime: 5000, // 5 seconds max for real-time
       onProgress: (progress) => {
         websocketBroadcast(caseId, {
           type: 'real_time_analysis_progress',
@@ -420,12 +420,12 @@ async function handleRealTimeAnalysis(data: any) {
             task: progress.task,
             timestamp: new Date().toISOString()
           }
-        });
+        })
       }
     }
-  );
+  )
 
-  // Broadcast real-time results;
+  // Broadcast real-time results
   websocketBroadcast(caseId, {
     type: 'real_time_analysis_completed',
     data: {
@@ -433,7 +433,7 @@ async function handleRealTimeAnalysis(data: any) {
       results: quickAnalysis,
       timestamp: new Date().toISOString()
     }
-  });
+  })
 
   return json({
     success: true,
@@ -441,7 +441,7 @@ async function handleRealTimeAnalysis(data: any) {
     results: quickAnalysis,
     realTime: true,
     timestamp: new Date().toISOString()
-  });
+  })
 }
 
 async function storeAnalysisResult(evidenceId: string, results: any, analysisId: string) {
@@ -455,19 +455,19 @@ async function storeAnalysisResult(evidenceId: string, results: any, analysisId:
       processingTime: results.totalTime || 0,
       createdAt: new Date(),
       updatedAt: new Date()
-    });
+    })
   } catch (error) {
-    console.error('Failed to store analysis result:', error);
+    console.error('Failed to store analysis result:', error)
     // Don't throw - analysis succeeded even if storage failed
   }
 }
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get('action') || 'status';
+    const action = url.searchParams.get('action') || 'status'
 
     switch (action) {
-      case 'status':;
+      case 'status':
         return json({
           service: 'Advanced Evidence Analysis API',
           status: 'operational',
@@ -491,27 +491,27 @@ export const GET: RequestHandler = async ({ url }) => {
             'all'
           ],
           timestamp: new Date().toISOString()
-        });
+        })
 
-      case 'models':;
+      case 'models':
         return json({
           availableModels: analyzer.getAvailableModels(),
           defaultModel: analyzer.getDefaultModel(),
           modelCapabilities: analyzer.getModelCapabilities()
-        });
+        })
 
       case 'health':
-        const healthCheck = await analyzer.healthCheck();
-        return json(healthCheck);
+        const healthCheck = await analyzer.healthCheck()
+        return json(healthCheck)
 
       default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+        return json({ error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
-    console.error('Advanced evidence analysis API error:', error);
+    console.error('Advanced evidence analysis API error:', error)
     return json({
       error: 'Service error',
       details: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

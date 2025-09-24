@@ -1,10 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- Evidence Analysis Modal with LLM integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  interface Evidence {
+  interface Evidence {;
     id: string;
     content: string;
     type: string;
@@ -52,13 +52,13 @@ https://svelte.dev/e/js_parse_error -->
     isAnalyzing = true;
     try {
       const response = await fetch('/api/evidence', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId: evidence.caseId,
-          content: evidence.content,
+          content: evidence.content,;
           type: evidence.type,
-          generateAnalysis: true,
+          generateAnalysis: true,;
           metadata: { analysisMode }
         })
       });
@@ -78,12 +78,12 @@ https://svelte.dev/e/js_parse_error -->
     const tags = newTags.split.map(t => t.trim()).filter(Boolean);
     try {
       const response = await fetch('/api/evidence', {
-        method: 'PUT',
+        method: 'PUT',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidenceId: evidence.id,
-          caseId: evidence.caseId,
-          tags: [...(evidence.tags || []), ...tags]
+          caseId: evidence.caseId,;
+          tags: [...(evidence.tags || []), ...tags];
         })
       });
 

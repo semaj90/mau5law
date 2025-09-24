@@ -8,17 +8,17 @@ https://svelte.dev/e/bind_invalid_expression -->
   // Svelte 5 runes are auto-imported
 
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea/index.js';
   import { Separator } from '$lib/components/ui/separator/index.js';
   import { Select } from '$lib/components/ui/select/index.js';
@@ -76,15 +76,16 @@ https://svelte.dev/e/bind_invalid_expression -->
     const health = clusterHealth();
     const healthyCount = Object.values.filter-length;
     return {
-      healthy: healthyCount === Object.keys.length,
-      count: healthyCount,
-      total: Object.keys.length
+      healthy: healthyCount === Object.keys(errors).length,;
+      count: healthyCount,;
+      total: Object.keys(errors).length;
     };
   });
 
   // Component lifecycle
-  $effect(async () => {
-    // Focus input if enabled
+  $effect(() => {
+    (async () => {
+// Focus input if enabled
     if (autoFocus && messageInput) {
       messageInput.focus();
     }
@@ -108,6 +109,7 @@ https://svelte.dev/e/bind_invalid_expression -->
 
     // Check cluster health
     aiAssistantManager.checkClusterHealth();
+    })();
   });
 
   // Effect to scroll to bottom when conversation updates
@@ -131,11 +133,11 @@ https://svelte.dev/e/bind_invalid_expression -->
       if (useUnifiedService) {
         // Use unified AI service
         const options: UnifiedQueryOptions = {
-          query: message,
+          query: message,;
           mode: selectedMode === 'auto' ? undefined : selectedMode,
           useContext7: enableContext7 && useContext7,
-          maxResults: 10,
-          threshold: 0.7
+          maxResults: 10,;
+          threshold: 0.7;
         };
 
         const response = await unifiedAIService.query(options);
@@ -145,21 +147,21 @@ https://svelte.dev/e/bind_invalid_expression -->
             id: crypto.randomUUID(),
             type: 'assistant' as const,
             content: response.response,
-            timestamp: new Date(),
+            timestamp: new Date(),;
             metadata: {
-              model: response.metadata?.model || selectedMode,
+              model: response.metadata?.model || selectedMode,;
               temperature: currentTemperature(),
               responseTime: response.processingTime,
               tokenCount: response.metadata?.tokenCount || 0,
-              context7Used: useContext7
+              context7Used: useContext7;
             }
           };
           // Add user message first
           const userEntry = {
             id: crypto.randomUUID(),
-            type: 'user' as const,
-            content: message,
-            timestamp: new Date()
+            type: 'user' as const,;
+            content: message,;
+            timestamp: new Date();
           };
           console.log('📝 Unified AI Response:', response);
         } else {
@@ -167,16 +169,16 @@ https://svelte.dev/e/bind_invalid_expression -->
           // Fall back to regular AI assistant
           await aiAssistantManager.sendMessage(message, {
             useContext7: enableContext7 && useContext7,
-            model: currentModel(),
-            temperature: currentTemperature()
+            model: currentModel(),;
+            temperature: currentTemperature();
           });
         }
       } else {
         // Use regular AI assistant manager
         await aiAssistantManager.sendMessage(message, {
           useContext7: enableContext7 && useContext7,
-          model: currentModel(),
-          temperature: currentTemperature()
+          model: currentModel(),;
+          temperature: currentTemperature();
         });
       }
     } catch (error) {
@@ -467,7 +469,7 @@ Retry
           <label class="text-sm font-medium">
             Temperature: {currentTemperature()}
           </label>
-          <Slider
+          <Slider;
             bind:value={[currentTemperature()]}
             min={0}
             max={2}

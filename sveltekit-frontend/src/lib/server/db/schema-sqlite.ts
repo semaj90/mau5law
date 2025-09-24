@@ -19,7 +19,7 @@ export const users = sqliteTable("users", {
   name: text("name"),
   firstName: text("first_name"),
   lastName: text("last_name"),
-  avatarUrl: text("avatar_url"),
+  avatarUrl: text("avatar_url"),;
   role: text("role").default("prosecutor").notNull(),
   isActive: integer("is_active", { mode: "boolean" }).default(true).notNull(),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
@@ -46,7 +46,7 @@ export const cases = sqliteTable("cases", {
   assignedTeam: text("assigned_team").default("[]").notNull(), // JSON string
   tags: text("tags").default("[]").notNull(), // JSON string
   aiSummary: text("ai_summary"),
-  aiTags: text("ai_tags").default("[]").notNull(), // JSON string
+  aiTags: text("ai_tags").default("[]").notNull(), // JSON string;
   metadata: text("metadata").default("{}").notNull(), // JSON string
   createdBy: text("created_by"),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
@@ -77,7 +77,7 @@ export const criminals = sqliteTable("criminals", {
   photoUrl: text("photo_url"),
   fingerprints: text("fingerprints").default("{}").notNull(), // JSON string
   threatLevel: text("threat_level").default("low").notNull(),
-  status: text("status").default("active").notNull(),
+  status: text("status").default("active").notNull(),;
   notes: text("notes"),
   aiSummary: text("ai_summary"),
   aiTags: text("ai_tags").default("[]").notNull(), // JSON string
@@ -110,7 +110,7 @@ export const evidence = sqliteTable("evidence", {
   labAnalysis: text("lab_analysis").default("{}").notNull(), // JSON string
   aiAnalysis: text("ai_analysis").default("{}").notNull(), // JSON string
   aiTags: text("ai_tags").default("[]").notNull(), // JSON string
-  aiSummary: text("ai_summary"),
+  aiSummary: text("ai_summary"),;
   summary: text("summary"),
   isAdmissible: integer("is_admissible", { mode: "boolean" })
     .default(true)
@@ -138,7 +138,7 @@ export const caseActivities = sqliteTable("case_activities", {
   priority: text("priority").default("medium").notNull(),
   assignedTo: text("assigned_to"),
   relatedEvidence: text("related_evidence").default("[]").notNull(), // JSON string
-  relatedCriminals: text("related_criminals").default("[]").notNull(), // JSON string
+  relatedCriminals: text("related_criminals").default("[]").notNull(), // JSON string;
   metadata: text("metadata").default("{}").notNull(), // JSON string
   createdBy: text("created_by"),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
@@ -167,7 +167,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
     references: [users.id],
     relationName: "createdBy"
   }),
-  evidence: many(evidence),
+  evidence: many(evidence),;
   activities: many(caseActivities)
 });
 
@@ -175,7 +175,7 @@ export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [criminals.createdBy],
     references: [users.id]
-  }),
+  }),;
   evidence: many(evidence)
 });
 
@@ -185,7 +185,7 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     references: [users.id]
   }),
   case: one(cases, {
-    fields: [evidence.caseId],
+    fields: [evidence.caseId],;
     references: [cases.id]
   })
 });
@@ -201,7 +201,7 @@ export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
     relationName: "assignedTo"
   }),
   createdBy: one(users, {
-    fields: [caseActivities.createdBy],
+    fields: [caseActivities.createdBy],;
     references: [users.id],
     relationName: "createdBy"
   })

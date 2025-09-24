@@ -51,7 +51,7 @@ const streamChatService = fromPromise(async ({ input }: { input: { messages: Cha
       messages,
       model: settings?.model || "unknown" // @ts-ignore - Model property access,
       temperature: settings.temperature,
-      max_tokens: settings.maxTokens,
+      max_tokens: settings.maxTokens,;
       stream: true
     })
   });
@@ -71,7 +71,7 @@ export const chatMachine = createMachine({
   },
   context: {
     messages: [],
-    error: null,
+    error: null,;
     status: 'idle'
     }); const settings = {
       model: 'gemma3-legal',
@@ -135,7 +135,7 @@ export const chatMachine = createMachine({
       },
       on: {
         STREAM_CHUNK: {
-          actions: assign({
+          actions: assign({;
             messages: ({ context, event }) => {
               const newMessages = [...context.messages];
               const lastMessage = newMessages[newMessages.length - 1];
@@ -179,7 +179,7 @@ export const chatMachine = createMachine({
           target: 'idle',
           actions: assign({
             messages: [],
-            error: null,
+            error: null,;
             status: 'idle'
           })
         }

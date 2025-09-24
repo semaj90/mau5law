@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Canvas Evidence Board with Fabric.js Integration -->
@@ -47,8 +47,9 @@ https://svelte.dev/e/js_parse_error -->
   function setWorkflowMode(mode: string) {
     if (canvasService) canvasService.send(mode.toUpperCase());
   }
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
     try {
       // Dynamically import Fabric.js
       const fabricModule = await import("fabric");
@@ -64,8 +65,9 @@ https://svelte.dev/e/js_parse_error -->
         backgroundColor: "#f8fafc",
         selection: !readonly,
         preserveObjectStacking: true,
-        enableRetinaScaling: true,
-      });
+        enableRetinaScaling: true,;
+    })();
+  });
       fabricLoaded = true;
       // Add event listeners
       // ...existing event setup...
@@ -74,10 +76,10 @@ https://svelte.dev/e/js_parse_error -->
       const { createMachine, createActor } = xstateModule;
       const canvasMachine = createMachine({
         id: "canvasWorkflow",
-        initial: "evidence",
+        initial: "evidence",;
         states: {
           evidence: { on: { DRAW: "drawing", ANNOTATE: "annotation" } },
-          drawing: { on: { EVIDENCE: "evidence", ANNOTATE: "annotation" } },
+          drawing: { on: { EVIDENCE: "evidence", ANNOTATE: "annotation" } },;
           annotation: { on: { EVIDENCE: "evidence", DRAW: "drawing" } },
         },
       });
@@ -98,10 +100,10 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error("Failed to initialize Fabric.js or XState:", error);
       notifications.add({
-        type: "error",
-        title: "Canvas Error",
+        type: "error",;
+        title: "Canvas Error",;
         message:
-          "Failed to initialize canvas or workflow state. Some features may not work.",
+          "Failed to initialize canvas or workflow state. Some features may not work.",;
       });
   }
   });
@@ -121,12 +123,12 @@ https://svelte.dev/e/js_parse_error -->
         // Add image
         try {
           const img = await fabricLib.FabricImage.fromURL.thumbnailUrl));
-          img.set.x || 100,
+          img.set(x) || 100,
             top: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).y || 100,
             scaleX: ((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).width || 200) / img.width,
             scaleY: ((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).height || 150) / img.height,
-            selectable: !readonly,
-            evented: !readonly,
+            selectable: !readonly,;
+            evented: !readonly,;
           });
           fabricObject = img;
         } catch (imgError) {
@@ -138,9 +140,9 @@ https://svelte.dev/e/js_parse_error -->
             width: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).width || 200,
             fontSize: 14,
             fontFamily: "Arial",
-            fill: "#6b7280",
-            selectable: !readonly,
-            evented: !readonly,
+            fill: "#6b7280",;
+            selectable: !readonly,;
+            evented: !readonly,;
           });
   }
       } else {
@@ -155,13 +157,13 @@ https://svelte.dev/e/js_parse_error -->
           backgroundColor: "#ffffff",
           padding: 10,
           borderColor: "#e5e7eb",
-          cornerColor: "#3b82f6",
-          selectable: !readonly,
-          evented: !readonly,
+          cornerColor: "#3b82f6",;
+          selectable: !readonly,;
+          evented: !readonly,;
         });
   }
       // Add metadata
-      fabricObject.set.id,
+      fabricObject.set(id),
         evidenceType: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).type,
         customType: "evidence",
       });
@@ -214,19 +216,19 @@ https://svelte.dev/e/js_parse_error -->
           left: 100,
           top: 100,
           width: 100,
-          height: 80,
-          fill: "rgba(59, 130, 246, 0.1)",
+          height: 80,;
+          fill: "rgba(59, 130, 246, 0.1)",;
           stroke: "#3b82f6",
-          strokeWidth: 2,
+          strokeWidth: 2,;
         }));
       } else {
         fabricObject = new fabricLib.Circle({
           left: 100,
           top: 100,
-          radius: 50,
-          fill: "rgba(16, 185, 129, 0.1)",
+          radius: 50,;
+          fill: "rgba(16, 185, 129, 0.1)",;
           stroke: "#10b981",
-          strokeWidth: 2,
+          strokeWidth: 2,;
         });
   }
       fabricObject.set({
@@ -251,10 +253,10 @@ https://svelte.dev/e/js_parse_error -->
         top: 100,
         width: 200,
         fontSize: 16,
-        fontFamily: "Arial",
+        fontFamily: "Arial",;
         fill: "#1f2937",
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
-        padding: 10,
+        backgroundColor: "rgba(255, 255, 255, 0.9)",;
+        padding: 10,;
       });
 
       textbox.set({
@@ -367,18 +369,18 @@ https://svelte.dev/e/js_parse_error -->
       .map((obj: any) => ({
         evidenceId: obj.evidenceId,
         x: obj.left,
-        y: obj.top,
-        width: obj.width * obj.scaleX,
-        height: obj.height * obj.scaleY,
+        y: obj.top,;
+        width: obj.width * obj.scaleX,;
+        height: obj.height * obj.scaleY,;
       }));
 
     // Wire up to SvelteKit API endpoint
     try {
       const response = await fetch("/api/canvas/save", {
-        method: "POST",
+        method: "POST",;
         headers: {
           "Content-Type": "application/json",
-        },
+        },;
         body: JSON.stringify({
           caseId,
           canvasData,
@@ -389,15 +391,15 @@ https://svelte.dev/e/js_parse_error -->
         throw new Error("Failed to save canvas");
   }
       notifications.add({
-        type: "success",
-        title: "Canvas Saved",
-        message: "Evidence board saved successfully.",
+        type: "success",;
+        title: "Canvas Saved",;
+        message: "Evidence board saved successfully.",;
       });
     } catch (error) {
       notifications.add({
-        type: "error",
-        title: "Save Failed",
-        message: "Failed to save evidence board.",
+        type: "error",;
+        title: "Save Failed",;
+        message: "Failed to save evidence board.",;
       });
   }
     onsave?.();
@@ -407,9 +409,9 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const dataURL = fabricCanvas.toDataURL({
-        format: "png",
-        quality: 0.9,
-        multiplier: 2,
+        format: "png",;
+        quality: 0.9,;
+        multiplier: 2,;
       });
 
       // Create download link
@@ -419,16 +421,16 @@ https://svelte.dev/e/js_parse_error -->
       link.click();
 
       notifications.add({
-        type: "success",
-        title: "Export Complete",
-        message: "Evidence board exported successfully.",
+        type: "success",;
+        title: "Export Complete",;
+        message: "Evidence board exported successfully.",;
       });
     } catch (error) {
       console.error("Export error:", error);
       notifications.add({
-        type: "error",
-        title: "Export Failed",
-        message: "Failed to export evidence board.",
+        type: "error",;
+        title: "Export Failed",;
+        message: "Failed to export evidence board.",;
       });
   }}
   function clearCanvas() {

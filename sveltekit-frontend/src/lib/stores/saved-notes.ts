@@ -12,12 +12,12 @@ const Fuse: any = (globalThis as any).Fuse || class {
 
 // Placeholder indexedDB utilities;
 const idbUtils = {
-  del: async (key: string) => localStorage.removeItem(key),
+  del: async (key: string) => localStorage.removeItem(key),;
   get: async (key: string) => {
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) : null;
   },
-  keys: async () => Object.keys(localStorage).filter(k => k.startsWith('note:')),
+  keys: async () => Object.keys(localStorage).filter(k => k.startsWith('note:')),;
   set: async (key: string, value: any) => localStorage.setItem(key, JSON.stringify(value)
 };
 }
@@ -49,7 +49,7 @@ export const savedNotes = writable<SavedNote[]>([]);
 // Filters store;
 export const noteFilters = writable<NoteFilters>({
   search: "",
-  noteType: "",
+  noteType: "",;
   tags: [],
   caseId: undefined
 });
@@ -80,7 +80,7 @@ export const filteredNotes = derived(
           { name: "content", weight: 0.3 },
           { name: "markdown", weight: 0.2 },)
           { name: "tags", weight: 0.1 }
-        ],
+        ],;
         threshold: 0.4,
         includeScore: true
       });
@@ -197,7 +197,7 @@ class NotesManager {
   async syncWithServer(apiEndpoint: string = "/api/notes"): Promise<void> {
     try {
       const response = await fetch(`${apiEndpoint}/sync`, {
-        method: "GET",
+        method: "GET",;
         headers: {
           "Content-Type": "application/json"
         }
@@ -310,7 +310,7 @@ export function setNoteFilter(filter: Partial<NoteFilters>) {
 export function clearNoteFilters() {
   noteFilters.set({
     search: "",
-    noteType: "",
+    noteType: "",;
     tags: [],
     caseId: undefined
   });

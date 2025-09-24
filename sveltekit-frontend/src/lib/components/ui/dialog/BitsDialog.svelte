@@ -26,15 +26,15 @@
     class: className = '',
     children,
     trigger,
-    footer
+    footer;
    }: Props = $props();
 
   const sizeClasses = {
     sm: 'max-w-sm',
     md: 'max-w-md',
-    lg: 'max-w-lg',
-    xl: 'max-w-xl',
-    full: 'max-w-[95vw] max-h-[95vh]'
+    lg: 'max-w-lg',;
+    xl: 'max-w-xl',;
+    full: 'max-w-[95vw] max-h-[95vh]';
   };
 
   function handleOpenChange(newOpen: boolean) {

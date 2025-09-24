@@ -38,18 +38,18 @@
  * /api/v1/timeline/events/[eventId] endpoint
  */
 
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { db } from '$lib/server/db/unified-client';
-import { caseTimeline, cases } from '$lib/server/db/schemas/cases-schema';
-import { eq, desc, asc, and } from 'drizzle-orm';
-import { generateId } from 'lucia';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from '@sveltejs/kit'
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
+import { db } from '$lib/server/db/unified-client'
+import { caseTimeline, cases } from '$lib/server/db/schemas/cases-schema'
+import { eq, desc, asc, and } from 'drizzle-orm'
+import { generateId } from 'lucia'
+import { z } from 'zod'
 
 // UUID validation schema
-const UUIDSchema = z.string().uuid('Invalid ID format');
+const UUIDSchema = z.string().uuid('Invalid ID format')
 
-// Timeline event schemas;
+// Timeline event schemas
 const CreateTimelineEventSchema = z.object({
   eventType: z.enum(['case_created', 'evidence_added', 'interview_conducted', 'court_filing', 'hearing', 'investigation', 'analysis', 'decision', 'other']),
   title: z.string().min(1, 'Title is required'),
@@ -62,9 +62,9 @@ const CreateTimelineEventSchema = z.object({
   importance: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
   isPublic: z.boolean().default(false),
   metadata: z.record(z.any()).optional()
-});
+})
 
-const UpdateTimelineEventSchema = CreateTimelineEventSchema.partial();
+const UpdateTimelineEventSchema = CreateTimelineEventSchema.partial()
 
 const TimelineQuerySchema = z.object({
   eventType: z.string().optional(),
@@ -73,27 +73,27 @@ const TimelineQuerySchema = z.object({
   endDate: z.string().datetime().optional(),
   sortOrder: z.enum(['asc', 'desc']).default('asc'),
   includePrivate: z.coerce.boolean().default(true)
-});
+})
 
 /*
  * GET /api/v1/timeline/[caseId]
  * Get timeline events for a specific case
- */;
+ */
 export const GET: RequestHandler = async ({ params, url, locals }) => {
   try {
-    // Check authentication;
+    // Check authentication
     if (!locals.session || !locals.user) {
       return error(
         401,
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
-      );
+      )
     }
 
     // Validate case ID
-    const caseId = UUIDSchema.parse(params.caseId);
+    const caseId = UUIDSchema.parse(params.caseId)
 
     // Parse query parameters
-    const queryParams = Object.fromEntries(url.searchParams.entries();
+    const queryParams = Object.fromEntries(url.searchParams.entries()
     const {
       eventType,
       importance,
@@ -101,51 +101,51 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       endDate,
       sortOrder,
       includePrivate
-    } = TimelineQuerySchema.parse(queryParams);
+    } = TimelineQuerySchema.parse(queryParams)
 
     // Verify case exists and user has access
     const [caseData] = await db.select()
       .from(cases)
       .where(eq(cases.id, caseId)
-      .limit(1);
+      .limit(1)
 
     if (!caseData) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
-      );
+      )
     }
 
     // Build where conditions
-    const whereConditions = [eq(caseTimeline.caseId, caseId)];
+    const whereConditions = [eq(caseTimeline.caseId, caseId)]
 
     if (eventType) {
-      whereConditions.push(eq(caseTimeline.eventType, eventType);
+      whereConditions.push(eq(caseTimeline.eventType, eventType)
     }
 
     if (importance) {
-      whereConditions.push(eq(caseTimeline.importance, importance);
+      whereConditions.push(eq(caseTimeline.importance, importance)
     }
 
     if (startDate) {
-      whereConditions.push(sql`${caseTimeline.eventDate} >= ${startDate}`);
+      whereConditions.push(sql`${caseTimeline.eventDate} >= ${startDate}`)
     }
 
     if (endDate) {
-      whereConditions.push(sql`${caseTimeline.eventDate} <= ${endDate}`);
+      whereConditions.push(sql`${caseTimeline.eventDate} <= ${endDate}`)
     }
 
     if (!includePrivate) {
-      whereConditions.push(eq(caseTimeline.isPublic, true);
+      whereConditions.push(eq(caseTimeline.isPublic, true)
     }
 
     // Get timeline events
     const timelineEvents = await db.select()
       .from(caseTimeline)
       .where(and(...whereConditions)
-      .orderBy(sortOrder === 'desc' ? desc(caseTimeline.eventDate) : asc(caseTimeline.eventDate);
+      .orderBy(sortOrder === 'desc' ? desc(caseTimeline.eventDate) : asc(caseTimeline.eventDate)
 
-    // Calculate timeline statistics;
+    // Calculate timeline statistics
     const statistics = {
       totalEvents: timelineEvents.length,
       eventTypes: [...new Set(timelineEvents.map(e => e.eventType))],
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       } : null,
       criticalEvents: timelineEvents.filter(item => item.length),
       publicEvents: timelineEvents.filter(item => item.length)
-    };
+    }
 
     return json({
       success: true,
@@ -174,10 +174,10 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         filters: { eventType, importance, startDate, endDate, sortOrder, includePrivate },
         timestamp: new Date().toISOString()
       }
-    });
+    })
 
   } catch (err: any) {
-    console.error('Timeline GET error:', err);
+    console.error('Timeline GET error:', err)
 
     if (err instanceof z.ZodError) {
       return error(
@@ -187,7 +187,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           code: 'INVALID_QUERY',
           details: err.errors
         })
-      );
+      )
     }
 
     return error(
@@ -197,45 +197,45 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         code: 'FETCH_FAILED',
         details: err.message
       })
-    );
+    )
   }
-};
+}
 
 /*
  * POST /api/v1/timeline/[caseId]
  * Add a new timeline event to a case
- */;
+ */
 export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
-    // Check authentication;
+    // Check authentication
     if (!locals.session || !locals.user) {
       return error(
         401,
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
-      );
+      )
     }
 
     // Validate case ID
-    const caseId = UUIDSchema.parse(params.caseId);
+    const caseId = UUIDSchema.parse(params.caseId)
 
     // Parse request body
-    const body = await request.json();
-    const eventData = CreateTimelineEventSchema.parse(body);
+    const body = await request.json()
+    const eventData = CreateTimelineEventSchema.parse(body)
 
     // Verify case exists and user has access
     const [caseData] = await db.select()
       .from(cases)
       .where(eq(cases.id, caseId)
-      .limit(1);
+      .limit(1)
 
     if (!caseData) {
       return error(
         404,
         makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' })
-      );
+      )
     }
 
-    const timelineEventId = generateId(15);
+    const timelineEventId = generateId(15)
 
     const newEvent = {
       id: timelineEventId,
@@ -243,15 +243,15 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       ...eventData,
       eventDate: new Date(eventData.eventDate),
       createdAt: new Date()
-    };
+    }
 
     // Insert the new timeline event
-    const [insertedEvent] = await db.insert(caseTimeline).values(newEvent).returning();
+    const [insertedEvent] = await db.insert(caseTimeline).values(newEvent).returning()
 
     // Update case updated timestamp
     await db.update(cases)
       .set({ updatedAt: new Date() })
-      .where(eq(cases.id, caseId);
+      .where(eq(cases.id, caseId)
 
     return json({
       success: true,
@@ -266,10 +266,10 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         timestamp: new Date().toISOString(),
         action: 'timeline_event_created'
       }
-    }, { status: 201 });
+    }, { status: 201 })
 
   } catch (err: any) {
-    console.error('Timeline POST error:', err);
+    console.error('Timeline POST error:', err)
 
     if (err instanceof z.ZodError) {
       return error(
@@ -279,7 +279,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           code: 'INVALID_DATA',
           details: err.errors
         })
-      );
+      )
     }
 
     return error(
@@ -289,6 +289,6 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         code: 'CREATE_FAILED',
         details: err.message
       })
-    );
+    )
   }
-};
+}

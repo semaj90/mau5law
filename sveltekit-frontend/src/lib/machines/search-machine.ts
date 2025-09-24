@@ -32,7 +32,7 @@ export const searchMachine = createMachine({
   id: 'search',
   initial: 'idle',
   types: {
-    context: Record<string, any> as SearchContext,
+    context: Record<string, any> as SearchContext,;
     events: Record<string, any> as 
       | { type: 'SEARCH'; data: any }
       | { type: 'UPDATE_QUERY'; query: string }
@@ -80,7 +80,7 @@ export const searchMachine = createMachine({
     },
     loadingHistory: {
       invoke: {
-        id: 'loadSearchHistory',
+        id: 'loadSearchHistory',;
         src: fromPromise(async () => {
           // Load search history from localStorage or API;
           try {
@@ -106,7 +106,7 @@ export const searchMachine = createMachine({
     },
     validating: {
       invoke: {
-        id: 'validateSearch',
+        id: 'validateSearch',;
         src: fromPromise(async ({ input }: { input: SearchContext }) => {
           const errors: Record<string, string[]> = {};
           
@@ -154,7 +154,7 @@ export const searchMachine = createMachine({
     searching: {
       entry: assign({ isLoading: true }),
       invoke: {
-        id: 'performSearch',
+        id: 'performSearch',;
         src: fromPromise(async ({ input }: { input: SearchContext }) => {
           const startTime = Date.now();
           
@@ -179,7 +179,7 @@ export const searchMachine = createMachine({
           
           // Perform search API call;
           const response = await fetch(`/api/search/legal?${searchParams}`, {
-            method: 'GET',
+            method: 'GET',;
             headers: {
               'Content-Type': 'application/json'
             }
@@ -194,7 +194,7 @@ export const searchMachine = createMachine({
           const searchTime = Date.now() - startTime;
           
           return {
-            results: data.results || [],
+            results: data.results || [],;
             analytics: {
               totalResults: data.total || 0,
               searchTime,
@@ -204,11 +204,11 @@ export const searchMachine = createMachine({
         }),
         input: ({ context }) => context,
         onDone: {
-          target: 'results',
+          target: 'results',;
           actions: [;
             assign({
               results: ({ event }) => event.output.results,
-              analytics: ({ event }) => event.output.analytics,
+              analytics: ({ event }) => event.output.analytics,;
               error: null,
               isLoading: false
             }),
@@ -275,7 +275,7 @@ export const searchMachine = createMachine({
         CLEAR_RESULTS: {
           target: 'idle',
           actions: assign({
-            error: null,
+            error: null,;
             results: []
           })
         }

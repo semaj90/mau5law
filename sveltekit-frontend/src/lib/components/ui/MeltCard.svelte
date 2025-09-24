@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -19,18 +19,18 @@ https://svelte.dev/e/js_parse_error -->
   					legal: 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950',
   					evidence: 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950',
   					caseItem: 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950',
-  					yorha: 'border-yellow-400 bg-black/90 text-yellow-400'
+  					yorha: 'border-yellow-400 bg-black/90 text-yellow-400';
   				},
   				size: {
   					default: 'p-6',
   					sm: 'p-4',
   					lg: 'p-8',
-  					xl: 'p-10'
+  					xl: 'p-10';
   				}
   			},
   			defaultVariants: {
-  				variant: 'default',
-  				size: 'default'
+  				variant: 'default',;
+  				size: 'default';
   			}
   		}
   	);
@@ -65,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
   		footer,
   		role = 'region',
   		'data-testid': testId,
-  		onclick
+  		onclick;
   	}: Props = $props();
   	let cardClass = $derived(cn(cardVariants({ variant, size }), class));
   	type $$Props = Props;

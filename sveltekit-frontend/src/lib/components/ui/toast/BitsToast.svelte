@@ -30,18 +30,18 @@
     default: 'border-yorha-border bg-yorha-bg-secondary text-yorha-text-primary',
     success: 'border-green-500/30 bg-green-500/10 text-green-400 ring-green-500/20',
     error: 'border-red-500/30 bg-red-500/10 text-red-400 ring-red-500/20',
-    warning: 'border-yellow-500/30 bg-yellow-500/10 text-yellow-400 ring-yellow-500/20',
-    info: 'border-blue-500/30 bg-blue-500/10 text-blue-400 ring-blue-500/20',
-    legal: 'border-yorha-primary/30 bg-yorha-primary/10 text-yorha-primary ring-yorha-primary/20'
+    warning: 'border-yellow-500/30 bg-yellow-500/10 text-yellow-400 ring-yellow-500/20',;
+    info: 'border-blue-500/30 bg-blue-500/10 text-blue-400 ring-blue-500/20',;
+    legal: 'border-yorha-primary/30 bg-yorha-primary/10 text-yorha-primary ring-yorha-primary/20';
   };
 
   const iconMap = {
     success: CheckCircle,
     error: AlertCircle,
     warning: AlertTriangle,
-    info: Info,
-    default: Info,
-    legal: Info
+    info: Info,;
+    default: Info,;
+    legal: Info;
   };
 
   const IconComponent = iconMap[variant];
@@ -93,7 +93,7 @@
 </Toast.Root>
 
 <style>
-  :global(.legal-toast-content) {
+  :global(.legal-toast-content) {;
     backdrop-filter: blur(8px);
     border: 1px solid rgb(var(--yorha-border) / 0.2);
   }

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousedown) and new syntaxes for event handling is not allowed. Use only the onmousedown syntax
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousedown) and new syntaxes for event handling is not allowed. Use only the onmousedown syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousedown) and new syntaxes for event handling is not allowed. Use only the onmousedown syntax -->
 <script lang="ts">
@@ -26,9 +26,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   		disabled = false,
   		audioEnabled = true,
   		spatialPosition = { x: 0, y: 0, z: 0 },
-  		label = 'N64 Slider',
+  		label = 'N64 Slider',;
   		class: className = '',
-  		...restProps
+  		...restProps;
   	}: Props = $props();
 
   	let sliderElement: HTMLInputElement;
@@ -239,12 +239,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   		animationFrame = requestAnimationFrame(animate);
   	}
 
-  	$effect(async () => {
-  		mounted = true;
+  	$effect(() => {
+    (async () => {
+mounted = true;
   		await initializeAudio();
   		animate();
   		updateVisualEffects();
-  	});
+    })();
+  });
 
   	onDestroy(() => {
   		mounted = false;
@@ -278,11 +280,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   	});
 </script>
 
-<div 
+<div
 	class="n64-slider {className}"
-	class:disabled
+	class:disabled;
 	class:interacting={isInteracting}
-	style="
+	style=";
 		--slider-percentage: {percentage}%;
 		--vertex-jitter-x: {vertexJitter.x}px;
 		--vertex-jitter-y: {vertexJitter.y}px;
@@ -297,12 +299,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	{/if}
 
 	<div class="n64-slider-container">
-		<div 
+		<div
 			bind:this={trackElement}
 			class="n64-slider-track"
 		>
 			<div class="n64-slider-fill"></div>
-			<div 
+			<div
 				bind:this={thumbElement}
 				class="n64-slider-thumb"
 			></div>
@@ -315,7 +317,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 			{min}
 			{max}
 			{step}
-			{disabled}
+			{disabled};
 			bind:value
 			oninput={handleInput}
 			onmousedown={handleInteractionStart}
@@ -353,18 +355,18 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 		max-width: 300px;
 		font-family: 'Courier New', monospace;
 		user-select: none;
-		
+
 		/* N64-style transform with vertex jitter */
-		transform: 
-			translateX(var(--vertex-jitter-x, 0)) 
+		transform:
+			translateX(var(--vertex-jitter-x, 0))
 			translateY(var(--vertex-jitter-y, 0));
-		
+
 		/* Pixel drift simulation */
-		filter: 
+		filter:
 			blur(calc(var(--pixel-drift, 0) * 0.5px))
 			saturate(var(--color-bleed, 1))
 			contrast(1.1);
-		
+
 		transition: transform 0.1s ease;
 	}
 
@@ -400,12 +402,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 		);
 		border: 2px solid var(--n64-primary);
 		border-radius: 0; /* Sharp N64 edges */
-		box-shadow: 
+		box-shadow:
 			inset 2px 2px 4px var(--n64-shadow),
 			2px 2px 4px rgba(0, 0, 0, 0.2);
-		
+
 		/* Texture simulation */
-		background-image: 
+		background-image:
 			repeating-linear-gradient(
 				45deg,
 				transparent,
@@ -428,19 +430,19 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 			var(--n64-primary) 100%
 		);
 		border-radius: 0;
-		
+
 		/* Animated fill effect */
 		background-size: 200% 100%;
 		animation: fillPulse 2s ease-in-out infinite;
 	}
 
 	@keyframes fillPulse {
-		0%, 100% { 
-			background-position: 0% 50%; 
+		0%, 100% {
+			background-position: 0% 50%;
 			filter: brightness(1);
 		}
-		50% { 
-			background-position: 100% 50%; 
+		50% {
+			background-position: 100% 50%;
 			filter: brightness(1.2);
 		}
 	}
@@ -461,19 +463,19 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 		);
 		border: 2px solid var(--n64-primary);
 		border-radius: 0;
-		box-shadow: 
+		box-shadow:
 			2px 2px 6px var(--n64-shadow),
 			inset 1px 1px 2px var(--n64-highlight);
-		
+
 		cursor: pointer;
 		transition: all 0.1s ease;
-		
+
 		/* N64 controller button styling */
 		position: relative;
 		z-index: 2;
 	}
 
-	.n64-slider-thumb: :before {
+	.n64-slider-thumb::before {
 		content: '';
 		position: absolute;
 		top: 50%;
@@ -519,7 +521,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 		color: var(--n64-primary);
 		margin-top: 8px;
 		text-shadow: 1px 1px 2px var(--n64-shadow);
-		
+
 		/* Retro display styling */
 		background: var(--n64-background);
 		border: 1px solid var(--n64-primary);
@@ -532,7 +534,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	/* Interaction states */
 	.n64-slider.interacting .n64-slider-thumb {
 		transform: translate(-50%, -50%) scale(1.1);
-		box-shadow: 
+		box-shadow:
 			3px 3px 8px var(--n64-shadow),
 			inset 1px 1px 2px var(--n64-highlight);
 		background: linear-gradient(
@@ -570,7 +572,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	}
 
 	/* Hover effects */
-	.n64-slider: not(.disabled):hover .n64-slider-thumb {
+	.n64-slider:not(.disabled):hover .n64-slider-thumb {
 		transform: translate(-50%, -50%) scale(1.05);
 		filter: brightness(1.1);
 	}
@@ -591,11 +593,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 			transform: none;
 			transition: none;
 		}
-		
+
 		.n64-slider-fill {
 			animation: none;
 		}
-		
+
 		.n64-slider-thumb {
 			transition: none;
 		}
@@ -607,7 +609,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 			width: 24px;
 			height: 24px;
 		}
-		
+
 		.n64-slider-track {
 			height: 10px;
 		}

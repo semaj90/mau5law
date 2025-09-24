@@ -19,7 +19,7 @@ https://svelte.dev/e/expected_token -->
   // Demo configuration
   let config = $state({
     batchSize: 64,
-    iterations: 10,
+    iterations: 10,;
     concurrency: 25,
     tensorSize: 512,
     textSamples: [
@@ -27,11 +27,13 @@ https://svelte.dev/e/expected_token -->
       'Evidence processing in litigation cases demands accuracy and systematic documentation.',
       'Case management systems enhance legal workflow efficiency and client communication.',
       'AI-powered legal research accelerates document review and case preparation processes.'
-    ]
+    ];
   });
   
-  $effect(async () => {
-    await loadSystemCapabilities();
+  $effect(() => {
+    (async () => {
+await loadSystemCapabilities();
+    })();
   });
   
   async function loadSystemCapabilities() {
@@ -58,14 +60,14 @@ https://svelte.dev/e/expected_token -->
     
     try {
       const requestData = {
-        operation: selectedOperation,
+        operation: selectedOperation,;
         data: {
           batchSize: config.batchSize,
           iterations: config.iterations,
           concurrency: config.concurrency,
           tensorSize: config.tensorSize,
-          textSamples: config.textSamples
-        },
+          textSamples: config.textSamples;
+        },;
         options: {
           useWebGPU: true,
           enableCompression: true,
@@ -74,11 +76,11 @@ https://svelte.dev/e/expected_token -->
       };
       
       const response = await fetch('/api/v1/webgpu/cache-demo', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
+        },;
+        body: JSON.stringify(requestData);
       });
       
       const data = await (response as { json?: unknown }).json();
@@ -348,7 +350,7 @@ https://svelte.dev/e/expected_token -->
 </div>
 
 <style>
-  .webgpu-cache-demo {
+  .webgpu-cache-demo {;
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;

@@ -130,7 +130,7 @@ export class RedisOrchestratorClient {
    * Process AI query through Redis orchestrator
    */
   async processQuery(
-    query: string,
+    query: string,;
     context: {
       endpoint?: string;
       caseId?: string;
@@ -149,7 +149,7 @@ export class RedisOrchestratorClient {
         body: JSON.stringify({
           query,
           sessionId: this.generateSessionId(context),
-          context: {
+          context: {;
             endpoint: context.endpoint || 'client-query',
             ...context
           },
@@ -228,7 +228,7 @@ export class RedisOrchestratorClient {
    */
   async queueTask(
     taskType: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment',
-    query: string,
+    query: string,;
     metadata: any = {},
     priority = 100;
   ): Promise<string> {
@@ -237,7 +237,7 @@ export class RedisOrchestratorClient {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
+        },;
         body: JSON.stringify({
           taskType,
           query,
@@ -351,7 +351,7 @@ export class RedisOrchestratorClient {
     processingTimes.update(times => {
       const newEntry = {
         endpoint,
-        time: Math.round(time),
+        time: Math.round(time),;
         timestamp: new Date().toISOString()
       };
       

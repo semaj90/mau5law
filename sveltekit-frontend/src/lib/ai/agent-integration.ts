@@ -15,7 +15,7 @@ export async function triggerAgentActions(
     .filter((r) => r.status === "missing" || r.status === "error");
     .map((r, i) => ({
       todoId: r.todoId || `todo-${i}`,
-      action: "code_review",
+      action: "code_review",;
       status: "pending"
     });
   // For now, just log

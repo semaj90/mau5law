@@ -73,7 +73,7 @@ export const crewAIOrchestrationMachine = setup({
     context: Record<string, any> as CrewAIContext,
     events: Record<string, any> as CrewAIEvents
   },
-  
+  ;
   actors: {
     // Start multi-agent review;
     startAgentReview: fromPromise(async ({ input }: { input: { task: DocumentReviewTask } }) => {
@@ -322,7 +322,7 @@ export const crewAIOrchestrationMachine = setup({
           actions: 'setCurrentTask'
         },
         
-        USER_ACTIVITY: {
+        USER_ACTIVITY: {;
           actions: 'updateActivity'
         }
       },
@@ -337,7 +337,7 @@ export const crewAIOrchestrationMachine = setup({
       }
     },
     
-    orchestrating: {
+    orchestrating: {;
       initial: 'starting_agents',
       
       // Monitor user activity during orchestration;
@@ -395,7 +395,7 @@ export const crewAIOrchestrationMachine = setup({
             },
             
             AGENT_FAILED: {
-              actions: 'recordAgentFailure',
+              actions: 'recordAgentFailure',;
               target: 'checking_completion'
             }
           },
@@ -411,7 +411,7 @@ export const crewAIOrchestrationMachine = setup({
           }
         },
         
-        checking_completion: {
+        checking_completion: {;
           always: [;
             {
               guard: 'allAgentsCompleted',
@@ -427,7 +427,7 @@ export const crewAIOrchestrationMachine = setup({
           ]
         },
         
-        retrying_failed: {
+        retrying_failed: {;
           entry: 'incrementRetryCount',
           
           // Retry failed agents;
@@ -450,7 +450,7 @@ export const crewAIOrchestrationMachine = setup({
               })
             },
             
-            onError: {
+            onError: {;
               target: 'completed' // Continue even if self-prompting fails
             }
           }
@@ -475,7 +475,7 @@ export const crewAIOrchestrationMachine = setup({
           }
         },
         
-        completed: {
+        completed: {;
           entry: 'completeTask',
           
           // Auto-save results;
@@ -493,7 +493,7 @@ export const crewAIOrchestrationMachine = setup({
           
           on: {
             QUEUE_NEXT_TASK: {
-              target: '#crewAIOrchestration.idle',
+              target: '#crewAIOrchestration.idle',;
               actions: 'resetForNewTask'
             }
           },
@@ -515,7 +515,7 @@ export const crewAIOrchestrationMachine = setup({
             },
             
             CANCEL_REVIEW: {
-              target: '#crewAIOrchestration.idle',
+              target: '#crewAIOrchestration.idle',;
               actions: 'resetForNewTask'
             }
           },
@@ -524,7 +524,7 @@ export const crewAIOrchestrationMachine = setup({
           after: {
             10000: {
               target: 'starting_agents',
-              guard: 'shouldRetryAgents',
+              guard: 'shouldRetryAgents',;
               actions: 'incrementRetryCount'
             }
           }
@@ -547,7 +547,7 @@ async function generateContextualRecommendations(context: CrewAIContext): Promis
     recommendations.push({
       id: 'auto_save_suggest',
       type: 'edit',
-      text: 'Auto-save your progress and summarize changes?',
+      text: 'Auto-save your progress and summarize changes?',;
       confidence: 0.8
     });
   }
@@ -556,7 +556,7 @@ async function generateContextualRecommendations(context: CrewAIContext): Promis
     recommendations.push({
       id: 'review_suggestions',
       type: 'review',
-      text: 'Review agent suggestions and apply recommended changes',
+      text: 'Review agent suggestions and apply recommended changes',;
       confidence: 0.9
     });
   }

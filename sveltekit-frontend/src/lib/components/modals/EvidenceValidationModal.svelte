@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
-<!-- @migration-task Error while migrating Svelte code: Identifier 'aiEvent' has already been declared
+<!-- @migration-task Error while migrating Svelte code: Identifier 'aiEvent' has already been declared;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -33,10 +33,10 @@ https://svelte.dev/e/js_parse_error -->
   let validationChoice = $state<"approve" | "reject" | null >(null);
   let feedback = $state<string >("");
   let corrections = $state({
-    summary: "",
+    summary: "",;
     tags: [] as string[],
-    evidenceType: "",
-    analysis: "",
+    evidenceType: "",;
+    analysis: "",;
   });
   let isSubmitting = $state(false);
   let showCorrections = $state(false);
@@ -45,10 +45,10 @@ https://svelte.dev/e/js_parse_error -->
   $effect(() => { 
     if (evidence && open) {
       corrections = {
-        summary: evidence.aiSummary || "",
+        summary: evidence.aiSummary || "",;
         tags: evidence.aiTags || [],
-        evidenceType: evidence.evidenceType || "",
-        analysis: evidence.aiAnalysis?.analysis || "",
+        evidenceType: evidence.evidenceType || "",;
+        analysis: evidence.aiAnalysis?.analysis || "",;
       };
     }
   });
@@ -79,15 +79,15 @@ https://svelte.dev/e/js_parse_error -->
       const payload = {
         evidenceId: evidence.id,
         eventId: aiEvent?.id || null,
-        valid: validationChoice === "approve",
-        feedback: feedback.trim() || null,
-        corrections: validationChoice === "reject" ? corrections : null,
+        valid: validationChoice === "approve",;
+        feedback: feedback.trim() || null,;
+        corrections: validationChoice === "reject" ? corrections : null,;
       };
 
       const response = await fetch("/api/evidence/validate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        method: "POST",;
+        headers: { "Content-Type": "application/json" },;
+        body: JSON.stringify(payload),;
       });
 
       const result = await (response as { json?: unknown }).json();

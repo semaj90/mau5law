@@ -51,7 +51,7 @@
   // Available optimization profiles
   let availableProfiles = $state<any[]>([]);
   // Component lifecycle
-  $effect(async () => {
+  $effect(() => {
     // Subscribe to metrics and alerts
     const unsubscribeMetrics = gpuPerformanceOptimizer.metricsStore.subscribe(value => {
       metrics = value;
@@ -505,21 +505,21 @@
 
 <style>
   /* Custom scrollbar styling */
-  .overflow-x-auto: :-webkit-scrollbar {
+  .overflow-x-auto::-webkit-scrollbar {;
     height: 4px;
   }
   
-  .overflow-x-auto: :-webkit-scrollbar-track {
+  .overflow-x-auto::-webkit-scrollbar-track {
     background: #475569;
     border-radius: 2px;
   }
   
-  .overflow-x-auto: :-webkit-scrollbar-thumb {
+  .overflow-x-auto::-webkit-scrollbar-thumb {
     background: #64748b;
     border-radius: 2px;
   }
   
-  .overflow-x-auto: :-webkit-scrollbar-thumb:hover {
+  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
 </style>

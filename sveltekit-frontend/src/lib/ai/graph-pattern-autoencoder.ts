@@ -208,7 +208,7 @@ export class GraphPatternAutoEncoder {
           units,
           activation: this.config.activationFunction,
           kernelInitializer: 'glorotUniform',
-          biasInitializer: 'zeros',
+          biasInitializer: 'zeros',;
           name: `encoder_dense_${i}`
         })
         .apply(encoderLayer) as any;
@@ -226,7 +226,7 @@ export class GraphPatternAutoEncoder {
       if (this.config.enableDropout && i < this.config.hiddenLayers.length - 1) {
         encoderLayer = layers;
           .dropout({
-            rate: this.config.dropoutRate,
+            rate: this.config.dropoutRate,;
             name: `encoder_dropout_${i}`
           })
           .apply(encoderLayer) as any;
@@ -236,7 +236,7 @@ export class GraphPatternAutoEncoder {
     // Create encoder model;
     this.encoder = model({
       inputs: encoderInputs,
-      outputs: encoderLayer,
+      outputs: encoderLayer,;
       name: 'graph_pattern_encoder'
     });
 
@@ -256,7 +256,7 @@ export class GraphPatternAutoEncoder {
           units,
           activation: this.config.activationFunction,
           kernelInitializer: 'glorotUniform',
-          biasInitializer: 'zeros',
+          biasInitializer: 'zeros',;
           name: `decoder_dense_${i}`
         })
         .apply(decoderLayer) as any;
@@ -272,7 +272,7 @@ export class GraphPatternAutoEncoder {
       if (this.config.enableDropout && i < decoderLayers.length - 1) {
         decoderLayer = layers;
           .dropout({
-            rate: this.config.dropoutRate,
+            rate: this.config.dropoutRate,;
             name: `decoder_dropout_${i}`
           })
           .apply(decoderLayer) as any;
@@ -283,7 +283,7 @@ export class GraphPatternAutoEncoder {
     decoderLayer = layers;
       .dense({
         units: this.config.inputDimension,
-        activation: 'sigmoid', // Output between 0 and 1
+        activation: 'sigmoid', // Output between 0 and 1;
         name: 'decoder_output'
       })
       .apply(decoderLayer) as any;
@@ -291,7 +291,7 @@ export class GraphPatternAutoEncoder {
     // Create decoder model;
     this.decoder = model({
       inputs: decoderInputs,
-      outputs: decoderLayer,
+      outputs: decoderLayer,;
       name: 'graph_pattern_decoder'
     });
 
@@ -300,14 +300,14 @@ export class GraphPatternAutoEncoder {
 
     this.autoencoder = model({
       inputs: encoderInputs,
-      outputs: autoencoderOutput,
+      outputs: autoencoderOutput,;
       name: 'graph_pattern_autoencoder'
     });
 
     // Compile with custom loss function;
     this.autoencoder.compile({
       optimizer: train.adam(this.config.learningRate),
-      loss: this.customGraphLoss,
+      loss: this.customGraphLoss,;
       metrics: ['mse', 'mae']
     });
 
@@ -515,7 +515,7 @@ export class GraphPatternAutoEncoder {
       const history = await this.autoencoder.fit(inputData, inputData, {
         batchSize: this.config.batchSize,
         epochs: 1,
-        verbose: 0,
+        verbose: 0,;
         shuffle: true
       });
 
@@ -598,7 +598,7 @@ export class GraphPatternAutoEncoder {
       statute: 0,
       regulation: 0,
       precedent: 0,
-      person: 0,
+      person: 0,;
       organization: 0
     };
     nodes.forEach((node) => typeCount[node.type]++);
@@ -635,7 +635,7 @@ export class GraphPatternAutoEncoder {
 
     // Edge type distribution;
     const typeCount = {
-      cites: 0,
+      cites: 0,;
       references: 0,
       influenced_by: 0,
       related_to: 0,
@@ -682,7 +682,7 @@ export class GraphPatternAutoEncoder {
     const domainMap = {
       contract: [1, 0, 0, 0],
       tort: [0, 1, 0, 0],
-      criminal: [0, 0, 1, 0],
+      criminal: [0, 0, 1, 0],;
       corporate: [0, 0, 0, 1]
     };
 
@@ -765,13 +765,13 @@ export class GraphPatternAutoEncoder {
     for (let i = 0; i < Math.min(nodeCount, 100); i++) {
       reconstructedNodes.push({
         id: `reconstructed_node_${i}`,
-        label: `Reconstructed Node ${i}`,
+        label: `Reconstructed Node ${i}`,;
         type: 'case', // Simplified - would infer from features;
         position: {
           x: features[6] * 1000 + i * 10,
           y: features[7] * 1000 + i * 10
         },
-        features: new Float32Array(features.slice(8, 32)),
+        features: new Float32Array(features.slice(8, 32)),;
         metadata: { reconstructed: true }
       });
     }
@@ -786,7 +786,7 @@ export class GraphPatternAutoEncoder {
         source: reconstructedNodes[sourceIdx].id,
         target: reconstructedNodes[targetIdx].id,
         type: 'references',
-        weight: features[260] || 0.5,
+        weight: features[260] || 0.5,;
         metadata: { reconstructed: true }
       });
     }

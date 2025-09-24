@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string
+<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string;
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
@@ -6,7 +6,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
 
   import { browser } from "$app/environment";
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { Accessibility, Keyboard, Maximize2, Minimize2 } from "lucide-svelte";
   import { onMount } from "svelte";
@@ -26,9 +26,9 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     { key: "Ctrl + F", description: "Toggle filters", action: "filter" },
     { key: "Ctrl + H", description: "Show/hide shortcuts", action: "help" },
     {
-      key: "Ctrl + Alt + A",
-      description: "Accessibility panel",
-      action: "accessibility",
+      key: "Ctrl + Alt + A",;
+      description: "Accessibility panel",;
+      action: "accessibility",;
     },
     { key: "F11", description: "Toggle fullscreen", action: "fullscreen" },
     { key: "Escape", description: "Close modals/exit", action: "escape" },
@@ -282,7 +282,7 @@ toggleFullscreen()}
 <AccessibilityPanel bind:showPanel={showAccessibilityPanel} />
 
 <style>
-  :global(.floating-actions) {
+  :global(.floating-actions) {;
     transition: all 0.3s ease;
   }
 

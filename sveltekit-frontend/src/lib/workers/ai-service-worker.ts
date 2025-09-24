@@ -46,7 +46,7 @@ class AIServiceWorker {
       id: 'ollama',
       type: 'ollama',
       endpoint: 'http://localhost:11434',
-      timeout: 30000,
+      timeout: 30000,;
       retries: 2
     });
 
@@ -54,7 +54,7 @@ class AIServiceWorker {
       id: 'llamacpp',
       type: 'llamacpp',
       endpoint: 'http://localhost:8000',
-      timeout: 15000,
+      timeout: 15000,;
       retries: 3
     });
 
@@ -62,7 +62,7 @@ class AIServiceWorker {
       id: 'autogen',
       type: 'autogen',
       endpoint: 'http://localhost:8001',
-      timeout: 45000,
+      timeout: 45000,;
       retries: 1
     });
 
@@ -70,7 +70,7 @@ class AIServiceWorker {
       id: 'crewai',
       type: 'crewai',
       endpoint: 'http://localhost:8002',
-      timeout: 60000,
+      timeout: 60000,;
       retries: 1
     });
   }
@@ -108,7 +108,7 @@ class AIServiceWorker {
       this.requestQueue.push({ ...task, taskId });
       this.sendMessage({
         type: 'TASK_QUEUED',
-        taskId,
+        taskId,;
         payload: { position: this.requestQueue.length }
       });
       return;
@@ -121,7 +121,7 @@ class AIServiceWorker {
     try {
       this.sendMessage({
         type: 'TASK_STARTED',
-        taskId,
+        taskId,;
         payload: { providerId: task.providerId }
       });
 
@@ -129,14 +129,14 @@ class AIServiceWorker {
 
       this.sendMessage({
         type: 'TASK_COMPLETED',
-        taskId,
+        taskId,;
         payload: result
       });
     } catch (error: any) {
       if (error instanceof Error && error.name === 'AbortError') {
         this.sendMessage({
           type: 'TASK_CANCELLED',
-          taskId,
+          taskId,;
           payload: null
         });
       } else {
@@ -179,7 +179,7 @@ class AIServiceWorker {
 
   private async callProvider(
     provider: AIProviderConfig,
-    task: AITask,
+    task: AITask,;
     signal: AbortSignal;
   ): Promise<AIResponse> {
     const timeoutId = setTimeout(() => {
@@ -206,7 +206,7 @@ class AIServiceWorker {
 
   private async callOllama(
     provider: AIProviderConfig,
-    task: AITask,
+    task: AITask,;
     signal: AbortSignal;
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/generate`, {
@@ -217,7 +217,7 @@ class AIServiceWorker {
         prompt: task.prompt,
         system: task.systemPrompt,
         stream: false,
-        options: {
+        options: {;
           temperature: task.temperature || 0.1,
           top_p: task.topP || 0.9,
           top_k: task.topK || 40,
@@ -239,7 +239,7 @@ class AIServiceWorker {
       providerId: provider.id,
       model: task?.model || "unknown" // @ts-ignore - Model property access,
       tokensUsed: data.eval_count || 0,
-      responseTime: data.total_duration ? Math.round(data.total_duration / 1000000) : 0,
+      responseTime: data.total_duration ? Math.round(data.total_duration / 1000000) : 0,;
       metadata: {
         evalCount: data.eval_count,
         evalDuration: data.eval_duration,
@@ -250,7 +250,7 @@ class AIServiceWorker {
 
   private async callAutoGen(
     provider: AIProviderConfig,
-    task: AITask,
+    task: AITask,;
     signal: AbortSignal;
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/chat`, {
@@ -259,7 +259,7 @@ class AIServiceWorker {
       body: JSON.stringify({
         agents: task.agents || ['assistant'],
         message: task.prompt,
-        max_rounds: task.maxRounds || 5,
+        max_rounds: task.maxRounds || 5,;
         context: task.context || {}
       }),
       signal
@@ -279,7 +279,7 @@ class AIServiceWorker {
       tokensUsed: data.total_tokens || 0,
       responseTime: Date.now() - task.timestamp,
       metadata: {
-        rounds: data.rounds,
+        rounds: data.rounds,;
         agents: data.agent_responses,
         conversationId: data.conversation_id
       }
@@ -288,7 +288,7 @@ class AIServiceWorker {
 
   private async callCrewAI(
     provider: AIProviderConfig,
-    task: AITask,
+    task: AITask,;
     signal: AbortSignal;
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/crew/execute`, {
@@ -297,7 +297,7 @@ class AIServiceWorker {
       body: JSON.stringify({
         crew_id: task.crewId || 'legal-analysis-crew',
         task: task.prompt,
-        context: task.context || {},
+        context: task.context || {},;
         agents: task.agents || ['researcher', 'analyst', 'writer']
       }),
       signal
@@ -317,7 +317,7 @@ class AIServiceWorker {
       tokensUsed: data.total_tokens || 0,
       responseTime: Date.now() - task.timestamp,
       metadata: {
-        taskId: data.task_id,
+        taskId: data.task_id,;
         agents: data.agent_outputs,
         executionTime: data.execution_time
       }
@@ -357,7 +357,7 @@ class AIServiceWorker {
       taskId: 'status',
       payload: {
         activeRequests: this.activeRequestCount,
-        queueLength: this.requestQueue.length,
+        queueLength: this.requestQueue.length,;
         providers: Array.from(this.providers.values()),
         maxConcurrent: this.maxConcurrentRequests
       }
@@ -374,7 +374,7 @@ class AIServiceWorker {
       taskId,
       payload: {
         name: error.name,
-        message: error.message,
+        message: error.message,;
         stack: error.stack
       }
     });

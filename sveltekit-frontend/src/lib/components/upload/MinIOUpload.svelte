@@ -6,43 +6,38 @@
   import { fileUploadSchema, type FileUploadData } from '$lib/schemas/upload';
   import { page } from '$app/state';
   import { invalidateAll } from '$app/navigation';
-  import type { PageData } from './$types';
   // Props
   interface Props {
-    data: PageData
+    data?: any;
     caseId?: string;
     onUploadComplete?: (result: UploadResult) => void;
     onUploadError?: (error: string) => void;
     multiple?: boolean;
     disabled?: boolean;
   }
-  let { data, 
-    caseId = '', 
+
+  let {
+    data = { form: null },
+    caseId = '',
     onUploadComplete,
     onUploadError,
     multiple = false,
-    disabled = false 
-   }: { data, 
-    caseId = '', 
-    onUploadComplete,
-    onUploadError,
-    multiple = false,
-    disabled = false 
-  : unknown } = $props();
+    disabled = false
+  }: Props = $props();
 
   interface UploadResult {
     success: boolean
     documentId: string
     url: string
     objectName: string
-    message: string
+    message: string;
   }
 
   // Superforms setup
-  const { form, errors, enhance, submitting, message } = superForm((data as { form?: unknown }).form, {
+  const { form, errors, enhance, submitting, message } = superForm(data?.form, {
     dataType: 'form',
     multipleFiles: true,
-    validators: {
+    validators: {;
       file: (value) => {
         if (!value || !(value instanceof File)) return 'File is required';
         const maxSize = 100 * 1024 * 1024; // 100MB
@@ -63,8 +58,8 @@
       }
     },
     onResult: ({ result }) => {
-      if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'success') {
-        const uploadResult = (result as { type?: unknown; data?: unknown; error?: unknown }).data?.uploadResult as UploadResult;
+      if (result.type === 'success') {
+        const uploadResult = result.data?.uploadResult as UploadResult;
         if (uploadResult?.success) {
           onUploadComplete?.(uploadResult);
           // Reset form
@@ -77,8 +72,8 @@
           onUploadError?.(error);
           uploadStatus = 'error';
         }
-      } else if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'error') {
-        onUploadError?.('Upload failed: ' + (result as { type?: unknown; data?: unknown; error?: unknown }).error?.message);
+      } else if (result.type === 'error') {
+        onUploadError?.('Upload failed: ' + result.error?.message);
         uploadStatus = 'error';
       }
     }
@@ -87,7 +82,7 @@
   // Upload state
   let uploadProgress = $state(0);
   let uploadStatus: 'idle' | 'uploading' | 'processing' | 'completed' | 'error' = $state('idle');
-  let fileInput: HTMLInputElement
+  let fileInput: HTMLInputElement;
   let dragOver = $state(false);
   let previewUrl = $state<string | null>(null);
 
@@ -158,9 +153,9 @@
       }
     }, 200);
 
-    return async ({ result }: { result: unknown }) => {
+    return async ({ result }: { result: any }) => {
       clearInterval(progressInterval);
-      if ((result as { type?: unknown; data?: unknown; error?: unknown }).type === 'success') {
+      if (result.type === 'success') {
         uploadProgress = 100;
         uploadStatus = 'processing';
         // Simulate processing time
@@ -403,7 +398,7 @@
 </div>
 
 <style>
-  .minio-upload-container {
+  .minio-upload-container {;
     max-width: 600px;
     margin: 0 auto;
     padding: 2rem;
@@ -417,7 +412,7 @@
   }
 
   .form-group label {
-    display: block
+    display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
     color: var(--text-primary);
@@ -432,14 +427,14 @@
     border-radius: 6px;
     background: var(--bg-primary);
     color: var(--text-primary);
-    font-family: inherit
+    font-family: inherit;
     transition: border-color 0.2s;
   }
 
   .form-input:focus,
   .form-select:focus,
   .form-textarea:focus {
-    outline: none
+    outline: none;
     border-color: var(--accent-primary);
     box-shadow: 0 0 0 3px var(--accent-primary-20);
   }
@@ -452,8 +447,8 @@
     border: 2px dashed var(--border-color);
     border-radius: 8px;
     padding: 2rem;
-    text-align: center
-    cursor: pointer
+    text-align: center;
+    cursor: pointer;
     transition: all 0.2s;
     background: var(--bg-primary);
   }
@@ -465,14 +460,14 @@
   }
 
   .file-upload-area.has-file {
-    border-style: solid
+    border-style: solid;
     border-color: var(--success-color);
   }
 
   .upload-prompt {
-    display: flex
-    flex-direction: column
-    align-items: center
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 1rem;
   }
 
@@ -491,25 +486,25 @@
   }
 
   .file-preview {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 1rem;
-    text-align: left
+    text-align: left;
   }
 
   .image-preview {
     width: 80px;
     height: 80px;
-    object-fit: cover
+    object-fit: cover;
     border-radius: 6px;
   }
 
   .file-icon {
     width: 80px;
     height: 80px;
-    display: flex
-    align-items: center
-    justify-content: center
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 2rem;
     background: var(--bg-secondary);
     border-radius: 6px;
@@ -533,23 +528,23 @@
     margin-top: 0.5rem;
     padding: 0.25rem 0.5rem;
     border: 1px solid var(--error-color);
-    background: transparent
+    background: transparent;
     color: var(--error-color);
     border-radius: 4px;
-    cursor: pointer
+    cursor: pointer;
     font-size: 0.875rem;
   }
 
   .remove-file:hover {
     background: var(--error-color);
-    color: white
+    color: white;
   }
 
   .checkbox-label {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 0.5rem;
-    cursor: pointer
+    cursor: pointer;
   }
 
   .upload-progress {
@@ -561,7 +556,7 @@
     height: 8px;
     background: var(--bg-tertiary);
     border-radius: 4px;
-    overflow: hidden
+    overflow: hidden;
   }
 
   .progress-fill {
@@ -572,7 +567,7 @@
 
   .progress-text {
     margin-top: 0.5rem;
-    text-align: center
+    text-align: center;
     font-size: 0.875rem;
     color: var(--text-secondary);
   }
@@ -585,11 +580,11 @@
     width: 100%;
     padding: 0.875rem;
     background: var(--accent-primary);
-    color: white
-    border: none
+    color: white;
+    border: none;
     border-radius: 6px;
     font-weight: 600;
-    cursor: pointer
+    cursor: pointer;
     transition: background-color 0.2s;
   }
 

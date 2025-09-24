@@ -111,7 +111,7 @@ class MarkovPredictorWithRedis {
 
   // Enhanced prediction with SIMD-accelerated similarity
   async predictNextWithSimilarity(
-    prev: Action,
+    prev: Action,;
     context: { docId?: string; query?: string },
     topK = 3;
   ): Promise<PredictionResult[]> {
@@ -136,7 +136,7 @@ class MarkovPredictorWithRedis {
   }
 
   private async enhancePredictionsWithSimilarity(
-    predictions: PredictionResult[],
+    predictions: PredictionResult[],;
     context: { docId?: string; query?: string },
     topK: number;
   ): Promise<PredictionResult[]> {

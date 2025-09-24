@@ -86,7 +86,7 @@ class UserActivityDetector {
     // Create activity event;
     const activityEvent: ActivityEvent = {
       type: eventType,
-      timestamp: now,
+      timestamp: now,;
       target: event?.target ? (event.target as Element).tagName: undefined
     };
 
@@ -208,7 +208,7 @@ class UserActivityDetector {
   private sendActivityToGPUBridge(eventType: string, data?: any): void {
     if (this.wsConnection && this.wsConnection.readyState === WebSocket.OPEN) {
       const message = {
-        type: eventType,
+        type: eventType,;
         timestamp: Date.now(),
         ...data
       };

@@ -30,7 +30,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
           id: devUserId || 'dev-user-custom',
           email: devUserEmail || 'dev-user@legal-ai.local',
           firstName: 'Dev',
-          lastName: 'User',
+          lastName: 'User',;
           role: 'admin'
         };
       }
@@ -41,7 +41,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
         id: 'dev-user-123',
         email: 'developer@legal-ai.local',
         firstName: 'Development',
-        lastName: 'User',
+        lastName: 'User',;
         role: 'admin'
       };
     }
@@ -56,7 +56,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
         id: session.user.id || session.user.userId,
         email: session.user.email,
         firstName: session.user.firstName,
-        lastName: session.user.lastName,
+        lastName: session.user.lastName,;
         role: session.user.role
       };
     }
@@ -74,7 +74,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
             id: decoded.sub || decoded.userId || decoded.id,
             email: decoded.email,
             firstName: decoded.firstName,
-            lastName: decoded.lastName,
+            lastName: decoded.lastName,;
             role: decoded.role
           };
         } catch (jwtError) {
@@ -90,7 +90,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
       if (headerKey === apiKey) {
         return {
           id: 'system',
-          email: 'system@legal-ai.local',
+          email: 'system@legal-ai.local',;
           role: 'system'
         };
       }

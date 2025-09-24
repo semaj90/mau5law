@@ -33,10 +33,10 @@ Displays all media: evidence, generated images, documents, uploads
   let galleryStats = $derived(() => {
     const stats = {
       total: mediaItems.length,
-      evidence: mediaItems.filter(item => item.category === 'evidence').length,
-      images: mediaItems.filter(item => item.category === 'images').length,
+      evidence: mediaItems.filter(item => item.category === 'evidence').length,;
+      images: mediaItems.filter(item => item.category === 'images').length,;
       documents: mediaItems.filter(item => item.category === 'documents').length,
-      aiGenerated: mediaItems.filter(item => item.metadata?.aiGenerated).length
+      aiGenerated: mediaItems.filter(item => item.metadata?.aiGenerated).length;
     };
     return stats;
   });
@@ -199,7 +199,7 @@ Displays all media: evidence, generated images, documents, uploads
 
     try {
       const response = await fetch(`/api/gallery/${(item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).id}`, {
-        method: 'DELETE'
+        method: 'DELETE';
       });
 
       if ((response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
@@ -218,7 +218,7 @@ Displays all media: evidence, generated images, documents, uploads
     const shareData = {
       title: (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).title || 'Gallery Item',
       text: (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).description || '',
-      url: window.location.href
+      url: window.location.href;
     };
 
     if (navigator.share) {
@@ -251,8 +251,8 @@ Displays all media: evidence, generated images, documents, uploads
 
     try {
       const response = await fetch('/api/gallery/upload', {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
 
       if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
@@ -694,7 +694,7 @@ Displays all media: evidence, generated images, documents, uploads
 </div>
 
 <style>
-  .gallery-page {
+  .gallery-page {;
     min-height: 100vh;
     background: #f5f5f5;
     padding: 1rem;

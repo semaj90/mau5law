@@ -11,7 +11,7 @@ const DATABASE_URL = import.meta.env.DATABASE_URL ||
 const client = postgres(DATABASE_URL, {
   max: 10, // Maximum number of connections
   idle_timeout: 20, // Close idle connections after 20 seconds
-  connect_timeout: 10, // Connection timeout in seconds
+  connect_timeout: 10, // Connection timeout in seconds;
   prepare: false // Disable prepared statements for compatibility
 });
 

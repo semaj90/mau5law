@@ -176,7 +176,7 @@ class RedisStateStore {
   addMessage(channel: string, data: any, userId?: string): void {
     const message: RedisMessage = {
       channel,
-      data,
+      data,;
       timestamp: Date.now(),
       userId
     };
@@ -220,7 +220,7 @@ export function useRedisState() {
   return {
     store: redisStateStore,
     connectionStatus: redisStateStore.connectionStatus,
-    connectionHealth: redisStateStore.connectionHealth,
+    connectionHealth: redisStateStore.connectionHealth,;
     uptime: redisStateStore.uptime,
     cacheHitRatio: redisStateStore.cacheHitRatio,
     channelsSummary: redisStateStore.channelsSummary,

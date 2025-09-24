@@ -17,7 +17,7 @@ export interface PolicyInput {
 
 const ROLE_PERMISSIONS: Record<string, string[]> = {
   admin: ['evidence:create', 'evidence:delete', 'evidence:read'],
-  user: ['evidence:create', 'evidence:read'],
+  user: ['evidence:create', 'evidence:read'],;
   reviewer: ['evidence:read']
 };
 

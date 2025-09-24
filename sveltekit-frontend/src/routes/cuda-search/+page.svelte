@@ -122,7 +122,7 @@ Content-Type: application/json
 			</div>
 			<div class="status-item nes-container">
 				<p class="nes-text">🤖 <strong>Ollama:</strong>
-					<a href="http://localhost:11434/api/tags" target="_blank" class="nes-text is-success">
+					<a href="http://localhost:11434/api/tags" target="_blank" class="nes-text is-success">;
 						localhost:11434
 					</a>
 				</p>
@@ -137,7 +137,7 @@ Content-Type: application/json
 </main>
 
 <style>
-	:global(body) {
+	:global(body) {;
 		font-family: "Press Start 2P", cursive;
 		background-color: #212529;
 		color: #f8f9fa;
@@ -229,7 +229,7 @@ Content-Type: application/json
 		text-decoration: none;
 	}
 
-	.status-item a:hover {
+	.status-item a:hover {;
 		text-decoration: underline;
 	}
 

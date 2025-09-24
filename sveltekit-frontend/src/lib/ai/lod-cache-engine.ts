@@ -257,7 +257,7 @@ class LODCacheEngine {
       gpuContextProvider.loadShaderResources('embedding-generation', {
         webgpu: { compute: this.createWebGPUEmbeddingShader() },
         webgl2: { vertex: this.createWebGL2ComputeVertexShader(), fragment: this.createWebGL2EmbeddingFragmentShader() },
-        webgl1: { vertex: this.createWebGL1ComputeVertexShader(), fragment: this.createWebGL1EmbeddingFragmentShader() },
+        webgl1: { vertex: this.createWebGL1ComputeVertexShader(), fragment: this.createWebGL1EmbeddingFragmentShader() },;
         cpu: { uniforms: { processingMode: 'embedding-generation' } }
       })
     );
@@ -315,7 +315,7 @@ class LODCacheEngine {
    * Main entry point: Process LLM output into LOD-cached, SVG-summarized, vector-enhanced format
    */
   async processLLMOutput(
-    text: string,
+    text: string,;
     context: LODProcessingContext = {}
   ): Promise<ProcessLLMOutputResult> {
     console.log(`🔄 Processing LLM output: ${text.length} chars for LOD caching...`);
@@ -323,7 +323,7 @@ class LODCacheEngine {
     telemetryBus.publish({
       type: 'lod.process.start',
       meta: {
-        length: text.length,
+        length: text.length,;
         backend: this.activeBackend,
         cacheSize: this.cache.size
       }
@@ -386,7 +386,7 @@ class LODCacheEngine {
         durationMs: totalTime,
         backend: this.activeBackend,
         cacheEntryId: cacheEntry.id,
-        embeddings: vectorMetadata.embeddings.length,
+        embeddings: vectorMetadata.embeddings.length,;
         dimensions: this.config.vector_dimensions
       }
     });
@@ -398,7 +398,7 @@ class LODCacheEngine {
    * Intelligent retrieval with contextual prompting enhancement
    */
   async retrieveWithEnhancedRAG(
-    query: string,
+    query: string,;
     options: EnhancedRAGRetrievalOptions = {}
   ): Promise<EnhancedRAGResponse> {
     console.log(`🔍 Enhanced RAG retrieval for: "${query}"`);
@@ -451,7 +451,7 @@ class LODCacheEngine {
   private async generateMultiLevelCompression(text: string): Promise<LODCacheEntry['compressed_data']> {
     // Leverage existing SIMD engine for tile-level compression;
     const simdResult = await simdTextTilingEngine.processText(text, {
-      type: 'general',
+      type: 'general',;
       context: 'cache-engine'
     });
 
@@ -462,7 +462,7 @@ class LODCacheEngine {
       glyph: await this.compressToGlyph(segments.glyph),
       tile: simdResult.compressedTiles[0]?.compressedData || new Uint8Array(7),
       block: await this.compressTileGroup(simdResult.compressedTiles.slice(0, 5)),
-      section: await this.compressTileGroup(simdResult.compressedTiles.slice(0, 25)),
+      section: await this.compressTileGroup(simdResult.compressedTiles.slice(0, 25)),;
       document: await this.compressFullDocument(simdResult)
     };
   }
@@ -478,7 +478,7 @@ class LODCacheEngine {
       glyph: await this.svgProcessor.generateGlyphSVG(compressedData.glyph),
       tile: await this.svgProcessor.generateTileSVG(compressedData.tile, text.slice(0, 50)),
       block: await this.svgProcessor.generateBlockSVG(compressedData.block, text.slice(0, 200)),
-      section: await this.svgProcessor.generateSectionSVG(compressedData.section, text.slice(0, 1000)),
+      section: await this.svgProcessor.generateSectionSVG(compressedData.section, text.slice(0, 1000)),;
       document: await this.svgProcessor.generateDocumentSVG(compressedData.document, text)
     };
   }
@@ -487,7 +487,7 @@ class LODCacheEngine {
    * Extract vector metadata for enhanced RAG
    */
   private async extractVectorMetadata(
-    text: string,
+    text: string,;
     context: LODProcessingContext
   ): Promise<LODCacheEntry['vector_metadata']> {
     const embeddings = await this.vectorEncoder.generateMultiLevelEmbeddings(text);
@@ -512,7 +512,7 @@ class LODCacheEngine {
       glyph: text[0] || ' ',
       tile: words.slice(0, 3).join(' '),
       block: words.slice(0, 15).join(' '),
-      section: words.slice(0, 75).join(' '),
+      section: words.slice(0, 75).join(' '),;
       document: text
     };
   }
@@ -723,7 +723,7 @@ class LODCacheEngine {
         type: 'preprocess_related_content',
         payload: {
           entry,
-          context,
+          context,;
           config: this.config
         }
       });
@@ -931,7 +931,7 @@ class VectorMetadataEncoder {
     ];
 
     telemetryBus.publish({
-      type: 'lod.embed.start',
+      type: 'lod.embed.start',;
       meta: { length: text.length, dimensions: adapted, segments: segments.length }
     });
 
@@ -955,7 +955,7 @@ class VectorMetadataEncoder {
 
     const duration = performance.now() - start;
     telemetryBus.publish({
-      type: 'lod.embed.end',
+      type: 'lod.embed.end',;
       meta: { durationMs: duration, dimensions: this.dimensions, backend: (this.cacheEngine as any)?.activeBackend }
     });
 
@@ -1033,7 +1033,7 @@ class VectorMetadataEncoder {
 
     const results = await runCompute.call(hybridGPU, embeddingShader, {
       textData: textBuffer,
-      lengths: lengthBuffer,
+      lengths: lengthBuffer,;
       config: new Float32Array([this.dimensions, maxLength, segments.length, 0])
     });
 

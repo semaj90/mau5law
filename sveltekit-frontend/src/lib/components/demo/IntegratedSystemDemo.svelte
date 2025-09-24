@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -7,13 +7,13 @@ https://svelte.dev/e/js_parse_error -->
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Separator } from '$lib/components/ui/separator/index.js';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs/index.js';
@@ -50,7 +50,7 @@ https://svelte.dev/e/js_parse_error -->
     sessionManagement: false,
     aiAssistant: false,
     productionServices: false,
-    overallHealth: 'unknown' as 'healthy' | 'partial' | 'down' | 'unknown'
+    overallHealth: 'unknown' as 'healthy' | 'partial' | 'down' | 'unknown';
   });
   let serviceMetrics = $state({
     lastUpdate: new Date());,
@@ -71,8 +71,9 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Component lifecycle
-  $effect(async () => {
-    // Initialize system health monitoring
+  $effect(() => {
+    (async () => {
+// Initialize system health monitoring
     await checkSystemHealth();
     // Set up periodic health checks
     const healthCheckInterval = setInterval(checkSystemHealth, 10000); // Every 10 seconds
@@ -83,6 +84,7 @@ https://svelte.dev/e/js_parse_error -->
       clearInterval(healthCheckInterval);
       clearInterval(metricsInterval);
     };
+    })();
   });
 
   // Comprehensive system health check

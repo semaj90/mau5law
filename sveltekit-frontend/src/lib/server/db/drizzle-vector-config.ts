@@ -52,7 +52,7 @@ export const users = pgTable('users', {
   id: serial('id').primaryKey(),
   email: varchar('email', { length: 255 }).notNull().unique(),
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
-  name: varchar('name', { length: 255 }),
+  name: varchar('name', { length: 255 }),;
   role: varchar('role', { length: 50 }).default('user'),
   isActive: boolean('is_active').default(true),
   lastLoginAt: timestamp('last_login_at'),
@@ -75,7 +75,7 @@ export const cases = pgTable(
     descriptionEmbedding: vector('description_embedding', { dimensions: 768 }),
 
     // Metadata
-    metadata: jsonb('metadata'),
+    metadata: jsonb('metadata'),;
     tags: jsonb('tags'),
 
     createdAt: timestamp('created_at').defaultNow(),
@@ -111,7 +111,7 @@ export const documents = pgTable(
     contentEmbedding: vector('content_embedding', { dimensions: 768 }),
     titleEmbedding: vector('title_embedding', { dimensions: 768 }),
 
-    // Metadata and processing info
+    // Metadata and processing info;
     metadata: jsonb('metadata'),
     processingStatus: varchar('processing_status', { length: 50 }).default('pending'),
     extractedText: text('extracted_text'),
@@ -150,7 +150,7 @@ export const evidence = pgTable(
     // Evidence-specific fields
     relevanceScore: integer('relevance_score'), // 0-100
     confidenceLevel: varchar('confidence_level', { length: 50 }),
-    tags: jsonb('tags'),
+    tags: jsonb('tags'),;
     metadata: jsonb('metadata'),
 
     createdAt: timestamp('created_at').defaultNow(),
@@ -179,7 +179,7 @@ export const vectorSearchLogs = pgTable(
     searchTimeMs: integer('search_time_ms'),
     userId: integer('user_id').references(() => users.id),
     searchType: varchar('search_type', { length: 50 }), // 'cases', 'documents', 'evidence', 'mixed'
-    similarityThreshold: integer('similarity_threshold'), // Store as integer (0-100)
+    similarityThreshold: integer('similarity_threshold'), // Store as integer (0-100);
     metadata: jsonb('metadata'),
     createdAt: timestamp('created_at').defaultNow()
   },
@@ -203,7 +203,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
     fields: [cases.userId],
     references: [users.id]
   }),
-  documents: many(documents),
+  documents: many(documents),;
   evidence: many(evidence)
 });
 
@@ -211,7 +211,7 @@ export const documentsRelations = relations(documents, ({ one, many }) => ({
   case: one(cases, {
     fields: [documents.caseId],
     references: [cases.id]
-  }),
+  }),;
   evidence: many(evidence)
 });
 
@@ -221,14 +221,14 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     references: [cases.id]
   }),
   document: one(documents, {
-    fields: [evidence.documentId],
+    fields: [evidence.documentId],;
     references: [documents.id]
   })
 });
 
 export const vectorSearchLogsRelations = relations(vectorSearchLogs, ({ one }) => ({
   user: one(users, {
-    fields: [vectorSearchLogs.userId],
+    fields: [vectorSearchLogs.userId],;
     references: [users.id]
   })
 });
@@ -271,7 +271,7 @@ export class VectorSearchService {
   static async searchDocuments(
     queryEmbedding: number[],
     caseId?: number,
-    threshold: number = 0.7,
+    threshold: number = 0.7,;
     limit: number = 10;
   ) {
     const caseFilter = caseId ? sql`AND case_id = ${caseId}` : sql``;
@@ -309,7 +309,7 @@ export class VectorSearchService {
     queryEmbedding: number[],
     caseId?: number,
     evidenceType?: string,
-    threshold: number = 0.7,
+    threshold: number = 0.7,;
     limit: number = 10;
   ) {
     const caseFilter = caseId ? sql`AND case_id = ${caseId}` : sql``;
@@ -356,7 +356,7 @@ export class VectorSearchService {
     return {
       cases: caseResults,
       documents: documentResults,
-      evidence: evidenceResults,
+      evidence: evidenceResults,;
       total:
         (caseResults as unknown as any[]).length +
         (documentResults as unknown as any[]).length +
@@ -385,7 +385,7 @@ export class VectorSearchService {
       searchType,
       similarityThreshold: Math.round(similarityThreshold * 100),
       metadata: {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString(),;
         version: '1.0.0'
       }
     });
@@ -411,14 +411,14 @@ export async function healthCheck(): Promise<any> {
     return {
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      connection: 'active',
+      connection: 'active',;
       result: result[0]
     };
   } catch (error: any) {
     return {
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
-      connection: 'failed',
+      connection: 'failed',;
       error: error instanceof Error ? error.message: 'Unknown error'
     };
   }

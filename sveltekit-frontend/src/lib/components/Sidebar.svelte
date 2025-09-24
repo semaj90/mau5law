@@ -17,26 +17,27 @@
   let activeTab: "evidence" | "notes" | "canvas" = "evidence";
   let fuse: Fuse<any> | null = null;
 
-  // Svelte store values (auto-unwrapped with $)
-  // $sidebarStore and $lokiStore provided by imports
-  // TODO: Convert to $derived: sidebarOpen = $sidebarStore?.open || isHovered || isPinned
-  // TODO: Convert to $derived: evidenceItems = $lokiStore?.evidence ?? []
-  // TODO: Convert to $derived: notesItems = $lokiStore?.notes ?? []
-  // TODO: Convert to $derived: canvasStates = $lokiStore?.canvasStates ?? []
+  // Svelte store values using $derived
+  let sidebarOpen = $derived($sidebarStore?.open || isHovered || isPinned);
+  let evidenceItems = $derived($lokiStore?.evidence ?? []);
+  let notesItems = $derived($lokiStore?.notes ?? []);
+  let canvasStates = $derived($lokiStore?.canvasStates ?? []);
 
   // Create Fuse instance when relevant items change
-  // TODO: Convert to $derived: if (activeTab === "evidence" && evidenceItems.length > 0) {
-    fuse = new Fuse(evidenceItems, { keys: ["fileName", "description", "tags"], threshold: 0.3 })
-  } else if (activeTab === "notes" && notesItems.length > 0) {
-    fuse = new Fuse(notesItems, { keys: ["title", "content", "tags"], threshold: 0.3 });
-  } else {
-    fuse = null;
-  }
+  $effect(() => {
+    if (activeTab === "evidence" && evidenceItems.length > 0) {
+      fuse = new Fuse(evidenceItems, { keys: ["fileName", "description", "tags"], threshold: 0.3 });
+    } else if (activeTab === "notes" && notesItems.length > 0) {
+      fuse = new Fuse(notesItems, { keys: ["title", "content", "tags"], threshold: 0.3 });
+    } else {
+      fuse = null;
+    }
+  });
 
   // Compute search results reactively
-  // TODO: Convert to $derived: searchResults = (() => {
+  let searchResults = $derived(() => {
     if (searchQuery && fuse) {
-      return fuse.search.map((r) => r.item)
+      return fuse.search(searchQuery).map((r) => r.item);
     }
     if (activeTab === "evidence") return evidenceItems;
     if (activeTab === "notes") return notesItems;
@@ -159,7 +160,7 @@
 
 <style>
   /* @unocss-include */
-  .sidebar-container {
+  .sidebar-container {;
     position: fixed;
     top: 60px; /* Header height */
     left: 0;

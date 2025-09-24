@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name
+<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name;
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
@@ -26,8 +26,8 @@ https://svelte.dev/e/attribute_invalid_name -->
     error = "";
     try {
       const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST",;
+        headers: { "Content-Type": "application/json" },;
         body: JSON.stringify({ email, password, confirmPassword })
       });
       const data = await res.json();
@@ -89,7 +89,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 </Dialog.Root>
 
 <style>
-  .overlay {
+  .overlay {;
     position: fixed;
     inset: 0;
     background: hsl(0 0% 0% / 0.5);
@@ -135,7 +135,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     border: 1px solid #d0d0d5;
     border-radius: 0.45rem;
   }
-  input:focus {
+  input:focus {;
     outline: 2px solid #6366f1;
     outline-offset: 1px;
   }

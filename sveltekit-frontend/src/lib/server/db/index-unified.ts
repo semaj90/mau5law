@@ -101,7 +101,7 @@ export async function healthCheck() {
     if (health.status === 'unhealthy') {
       return {
         status: "unhealthy" as const,
-        error: health.error || 'Database connection failed',
+        error: health.error || 'Database connection failed',;
         timestamp: new Date()
       };
     }
@@ -122,7 +122,7 @@ export async function healthCheck() {
             status: "degraded" as const,
             error: `${failedTests.length} table(s) inaccessible`,
             timestamp: new Date(),
-            tables: connection.tables || [],
+            tables: connection.tables || [],;
             extensions: connection.extensions || []
           };
         }
@@ -136,14 +136,14 @@ export async function healthCheck() {
       status: "healthy" as const,
       timestamp: new Date(),
       version: connection.version,
-      tables: connection.tables?.length || 0,
+      tables: connection.tables?.length || 0,;
       extensions: connection.extensions || [],
       poolStats: health.pools
     };
   } catch (error: any) {
     return {
       status: "unhealthy" as const,
-      error: error.message,
+      error: error.message,;
       timestamp: new Date()
     };
   }
@@ -164,7 +164,7 @@ export async function getSystemHealth() {
       pools: dbHealth.pools
     },
     application: appHealth,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString(),;
     version: '2.0.0-unified'
   };
 }
@@ -183,7 +183,7 @@ export function getVectorStore() {
 
     return new PGVectorStore(embeddings, {
       pool: getAppPool(),
-      tableName: "vector_embeddings",
+      tableName: "vector_embeddings",;
       columns: {
         idColumnName: "id",
         vectorColumnName: "embedding",

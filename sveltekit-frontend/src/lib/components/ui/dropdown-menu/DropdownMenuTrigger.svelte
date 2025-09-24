@@ -14,7 +14,7 @@
     children,
     class: className = '',
     disabled = false,
-    asChild = false
+    asChild = false;
   }: Props = $props();
 
   let triggerClasses = $derived(cn(

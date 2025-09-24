@@ -41,7 +41,7 @@
   const evidenceBuilder = createLegalEvidenceAnalyzer({
     caseType: 'criminal',
     urgency: 'high',
-    aiModel: 'gemma3'
+    aiModel: 'gemma3';
   });
 
   let selectedEvidence = $state<Set<string>>(new Set());
@@ -66,11 +66,11 @@
       relevanceScore: 0.92,
       authenticity: 'verified',
       privileged: false,
-      redacted: false,
+      redacted: false,;
       metadata: {
         from: 'john.doe@company.com',
         to: 'legal@contractor.com',
-        subject: 'Re: Project Status Update'
+        subject: 'Re: Project Status Update';
       }
     },
     {
@@ -86,11 +86,11 @@
       relevanceScore: 0.88,
       authenticity: 'verified',
       privileged: true,
-      redacted: true,
+      redacted: true,;
       metadata: {
         account: '****-1234',
         amount: '$25,000.00',
-        institution: 'First National Bank'
+        institution: 'First National Bank';
       }
     },
     {
@@ -106,11 +106,11 @@
       relevanceScore: 0.85,
       authenticity: 'pending',
       privileged: true,
-      redacted: false,
+      redacted: false,;
       metadata: {
-        attendees: 7,
-        duration: '2h 15m',
-        recorder: 'Legal Counsel'
+        attendees: 7,;
+        duration: '2h 15m',;
+        recorder: 'Legal Counsel';
       }
     }
   ]);
@@ -161,10 +161,10 @@
 
     return {
       total: evidenceData.length,
-      verified: evidenceData.filter(e => e.authenticity === 'verified').length,
-      privileged: evidenceData.filter(e => e.privileged).length,
+      verified: evidenceData.filter(e => e.authenticity === 'verified').length,;
+      privileged: evidenceData.filter(e => e.privileged).length,;
       redacted: evidenceData.filter(e => e.redacted).length,
-      byType: stats
+      byType: stats;
     };
   });
 
@@ -217,9 +217,9 @@
       email: '📧',
       transcript: '📝',
       financial: '💰',
-      document: '📄',
-      audio: '🎵',
-      video: '🎥'
+      document: '📄',;
+      audio: '🎵',;
+      video: '🎥';
     };
     return icons[type] || '📎';
   }
@@ -228,7 +228,7 @@
     const styles = {
       verified: { color: '#10b981', background: 'rgba(16, 185, 129, 0.1)' },
       pending: { color: '#f59e0b', background: 'rgba(245, 158, 11, 0.1)' },
-      disputed: { color: '#ef4444', background: 'rgba(239, 68, 68, 0.1)' },
+      disputed: { color: '#ef4444', background: 'rgba(239, 68, 68, 0.1)' },;
       invalid: { color: '#6b7280', background: 'rgba(107, 114, 128, 0.1)' }
     };
     return styles[authenticity] || styles.pending;
@@ -455,7 +455,7 @@
                   <div class="relevance-bar">
                     <div
                       class="relevance-fill"
-                      style="
+                      style=";
                         width: {evidence.relevanceScore * 100}%;
                         background: {evidenceBuilder.styling.colors.evidence};
                       "

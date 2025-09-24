@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Comprehensive AI Summary Engine - End-to-End Integration Component -->
@@ -83,7 +83,7 @@ https://svelte.dev/e/props_duplicate -->
     enableTriton: true,
     fusejsThreshold: 0.6,
     ragDocumentLimit: 10,
-    userActivityDays: 30
+    userActivityDays: 30;
   });
 
   // Real-time metrics
@@ -96,14 +96,16 @@ https://svelte.dev/e/props_duplicate -->
     gpuUtilization: 0
   });
 
-  $effect(async () => {
-    await initializeServiceWorker();
+  $effect(() => {
+    (async () => {
+await initializeServiceWorker();
     setupEventListeners();
     preloadRequiredData();
     // Register for background notifications
     if ('Notification' in window) {
       await Notification.requestPermission();
     }
+    })();
   });
 
   onDestroy(() => {
@@ -172,7 +174,7 @@ https://svelte.dev/e/props_duplicate -->
 
     // Send start signal to XState machine
     send({
-      type: 'START_SUMMARY',
+      type: 'START_SUMMARY',;
       data: {
         targetId,
         targetType,
@@ -193,7 +195,7 @@ https://svelte.dev/e/props_duplicate -->
         includeUserActivity: enableUserActivity,
         enableStreaming,
         chunkSize: config.chunkSize,
-        userId: 'current-user' // TODO: Get from auth context
+        userId: 'current-user' // TODO: Get from auth context;
       };
 
       if (enableStreaming) {
@@ -211,9 +213,9 @@ https://svelte.dev/e/props_duplicate -->
 
   async function handleStreamingSummary(request) {
     const response = await fetch('/api/summaries', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request)
+      method: 'POST',;
+      headers: { 'Content-Type': 'application/json' },;
+      body: JSON.stringify(request);
     });
 
     if (!(response as { ok?: any; statusText?: any; body?: any; json?: any }).ok) {
@@ -250,9 +252,9 @@ https://svelte.dev/e/props_duplicate -->
   async function handleBatchSummary(request) {
     currentStep = 'Processing comprehensive summary...';
     const response = await fetch('/api/summaries', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request)
+      method: 'POST',;
+      headers: { 'Content-Type': 'application/json' },;
+      body: JSON.stringify(request);
     });
 
     if (!(response as { ok?: any; statusText?: any; body?: any; json?: any }).ok) {
@@ -261,8 +263,8 @@ https://svelte.dev/e/props_duplicate -->
 
     const result = await (response as { ok?: any; statusText?: any; body?: any; json?: any }).json();
     if ((result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).success) {
-      synthesisResult.set.result);
-      processingStats.set.metadata.processingTime,
+      synthesisResult.set(result));
+      processingStats.set(metadata).processingTime,
         tokensGenerated: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).result.sources.find(s => s.type === 'llm')?.details.tokens || 0,
         documentsRetrieved: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).result.sources.find(s => s.type === 'rag')?.details.documentsUsed || 0,
         confidenceScore: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).result.confidence
@@ -280,15 +282,15 @@ https://svelte.dev/e/props_duplicate -->
     switch ((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).type) {
       case 'status':
         currentStep = (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).message;
-        summaryProgress.set.progress);
+        summaryProgress.set(progress));
         break;
       case 'llm_chunk':
         streamingData.update.content,
-          timestamp: Date.now()
+          timestamp: Date.now();
         }]);
         break;
       case 'complete':
-        synthesisResult.set.result);
+        synthesisResult.set(result));
         summaryProgress.set(100);
         currentStep = 'Summary completed successfully';
         isProcessing = false;
@@ -301,17 +303,17 @@ https://svelte.dev/e/props_duplicate -->
   }
 
   function updateStreamingProgress(data) {
-    summaryProgress.set.progress * 100);
+    summaryProgress.set(progress) * 100);
     if ((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).result) {
       streamingData.update.result.content,
         chunkIndex: (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).chunkIndex,
-        timestamp: Date.now()
+        timestamp: Date.now();
       }]);
     }
   }
 
   function handleSummaryCompletion(data) {
-    synthesisResult.set.summary);
+    synthesisResult.set(summary));
     isProcessing = false;
     summaryProgress.set(100);
     currentStep = 'Summary completed successfully';
@@ -319,8 +321,8 @@ https://svelte.dev/e/props_duplicate -->
     // Show notification if enabled
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification('Legal AI Summary Complete', {
-        body: 'Your comprehensive summary is ready for review.',
-        icon: '/icons/ai-summary.png'
+        body: 'Your comprehensive summary is ready for review.',;
+        icon: '/icons/ai-summary.png';
       });
     }
   }
@@ -385,14 +387,14 @@ https://svelte.dev/e/props_duplicate -->
       metadata: {
         targetId,
         targetType,
-        depth,
+        depth,;
         timestamp: new Date().toISOString(),
-        processingStats: $processingStats
+        processingStats: $processingStats;
       }
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: exportFormat === 'json' ? 'application/json' : 'text/plain'
+      type: exportFormat === 'json' ? 'application/json' : 'text/plain';
     });
 
     const url = URL.createObjectURL(blob);

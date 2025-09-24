@@ -71,7 +71,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         ops_per_sec: 142,
         latency_avg: 0.85,
         memory_efficiency: 76.3
-      },
+      },;
       timestamp: new Date().toISOString()
     };
   }
@@ -175,7 +175,7 @@ async function getRecentKeys() {
     return keys?.slice(0, 10).map(key => ({
       key,
       type: 'string',
-      ttl: -1,
+      ttl: -1,;
       size: '1KB'
     })) || [];
   } catch (error) {

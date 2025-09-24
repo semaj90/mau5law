@@ -19,13 +19,13 @@
 // Enhanced GRPO-thinking API endpoint - Simplified working version
 // Integrates with existing infrastructure and new GRPO database tables
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/db/connection';
-import { sql } from 'drizzle-orm';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { db } from '$lib/db/connection'
+import { sql } from 'drizzle-orm'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
-// Generate embedding using nomic-embed-text;
+// Generate embedding using nomic-embed-text
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch('http://localhost:11434/api/embeddings', {
@@ -35,20 +35,20 @@ async function generateEmbedding(text: string): Promise<number[]> {
         model: 'nomic-embed-text',
         prompt: text.slice(0, 2048)
       })
-    });
+    })
 
     if ((response as { ok?: any; json?: any }).ok) {
-      const data = await (response as { ok?: any; json?: any }).json();
-      return (data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).embedding || [];
+      const data = await (response as { ok?: any; json?: any }).json()
+      return (data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).embedding || []
     }
   } catch (error) {
-    console.warn('Failed to generate embedding:', error);
+    console.warn('Failed to generate embedding:', error)
   }
   
-  return new Array(768).fill(0);
+  return new Array(768).fill(0)
 }
 
-// Get AI response using Gemma3-Legal with thinking;
+// Get AI response using Gemma3-Legal with thinking
 async function getAIResponse(query: string): Promise<any> {
   try {
     const response = await fetch('http://localhost:11434/api/generate', {
@@ -69,37 +69,37 @@ ${query}
 Please provide a comprehensive legal analysis with structured reasoning.`,
         stream: false
       })
-    });
+    })
 
     if ((response as { ok?: any; json?: any }).ok) {
-      const data = await (response as { ok?: any; json?: any }).json();
-      const content = (data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).response || '';
+      const data = await (response as { ok?: any; json?: any }).json()
+      const content = (data as { embedding?: any; response?: any; query?: any; thinking?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; legalDomain?: any; userId?: any; legal_domain?: any; created_at?: any }).response || ''
       
       // Extract thinking content
-      const thinkingMatch = content.match(/<\|thinking\|>([\s\S]*?)<\/\|thinking\|>/);
-      const thinking = thinkingMatch ? thinkingMatch[1].trim() : '';
-      const responseText = content.replace(/<\|thinking\|>[\s\S]*?<\/\|thinking\|>/, '').trim();
+      const thinkingMatch = content.match(/<\|thinking\|>([\s\S]*?)<\/\|thinking\|>/)
+      const thinking = thinkingMatch ? thinkingMatch[1].trim() : ''
+      const responseText = content.replace(/<\|thinking\|>[\s\S]*?<\/\|thinking\|>/, '').trim()
       
       return {
         thinking,
         response: responseText,
         confidence: 0.85
-      };
+      }
     }
   } catch (error) {
-    console.error('AI response error:', error);
+    console.error('AI response error:', error)
   }
   
   return {
     thinking: 'Unable to generate thinking content',
     response: 'I apologize, but I encountered an issue processing your request.',
     confidence: 0.3
-  };
+  }
 }
 
-// Extract structured reasoning from thinking content;
+// Extract structured reasoning from thinking content
 function extractStructuredReasoning(thinking: string) {
-  const lines = thinking.split('\n').filter(line => line.trim();
+  const lines = thinking.split('\n').filter(line => line.trim()
   
   return {
     premises: lines.filter(item => item.includes)('premise') || 
@@ -126,21 +126,21 @@ function extractStructuredReasoning(thinking: string) {
       line.toLowerCase().includes('certain') ||
       line.toLowerCase().includes('established')
     ).slice(0, 3)
-  };
+  }
 }
 
-// Calculate temporal score with exponential decay;
+// Calculate temporal score with exponential decay
 function calculateTemporalScore(createdAt: Date, halfLifeDays: number = 30): number {
-  const now = new Date();
-  const ageDays = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
-  const decayFactor = Math.exp(-Math.LN2 * ageDays / halfLifeDays);
-  return Math.max(0.1, Math.min(1.0, decayFactor);
+  const now = new Date()
+  const ageDays = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24)
+  const decayFactor = Math.exp(-Math.LN2 * ageDays / halfLifeDays)
+  return Math.max(0.1, Math.min(1.0, decayFactor)
 }
 
-// Get similar responses from database using vector similarity;
+// Get similar responses from database using vector similarity
 async function getSimilarResponses(queryEmbedding: number[], maxResults: number = 5) {
   try {
-    const embeddingVector = `[${queryEmbedding.join(',')}]`;
+    const embeddingVector = `[${queryEmbedding.join(',')}]`
     
     const results = await db.execute(sql`
       SELECT 
@@ -157,7 +157,7 @@ async function getSimilarResponses(queryEmbedding: number[], maxResults: number 
         AND (1 - (query_embedding <=> ${embeddingVector}::vector)) > 0.5
       ORDER BY similarity DESC
       LIMIT ${maxResults}
-    `);
+    `)
 
     return results.rows.map(row => ({
       id: row.id as string,
@@ -171,24 +171,24 @@ async function getSimilarResponses(queryEmbedding: number[], maxResults: number 
         usage_count: row.usage_count as number,
         confidence: row.confidence as string
       }
-    });
+    })
   } catch (error) {
-    console.warn('Failed to get similar responses:', error);
-    return [];
+    console.warn('Failed to get similar responses:', error)
+    return []
   }
 }
 
-// Save enhanced response to database;
+// Save enhanced response to database
 async function saveEnhancedResponse(data: {
-  query: string;
-  response: string;
-  thinking: string;
-  structuredReasoning: any;
-  queryEmbedding: number[];
-  responseEmbedding: number[];
-  confidence: number;
-  userId?: string;
-  legalDomain?: string;
+  query: string
+  response: string
+  thinking: string
+  structuredReasoning: any
+  queryEmbedding: number[]
+  responseEmbedding: number[]
+  confidence: number
+  userId?: string
+  legalDomain?: string
 }) {
   try {
     const result = await db.execute(sql`
@@ -221,19 +221,19 @@ async function saveEnhancedResponse(data: {
         NOW(),
         NOW()
       ) RETURNING id
-    `);
+    `)
     
-    return (result as { rows?: any }).rows[0]?.id as string;
+    return (result as { rows?: any }).rows[0]?.id as string
   } catch (error) {
-    console.error('Failed to save enhanced response:', error);
-    return null;
+    console.error('Failed to save enhanced response:', error)
+    return null
   }
 }
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    const startTime = Date.now();
-    const requestData = await request.json();
+    const startTime = Date.now()
+    const requestData = await request.json()
 
     const {
       query,
@@ -245,35 +245,35 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       enableRecommendations = true,
       maxRecommendations = 5,
       legalDomain = 'general'
-    } = requestData;
+    } = requestData
 
-    // Validate input;
+    // Validate input
     if (!query && !text) {
       return json({ 
         error: 'Query or text is required',
         success: false 
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
-    const inputText = query || text;
+    const inputText = query || text
 
     // Step 1: Get AI response with thinking
-    const aiResponse = await getAIResponse(inputText);
+    const aiResponse = await getAIResponse(inputText)
     
     // Step 2: Extract structured reasoning
-    const structuredReasoning = extractStructuredReasoning(aiResponse.thinking);
+    const structuredReasoning = extractStructuredReasoning(aiResponse.thinking)
     
     // Step 3: Generate embeddings
-    const queryEmbedding = await generateEmbedding(inputText);
-    const responseEmbedding = await generateEmbedding(aiResponse.response);
+    const queryEmbedding = await generateEmbedding(inputText)
+    const responseEmbedding = await generateEmbedding(aiResponse.response)
     
     // Step 4: Get similar responses (recommendations)
-    let recommendations = [];
+    let recommendations = []
     if (enableRecommendations && queryEmbedding.some(x => x !== 0)) {
-      recommendations = await getSimilarResponses(queryEmbedding, maxRecommendations);
+      recommendations = await getSimilarResponses(queryEmbedding, maxRecommendations)
     }
     
-    // Step 5: Save to database;
+    // Step 5: Save to database
     const grpoId = await saveEnhancedResponse({
       query: inputText,
       response: aiResponse.response,
@@ -284,7 +284,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       confidence: aiResponse.confidence,
       userId,
       legalDomain: analysisType
-    });
+    })
     
     // Step 6: Get trending topics
     const trendingTopics = await db.execute(sql`
@@ -298,9 +298,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       GROUP BY legal_domain
       ORDER BY count DESC, avg_confidence DESC
       LIMIT 5
-    `);
+    `)
 
-    const processingTime = Date.now() - startTime;
+    const processingTime = Date.now() - startTime
     
     const response = {
       success: true,
@@ -316,7 +316,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         structured_reasoning: structuredReasoning,
         temporal_score: 1.0, // New response gets max temporal score
         
-        // Recommendations;
+        // Recommendations
         recommendations: recommendations.map(rec => ({
           id: rec.id,
           score: rec.final_score,
@@ -330,14 +330,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           }
         })),
         
-        // Context;
+        // Context
         trending_topics: trendingTopics.rows.map(row => ({
           topic: row.topic as string,
           count: parseInt(row.count as string),
           avg_confidence: parseFloat(row.avg_confidence as string)
         })),
         
-        // Reasoning breakdown;
+        // Reasoning breakdown
         reasoning_components: {
           premises: structuredReasoning.premises,
           inferences: structuredReasoning.inferences,
@@ -367,12 +367,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           'trend_analysis'
         ]
       }
-    };
+    }
 
-    return json(response);
+    return json(response)
 
   } catch (error: any) {
-    console.error('Enhanced GRPO API error:', error);
+    console.error('Enhanced GRPO API error:', error)
     
     return json({
       success: false,
@@ -385,19 +385,19 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         thinking_enabled: false,
         error_type: error.constructor.name
       }
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-// GET endpoint for retrieving recommendations and trends;
+// GET endpoint for retrieving recommendations and trends
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
-    const operation = url.searchParams.get('operation') || 'trending';
-    const limit = parseInt(url.searchParams.get('limit') || '10');
+    const operation = url.searchParams.get('operation') || 'trending'
+    const limit = parseInt(url.searchParams.get('limit') || '10')
 
     switch (operation) {
       case 'trending':
-        const days = parseInt(url.searchParams.get('days') || '7');
+        const days = parseInt(url.searchParams.get('days') || '7')
         
         const trendingTopics = await db.execute(sql`
           SELECT 
@@ -411,7 +411,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           GROUP BY legal_domain
           ORDER BY count DESC, avg_confidence DESC
           LIMIT ${limit}
-        `);
+        `)
         
         return json({
           success: true,
@@ -422,7 +422,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
             latest_activity: row.latest_activity as string
           })),
           period_days: days
-        });
+        })
 
       case 'recent':
         const recentResponses = await db.execute(sql`
@@ -437,7 +437,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           FROM ai_responses 
           ORDER BY created_at DESC
           LIMIT ${limit}
-        `);
+        `)
         
         return json({
           success: true,
@@ -450,32 +450,32 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
             created_at: row.created_at as string,
             usage_count: row.usage_count as number
           })
-        });
+        })
 
-      default:;
+      default:
         return json({
           success: true,
           message: 'Enhanced GRPO API is operational',
           available_operations: ['trending', 'recent'],
           database_tables: ['ai_responses', 'grpo_feedback', 'recommendation_scores']
-        });
+        })
     }
 
   } catch (error: any) {
-    console.error('Enhanced GRPO GET error:', error);
+    console.error('Enhanced GRPO GET error:', error)
     
     return json({
       success: false,
       error: 'Failed to retrieve data',
       details: error.message
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-// PATCH endpoint for recording feedback;
+// PATCH endpoint for recording feedback
 const originalPATCHHandler: RequestHandler = async ({ request }) => {
   try {
-    const feedbackData = await request.json();
+    const feedbackData = await request.json()
     
     const {
       responseId,
@@ -487,13 +487,13 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       relevance,
       userId,
       userRole
-    } = feedbackData;
+    } = feedbackData
 
     if (!responseId || !userRating || userRating < 1 || userRating > 5) {
       return json({ 
         error: 'responseId and userRating (1-5) are required',
         success: false 
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
     // Record feedback
@@ -521,7 +521,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
         ${userRole || null},
         'rating'
       )
-    `);
+    `)
 
     // Update response usage count and success metric
     await db.execute(sql`
@@ -530,26 +530,26 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
           success_metric = ${userRating / 5.0},
           last_accessed = NOW()
       WHERE id = ${responseId}
-    `);
+    `)
 
     return json({
       success: true,
       message: 'Feedback recorded successfully',
       feedback_id: responseId,
       impact: 'Learning algorithms updated with your feedback'
-    });
+    })
 
   } catch (error: any) {
-    console.error('Feedback recording error:', error);
+    console.error('Feedback recording error:', error)
     
     return json({
       success: false,
       error: 'Failed to record feedback',
       details: error.message
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
-export const GET = redisOptimized.aiAnalysis(originalGETHandler);
-export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler);
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
+export const GET = redisOptimized.aiAnalysis(originalGETHandler)
+export const PATCH = redisOptimized.aiAnalysis(originalPATCHHandler)

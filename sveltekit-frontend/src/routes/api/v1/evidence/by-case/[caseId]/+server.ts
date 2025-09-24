@@ -3,12 +3,12 @@
  * GET /api/v1/evidence/by-case/[caseId] - Get all evidence for a specific case
  */
 
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from '@sveltejs/kit'
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
+import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud'
+import { z } from 'zod'
 
-// Query parameters schema;
+// Query parameters schema
 const EvidenceQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(50),
@@ -17,32 +17,32 @@ const EvidenceQuerySchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
   includeAnalysis: z.coerce.boolean().default(true),
   search: z.string().optional()
-});
+})
 
 /*
  * GET /api/v1/evidence/by-case/[caseId]
  * Retrieve all evidence items for a specific case with optional filtering and analysis
- */;
+ */
 export const GET: RequestHandler = async ({ params, url, locals }) => {
   try {
-    // Check authentication;
+    // Check authentication
     if (!locals.session || !locals.user) {
       return error(
         401,
         makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
-      );
+      )
     }
 
-    const { caseId } = params;
+    const { caseId } = params
     if (!caseId) {
       return error(
         400,
         makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' })
-      );
+      )
     }
 
     // Parse query parameters
-    const queryParams = Object.fromEntries(url.searchParams.entries();
+    const queryParams = Object.fromEntries(url.searchParams.entries()
     const {
       page,
       limit,
@@ -51,12 +51,12 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       sortOrder,
       includeAnalysis,
       search
-    } = EvidenceQuerySchema.parse(queryParams);
+    } = EvidenceQuerySchema.parse(queryParams)
 
     // Create evidence service
-    const evidenceService = new EvidenceCRUDService(locals.user.id);
+    const evidenceService = new EvidenceCRUDService(locals.user.id)
 
-    // Build query options;
+    // Build query options
     const options = {
       page,
       limit,
@@ -66,10 +66,10 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         ...(type && { evidenceType: type }),
         ...(search && { search })
       }
-    };
+    }
 
     // Get evidence for the case
-    const evidenceResult = await evidenceService.listByCase(caseId, options);
+    const evidenceResult = await evidenceService.listByCase(caseId, options)
     
     if (!evidenceResult.success) {
       return error(
@@ -79,21 +79,21 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           code: 'EVIDENCE_FETCH_FAILED',
           details: evidenceResult.error
         })
-      );
+      )
     }
 
-    let enhancedEvidence = evidenceResult.data;
+    let enhancedEvidence = evidenceResult.data
 
-    // Enhance with AI analysis if requested;
+    // Enhance with AI analysis if requested
     if (includeAnalysis) {
       enhancedEvidence = await Promise.all(evidenceResult.data.map(async (evidence) => {
           try {
-            // Check if evidence already has analysis;
+            // Check if evidence already has analysis
             if (evidence.metadata?.aiAnalysis) {
-              return evidence);
+              return evidence)
             }
 
-            // Call MCP server for Gemma embeddings analysis;
+            // Call MCP server for Gemma embeddings analysis
             const mcpResponse = await fetch('http://localhost:3002/mcp/evidence-analyze', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -105,12 +105,12 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                 useGemmaEmbeddings: true,
                 analysisType: 'comprehensive'
               })
-            });
+            })
 
             if (mcpResponse.ok) {
-              const analysisData = await mcpResponse.json();
+              const analysisData = await mcpResponse.json()
               
-              // Add analysis to evidence metadata;
+              // Add analysis to evidence metadata
               return {
                 ...evidence,
                 metadata: {
@@ -127,26 +127,26 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                     analyzedBy: 'gemma-embeddings'
                   }
                 }
-              };
+              }
             }
 
-            return evidence;
+            return evidence
           } catch (analysisError) {
-            console.warn(`Analysis failed for evidence ${evidence.id}:`, analysisError);
-            return evidence;
+            console.warn(`Analysis failed for evidence ${evidence.id}:`, analysisError)
+            return evidence
           }
         })
-      );
+      )
     }
 
     // Calculate additional metadata
-    const evidenceTypes = [...new Set(enhancedEvidence.map(e => e.evidenceType))];
-    const totalSize = enhancedEvidence.reduce((sum, e) => sum + (e.metadata?.fileSize || 0), 0);
+    const evidenceTypes = [...new Set(enhancedEvidence.map(e => e.evidenceType))]
+    const totalSize = enhancedEvidence.reduce((sum, e) => sum + (e.metadata?.fileSize || 0), 0)
     const analysisStatus = {
       total: enhancedEvidence.length,
       analyzed: enhancedEvidence.filter(item => item.length),
       pending: enhancedEvidence.filter(item => item.length)
-    };
+    }
 
     return json({
       success: true,
@@ -175,10 +175,10 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         action: 'evidence_list_by_case',
         caseId
       }
-    });
+    })
 
   } catch (err: any) {
-    console.error('Error retrieving evidence by case:', err);
+    console.error('Error retrieving evidence by case:', err)
 
     if (err instanceof z.ZodError) {
       return error(
@@ -188,7 +188,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           code: 'INVALID_PARAMS',
           details: err.errors
         })
-      );
+      )
     }
 
     return error(
@@ -198,6 +198,6 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         code: 'EVIDENCE_FETCH_FAILED',
         details: err.message
       })
-    );
+    )
   }
-};
+}

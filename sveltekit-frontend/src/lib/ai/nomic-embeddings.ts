@@ -34,7 +34,7 @@ export class NomicEmbeddingsService {
       return {
         embedding,
         model: "nomic-embed-text-v1",
-        metadata: {
+        metadata: {;
           timestamp: new Date().toISOString()
         }
       };
@@ -44,7 +44,7 @@ export class NomicEmbeddingsService {
       return {
         embedding: new Array(768).fill(0).map(() => Math.random()),
         model: "nomic-embed-text-v1",
-        metadata: {
+        metadata: {;
           timestamp: new Date().toISOString()
         }
       };
@@ -98,7 +98,7 @@ export class NomicEmbeddingsService {
               size: document.metadata?.size || 0,
               mimeType: document.metadata?.mimeType || "text/plain",
               pageCount: document.metadata?.pageCount,
-              wordCount: document.metadata?.wordCount,
+              wordCount: document.metadata?.wordCount,;
               language: document.metadata?.language
             }
           }

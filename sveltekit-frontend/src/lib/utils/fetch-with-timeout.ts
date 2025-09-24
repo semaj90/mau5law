@@ -43,7 +43,7 @@ export async function fetchWithTimeout(
   options: FetchWithTimeoutOptions = {}
 ): Promise<Response> {
   const {
-    timeout = 30000,
+    timeout = 30000,;
     signal: externalSignal,
     retry,
     ...fetchOptions
@@ -138,13 +138,13 @@ export async function fetchLegalAI(
   url: string | URL | Request,
   options: FetchWithTimeoutOptions = {}
 ): Promise<Response> {
-  return fetchWithTimeout(url, {
+  return fetchWithTimeout(url, {;
     timeout: 45000, // 45s for AI operations;
     retry: {
       attempts: 3,
       delay: 1000,
       backoff: 'exponential'
-    },
+    },;
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -161,13 +161,13 @@ export async function fetchOllama(
   url: string | URL | Request,
   options: FetchWithTimeoutOptions = {}
 ): Promise<Response> {
-  return fetchWithTimeout(url, {
+  return fetchWithTimeout(url, {;
     timeout: 60000, // 60s for model operations;
     retry: {
       attempts: 2,
       delay: 2000,
       backoff: 'linear'
-    },
+    },;
     headers: {
       'Content-Type': 'application/json',
       ...options.headers
@@ -183,11 +183,11 @@ export async function fetchDatabase(
   url: string | URL | Request,
   options: FetchWithTimeoutOptions = {}
 ): Promise<Response> {
-  return fetchWithTimeout(url, {
+  return fetchWithTimeout(url, {;
     timeout: 15000, // 15s for DB operations;
     retry: {
       attempts: 2,
-      delay: 500,
+      delay: 500,;
       backoff: 'linear'
     },
     ...options

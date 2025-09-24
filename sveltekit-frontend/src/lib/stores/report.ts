@@ -46,12 +46,12 @@ const defaultReport: Report = {
     createdAt: new Date(),
     updatedAt: new Date(),
     version: 1,
-    status: "draft",
+    status: "draft",;
     tags: []
   }
   }); const settings = {
     autoSave: true,
-    theme: "light",
+    theme: "light",;
     layout: "single"
   }
 };

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -45,9 +45,9 @@ https://svelte.dev/e/js_parse_error -->
     publicationDate: citation?.publicationDate ? 
       new Date(citation.publicationDate).toISOString.split('T')[0] : '',
     jurisdiction: citation?.jurisdiction || '',
-    court: citation?.court || '',
-    verified: citation?.verified || false,
-    tags: citation?.tags || []
+    court: citation?.court || '',;
+    verified: citation?.verified || false,;
+    tags: citation?.tags || [];
   });
 
   // Quill editor instance
@@ -79,8 +79,9 @@ https://svelte.dev/e/js_parse_error -->
   ];
 
   // Initialize Quill editor
-  $effect(async () => {
-    try {
+  $effect(() => {
+    (async () => {
+try {
       // Dynamic import of Quill
       const { default: Quill } = await import('quill');
       // Custom toolbar configuration for legal citations
@@ -95,11 +96,12 @@ https://svelte.dev/e/js_parse_error -->
 
       quillEditor = new Quill(editorContainer, {
         modules: {
-          toolbar: toolbarOptions
+          toolbar: toolbarOptions;
         },
-        theme: 'snow',
-        placeholder: 'Enter citation details, relevant quotes, and context notes...',
-      });
+        theme: 'snow',;
+        placeholder: 'Enter citation details, relevant quotes, and context notes...',;
+    })();
+  });
 
       // Set initial content
       if (formData.contextNotes) {
@@ -153,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
     }
 
     errors.set(newErrors);
-    return Object.keys.length === 0;
+    return Object.keys(errors).length === 0;
   }
 
   function isValidUrl(url: string): boolean {
@@ -182,8 +184,8 @@ https://svelte.dev/e/js_parse_error -->
 
       const response = await fetch(endpoint, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type': 'application/json' },;
+        body: JSON.stringify(payload);
       });
 
       const result = await (response as { json?: any }).json();
@@ -209,8 +211,8 @@ https://svelte.dev/e/js_parse_error -->
     isLoading = true;
     try {
       const response = await fetch('/api/citations', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'DELETE',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ id: citation.id })
       });
 
@@ -278,7 +280,7 @@ https://svelte.dev/e/js_parse_error -->
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-title-">
           Title *
         </label><input id="-title-"
-          type="text"
+          type="text";
           bind:value={formData.title}
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -311,7 +313,7 @@ https://svelte.dev/e/js_parse_error -->
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-author-">
           Author
         </label><input id="-author-"
-          type="text"
+          type="text";
           bind:value={formData.author}
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -323,7 +325,7 @@ https://svelte.dev/e/js_parse_error -->
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-source-">
           Source
         </label><input id="-source-"
-          type="text"
+          type="text";
           bind:value={formData.source}
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -337,7 +339,7 @@ https://svelte.dev/e/js_parse_error -->
       <label class="block text-sm font-medium text-gray-700 mb-1" for="-formatted-citation-">
         Formatted Citation
       </label><input id="-formatted-citation-"
-        type="text"
+        type="text";
         bind:value={formData.citation}
         disabled={disabled || isLoading}
         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 bg-gray-50"
@@ -351,7 +353,7 @@ https://svelte.dev/e/js_parse_error -->
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-url-">
           URL
         </label><input id="-url-"
-          type="url"
+          type="url";
           bind:value={formData.url}
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -381,7 +383,7 @@ https://svelte.dev/e/js_parse_error -->
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-jurisdiction-">
           Jurisdiction
         </label><input id="-jurisdiction-"
-          type="text"
+          type="text";
           bind:value={formData.jurisdiction}
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -393,7 +395,7 @@ https://svelte.dev/e/js_parse_error -->
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-court-">
           Court
         </label><input id="-court-"
-          type="text"
+          type="text";
           bind:value={formData.court}
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -405,7 +407,7 @@ https://svelte.dev/e/js_parse_error -->
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-publication-date-">
           Publication Date
         </label><input id="-publication-date-"
-          type="date"
+          type="date";
           bind:value={formData.publicationDate}
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -417,7 +419,7 @@ https://svelte.dev/e/js_parse_error -->
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1" for="-abstract-">
         Abstract
-      </label><textarea id="-abstract-"
+      </label><textarea id="-abstract-";
         bind:value={formData.abstract}
         disabled={disabled || isLoading}
         rows="3"
@@ -429,7 +431,7 @@ https://svelte.dev/e/js_parse_error -->
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1" for="-relevant-quote-">
         Relevant Quote
-      </label><textarea id="-relevant-quote-"
+      </label><textarea id="-relevant-quote-";
         bind:value={formData.relevantQuote}
         disabled={disabled || isLoading}
         rows="2"
@@ -453,7 +455,7 @@ https://svelte.dev/e/js_parse_error -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1" for="-citation-purpose-">
           Citation Purpose
-        </label><select id="-citation-purpose-"
+        </label><select id="-citation-purpose-";
           bind:value={formData.citationPurpose}
           disabled={disabled || isLoading}
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
@@ -549,7 +551,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  :global(.ql-editor) {
+  :global(.ql-editor) {;
     min-height: 150px;
     font-family: inherit;
   }

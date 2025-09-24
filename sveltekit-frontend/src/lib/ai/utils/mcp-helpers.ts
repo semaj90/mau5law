@@ -40,7 +40,7 @@ export async function copilotOrchestrator(
       ? { method: 'prompt', params: { prompt: request } }
       : (request as MCPRequest);
   return {
-    success: true,
+    success: true,;
     result: null,
     selfPrompt: typeof request === 'string' ? request : undefined
   };
@@ -68,7 +68,7 @@ export function generateMCPPrompt(context: any): string {
 
 export const commonMCPQueries = {
   search: 'search',
-  analyze: 'analyze',
+  analyze: 'analyze',;
   generate: 'generate',
   analyzeSvelteKit: () => 'analyze-sveltekit',
   analyzeDrizzle: () => 'analyze-drizzle',

@@ -84,7 +84,7 @@ export interface RegistrationData {
 
 const initialContext: AuthContext = {
   user: null,
-  session: null,
+  session: null,;
   error: undefined,
   isLoading: false,
   deviceInfo: undefined,
@@ -97,7 +97,7 @@ const initialContext: AuthContext = {
 };
 
 export const authMachine = setup({
-  types: Record<string, any> as {
+  types: Record<string, any> as {;
     context: AuthContext;
     events: AuthEvent;
   },
@@ -152,7 +152,7 @@ export const authMachine = setup({
     clearRegistrationData: assign({
       registrationData: () => undefined
     })
-  },
+  },;
   guards: {
     isMaxAttemptsReached: ({ context }) => {
       return context.loginAttempts >= context.maxLoginAttempts;
@@ -161,7 +161,7 @@ export const authMachine = setup({
       return context.lockoutUntil ? new Date() < context.lockoutUntil: false;
     }
   },
-  actors: {
+  actors: {;
     authenticate: fromPromise(async ({ input }: { input: LoginData }) => {
       // Real authentication with local Windows native services
       const authService = new AuthService();
@@ -170,7 +170,7 @@ export const authMachine = setup({
         const result = await authService.login(input.email, input.password);
 
         return {
-          user: {
+          user: {;
             id: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id,
             email: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).email,
             firstName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).firstName || 'User',
@@ -178,7 +178,7 @@ export const authMachine = setup({
             role: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).role,
             permissions: ['read:cases', 'write:cases', 'ai:query'], // TODO: Get from user role
           },
-          session: {
+          session: {;
             id: 'session_' + (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id, // Generate session ID
             expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
             fresh: true
@@ -194,7 +194,7 @@ export const authMachine = setup({
 
       try {
         const result = await authService.register({
-          email: input.email,
+          email: input.email,;
           password: input.password,
           firstName: input.firstName,
           lastName: input.lastName,
@@ -203,13 +203,13 @@ export const authMachine = setup({
         });
 
         return {
-          user: {
+          user: {;
             id: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id,
             email: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).email,
             firstName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).firstName,
             lastName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).lastName,
             role: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).role,
-            department: input.department,
+            department: input.department,;
             permissions: []
           }
         };
@@ -260,7 +260,7 @@ export const authMachine = setup({
     authenticating: {
       entry: 'setLoading',
       invoke: {
-        src: 'authenticate',
+        src: 'authenticate',;
         input: ({ event }) => (event as any).data,
         onDone: [;
           {
@@ -269,7 +269,7 @@ export const authMachine = setup({
             actions: ['setTwoFactorRequired', 'clearLoading']
           },
           {
-            target: 'authenticated',
+            target: 'authenticated',;
             actions: ['setUser', 'resetLoginAttempts']
           }
         ],
@@ -392,7 +392,7 @@ export const authMachine = setup({
       entry: 'setLoading',
       after: {
         1500: {
-          target: 'authenticated',
+          target: 'authenticated',;
           actions: 'clearLoading'
         }
       }

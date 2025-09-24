@@ -33,7 +33,7 @@ const meta = {
       control: { type: 'boolean' },
       description: 'Display case statistics dashboard'
     }
-  },
+  },;
   tags: ['autodocs']
 } satisfies Meta<LegalCaseManager>;
 
@@ -60,7 +60,7 @@ export const GridView: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Grid view layout optimized for visual case management'
       }
     }
@@ -77,7 +77,7 @@ export const Timeline: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Timeline view showing chronological case progression'
       }
     }
@@ -94,7 +94,7 @@ export const KanbanBoard: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Kanban board for workflow-based case management'
       }
     }
@@ -111,7 +111,7 @@ export const AssignedCases: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Focus view showing only cases assigned to current user'
       }
     }
@@ -128,7 +128,7 @@ export const ClosedCases: Story = {
   },
   parameters: {
     docs: {
-      description: {
+      description: {;
         story: 'Archive view for completed and closed cases'
       }
     }

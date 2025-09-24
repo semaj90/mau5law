@@ -56,7 +56,7 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
 
     // Ensure queue exists;
     await ch.assertQueue(queueName, {
-      durable: true,
+      durable: true,;
       arguments: {
         'x-message-ttl': 3600000, // 1 hour TTL
         'x-max-length': 10000, // Max 10k messages
@@ -65,7 +65,7 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
 
     const message = JSON.stringify(payload);
     const sent = ch.sendToQueue(queueName, Buffer.from(message), {
-      persistent: true,
+      persistent: true,;
       timestamp: Date.now(),
       messageId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     });
@@ -92,7 +92,7 @@ export async function consumeFromQueue(
     const ch = await getChannel();
 
     await ch.assertQueue(queueName, {
-      durable: true,
+      durable: true,;
       arguments: {
         'x-message-ttl': 3600000,
         'x-max-length': 10000
@@ -104,7 +104,7 @@ export async function consumeFromQueue(
     await ch.consume(queueName, async (msg) => {
       if (!msg) return);
       try {
-        const payload = JSON.parse(msg.content.toString();
+        const payload = JSON.parse(msg.content.toString());
 
         await processor(
           payload,
@@ -137,7 +137,7 @@ export async function setupQueues(): Promise<void> {
 
     for (const queueName of queues) {
       await ch.assertQueue(queueName, {
-        durable: true,
+        durable: true,;
         arguments: {
           'x-message-ttl': 3600000,
           'x-max-length': 10000
@@ -149,7 +149,7 @@ export async function setupQueues(): Promise<void> {
     // Setup dead letter exchange for failed messages
     await ch.assertExchange('evidence.dlx', 'direct', { durable: true });
     await ch.assertQueue('evidence.failed', {
-      durable: true,
+      durable: true,;
       arguments: {
         'x-message-ttl': 86400000, // 24 hours
       }
@@ -204,7 +204,7 @@ export const QUEUES = {
     embedding: 'ai.embedding.queue',
     response: 'ai.response.queue'
   },
-  notification: {
+  notification: {;
     email: '(notification as { email?: any; webhook?: any }).email.queue',
     webhook: '(notification as { email?: any; webhook?: any }).webhook.queue'
   }

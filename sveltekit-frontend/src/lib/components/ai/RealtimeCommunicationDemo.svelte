@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Identifier 'Card' has already been declared
+<!-- @migration-task Error while migrating Svelte code: Identifier 'Card' has already been declared;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'Card' has already been declared -->
 <!-- Real-time Communication Demo Component -->
@@ -14,19 +14,19 @@ https://svelte.dev/e/js_parse_error -->
     type RealtimeMessage,
     type StreamingResponse,
   } from '$lib/services/realtime-communication';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
 
   // Reactive state using Svelte 5 runes
   let status = $state($connectionStatus);
@@ -110,9 +110,9 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       await realtimeComm.sendMessage.toISOString(),
-          metadata: {
+          metadata: {;
             source: 'demo',
-            userAgent: navigator.userAgent,
+            userAgent: navigator.userAgent,;
           },
         },
         selectedPriority
@@ -133,8 +133,8 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const requestId = await realtimeComm.sendStreamingRequest(streamingRequestType, {
         prompt: streamingData,
-        maxTokens: 500,
-        temperature: 0.7,
+        maxTokens: 500,;
+        temperature: 0.7,;
       });
 
       console.log(`Streaming request started: ${requestId}`);
@@ -164,7 +164,7 @@ https://svelte.dev/e/js_parse_error -->
         'system_notification',
         {
           testIndex: i,
-          timestamp: performance.now(),
+          timestamp: performance.now(),;
         },
         'low'
       );
@@ -384,7 +384,7 @@ Disconnect
         <div class="yorha-panel-content">
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2" for="-message-content-"> Message Content </label><textarea id="-message-content-"
+              <label class="block text-sm font-medium text-gray-700 mb-2" for="-message-content-"> Message Content </label><textarea id="-message-content-";
                 bind:value={testMessage}
                 rows="3"
                 class="w-full p-2 border border-gray-300 rounded-lg"
@@ -527,7 +527,7 @@ Run Performance Test
                   </div>
                   <div class="text-sm text-gray-900">
                     {typeof message.data === 'string'
-                      ? message.data: JSON.stringify.substring(0, 200)}...
+                      ? message.data: JSON.stringify(substring)(0, 200)}...
                   </div>
                 </div>
                 <div class="ml-4">
@@ -602,7 +602,7 @@ Run Performance Test
 </div>
 
 <style>
-  .realtime-demo {
+  .realtime-demo {;
     font-family:
       system-ui,
       -apple-system,
@@ -626,15 +626,15 @@ Run Performance Test
     scrollbar-color: #d1d5db #f9fafb;
   }
 
-  .message-log: :-webkit-scrollbar {
+  .message-log::-webkit-scrollbar {
     width: 6px;
   }
 
-  .message-log: :-webkit-scrollbar-track {
+  .message-log::-webkit-scrollbar-track {
     background: #f9fafb;
   }
 
-  .message-log: :-webkit-scrollbar-thumb {
+  .message-log::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 3px;
   }

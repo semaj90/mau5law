@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
     jobs: { active: [], recent: [], stats: },
     workers: { active: [], stats: },
     metrics: { recentActivity: [], performance: },
-    workflow: { state: 'idle', context: },
+    workflow: { state: 'idle', context: },;
     system: });
 
   let pollInterval;
@@ -24,9 +24,9 @@ https://svelte.dev/e/js_parse_error -->
   // Job submission form
   let newJob = {
     documentId: '',
-    text: '',
-    chunks: 1,
-    priority: 'normal'
+    text: '',;
+    chunks: 1,;
+    priority: 'normal';
   };
   let submissionStatus = '';
 
@@ -35,7 +35,7 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/ingestion/comprehensive?action=get_dashboard');
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; dashboard?: unknown; error?: unknown; jobId?: unknown; message?: unknown }).success) {
-        dashboardData.set.dashboard);
+        dashboardData.set(dashboard));
         isConnected = true;
         errorMessage = '';
       } else {
@@ -64,16 +64,16 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       const response = await fetch('/api/ingestion/comprehensive', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'submit_document',
           documentId: newJob.documentId,
-          chunks,
+          chunks,;
           metadata: {
-            priority: newJob.priority,
+            priority: newJob.priority,;
             source: 'dashboard_test',
-            userId: 'test_user'
+            userId: 'test_user';
           }
         })
       });
@@ -96,8 +96,8 @@ https://svelte.dev/e/js_parse_error -->
   async function controlWorkflow(action, params = ) {
     try {
       const response = await fetch('/api/ingestion/comprehensive', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ action, ...params })
       });
 
@@ -304,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1" for="document-id">Document ID</label><input id="document-id" 
-              type="text" 
+              type="text" ;
               bind:value={newJob.documentId}
               placeholder="test-doc-001"
               class="w-full border rounded px-3 py-2"
@@ -459,7 +459,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .bg-gray-50 {
+  .bg-gray-50 {;
     background-color: #f9fafb;
   }
 </style>

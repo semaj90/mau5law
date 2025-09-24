@@ -137,7 +137,7 @@ export const evidenceProcessingMachine = setup({
     context: Record<string, any> as EnhancedAIContext,
     events: Record<string, any> as EvidenceEvent
   },
-
+;
   actors: {
     // Enhanced AI processing with multiple models;
     processEvidenceAI: fromPromise(async ({ input }: { input: { evidence: Evidence } }) => {
@@ -151,7 +151,7 @@ export const evidenceProcessingMachine = setup({
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              content: input.evidence.description || input.evidence.title,
+              content: input.evidence.description || input.evidence.title,;
               model: 'nomic-embed-text'
             })
           }).then((r: any) => (r.ok ? r.json() : Promise.reject(new Error('Embedding failed')))),
@@ -161,7 +161,7 @@ export const evidenceProcessingMachine = setup({
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              evidence: input.evidence,
+              evidence: input.evidence,;
               context: 'legal_investigation',
               enhance_tags: true
             })
@@ -173,7 +173,7 @@ export const evidenceProcessingMachine = setup({
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               evidence: input.evidence,
-              analysis_type: 'comprehensive',
+              analysis_type: 'comprehensive',;
               model: 'gemma3-legal'
             })
           }).then((r: any) => (r.ok ? r.json() : Promise.reject(new Error('Analysis failed'))))
@@ -202,7 +202,7 @@ export const evidenceProcessingMachine = setup({
             embeddings.confidence || 0,
             tags.confidence || 0,
             analysis.confidence || 0
-          ),
+          ),;
           timestamp: new Date()
         };
       } catch (error: any) {
@@ -218,7 +218,7 @@ export const evidenceProcessingMachine = setup({
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               vector: input.embeddings,
-              limit: input.limit || 10,
+              limit: input.limit || 10,;
               threshold: 0.7
             })
           });
@@ -238,7 +238,7 @@ export const evidenceProcessingMachine = setup({
         const response = await fetch(`/api/graph/discover/${input.evidenceId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+          body: JSON.stringify({;
             depth: 3,
             relationship_types: ['references', 'involves', 'located_at', 'connected_to']
           })
@@ -369,7 +369,7 @@ export const evidenceProcessingMachine = setup({
             input: ({ context }) => ({ evidence: context.evidenceQueue[0] }),
 
             onDone: {
-              target: 'vectorSearch',
+              target: 'vectorSearch',;
               actions: assign({
                 processingResults: ({ context, event }) => {
                   const newResults = new Map(context.processingResults);
@@ -380,7 +380,7 @@ export const evidenceProcessingMachine = setup({
                     status: 'complete',
                     result: event.output,
                     confidence: event.output.confidence,
-                    processingTime: event.output.processingTime,
+                    processingTime: event.output.processingTime,;
                     timestamp: new Date()
                   });
                   return newResults;
@@ -431,17 +431,17 @@ export const evidenceProcessingMachine = setup({
 
         vectorSearch: {
           invoke: {
-            src: 'searchSimilarEvidence',
+            src: 'searchSimilarEvidence',;
             input: ({ context }) => {
               const currentEvidence = context.evidenceQueue[0];
               return {
-                embeddings: context.embeddings.get(currentEvidence.id) || [],
+                embeddings: context.embeddings.get(currentEvidence.id) || [],;
                 limit: 15
               };
             },
 
             onDone: {
-              target: 'relationshipDiscovery',
+              target: 'relationshipDiscovery',;
               actions: assign({
                 vectorMatches: ({ event }) =>;
                   (event.output.matches || []).map((match: any, index: number) => ({
@@ -480,7 +480,7 @@ export const evidenceProcessingMachine = setup({
             }),
 
             onDone: {
-              target: 'complete',
+              target: 'complete',;
               actions: assign({
                 graphRelationships: ({ event }) => event.output.nodes || [],
                 connectionStrength: ({ event }) => {
@@ -514,7 +514,7 @@ export const evidenceProcessingMachine = setup({
           }
         },
 
-        complete: {
+        complete: {;
           always: [;
             {
               target: '#evidenceProcessing.queueing',
@@ -620,7 +620,7 @@ export const evidenceProcessingMachine = setup({
       })
     },
 
-    STREAM_RESULTS: {
+    STREAM_RESULTS: {;
       actions: assign({
         liveUpdates: ({ context, event }) => [...context.liveUpdates, ...event.updates],
         streamingActive: true
@@ -635,7 +635,7 @@ export const evidenceProcessingMachine = setup({
 
 export const evidenceProcessingStore = writable({
   machine: null as any,
-  state: 'idle',
+  state: 'idle',;
   context: null as EnhancedAIContext | null
 });
 
@@ -658,7 +658,7 @@ export const aiRecommendationsStore = derived(evidenceProcessingStore, ($store) 
         id: crypto.randomUUID(),
         type: 'suggested_action',
         content: action,
-        confidence: a.confidenceScore,
+        confidence: a.confidenceScore,;
         source: a.processingModel
       })) || []
   );
@@ -675,7 +675,7 @@ export const graphRelationshipsStore = derived(
 );
 
 export const systemHealthStore = derived(evidenceProcessingStore, ($store) => ({
-  health: $store.context?.systemHealth || 'unknown',
+  health: $store.context?.systemHealth || 'unknown',;
   errors: $store.context?.errors?.filter((e: any) => !e.resolved) || [],
   cacheHits: $store.context?.cacheHits || 0,
   lastSync: $store.context?.lastSync
@@ -686,7 +686,7 @@ export const streamingStore = writable({
   isStreaming: false,
   streamType: null as string | null,
   progress: 0,
-  data: null as any,
+  data: null as any,;
   error: null as string | null
 });
 
@@ -705,7 +705,7 @@ export async function initializeEnhancedMachines(): Promise<any> {
     evidenceActor.subscribe((state: any) => {
       evidenceProcessingStore.set({
         machine: evidenceActor,
-        state: (state as any).value as string,
+        state: (state as any).value as string,;
         context: (state as any).context
       });
     });

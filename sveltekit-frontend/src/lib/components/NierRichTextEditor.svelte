@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components
+<!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components;
 https://svelte.dev/e/component_invalid_directive -->
 <!-- NieR: Automata Themed Rich Text Editor using bits-ui -->
 <script lang="ts">
@@ -19,18 +19,18 @@ https://svelte.dev/e/component_invalid_directive -->
   import { Editor } from "@tiptap/core";
   import StarterKit from "@tiptap/starter-kit";
   import { onMount } from "svelte";
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import { Select } from "$lib/components/ui/select";
   import { Separator } from "$lib/components/ui/separator";
   let editor = $state<Editor | null >(null);
   let editorElement = $state({}) {
     editor = new Editor({
-      element: editorElement,
+      element: editorElement,;
       extensions: [StarterKit],
       content,
       editorProps: {
-        attributes: {
-          class: "nier-editor-content focus:outline-none"
+        attributes: {;
+          class: "nier-editor-content focus:outline-none";
         }
       }
     }));
@@ -102,7 +102,7 @@ editor?.chain.focus().toggleBold.run()}
       <Button 
         variant="ghost" 
         size="sm" 
-        class="nier-toolbar-btn bits-btn bits-btn"
+        class="nier-toolbar-btn bits-btn bits-btn";
         class:active={editor?.isActive('italic')}
         onclick={() =>
 editor?.chain.focus().toggleItalic.run()}

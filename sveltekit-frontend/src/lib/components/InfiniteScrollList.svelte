@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -108,9 +108,9 @@ https://svelte.dev/e/js_parse_error -->
   }}
   function formatDate(dateString: string) {
     return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+      year: "numeric",;
+      month: "short",;
+      day: "numeric",;
     });
   }
   function truncateText(text: string, maxLength = 100) {
@@ -211,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .infinite-scroll-container {
+  .infinite-scroll-container {;
     flex: 1;
     overflow-y: auto;
     padding: 0;
@@ -364,17 +364,17 @@ https://svelte.dev/e/js_parse_error -->
       transform: rotate(360deg);
 }}
   /* Custom scrollbar */
-  .infinite-scroll-container: :-webkit-scrollbar {
+  .infinite-scroll-container::-webkit-scrollbar {
     width: 6px;
 }
-  .infinite-scroll-container: :-webkit-scrollbar-track {
+  .infinite-scroll-container::-webkit-scrollbar-track {
     background: var(--pico-background-color);
 }
-  .infinite-scroll-container: :-webkit-scrollbar-thumb {
+  .infinite-scroll-container::-webkit-scrollbar-thumb {
     background: var(--pico-muted-border-color);
     border-radius: 3px;
 }
-  .infinite-scroll-container: :-webkit-scrollbar-thumb:hover {
+  .infinite-scroll-container::-webkit-scrollbar-thumb:hover {
     background: var(--pico-primary);
 }
 </style>

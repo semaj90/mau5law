@@ -41,7 +41,7 @@ export class WASMLLMService {
 	private legalTokenPatterns = {
 		citations: /\b\d+\s+[A-Z][a-zA-Z\s]+\d+\b/g,
 		statutes: /\b\d+\s+U\.S\.C\.\s+§\s*\d+/g,
-		cases: /\b[A-Z][a-zA-Z\s]+v\.\s+[A-Z][a-zA-Z\s]+/g,
+		cases: /\b[A-Z][a-zA-Z\s]+v\.\s+[A-Z][a-zA-Z\s]+/g,;
 		jurisdictions: /\b(federal|state|appellate|supreme|district)\s+court\b/gi
 	};
 
@@ -89,7 +89,7 @@ export class WASMLLMService {
 			
 			// Instantiate the WASM module with memory and table;
 			const wasmModule = await WebAssembly.instantiate(wasmBinary, {
-				env: {
+				env: {;
 					memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }), // 16MB - 32MB;
 					abort: (msg: number, file: number, line: number, column: number) => {
 						console.error('WASM abort:', msg, file, line, column);
@@ -269,7 +269,7 @@ export class WASMLLMService {
 				tokens: totalTokens,
 				processingTimeMs: processingTime,
 				confidence: this.calculateConfidence(processedResponse, legalMetadata),
-				metadata: {
+				metadata: {;
 					model: config.modelPath,
 					promptTokens,
 					completionTokens,

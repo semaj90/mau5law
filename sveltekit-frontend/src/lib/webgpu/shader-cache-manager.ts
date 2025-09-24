@@ -98,7 +98,7 @@ export class ShaderCacheManager {
 
   private async compileShader(
     id: string, 
-    wgsl: string, 
+    wgsl: string, ;
     config: ShaderConfig, 
     startTime: number;
   ): Promise<CompiledShader> {
@@ -120,7 +120,7 @@ export class ShaderCacheManager {
 
       // Compile shader module;
       const shaderModule = this.device.createShaderModule({
-        label: `shader_${id}`,
+        label: `shader_${id}`,;
         code: wgsl
       });
 
@@ -132,7 +132,7 @@ export class ShaderCacheManager {
         pipeline = this.device.createComputePipeline({
           label: `compute_pipeline_${id}`,
           layout: 'auto',
-          compute: {
+          compute: {;
             module: shaderModule,
             entryPoint: config.entryPoint
           }
@@ -152,7 +152,7 @@ export class ShaderCacheManager {
             entryPoint: config.entryPoint,
             targets: [{ format: 'bgra8unorm' }]
           } : undefined,
-          primitive: {
+          primitive: {;
             topology: 'triangle-list'
           }
         });
@@ -166,7 +166,7 @@ export class ShaderCacheManager {
         shaderModule,
         pipeline,
         bindGroupLayout,
-        config,
+        config,;
         metadata: {
           compiledAt: Date.now(),
           lastUsed: Date.now(),
@@ -200,7 +200,7 @@ export class ShaderCacheManager {
    * Create specialized compute shader for tensor operations
    */
   async createTensorShader(
-    operation: 'embedding' | 'similarity' | 'quantize' | 'simd_parse',
+    operation: 'embedding' | 'similarity' | 'quantize' | 'simd_parse',;
     dimensions: number;
   ): Promise<CompiledShader> {
     const id = `tensor_${operation}_${dimensions}`;
@@ -316,7 +316,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
    * Execute tensor operation on GPU
    */
   async executeTensorOperation(
-    shader: CompiledShader,
+    shader: CompiledShader,;
     inputs: GPUBuffer[],
     outputSize: number;
   ): Promise<GPUBuffer> {
@@ -326,20 +326,20 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 
     // Create output buffer;
     const outputBuffer = this.device.createBuffer({
-      size: outputSize,
+      size: outputSize,;
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     // Create bind group;
     const bindGroup = this.device.createBindGroup({
-      layout: shader.bindGroupLayout,
+      layout: shader.bindGroupLayout,;
       entries: [;
         ...inputs.map((buffer, index) => ({
           binding: index,
           resource: { buffer }
         })),
         {
-          binding: inputs.length,
+          binding: inputs.length,;
           resource: { buffer: outputBuffer }
         }
       ]
@@ -366,7 +366,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const logData = {
       shader_id: id,
       cache_type: type,
-      compile_time_ms: duration,
+      compile_time_ms: duration,;
       timestamp: Date.now()
     };
     
@@ -384,7 +384,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const errorData = {
       shader_id: id,
       error_message: error.message,
-      error_stack: error.stack,
+      error_stack: error.stack,;
       timestamp: Date.now()
     };
     
@@ -412,7 +412,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         body: JSON.stringify({
           text: embeddingText,
           model: 'nomic-embed-text',
-          tags: ['shader', 'webgpu', ...metadata.tags],
+          tags: ['shader', 'webgpu', ...metadata.tags],;
           type: 'shader'
         })
       });
@@ -508,7 +508,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
                 usageCount: 0,
                 averageExecutionTime: 0,
                 description: query.text,
-                tags: query.tags || [],
+                tags: query.tags || [],;
                 operation: 'query'
               });
 
@@ -587,7 +587,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   async cacheShaderWithEmbedding(
     shader: CompiledShader,
     description: string,
-    operation: string,
+    operation: string,;
     tags: string[] = [];
   ): Promise<void> {
     try {

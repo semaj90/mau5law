@@ -338,7 +338,7 @@ export interface EnhancedGPUCacheConfig {
   nesCache: NESCacheConfig;
 
   // WebGPU configuration;
-  webgpu: {
+  webgpu: {;
     enabled: boolean;
     preferredAdapter?: string;
     memoryLimit?: number;
@@ -519,7 +519,7 @@ export function createDefaultEnhancedGPUCacheConfig(): EnhancedGPUCacheConfig {
       defaultComplexity: 'medium',
       securityLevel: 'standard',
       retentionPeriod: 365
-    },
+    },;
     performance: {
       enableAnalytics: true,
       metricsInterval: 60000, // 1 minute
@@ -567,7 +567,7 @@ export function createCacheKey(
 }
 
 export function estimateMemoryFootprint(
-  data: any,
+  data: any,;
   format: EncodingFormat = 'json';
 ): number {
   const jsonSize = JSON.stringify(data).length * 2; // UTF-16

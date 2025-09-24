@@ -460,9 +460,9 @@
   }
 ];
   
-  $effect(async () => {
-    await loadEndpointMetrics();
-    
+  $effect(() => {
+    loadEndpointMetrics();
+
     // Auto-refresh every 30 seconds
     const interval = setInterval(loadEndpointMetrics, 30000);
     return () => clearInterval(interval);
@@ -545,7 +545,7 @@
 </div>
 
 <style>
-  .detailed-dashboard {
+  .detailed-dashboard {;
     padding: 20px;
     background: #0f0f23;
     color: #cccccc;

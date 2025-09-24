@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:drop) and new syntaxes for event handling is not allowed. Use only the ondrop syntax
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:drop) and new syntaxes for event handling is not allowed. Use only the ondrop syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:drop) and new syntaxes for event handling is not allowed. Use only the ondrop syntax -->
 <!--
@@ -53,8 +53,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   // File input reference
   let fileInput: HTMLInputElement;
 
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
 
     try {
       console.log('🎮 Initializing N64 Detective UI...');
@@ -68,6 +69,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     } catch (error: unknown) {
       console.error('N64 Detective UI initialization failed:', error);
     }
+    })();
   });
 
   /**
@@ -115,7 +117,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       const evidence = await detectiveAnalysisEngine.analyzeEvidence(file, {
         type: file.type.startsWith('image/') ? 'image' : 'document',
         userId: 'detective_user',
-        caseId: 'case_2024_001'
+        caseId: 'case_2024_001';
       });
 
       clearInterval(progressInterval);
@@ -133,12 +135,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           severity: 'medium',
           description: 'Potential inconsistency detected with previous evidence',
           affectedEvidence: [evidence.id],
-          suggestedResolution: 'Review evidence for accuracy',
+          suggestedResolution: 'Review evidence for accuracy',;
           confidence: 0.75,
           llmResponse: {
-            summary: 'LLM analysis indicates potential conflict',
-            reasoning: 'Cross-reference with existing evidence shows discrepancies',
-            recommendations: ['Verify with additional sources', 'Interview witnesses']
+            summary: 'LLM analysis indicates potential conflict',;
+            reasoning: 'Cross-reference with existing evidence shows discrepancies',;
+            recommendations: ['Verify with additional sources', 'Interview witnesses'];
           }
         };
         conflicts = [newConflict, ...conflicts];
@@ -240,7 +242,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       const enhanced = await detectiveAnalysisEngine.analyzeEvidence(mockScreenshot, {
         type: 'screenshot',
         userId: 'detective_user',
-        caseId: 'case_2024_001'
+        caseId: 'case_2024_001';
       });
 
       currentEvidence = enhanced;
@@ -356,7 +358,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
               <div class="drop-icon">📁</div>
               <div class="drop-text">DROP EVIDENCE HERE</div>
               <div class="drop-subtext">or click to select file</div>
-              <input
+              <input;
                 bind:this={fileInput}
                 type="file"
                 accept="image/*,application/pdf,.txt,.doc,.docx"
@@ -622,7 +624,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 </div>
 
 <style>
-  .n64-detective-ui {
+  .n64-detective-ui {;
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     color: #00ff41;
     font-family: 'Courier New', monospace;
@@ -631,7 +633,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     position: relative;
   }
 
-  .n64-detective-ui.scanlines: :before {
+  .n64-detective-ui.scanlines::before {
     content: '';
     position: absolute;
     top: 0;
@@ -917,7 +919,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     font-size: 0.875rem;
   }
 
-  .ocr-stat span:last-child {
+  .ocr-stat span:last-child {;
     color: #00cc33;
     font-weight: bold;
   }

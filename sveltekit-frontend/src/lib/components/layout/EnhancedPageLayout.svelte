@@ -29,13 +29,14 @@ https://svelte.dev/e/expected_token -->
   let pageLoaded = $state(false);
   let gpuStatus = $state({
     gpu: 'RTX 3060 Ti',
-    status: 'Active',
-    memory: '7.0GB/8.0GB',
-    temperature: '51°C'
+    status: 'Active',;
+    memory: '7.0GB/8.0GB',;
+    temperature: '51°C';
   });
   
-  $effect(async () => {
-    pageLoaded = true;
+  $effect(() => {
+    (async () => {
+pageLoaded = true;
     
     if (showGpuStatus) {
       try {
@@ -46,15 +47,16 @@ https://svelte.dev/e/expected_token -->
         if (data.status === 'operational') {
           gpuStatus = {
             gpu: 'WebGPU',
-            status: 'Ready',
-            memory: 'Available',
-            temperature: 'Optimal'
+            status: 'Ready',;
+            memory: 'Available',;
+            temperature: 'Optimal';
           };
         }
       } catch (error) {
         console.log('GPU status check:', error);
       }
     }
+    })();
   });
 </script>
 
@@ -130,7 +132,7 @@ https://svelte.dev/e/expected_token -->
 </div>
 
 <style>
-  .enhanced-page-layout {
+  .enhanced-page-layout {;
     position: relative;
     min-height: 100vh;
   }
@@ -230,7 +232,7 @@ https://svelte.dev/e/expected_token -->
     font-size: 18px;
   }
   
-  .feature span:last-child {
+  .feature span:last-child {;
     font-size: 10px;
     color: #ccc;
     text-align: center;

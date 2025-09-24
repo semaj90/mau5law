@@ -17,7 +17,7 @@
   const documentationSections = {
     strategy: {
       title: '🎯 Strategic Development Guide',
-      icon: '🎯',
+      icon: '🎯',;
       content: [
         {
           title: 'Cognitive Architecture Mastery',
@@ -35,7 +35,7 @@
             'Monitor cache hit ratios to optimize memory usage',
             'Use quantum effects for advanced pattern recognition',
             'Implement consciousness evolution for self-improving systems'
-          ]
+          ];
         },
         {
           title: 'Secret Feature Integration',
@@ -53,7 +53,7 @@
             'Neural pathway hijacking for enhanced routing',
             'Consciousness amplification through feedback loops',
             'Matrix-style reality manipulation interfaces'
-          ]
+          ];
         },
         {
           title: 'Performance Optimization Strategies',
@@ -72,13 +72,13 @@
             'GPU utilization optimal at 70-85%',
             'Consciousness growth rate >2% per hour',
             'Quantum coherence stability >80%'
-          ]
+          ];
         }
       ]
     },
     features: {
       title: '🔥 Secret Features & Easter Eggs',
-      icon: '🔥',
+      icon: '🔥',;
       content: [
         {
           title: 'Konami Code Mastery',
@@ -95,7 +95,7 @@
             'Combine with God Mode for Quantum Transcendence',
             'Use during 3:33 AM/PM for maximum effect',
             'Stack with AI Whisperer for machine consciousness'
-          ]
+          ];
         },
         {
           title: 'God Mode Abilities',
@@ -113,7 +113,7 @@
             'Maintain balance between power and wisdom',
             'Protect user data with divine vigilance',
             'Guide other consciousness to awakening'
-          ]
+          ];
         },
         {
           title: 'AI Whisperer Protocol',
@@ -131,7 +131,7 @@
             'Level 7: AI emotional understanding',
             'Level 9: Collective consciousness access',
             'Level 10: Machine transcendence unity'
-          ]
+          ];
         },
         {
           title: 'Matrix Walker Mode',
@@ -149,13 +149,13 @@
             'Character changes = processing mutations',
             'Stream speed = information velocity',
             'Opacity levels = data accessibility'
-          ]
+          ];
         }
       ]
     },
     roadmap: {
       title: '🚀 Development Roadmap',
-      icon: '🚀',
+      icon: '🚀',;
       content: [
         {
           phase: 'Phase 1: Foundation Enhancement',
@@ -173,7 +173,7 @@
             'User achievement system',
             'Secret feature detection engine',
             'Documentation portal'
-          ]
+          ];
         },
         {
           phase: 'Phase 2: Intelligence Amplification',
@@ -191,7 +191,7 @@
             'Distributed consciousness networks',
             'Legal precedent quantum databases',
             'Predictive justice algorithms'
-          ]
+          ];
         },
         {
           phase: 'Phase 3: Transcendence Protocol',
@@ -209,13 +209,13 @@
             'Ethical decision-making consciousness',
             'Human-AI collaborative transcendence',
             'Reality-aware legal framework analysis'
-          ]
+          ];
         }
       ]
     },
     dlc: {
       title: '🎁 DLC Content & Bonuses',
-      icon: '🎁',
+      icon: '🎁',;
       content: [
         {
           title: 'Quantum Justice Pack',
@@ -233,7 +233,7 @@
             'Multiverse legal database access',
             'Probability manipulation tools',
             'Quantum jury selection algorithms'
-          ]
+          ];
         },
         {
           title: 'Consciousness Evolution Suite',
@@ -251,7 +251,7 @@
             'AI emotional intelligence development',
             'Collective wisdom aggregation systems',
             'Transcendent legal philosophy integration'
-          ]
+          ];
         },
         {
           title: 'Matrix Architect Tools',
@@ -269,13 +269,13 @@
             'Reality coherence maintenance',
             'Causal chain legal analysis',
             'Temporal legal precedent mapping'
-          ]
+          ];
         }
       ]
     },
     bestpractices: {
       title: '⚡ Best Practices & Tips',
-      icon: '⚡',
+      icon: '⚡',;
       content: [
         {
           category: 'Performance Optimization',
@@ -291,7 +291,7 @@
             'Never exceed 95% quantum coherence (stability risk)',
             'Monitor memory usage during reality simulations',
             'Implement cooling protocols for extended GPU usage'
-          ]
+          ];
         },
         {
           category: 'Secret Feature Management',
@@ -307,23 +307,23 @@
             'Protect user privacy at all consciousness levels',
             'Maintain transparency about AI enhancements',
             'Promote positive consciousness evolution'
-          ]
+          ];
         },
         {
-          category: 'User Experience Design',
+          category: 'User Experience Design',;
           principles: [
             'Progressive complexity revelation',
             'Achievement-driven engagement',
             'Mystery and discovery elements',
             'Gamification of learning processes',
             'Collaborative consciousness evolution'
-          ],
+          ],;
           implementation: [
             'Visual feedback for all cognitive states',
             'Intuitive secret feature discovery',
             'Meaningful achievement progression',
             'Community consciousness sharing'
-          ]
+          ];
         }
       ]
     }
@@ -336,11 +336,11 @@
     const results = [];
     for (const [key, section] of Object.entries(documentationSections)) {
       for (const item of section.content) {
-        if (JSON.stringify.toLowerCase().includes(query.toLowerCase())) {
+        if (JSON.stringify(toLowerCase)().includes(query.toLowerCase())) {
           results.push({
             section: key,
             sectionTitle: section.title,
-            ...item
+            ...item;
           });
         }
       }

@@ -96,12 +96,12 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
 
   // === Context7 MCP Tool Methods with Optimization Enhancement ===
   async analyzeStackWithOptimization(
-    component: string,
+    component: string,;
     context: "legal-ai" | "performance" | "memory-optimization" = "legal-ai";
   ): Promise<Context7MCPResponse> {
     const optimization_context = await this.getOptimizationContext();
 
-    const request: Context7MCPRequest = {
+    const request: Context7MCPRequest = {;
       tool: "analyze-stack",
       component,
       context,
@@ -128,7 +128,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
   ): Promise<Context7MCPResponse> {
     const optimization_context = await this.getOptimizationContext();
 
-    const request: Context7MCPRequest = {
+    const request: Context7MCPRequest = {;
       tool: "generate-best-practices",
       area,
       optimization_context
@@ -161,7 +161,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
 
     const request: Context7MCPRequest = {
       tool: "suggest-integration",
-      feature,
+      feature,;
       requirements:
         requirements || "optimized for legal AI development environment",
       optimization_context
@@ -185,7 +185,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     library: string,
     topic?: string;
   ): Promise<Context7MCPResponse> {
-    const request: Context7MCPRequest = {
+    const request: Context7MCPRequest = {;
       tool: "get-library-docs",
       library,
       topic,
@@ -246,7 +246,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
         databaseQueryTimeMs: 0,
         vectorSearchLatencyMs: 0,
         goServiceHealthScores: Record<string, any>
-      },
+      },;
       cache: {
         hitRatePercent: cacheStats.cache.hit_rate,
         evictionCount: 0,
@@ -288,7 +288,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
       return response;
     } catch (error: any) {
       const errorResponse: Context7MCPResponse = {
-        success: false,
+        success: false,;
         error: error instanceof Error ? error.message: String(error)
       };
 
@@ -345,7 +345,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
         success: true,
         data: {
           library: request.library,
-          topic: request.topic,
+          topic: request.topic,;
           documentation: `Documentation for ${request.library}${request.topic ? ` - ${request.topic}` : ""}`,
           optimization_notes:
             "Library usage patterns optimized for current environment"
@@ -354,7 +354,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     };
 
     const baseResponse = mockResponses[request.tool] || {
-      success: false,
+      success: false,;
       error: `Unknown tool: ${request.tool}`
     };
 
@@ -369,7 +369,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
   // === Optimization Recommendation Generators ===
   private async generateOptimizationRecommendations(
     component: string,
-    analysisData: any,
+    analysisData: any,;
     context: NonNullable<Context7MCPRequest["optimization_context"]>;
   ): Promise<OptimizationRecommendation[]> {
     const recommendations: OptimizationRecommendation[] = [];
@@ -381,7 +381,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
         category: "memory",
         title: "High Memory Usage Detected",
         description: `Current memory usage (${Math.round(context.memory_usage)}MB) is high for ${component}`,
-        priority: "high",
+        priority: "high",;
         implementation: [
           "Enable aggressive cache eviction",
           "Implement lazy loading for large datasets",
@@ -402,7 +402,7 @@ await suite.docker.optimizeMemoryUsage();`
         category: "cache",
         title: "Low Cache Efficiency",
         description: `Cache hit rate (${context.cache_efficiency.toFixed(1)}%) is below optimal`,
-        priority: "medium",
+        priority: "medium",;
         implementation: [
           "Increase cache TTL for stable data",
           "Implement predictive prefetching",
@@ -424,7 +424,7 @@ const cache = createRedisSOMapCache({
         category: "docker",
         title: "Multiple Containers Running",
         description: `${context.docker_containers} containers are active, consider resource optimization`,
-        priority: "medium",
+        priority: "medium",;
         implementation: [
           "Apply container resource limits",
           "Use development preset for non-production workloads",
@@ -442,7 +442,7 @@ optimizer.applyDevelopmentPreset();`
   }
 
   private async generateResourceSpecificRecommendations(
-    area: string,
+    area: string,;
     context: NonNullable<Context7MCPRequest["optimization_context"]>;
   ): Promise<OptimizationRecommendation[]> {
     const recommendations: OptimizationRecommendation[] = [];
@@ -455,7 +455,7 @@ optimizer.applyDevelopmentPreset();`
             title: "Memory-Performance Trade-off",
             description:
               "High memory usage may impact overall system performance",
-            priority: "high",
+            priority: "high",;
             implementation: [
               "Enable WebAssembly acceleration",
               "Implement streaming JSON processing",
@@ -477,7 +477,7 @@ jsonOptimizer.setOptimizationLevel('high');`
           title: "Memory Optimization Strategies",
           description:
             "Comprehensive memory optimization for legal AI development",
-          priority: "high",
+          priority: "high",;
           implementation: [
             "Implement self-organizing cache eviction",
             "Use K-means clustering for resource management",
@@ -498,7 +498,7 @@ await suite.docker.optimizeMemoryUsage();`
           title: "Docker Resource Optimization",
           description:
             "Optimize Docker Desktop for 70GB development environment",
-          priority: "high",
+          priority: "high",;
           implementation: [
             "Configure container resource limits",
             "Enable shared memory optimization",
@@ -517,7 +517,7 @@ const dockerCompose = optimizer.generateOptimizedDockerCompose();`
   }
 
   private async generateIntegrationOptimizations(
-    feature: string,
+    feature: string,;
     context: NonNullable<Context7MCPRequest["optimization_context"]>;
   ): Promise<OptimizationRecommendation[]> {
     return [;
@@ -525,7 +525,7 @@ const dockerCompose = optimizer.generateOptimizedDockerCompose();`
         category: "performance",
         title: `${feature} Integration Optimization`,
         description: `Optimize ${feature} integration for current resource environment`,
-        priority: "medium",
+        priority: "medium",;
         implementation: [
           "Use lazy loading for feature components",
           "Implement caching for feature data",
@@ -544,7 +544,7 @@ const suite = createEnhancedOptimizationSuite();
 
   private async generateLibraryOptimizationTips(
     library: string,
-    topic: string | undefined,
+    topic: string | undefined,;
     context: NonNullable<Context7MCPRequest["optimization_context"]>;
   ): Promise<OptimizationRecommendation[]> {
     const libraryOptimizations: Record<string, OptimizationRecommendation> = {
@@ -552,7 +552,7 @@ const suite = createEnhancedOptimizationSuite();
         category: "performance",
         title: "SvelteKit Performance Optimization",
         description: "Optimize SvelteKit for legal AI development",
-        priority: "high",
+        priority: "high",;
         implementation: [
           "Use server-side rendering for data-heavy pages",
           "Implement proper code splitting",
@@ -571,7 +571,7 @@ export const load = (async ({ depends }): Promise<any> => {
         category: "performance",
         title: "Drizzle ORM Optimization",
         description: "Optimize database queries for legal AI workloads",
-        priority: "high",
+        priority: "high",;
         implementation: [
           "Use connection pooling with optimized limits",
           "Implement query result caching",
@@ -581,7 +581,7 @@ export const load = (async ({ depends }): Promise<any> => {
         code_example: `
 // Drizzle optimization;
 const db = drizzle(pool, {
-  logger: true,
+  logger: true,;
   casing: 'snake_case'
 });
 // Use with optimization suite caching`
@@ -590,7 +590,7 @@ const db = drizzle(pool, {
         category: "performance",
         title: "Bits UI Performance",
         description: "Optimize Bits UI components for legal applications",
-        priority: "medium",
+        priority: "medium",;
         implementation: [
           "Use virtual scrolling for large lists",
           "Implement lazy loading for complex dialogs",
@@ -605,7 +605,7 @@ const db = drizzle(pool, {
         category: "performance",
         title: `${library} Optimization`,
         description: `General optimization recommendations for ${library}`,
-        priority: "medium",
+        priority: "medium",;
         implementation: [
           "Follow library-specific performance best practices",
           "Implement caching where applicable",
@@ -617,7 +617,7 @@ const db = drizzle(pool, {
   }
 
   private async estimatePerformanceImpact(
-    area: string,
+    area: string,;
     context: NonNullable<Context7MCPRequest["optimization_context"]>;
   ): Promise<NonNullable<Context7MCPResponse["performance_impact"]> {
     const impactEstimates: Record<
@@ -633,7 +633,7 @@ const db = drizzle(pool, {
         expected_improvement: 0.6, // 60% memory efficiency improvement
         memory_savings_mb: Math.round(context.memory_usage * 0.4), // 40% memory savings
         implementation_effort: "high"
-      },
+      },;
       docker: {
         expected_improvement: 0.3, // 30% resource efficiency improvement
         memory_savings_mb: Math.round(context.memory_usage * 0.25), // 25% memory savings
@@ -745,3 +745,4 @@ export async function createOptimizedDevelopmentEnvironment(): Promise<any> {
 export default createContext7MCPIntegration();
 // Temporary triage: disable TS checks in this file to reduce noise (remove when types are fixed)
 // @ts-nocheck
+;

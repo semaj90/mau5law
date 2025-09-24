@@ -107,7 +107,7 @@ export class QueryBuilder {
 
   static applySorting(
     table: any,
-    sortBy: string,
+    sortBy: string,;
     order: "asc" | "desc" = "desc";
   ): SQL {
     const column = table[sortBy];
@@ -132,7 +132,7 @@ export class QueryBuilder {
 
   static async executeQuery<T>(
     baseQuery: any,
-    filters: QueryFilters,
+    filters: QueryFilters,;
     table: any;
   ): Promise<any> {
     // Build filter conditions
@@ -152,9 +152,9 @@ export class QueryBuilder {
 
     // Get pagination params
     const pagination = this.getPaginationParams(
-      filters.limit?.toString(),
+      filters.limit?.toString()),
       filters.offset
-        ? (Math.floor(filters.offset / (filters.limit || 20)) + 1).toString()
+        ? (Math.floor(filters.offset / (filters.limit || 20)) + 1).toString())
         : "1"
     );
 

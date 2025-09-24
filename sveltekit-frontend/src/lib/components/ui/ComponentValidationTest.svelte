@@ -107,7 +107,7 @@
 </div>
 
 <style>
-  .validation-container {
+  .validation-container {;
     max-width: 800px;
     margin: 2rem auto;
     padding: 2rem;

@@ -40,7 +40,7 @@ const sessionState = $state<SessionState>({
     isValid: false,
     warningCount: 0,
     lastCheck: null
-  },
+  },;
   analytics: {
     loginTime: null,
     activityCount: 0,
@@ -191,7 +191,7 @@ export class SessionManager {
 
   // Record user activity for analytics;
   recordActivity(route: string, action: string, featureUsed?: string) {
-    this.actor.send({
+    this.actor.send({;
       type: 'ACTIVITY',
       route,
       action

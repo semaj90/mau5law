@@ -6,7 +6,7 @@
 
   interface RouteData {
     generated: string;
-    filters: {
+    filters: {;
       applied: boolean;
       category: string | null;
       status: string | null;
@@ -14,12 +14,12 @@
       search: string | null;
     };
     counts: {
-      total: {
+      total: {;
         config: number;
         fileBased: number;
         api: number;
       };
-      displayed: {
+      displayed: {;
         config: number;
         fileBased: number;
       };
@@ -96,8 +96,9 @@
     return [...tags].sort();
   });
 
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
 
     try {
       // Generate route data with analytics
@@ -112,6 +113,7 @@
     } finally {
       loading = false;
     }
+    })();
   });
 
   function getStatusColor(status: string): string {
@@ -256,7 +258,7 @@
           <div>
             <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search</label>
             <input
-              id="search"
+              id="search";
               bind:value={searchTerm}
               placeholder="Search routes..."
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -266,7 +268,7 @@
           <div>
             <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
             <select
-              id="category"
+              id="category";
               bind:value={selectedCategory}
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >

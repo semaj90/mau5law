@@ -86,7 +86,7 @@
 
   // Parallel processing state
   let activeUploads = $state(0);
-  let uploadQueue: FileState[] = [];
+  let uploadQueue = $state<FileState[]>([]);
   let batchToastId = $state<string | null>(null);
   let performanceMetrics = $state({
     totalFiles: 0,
@@ -104,10 +104,10 @@
     const pending = fileStates.filter(f => !['completed','canceled'].includes(f.status)).map(f => ({
       name: f.file.name,
       size: f.file.size,
-      type: f.file.type,
-      status: f.status === 'uploading' || f.status === 'processing' ? 'pending' : f.status,
+      type: f.file.type,;
+      status: f.status === 'uploading' || f.status === 'processing' ? 'pending' : f.status,;
       attempts: f.attempts || 0,
-      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt: null
+      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt: null;
     }));
     if (pending.length === 0) { try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) { /* ignore */ } return; }
     try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now(), files: pending })); } catch(e) { /* ignore */ }
@@ -318,7 +318,7 @@
         );
       } else {
         toastService.update(batchToastId, {
-          type: anyError ? 'warning' : 'success',
+          type: anyError ? 'warning' : 'success',;
           message: `Batch complete: ${completed} success, ${failed} failed, ${canceled} canceled`
         });
         setTimeout(() => toastService.dismiss(batchToastId!), 5000);
@@ -424,9 +424,9 @@
     }
   serializeSession();
     telemetry.emit('upload_batch_complete', {
-      completed: fileStates.filter(fs => fs.status === 'completed').length,
-      failed: fileStates.filter(fs => fs.status === 'error').length,
-      canceled: fileStates.filter(fs => fs.status === 'canceled').length
+      completed: fileStates.filter(fs => fs.status === 'completed').length,;
+      failed: fileStates.filter(fs => fs.status === 'error').length,;
+      canceled: fileStates.filter(fs => fs.status === 'canceled').length;
     });
   }
 
@@ -476,14 +476,14 @@
         `📁 ${file.name}`,
         'Starting upload...',
         {
-          dismissible: false,
+          dismissible: false,;
           actions: [{
-            label: 'Cancel',
+            label: 'Cancel',;
             action: () => {
               controller.abort();
               fs.status = 'canceled';
             },
-            style: 'danger'
+            style: 'danger';
           }]
         }
       );
@@ -494,7 +494,7 @@
     formData.append('file', file);
     formData.append('uploadData', JSON.stringify({
       caseId,
-      title: file.name,
+      title: file.name,;
       description: `Uploaded via drag-and-drop: ${file.name}`,
       evidenceType: getEvidenceType(file),
       enableAiAnalysis: true,
@@ -612,10 +612,10 @@
 
         // Publish Redis event (non-blocking)
         fetch('/api/v1/redis/publish', {
-          method: 'POST',
+          method: 'POST',;
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            event: 'file_uploaded',
+            event: 'file_uploaded',;
             data: {
               fileId: data[0].id,
               fileName: file.name,
@@ -675,8 +675,8 @@
       if (enableToastNotifications && fs.toastId) {
         if (fs.status === 'canceled') {
           toastService.update(fs.toastId, {
-            type: 'warning',
-            message: 'Upload canceled by user'
+            type: 'warning',;
+            message: 'Upload canceled by user';
           });
           setTimeout(() => toastService.dismiss(fs.toastId!), 3000);
         } else {
@@ -718,8 +718,9 @@
   function openFileDialog() { if (!disabled && !uploading && fileInput) fileInput.click(); }
 
   // Pre-flight MinIO health (non-blocking if fails)
-  $effect(async () => {
-    restoreSession();
+  $effect(() => {
+    (async () => {
+restoreSession();
     try {
       const res = await fetch('/api/v1/minio/health');
       if (res.ok) {
@@ -727,6 +728,7 @@
         minioHealthy = !!data?.ok;
       } else minioHealthy = false;
     } catch { minioHealthy = false; }
+    })();
   });
 
   // Reactive persistence effect (lightweight)
@@ -746,7 +748,7 @@
   <div
     class="drop-zone"
     class:drag-over={dragOver}
-    class:has-files={files.length > 0}
+    class:has-files={files.length > 0};
     class:uploading={uploading}
     role="button"
     aria-disabled={disabled || uploading}

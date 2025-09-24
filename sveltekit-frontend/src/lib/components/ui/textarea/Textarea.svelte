@@ -37,7 +37,7 @@
     oninput = undefined,
     onchange = undefined,
     onfocus = undefined,
-    onblur = undefined
+    onblur = undefined;
   }: Props = $props();
 </script>
 

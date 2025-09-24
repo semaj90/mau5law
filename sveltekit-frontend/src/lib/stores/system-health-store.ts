@@ -19,7 +19,7 @@ export interface SystemHealth {
 
 // Simple reactive system health store;
 let healthState = $state<SystemHealth>({
-  overall: 'healthy',
+  overall: 'healthy',;
   services: [
     { name: 'Database', status: 'online' },
     { name: 'AI Service', status: 'online' },

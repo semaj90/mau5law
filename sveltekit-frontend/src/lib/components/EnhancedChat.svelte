@@ -45,7 +45,7 @@
   	// Enhanced Chat Machine with proper error handling
   	const enhancedChatMachine = createMachine({
   		id: 'enhancedChat',
-  		initial: 'idle',
+  		initial: 'idle',;
   		context: {
   			messages: [] as ChatMessage[],
   			currentMessage: '',
@@ -54,7 +54,7 @@
   			session: null as ChatSession | null,
   			error: null as string | null,
   			confidence: 0,
-  			model: 'gemma3-legal'
+  			model: 'gemma3-legal';
   		},
   		states: {
   			idle: {
@@ -72,13 +72,13 @@
   				invoke: {
   					src: 'initializeSession',
   					onDone: {
-  						target: 'idle',
+  						target: 'idle',;
   						actions: assign({
   							session: ({ event }) => event.data
   						})
   					},
   					onError: {
-  						target: 'error',
+  						target: 'error',;
   						actions: assign({
   							error: ({ event }) => event.data.message || 'Failed to initialize session'
   						})
@@ -88,12 +88,12 @@
   			sending: {
   				entry: assign({
   					isLoading: true,
-  					error: null
+  					error: null;
   				}),
   				invoke: {
   					src: 'sendMessageToOllama',
   					onDone: {
-  						target: 'idle',
+  						target: 'idle',;
   						actions: [
   							assign({
   								messages: ({ context, event }) => [
@@ -110,7 +110,7 @@
   						]
   					},
   					onError: {
-  						target: 'error',
+  						target: 'error',;
   						actions: assign({
   							error: ({ event }) => event.data.message || 'Failed to send message',
   							isLoading: false
@@ -122,15 +122,15 @@
   				on: {
   					RETRY: 'sending',
   					CLEAR_ERROR: {
-  						target: 'idle',
+  						target: 'idle',;
   						actions: assign({
-  							error: null
+  							error: null;
   						})
   					}
   				}
   			}
   		}
-  	}, {
+  	}, {;
   		actions: {
   			updateChatStore: ({ context }) => {
   				chatStore.setMessages(context.messages);
@@ -139,12 +139,12 @@
   				// Save to PostgreSQL with pgvector
   				try {
   					await fetch('/api/chat/save', {
-  						method: 'POST',
+  						method: 'POST',;
   						headers: { 'Content-Type': 'application/json' },
   						body: JSON.stringify({
   							messages: context.messages.slice(-2), // Last user + AI message
-  							sessionId: context.session?.id,
-  							model: context.model
+  							sessionId: context.session?.id,;
+  							model: context.model;
   						})
   					});
   				} catch (error) {
@@ -158,18 +158,18 @@
   				const session: ChatSession = {
   					id: sessionId,
   					createdAt: new Date(),
-  					model: 'gemma3-legal',
+  					model: 'gemma3-legal',;
   					metadata: {
-  						userAgent: navigator.userAgent,
-  						context: 'legal-ai-chat'
+  						userAgent: navigator.userAgent,;
+  						context: 'legal-ai-chat';
   					}
   				};
   				// Initialize session in database
   				try {
   					await fetch('/api/chat/session', {
-  						method: 'POST',
-  						headers: { 'Content-Type': 'application/json' },
-  						body: JSON.stringify(session)
+  						method: 'POST',;
+  						headers: { 'Content-Type': 'application/json' },;
+  						body: JSON.stringify(session);
   					});
   				} catch (error) {
   					console.warn('Failed to save session:', error);
@@ -179,26 +179,26 @@
   			sendMessageToOllama: async ({ context, event }) => {
   				const userMessage: ChatMessage = {
   					id: crypto.randomUUID(),
-  					content: event.message,
-  					role: 'user',
+  					content: event.message,;
+  					role: 'user',;
   					timestamp: new Date(),
-  					sessionId: context.session?.id
+  					sessionId: context.session?.id;
   				};
 
   				// Direct Ollama API call with streaming disabled for now
   				const response = await fetch('http://localhost:11434/api/generate', {
-  					method: 'POST',
+  					method: 'POST',;
   					headers: { 'Content-Type': 'application/json' },
   					body: JSON.stringify({
   						model: context.model,
   						prompt: event.message,
-  						stream: false,
+  						stream: false,;
   						options: {
   							temperature: 0.7,
   							max_tokens: 1000,
-  							top_p: 0.9
-  						},
-  						system: "You are a helpful legal AI assistant. Provide accurate, professional responses about legal matters. Always include appropriate disclaimers that your advice should not replace professional legal counsel."
+  							top_p: 0.9;
+  						},;
+  						system: "You are a helpful legal AI assistant. Provide accurate, professional responses about legal matters. Always include appropriate disclaimers that your advice should not replace professional legal counsel.";
   					})
   				});
 
@@ -212,21 +212,21 @@
   					content: data.response || 'Sorry, I could not generate a response.',
   					role: 'assistant',
   					timestamp: new Date(),
-  					sessionId: context.session?.id,
+  					sessionId: context.session?.id,;
   					metadata: {
-  						model: context.model,
+  						model: context.model,;
   						confidence: data.confidence || 0.8,
   						totalDuration: data.total_duration,
   						loadDuration: data.load_duration,
   						promptEvalCount: data.prompt_eval_count,
-  						evalCount: data.eval_count
+  						evalCount: data.eval_count;
   					}
   				};
 
   				return {
   					userMessage,
   					aiResponse,
-  					confidence: data.confidence || 0.8
+  					confidence: data.confidence || 0.8;
   				};
   			}
   		}
@@ -430,32 +430,32 @@ send({ type: 'CLEAR_ERROR' })}
 </div>
 
 <style>
-	.typing-indicator div:nth-child(1) {
+	.typing-indicator div:nth-child(1) {;
 		animation-delay: 0s;
 	}
-	.typing-indicator div:nth-child(2) {
+	.typing-indicator div:nth-child(2) {;
 		animation-delay: 0.1s;
 	}
-	.typing-indicator div:nth-child(3) {
+	.typing-indicator div:nth-child(3) {;
 		animation-delay: 0.2s;
 	}
 
 	/* Custom scrollbar */
-	.messages-container: :-webkit-scrollbar {
+	.messages-container::-webkit-scrollbar {
 		width: 6px;
 	}
 
-	.messages-container: :-webkit-scrollbar-track {
+	.messages-container::-webkit-scrollbar-track {
 		background: #f1f5f9;
 		border-radius: 3px;
 	}
 
-	.messages-container: :-webkit-scrollbar-thumb {
+	.messages-container::-webkit-scrollbar-thumb {
 		background: #cbd5e1;
 		border-radius: 3px;
 	}
 
-	.messages-container: :-webkit-scrollbar-thumb:hover {
+	.messages-container::-webkit-scrollbar-thumb:hover {
 		background: #94a3b8;
 	}
 </style>

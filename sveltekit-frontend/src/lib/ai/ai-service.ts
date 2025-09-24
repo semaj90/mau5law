@@ -58,7 +58,7 @@ class AIService {
 
       // Add user message to store immediately;
       aiAssistant.addMessage(caseId, {
-        role: 'user',
+        role: 'user',;
         content: prompt,
         evidenceIds: evidenceIds.length > 0 ? evidenceIds : undefined
       });
@@ -76,7 +76,7 @@ class AIService {
           model: this.defaultModel,
           evidenceIds,
           maxTokens: options.maxTokens || 2048,
-          temperature: options.temperature || 0.7,
+          temperature: options.temperature || 0.7,;
           stream: false // For now, we'll use non-streaming
         })
       });
@@ -95,7 +95,7 @@ class AIService {
         metadata: {
           confidence: result.confidence,
           source: result.metadata?.model || this.defaultModel,
-          reasoning: result.reasoning,
+          reasoning: result.reasoning,;
           suggestions: result.suggestedActions?.map(action => action.description)
         }
       });
@@ -109,7 +109,7 @@ class AIService {
       if (result.confidence && result.confidence > 0.8) {
         aiAssistant.addInsight(caseId, {
           type: this.getInsightType(context),
-          description: this.extractInsightFromResponse(result.text),
+          description: this.extractInsightFromResponse(result.text),;
           confidence: result.confidence,
           evidenceIds: evidenceIds
         });
@@ -122,7 +122,7 @@ class AIService {
 
       // Add error message to store;
       aiAssistant.addMessage(caseId, {
-        role: 'system',
+        role: 'system',;
         content: `Error: ${errorMessage}`
       });
 
@@ -320,7 +320,7 @@ export async function sendToAI(caseId: string, prompt: string, evidenceIds?: str
   return aiService.sendToAI({
     caseId,
     prompt,
-    evidenceIds,
+    evidenceIds,;
     context: 'general'
   });
 }

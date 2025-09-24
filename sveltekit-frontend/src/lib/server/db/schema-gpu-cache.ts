@@ -55,7 +55,7 @@ export const shaderCacheEntries = pgTable('shader_cache_entries', {
   reinforcementData: jsonb('reinforcement_data'),
   
   // Version and lifecycle
-  version: integer('version').default(1),
+  version: integer('version').default(1),;
   deprecated: boolean('deprecated').default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
@@ -121,7 +121,7 @@ export const shaderUserPatterns = pgTable('shader_user_patterns', {
   
   // Reinforcement learning features
   stateVector: vector('state_vector', { dimensions: 64 }), // Compressed workflow state
-  actionVector: vector('action_vector', { dimensions: 32 }), // Action embedding
+  actionVector: vector('action_vector', { dimensions: 32 }), // Action embedding;
   reward: real('reward'), // Computed reward for this access
   
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow();
@@ -174,7 +174,7 @@ export const shaderPreloadRules = pgTable('shader_preload_rules', {
   successCount: integer('success_count').default(0),
   preloadSavingsMs: integer('preload_savings_ms').default(0),
   
-  // Lifecycle
+  // Lifecycle;
   active: boolean('active').default(true),
   learningRate: real('learning_rate').default(0.01),
   lastTriggered: timestamp('last_triggered', { withTimezone: true }),
@@ -237,7 +237,7 @@ export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
   
   // Queue identification
   queueKey: text('queue_key').notNull().unique(),
-  priority: text('priority').notNull(), // 'immediate', 'high', 'normal', 'low', 'preload'
+  priority: text('priority').notNull(), // 'immediate', 'high', 'normal', 'low', 'preload';
   status: text('status').notNull(), // 'pending', 'processing', 'completed', 'failed', 'cancelled'
   
   // Shader information
@@ -291,7 +291,7 @@ export const shaderRecommendationsView = pgTable('shader_recommendations_view', 
   userId: text('user_id').notNull(),
   shaderKey: text('shader_key').notNull(),
   recommendationType: text('recommendation_type').notNull(), // 'similar', 'next', 'popular', 'optimal'
-  confidence: real('confidence').notNull(),
+  confidence: real('confidence').notNull(),;
   reasoning: text('reasoning'),
   
   // Recommendation context

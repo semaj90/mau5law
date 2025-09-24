@@ -21,7 +21,7 @@ export interface SystemHealthData {
 }
 
 export interface UserSession {
-  user: {
+  user: {;
     id: string;
     email: string;
     firstName?: string;
@@ -43,7 +43,7 @@ export interface RoutePageData {
   recentOperations: Array<any>;
   routeInventory?: {
     generated: string;
-    counts: {
+    counts: {;
       config: number;
       fileBased: number;
       api: number;
@@ -138,7 +138,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
             name: 'Unknown Service',
             status: 'down' as const
           }
-    ),
+    ),;
     performance: {
       cpu_usage: Math.random() * 80 + 10,
       memory_usage: Math.random() * 70 + 20,
@@ -169,7 +169,7 @@ async function getUserSession(cookies: any): Promise<UserSession> {
         language: 'en',
         notifications: {
           email: true,
-          push: true,
+          push: true,;
           sms: false
         }
       }
@@ -223,7 +223,7 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
       {
         operation: 'API Endpoint Validation',
         timestamp: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
-        status: 'success' as const,
+        status: 'success' as const,;
         protocol: 'http'
       }
     ];
@@ -269,7 +269,7 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
         routeInventory = {
           generated: parsed.generated,
           counts: {
-            ...parsed.counts,
+            ...parsed.counts,;
             consolidatable: consolidatableRoutes.length
           },
           configMissingFiles: parsed.configMissingFiles || [],

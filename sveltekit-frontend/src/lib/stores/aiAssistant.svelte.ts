@@ -69,7 +69,7 @@ const aiAssistantState = $state<AIAssistantState>({
     primary: false,
     secondary: false,
     embeddings: false
-  },
+  },;
   usage: {
     totalQueries: 0,
     totalTokens: 0,
@@ -81,7 +81,7 @@ const aiAssistantState = $state<AIAssistantState>({
 
 // Create XState actor for AI assistant;
 const aiAssistantActor = browser ? createActor(aiAssistantMachine, {
-  services: aiAssistantServices,
+  services: aiAssistantServices,;
   actions: aiAssistantActions
 }) : null;
 
@@ -208,7 +208,7 @@ export class AIAssistantManager {
       } else {
         // Send message to XState actor (original path);
         this.actor.send({
-          type: 'SEND_MESSAGE',
+          type: 'SEND_MESSAGE',;
           message: message.trim(),
           useContext7: options?.useContext7 || false
         });
@@ -237,7 +237,7 @@ export class AIAssistantManager {
       const response: WebAssemblyAIResponse = await webAssemblyAIAdapter.sendMessage(message, {
         conversationHistory: aiAssistantState.conversationHistory,
         useContext: options?.useContext7,
-        model: options?.model || aiAssistantState.model || 'unknown',
+        model: options?.model || aiAssistantState.model || 'unknown',;
         temperature: options?.temperature || aiAssistantState.temperature,
         maxTokens: aiAssistantState.maxTokens
       });
@@ -249,7 +249,7 @@ export class AIAssistantManager {
         content: message,
         timestamp: new Date(),
         metadata: {
-          model: response.metadata.modelUsed,
+          model: response.metadata.modelUsed,;
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: 0,
           tokenCount: message.split(' ').length * 1.5,
@@ -263,7 +263,7 @@ export class AIAssistantManager {
         content: response.content,
         timestamp: new Date(),
         metadata: {
-          model: response.metadata.modelUsed,
+          model: response.metadata.modelUsed,;
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: response.metadata.processingTime,
           tokenCount: response.metadata.tokensGenerated,
@@ -286,7 +286,7 @@ export class AIAssistantManager {
       console.log('[AI Assistant] WebAssembly response generated:', {
         tokensGenerated: response.metadata.tokensGenerated,
         processingTime: response.metadata.processingTime,
-        fromCache: response.metadata.fromCache,
+        fromCache: response.metadata.fromCache,;
         confidence: response.metadata.confidence
       });
 
@@ -301,7 +301,7 @@ export class AIAssistantManager {
       if (this.webAssemblyFallback && this.actor) {
         console.log('[AI Assistant] Falling back to XState machine...');
         this.actor.send({
-          type: 'SEND_MESSAGE',
+          type: 'SEND_MESSAGE',;
           message: message.trim(),
           useContext7: options?.useContext7 || false
         });
@@ -337,7 +337,7 @@ export class AIAssistantManager {
         content: message,
         timestamp: new Date(),
         metadata: {
-          model: options?.model || aiAssistantState.model || 'unknown',
+          model: options?.model || aiAssistantState.model || 'unknown',;
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: 0,
           tokenCount: message.split(' ').length * 1.5,
@@ -351,7 +351,7 @@ export class AIAssistantManager {
         content: ragResult.answer,
         timestamp: new Date(),
         metadata: {
-          model: ragResult.metadata.processingMethod || 'hybrid',
+          model: ragResult.metadata.processingMethod || 'hybrid',;
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: ragResult.metadata.processingTime,
           tokenCount: ragResult.answer.split(' ').length * 1.3,
@@ -374,7 +374,7 @@ export class AIAssistantManager {
       console.log('[AI Assistant] LangChain RAG response generated:', {
         processingMethod: ragResult.metadata.processingMethod,
         processingTime: ragResult.metadata.processingTime,
-        retrievedChunks: ragResult.metadata.retrievedChunks,
+        retrievedChunks: ragResult.metadata.retrievedChunks,;
         confidence: ragResult.confidence,
         usedWebAssembly: ragResult.metadata.usedWebAssembly,
         sourceDocuments: ragResult.sourceDocuments.length
@@ -394,7 +394,7 @@ export class AIAssistantManager {
       } else if (this.actor) {
         console.log('[AI Assistant] Falling back to XState machine...');
         this.actor.send({
-          type: 'SEND_MESSAGE',
+          type: 'SEND_MESSAGE',;
           message: message.trim(),
           useContext7: options?.useContext7 || false
         });
@@ -536,7 +536,7 @@ export class AIAssistantManager {
       model: aiAssistantState.model || 'unknown',
       temperature: aiAssistantState.temperature,
       conversation: aiAssistantState.conversationHistory,
-      statistics: stats,
+      statistics: stats,;
       usage: aiAssistantState.usage
     };
 
@@ -601,7 +601,7 @@ export class AIAssistantManager {
       healthyCount,
       totalCount,
       status: healthyCount === totalCount ? 'all_healthy' : 
-              healthyCount > 0 ? 'partial' : 'all_down',
+              healthyCount > 0 ? 'partial' : 'all_down',;
       details: health
     };
   }
@@ -640,7 +640,7 @@ export class AIAssistantManager {
 
   // Analyze legal document using WebAssembly if available
   async analyzeLegalDocument(
-    title: string,
+    title: string,;
     content: string,
     analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive';
   ) {
@@ -656,7 +656,7 @@ export class AIAssistantManager {
       console.log('[AI Assistant] Legal analysis completed:', {
         summary: analysis.summary.substring(0, 100) + '...',
         keyTerms: analysis.keyTerms.length,
-        entities: analysis.entities.length,
+        entities: analysis.entities.length,;
         risks: analysis.risks.length,
         processingTime: analysis.processingTime
       });

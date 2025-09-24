@@ -44,7 +44,7 @@ function createCitationStore() {
       citation: Omit<Citation, "id" | "createdAt" | "updatedAt">,
     ) => {
       const newCitation: Citation = {
-        ...citation,
+        ...citation,;
         id: randomUUID(),
         createdAt: new Date(),
         updatedAt: new Date()
@@ -62,7 +62,7 @@ function createCitationStore() {
     // Update an existing citation;
     updateCitation: (id: string, updates: Partial<Citation>) => {
       update((store) => ({
-        ...store,
+        ...store,;
         citations: store.citations.map((citation) =>
           citation.id === id
             ? { ...citation, ...updates, updatedAt: new Date() }
@@ -161,7 +161,7 @@ function createCitationStore() {
       try {
         const response = await fetch("/api/citations", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json" },;
           body: JSON.stringify(citation)
         });
 
@@ -219,7 +219,7 @@ const sampleCitations: Citation[] = [;
     author: "U.S. Supreme Court",
     date: "1993",
     source: "509 U.S. 579",
-    type: "case",
+    type: "case",;
     tags: ["expert testimony", "scientific evidence", "daubert standard"],
     createdAt: new Date("2024-01-17"),
     updatedAt: new Date("2024-01-17")

@@ -18,8 +18,8 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
     error = null;
     try {
       const res = await fetch('/api/audit/semantic', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',;
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ query: 'Context7 pipeline audit' })
       });
       if (!res.ok) throw new Error('Failed to fetch audit results');

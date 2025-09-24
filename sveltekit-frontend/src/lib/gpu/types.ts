@@ -15,14 +15,13 @@ export type QuantizationLevel = 'none' | 'int8' | 'int4' | 'binary';
 
 // Nintendo Memory Bank Types (enhanced)
 export type MemoryBankType = 'L1_GPU' | 'L2_RAM' | 'L3_REDIS' | 'CHR_ROM' | 'PRG_ROM' | 'OAM' | 'PALETTE';
-}
 
 export interface NintendoMemoryBudget {
-  l1GpuBudget: number;     // VRAM budget (bytes)
-  l2RamBudget: number;     // System RAM budget (bytes)  
-  l3RedisBudget: number;   // Redis cache budget (bytes)
-  chrRomSize: number;      // CHR-ROM total size (bytes)
-  chrRomBanks: number;     // Number of CHR-ROM banks
+  l1GpuBudget: number; // VRAM budget (bytes)
+  l2RamBudget: number; // System RAM budget (bytes)
+  l3RedisBudget: number; // Redis cache budget (bytes)
+  chrRomSize: number; // CHR-ROM total size (bytes)
+  chrRomBanks: number; // Number of CHR-ROM banks
 }
 
 export interface BackendCapabilities {
@@ -85,12 +84,16 @@ export interface TrackedBuffer {
 
 export function normalizePerformanceProfile(input: string | undefined): 'auto' | 'mobile' | 'desktop' | 'high-end' {
   switch ((input || '').toLowerCase()) {
-    case 'mobile': return 'mobile';
-    case 'desktop': return 'desktop';
+    case 'mobile':
+      return 'mobile';
+    case 'desktop':
+      return 'desktop';
     case 'high-end':
     case 'hi-end':
-    case 'highend': return 'high-end';
-    default: return 'auto';
+    case 'highend':
+      return 'high-end';
+    default:
+      return 'auto';
   }
 }
 
@@ -99,8 +102,7 @@ export function clampMemoryMB(value: number, min = 64, max = 8192): number {
   return Math.min(Math.max(value, min), max);
 }
 
-// Enhanced interfaces for production use;
-}
+// Enhanced interfaces for production use
 
 export interface AdaptiveGPUConfig extends GPUContextFactoryConfig {
   adaptiveScaling: AdaptiveScalingMode;
@@ -108,59 +110,56 @@ export interface AdaptiveGPUConfig extends GPUContextFactoryConfig {
   vectorQuantization: QuantizationLevel;
   realTimeMetrics: boolean;
   performanceThresholds: {
-    maxRenderTime: number;    // milliseconds
-    maxMemoryUsage: number;   // percentage 0-100
-    maxTemperature: number;   // celsius
+    maxRenderTime: number; // milliseconds
+    maxMemoryUsage: number; // percentage 0-100
+    maxTemperature: number; // celsius
   };
 }
 
 export interface VectorEncodingConfig {
   dimensions: VectorDimensions;
   quantization: QuantizationLevel;
-  compressionTarget: number;   // 0-1 ratio
+  compressionTarget: number; // 0-1 ratio
   adaptiveDimensions: boolean;
   batchSize: number;
 }
 
 export interface GPUPerformanceMetrics {
-  renderTime: number;         // milliseconds
-  memoryUsage: number;        // bytes
-  gpuUtilization: number;     // percentage 0-100
-  temperature: number;        // celsius
-  powerConsumption: number;   // watts
+  renderTime: number; // milliseconds
+  memoryUsage: number; // bytes
+  gpuUtilization: number; // percentage 0-100
+  temperature: number; // celsius
+  powerConsumption: number; // watts
   contextSwitches: number;
-  frameRate: number;          // fps
-  lastMeasurement: number;    // timestamp
+  frameRate: number; // fps
+  lastMeasurement: number; // timestamp
 }
 
 export interface MemoryBankStatus {
   type: MemoryBankType;
-  allocated: number;          // bytes
-  used: number;              // bytes
-  available: number;         // bytes
-  fragmentation: number;     // percentage 0-100
-  bankSwitches: number;      // Nintendo-style bank switches
+  allocated: number; // bytes
+  used: number; // bytes
+  available: number; // bytes
+  fragmentation: number; // percentage 0-100
+  bankSwitches: number; // Nintendo-style bank switches
 }
 
 // Advanced validation functions
 
 export function validateVectorDimensions(dimensions: number): VectorDimensions {
   const validDimensions: VectorDimensions[] = [128, 256, 512, 768, 1024, 1536, 2048];
-  const closest = validDimensions.reduce((prev, curr) => 
+  const closest = validDimensions.reduce((prev, curr) =>
     Math.abs(curr - dimensions) < Math.abs(prev - dimensions) ? curr : prev
   );
   return closest;
 }
 
-export function calculateOptimalQuantization(
-  dimensions: VectorDimensions, 
-  memoryBudget: number;
-): QuantizationLevel {
+export function calculateOptimalQuantization(dimensions: VectorDimensions, memoryBudget: number): QuantizationLevel {
   const memoryPerVector = {
-    'none': dimensions * 4,   // float32
-    'int8': dimensions * 1,   // int8
+    'none': dimensions * 4, // float32
+    'int8': dimensions * 1, // int8
     'int4': dimensions * 0.5, // int4
-    'binary': dimensions / 8  // 1 bit per dimension
+    'binary': dimensions / 8, // 1 bit per dimension
   };
 
   for (const [level, memory] of Object.entries(memoryPerVector)) {
@@ -168,14 +167,14 @@ export function calculateOptimalQuantization(
       return level as QuantizationLevel;
     }
   }
-  
+
   return 'binary'; // Most aggressive if nothing else fits
 }
 
 export function adaptiveScalingDecision(
   metrics: GPUPerformanceMetrics,
   thresholds: AdaptiveGPUConfig['performanceThresholds'],
-  mode: AdaptiveScalingMode;
+  mode: AdaptiveScalingMode
 ): {
   shouldScale: boolean;
   recommendedDimensions: VectorDimensions;
@@ -187,11 +186,11 @@ export function adaptiveScalingDecision(
       shouldScale: false,
       recommendedDimensions: 768,
       recommendedQuantization: 'none',
-      reason: 'Adaptive scaling disabled'
+      reason: 'Adaptive scaling disabled',
     };
   }
 
-  const isOverThreshold = 
+  const isOverThreshold =
     metrics.renderTime > thresholds.maxRenderTime ||
     (metrics.memoryUsage / (8 * 1024 * 1024 * 1024)) * 100 > thresholds.maxMemoryUsage ||
     metrics.temperature > thresholds.maxTemperature;
@@ -201,15 +200,15 @@ export function adaptiveScalingDecision(
       shouldScale: false,
       recommendedDimensions: 768,
       recommendedQuantization: 'none',
-      reason: 'Performance within thresholds'
+      reason: 'Performance within thresholds',
     };
   }
 
-  // Scaling recommendations based on mode;
+  // Scaling recommendations based on mode
   const scalingStrategies = {
     'conservative': { dimensions: 512 as VectorDimensions, quantization: 'int8' as QuantizationLevel },
     'balanced': { dimensions: 256 as VectorDimensions, quantization: 'int4' as QuantizationLevel },
-    'aggressive': { dimensions: 128 as VectorDimensions, quantization: 'binary' as QuantizationLevel }
+    'aggressive': { dimensions: 128 as VectorDimensions, quantization: 'binary' as QuantizationLevel },
   };
 
   const strategy = scalingStrategies[mode] || scalingStrategies.balanced;
@@ -218,7 +217,7 @@ export function adaptiveScalingDecision(
     shouldScale: true,
     recommendedDimensions: strategy.dimensions,
     recommendedQuantization: strategy.quantization,
-    reason: `Performance threshold exceeded (${mode} scaling)`
+    reason: `Performance threshold exceeded (${mode} scaling)`,
   };
 }
 

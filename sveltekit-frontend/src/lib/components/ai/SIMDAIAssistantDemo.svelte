@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
@@ -18,7 +18,7 @@ export default ;
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   
   interface Props {
     initialContext?: any;
@@ -40,7 +40,7 @@ export default ;
       conversationHistory: [],
       sessionId: `simd-session-${Date.now()}`,
       isProcessing: false,
-      model: 'gemma3-legal:latest',
+      model: 'gemma3-legal:latest',;
       temperature: 0.7,
       maxTokens: 2048,
       
@@ -96,7 +96,7 @@ export default ;
       
       // Send to XState machine
       send({ 
-        type: 'QUERY', 
+        type: 'QUERY', ;
         query: queryInput.trim(),
         simdConfig: {
           compressionTarget,
@@ -107,11 +107,11 @@ export default ;
       
       // Call our enhanced Ollama-SIMD API
       const response = await fetch('/api/ai/ollama-simd', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt: queryInput.trim(),
-          model: context.model,
+          prompt: queryInput.trim(),;
+          model: context.model,;
           temperature: context.temperature,
           enable_simd: enableSIMD,
           compression_target: compressionTarget,
@@ -119,7 +119,7 @@ export default ;
           generate_ui_components: true,
           use_web_worker: useWorker,
           session_id: context.sessionId,
-          task_type: 'legal-analysis'
+          task_type: 'legal-analysis';
         })
       });
       
@@ -131,9 +131,9 @@ export default ;
       
       // Update machine state with results
       send({
-        type: 'RESPONSE_RECEIVED',
+        type: 'RESPONSE_RECEIVED',;
         response: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).response,
-        metadata: {
+        metadata: {;
           model: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).model,
           tokensPerSecond: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).performance_metrics.tokens_per_second,
           totalDuration: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).total_duration,
@@ -158,8 +158,8 @@ export default ;
       addLog(`❌ Error: ${error.message}`);
       
       send({
-        type: 'ERROR',
-        error: error.message
+        type: 'ERROR',;
+        error: error.message;
       });
     }
   }
@@ -169,8 +169,8 @@ export default ;
     
     const components = simdData.instant_ui_components.map(comp => ({
       ...comp,
-      timestamp: Date.now(),
-      animated: qualityTier === 'nes'
+      timestamp: Date.now(),;
+      animated: qualityTier === 'nes';
     }));
     
     liveComponents = [
@@ -579,7 +579,7 @@ processingLogs = []} variant="ghost" size="sm">
 </div>
 
 <style>
-  .simd-ai-assistant {
+  .simd-ai-assistant {;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
   
@@ -612,15 +612,15 @@ processingLogs = []} variant="ghost" size="sm">
   }
   
   /* Enhanced scrollbars */
-  .bg-black: :-webkit-scrollbar {
+  .bg-black::-webkit-scrollbar {
     width: 8px;
   }
   
-  .bg-black: :-webkit-scrollbar-track {
+  .bg-black::-webkit-scrollbar-track {
     background: #000;
   }
   
-  .bg-black: :-webkit-scrollbar-thumb {
+  .bg-black::-webkit-scrollbar-thumb {
     background: #22c55e;
     border-radius: 4px;
   }

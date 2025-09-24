@@ -146,7 +146,7 @@ export const chatActions = {
     try {
       const response = await fetch('/api/chat/session', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },;
         body: JSON.stringify({ user_id: userId, case_id: caseId })
       });
 
@@ -257,7 +257,7 @@ export const chatActions = {
         session_id: session?.id || '',
         sessionId: session?.id || '',
         role: 'assistant',
-        content: response,
+        content: response,;
         timestamp: Date.now(),
         token_count: Math.ceil(response.length / 4) // Rough estimate
       };
@@ -295,7 +295,7 @@ export const chatActions = {
       userId,
       sessionId,
       isTyping,
-      lastSeen: Date.now(),
+      lastSeen: Date.now(),;
       status: 'online'
     };
 
@@ -324,7 +324,7 @@ export const chatActions = {
   // Error handling;
   addError: (message: string, context?: unknown): void => {
     const error = {
-      timestamp: new Date(),
+      timestamp: new Date(),;
       error: message,
       context
     };
@@ -445,7 +445,7 @@ export const chatStores = {
   attention: userAttention,
   activities: userActivities,
   
-  // Configuration
+  // Configuration;
   config: chatConfig,
   
   // Derived;

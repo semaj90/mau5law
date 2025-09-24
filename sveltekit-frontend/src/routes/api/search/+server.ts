@@ -1,11 +1,11 @@
 // Vector Search API Endpoint
 // Bridge between frontend UI and vector search service
 
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } from '@sveltejs/kit'
 // TODO: Implement enhanced vector search service
-// import { enhancedVectorSearchService } from '$lib/services/enhanced-vector-search';
+// import { enhancedVectorSearchService } from '$lib/services/enhanced-vector-search'
 
-// Placeholder service until enhanced-vector-search is implemented;
+// Placeholder service until enhanced-vector-search is implemented
 const enhancedVectorSearchService = {
   async unifiedVectorSearch(query: string, options: any) {
     return {
@@ -14,45 +14,45 @@ const enhancedVectorSearchService = {
       executionTime: Date.now(),
       suggestions: [],
       debug: { message: 'Enhanced vector search not yet implemented' }
-    };
+    }
   },
   async healthCheck() {
-    return { status: 'healthy', service: 'placeholder' };
+    return { status: 'healthy', service: 'placeholder' }
   },
   async getSearchStats() {
-    return { totalQueries: 0, avgResponseTime: 0 };
+    return { totalQueries: 0, avgResponseTime: 0 }
   }
-};
-import type { VectorSearchOptions } from '$lib/types/vector-search';
+}
+import type { VectorSearchOptions } from '$lib/types/vector-search'
 
 interface SearchRequestBody {
-  query: string;
+  query: string
   options?: VectorSearchOptions & {
-    embedding?: number[];
-  };
+    embedding?: number[]
+  }
 }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const startTime = Date.now();
-    const body: SearchRequestBody = await request.json();
+    const startTime = Date.now()
+    const body: SearchRequestBody = await request.json()
     
     if (!body.query || typeof body.query !== 'string') {
       return json({
         error: 'Query text is required',
         code: 'MISSING_QUERY'
-      }, { status: 400 });
+      }, { status: 400 })
     }
 
-    console.log(`🔍 Search request: "${body.query.substring(0, 100)}..."`);
+    console.log(`🔍 Search request: "${body.query.substring(0, 100)}..."`)
 
-    let queryEmbedding: number[];
+    let queryEmbedding: number[]
 
     if (body.options?.embedding && Array.isArray(body.options.embedding)) {
-      console.log('🔧 Using provided embedding');
-      queryEmbedding = body.options.embedding;
+      console.log('🔧 Using provided embedding')
+      queryEmbedding = body.options.embedding
     } else {
-      console.log('🤖 Generating embedding with Ollama...');
+      console.log('🤖 Generating embedding with Ollama...')
       try {
         const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
           method: 'POST',
@@ -63,31 +63,31 @@ export const POST: RequestHandler = async ({ request }) => {
             model: 'nomic-embed-text',
             prompt: body.query
           })
-        });
+        })
 
         if (!embeddingResponse.ok) {
-          const errorText = await embeddingResponse.text();
-          console.error('❌ Ollama embedding error:', errorText);
+          const errorText = await embeddingResponse.text()
+          console.error('❌ Ollama embedding error:', errorText)
           
           return json({
             error: 'Failed to generate embedding from Ollama',
             code: 'EMBEDDING_GENERATION_FAILED',
             details: `Ollama responded with ${embeddingResponse.status}: ${errorText}`
-          }, { status: 502 });
+          }, { status: 502 })
         }
 
-        const embeddingData = await embeddingResponse.json();
-        queryEmbedding = embeddingData.embedding;
+        const embeddingData = await embeddingResponse.json()
+        queryEmbedding = embeddingData.embedding
         
-        console.log(`✅ Generated ${queryEmbedding.length}D embedding`);
+        console.log(`✅ Generated ${queryEmbedding.length}D embedding`)
       } catch (error) {
-        console.error('❌ Ollama connection error:', error);
+        console.error('❌ Ollama connection error:', error)
         
         return json({
           error: 'Unable to connect to Ollama for embedding generation',
           code: 'OLLAMA_CONNECTION_ERROR',
           details: error instanceof Error ? error.message: 'Unknown connection error'
-        }, { status: 502 });
+        }, { status: 502 })
       }
     }
 
@@ -95,12 +95,12 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         error: 'Invalid embedding generated',
         code: 'INVALID_EMBEDDING'
-      }, { status: 500 });
+      }, { status: 500 })
     }
 
-    console.log('🔍 Performing vector similarity search...');
+    console.log('🔍 Performing vector similarity search...')
     const searchResults = await enhancedVectorSearchService.unifiedVectorSearch(
-      queryEmbedding,);
+      queryEmbedding,)
       {
         limit: body.options?.limit || 10,
         threshold: body.options?.threshold || 0.6,
@@ -108,10 +108,10 @@ export const POST: RequestHandler = async ({ request }) => {
         includeMetadata: true,
         ...body.options
       }
-    );
+    )
 
-    const processingTime = Date.now() - startTime;
-    console.log(`✅ Search completed in ${processingTime}ms, found ${searchResults.length} results`);
+    const processingTime = Date.now() - startTime
+    console.log(`✅ Search completed in ${processingTime}ms, found ${searchResults.length} results`)
 
     return json({
       success: true,
@@ -125,41 +125,41 @@ export const POST: RequestHandler = async ({ request }) => {
         searchTypes: body.options?.entityTypes || ['evidence'],
         timestamp: new Date().toISOString()
       }
-    });
+    })
 
   } catch (error) {
-    console.error('❌ Search API error:', error);
+    console.error('❌ Search API error:', error)
     
     return json({
       error: 'Internal server error during search',
       code: 'INTERNAL_ERROR',
       details: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}
 
 export const GET: RequestHandler = async () => {
   try {
-    console.log('📊 Search system status check');
+    console.log('📊 Search system status check')
     
-    let ollamaStatus = 'unknown';
-    let ollamaModels: string[] = [];
+    let ollamaStatus = 'unknown'
+    let ollamaModels: string[] = []
     try {
-      const ollamaResponse = await fetch('http://localhost:11434/api/tags');
+      const ollamaResponse = await fetch('http://localhost:11434/api/tags')
       
       if (ollamaResponse.ok) {
-        const data = await ollamaResponse.json();
-        ollamaModels = data.models?.map((m: any) => m.name) || [];
-        ollamaStatus = ollamaModels.includes('nomic-embed-text') ? 'ready' : 'missing_model';
+        const data = await ollamaResponse.json()
+        ollamaModels = data.models?.map((m: any) => m.name) || []
+        ollamaStatus = ollamaModels.includes('nomic-embed-text') ? 'ready' : 'missing_model'
       } else {
-        ollamaStatus = 'unavailable';
+        ollamaStatus = 'unavailable'
       }
     } catch {
-      ollamaStatus = 'unavailable';
+      ollamaStatus = 'unavailable'
     }
 
-    const vectorHealth = await enhancedVectorSearchService.healthCheck();
-    const vectorStats = await enhancedVectorSearchService.getSearchStats();
+    const vectorHealth = await enhancedVectorSearchService.healthCheck()
+    const vectorStats = await enhancedVectorSearchService.getSearchStats()
 
     return json({
       success: true,
@@ -181,12 +181,12 @@ export const GET: RequestHandler = async () => {
         maxEmbeddingDimensions: 384,
         supportedEntityTypes: ['evidence', 'case']
       }
-    });
+    })
 
   } catch (error) {
     return json({
       error: 'Failed to get search system status',
       code: 'STATUS_ERROR'
-    }, { status: 500 });
+    }, { status: 500 })
   }
-};
+}

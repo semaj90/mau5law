@@ -26,7 +26,7 @@ export const users = pgTable('users', {
   lockoutUntil: timestamp('lockout_until'),
   twoFactorSecret: text('two_factor_secret'),
   twoFactorEnabled: boolean('two_factor_enabled').default(false),
-  profilePicture: text('profile_picture'),
+  profilePicture: text('profile_picture'),;
   preferences: json('preferences').default(sql`'{}'::json`),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
@@ -48,7 +48,7 @@ export const userAuditLogs = pgTable('user_audit_logs', {
   userId: uuid('user_id').references(() => users.id),
   action: varchar('action', { length: 100 }).notNull(), // login, logout, password_change, profile_update, etc.
   ipAddress: varchar('ip_address', { length: 45 }),
-  userAgent: text('user_agent'),
+  userAgent: text('user_agent'),;
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow()
 });
@@ -58,7 +58,7 @@ export const cases = pgTable('cases', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
-  status: varchar('status', { length: 50 }).default('active'), // active, closed, archived
+  status: varchar('status', { length: 50 }).default('active'), // active, closed, archived;
   priority: varchar('priority', { length: 20 }).default('medium'), // low, medium, high, critical
   caseNumber: varchar('case_number', { length: 100 }).unique(),
   createdBy: uuid('created_by').references(() => users.id),
@@ -80,7 +80,7 @@ export const documents = pgTable('documents', {
   embedding: vector('embedding', { dimensions: 1536 }), // OpenAI ada-002 or similar
   metadata: json('metadata'),
   tags: json('tags').default(sql`'[]'::json`),
-  isIndexed: boolean('is_indexed').default(false),
+  isIndexed: boolean('is_indexed').default(false),;
   source: varchar('source', { length: 100 }).default('upload'), // upload, scan, email, etc.
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
@@ -98,7 +98,7 @@ export const evidence = pgTable('evidence', {
   hash: varchar('hash', { length: 256 }), // File integrity hash
   chainOfCustody: json('chain_of_custody').default(sql`'[]'::json`),
   isAdmissible: boolean('is_admissible'),
-  admissibilityNotes: text('admissibility_notes'),
+  admissibilityNotes: text('admissibility_notes'),;
   tags: json('tags').default(sql`'[]'::json`),
   aiAnalysis: json('ai_analysis'),
   createdBy: uuid('created_by').references(() => users.id),
@@ -118,7 +118,7 @@ export const aiInteractions = pgTable('ai_interactions', {
   tokensUsed: integer('tokens_used'),
   responseTime: integer('response_time'), // milliseconds
   confidence: integer('confidence'), // 0-100
-  feedback: json('feedback'),
+  feedback: json('feedback'),;
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow()
 });
@@ -129,7 +129,7 @@ export const searchIndex = pgTable('search_index', {
   entityType: varchar('entity_type', { length: 50 }).notNull(), // document, case, evidence, etc.
   entityId: uuid('entity_id').notNull(),
   content: text('content').notNull(),
-  embedding: vector('embedding', { dimensions: 1536 }),
+  embedding: vector('embedding', { dimensions: 1536 }),;
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
@@ -170,7 +170,7 @@ export const relations = {
     creator: users
   },
   aiInteractions: {
-    user: users,
+    user: users,;
     case: cases
   }
 };

@@ -23,7 +23,7 @@ const redisUrl = env.REDIS_URL || 'redis://localhost:6379';
 const defaultConfig: RedisConfig = {
   host: env.REDIS_HOST || 'localhost',
   port: parseInt(env.REDIS_PORT || '6379'),
-  password: env.REDIS_PASSWORD, // No default password - Docker Redis has no auth
+  password: env.REDIS_PASSWORD, // No default password - Docker Redis has no auth;
   db: 0,
   retryDelayOnFailover: 100,
   maxRetriesPerRequest: 3,
@@ -150,7 +150,7 @@ export async function checkRedisHealth(): Promise<any> {
 
   } catch (error) {
     return { 
-      status: 'error', 
+      status: 'error', ;
       error: error instanceof Error ? error.message: String(error)
     };
   }

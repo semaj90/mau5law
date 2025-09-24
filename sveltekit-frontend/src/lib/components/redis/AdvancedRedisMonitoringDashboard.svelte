@@ -15,11 +15,11 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   
   // Real-time metrics stores
   const liveMetrics = writable({
-    timestamp: Date.now(),
+    timestamp: Date.now(),;
     redis: { hit_rate: 0, memory_usage: 0, connections: 0 },
     gpu: { utilization: 0, memory_used: 0, temperature: 0 },
     simd: { cache_hit_rate: 0, parse_performance: 0, backends_active: 0 },
-    mcp: { workers_active: 0, requests_per_second: 0, avg_response_time: 0 },
+    mcp: { workers_active: 0, requests_per_second: 0, avg_response_time: 0 },;
     endpoints: { optimized: 78, total: 90, performance_gain: 0 }
   });
 
@@ -35,13 +35,14 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     primary: '#00d800',
     secondary: '#3cbcfc', 
     warning: '#fcfc54',
-    error: '#fc5454',
-    background: '#0f0f23',
-    surface: '#1e1e3f'
+    error: '#fc5454',;
+    background: '#0f0f23',;
+    surface: '#1e1e3f';
   };
 
-  $effect(async () => {
-    // Initialize SIMD parser first
+  $effect(() => {
+    (async () => {
+// Initialize SIMD parser first
     try {
       const { UnifiedSIMDParser } = await import('$lib/services/unified-simd-parser');
       unifiedSIMDParser = new UnifiedSIMDParser();
@@ -59,6 +60,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     
     await initializeRealTimeMonitoring();
     startPerformancePolling();
+    })();
   });
 
   onDestroy(() => {
@@ -112,17 +114,17 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       const mcpStats = await getMCPStats();
       
       const newMetrics = {
-        timestamp: Date.now(),
+        timestamp: Date.now(),;
         redis: {
           hit_rate: redisData.cache_hit_rate || 0,
           memory_usage: redisData.memory_usage_mb || 0,
           connections: redisData.connections || 0,
-          operations_per_sec: redisData.ops_per_sec || 0
+          operations_per_sec: redisData.ops_per_sec || 0;
         },
         gpu: {
           utilization: gpuStats.utilization || 0,
           memory_used: gpuStats.memory_used_mb || 0,
-          temperature: gpuStats.temperature || 0
+          temperature: gpuStats.temperature || 0;
         },
         simd: {
           cache_hit_rate: simdStats.cache_hit_rates?.redis || 0,
@@ -135,9 +137,9 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
           avg_response_time: mcpStats.avg_response_ms || 0
         },
         endpoints: {
-          optimized: 78,
+          optimized: 78,;
           total: 90,
-          performance_gain: calculatePerformanceGain(redisData.cache_hit_rate)
+          performance_gain: calculatePerformanceGain(redisData.cache_hit_rate);
         }
       };
 
@@ -162,8 +164,8 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       // Simulate GPU metrics - replace with actual NVIDIA-ML or GPU monitoring
       return {
         utilization: Math.random() * 30 + 20, // 20-50% utilization
-        memory_used_mb: Math.random() * 2000 + 1500, // 1.5-3.5GB
-        temperature: Math.random() * 10 + 45 // 45-55°C
+        memory_used_mb: Math.random() * 2000 + 1500, // 1.5-3.5GB;
+        temperature: Math.random() * 10 + 45 // 45-55°C;
       };
     } catch {
       return { utilization: 0, memory_used_mb: 0, temperature: 0 };
@@ -207,7 +209,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
       alertsLog.update(log => [
         ...alerts.map(alert => ({
           ...alert,
-          timestamp: Date.now()
+          timestamp: Date.now();
         })),
         ...log
       ].slice(0, 10)); // Keep last 10 alerts
@@ -390,7 +392,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
 </div>
 
 <style>
-  .nintendo-dashboard {
+  .nintendo-dashboard {;
     background: #0f0f23;
     color: #cccccc;
     font-family: 'Courier New', monospace;

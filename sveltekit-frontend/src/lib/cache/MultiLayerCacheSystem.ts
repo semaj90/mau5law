@@ -42,7 +42,7 @@ export class MultiLayerCacheSystem {
   private stats = {
     hits: { l1: 0, l2: 0, l3: 0, l4: 0 },
     misses: { l1: 0, l2: 0, l3: 0, l4: 0 },
-    evictions: 0,
+    evictions: 0,;
     writes: 0
   };
 
@@ -58,14 +58,14 @@ export class MultiLayerCacheSystem {
   constructor() {
     // Initialize Loki.js in-memory database
     this.lokiDB = new Loki('legal-ai-cache.db', {
-      env: 'BROWSER',
+      env: 'BROWSER',;
       autosave: false,
       persistenceMethod: 'memory'
     });
 
     // Create collection for cache entries
     this.memoryCollection = this.lokiDB.addCollection<CacheEntry>('cache', {
-      indices: ['key', 'timestamp', 'priority'],
+      indices: ['key', 'timestamp', 'priority'],;
       unique: ['key']
     });
 
@@ -114,7 +114,7 @@ export class MultiLayerCacheSystem {
    */
   private initializeFuseIndex(): void {
     const options: Fuse.IFuseOptions<CacheEntry> = {
-      keys: ['key', 'value'],
+      keys: ['key', 'value'],;
       threshold: 0.3,
       includeScore: true,
       minMatchCharLength: 2
@@ -167,7 +167,7 @@ export class MultiLayerCacheSystem {
   async set<T>(
     key: string,
     value: T,
-    ttl: number = this.config.defaultTTL,
+    ttl: number = this.config.defaultTTL,;
     priority: number = 100
   ): Promise<void> {
     this.stats.writes++;
@@ -193,7 +193,7 @@ export class MultiLayerCacheSystem {
     if (this.fuseIndex) {
       const entry: CacheEntry = {
         key,
-        value,
+        value,;
         timestamp: Date.now(),
         ttl,
         priority,
@@ -222,7 +222,7 @@ export class MultiLayerCacheSystem {
   private async setInMemory<T>(
     key: string,
     value: T,
-    ttl: number,
+    ttl: number,;
     priority: number
   ): Promise<void> {
     const sizeBytes = this.estimateSize(value);
@@ -235,7 +235,7 @@ export class MultiLayerCacheSystem {
 
     const entry: CacheEntry<T> = {
       key,
-      value,
+      value,;
       timestamp: Date.now(),
       ttl,
       priority,
@@ -258,7 +258,7 @@ export class MultiLayerCacheSystem {
   private async setInIndexedDB<T>(
     key: string,
     value: T,
-    ttl: number,
+    ttl: number,;
     priority: number
   ): Promise<void> {
     if (!this.indexedDB) return;
@@ -269,7 +269,7 @@ export class MultiLayerCacheSystem {
 
       const entry: CacheEntry<T> = {
         key,
-        value,
+        value,;
         timestamp: Date.now(),
         ttl,
         priority,
@@ -295,7 +295,7 @@ export class MultiLayerCacheSystem {
   ): void {
     const entry: CacheEntry<T> = {
       key,
-      value,
+      value,;
       timestamp: Date.now(),
       ttl,
       priority,
@@ -473,7 +473,7 @@ export class MultiLayerCacheSystem {
       totalHits,
       totalMisses,
       hitRate: totalHits / (totalHits + totalMisses) || 0,
-      evictions: this.stats.evictions,
+      evictions: this.stats.evictions,;
       writes: this.stats.writes
     };
   }

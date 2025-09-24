@@ -18,7 +18,7 @@ export interface ApiResponse<T = any> {
 }
 
 export interface PaginatedResponse<T> extends ApiResponse<T[]> {
-  pagination: {
+  pagination: {;
     page: number;
     limit: number;
     total: number;
@@ -87,12 +87,12 @@ export interface AuthUser {
 export interface UserPreferences {
   theme: "yorha-dark" | "yorha-light" | "professional";
   language: "en" | "es" | "fr";
-  notifications: {
+  notifications: {;
     email: boolean;
     browser: boolean;
     mobile: boolean;
   };
-  dashboard: {
+  dashboard: {;
     layout: "grid" | "list";
     widgets: string[];
   };
@@ -321,7 +321,7 @@ export interface ServiceEndpoints {
     port: number;
     grpcPort?: number;
     healthCheck: string;
-    endpoints: {
+    endpoints: {;
       documents: string;
       search: string;
       embeddings: string;
@@ -332,20 +332,20 @@ export interface ServiceEndpoints {
     baseUrl: string;
     port: number;
     healthCheck: string;
-    endpoints: {
+    endpoints: {;
       generate: string;
       chat: string;
       embeddings: string;
       models: string;
     };
   };
-  redis: {
+  redis: {;
     host: string;
     port: number;
     password?: string;
     db?: number;
   };
-  postgresql: {
+  postgresql: {;
     host: string;
     port: number;
     database: string;
@@ -357,7 +357,7 @@ export interface ServiceEndpoints {
     baseUrl: string;
     port: number;
     apiKey?: string;
-    collections: {
+    collections: {;
       documents: string;
       cases: string;
       precedents: string;
@@ -566,7 +566,7 @@ export const DEFAULT_CONFIG: ServiceEndpoints = {
     port: 6333,
     collections: {
       documents: "legal_documents",
-      cases: "legal_cases",
+      cases: "legal_cases",;
       precedents: "legal_precedents"
     }
   }

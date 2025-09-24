@@ -93,7 +93,7 @@ export const selfPromptingMachine = createMachine({
   states: {
     initializing: {
       invoke: {
-        id: 'initializeRabbitMQ',
+        id: 'initializeRabbitMQ',;
         src: fromPromise(async () => {
           return await RabbitMQXStateIntegration.initialize();
         }),
@@ -134,7 +134,7 @@ export const selfPromptingMachine = createMachine({
               target: 'selfPrompting',
               actions: 'triggerSelfAnalysis'
             },
-            USER_HISTORY_UPDATE: {
+            USER_HISTORY_UPDATE: {;
               actions: assign({
                 userHistory: ({ context, event }) => [
                   ...context.userHistory.slice(-100), // Keep last 100 entries;
@@ -152,7 +152,7 @@ export const selfPromptingMachine = createMachine({
 
         processing: {
           invoke: {
-            id: 'processMessage',
+            id: 'processMessage',;
             src: fromPromise(async ({ input }) => {
               const { message } = input;
               return await RabbitMQXStateIntegration.processLegalAIMessage(message);
@@ -161,7 +161,7 @@ export const selfPromptingMachine = createMachine({
               message: context.pendingTasks[0]
             }),
             onDone: {
-              target: 'idle',
+              target: 'idle',;
               actions: [;
                 assign({
                   completedTasks: ({ context, event }) => [
@@ -178,7 +178,7 @@ export const selfPromptingMachine = createMachine({
               ]
             },
             onError: {
-              target: 'idle',
+              target: 'idle',;
               actions: [;
                 assign({
                   errorTasks: ({ context, event }) => [
@@ -199,7 +199,7 @@ export const selfPromptingMachine = createMachine({
 
         selfPrompting: {
           invoke: {
-            id: 'performSelfAnalysis',
+            id: 'performSelfAnalysis',;
             src: fromPromise(async ({ input }) => {
               const { context, userHistory } = input;
               return await RabbitMQXStateIntegration.performSelfPromptingAnalysis(context, userHistory);
@@ -209,7 +209,7 @@ export const selfPromptingMachine = createMachine({
               userHistory: context.userHistory
             }),
             onDone: {
-              target: 'idle',
+              target: 'idle',;
               actions: [;
                 assign({
                   pendingTasks: ({ context, event }) => [
@@ -261,7 +261,7 @@ export const selfPromptingMachine = createMachine({
       }
     }
   }
-}, {
+}, {;
   actions: {
     setupMessageHandlers: ({ context }) => {
       console.log('🔗 Setting up RabbitMQ message handlers');
@@ -294,7 +294,7 @@ export const selfPromptingMachine = createMachine({
       if (context.rabbitMQConnection) {
         RabbitMQXStateIntegration.publishMessage({
           type: 'self_prompt',
-          payload: event.output,
+          payload: event.output,;
           priority: 8
         });
       }
@@ -327,7 +327,7 @@ export class RabbitMQXStateIntegration {
     vhost: import.meta.env.RABBITMQ_VHOST || '/',
     username: import.meta.env.RABBITMQ_USERNAME || 'guest',
     password: import.meta.env.RABBITMQ_PASSWORD || 'guest',
-    ssl: import.meta.env.RABBITMQ_SSL === 'true',
+    ssl: import.meta.env.RABBITMQ_SSL === 'true',;
     heartbeat: 60
   };
 
@@ -366,7 +366,7 @@ export class RabbitMQXStateIntegration {
               login: this.config.username,
               passcode: this.config.password,
               'heart-beat': `${this.config.heartbeat * 1000},${this.config.heartbeat * 1000}`
-            },
+            },;
             debug: (str: string) => console.log('RabbitMQ STOMP:', str),
             onConnect: (frame: any) => {
               console.log('✅ Connected to RabbitMQ via WebSocket STOMP');
@@ -435,7 +435,7 @@ export class RabbitMQXStateIntegration {
       // Server AMQP setup;
       for (const queueName of Object.values(this.queues)) {
         await this.channel.assertQueue(queueName, {
-          durable: true,
+          durable: true,;
           arguments: {
             'x-max-priority': 10, // Priority queue support
             'x-message-ttl': 600000, // 10 minutes TTL
@@ -470,7 +470,7 @@ export class RabbitMQXStateIntegration {
     }
 
     const fullMessage: LegalAIMessage = {
-      id: this.generateId(),
+      id: this.generateId(),;
       timestamp: Date.now(),
       ...message
     };
@@ -482,7 +482,7 @@ export class RabbitMQXStateIntegration {
       this.connection.publish({
         destination: `/queue/${queueName}`,
         body: JSON.stringify(fullMessage),
-        headers: {
+        headers: {;
           priority: message.priority?.toString() || '5',
           'content-type': 'application/json'
         }
@@ -493,7 +493,7 @@ export class RabbitMQXStateIntegration {
         queueName,
         Buffer.from(JSON.stringify(fullMessage)),
         {
-          priority: message.priority || 5,
+          priority: message.priority || 5,;
           persistent: true,
           contentType: 'application/json'
         }
@@ -587,7 +587,7 @@ export class RabbitMQXStateIntegration {
         payload: {
           action: 'preload_popular_searches',
           searches: patterns.popularSearches
-        },
+        },;
         priority: 7,
         correlationId: context.activeSession
       });
@@ -600,7 +600,7 @@ export class RabbitMQXStateIntegration {
         payload: {
           action: 'batch_vector_processing',
           documents: patterns.recentDocuments
-        },
+        },;
         priority: 6,
         correlationId: context.activeSession
       });
@@ -613,7 +613,7 @@ export class RabbitMQXStateIntegration {
         payload: {
           action: 'rebuild_cache',
           strategy: 'user_behavior_based'
-        },
+        },;
         priority: 8,
         correlationId: context.activeSession
       });
@@ -628,7 +628,7 @@ export class RabbitMQXStateIntegration {
           modelPath: '/models/gemma3-legal-q4.wasm',
           optimization: 'latency_focused',
           reason: 'frequent_usage_detected'
-        },
+        },;
         priority: 7,
         correlationId: context.activeSession
       });
@@ -642,7 +642,7 @@ export class RabbitMQXStateIntegration {
           action: 'suggest_batching',
           batchSize: Math.min(patterns.concurrentWasmRequests, 8),
           reason: 'concurrent_requests_detected'
-        },
+        },;
         priority: 6,
         correlationId: context.activeSession
       });
@@ -656,7 +656,7 @@ export class RabbitMQXStateIntegration {
           action: 'health_check',
           focus: 'error_investigation',
           reason: 'error_threshold_exceeded'
-        },
+        },;
         priority: 8,
         correlationId: context.activeSession
       });
@@ -667,7 +667,7 @@ export class RabbitMQXStateIntegration {
         ...rec,
         id: this.generateId(),
         timestamp: Date.now()
-      })),
+      })),;
       analysis: patterns
     };
   }
@@ -757,7 +757,7 @@ export class RabbitMQXStateIntegration {
         prompt: payload.prompt,
         maxTokens: payload.maxTokens || 2048,
         temperature: payload.temperature || 0.7,
-        enableRAG: payload.enableRAG !== false,
+        enableRAG: payload.enableRAG !== false,;
         priority: payload.priority || 'medium',
         systemMessage: payload.systemMessage,
         contextDocuments: payload.contextDocuments,
@@ -784,7 +784,7 @@ export class RabbitMQXStateIntegration {
           averageLatency: 0,
           cacheHitRate: 0,
           memoryPeak: 0
-        },
+        },;
         error: null
       });
 
@@ -796,7 +796,7 @@ export class RabbitMQXStateIntegration {
           result,
           success: true,
           processingTime: Date.now() - (payload.startTime || Date.now()
-        },
+        },;
         priority: payload.priority === 'critical' ? 9 : 7,
         correlationId: payload.correlationId,
         replyTo: payload.replyTo
@@ -821,7 +821,7 @@ export class RabbitMQXStateIntegration {
           originalRequestId: payload.id,
           error: error.message,
           success: false
-        },
+        },;
         priority: 8,
         correlationId: payload.correlationId
       });
@@ -844,7 +844,7 @@ export class RabbitMQXStateIntegration {
     }
 
     return {
-      processed: true,
+      processed: true,;
       success: payload.success,
       originalRequestId: payload.originalRequestId
     };
@@ -864,7 +864,7 @@ export class RabbitMQXStateIntegration {
         threads: payload.threads || 8,
         contextLength: payload.contextLength || 4096,
         enableGPU: payload.enableGPU !== false,
-        batchSize: payload.batchSize || 4,
+        batchSize: payload.batchSize || 4,;
         quantization: payload.quantization || 'q4_0'
       };
 
@@ -928,7 +928,7 @@ export class RabbitMQXStateIntegration {
         } catch (error: any) {
           results.push({
             requestId: request.id,
-            error: error.message,
+            error: error.message,;
             success: false
           });
         }
@@ -981,7 +981,7 @@ export class RabbitMQXStateIntegration {
             totalChunks: chunks.length,
             isComplete: i === chunks.length - 1,
             success: true
-          },
+          },;
           priority: 7,
           correlationId: payload.correlationId
         });
@@ -1016,7 +1016,7 @@ export class RabbitMQXStateIntegration {
         status: 'health_check_completed',
         timestamp: Date.now(),
         health: healthStatus,
-        uptime: Date.now() - (payload.startTime || Date.now()),
+        uptime: Date.now() - (payload.startTime || Date.now()),;
         version: '1.0.0'
       };
 
@@ -1029,7 +1029,7 @@ export class RabbitMQXStateIntegration {
         health: {
           status: 'unhealthy',
           wasm: false,
-          rag: false,
+          rag: false,;
           messaging: false
         }
       };

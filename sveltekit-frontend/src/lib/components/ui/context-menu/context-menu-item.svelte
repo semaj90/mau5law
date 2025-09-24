@@ -31,7 +31,7 @@
   {@render children?.()}
 </button>
 
-<style>/* @unocss-include */ .context-menu-item {
+<style>/* @unocss-include */ .context-menu-item {;
     display: flex;
     align-items: center;
     width: 100%;

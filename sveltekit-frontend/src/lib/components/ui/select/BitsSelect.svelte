@@ -30,7 +30,7 @@
     required = false,
     name,
     class: className = '',
-    onValueChange
+    onValueChange;
   }: Props = $props();
 
   function handleValueChange(newValue: string | undefined) {
@@ -100,7 +100,7 @@
 
 <style>
   /* Legal AI App Specific Styling */
-  :global(.legal-select-trigger) {
+  :global(.legal-select-trigger) {;
     transition: all 0.2s ease;
   }
 

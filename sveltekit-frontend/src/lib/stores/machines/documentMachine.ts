@@ -327,7 +327,7 @@ export const documentMachine = createMachine({
         START_PROCESSING: {
           target: 'processing',
           actions: assign({
-            processingProgress: 20,
+            processingProgress: 20,;
             errors: [],
             processingSteps: ({ context }) => [...context.processingSteps, 'Processing restarted'],
             currentStep: 'starting_processing'
@@ -343,7 +343,7 @@ export const documentMachine = createMachine({
   },
   guards: {
     // Custom guards can be defined here if needed
-  },
+  },;
   delays: {
     // Custom delays can be defined here if needed
   }

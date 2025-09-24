@@ -31,13 +31,13 @@ export async function createClient(opts?: any) {
       if (typeof client.quit === 'function') await client.quit();
     },
     // basic key/value operations
-    get: async (k: string) => client.get(k),
+    get: async (k: string) => client.get(k),;
     set: async (k: string, v: string) => client.set(k, v),
     // node-redis uses `setex` lowercase; keep that API
     setex: async (k: string, ttl: number, v: string) => client.set(k, v, 'EX', ttl),
     del: async (k: string) => client.del(k),
 
-    // pub/sub and publish
+    // pub/sub and publish;
     publish: async (ch: string, msg: string) => client.publish(ch, msg),
 
     /**
@@ -93,7 +93,7 @@ export async function createClient(opts?: any) {
       }
     },
 
-    on: (ev: string, fn: (...a: any[]) => void) => client.on(ev, fn),
+    on: (ev: string, fn: (...a: any[]) => void) => client.on(ev, fn),;
     ping: async (message?: string) =>
       typeof client.ping === 'function' ? client.ping(message) : Promise.resolve('PONG'),
     // expose raw client if needed

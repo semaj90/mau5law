@@ -60,7 +60,7 @@
     memoryUsage: 0,
     networkLatency: 0,
     cacheHitRate: 0,
-    aiResponseTime: 0
+    aiResponseTime: 0;
   };
   // Bit-encoding streaming state
   let streamingChunks: Array = [];
@@ -70,8 +70,9 @@
   let animationFrame: number;
   let lastFrameTime = 0;
   let deltaTime = 0;
-  $effect(async () => {
-    if (!browser) return;
+  $effect(() => {
+    (async () => {
+if (!browser) return;
     try {
       await initializeSystem();
     } catch (error) {
@@ -79,6 +80,7 @@
       addSystemMessage('System initialization failed. Running in degraded mode.');
     
     errorMessage = error instanceof Error ? error.message: 'An error occurred';}
+    })();
   });
   onDestroy(() => {
     cleanup();
@@ -252,7 +254,7 @@
         tensorParallelSize: 1,
         quantization: 'int8',
         maxModelLength: 4096,
-        enableTensorCores: true
+        enableTensorCores: true;
       });
       await vllmIntegration.initializeGPU();
       stages[2].progress = 1.0;
@@ -416,10 +418,10 @@
       if (neo4jEngine) {
         recommendations = await neo4jEngine.getRecommendations({
           userId: 'demo_user',
-          context: message,
+          context: message,;
           type: 'expert_insights',
-          useAI: true,
-          limit: 3
+          useAI: true,;
+          limit: 3;
         });
         if (recommendations.length > 0) {
           addSystemMessage(`Generated ${recommendations.length} AI recommendations`);
@@ -429,20 +431,20 @@
       if (vllmIntegration) {
         const streamRequest: StreamingRequest = {
           id: crypto.randomUUID(),
-          model: 'gemma3-legal',
+          model: 'gemma3-legal',;
           prompt: `Legal AI Analysis: ${message}`,
           temperature: 0.1,
-          maxTokens: 500,
+          maxTokens: 500,;
           stream: true,
-          useCache: true,
-          priority: 'high'
+          useCache: true,;
+          priority: 'high';
         };
         // Add streaming chunk visualization
         streamingChunks.push({
           id: streamRequest.id,
-          data: new ArrayBuffer(1024), // Mock data
-          progress: 0,
-          status: 'streaming'
+          data: new ArrayBuffer(1024), // Mock data;
+          progress: 0,;
+          status: 'streaming';
         });
         // Process streaming response
         const responseGenerator = vllmIntegration.streamWithEnhancedQUIC([streamRequest]);
@@ -471,26 +473,26 @@
   }
   function addUserMessage(content: string) {
     chatMessages = [...chatMessages, {
-      id: crypto.randomUUID(),
+      id: crypto.randomUUID(),;
       type: 'user',
-      content,
-      timestamp: Date.now()
+      content,;
+      timestamp: Date.now();
     }];
   }
   function addAIMessage(content: string) {
     chatMessages = [...chatMessages, {
-      id: crypto.randomUUID(),
+      id: crypto.randomUUID(),;
       type: 'ai',
-      content,
-      timestamp: Date.now()
+      content,;
+      timestamp: Date.now();
     }];
   }
   function addSystemMessage(content: string) {
     chatMessages = [...chatMessages, {
-      id: crypto.randomUUID(),
+      id: crypto.randomUUID(),;
       type: 'system',
-      content,
-      timestamp: Date.now()
+      content,;
+      timestamp: Date.now();
     }];
   }
   function cleanup() {
@@ -647,7 +649,7 @@
 </div>
 
 <style>
-  .enhanced-3d-legal-ai-interface {
+  .enhanced-3d-legal-ai-interface {;
     display: grid;
     grid-template-columns: 1fr 300px;
     grid-template-rows: 400px 100px auto;
@@ -980,7 +982,7 @@
     font-size: 13px;
   }
   
-  .chat-input input:focus {
+  .chat-input input:focus {;
     outline: none;
     border-color: #00d4aa;
     box-shadow: 0 0 0 2px rgba(0, 212, 170, 0.2);
@@ -999,11 +1001,11 @@
     transition: background 0.2s;
   }
   
-  .chat-input button:hover:not(:disabled) {
+  .chat-input button:hover:not(:disabled) {;
     background: #00ff88;
   }
   
-  .chat-input button:disabled {
+  .chat-input button:disabled {;
     background: #333;
     color: #666;
     cursor: not-allowed;

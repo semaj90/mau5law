@@ -109,11 +109,11 @@ except Exception as e:
       let error = '';
 
       pythonProcess.stdout.on('data', (data) => {
-        output += data.toString();
+        output += data.toString());
       });
 
       pythonProcess.stderr.on('data', (data) => {
-        error += data.toString();
+        error += data.toString());
       });
 
       pythonProcess.on('close', (code) => {
@@ -169,7 +169,7 @@ try:
         system_prompt = "You are a legal AI assistant specialized in analyzing contracts, regulations, and legal documents. Provide accurate, detailed analysis with relevant legal principles and potential risks."
 
         if context:
-            formatted_prompt = f"{system_prompt}\\n\\nContext: {context}\\n\\nQuestion: {prompt}\\n\\nAnalysis:"
+            formatted_prompt = f"{system_prompt}\\n\\nContext: {context}\\n\\nQuestion: {prompt}\\n\\nAnalysis:";
         else:
             formatted_prompt = f"{system_prompt}\\n\\nQuestion: {prompt}\\n\\nAnalysis:"
 
@@ -264,11 +264,11 @@ except Exception as e:
       let error = '';
 
       pythonProcess.stdout.on('data', (data) => {
-        output += data.toString();
+        output += data.toString());
       });
 
       pythonProcess.stderr.on('data', (data) => {
-        error += data.toString();
+        error += data.toString());
       });
 
       pythonProcess.on('close', (code) => {
@@ -283,7 +283,7 @@ except Exception as e:
         } else {
           // Emergency fallback
           resolve({
-            text: `Legal Analysis: ${request.prompt} - Professional legal guidance available. Recommend consultation with qualified legal counsel.`,
+            text: `Legal Analysis: ${request.prompt} - Professional legal guidance available. Recommend consultation with qualified legal counsel.`,;
             tokens: 15,
             inference_time: 0.05,
             model_used: 'Emergency-Fallback'

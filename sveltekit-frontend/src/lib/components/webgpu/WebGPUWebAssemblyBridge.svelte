@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
 
   // Props
@@ -55,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
     webAssemblySupport: false,
     modelLoaded: false,
     lastProcessingTime: 0,
-    throughput: 0
+    throughput: 0;
   });
 
   async function initializeWebGPUWebAssembly() {
@@ -114,18 +114,18 @@ https://svelte.dev/e/js_parse_error -->
         webGPU: {
           supported: !!navigator.gpu,
           initialized: metrics.webgpuSupport,
-          info: webgpuClient?.getModelInfo() || null
+          info: webgpuClient?.getModelInfo() || null;
         },
         webAssembly: {
           supported: typeof WebAssembly !== 'undefined',
           initialized: metrics.webAssemblySupport,
-          health: webLlamaService.getHealthStatus()
+          health: webLlamaService.getHealthStatus();
         },
         adapter: {
           initialized: true,
           health: webAssemblyAIAdapter.getHealthStatus(),
-          supportedMethods: processingModes
-        },
+          supportedMethods: processingModes;
+        },;
         performance: {
           hardwareConcurrency: navigator.hardwareConcurrency,
           maxConcurrent,
@@ -166,7 +166,7 @@ https://svelte.dev/e/js_parse_error -->
           const wasmResponse = await webAssemblyAIAdapter.sendMessage(demoText, {
             maxTokens: 512,
             temperature: 0.1,
-            useGPUAcceleration: metrics.webgpuSupport
+            useGPUAcceleration: metrics.webgpuSupport;
           });
           result = wasmResponse.content;
           method = `WebAssembly (${wasmResponse.metadata.method})`;
@@ -182,7 +182,7 @@ https://svelte.dev/e/js_parse_error -->
         try {
           const gpuResponse = await webgpuClient.generateText(demoText, {
             maxTokens: 512,
-            temperature: 0.1
+            temperature: 0.1;
           });
           result = gpuResponse.text;
           method = 'WebGPU Client';
@@ -407,7 +407,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .animate-spin {
+  .animate-spin {;
     animation: spin 1s linear infinite;
   }
   

@@ -99,14 +99,17 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     evidenceItems.filter(item => item.status === 'ready').length
   );
 
-  $effect(async () => {
-  await loadExistingEvidence();
+  $effect(() => {
+    (async () => {
+await loadExistingEvidence();
   await loadBuckets();
   await checkServiceStatus();
   startRealTimeUpdates();
   // fetch current user info for namespacing uploads
   try {
-    const me = await fetch('/api/v1/storage/me', { credentials: 'include' });
+    const me = await fetch('/api/v1/storage/me', { credentials: 'include';
+    })();
+  });
     if (me.ok) {
       const j = await me.json();
       // store current user id in a local variable for signed url namespacing
@@ -122,13 +125,13 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     try {
       // Check Ollama connection
       const ollamaResponse = await fetch('/api/v1/evidence/analyze', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidenceId: 'health-check',
-          filename: 'test.txt',
-          content: 'health check',
-          type: 'document'
+          filename: 'test.txt',;
+          content: 'health check',;
+          type: 'document';
         })
       });
       ollamaConnected = ollamaResponse.status !== 500;
@@ -214,12 +217,12 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
     try {
       const response = await fetch('/api/v1/evidence/search/suggest', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query,
-          type: 'legal',
-          limit: 5
+          type: 'legal',;
+          limit: 5;
         })
       });
 
@@ -286,8 +289,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     // Calculate drop position relative to the evidence board
     const rect = dropZone.getBoundingClientRect();
     const position = {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      x: e.clientX - rect.left,;
+      y: e.clientY - rect.top;
     };
 
     await uploadFiles(files, position);
@@ -309,10 +312,10 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           uploadedAt: new Date().toISOString(),
           status: 'uploading',
           size: file.size,
-          mimeType: file.type,
+          mimeType: file.type,;
           position: {
-            x: position.x + (evidenceItems.length * 20),
-            y: position.y + (evidenceItems.length * 20)
+            x: position.x + (evidenceItems.length * 20),;
+            y: position.y + (evidenceItems.length * 20);
           }
         };
 
@@ -337,8 +340,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             const keyCandidate = `${(window as any).__CURRENT_USER_ID__ || 'anon'}/${file.name}`;
             const signedResp = await fetch('/api/v1/storage/signed-url', {
               method: 'POST',
-              credentials: 'include',
-              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',;
+              headers: { 'Content-Type': 'application/json' },;
               body: JSON.stringify({ key: keyCandidate, bucket: currentBucket })
             });
 
@@ -426,13 +429,13 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
       // Call AI analysis API
       const response = await fetch('/api/v1/evidence/analyze', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidenceId,
-          filename: file.name,
-          content: content.substring(0, 2000), // Limit content length
-          type: detectFileType(file.type)
+          filename: file.name,;
+          content: content.substring(0, 2000), // Limit content length;
+          type: detectFileType(file.type);
         })
       });
 
@@ -443,7 +446,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         evidenceItems = evidenceItems.map.id === evidenceId ? {
             ...item,
             status: 'ready',
-            aiAnalysis: analysisResult.data.analysis
+            aiAnalysis: analysisResult.data.analysis;
           } : item
         );
       } else {
@@ -474,9 +477,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     const icons = {
       document: '📄',
       image: '🖼️',
-      video: '🎥',
-      audio: '🎵',
-      other: '📎'
+      video: '🎥',;
+      audio: '🎵',;
+      other: '📎';
     };
     return icons[type];
   }
@@ -510,9 +513,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       try {
         const resp = await fetch('/api/v1/storage/object', {
           method: 'DELETE',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json', 'x-api-key': (window as any).__MINIO_API_KEY__ || '' },
-          body: JSON.stringify.aiAnalysis.storage.bucket, key: (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis.storage.key })
+          credentials: 'include',;
+          headers: { 'Content-Type': 'application/json', 'x-api-key': (window as any).__MINIO_API_KEY__ || '' },;
+          body: JSON.stringify(aiAnalysis).storage.bucket, key: (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis.storage.key })
         });
 
         const txt = await resp.text();
@@ -557,9 +560,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   function getStatusIcon(status: EvidenceItem['status']): string {
     const icons = {
       uploading: '⬆️',
-      processing: '🔄',
-      ready: '✅',
-      error: '❌'
+      processing: '🔄',;
+      ready: '✅',;
+      error: '❌';
     };
     return icons[status];
   }
@@ -578,15 +581,15 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           return {
             ...item,
             status: 'ready',
-            aiAnalysis: {
+            aiAnalysis: {;
               summary: `AI analysis complete for ${(item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).filename}`,
               confidence: Math.random() * 0.4 + 0.6,
               relevantLaws: ['Sample Law 1', 'Sample Law 2'],
               suggestedTags: ['evidence', 'legal'],
               prosecutionScore: Math.random() * 0.5 + 0.5,
               legalRelevance: 'High - Contains relevant legal information',
-              keyFindings: ['Key finding 1', 'Key finding 2'],
-              recommendations: ['Recommendation 1', 'Recommendation 2']
+              keyFindings: ['Key finding 1', 'Key finding 2'],;
+              recommendations: ['Recommendation 1', 'Recommendation 2'];
             }
           };
         }
@@ -606,7 +609,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
     try {
       const response = await fetch('/api/v1/evidence/unified', {
-        method: 'POST',
+        method: 'POST',;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           evidenceIds: selectedEvidence,
@@ -623,8 +626,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             includeVisualization: true
           },
           context: {
-            caseType: 'commercial',
-            urgency: 'medium'
+            caseType: 'commercial',;
+            urgency: 'medium';
           }
         })
       });
@@ -656,7 +659,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                   correlations,
                   vectorGroup,
                   strategicImportance: analysis.strategyAnalysis?.primaryStrategy,
-                  recommendations: recs
+                  recommendations: recs;
                 }
               }
             } as EvidenceItem;
@@ -850,7 +853,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               type="text"
               class="nes-input"
               id="search-input"
-              placeholder="Search evidence, laws, cases..."
+              placeholder="Search evidence, laws, cases...";
               bind:value={searchQuery}
               oninput={handleSearchInput}
             />
@@ -980,7 +983,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         bind:this={dropZone}
         role="list"
         class="evidence-drop-zone min-h-96 p-6 transition-all duration-300"
-        class:n64-depth={gamingMode}
+        class:n64-depth={gamingMode};
         class:yorha-glow={dragActive}
         ondragenter={handleDragEnter}
         ondragleave={handleDragLeave}
@@ -1072,7 +1075,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4" style="display: none;">
           {#each filteredEvidence as evidence (evidence.id)}
             <div class="evidence-nier-bits-card nes-container {selectedEvidence.includes(evidence.id) ? 'is-success' : 'with-title'} relative"
-                 class:n64-glow={gamingMode && selectedEvidence.includes(evidence.id)}
+                 class:n64-glow={gamingMode && selectedEvidence.includes(evidence.id)};
                  class:yorha-selected={selectedEvidence.includes(evidence.id)}>
 
               {#if !selectedEvidence.includes(evidence.id)}
@@ -1264,7 +1267,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     overflow: hidden;
   }
 
-  .evidence-canvas-container: :before {
+  .evidence-canvas-container::before {
     content: '';
     position: absolute;
     top: 0;
@@ -1278,7 +1281,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   /* Gaming mode enhancements */
   /* Glow effect when the container that actually gets class:retro-glow wraps the canvas */
   /* Enhanced NES × N64 hybrid glow + CRT / pixel layering */
-  :global(.retro-glow) .evidence-canvas-container {
+  :global(.retro-glow) .evidence-canvas-container {;
     position: relative;
     --accent-a: 59 130 246;   /* blue */
     --accent-b: 139 92 246;   /* purple */
@@ -1298,7 +1301,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   }
 
   /* Pixel / scanline / chromatic edge layering */
-  :global(.retro-glow) .evidence-canvas-container: :after,
+  :global(.retro-glow) .evidence-canvas-container::after,
   :global(.retro-glow) .evidence-canvas-container::before {
     content: '';
     pointer-events: none;
@@ -1308,7 +1311,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   }
 
   /* Subtle animated radial / scanline hybrid (N64 + CRT feel) */
-  :global(.retro-glow) .evidence-canvas-container: :before {
+  :global(.retro-glow) .evidence-canvas-container::before {
     background:
       repeating-linear-gradient(
         to bottom,
@@ -1325,7 +1328,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   }
 
   /* NES-style pixel grid & edge glow */
-  :global(.retro-glow) .evidence-canvas-container: :after {
+  :global(.retro-glow) .evidence-canvas-container::after {
     background:
       linear-gradient(145deg,
         rgba(var(--accent-a) / 0.18),
@@ -1376,7 +1379,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   /* Accessibility: respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     :global(.retro-glow) .evidence-canvas-container,
-    :global(.retro-glow) .evidence-canvas-container: :before,
+    :global(.retro-glow) .evidence-canvas-container::before,
     :global(.retro-glow) .evidence-canvas-container::after {
       animation: none !important;
     }

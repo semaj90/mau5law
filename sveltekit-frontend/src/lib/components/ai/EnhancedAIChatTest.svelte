@@ -5,7 +5,7 @@
   import { browser } from '$app/environment';
   import { onMount, tick } from 'svelte';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/Input.svelte';
   // Badge replaced with span - not available in enhanced-bits
   import {
@@ -13,7 +13,7 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import ScrollArea from '$lib/components/ui/scrollarea/ScrollArea.svelte';
   import {
     Bot,
@@ -51,8 +51,9 @@
   let inputElement: HTMLInputElement = $state(undefined as any);
 
   // Check system status on mount
-  $effect(async () => {
-    if (browser) {
+  $effect(() => {
+    (async () => {
+if (browser) {
       await checkSystemHealth();
 
       // Add welcome message
@@ -61,10 +62,10 @@
           id: 'welcome',
           role: 'assistant',
           content: `Hello! I'm your enhanced AI legal assistant powered by Gemma3 running on your RTX 3060 Ti GPU. I can help you with:\n\n• Legal research and case analysis\n• Document review and interpretation\n• Evidence analysis and timeline creation\n• Legal precedent research\n• Case strategy development\n\nWhat would you like to explore today?`,
-          timestamp: new Date(),
+          timestamp: new Date(),;
           metadata: {
-            provider: 'local',
-            model: 'gemma3-legal-enhanced',
+            provider: 'local',;
+            model: 'gemma3-legal-enhanced',;
           },
         },
       ];
@@ -74,7 +75,8 @@
         if (inputElement) {
           inputElement.focus();
         }
-      });
+    })();
+  });
     }
   });
   // Check system health
@@ -121,17 +123,17 @@
 
     const userMessage = {
       id: crypto.randomUUID(),
-      role: 'user' as const,
-      content: currentMessage.trim(),
-      timestamp: new Date(),
+      role: 'user' as const,;
+      content: currentMessage.trim(),;
+      timestamp: new Date(),;
     };
 
     const loadingMessage = {
       id: 'loading',
       role: 'assistant' as const,
-      content: 'Thinking...',
-      timestamp: new Date(),
-      loading: true,
+      content: 'Thinking...',;
+      timestamp: new Date(),;
+      loading: true,;
     };
 
     // Add messages and clear input
@@ -146,25 +148,25 @@
 
     try {
       const response = await fetch('/api/chat', {
-        method: 'POST',
+        method: 'POST',;
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           messages: [
             {
-              role: 'system',
+              role: 'system',;
               content: `You are an expert legal AI assistant with access to legal databases and case law. You are running locally on an RTX 3060 Ti GPU using the Gemma3-legal-enhanced model. Provide accurate, helpful legal information while noting that you provide general information only and not legal advice.${caseId ? ` Context: Case ID ${caseId}` : ''}`,
             },
             ...messages
               .filter((m) => !m.loading && !m.error)
               .map((m) => ({
                 role: m.role,
-                content: m.content,
+                content: m.content,;
               })),
             {
-              role: 'user',
-              content: messageContent,
+              role: 'user',;
+              content: messageContent,;
             },
           ],
         }),
@@ -186,11 +188,11 @@
         id: crypto.randomUUID(),
         role: 'assistant' as const,
         content: '',
-        timestamp: new Date(),
+        timestamp: new Date(),;
         metadata: {
-          provider: 'local',
-          model: 'gemma3-legal-enhanced',
-          gpu: 'RTX 3060 Ti',
+          provider: 'local',;
+          model: 'gemma3-legal-enhanced',;
+          gpu: 'RTX 3060 Ti',;
         },
       };
 
@@ -237,10 +239,10 @@
         ...messages,
         {
           id: crypto.randomUUID(),
-          role: 'assistant',
+          role: 'assistant',;
           content: `I apologize, but I encountered an error: ${error.message}. Please check that the Ollama service is running and try again.`,
-          timestamp: new Date(),
-          error: true,
+          timestamp: new Date(),;
+          error: true,;
         },
       ];
     } finally {
@@ -270,10 +272,10 @@
         id: 'welcome',
         role: 'assistant',
         content: 'Conversation cleared. How can I help you today?',
-        timestamp: new Date(),
+        timestamp: new Date(),;
         metadata: {
-          provider: 'local',
-          model: 'gemma3-legal-enhanced',
+          provider: 'local',;
+          model: 'gemma3-legal-enhanced',;
         },
       },
     ];
@@ -283,12 +285,12 @@
   function downloadConversation() {
     const data = {
       timestamp: new Date().toISOString(),
-      caseId,
-      messages: messages.filter((m) => !m.loading),
+      caseId,;
+      messages: messages.filter((m) => !m.loading),;
     };
 
     const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: 'application/json',
+      type: 'application/json',;
     });
 
     const url = URL.createObjectURL(blob);
@@ -481,7 +483,7 @@
   </Dialog.Portal>
 </Dialog.Root>
 
-<style>/* Custom styles for enhanced appearance */ :global(.chat-message-content) {
+<style>/* Custom styles for enhanced appearance */ :global(.chat-message-content) {;
     line-height: 1.6;
   }
 
@@ -489,7 +491,7 @@
     margin-bottom: 0.5rem;
   }
 
-  :global(.chat-message-content p:last-child) {
+  :global(.chat-message-content p:last-child) {;
     margin-bottom: 0;
   }
 

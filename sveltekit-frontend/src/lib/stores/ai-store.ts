@@ -87,7 +87,7 @@ export interface AIStatusState {
 
 // Default states with SSR safety;
 const DEFAULT_CONVERSATION: AIConversationState = {
-  id: "",
+  id: "",;
   messages: [],
   isActive: false,
   lastUpdated: 0
@@ -96,7 +96,7 @@ const DEFAULT_CONVERSATION: AIConversationState = {
 const DEFAULT_SETTINGS: AISettingsState = {
   preferredProvider: "auto",
   gemma3Config: {
-    model: "gemma2:2b",
+    model: "gemma2:2b",;
     temperature: 0.7,
     maxTokens: 512,
     topP: 0.9,
@@ -189,7 +189,7 @@ export const currentModelInfo = derived(
   [aiStatus],
   ([$aiStatus]) => ({
     provider: $aiStatus.currentProvider,
-    model: $aiStatus.currentModel,
+    model: $aiStatus.currentModel,;
     available: $aiStatus.localModelAvailable || $aiStatus.cloudModelAvailable
   })
 );
@@ -207,14 +207,14 @@ export const aiStore = {
     try {
       // Check local model availability;
       const localHealthCheck = await fetch("/api/ai/health/local", {
-        method: "GET",
+        method: "GET",;
         headers: { "Content-Type": "application/json" }
       });
       const localHealth = await localHealthCheck.json();
 
       // Check cloud model availability;
       const cloudHealthCheck = await fetch("/api/ai/health/cloud", {
-        method: "GET",
+        method: "GET",;
         headers: { "Content-Type": "application/json" }
       });
       const cloudHealth = await cloudHealthCheck.json();
@@ -251,7 +251,7 @@ export const aiStore = {
 
   // Send message to AI
   async sendMessage(
-    content: string,
+    content: string,;
     options: {
       includeHistory?: boolean;
       maxSources?: number;
@@ -266,7 +266,7 @@ export const aiStore = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: content,
+          query: content,;
           context: [],
           includeHistory: options.includeHistory ?? true,
           maxSources: options.maxSources ?? 5,
@@ -291,7 +291,7 @@ export const aiStore = {
         const userMessage = {
           id: `${messageId}_user`,
           role: "user" as const,
-          content,
+          content,;
           timestamp: new Date()
         };
         const assistantMessage = {
@@ -302,7 +302,7 @@ export const aiStore = {
           sources: aiResponse.sources,
           metadata: {
             provider: aiResponse.metadata.provider,
-            model: aiResponse.metadata?.model || "unknown" // @ts-ignore - Model property access,
+            model: aiResponse.metadata?.model || "unknown" // @ts-ignore - Model property access,;
             confidence: aiResponse.metadata.confidence,
             executionTime: aiResponse.metadata.executionTime,
             fromCache: aiResponse.metadata.fromCache
@@ -310,7 +310,7 @@ export const aiStore = {
         };
 
         return {
-          id: conversation.id || `conv_${Date.now()}`,
+          id: conversation.id || `conv_${Date.now()}`,;
           messages: [...conversation.messages, userMessage, assistantMessage],
           isActive: true,
           lastUpdated: Date.now()
@@ -368,7 +368,7 @@ export const aiStore = {
           id: msg.id,
           role: msg.role,
           content: msg.content,
-          timestamp: msg.timestamp,
+          timestamp: msg.timestamp,;
           sources: msg.sources;
             ? msg.sources.map((source: any) => ({
                 id: source.id,
@@ -384,7 +384,7 @@ export const aiStore = {
             : undefined,
           metadata: msg.metadata
         })),
-        timestamp: Date.now(),
+        timestamp: Date.now(),;
         metadata: {
           messageCount: conversation.messages.length,
           lastModel:
@@ -408,7 +408,7 @@ export const aiStore = {
 
     if (historyItem) {
       aiConversation.set({
-        id: historyItem.id,
+        id: historyItem.id,;
         messages: historyItem.messages as any,
         isActive: true,
         lastUpdated: Date.now()

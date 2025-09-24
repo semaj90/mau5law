@@ -24,7 +24,7 @@ export const caseCreationMachine = createMachine({
   id: 'caseCreation',
   initial: 'idle',
   types: {
-    context: Record<string, any> as CaseCreationContext,
+    context: Record<string, any> as CaseCreationContext,;
     events: Record<string, any> as 
       | { type: 'START_CREATION' }
       | { type: 'UPDATE_FORM'; data: any }
@@ -120,7 +120,7 @@ export const caseCreationMachine = createMachine({
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
-            },
+            },;
             body: JSON.stringify(input.formData)
           });
           
@@ -135,7 +135,7 @@ export const caseCreationMachine = createMachine({
         onDone: {
           target: 'completed',
           actions: assign({
-            createdCase: ({ event }) => event.output,
+            createdCase: ({ event }) => event.output,;
             error: null,
             retryCount: 0
           })
@@ -202,7 +202,7 @@ export const caseCreationMachine = createMachine({
       }
     }
   }
-}, {
+}, {;
   actors: {
     validateCaseData: fromPromise(async ({ input }: { input: CaseCreationContext }) => {
       const errors: Record<string, string[]> = {};

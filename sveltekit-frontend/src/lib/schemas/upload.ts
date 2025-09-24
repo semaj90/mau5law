@@ -31,7 +31,7 @@ export const fileUploadSchema = z.object({
     .refine(
       (file) => ALLOWED_MIME_TYPES.includes(file.type as any),
       'File type not supported'
-    ),
+    ),;
   tags: z.array(z.string()).optional(),
   isPrivate: z.boolean().default(false),
   aiAnalysis: z.boolean().default(true) // Whether to run AI analysis on upload
@@ -54,7 +54,7 @@ export const batchUploadSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
   files: z.array(z.object({
       file: z.instanceof(File),
-      title: z.string().optional(),
+      title: z.string().optional(),;
       type: z.enum(['document', 'image', 'video', 'audio', 'physical', 'digital']).optional()
     })
   ).min(1, 'At least one file is required').max(10, 'Maximum 10 files at once'),
@@ -69,7 +69,7 @@ export const searchUploadSchema = z.object({
   dateFrom: z.date().optional(),
   dateTo: z.date().optional(),
   tags: z.array(z.string()).optional(),
-  limit: z.number().min(1).max(100).default(20),
+  limit: z.number().min(1).max(100).default(20),;
   offset: z.number().min(0).default(0)
 });
 

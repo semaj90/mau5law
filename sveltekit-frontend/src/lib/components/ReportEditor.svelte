@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once;
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
@@ -40,7 +40,7 @@ https://svelte.dev/e/props_duplicate -->
   let currentSelection = $state<Range | null >(null);
   let cursorPosition = $state(0);
 
-  $effect(async () => {
+  $effect(() => {
     if (browser && editorElement) {
       setupEditor();
       loadAvailableCitations();
@@ -247,7 +247,7 @@ https://svelte.dev/e/props_duplicate -->
         ...report,
         title,
         content: editorElement.innerHTML,
-        caseId,
+        caseId,;
         metadata: {
           ...(report?.metadata && typeof report.metadata === "object"
             ? report.metadata: ),
@@ -258,11 +258,11 @@ https://svelte.dev/e/props_duplicate -->
       };
 
       const response = await fetch("/api/reports", {
-        method: report ? "PUT" : "POST",
+        method: report ? "PUT" : "POST",;
         headers: {
           "Content-Type": "application/json",
-        },
-        body: JSON.stringify(reportData),
+        },;
+        body: JSON.stringify(reportData),;
       });
 
       if (response.ok) {
@@ -297,14 +297,14 @@ https://svelte.dev/e/props_duplicate -->
 
     try {
       const response = await fetch("/api/ai/suggestions", {
-        method: "POST",
+        method: "POST",;
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
+        body: JSON.stringify({;
           content: editorElement.textContent,
           caseId,
-          reportType: report?.reportType || "prosecution_memo",
+          reportType: report?.reportType || "prosecution_memo",;
         }),
       });
 
@@ -434,7 +434,7 @@ https://svelte.dev/e/props_duplicate -->
   </div>
 
   <!-- Citation sidebar -->
-  <div
+  <div;
     bind:this={citationSidebar}
     class="container mx-auto px-4"
     style="display: none;"
@@ -520,7 +520,7 @@ https://svelte.dev/e/props_duplicate -->
 
 <style>
   /* @unocss-include */
-  .report-editor-container {
+  .report-editor-container {;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -625,7 +625,7 @@ https://svelte.dev/e/props_duplicate -->
     font-size: 14px;
     transition: all 0.2s;
 }
-  .formatting-toolbar button:hover {
+  .formatting-toolbar button:hover {;
     background: #f3f4f6;
 }
   .separator {
@@ -649,7 +649,7 @@ https://svelte.dev/e/props_duplicate -->
     cursor: default;
 }
   /* Citation token styling */
-  .content-editor: global(.citation-token) {
+  .content-editor :global(.citation-token) {
     background: #dbeafe;
     color: #1d4ed8;
     padding: 2px 6px;
@@ -660,7 +660,7 @@ https://svelte.dev/e/props_duplicate -->
     cursor: pointer;
     white-space: nowrap;
 }
-  .content-editor: global(.citation-token:hover) {
+  .content-editor :global(.citation-token:hover) {
     background: #bfdbfe;
 }
   .citation-sidebar {

@@ -10,12 +10,12 @@ export interface EnvironmentConfig {
     port: number;
     isDetected: boolean;
   };
-  redis: {
+  redis: {;
     url: string;
     host: string;
     port: number;
   };
-  postgres: {
+  postgres: {;
     url: string;
     host: string;
     port: number;
@@ -53,7 +53,7 @@ async function detectOllamaConfig(): Promise<any> {
       // Only test in browser environment or when fetch is available;
       if (typeof fetch !== 'undefined') {
         const response = await fetch(`${baseUrl}/api/tags`, {
-          method: 'GET',
+          method: 'GET',;
           signal: AbortSignal.timeout(1000)
         });
         
@@ -94,7 +94,7 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
     },
     development: {
       isDev: process.env.NODE_ENV === 'development',
-      debug: process.env.DEBUG === 'true' || process.env.VITE_DEBUG === 'true',
+      debug: process.env.DEBUG === 'true' || process.env.VITE_DEBUG === 'true',;
       verbose: process.env.VERBOSE === 'true' || process.env.VITE_VERBOSE === 'true'
     }
   };

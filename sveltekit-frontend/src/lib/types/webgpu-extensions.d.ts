@@ -6,7 +6,7 @@
 // Ensure WebGPU types are available globally
 /// <reference types="@webgpu/types" />
 
-// Extended WebGPU types for better TypeScript support;
+// Extended WebGPU types for better TypeScript support
 declare global {
   interface Navigator {
     gpu?: GPU;
@@ -29,7 +29,7 @@ declare global {
 export type GPUBufferCompatible = ArrayBuffer | ArrayBufferView | SharedArrayBuffer;
 export type TypedArrayTypes = Float32Array | Uint32Array | Uint16Array | Int8Array | Uint8Array;
 
-// Enhanced buffer creation options;
+// Enhanced buffer creation options
 export interface ExtendedGPUBufferDescriptor extends GPUBufferDescriptor {
   data?: GPUBufferCompatible;
   label?: string;
@@ -48,7 +48,7 @@ export interface LegalWebGPUContext {
   visualizationPipeline: GPURenderPipeline;
 }
 
-// Buffer management for legal documents;
+// Buffer management for legal documents
 export interface LegalDocumentGPUBuffers {
   embeddings: GPUBuffer;
   metadata: GPUBuffer;
@@ -57,7 +57,7 @@ export interface LegalDocumentGPUBuffers {
   uniforms: GPUBuffer;
 }
 
-// Shader module definitions;
+// Shader module definitions
 export interface LegalAIShaderModules {
   documentVertex: GPUShaderModule;
   documentFragment: GPUShaderModule;
@@ -67,7 +67,7 @@ export interface LegalAIShaderModules {
   visualizationFragment: GPUShaderModule;
 }
 
-// WebGPU compute pipeline for legal AI operations;
+// WebGPU compute pipeline for legal AI operations
 export interface LegalComputePipelineDescriptor {
   type: 'embedding_normalization' | 'similarity_search' | 'document_clustering' | 'risk_assessment';
   shaderModule: GPUShaderModule;
@@ -75,7 +75,7 @@ export interface LegalComputePipelineDescriptor {
   bufferLayout: GPUBufferBindingLayout[];
 }
 
-// Render pipeline for legal document visualization;
+// Render pipeline for legal document visualization
 export interface LegalRenderPipelineDescriptor {
   vertex: {
     module: GPUShaderModule;
@@ -91,7 +91,7 @@ export interface LegalRenderPipelineDescriptor {
   depthStencil?: GPUDepthStencilState;
 }
 
-// WebGPU performance metrics;
+// WebGPU performance metrics
 export interface WebGPUPerformanceMetrics {
   renderTime: number;
   computeTime: number;
@@ -107,7 +107,7 @@ export interface WebGPUPerformanceMetrics {
   };
 }
 
-// Error handling for WebGPU operations;
+// Error handling for WebGPU operations
 export class WebGPUError extends Error {
   constructor(
     message: string,
@@ -123,7 +123,7 @@ export class WebGPUError extends Error {
   }
 }
 
-// Texture streaming for legal documents;
+// Texture streaming for legal documents
 export interface LegalDocumentTexture {
   texture: GPUTexture;
   view: GPUTextureView;
@@ -137,7 +137,7 @@ export interface LegalDocumentTexture {
   mipLevels: number;
 }
 
-// CHR-ROM pattern cache integration;
+// CHR-ROM pattern cache integration
 export interface CHRROMGPUPattern {
   patternId: string;
   texture: GPUTexture;
@@ -150,7 +150,7 @@ export interface CHRROMGPUPattern {
   };
 }
 
-// WebGPU utility functions type definitions;
+// WebGPU utility functions type definitions
 export interface WebGPUUtilities {
   createBuffer(device: GPUDevice, data: GPUBufferCompatible, usage: GPUBufferUsageFlags): GPUBuffer;
   createTexture(device: GPUDevice, descriptor: GPUTextureDescriptor): GPUTexture;
@@ -159,13 +159,13 @@ export interface WebGPUUtilities {
   createComputePipeline(device: GPUDevice, descriptor: LegalComputePipelineDescriptor): GPUComputePipeline;
 }
 
-// Buffer streaming for large datasets;
+// Buffer streaming for large datasets
 export interface BufferStreamer {
   streamBuffer(device: GPUDevice, buffer: GPUBuffer, data: AsyncIterable<GPUBufferCompatible>): Promise<void>;
   streamTexture(device: GPUDevice, texture: GPUTexture, data: AsyncIterable<ImageData>): Promise<void>;
 }
 
-// Legal document vertex structure for WebGPU;
+// Legal document vertex structure for WebGPU
 export interface LegalDocumentVertex {
   position: [number, number, number];
   color: [number, number, number, number];
@@ -175,7 +175,7 @@ export interface LegalDocumentVertex {
   confidence: number; // 0.0-1.0
 }
 
-// WebGPU command encoder utilities;
+// WebGPU command encoder utilities
 export interface LegalCommandEncoder {
   encoder: GPUCommandEncoder;
   renderPass: GPURenderPassEncoder | null;
@@ -187,7 +187,7 @@ export interface LegalCommandEncoder {
   submitCommands(): void;
 }
 
-// Animation and interaction state for legal visualizations;
+// Animation and interaction state for legal visualizations
 export interface LegalVisualizationState {
   camera: {
     position: [number, number, number];
@@ -212,7 +212,7 @@ export interface LegalVisualizationState {
   };
 }
 
-// WebGPU resource management;
+// WebGPU resource management
 export interface WebGPUResourceManager {
   buffers: Map<string, GPUBuffer>;
   textures: Map<string, GPUTexture>;

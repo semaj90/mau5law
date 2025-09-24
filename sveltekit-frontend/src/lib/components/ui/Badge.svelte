@@ -14,20 +14,20 @@
     variant = 'default',
     size = 'default',
     class: className = '',
-    children
+    children;
   }: Props = $props();
 
   const variants = {
     default: 'bg-primary text-primary-foreground',
-    secondary: 'bg-secondary text-secondary-foreground',
-    destructive: 'bg-destructive text-destructive-foreground',
-    outline: 'border border-input'
+    secondary: 'bg-secondary text-secondary-foreground',;
+    destructive: 'bg-destructive text-destructive-foreground',;
+    outline: 'border border-input';
   };
 
   const sizes = {
-    default: 'px-2.5 py-0.5 text-xs',
-    sm: 'px-2 py-0.5 text-xs',
-    lg: 'px-3 py-1 text-sm'
+    default: 'px-2.5 py-0.5 text-xs',;
+    sm: 'px-2 py-0.5 text-xs',;
+    lg: 'px-3 py-1 text-sm';
   };
 
   let classes = $derived([

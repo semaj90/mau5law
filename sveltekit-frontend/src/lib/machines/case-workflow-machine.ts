@@ -32,7 +32,7 @@ export interface CaseWorkflowContext {
 export const caseWorkflowMachine = createMachine({
   id: 'caseWorkflow',
   types: {
-    context: Record<string, any> as CaseWorkflowContext,
+    context: Record<string, any> as CaseWorkflowContext,;
     events: Record<string, any> as 
       | { type: 'CREATE_CASE'; case_data: any }
       | { type: 'UPLOAD_DOCUMENT'; file: File; metadata?: any }
@@ -52,7 +52,7 @@ export const caseWorkflowMachine = createMachine({
     current_step: 'initial',
     documents: [],
     analysis_results: [],
-    recommendations: [],
+    recommendations: [],;
     progress: {
       total_steps: 6,
       completed_steps: 0,
@@ -85,7 +85,7 @@ export const caseWorkflowMachine = createMachine({
     },
 
     creatingCase: {
-      invoke: {
+      invoke: {;
         src: fromPromise(async ({ input }) => {
           const { case_data, user_id } = input.context;
           
@@ -97,7 +97,7 @@ export const caseWorkflowMachine = createMachine({
               case_data
             },
             context: {
-              user_id,
+              user_id,;
               priority: 'normal'
             }
           });
@@ -161,7 +161,7 @@ export const caseWorkflowMachine = createMachine({
     },
 
     uploadingDocument: {
-      invoke: {
+      invoke: {;
         src: fromPromise(async ({ input }) => {
           const { case_id, user_id } = input.context;
           const { file, metadata } = input.event;
@@ -177,7 +177,7 @@ export const caseWorkflowMachine = createMachine({
             },
             context: {
               user_id,
-              case_id,
+              case_id,;
               priority: 'normal'
             }
           });
@@ -187,7 +187,7 @@ export const caseWorkflowMachine = createMachine({
             case_id,
             user_id,
             interaction_type: 'document_view',
-            content: `Uploaded: ${file.name}`,
+            content: `Uploaded: ${file.name}`,;
             metadata: {
               file_size: file.size,
               file_type: file.type,
@@ -223,7 +223,7 @@ export const caseWorkflowMachine = createMachine({
     },
 
     documentProcessing: {
-      invoke: {
+      invoke: {;
         src: fromPromise(async ({ input }) => {
           const { case_id, user_id, documents } = input.context;
           const latestDoc = documents[documents.length - 1];
@@ -248,7 +248,7 @@ export const caseWorkflowMachine = createMachine({
               },
               context: {
                 user_id,
-                case_id,
+                case_id,;
                 priority: 'normal'
               }
             });
@@ -298,7 +298,7 @@ export const caseWorkflowMachine = createMachine({
         })
       }),
       
-      invoke: {
+      invoke: {;
         src: fromPromise(async ({ input }) => {
           const { case_id, user_id, documents } = input.context;
           
@@ -313,7 +313,7 @@ export const caseWorkflowMachine = createMachine({
             },
             context: {
               user_id,
-              case_id,
+              case_id,;
               priority: 'high'
             }
           });
@@ -324,7 +324,7 @@ export const caseWorkflowMachine = createMachine({
             user_id,);
             {
               type: 'analysis',
-              content: 'Comprehensive case analysis completed',
+              content: 'Comprehensive case analysis completed',;
               metadata: { analysis_id: analysis.id }
             }
           );
@@ -392,7 +392,7 @@ export const caseWorkflowMachine = createMachine({
     },
 
     executingRecommendation: {
-      invoke: {
+      invoke: {;
         src: fromPromise(async ({ input }) => {
           const { case_id, user_id, recommendations } = input.context;
           const { recommendation_id } = input.event;
@@ -413,7 +413,7 @@ export const caseWorkflowMachine = createMachine({
             },
             context: {
               user_id,
-              case_id,
+              case_id,;
               priority: recommendation.timing_suggestion === 'immediate' ? 'high' : 'normal'
             }
           });
@@ -424,7 +424,7 @@ export const caseWorkflowMachine = createMachine({
             user_id,
             interaction_type: 'analysis',
             content: `Executed recommendation: ${recommendation.type}`,
-            response: JSON.stringify(result),
+            response: JSON.stringify(result),;
             metadata: {
               recommendation_id,
               execution_result: result
@@ -466,7 +466,7 @@ export const caseWorkflowMachine = createMachine({
     },
 
     providingAssistance: {
-      invoke: {
+      invoke: {;
         src: fromPromise(async ({ input }) => {
           const { case_id, user_id, memory_context } = input.context;
           const { query } = input.event;
@@ -482,7 +482,7 @@ export const caseWorkflowMachine = createMachine({
             },
             context: {
               user_id,
-              case_id,
+              case_id,;
               priority: 'normal'
             }
           });
@@ -539,7 +539,7 @@ export const caseWorkflowMachine = createMachine({
             analysis_results: [],
             recommendations: [],
             memory_context: undefined,
-            error_message: undefined,
+            error_message: undefined,;
             progress: {
               total_steps: 6,
               completed_steps: 0,
@@ -554,7 +554,7 @@ export const caseWorkflowMachine = createMachine({
   // Global transitions;
   on: {
     UPDATE_SETTINGS: {
-      actions: assign({
+      actions: assign({;
         settings: ({ context, event }) => ({
           ...context.settings,
           ...event.settings

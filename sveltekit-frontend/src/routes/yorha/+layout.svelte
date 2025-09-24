@@ -24,9 +24,9 @@
 
   // System status and navigation
   let systemStatus = $state({
-    connected: false,
-    services: 0,
-    errors: 0
+    connected: false,;
+    services: 0,;
+    errors: 0;
   });
 
   let sidebarOpen = $state(false);
@@ -38,68 +38,70 @@
       path: '/yorha',
       label: 'Command Center',
       icon: Terminal,
-      description: 'Main YoRHa interface hub'
+      description: 'Main YoRHa interface hub';
     },
     {
       path: '/yorha/dashboard',
       label: 'System Dashboard',
       icon: Monitor,
-      description: 'Live system monitoring'
+      description: 'Live system monitoring';
     },
     {
       path: '/yorha/components',
       label: 'UI Components',
       icon: Bot,
-      description: '3D UI component gallery'
+      description: '3D UI component gallery';
     },
     {
       path: '/yorha/api-test',
       label: 'API Testing',
       icon: Cpu,
-      description: 'Live API integration tests'
+      description: 'Live API integration tests';
     },
     {
       path: '/yorha/terminal',
       label: 'Terminal',
       icon: Terminal,
-      description: 'YoRHa command terminal'
+      description: 'YoRHa command terminal';
     },
     {
       path: '/yorha/data-grid',
       label: 'Data Grid',
       icon: Database,
-      description: 'Advanced data visualization'
+      description: 'Advanced data visualization';
     },
     {
       path: '/yorha/search',
       label: 'Vector Search',
       icon: Search,
-      description: 'Semantic search interface'
+      description: 'Semantic search interface';
     },
     {
       path: '/yorha/chat',
-      label: 'AI Chat',
-      icon: Bot,
-      description: 'Enhanced AI conversation'
+      label: 'AI Chat',;
+      icon: Bot,;
+      description: 'Enhanced AI conversation';
     }
   ];
 
   // System status monitoring
-  $effect(async () => {
+  $effect(() => {
     currentPath = $page.url.pathname;
 
     // Initialize YoRHa API and check system status
-    try {
-      const status = await yorhaAPI.getSystemStatus();
-      systemStatus = {
-        connected: true,
-        services: Object.keys.length,
-        errors: 0
-      };
-    } catch (error) {
-      console.warn('YoRHa API not available:', error);
-      systemStatus.connected = false;
-    }
+    (async () => {
+      try {
+        const status = await yorhaAPI.getSystemStatus();
+        systemStatus = {
+          connected: true,;
+          services: Object.keys(errors).length,;
+          errors: 0;
+        };
+      } catch (error) {
+        console.warn('YoRHa API not available:', error);
+        systemStatus.connected = false;
+      }
+    })();
 
     // Subscribe to route changes
     const unsubscribe = page.subscribe(($page) => {

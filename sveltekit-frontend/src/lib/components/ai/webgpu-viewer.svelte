@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- WebGPU Embedding Visualization - 3D Vector Space with Real-time Updates -->
 <script lang="ts">
@@ -41,9 +41,9 @@ https://svelte.dev/e/js_parse_error -->
   // Vertex shader
   const vertexShaderCode = `
   struct Uniforms {
-  matrix: mat4x4<f32>,
-  time: f32,
-  zoom: f32,
+  matrix: mat4x4<f32>,;
+  time: f32,;
+  zoom: f32,;
   }
 
   @group(0) @binding(0) var<uniform> uniforms: Uniforms;
@@ -52,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
   struct VertexOutput {
   @builtin(position) position: vec4<f32>,
   @location(0) color: vec3<f32>,
-  @location(1) pointSize: f32,
+  @location(1) pointSize: f32,;
   }
 
   @vertex
@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
   const fragmentShaderCode = `
   struct FragmentInput {
   @location(0) color: vec3<f32>,
-  @location(1) pointSize: f32,
+  @location(1) pointSize: f32,;
   }
 
   @fragment
@@ -94,8 +94,9 @@ https://svelte.dev/e/js_parse_error -->
   }
   `;
 
-  $effect(async () => {
-  if (!navigator.gpu) {
+  $effect(() => {
+    (async () => {
+if (!navigator.gpu) {
     console.error('WebGPU not supported');
     return;
   }
@@ -109,6 +110,7 @@ https://svelte.dev/e/js_parse_error -->
   if (isPlaying) {
     animate();
   }
+    })();
   });
 
   onDestroy(() => {
@@ -140,34 +142,34 @@ https://svelte.dev/e/js_parse_error -->
   context.configure({
     device,
     format: presentationFormat,
-    alphaMode: 'premultiplied'
+    alphaMode: 'premultiplied';
   });
 
   // Create shaders
   const vertexShader = device.createShaderModule({
-    code: vertexShaderCode
+    code: vertexShaderCode;
   });
 
   const fragmentShader = device.createShaderModule({
-    code: fragmentShaderCode
+    code: fragmentShaderCode;
   });
 
   // Create pipeline
   pipeline = device.createRenderPipeline({
-    layout: 'auto',
+    layout: 'auto',;
     vertex: {
       module: vertexShader,
-      entryPoint: 'main'
+      entryPoint: 'main';
     },
     fragment: {
       module: fragmentShader,
-      entryPoint: 'main',
+      entryPoint: 'main',;
       targets: [{
-        format: presentationFormat
+        format: presentationFormat;
       }]
     },
-    primitive: {
-      topology: 'triangle-list'
+    primitive: {;
+      topology: 'triangle-list';
     }
   });
 
@@ -176,8 +178,8 @@ https://svelte.dev/e/js_parse_error -->
 
   // Create uniform buffer
   uniformBuffer = device.createBuffer({
-    size: 64 + 8, // mat4x4 + 2 floats
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
+    size: 64 + 8, // mat4x4 + 2 floats;
+    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
   });
   }
 
@@ -195,9 +197,9 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   embedBuffer = device.createBuffer({
-    size: embeddingData.byteLength,
+    size: embeddingData.byteLength,;
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    mappedAtCreation: true
+    mappedAtCreation: true;
   });
 
   new Float32Array(embedBuffer.getMappedRange()).set(embeddingData);
@@ -206,14 +208,14 @@ https://svelte.dev/e/js_parse_error -->
   // Create bind group
   if (pipeline && uniformBuffer) {
     bindGroup = device.createBindGroup({
-      layout: pipeline.getBindGroupLayout(0),
+      layout: pipeline.getBindGroupLayout(0),;
       entries: [
         {
-          binding: 0,
+          binding: 0,;
           resource: { buffer: uniformBuffer }
         },
         {
-          binding: 1,
+          binding: 1,;
           resource: { buffer: embedBuffer }
         }
       ]
@@ -431,7 +433,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <style>
-  .webgpu-viewer {
+  .webgpu-viewer {;
     position: relative;
     background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
     border-radius: 8px;
@@ -483,7 +485,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: grab;
   }
 
-  canvas:active {
+  canvas:active {;
     cursor: grabbing;
   }
 

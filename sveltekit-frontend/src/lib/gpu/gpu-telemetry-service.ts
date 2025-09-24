@@ -1,5 +1,4 @@
 import { telemetryBus } from '../telemetry/telemetry-bus.js';
-}
 
 export interface OperationSample {
   pipeline: string;
@@ -59,8 +58,8 @@ export class GPUTelemetryService {
     return this.samples.slice(-limit);
   }
 
-  getAggregates(): Array<OperationSample & { avgMs: number; successRate: number } > {
-    const results: Array<OperationSample & { avgMs: number; successRate: number } > = [];
+  getAggregates(): Array<OperationSample & { avgMs: number; successRate: number }> {
+    const results: Array<OperationSample & { avgMs: number; successRate: number }> = [];
     for (const key of Object.keys(this.aggregates)) {
       const [pipeline, backend, shaderType] = key.split('|');
       const a = this.aggregates[key];
@@ -73,11 +72,11 @@ export class GPUTelemetryService {
         timestamp: Date.now(),
         avgMs: a.totalMs / a.count,
         successRate: a.successes / a.count,
-        count: a.count,
+        count: a.count,;
         successes: a.successes,
         totalMs: a.totalMs,
         maxMs: a.maxMs,
-        minMs: a.minMs
+        minMs: a.minMs,
       } as any);
     }
     return results.sort((a, b) => b.timestamp - a.timestamp);
@@ -108,7 +107,7 @@ export class GPUTelemetryService {
 
 export const gpuTelemetryService = new GPUTelemetryService();
 
-// Optional: wire bus listener (can be expanded later);
+// Optional: wire bus listener (can be expanded later)
 telemetryBus.subscribe(evt => {
   if (evt.type === 'gpu.vector.process.end') {
     const meta = evt.meta as any;
@@ -117,8 +116,8 @@ telemetryBus.subscribe(evt => {
       backend: meta.backend,
       durationMs: meta.durationMs,
       success: meta.success,
-      shaderType: meta.shaderType,
-      timestamp: Date.now()
+      shaderType: meta.shaderType,;
+      timestamp: Date.now(),
     });
   } else if (evt.type === 'error') {
     const meta = evt.meta as any;
@@ -128,8 +127,8 @@ telemetryBus.subscribe(evt => {
         pipeline: meta.pipeline,
         category: meta.category,
         retryable: !!meta.retryable,
-        message: meta.message || 'unknown',
-        timestamp: Date.now()
+        message: meta.message || 'unknown',;
+        timestamp: Date.now(),
       });
     }
   } else if (evt.type === 'gpu.backend') {
@@ -138,8 +137,8 @@ telemetryBus.subscribe(evt => {
       gpuTelemetryService.recordDemotion({
         from: meta.from,
         to: meta.to,
-        reason: meta.reason || 'unspecified',
-        timestamp: Date.now()
+        reason: meta.reason || 'unspecified',;
+        timestamp: Date.now(),
       });
     }
   }

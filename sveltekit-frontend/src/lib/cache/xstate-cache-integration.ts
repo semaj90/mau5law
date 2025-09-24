@@ -37,7 +37,7 @@ export type CacheEvent =
 export const cacheActor = fromPromise(async ({
     input
   }: {
-    input: {
+    input: {;
       operation: 'get' | 'set' | 'invalidate' | 'sync';
       key?: string;
       data?: any;
@@ -62,7 +62,7 @@ export const cacheActor = fromPromise(async ({
               hit: true,
               data: cachedData,
               metadata: {
-                timestamp: Date.now(),
+                timestamp: Date.now(),;
                 source: 'cache' as const,
                 hitRatio: headlessUICache.getStats().hitRatio,
                 responseTime
@@ -74,7 +74,7 @@ export const cacheActor = fromPromise(async ({
               hit: false,
               data: null,
               metadata: {
-                timestamp: Date.now(),
+                timestamp: Date.now(),;
                 source: 'none' as const,
                 hitRatio: headlessUICache.getStats().hitRatio,
                 responseTime
@@ -98,7 +98,7 @@ export const cacheActor = fromPromise(async ({
 
           return {
             success: true,
-            stored: true,
+            stored: true,;
             key: input.key,
             responseTime: performance.now() - startTime
           };
@@ -117,7 +117,7 @@ export const cacheActor = fromPromise(async ({
           }
 
           return {
-            success: true,
+            success: true,;
             invalidated: true,
             responseTime: performance.now() - startTime
           };
@@ -127,7 +127,7 @@ export const cacheActor = fromPromise(async ({
           // Trigger cache sync with server
           console.log('[Cache] Syncing with server...');
           return {
-            success: true,
+            success: true,;
             synced: true,
             responseTime: performance.now() - startTime
           };
@@ -138,7 +138,7 @@ export const cacheActor = fromPromise(async ({
       }
     } catch (error: any) {
       return {
-        success: false,
+        success: false,;
         error: error.message,
         responseTime: performance.now() - startTime
       };
@@ -289,9 +289,9 @@ export const createCachedMachineStates = () => ({
     checkingCache: {
       entry: ['setCacheKey'],
       invoke: {
-        src: cacheActor,
+        src: cacheActor,;
         input: ({ context, event }: { context: any; event: any }) => ({
-          operation: 'get' as const,
+          operation: 'get' as const,;
           key: context.cache.cacheKey,
           semanticQuery: context.cache.semanticQuery
         }),
@@ -325,7 +325,7 @@ export const createCachedMachineStates = () => ({
     },
 
     computing: {
-      entry: ['trackComputationCost'],
+      entry: ['trackComputationCost'],;
       invoke: {
         // Your actual computation logic here;
         src: fromPromise(async ({ input }) => {
@@ -364,7 +364,7 @@ export const createCachedMachineStates = () => ({
     },
 
     error: {
-      type: 'final',
+      type: 'final',;
       entry: () => console.log('Error occurred')
     }
   }
@@ -380,7 +380,7 @@ export function withNeuralSpriteCache(spriteConfig: any) {
     cache: {
       enabled: true,
       strategy: 'semantic',
-      ttl: 30 * 60 * 1000, // 30 minutes
+      ttl: 30 * 60 * 1000, // 30 minutes;
       priority: 'high'
     },
 
@@ -420,6 +420,6 @@ export function getCacheStats() {
 // Export cache control functions;
 export const cacheControl = {
   clear: () => headlessUICache.clear(),
-  getStats: () => headlessUICache.getStats(),
+  getStats: () => headlessUICache.getStats(),;
   dispose: () => headlessUICache.dispose()
 };

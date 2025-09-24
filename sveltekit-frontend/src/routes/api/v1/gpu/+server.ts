@@ -1,55 +1,55 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
 // GPU Acceleration API Proxy - Legal AI Platform
 // Routes SvelteKit frontend requests to CUDA Integration Service (Port 8231)
 
 
-import { ensureError } from '$lib/utils/ensure-error';
-import { error } from '@sveltejs/kit';
+import { ensureError } from '$lib/utils/ensure-error'
+import { error } from '@sveltejs/kit'
 
-const GPU_SERVICE_URL = 'http://localhost:8231';
+const GPU_SERVICE_URL = 'http://localhost:8231'
 }
 
 export interface GPURequest {
-	service: string;
-	operation: string;
-	data: number[];
-	metadata?: Record<string, any>;
-	priority?: 'high' | 'normal' | 'low';
+	service: string
+	operation: string
+	data: number[]
+	metadata?: Record<string, any>
+	priority?: 'high' | 'normal' | 'low'
 }
 
 export interface GPUResponse {
-	success: boolean;
-	result?: number[];
-	processing_ms?: number;
-	gpu_utilized?: boolean;
-	service?: string;
-	job_id?: string;
-	metadata?: Record<string, any>;
-	error?: string;
+	success: boolean
+	result?: number[]
+	processing_ms?: number
+	gpu_utilized?: boolean
+	service?: string
+	job_id?: string
+	metadata?: Record<string, any>
+	error?: string
 }
 
-/* POST /api/v1/gpu - GPU-accelerated processing proxy */;
+/* POST /api/v1/gpu - GPU-accelerated processing proxy */
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-		const body = await request.json() as GPURequest;
+		const body = await request.json() as GPURequest
 
-		// Validate request;
+		// Validate request
 		if (!body.service || !body.operation) {
 			throw error(400, ensureError({
 				message: 'Invalid GPU request: service and operation are required'
-			});
+			})
 		}
 
 		if (!body.data || !Array.isArray(body.data) || body.data.length === 0) {
 			throw error(400, ensureError({
 				message: 'Invalid GPU request: data array is required and cannot be empty'
-			});
+			})
 		}
 
-		console.log(`🔥 GPU API: Processing ${body.service}/${body.operation} with ${body.data.length} data points`);
+		console.log(`🔥 GPU API: Processing ${body.service}/${body.operation} with ${body.data.length} data points`)
 
-		// Route to appropriate GPU service endpoint;
+		// Route to appropriate GPU service endpoint
 		const serviceEndpoints = {
 			'legal': '/api/gpu/legal/similarity',
 			'rag': '/api/gpu/process',
@@ -57,11 +57,11 @@ export const POST: RequestHandler = async ({ request }) => {
 			'indexer': '/api/gpu/process',
 			'typescript': '/api/gpu/process',
 			'embedding': '/api/gpu/process'
-		};
+		}
 
-		const endpoint = serviceEndpoints[body.service as keyof typeof serviceEndpoints] || '/api/gpu/process';
+		const endpoint = serviceEndpoints[body.service as keyof typeof serviceEndpoints] || '/api/gpu/process'
 		
-		// Forward request to CUDA Integration Service;
+		// Forward request to CUDA Integration Service
 		const response = await fetch(`${GPU_SERVICE_URL}${endpoint}`, {
 			method: 'POST',
 			headers: {
@@ -74,28 +74,28 @@ export const POST: RequestHandler = async ({ request }) => {
 				frontend_request: true,
 				timestamp: Date.now()
 			})
-		});
+		})
 
 		if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-			console.error(`GPU service error ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+			console.error(`GPU service error ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`)
 			throw error((response as { ok?: any; status?: any; statusText?: any; json?: any }).status, {
 				message: `GPU processing failed: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`
-			});
+			})
 		}
 
-		const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json() as GPUResponse;
+		const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json() as GPUResponse
 
-		console.log(`✅ GPU API: ${body.service} completed in ${(result as { processing_ms?: any; gpu_utilized?: any }).processing_ms}ms (GPU: ${(result as { processing_ms?: any; gpu_utilized?: any }).gpu_utilized})`);
+		console.log(`✅ GPU API: ${body.service} completed in ${(result as { processing_ms?: any; gpu_utilized?: any }).processing_ms}ms (GPU: ${(result as { processing_ms?: any; gpu_utilized?: any }).gpu_utilized})`)
 
 		return json({
 			...result,
 			api_version: '1.0.0',
 			proxy_processed: true,
 			timestamp: new Date().toISOString()
-		});
+		})
 
 	} catch (err: any) {
-		console.error('GPU API error:', err);
+		console.error('GPU API error:', err)
 
 		if (err && typeof err === 'object' && 'status' in err) {
 			throw err; // Re-throw SvelteKit errors
@@ -107,26 +107,26 @@ export const POST: RequestHandler = async ({ request }) => {
 			details: err instanceof Error ? err.message: 'Unknown error',
 			fallback_available: true,
 			gpu_utilized: false
-		}, { status: 503 });
+		}, { status: 503 })
 	}
-};
+}
 
-/* GET /api/v1/gpu - GPU service status and capabilities */;
+/* GET /api/v1/gpu - GPU service status and capabilities */
 export const GET: RequestHandler = async () => {
 	try {
-		// Check GPU service health;
+		// Check GPU service health
 		const healthResponse = await fetch(`${GPU_SERVICE_URL}/health`, {
 			method: 'GET',
 			headers: { 'Accept': 'application/json' }
-		});
+		})
 
 		const statusResponse = await fetch(`${GPU_SERVICE_URL}/api/gpu/status`, {
-			method: 'GET', 
+			method: 'GET',
 			headers: { 'Accept': 'application/json' }
-		});
+		})
 
-		const health = healthResponse.ok ? await healthResponse.json() : null;
-		const status = statusResponse.ok ? await statusResponse.json() : null;
+		const health = healthResponse.ok ? await healthResponse.json() : null
+		const status = statusResponse.ok ? await statusResponse.json() : null
 
 		return json({
 			service: 'SvelteKit GPU API Proxy',
@@ -152,10 +152,10 @@ export const GET: RequestHandler = async () => {
 				concurrent_requests: '4-8 parallel'
 			},
 			timestamp: new Date().toISOString()
-		});
+		})
 
 	} catch (err: any) {
-		console.error('GPU status check failed:', err);
+		console.error('GPU status check failed:', err)
 		
 		return json({
 			service: 'SvelteKit GPU API Proxy',
@@ -164,6 +164,6 @@ export const GET: RequestHandler = async () => {
 			gpu_status: { gpu_available: false },
 			error: err instanceof Error ? err.message: 'Unknown error',
 			timestamp: new Date().toISOString()
-		}, { status: 503 });
+		}, { status: 503 })
 	}
-};
+}

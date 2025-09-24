@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
@@ -42,10 +42,10 @@ https://svelte.dev/e/js_parse_error -->
   let error = $state<string | null>(null);
   let streamingActive = $state(false);
   let renderStats = $state({
-    fps: 0,
-    vertices: 0,
+    fps: 0,;
+    vertices: 0,;
     relationships: 0,
-    streamingChunks: 0
+    streamingChunks: 0;
   });
 
   // XState machine for idle detection and self-prompting
@@ -58,23 +58,23 @@ https://svelte.dev/e/js_parse_error -->
   let camera = {
     position: { x: 0, y: 0, z: 50 },
     rotation: { x: 0, y: 0, z: 0 },
-    fov: 45,
+    fov: 45,;
     target: { x: 0, y: 0, z: 0 }
   };
 
   let animation = {
     time: 0,
-    phase: 0,
-    speed: 1.0,
-    enabled: true
+    phase: 0,;
+    speed: 1.0,;
+    enabled: true;
   };
 
   // Progress animation state
   let progressAnimation = {
     value: 0,
-    target: 0,
-    speed: 0.05,
-    segments: [] as Array
+    target: 0,;
+    speed: 0.05,;
+    segments: [] as Array;
   };
 
   /**
@@ -110,9 +110,9 @@ https://svelte.dev/e/js_parse_error -->
       // Configure canvas
       const presentationFormat = navigator.gpu.getPreferredCanvasFormat();
       context.configure({
-        device: gpuDevice,
+        device: gpuDevice,;
         format: presentationFormat,
-        alphaMode: 'premultiplied'
+        alphaMode: 'premultiplied';
       });
 
       // Initialize progress animation segments
@@ -136,9 +136,9 @@ https://svelte.dev/e/js_parse_error -->
     const numSegments = 12;
     progressAnimation.segments = Array.from({ length: numSegments }, (_, i) => ({
       start: (i / numSegments) * 100,
-      end: ((i + 1) / numSegments) * 100,
-      active: false,
-      color: theme === 'yorha' ? '#00ff00' : '#0ea5e9'
+      end: ((i + 1) / numSegments) * 100,;
+      active: false,;
+      color: theme === 'yorha' ? '#00ff00' : '#0ea5e9';
     }));
   }
 
@@ -176,8 +176,8 @@ https://svelte.dev/e/js_parse_error -->
         progressAnimation.target = 80;
         const streamId = await neo4j3DEngine.startQUICStreaming(nodeId, {
           chunkSize: 8192,
-          priority: 'high',
-          compression: true
+          priority: 'high',;
+          compression: true;
         });
         streamingActive = true;
         ondispatch?.({ streamId });
@@ -228,7 +228,7 @@ https://svelte.dev/e/js_parse_error -->
       const cacheEntry = {
         id: `neo4j_3d_${graph.centerNode}_${Date.now()}`,
         category: 'graph' as const,
-        severity: 'medium' as const,
+        severity: 'medium' as const,;
         suggestions: [
           `3D Graph: ${graph.nodes.length} nodes, ${graph.relationships.length} relationships`,
           `Score: ${graph.recommendationScore.toFixed(2)}`,
@@ -237,8 +237,8 @@ https://svelte.dev/e/js_parse_error -->
         ],
         webgpuProcessed: true,
         rtxOptimized: true,
-        timestamp: new Date().toISOString(),
-        confidence: graph.recommendationScore
+        timestamp: new Date().toISOString(),;
+        confidence: graph.recommendationScore;
       };
 
       await webgpuSOMCache.store(cacheEntry);
@@ -383,8 +383,9 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Lifecycle
-  $effect(async () => {
-    mounted = true;
+  $effect(() => {
+    (async () => {
+mounted = true;
     // Initialize WebGPU
     await initializeWebGPU();
     // Handle resize
@@ -396,6 +397,7 @@ https://svelte.dev/e/js_parse_error -->
     if (autoStart && nodeId) {
       await loadRecommendations();
     }
+    })();
   });
 
   onDestroy(() => {
@@ -550,7 +552,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <!-- Styles -->
 <style>
-  .neo4j-3d-viewer {
+  .neo4j-3d-viewer {;
     position: relative;
     width: 100%;
     height: 100%;

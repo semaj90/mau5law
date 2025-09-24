@@ -31,7 +31,7 @@ class ProductionServiceClient {
         headers: {
           'Content-Type': 'application/json',
           ...options.headers
-        },
+        },;
         signal: AbortSignal.timeout(options.timeout || 5000)
       };
 
@@ -53,7 +53,7 @@ class ProductionServiceClient {
       } catch (parseError) {
         // Handle non-JSON responses;
         data = {
-          error: 'Non-JSON response',
+          error: 'Non-JSON response',;
           text: await (response as { json?: any; text?: any; status?: any; headers?: any }).text(),
           parseError: parseError.message
         };
@@ -63,7 +63,7 @@ class ProductionServiceClient {
         data,
         status: (response as { json?: any; text?: any; status?: any; headers?: any }).status,
         headers: Object.fromEntries((response as { json?: any; text?: any; status?: any; headers?: any }).headers.entries()),
-        protocol: 'HTTP/1.1',
+        protocol: 'HTTP/1.1',;
         service: this.extractServiceFromEndpoint(endpoint),
         latency
       };
@@ -80,7 +80,7 @@ class ProductionServiceClient {
         },
         status: 0, // Indicates network failure
         headers: Record<string, any>,
-        protocol: 'HTTP/1.1',
+        protocol: 'HTTP/1.1',;
         service: this.extractServiceFromEndpoint(endpoint),
         latency
       };

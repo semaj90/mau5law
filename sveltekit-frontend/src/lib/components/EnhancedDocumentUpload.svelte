@@ -62,8 +62,8 @@
       if (title) formData.append('title', title);
 
       const response = await fetch('/api/documents/upload-enhanced', {
-        method: 'POST',
-        body: formData
+        method: 'POST',;
+        body: formData;
       });
 
       const result = await response.json();
@@ -266,7 +266,7 @@
 </div>
 
 <style>
-  .enhanced-upload-container {
+  .enhanced-upload-container {;
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
