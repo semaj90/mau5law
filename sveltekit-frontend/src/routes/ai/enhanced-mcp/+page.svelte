@@ -13,10 +13,10 @@ https://svelte.dev/e/js_parse_error -->
 	import { writable } from 'svelte/store';
 	// Page state
 	const integrationStatus = writable({
-		mcpServerRunning: false
-		vsCodeExtensionActive: false
-		clusterSystemOnline: false
-		ollamaModelsLoaded: false
+		mcpServerRunning: false,
+		vsCodeExtensionActive: false,
+		clusterSystemOnline: false,
+		ollamaModelsLoaded: false,
 		contextualAnalysisReady: false
 	});
 	type SystemLog = { timestamp: Date; level: 'info'|'success'|'warning'|'error'; message: string; source: string };

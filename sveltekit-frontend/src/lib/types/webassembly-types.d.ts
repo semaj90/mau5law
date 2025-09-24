@@ -36,9 +36,9 @@ export interface LegalWASMModule {
   normalize_embeddings: (vectorPtr: number, dimension: number) => void;
   cosine_similarity: (vec1Ptr: number, vec2Ptr: number, dimension: number) => number;
   batch_similarity: (
-    vectorsPtr: number
-    queryPtr: number
-    count: number
+    vectorsPtr: number,
+    queryPtr: number,
+    count: number,
     dimension: number
   ) => number;
   // Legal-specific operations
@@ -51,7 +51,7 @@ export interface LegalWASMBridge {
   module: LegalWASMModule;
   memory: WASMMemoryManager;
   // High-level document processing methods
-  processLegalDocument(content: string): Promise<{,
+  processLegalDocument(content: string): Promise<{
     entities: Array<any>;
     classification: string;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
@@ -116,7 +116,7 @@ export interface WASMPerformanceMetrics {
 // Error types for WASM operations (declaration only)
 export declare class WASMError extends Error {
   constructor(
-    message: string
+    message: string,
     code: 'INSTANTIATION_FAILED' | 'MEMORY_ERROR' | 'PROCESSING_ERROR' | 'INVALID_INPUT',
     details?: unknown
   );

@@ -25,10 +25,10 @@
     webgpu: boolean;
     extensions: string[];
   }
-  let gpuCapabilities: GpuCapabilities = $state({,
-    webgl: false
-    webgl2: false
-    webgpu: false
+  let gpuCapabilities: GpuCapabilities = $state({
+    webgl: false,
+    webgl2: false,
+    webgpu: false,
     extensions: [],
   });
   // Canvas and WebGL context

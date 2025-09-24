@@ -6,8 +6,8 @@
   let { data }: { data: PageData } = $props();
   const { form, errors, enhance, message } = superForm(data.form, {
     validators: zodClient(registerSchema),
-    resetForm: true
-    taintedMessage: null;
+    resetForm: true,
+    taintedMessage: null
   });
 </script>
 {#if $message}

@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js'
 export const GET: RequestHandler = async () => {
   const health = {
     timestamp: new Date().toISOString(),
-    services: { [key: string]: any },
+    services: {},
     overall: 'unknown'
   }
   const checks = [

@@ -158,12 +158,12 @@ https://svelte.dev/e/js_parse_error -->
           raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
         };
       } else if (file.type === "text/csv" || file.name.endsWith(".csv")) {
-        const lines = content.split(''n)slice(0, 5);
+        const lines = content.split('\n').slice(0, 5);
         filePreview = {
           name: file.name,
           size: file.size,
           type: "csv",
-          data: lines
+          data: lines,
           raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
         };
       } else {
@@ -201,7 +201,9 @@ https://svelte.dev/e/js_parse_error -->
       const result = await (response as { json?: unknown; ok?: unknown }).json();
       if ((response as { json?: unknown; ok?: unknown }).ok) {
         importResults = result;
-        notifications.add.message,
+        notifications.add({
+          type: 'success',
+          message: 'Import completed successfully'
         });
       } else {
         throw new Error((result as { message?: unknown; error?: unknown }).error || "Import failed");

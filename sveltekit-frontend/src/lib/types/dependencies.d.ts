@@ -152,8 +152,8 @@ declare module '@xenova/transformers' {
     };
   };
   export function pipeline(
-    task: string
-    model?: string
+    task: string,
+    model?: string,
     options?: PretrainedOptions
   ): Promise<Pipeline>;
 }
@@ -195,7 +195,7 @@ declare module '@xenova/transformers' {
     }
     export interface LokiDatabase {
       addCollection<T = any>(
-        name: string
+        name: string,
         options?: {
           unique?: string[];
           indices?: string[];
@@ -231,7 +231,7 @@ declare module '@xenova/transformers' {
     }
     export class LokiConstructor {
       constructor(
-        filename?: string | null
+        filename?: string | null,
         options?: {
           adapter?: any;
           autoload?: boolean;
@@ -246,7 +246,7 @@ declare module '@xenova/transformers' {
       );
       // Database methods
       addCollection<T = any>(
-        name: string
+        name: string,
         options?: {
           unique?: string[];
           indices?: string[];

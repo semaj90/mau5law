@@ -35,7 +35,7 @@ Showcases the service worker-based AI orchestration system
   let selectedModel: LLMModel | undefined = $state();
   let userPrompt = $state('Analyze the following legal document for key terms, potential issues, and recommendations...');
   let isProcessing = $state(false);
-  let demoResults = $state<any[]>([]) => []);
+  let demoResults = $state<any[]>([]);
   // Demo scenarios
   const demoScenarios = [
     {

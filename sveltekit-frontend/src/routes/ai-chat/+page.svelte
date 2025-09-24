@@ -22,7 +22,7 @@
 			connectionStatus = 'connected';
 			modelInfo = {
 				name: 'TensorRT Bridge - Gemma3-Legal',
-				status: data.status || 'Running';
+				status: data.status || 'Running'
 			};
 		} catch (error) {
 			connectionStatus = 'disconnected';
@@ -36,7 +36,7 @@
 			// Set mock model info
 			modelInfo = {
 				name: 'Mock Legal AI - Offline',
-				status: 'Simulated';
+				status: 'Simulated'
 			};
 		}
 	}
@@ -47,10 +47,10 @@
 			id: crypto.randomUUID(),
 			role: 'user' as const,
 			content: currentMessage.trim(),
-			timestamp: new Date();
+			timestamp: new Date()
 		};
 		messages = [...messages, userMessage];
-		const messageToSend = currentMessag;
+		const messageToSend = currentMessage;
 		currentMessage = '';
 		isLoading = true;
 		typingIndicator = true;
@@ -64,13 +64,13 @@
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({,
+				body: JSON.stringify({
 					model: 'gemma3-legal:latest',
-					prompt: messageToSend
-					stream: false
+					prompt: messageToSend,
+					stream: false,
 					options: {
 						temperature: 0.7,
-						max_tokens: 512;
+						max_tokens: 512
 					}
 				})
 			});
@@ -82,7 +82,7 @@
 				id: crypto.randomUUID(),
 				role: 'assistant' as const,
 				content: data.response || data.text || 'No response received',
-				timestamp: new Date();
+				timestamp: new Date()
 			};
 			messages = [...messages, assistantMessage];
 		} catch (error) {
@@ -105,7 +105,7 @@
 				id: crypto.randomUUID(),
 				role: 'assistant' as const,
 				content: `🤖 ${randomResponse} [Mock Response - Real AI service unavailable]`,
-				timestamp: new Date();
+				timestamp: new Date()
 			};
 			messages = [...messages, mockMessage];
 		} finally {
@@ -127,7 +127,7 @@
 	function formatTime(date: Date): string {
 		return date.toLocaleTimeString('en-US', {
 			hour: '2-digit',
-			minute: '2-digit';
+			minute: '2-digit'
 		});
 	}
 	$effect(() => {

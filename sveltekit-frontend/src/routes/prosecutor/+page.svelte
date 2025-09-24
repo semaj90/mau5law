@@ -59,16 +59,11 @@ Features: Case management, evidence upload, AI chat, vector search
   });
   const loadCases = async () => {
     try {
-  let response = $state<Responsetry {
-          response  | null>(null); const data = await fetch('/api/cases?role=prosecutor');
-          if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
-            throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
-          }
-        } catch (error) {
-          console.error('Fetch failed:', error);
-          throw error;
-        }
-      const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
+      const response = await fetch('/api/cases?role=prosecutor');
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      const result = await response.json();
       cases = (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
       if (cases.length > 0 && !selectedCaseId) {
         selectedCaseId = cases[0].id;
@@ -79,16 +74,11 @@ Features: Case management, evidence upload, AI chat, vector search
   };
   const loadPersonsOfInterest = async () => {
     try {
-  let response = $state<Responsetry {
-          response  | null>(null); const data = await fetch(`/api/persons-of-interest?caseId=${selectedCaseId}`);
-          if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
-            throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
-          }
-        } catch (error) {
-          console.error('Fetch failed:', error);
-          throw error;
-        }
-      const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
+      const response = await fetch(`/api/persons-of-interest?caseId=${selectedCaseId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      const result = await response.json();
       personsOfInterest = (result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).data || [];
     } catch (error) {
       console.error('Failed to load POIs:', error);

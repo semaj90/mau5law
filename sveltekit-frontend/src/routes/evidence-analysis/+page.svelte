@@ -19,14 +19,14 @@
         description: 'Recurring pattern in email communications indicates systematic behavior',
         confidence: 0.85,
         relevance: 0.9,
-        supportingData: [];
+        supportingData: []
       },
       {
         type: 'anomaly' as const,
         description: 'Unusual time gaps in document timestamps suggest tampering',
         confidence: 0.73,
         relevance: 0.8,
-        supportingData: [];
+        supportingData: []
       }
     ],
     correlations: [
@@ -35,14 +35,14 @@
         correlationType: 'temporal' as const,
         strength: 0.78,
         description: 'Similar timeframe and participants in both evidence items',
-        sharedEntities: ['John Doe', 'Contract ABC'];
+        sharedEntities: ['John Doe', 'Contract ABC']
       },
       {
         relatedEvidenceId: 'evidence-003',
         correlationType: 'semantic' as const,
         strength: 0.65,
         description: 'Common terminology and legal concepts',
-        sharedEntities: ['Amendment', 'Termination'];
+        sharedEntities: ['Amendment', 'Termination']
       }
     ],
     riskScore: 0.72,
@@ -59,21 +59,21 @@
         value: 'John Doe',
         confidence: 0.95,
         mentions: 12,
-        context: ['Contract signatory', 'Email participant'];
+        context: ['Contract signatory', 'Email participant']
       },
       {
         type: 'organization' as const,
         value: 'ABC Corporation',
         confidence: 0.88,
         mentions: 8,
-        context: ['Contracting party', 'Email domain'];
+        context: ['Contracting party', 'Email domain']
       },
       {
         type: 'date' as const,
         value: '2024-01-15',
         confidence: 0.92,
         mentions: 5,
-        context: ['Contract date', 'Email timestamp'];
+        context: ['Contract date', 'Email timestamp']
       }
     ],
     sentiment: {
@@ -84,10 +84,10 @@
         joy: 0.05,
         sadness: 0.1,
         surprise: 0.2,
-        trust: 0.4;
+        trust: 0.4
       },
       subjectivity: 0.6,
-      formality: 0.8;
+      formality: 0.8
     },
     timeline: [
       {
@@ -95,14 +95,14 @@
         description: 'Initial contract draft created',
         type: 'action' as const,
         actors: ['Legal Team'],
-        confidence: 0.9;
+        confidence: 0.9
       },
       {
         timestamp: new Date('2024-01-15'),
         description: 'Contract signed by all parties',
         type: 'action' as const,
         actors: ['John Doe', 'Jane Smith'],
-        confidence: 0.95;
+        confidence: 0.95
       }
     ]
   };

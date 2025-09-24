@@ -59,7 +59,7 @@
     try {
       const response = await fetch('?/startStream', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).success) {
@@ -79,7 +79,7 @@
     try {
       await fetch('?/stopStream', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       stopStreamingUpdates();
     } catch (error) {
@@ -95,15 +95,15 @@
         // Add final result
         streamResults = [...streamResults, {
           id: Date.now(),
-          operation: selectedOperation
+          operation: selectedOperation,
           input: inputText.slice(0, 100) + '...',
           status: 'completed',
           processingTime: Math.floor(Math.random() * 2000) + 500,
-          gpuAccelerated: useGpu
+          gpuAccelerated: useGpu,
           results: {
             vectorsGenerated: Math.floor(Math.random() * 500) + 100,
             entitiesExtracted: Math.floor(Math.random() * 20) + 5,
-            confidence: 0.85 + Math.random() * 0.1;
+            confidence: 0.85 + Math.random() * 0.1
           }
         }];
         stopStreamingUpdates();
@@ -113,7 +113,7 @@
           id: Date.now(),
           operation: `${selectedOperation}_chunk_${streamResults.length + 1}`,
           status: 'processing',
-          progress: processingProgres;
+          progress: processingProgres
         }];
       }
     }, 800);
@@ -139,7 +139,7 @@
     try {
       const response = await fetch('?/processDocument', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).success) {

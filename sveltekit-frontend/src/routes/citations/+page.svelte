@@ -14,7 +14,7 @@
       category: 'Criminal Procedure',
       relevance: 'high',
       keyPoints: ['Right to remain silent', 'Right to counsel', 'Police warnings'],
-      cited: 47;
+      cited: 47
     },
     {
       id: '002',
@@ -25,7 +25,7 @@
       category: 'Civil Rights',
       relevance: 'medium',
       keyPoints: ['Separate but equal', 'Educational discrimination', '14th Amendment'],
-      cited: 23;
+      cited: 23
     },
     {
       id: '003',
@@ -36,7 +36,7 @@
       category: 'Constitutional Law',
       relevance: 'low',
       keyPoints: ['Privacy rights', 'Due process', 'State regulation'],
-      cited: 12;
+      cited: 12
     },
     {
       id: '004',
@@ -47,7 +47,7 @@
       category: 'Criminal Defense',
       relevance: 'high',
       keyPoints: ['Right to counsel', '6th Amendment', 'Public defender'],
-      cited: 34;
+      cited: 34
     }
   ]);
   let searchQuery = $state('');

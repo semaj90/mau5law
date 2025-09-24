@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ url }) => {
       limit
     )
     return json({
-      success: true
+      success: true,
       logs,
       count: logs.length
     })
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     await librarySyncService.logAgentCall(agentLog)
     return json({
-      success: true
+      success: true,
       message: "Agent call logged successfully",
       logId: agentLog.id
     })

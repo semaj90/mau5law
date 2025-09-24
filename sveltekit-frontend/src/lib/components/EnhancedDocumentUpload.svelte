@@ -53,10 +53,10 @@
       if (title) formData.append('title', title);
       const response = await fetch('/api/documents/upload-enhanced', {
         method: 'POST',
-        body: formData;
+        body: formData
       });
       const result = await response.json();
-      const typedResult = result as UploadRespon;
+      const typedResult = result as UploadResponse;
       if (typedResult.success) {
         uploadResult = typedResult;
         // Reset form
@@ -327,7 +327,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
   }
-  .file-input-label: hover {
+  .file-input-label:hover {
     border-color: #00ff41;
     background: #1a2a1a;
   }

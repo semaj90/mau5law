@@ -6,7 +6,7 @@ async function getEmbedding(text: string): Promise<number[]> {
   const response = await fetch('http://localhost:11434/api/embeddings', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({,
+    body: JSON.stringify({
       model: 'nomic-embed-text',
       prompt: text
     })
@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const embedding = await getEmbedding(content)
   const doc = await db.insert(documents).values({
     id: crypto.randomUUID(),
-    filename: title
+    filename: title,
     content,
     embedding: JSON.stringify(embedding),
     user_id: parseInt(locals.user.id)

@@ -367,11 +367,11 @@ export const LEGAL_AI_PALETTE: ConsolePalette = {
 };
 // Console palette collection
 export const CONSOLE_PALETTES = {
-  nes: NES_PALETTE
-  snes: SNES_PALETTE
-  ps1: PS1_PALETTE
-  n64: N64_PALETTE
-  ps2: PS2_PALETTE
+  nes: NES_PALETTE,
+  snes: SNES_PALETTE,
+  ps1: PS1_PALETTE,
+  n64: N64_PALETTE,
+  ps2: PS2_PALETTE,
   legal: LEGAL_AI_PALETTE
 } as const;
 export type ConsolePaletteName = keyof typeof CONSOLE_PALETTES;
@@ -434,8 +434,8 @@ export function getConstrainedColor(color: string, bitDepth: number): string {
 }
 // Generate palette-aware gradient with memory constraints
 export function generateConstrainedGradient(
-  colors: string[]
-  memoryKB: number
+  colors: string[],
+  memoryKB: number,
   angle = 45
 ): string {
   // Reduce colors based on memory constraints

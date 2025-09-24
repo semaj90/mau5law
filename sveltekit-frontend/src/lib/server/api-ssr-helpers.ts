@@ -38,7 +38,7 @@ export interface BitsUICompatibleData {
  * Enhanced with GPU-accelerated serialization and thread-safe operations
  */
 export async function createSSRResponse<T extends BitsUICompatibleData>(
-  data: T
+  data: T,
   options?: {
     cached?: boolean;
     status?: number;
@@ -58,7 +58,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
         items: [data],
         operation: 'serialize',
         priority: 'high',
-        cache: !!options?.cacheKey
+        cache: !!options?.cacheKey,
       });
       if (gpuResult?.serialized && Array.isArray(gpuResult.serialized)) {
         sanitizedData = gpuResult.serialized[0] as T;
@@ -73,19 +73,19 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
     sanitizedData = sanitizeForSSR(data);
   }
   const response: SSRResponse<T> = {
-    success: true
-    data: sanitizedData
+    success: true,
+    data: sanitizedData,
     meta: {
       timestamp: new Date().toISOString(),
       cached: options?.cached ?? false,
-      source: 'ssr'
-    }
+      source: 'ssr',
+    },
   };
   // Use concurrent serializer for better performance
   try {
     serializedResponse = await serializeForAPI(response, {
       compress: estimateDataSize(response) > 50 * 1024, // Compress if > 50KB
-      gpuAccelerated: shouldUseGPU
+      gpuAccelerated: shouldUseGPU,
     });
   } catch (error) {
     console.warn('Concurrent serialization failed, using standard JSON:', error);
@@ -95,8 +95,8 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
   if (options?.cacheKey) {
     await cognitiveCache.storeJsonbDocument(options.cacheKey, response, {
       responseType: 'ssr',
-      gpuProcessed: shouldUseGPU
-      threadSafe: true
+      gpuProcessed: shouldUseGPU,
+      threadSafe: true,
     });
   }
   return new Response(serializedResponse, {
@@ -106,8 +106,8 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
       'Cache-Control': 'public, max-age=30',
       'X-GPU-Accelerated': shouldUseGPU ? 'true' : 'false',
       'X-Thread-Safe': 'true',
-      ...options?.headers
-    }
+      ...options?.headers,
+    },
   });
 }
 /**
@@ -115,14 +115,14 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
  */;
 export function createSSRErrorResponse(error: string, status: number = 500, data?: any): Response {
   const response: SSRResponse = {
-    success: false
+    success: false,
     data: data ?? null,
     meta: {
       timestamp: new Date().toISOString(),
-      cached: false
-      source: 'ssr'
+      cached: false,
+      source: 'ssr',
     },
-    error
+    error,
   };
   return json(response, { status });
 }
@@ -206,10 +206,7 @@ export function ssrErrorBoundary<T>(fn: () => Promise<T>, fallback: T): Promise<
 /**
  * Type-safe API response validator for Bits UI
  */
-export function validateSSRResponse<T>(
-  response: any
-  validator: (data: any) => data is T
-): response is SSRResponse<T> {
+export function validateSSRResponse<T>(response: any, validator: (data: any) => data is T): response is SSRResponse<T> {
   return (
     response &&
     typeof response === 'object' &&
@@ -344,15 +341,16 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
       const batchDbOps: any =
         (gpuCoordinator as any).batchDatabaseOperations || (gpuCoordinator as any).batchOps || null;
       if (batchDbOps) {
-        const batchResult = await batchDbOps(requestEntries.map(([key, requestFn]) => ({
+        const batchResult = await batchDbOps(
+          requestEntries.map(([key, requestFn]) => ({
             type: 'query',
             table: 'batch_requests',
-            data: { key: String(key), requestFn: requestFn.toString() }
+            data: { key: String(key), requestFn: requestFn.toString() },
           })),
           {
-            atomic: false
-            gpuSerialize: true
-            threadSafe
+            atomic: false,
+            gpuSerialize: true,
+            threadSafe,
           }
         );
         if (batchResult.result?.success) {
@@ -372,9 +370,9 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
         // Use concurrent serializer if GPU acceleration is enabled
         if (gpuAccelerated) {
           const serialized = await concurrentSerializer.serialize(result, {
-            gpuAccelerated: true
-            legalDocumentMode: true
-            compress: estimateDataSize(result) > 50 * 1024
+            gpuAccelerated: true,
+            legalDocumentMode: true,
+            compress: estimateDataSize(result) > 50 * 1024,
           });
           results[key] = JSON.parse(serialized.serialized);
         } else {
@@ -385,8 +383,8 @@ export async function batchSSRRequestsGPU<T extends { [key: string]: any }>(
           const cacheKey = `batch_result_${String(key)}_${Date.now()}`;
           await cognitiveCache.storeJsonbDocument(cacheKey, results[key], {
             batchKey: String(key),
-            gpuProcessed: gpuAccelerated
-            threadSafe
+            gpuProcessed: gpuAccelerated,
+            threadSafe,
           });
         }
       } catch (error) {
@@ -422,11 +420,11 @@ export async function getThreadSyncHealth(): Promise<any> {
           ? 'degraded'
           : 'unhealthy';
     return {
-      postgres: postgresHealth
-      cognitive_cache: cacheStats
-      serializer: serializerStats
-      gpu_coordinator: gpuHealth
-      overall_status: overallStatus
+      postgres: postgresHealth,
+      cognitive_cache: cacheStats,
+      serializer: serializerStats,
+      gpu_coordinator: gpuHealth,
+      overall_status: overallStatus,
     };
   } catch (error) {
     console.error('Health check failed:', error);

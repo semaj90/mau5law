@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: message.trim(),
           fixable: ['TS1434', 'TS2304', 'TS2307', 'TS2457', 'TS1005'].includes(code),
           confidence: 0.8 + Math.random() * 0.2,
-          gpuProcessed: true
+          gpuProcessed: true,
           model: 'gemma3-legal:latest'
         }
       }

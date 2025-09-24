@@ -80,10 +80,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!currentSessionId) {
       currentSessionId = generateId()
       const newSession: NewChatSession = {
-        id: currentSessionId
+        id: currentSessionId,
         userId: (locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747',
         title: 'Chat Session',
-        context: { [key: string]: any },
+        context: {},
         metadata: {
           model,
           userAgent: request.headers.get('user-agent'),

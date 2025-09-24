@@ -99,7 +99,7 @@
       type: f.file.type,
       status: f.status === 'uploading' || f.status === 'processing' ? 'pending' : f.status,
       attempts: f.attempts || 0,
-      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt: null;
+      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt : null
     }));
     if (pending.length === 0) { try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) { /* ignore */ } return; }
     try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now(), files: pending })); } catch(e) { /* ignore */ }
@@ -382,7 +382,7 @@
     telemetry.emit('upload_batch_complete', {
       completed: fileStates.filter(fs => fs.status === 'completed').length,
       failed: fileStates.filter(fs => fs.status === 'error').length,
-      canceled: fileStates.filter(fs => fs.status === 'canceled').length;
+      canceled: fileStates.filter(fs => fs.status === 'canceled').length
     });
   }
   /**
@@ -676,7 +676,7 @@ restoreSession();
   <div
     class="drop-zone"
     class:drag-over={dragOver}
-    class:has-files={files.length > 0};
+    class:has-files={files.length > 0}
     class:uploading={uploading}
     role="button"
     aria-disabled={disabled || uploading}
@@ -870,13 +870,13 @@ restoreSession();
     align-items: center;
     justify-content: center;
   }
-  .drop-zone: hover:not(.uploading) {
+  .drop-zone:hover:not(.uploading) {
     border-color: #3b82f6;
     background: #eff6ff;
   }
   .drop-zone.drag-over {
     border-color: #3b82f6;
-    background: #dbeaf;
+    background: #dbeafe;
     transform: scale(1.02);
   }
   .drop-zone.has-files {
@@ -897,7 +897,7 @@ restoreSession();
   .upload-icon {
     transition: transform 0.2s ease;
   }
-  .drop-zone:hover .upload-icon:not(.uploading) {,
+  .drop-zone:hover .upload-icon:not(.uploading) {
     transform: scale(1.1);
   }
   .upload-text h3 {
@@ -1049,7 +1049,7 @@ restoreSession();
   :global(.nes-theme) .upload-button {
     border-radius: 0;
     font-family: 'Press Start 2P', monospace;
-    background: #209ce;
+    background: #209ce2;
     box-shadow: 0 0 0 4px #fff, 0 0 0 8px #212529;
     border: 4px solid #212529;
   }
@@ -1097,7 +1097,7 @@ restoreSession();
     cursor: pointer;
     transition: background-color 0.2;
   }
-  .upload-button:hover:not(:disabled) {,
+  .upload-button:hover:not(:disabled) {
     background: #2563eb;
   }
   .upload-button:disabled {
@@ -1177,7 +1177,7 @@ restoreSession();
     text-align: center;
     padding: 0.5rem;
     background: rgba(34, 197, 94, 0.1);
-    border: 1px solid #22c55;
+    border: 1px solid #22c55e;
     border-radius: 4px;
   }
   .gpu-indicator {

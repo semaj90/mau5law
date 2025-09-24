@@ -21,7 +21,7 @@ export const GET: RequestHandler = async () => {
       }
     } catch (error: any) {
       results.pgvector = {
-        installed: false
+        installed: false,
         error: error.message
       }
     }

@@ -28,7 +28,7 @@ try {
     law.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     law.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     law.code?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ));
 </script>
 <svelte:head>
   <title>Law Database - WardenNet</title>

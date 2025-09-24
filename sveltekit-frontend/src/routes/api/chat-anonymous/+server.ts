@@ -41,8 +41,8 @@ Legal Analysis:`
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model,
-          prompt: legalPrompt
-          stream: false
+          prompt: legalPrompt,
+          stream: false,
           options: {
             temperature: 0.7,
             top_p: 0.9,
@@ -57,13 +57,13 @@ Legal Analysis:`
       const responseTime = Date.now() - startTime
       // Return formatted response
       return json({
-        success: true
+        success: true,
         response: ollamaData.response,
         responseTime,
         model,
         confidence: 0.85,
         source: 'gemma3-legal',
-        cacheHit: false
+        cacheHit: false,
         metadata: {
           timestamp: new Date().toISOString(),
           analysisType: 'legal-query',
@@ -89,7 +89,7 @@ Currently running in demo mode. For detailed legal analysis, please ensure the O
         model: 'demo-fallback',
         confidence: 1.0,
         source: 'fallback',
-        cacheHit: false
+        cacheHit: false,
         metadata: {
           timestamp: new Date().toISOString(),
           analysisType: 'demo-response',

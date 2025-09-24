@@ -4,9 +4,9 @@
   import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
   import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
   // Svelte 5 runes
-  let systemStatus = $state<{ [key: string]: any }('')>( );
+  let systemStatus = $state({});
   let authStatus = $state<any>(null);
-  let testResults = $state<{ [key: string]: any }('')>( );
+  let testResults = $state({});
   let isRunning = $state(false);
   const tests = [
     {

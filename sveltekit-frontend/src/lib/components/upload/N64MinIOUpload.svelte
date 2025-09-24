@@ -123,20 +123,20 @@
       type: f.file.type,
       status: f.status === 'uploading' || f.status === 'processing' ? 'pending' : f.status,
       attempts: f.attempts || 0,
-      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt: null
-      gamingProgress: f.gamingProgres;
+      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt : null,
+      gamingProgress: f.gamingProgress
     }));
     if (pending.length === 0) {
-      try { sessionStorage.removeItem(STORAGE_KEY); } catch ;
+      try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) { /* ignore */ }
       return;
     }
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
         ts: Date.now(),
-        files: pending
-        evolutionStag;
+        files: pending,
+        evolutionStage: evolutionStage
       }));
-    } catch }
+    } catch(e) { /* ignore */ }
   function restoreSession() {
     if (!enablePersistence) return;
     try {
@@ -797,7 +797,7 @@ restoreSession();
 <!-- N64 Gaming Style MinIO Upload Zone -->
 <div class="n64-upload-container" class:retro>
   <!-- Hidden file input -->
-  <input;
+  <input
     bind:this={fileInput}
     type="file"
     {accept}
@@ -1086,7 +1086,6 @@ restoreSession();
   }
   .evolution-overlay {
     position: fixed;
-d;
     top: 0;
     left: 0;
     right: 0;
@@ -1129,7 +1128,7 @@ d;
     z-index: -1;
     border-radius: 0;
   }
-  .n64-drop-zone: hover:not(.uploading) {
+  .n64-drop-zone:hover:not(.uploading) {
     border-color: #FFA500;
     transform: scale(1.02);
     box-shadow:
@@ -1422,7 +1421,7 @@ d;
       inset -2px -2px 0 rgba(0, 0, 0, 0.3),
       0 4px 8px rgba(0, 0, 0, 0.5);
   }
-  .n64-upload-button:hover:not(:disabled) {,
+  .n64-upload-button:hover:not(:disabled) {
     background: #FFA500;
     transform: translateY(-2px);
     box-shadow:

@@ -148,7 +148,7 @@ export function calculateOptimalQuantization(dimensions: VectorDimensions, memor
   return 'binary'; // Most aggressive if nothing else fits
 }
 export function adaptiveScalingDecision(
-  metrics: GPUPerformanceMetrics
+  metrics: GPUPerformanceMetrics,
   thresholds: AdaptiveGPUConfig['performanceThresholds'],
   mode: AdaptiveScalingMode
 ): {
@@ -159,7 +159,7 @@ export function adaptiveScalingDecision(
 } {
   if (mode === 'disabled') {
     return {
-      shouldScale: false
+      shouldScale: false,
       recommendedDimensions: 768,
       recommendedQuantization: 'none',
       reason: 'Adaptive scaling disabled',
@@ -171,7 +171,7 @@ export function adaptiveScalingDecision(
     metrics.temperature > thresholds.maxTemperature;
   if (!isOverThreshold) {
     return {
-      shouldScale: false
+      shouldScale: false,
       recommendedDimensions: 768,
       recommendedQuantization: 'none',
       reason: 'Performance within thresholds',
@@ -185,7 +185,7 @@ export function adaptiveScalingDecision(
   };
   const strategy = scalingStrategies[mode] || scalingStrategies.balanced;
   return {
-    shouldScale: true
+    shouldScale: true,
     recommendedDimensions: strategy.dimensions,
     recommendedQuantization: strategy.quantization,
     reason: `Performance threshold exceeded (${mode} scaling)`,

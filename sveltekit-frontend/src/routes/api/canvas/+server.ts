@@ -8,15 +8,15 @@ export const POST: RequestHandler = async ({ request }) => {
     const { caseId, canvasState, timestamp } = await request.json()
     if (!caseId || !canvasState) {
       return json(
-        { error: "Case ID and canvas state are required" },)
-        { status: 400 },
+        { error: "Case ID and canvas state are required" },
+        { status: 400 }
       )
     }
     // Check if canvas state already exists for this case
     const existing = await db
       .select()
       .from(canvasStates)
-      .where(eq(canvasStates.caseId, caseId)
+      .where(eq(canvasStates.caseId, caseId))
       .limit(1)
     let result
     if (existing.length > 0) {
@@ -24,11 +24,11 @@ export const POST: RequestHandler = async ({ request }) => {
       [result] = await db
         .update(canvasStates)
         .set({
-          canvasData: canvasState
+          canvasData: canvasState,
           updatedAt: new Date(),
           version: (existing[0].version || 1) + 1
         })
-        .where(eq(canvasStates.caseId, caseId)
+        .where(eq(canvasStates.caseId, caseId))
         .returning()
     } else {
       // Create new canvas state
@@ -38,15 +38,15 @@ export const POST: RequestHandler = async ({ request }) => {
           id: randomUUID(),
           caseId,
           name: `Canvas State ${new Date().toISOString()}`,
-          canvasData: canvasState
+          canvasData: canvasState,
           version: 1,
           createdBy: null, // Set to actual user ID when available
         })
         .returning()
     }
     return json({
-      success: true
-      canvasState: result
+      success: true,
+      canvasState: result,
       message: "Canvas state saved successfully"
     })
   } catch (error: any) {

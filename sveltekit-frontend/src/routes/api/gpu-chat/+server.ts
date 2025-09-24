@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Create inference request for the Go GPU server
         const inferenceRequest = {
             prompt: body.prompt,
-            model: body?.model || "unknown" // @ts-ignore - Model property access || 'legal:latest',
+            model: body?.model || "unknown", // @ts-ignore - Model property access || 'legal:latest',
             max_tokens: body.max_tokens || 512,
             temperature: body.temperature || 0.1,
             use_gpu: true

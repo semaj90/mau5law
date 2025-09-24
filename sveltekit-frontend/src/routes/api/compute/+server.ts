@@ -42,12 +42,12 @@ export const POST: RequestHandler = async ({ request }) => {
       ownerId,
       event: type as 'upsert' | 'delete' | 'reembed',
       vector: null, // Will be filled by CUDA worker
-      payload: data
+      payload: data,
       attempts: 0
     }).returning()
     // Step 2: Create job tracking entry
     const [jobRow] = await db.insert(vectorJobs).values({
-      jobId: finalJobId
+      jobId: finalJobId,
       ownerType: ownerType as 'evidence' | 'report' | 'case' | 'document',
       ownerId,
       event: type as 'upsert' | 'delete' | 'reembed',
@@ -57,11 +57,11 @@ export const POST: RequestHandler = async ({ request }) => {
     // Step 3: Enqueue to Redis Streams for Go microservice consumption
     await connectRedis()
     const streamMessage = {
-      jobId: finalJobId
+      jobId: finalJobId,
       outboxId: outboxRow.id,
       ownerType,
       ownerId,
-      event: type
+      event: type,
       payload: JSON.stringify(data || {}),
       timestamp: new Date().toISOString()
     }
@@ -75,8 +75,8 @@ export const POST: RequestHandler = async ({ request }) => {
     // TODO: Add RabbitMQ publisher here for high-volume scenarios
     // Step 5: Return job tracking information
     return json({
-      success: true
-      jobId: finalJobId
+      success: true,
+      jobId: finalJobId,
       outboxId: outboxRow.id,
       jobTrackingId: jobRow.id,
       streamId,

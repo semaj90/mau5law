@@ -23,7 +23,7 @@ const qloraIntegrationAnalyzer = {
   },
   async executeDistillationPlan(plan: any) {
     return {
-      success: true
+      success: true,
       modelPath: '/models/distilled-legal-ai',
       metrics: {
         validation_accuracy: 0.89,

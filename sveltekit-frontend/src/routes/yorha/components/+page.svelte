@@ -34,10 +34,10 @@ https://svelte.dev/e/js_parse_error -->
     variant: 'primary',
     size: 'medium',
     icon: 'terminal',
-    loading: false
-    disabled: false
-    glowEffect: true
-    hoverAnimation: true;
+    loading: false,
+    disabled: false,
+    glowEffect: true,
+    hoverAnimation: true
   });
   let panelConfig = $state<YoRHaPanel3DOptions>({
     title: 'YoRHa Panel',

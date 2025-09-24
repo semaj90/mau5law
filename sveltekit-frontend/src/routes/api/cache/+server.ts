@@ -34,21 +34,21 @@ export const GET: RequestHandler = async ({ url }) => {
         .reduce((sum, layer) => sum + layer.avgResponseTime, 0) / Object.values(layerStats).filter(item => item.length)
     }
     logger.info('📊 Cache stats requested', {
-      metrics: systemMetrics
+      metrics: systemMetrics,
       timestamp: new Date().toISOString()
     })
     return json({
-      success: true
+      success: true,
       data: {
-        layers: layerStats
-        system: systemMetrics
+        layers: layerStats,
+        system: systemMetrics,
         timestamp: new Date().toISOString()
       }
     })
   }
   if (!key) {
     return json({
-      success: false
+      success: false,
       error: 'Key parameter is required'
     }, { status: 400 })
   }
@@ -64,10 +64,10 @@ export const GET: RequestHandler = async ({ url }) => {
         source: 'multi-layer-cache'
       })
       return json({
-        success: true
+        success: true,
         data,
         meta: {
-          hit: true
+          hit: true,
           responseTime,
           type,
           timestamp: new Date().toISOString()
@@ -80,10 +80,10 @@ export const GET: RequestHandler = async ({ url }) => {
         responseTime
       })
       return json({
-        success: false
+        success: false,
         error: 'Cache miss',
         meta: {
-          hit: false
+          hit: false,
           responseTime,
           type,
           timestamp: new Date().toISOString()
@@ -284,7 +284,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   }
   if (!key) {
     return json({
-      success: false
+      success: false,
       error: 'Key parameter is required'
     }, { status: 400 })
   }

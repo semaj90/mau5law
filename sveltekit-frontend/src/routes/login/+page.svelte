@@ -7,8 +7,8 @@
   let { data }: { data: PageData } = $props();
   const { form, errors, enhance, message } = superForm(data.form, {
     validators: zodClient(loginSchema),
-    resetForm: true
-    taintedMessage: null;
+    resetForm: true,
+    taintedMessage: null
   });
   // Show success banner if coming from registration
   let registrationSuccess = $state(data.registrationSuccess);

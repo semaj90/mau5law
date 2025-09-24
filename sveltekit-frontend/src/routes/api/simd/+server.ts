@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const parsed = SIMDProcessSchema.safeParse(body)
     if (!parsed.success) {
       return json(
-        { error: 'Invalid request', details: parsed.error.errors },)
+        { error: 'Invalid request', details: parsed.error.errors },
         { status: 400 }
       )
     }

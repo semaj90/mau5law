@@ -15,7 +15,7 @@
   import { serviceStatus } from '$lib/stores/chatStore';
   // Use the XState machine through the store
   const actor = useChatActor();
-  const stateStore = actor.stat;
+  const stateStore = actor.state;
   let userInput = $state('');
   let chatContainer: HTMLElement | null = null;
   // Send message handler

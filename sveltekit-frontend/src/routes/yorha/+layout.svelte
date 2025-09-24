@@ -22,9 +22,9 @@
   } from 'lucide-svelte';
   // System status and navigation
   let systemStatus = $state({
-    connected: false
+    connected: false,
     services: 0,
-    errors: 0;
+    errors: 0
   });
   let sidebarOpen = $state(false);
   let currentPath = $state('');
@@ -33,50 +33,50 @@
     {
       path: '/yorha',
       label: 'Command Center',
-      icon: Terminal
-      description: 'Main YoRHa interface hub';
+      icon: Terminal,
+      description: 'Main YoRHa interface hub'
     },
     {
       path: '/yorha/dashboard',
       label: 'System Dashboard',
-      icon: Monitor
-      description: 'Live system monitoring';
+      icon: Monitor,
+      description: 'Live system monitoring'
     },
     {
       path: '/yorha/components',
       label: 'UI Components',
-      icon: Bot
-      description: '3D UI component gallery';
+      icon: Bot,
+      description: '3D UI component gallery'
     },
     {
       path: '/yorha/api-test',
       label: 'API Testing',
-      icon: Cpu
-      description: 'Live API integration tests';
+      icon: Cpu,
+      description: 'Live API integration tests'
     },
     {
       path: '/yorha/terminal',
       label: 'Terminal',
-      icon: Terminal
-      description: 'YoRHa command terminal';
+      icon: Terminal,
+      description: 'YoRHa command terminal'
     },
     {
       path: '/yorha/data-grid',
       label: 'Data Grid',
-      icon: Database
-      description: 'Advanced data visualization';
+      icon: Database,
+      description: 'Advanced data visualization'
     },
     {
       path: '/yorha/search',
       label: 'Vector Search',
-      icon: Search
-      description: 'Semantic search interface';
+      icon: Search,
+      description: 'Semantic search interface'
     },
     {
       path: '/yorha/chat',
       label: 'AI Chat',
-      icon: Bot
-      description: 'Enhanced AI conversation';
+      icon: Bot,
+      description: 'Enhanced AI conversation'
     }
   ];
   // System status monitoring
@@ -87,9 +87,9 @@
       try {
         const status = await yorhaAPI.getSystemStatus();
         systemStatus = {
-          connected: true
+          connected: true,
           services: Object.keys(errors).length,
-          errors: 0;
+          errors: 0
         };
       } catch (error) {
         console.warn('YoRHa API not available:', error);

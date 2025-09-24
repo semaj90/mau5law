@@ -78,10 +78,10 @@
   let citations = $state<string[]>([]);
   let isAIProcessing = $state(false);
   let systemStatus = $state({
-    evidenceCanvas: true
-    detectiveAnalysis: true
-    aiAssistant: false
-    webgpuAcceleration: false
+    evidenceCanvas: true,
+    detectiveAnalysis: true,
+    aiAssistant: false,
+    webgpuAcceleration: false,
     ollamaConnection: false
   });
   // Create a new case
@@ -94,7 +94,7 @@
       priority: 'medium',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      assignedTo: 'current-user';
+      assignedTo: 'current-user'
     };
     cases = [newCase, ...cases];
     currentCase = newCa;

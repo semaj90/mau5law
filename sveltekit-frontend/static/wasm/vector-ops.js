@@ -12,10 +12,6 @@ async function instantiate(module, imports = {}) {
           throw Error(`${message} in ${fileName}:${lineNumber}:${columnNumber}`);
         })();
       },
-      "Date.now"() {
-        // ~lib/bindings/dom/Date.now() => f64
-        return Date.now();
-      },
     }, Object.assign(Object.create(globalThis), imports.env || {})),
   };
   const { exports } = await WebAssembly.instantiate(module, adaptedImports);

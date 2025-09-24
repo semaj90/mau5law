@@ -15,7 +15,7 @@ export const GET: RequestHandler = async () => {
       embeddingCache.getStats(),
       dbPool.getStats(),
       dbPool.healthCheck(),
-      Promise.resolve(redisService.isHealthy()
+      Promise.resolve(redisService.isHealthy())
     ])
     // Calculate cache efficiency
     const embeddingHitRate = cacheStats.embeddings.hits + cacheStats.embeddings.misses > 0 ?

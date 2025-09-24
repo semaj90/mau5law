@@ -9,16 +9,16 @@ export const load: PageServerLoad = async ({ fetch }) => {
       systemStatus,
       multicoreStatus,
       graphData,
-      initialLoad: true
+      initialLoad: true,
       timestamp: new Date().toISOString(),
     };
   } catch (err: unknown) {
     console.error('Error loading dashboard data:', err);
     return {
       systemStatus: generateMockSystemStatus(),
-      multicoreStatus: null
+      multicoreStatus: null,
       graphData: generateSystemGraphData(),
-      initialLoad: false
+      initialLoad: false,
       timestamp: new Date().toISOString(),
       error: 'Failed to load system data',
     };

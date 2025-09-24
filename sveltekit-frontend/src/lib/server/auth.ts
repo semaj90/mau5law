@@ -1,5 +1,5 @@
 // src/lib/server/auth.ts - Lucia v3 Authentication Setup for SvelteKit 2
-import { Lucia, TimeSpan, generateId } from "lucia";
+import { Lucia, TimeSpan } from 'lucia';
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 import { dev } from "$app/environment";
 import { db } from "$lib/server/db";
@@ -53,7 +53,7 @@ export class AuthService {
   private argon2id = new Argon2id();
   /**
    * Register a new user with enhanced profile data
-   */;
+   */
   async register(data: {
     email: string;
     password: string;
@@ -62,79 +62,160 @@ export class AuthService {
     displayName?: string;
   }) {
     // Check if user already exists
-    const existingUser = await db.select().from(users).where(eq(users.email, (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).email)).limit(1);
+    const existingUser = await db
+      .select()
+      .from(users)
+      .where(
+        eq(
+          users.email,
+          (
+            data as {
+              email?: any;
+              password?: any;
+              firstName?: any;
+              lastName?: any;
+              displayName?: any;
+              avatarUrl?: any;
+              legalSpecialties?: any;
+              preferences?: any;
+            }
+          ).email
+        )
+      )
+      .limit(1);
     if (existingUser.length > 0) {
-      throw new Error("User already exists");
+      throw new Error('User already exists');
     }
     // Hash password
-    const passwordHash = await this.argon2id.hash((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).password);
+    const passwordHash = await this.argon2id.hash(
+      (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).password
+    );
     // Create user
-    const [newUser] = await db.insert(users).values({
-      email: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).email,
-      hashedPassword: passwordHash
-      firstName: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName || null,
-      lastName: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName || null,
-      name: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).displayName || `${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName || ''} ${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName || ''}`.trim() || null,
-      isActive: true
-    }).returning();
+    const [newUser] = await db
+      .insert(users)
+      .values({
+        email: (
+          data as {
+            email?: any;
+            password?: any;
+            firstName?: any;
+            lastName?: any;
+            displayName?: any;
+            avatarUrl?: any;
+            legalSpecialties?: any;
+            preferences?: any;
+          }
+        ).email,
+        hashedPassword: passwordHash,
+        firstName:
+          (
+            data as {
+              email?: any;
+              password?: any;
+              firstName?: any;
+              lastName?: any;
+              displayName?: any;
+              avatarUrl?: any;
+              legalSpecialties?: any;
+              preferences?: any;
+            }
+          ).firstName || null,
+        lastName:
+          (
+            data as {
+              email?: any;
+              password?: any;
+              firstName?: any;
+              lastName?: any;
+              displayName?: any;
+              avatarUrl?: any;
+              legalSpecialties?: any;
+              preferences?: any;
+            }
+          ).lastName || null,
+        name:
+          (
+            data as {
+              email?: any;
+              password?: any;
+              firstName?: any;
+              lastName?: any;
+              displayName?: any;
+              avatarUrl?: any;
+              legalSpecialties?: any;
+              preferences?: any;
+            }
+          ).displayName ||
+          `${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName || ''} ${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName || ''}`.trim() ||
+          null,
+        isActive: true,
+      })
+      .returning();
     return newUser;
   }
   /**
    * Login user with email and password
-   */;
-  async login(email: string, password: string) {
+   */ async login(email: string, password: string) {
     // Find user by email
     const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
     if (!user || !user.hashedPassword) {
-      throw new Error("Invalid email or password");
+      throw new Error('Invalid email or password');
     }
     // Check if user is active
     if (!user.isActive) {
-      throw new Error("Account is deactivated");
+      throw new Error('Account is deactivated');
     }
     // Verify password
     const validPassword = await this.argon2id.verify(user.hashedPassword, password);
     if (!validPassword) {
-      throw new Error("Invalid email or password");
+      throw new Error('Invalid email or password');
     }
     return user;
   }
   /**
    * Handle failed login attempts (simplified - no account locking)
-   */;
-  private async handleFailedLogin(userId: string) {
+   */ private async handleFailedLogin(userId: string) {
     console.log(`Failed login attempt for user: ${userId}`);
     // TODO: Implement proper failed login tracking when schema supports it
   }
   /**
    * Create session for user
-   */;
-  async createSession(userId: string) {
+   */ async createSession(userId: string) {
     const session = await lucia.createSession(userId, {});
     return session;
   }
   /**
    * Validate session
-   */;
-  async validateSession(sessionId: string) {
+   */ async validateSession(sessionId: string) {
     const result = await lucia.validateSession(sessionId);
     return result;
   }
   /**
    * Invalidate session (logout)
-   */;
+   */
   async invalidateSession(sessionId: string) {
-    await lucia.deleteSession(sessionId);
+    await lucia.invalidateSession(sessionId);
   }
   /**
    * Invalidate all user sessions
-   */;
+   */
   async invalidateUserSessions(userId: string) {
-    await lucia.deleteUserSessions(userId);
+    await lucia.invalidateUserSessions(userId);
   }
   /**
    * Logout user by invalidating session
-   */;
+   */
   async logout(sessionId?: string) {
     if (sessionId) {
       await this.invalidateSession(sessionId);
@@ -142,8 +223,7 @@ export class AuthService {
   }
   /**
    * Request password reset (placeholder for email integration)
-   */;
-  async requestPasswordReset(email: string) {
+   */ async requestPasswordReset(email: string) {
     // Find user by email
     const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
     if (!user) {
@@ -157,44 +237,190 @@ export class AuthService {
   }
   /**
    * Update user profile
-   */;
-  async updateProfile(userId: string, data: Partial<any>) {
+   */ async updateProfile(userId: string, data: Partial<any>) {
     // Map camelCase input to snake_case database columns
     const updateData: any = {};
-    if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName !== undefined) updateData.first_name = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName;
-    if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName !== undefined) updateData.last_name = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName;
-    if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).displayName !== undefined) updateData.username = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).displayName;
-    if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).avatarUrl !== undefined) updateData.avatar_url = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).avatarUrl;
-    if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).legalSpecialties !== undefined) updateData.practice_areas = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).legalSpecialties;
-    if ((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).preferences !== undefined) updateData.metadata = (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).preferences;
+    if (
+      (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).firstName !== undefined
+    )
+      updateData.first_name = (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).firstName;
+    if (
+      (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).lastName !== undefined
+    )
+      updateData.last_name = (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).lastName;
+    if (
+      (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).displayName !== undefined
+    )
+      updateData.username = (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).displayName;
+    if (
+      (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).avatarUrl !== undefined
+    )
+      updateData.avatar_url = (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).avatarUrl;
+    if (
+      (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).legalSpecialties !== undefined
+    )
+      updateData.practice_areas = (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).legalSpecialties;
+    if (
+      (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).preferences !== undefined
+    )
+      updateData.metadata = (
+        data as {
+          email?: any;
+          password?: any;
+          firstName?: any;
+          lastName?: any;
+          displayName?: any;
+          avatarUrl?: any;
+          legalSpecialties?: any;
+          preferences?: any;
+        }
+      ).preferences;
     // Add timestamp
     updateData.updated_at = new Date();
-    const [updatedUser] = await db.update(users)
-      .set(updateData)
-      .where(eq(users.id, userId))
-      .returning();
+    const [updatedUser] = await db.update(users).set(updateData).where(eq(users.id, userId)).returning();
     return updatedUser;
   }
   /**
    * Change user password
-   */;
-  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+   */ async changePassword(userId: string, currentPassword: string, newPassword: string) {
     const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
     if (!user || !user.hashed_password) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
     // Verify current password
     const validPassword = await this.argon2id.verify(user.hashed_password, currentPassword);
     if (!validPassword) {
-      throw new Error("Current password is incorrect");
+      throw new Error('Current password is incorrect');
     }
     // Hash new password
     const newPasswordHash = await this.argon2id.hash(newPassword);
     // Update password
-    await db.update(users)
+    await db
+      .update(users)
       .set({
-        hashed_password: newPasswordHash
-        updated_at: new Date()
+        hashed_password: newPasswordHash,
+        updated_at: new Date(),
       })
       .where(eq(users.id, userId));
     // Invalidate all existing sessions to force re-login
@@ -202,18 +428,17 @@ export class AuthService {
   }
   /**
    * Get case by ID (for RAG pages)
-   */;
-  async getCaseById(caseId: string) {
+   */ async getCaseById(caseId: string) {
     try {
       // This would fetch from cases table in production
       // For now, return mock data
       return {
-        id: caseId
+        id: caseId,
         title: `Case ${caseId}`,
         description: 'Mock case description',
         status: 'active',
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       };
     } catch (error) {
       console.error('Failed to get case by ID:', error);
@@ -222,8 +447,7 @@ export class AuthService {
   }
   /**
    * Get documents for a case
-   */;
-  async getCaseDocuments(caseId: string) {
+   */ async getCaseDocuments(caseId: string) {
     try {
       // This would fetch from documents table in production
       // For now, return mock data
@@ -233,15 +457,15 @@ export class AuthService {
           title: 'Sample Document 1',
           type: 'pdf',
           uploaded_at: new Date(),
-          processed: true
+          processed: true,
         },
         {
           id: `doc_${caseId}_2`,
           title: 'Sample Document 2',
           type: 'docx',
           uploaded_at: new Date(),
-          processed: true
-        }
+          processed: true,
+        },
       ];
     } catch (error) {
       console.error('Failed to get case documents:', error);
@@ -250,8 +474,7 @@ export class AuthService {
   }
   /**
    * Get total number of cases
-   */;
-  async getTotalCases(): Promise<number> {
+   */ async getTotalCases(): Promise<number> {
     try {
       // This would count from cases table in production
       return 42; // Mock data
@@ -262,8 +485,7 @@ export class AuthService {
   }
   /**
    * Get total number of documents
-   */;
-  async getTotalDocuments(): Promise<number> {
+   */ async getTotalDocuments(): Promise<number> {
     try {
       // This would count from documents table in production
       return 156; // Mock data
@@ -284,8 +506,8 @@ export class AuthService {
         title: `Sample Case ${i + 1}`,
         description: `Description for case ${i + 1}`,
         status: i % 2 === 0 ? 'active' : 'closed',
-        created_at: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
-        updated_at: new Date()
+        created_at: new Date(Date.now() - i * 24 * 60 * 60 * 1000),
+        updated_at: new Date(),
       }));
     } catch (error) {
       console.error('Failed to get sample cases:', error);

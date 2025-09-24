@@ -58,7 +58,7 @@ if (!browser) return;
         totalShaders: {
           total: data.totalShaders.total,
           webgpu: data.totalShaders.webgpu,
-          webgl: data.totalShaders.webgl;
+          webgl: data.totalShaders.webgl
         },
         topOperations: data.supportedOperations.map((op: string) => ({ operation: op, count: 0 })),
         averagePerformance: 0,

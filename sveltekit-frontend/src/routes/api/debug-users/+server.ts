@@ -14,13 +14,13 @@ export async function GET(): Promise<any> {
       hasPassword: users.hashedPassword
     }).from(users)
     return json({
-      success: true
-      users: existingUsers
+      success: true,
+      users: existingUsers,
       count: existingUsers.length
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }
@@ -47,7 +47,7 @@ export async function POST(): Promise<any> {
     })
   } catch (error: any) {
     return json({
-      success: false
+      success: false,
       error: error.message
     }, { status: 500 })
   }

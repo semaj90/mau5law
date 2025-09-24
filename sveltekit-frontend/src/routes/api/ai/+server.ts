@@ -46,8 +46,8 @@ class LegalAIService {
         },
         body: JSON.stringify({
           model: request.model || this.defaultModel,
-          prompt: fullPrompt
-          stream: false
+          prompt: fullPrompt,
+          stream: false,
           options: {
             temperature: request.temperature || 0.7,
             top_p: 0.9,
@@ -218,7 +218,7 @@ Provide comprehensive legal guidance as appropriate for the query.`
     }
     if (context && contextKeywords[context as keyof typeof contextKeywords]) {
       const keywords = contextKeywords[context as keyof typeof contextKeywords]
-      const foundKeywords = keywords.filter(item => item.includes(keyword)
+      const foundKeywords = keywords.filter(item => item.includes(keyword))
       confidence += (foundKeywords.length / keywords.length) * 0.2
     }
     // Decrease confidence for very short responses

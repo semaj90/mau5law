@@ -45,37 +45,37 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     {
       id: "getting-started",
       title: "Getting Started",
-      icon: Star
+      icon: Star,
       description: "New to the system? Start here",
     },
     {
       id: "cases",
       title: "Case Management",
-      icon: Book
+      icon: Book,
       description: "Managing and organizing cases",
     },
     {
       id: "evidence",
       title: "Evidence Handling",
-      icon: Search
+      icon: Search,
       description: "Evidence collection and analysis",
     },
     {
       id: "ai-assistant",
       title: "AI Assistant",
-      icon: MessageSquare
+      icon: MessageSquare,
       description: "Using AI features effectively",
     },
     {
       id: "advanced",
       title: "Advanced Features",
-      icon: UserIcon
+      icon: UserIcon,
       description: "Power user features and tips",
     },
     {
       id: "troubleshooting",
       title: "Troubleshooting",
-      icon: AlertTriangle
+      icon: AlertTriangle,
       description: "Common issues and solutions",
     },
   ];
@@ -416,9 +416,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         return "text-gray-600";
     }
   }
-  // TODO: Convert to $derived: {
-    filterArticles()
-  }
+  // TODO: Convert to $derived
+  // filterArticles()
 </script>
 <svelte:head>
   <title>Help & Support - Legal Case Management</title>

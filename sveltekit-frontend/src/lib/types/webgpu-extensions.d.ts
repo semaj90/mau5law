@@ -96,7 +96,7 @@ export interface WebGPUPerformanceMetrics {
 // Error handling for WebGPU operations
 export class WebGPUError extends Error {
   constructor(
-    message: string
+    message: string,
     public code: 'DEVICE_LOST' | 'OUT_OF_MEMORY' | 'VALIDATION_ERROR' | 'OPERATION_ERROR',
     public details?: {
       pipeline?: string;

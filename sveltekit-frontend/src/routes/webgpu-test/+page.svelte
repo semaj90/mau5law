@@ -65,7 +65,7 @@ if (!browser) return;
       console.error('Vector similarity test failed:', error);
       testResults = {
         cpu: 0,
-        error: error instanceof Error ? error.message: 'Test failed' ;
+        error: error instanceof Error ? error.message: 'Test failed'
       };
     } finally {
       isRunning = false;

@@ -8,7 +8,7 @@ import { aiSuggestionsClient } from '$lib/services/ai-suggestions-grpc-client'
 import { pgvectorHealthCheck } from '$lib/server/db/pgvector-utils'
 import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced'
 import { db, healthCheck as dbHealthCheck } from '$lib/server/db/index'
-}
+
 export interface IntegrationTestResult {
   service: string
   status: 'pass' | 'fail' | 'warning'

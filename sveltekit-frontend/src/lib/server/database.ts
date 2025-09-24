@@ -13,7 +13,7 @@ const sql = postgres(connectionString, {
   max: 10,
   idle_timeout: 20,
   connect_timeout: 10,
-  transform: undefined
+  transform: undefined,
   onnotice: (notice) => {
     // Suppress PostgreSQL notices during development
     if (process.env.NODE_ENV === 'development') {

@@ -38,13 +38,13 @@ async function triggerWorkerProcessing(caseId: string, options: {
   const correlationId = `case-${caseId}-${Date.now()}`
   // Create Redis stream event for worker
   const eventData = {
-    id: correlationId
+    id: correlationId,
     type: 'case_created',
     action: 'process',
-    caseId: caseId
+    caseId: caseId,
     evidenceId: '',
     documentId: '',
-    metadata: JSON.stringify({,
+    metadata: JSON.stringify({
       priority: options.priority,
       caseType: options.caseType,
       userId: options.userId,
@@ -75,9 +75,9 @@ const searchCasesSchema = z.object({
   status: z.array(z.string()).optional(),
   priority: z.array(z.string()).optional(),
   assignedTo: z.string().optional(),
-  dateRange: z.object({,
+  dateRange: z.object({
     start: z.string().datetime().transform(str => new Date(str)),
-    end: z.string().datetime().transform(str => new Date(str)
+    end: z.string().datetime().transform(str => new Date(str))
   }).optional(),
   page: z.number().min(1).default(1),
   limit: z.number().min(1).max(100).default(50),
@@ -102,10 +102,10 @@ export const GET: RequestHandler = async (event: any) => {
       status: url.searchParams.get('status')?.split(',').filter(Boolean) || undefined,
       priority: url.searchParams.get('priority')?.split(',').filter(Boolean) || undefined,
       assignedTo: url.searchParams.get('assignedTo') || undefined,
-      dateRange: url.searchParams.get('dateStart') && url.searchParams.get('dateEnd') ? {,
+      dateRange: url.searchParams.get('dateStart') && url.searchParams.get('dateEnd') ? {
         start: new Date(url.searchParams.get('dateStart')!),
         end: new Date(url.searchParams.get('dateEnd')!)
-      } : undefined
+      } : undefined,
       page: parseInt(url.searchParams.get('page') || '1'),
       limit: Math.min(parseInt(url.searchParams.get('limit') || '50'), 100),
       useVectorSearch: url.searchParams.get('useVectorSearch') !== 'false'
@@ -123,9 +123,9 @@ export const GET: RequestHandler = async (event: any) => {
       // Create pagination info
       const pagination = createPagination(validatedParams.page, validatedParams.limit, total)
       return {
-        cases: caseResults
+        cases: caseResults,
         pagination,
-        search: validatedParams.query ? {,
+        search: validatedParams.query ? {
           term: validatedParams.query,
           resultsCount: caseResults.length,
           vectorSearchUsed: validatedParams.useVectorSearch

@@ -155,7 +155,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     // Update matrix UI based on file types
     updateMatrixUINodes();
     // Trigger AI reranking for file suggestions
-    performAIReranking('file_upload', files.map(f => f.name);
+    performAIReranking('file_upload', files.map(f => f.name));
   }
   function handleCaseDetailsUpdate(): void {
     send({

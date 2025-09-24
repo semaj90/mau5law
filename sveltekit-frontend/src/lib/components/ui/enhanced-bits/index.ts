@@ -1,6 +1,7 @@
 // Enhanced-Bits Component Library
 // Modern SvelteKit 2 + Svelte 5 UI Components for Legal AI Platform
-// Core components
+
+// Core UI Components (from enhanced-bits directory)
 export { default as ProfileContainer } from './ProfileContainer.svelte';
 export { default as ProfileHeader } from './ProfileHeader.svelte';
 export { default as StatCard } from './StatCard.svelte';
@@ -8,12 +9,27 @@ export { default as Alert } from './Alert.svelte';
 export { default as FormGrid } from './FormGrid.svelte';
 export { default as AvatarDisplay } from './AvatarDisplay.svelte';
 export { default as EditorCard } from './EditorCard.svelte';
-// Re-export commonly used components from other UI modules
-export { default as Card } from '../Card.svelte';
-export { default as CardContent } from '../CardContent.svelte';
-export { default as CardHeader } from '../CardHeader.svelte';
-export { default as CardTitle } from '../CardTitle.svelte';
-export { default as Button } from '../Button.svelte';
+
+// Re-export commonly used components from parent UI directory
+export { default as Button } from '../button/Button.svelte';
+export { default as Card } from '../card/Card.svelte';
+export { default as CardContent } from '../card/CardContent.svelte';
+export { default as CardHeader } from '../card/CardHeader.svelte';
+export { default as CardTitle } from '../card/CardTitle.svelte';
+export { default as CardDescription } from '../card/CardDescription.svelte';
+export { default as CardFooter } from '../card/CardFooter.svelte';
+
+// Form Components
+export { default as Input } from '../input/Input.svelte';
+export { default as Label } from '../label/Label.svelte';
+export { default as Textarea } from '../Textarea.svelte';
+
+// Dialog Components
+export { default as Dialog } from '../dialog/Dialog.svelte';
+
+// Theme utilities
+export * from '$lib/themes/retro-console-palettes';
+export * from '$lib/cache/multi-layer-cache';
 // Component registry for dynamic loading
 export const ENHANCED_BITS_COMPONENTS = {
   ProfileContainer: () => import('./ProfileContainer.svelte'),

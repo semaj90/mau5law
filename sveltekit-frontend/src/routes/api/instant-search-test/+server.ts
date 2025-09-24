@@ -19,9 +19,9 @@ export const GET: RequestHandler = async ({ url }) => {
   const results: any = {
     timestamp: new Date().toISOString(),
     testType,
-    results: { [key: string]: any },
+    results: {},
     errors: [],
-    performance: { [key: string]: any }
+    performance: {}
   }
   try {
     // Test Redis Service

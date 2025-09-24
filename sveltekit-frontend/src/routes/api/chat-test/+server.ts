@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         type: 'inference',
         priority: 5,
         payload: {
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
       throw new Error('No task ID returned from CUDA service')
     }
     // Wait a bit then get result
-    await new Promise(resolve => setTimeout(resolve, 2000); // Wait 2 seconds
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
     const resultResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/result/${taskId}`)
     if (!resultResponse.ok) {
       throw new Error(`Failed to get result: ${resultResponse.status}`)

@@ -21,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
   const mockUser = {
     id: 'user-123',
     name: 'Legal Assistant User',
-    email: 'assistant@legal.ai';
+    email: 'assistant@legal.ai'
   };
   setContext('user', () => mockUser);
   $effect(() => {

@@ -9,7 +9,7 @@
     status: 'checking',
     workers: 0,
     uptime: 0,
-    version: 'Unknown';
+    version: 'Unknown'
   });
   // Quick stats
   let totalProcessed = 1247;
@@ -24,7 +24,7 @@
       icon: '📄',
       href: '/mcp/demo',
       stats: { processed: '450+ docs', accuracy: '95%' },
-      color: 'blue';
+      color: 'blue'
     },
     {
       title: 'Legal Processor',
@@ -32,7 +32,7 @@
       icon: '⚖️',
       href: '/mcp/processor',
       stats: { workers: '4 cores', speed: '2.3s avg' },
-      color: 'purple';
+      color: 'purple'
     },
     {
       title: 'Server Dashboard',
@@ -40,7 +40,7 @@
       icon: '📊',
       href: '/mcp/dashboard',
       stats: { uptime: '99.9%', gpu: 'RTX 3060 Ti' },
-      color: 'green';
+      color: 'green'
     }
   ];
   // Recent activity (mock data)

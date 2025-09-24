@@ -136,18 +136,18 @@ const originalGETHandler: RequestHandler = async () => {
   return json({
     cases,
     summary: {
-      total_cases: totalCases
-      average_risk_score: avgRiskScore
-      priority_breakdown: priorityBreakdown
+      total_cases: totalCases,
+      average_risk_score: avgRiskScore,
+      priority_breakdown: priorityBreakdown,
       last_analysis: new Date().toISOString(),
-      analysis_confidence: 0.89
+      analysis_confidence: 0.89,
     },
     metadata: {
       response_time_ms: Math.floor(Math.random() * 50) + 25,
       ai_model: 'legal-scoring-v2.1',
-      cache_status: 'hit'
-    }
-  })
+      cache_status: 'hit',
+    },
+  });
 }
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {

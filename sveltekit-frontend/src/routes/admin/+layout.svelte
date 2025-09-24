@@ -34,7 +34,7 @@ https://svelte.dev/e/js_parse_error -->
     navLinkActive: 'px-6 py-3 border border-amber-500 bg-gradient-to-r from-amber-500/20 to-amber-600/20 text-amber-400 shadow-lg shadow-amber-500/25 rounded-lg font-semibold',
     sidebar: 'w-80 bg-slate-900/90 backdrop-blur-sm border-r border-amber-500/20 p-6 shadow-2xl',
     content: 'flex-1 p-8 max-w-7xl mx-auto',
-    glitch: 'relative overflow-hidden';
+    glitch: 'relative overflow-hidden'
   };
   // Executive navigation items for admin panel
   const navItems: { path: string; label: string; icon: string; permission: Permission; description: string }[] = [
@@ -43,42 +43,42 @@ https://svelte.dev/e/js_parse_error -->
       label: 'Executive Dashboard',
       icon: '📊',
       permission: 'access_admin_panel',
-      description: 'Strategic overview and key metrics';
+      description: 'Strategic overview and key metrics'
     },
     {
       path: '/admin/users',
       label: 'User Management',
       icon: '👥',
       permission: 'manage_users',
-      description: 'User accounts and permissions';
+      description: 'User accounts and permissions'
     },
     {
       path: '/admin/roles',
       label: 'Role Administration',
       icon: '🔐',
       permission: 'manage_users',
-      description: 'Access control and role definitions';
+      description: 'Access control and role definitions'
     },
     {
       path: '/admin/system',
       label: 'System Configuration',
       icon: '⚙️',
       permission: 'configure_system',
-      description: 'Platform settings and configuration';
+      description: 'Platform settings and configuration'
     },
     {
       path: '/admin/audit',
       label: 'Audit & Compliance',
       icon: '📋',
       permission: 'view_audit_logs',
-      description: 'Security logs and compliance tracking';
+      description: 'Security logs and compliance tracking'
     },
     {
       path: '/admin/integrations',
       label: 'Enterprise Integrations',
       icon: '🔗',
       permission: 'manage_integrations',
-      description: 'Third-party systems and APIs';
+      description: 'Third-party systems and APIs'
     }
   ];
   // Derive visible nav items from current user permissions
@@ -107,9 +107,7 @@ try {
       // Initialize current user from data or store snapshot and subscribe for updates
       const initialUser = (data as { user?: unknown }).user || get(currentUser);
       currentUserValue = initialUser ?? null;
-      unsubscribeCurrentUser = currentUser.subscribe(v => { currentUserValue = v;
-    })();
-  });
+      unsubscribeCurrentUser = currentUser.subscribe(v => { currentUserValue = v; });
       // subscribe to page store to keep currentPath updated (safe in TS/SSR)
       unsubscribePage = page.subscribe(p => {
         currentPath = p?.url?.pathname ?? '';
@@ -137,6 +135,7 @@ try {
     } finally {
       isLoading = false;
     }
+  })();
   });
   onDestroy(() => {
     if (glitchInterval !== null) {

@@ -20,8 +20,8 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'status':
         const status = getBridgeStatus()
         return json({
-          success: true
-          data: status
+          success: true,
+          data: status,
           timestamp: new Date().toISOString()
         })
       case 'health':

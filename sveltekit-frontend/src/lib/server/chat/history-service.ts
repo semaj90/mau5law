@@ -43,7 +43,7 @@ export class ChatHistoryService {
       sessionId: params.sessionId,
       role: params.role,
       content: params.content,
-      embedding: null
+      embedding: null,
       metadata: {
         model: params?.model || 'unknown',
         ...(params.metadata || {})

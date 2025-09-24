@@ -53,7 +53,8 @@ https://svelte.dev/e/js_parse_error -->
   		try {
   			loading.set(true);
   			// Fetch from both legacy and new coordinator APIs
-  			const [legacyResponse, coordinatorResponse] = await Promise.all.catch(() => null),
+  			const [legacyResponse, coordinatorResponse] = await Promise.all([
+				fetch('/api/health').catch(() => null),
   				fetch('/api/v1/coordinator?action=health').catch(() => null)
   			]);
   let legacyData = $state(null);

@@ -9,7 +9,7 @@
   <title>{title}</title>
   <meta name="description" content={description} />
   <meta name="keywords" content="evidence, canvas, legal, AI, analysis, annotation" />
-</svelte: head>
+</svelte:head>
 <div class="evidence-canvas-page">
   <header class="page-header">
     <h1>Evidence Canvas</h1>

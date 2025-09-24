@@ -25,8 +25,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const sessionId = cookies.get("session_id")
     if (!sessionId) {
       return json(
-        { success: false, error: "Authentication required" },)
-        { status: 401 },
+        { success: false, error: "Authentication required" },
+        { status: 401 }
       )
     }
     const body = await request.json()

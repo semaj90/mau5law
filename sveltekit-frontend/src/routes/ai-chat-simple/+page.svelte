@@ -39,10 +39,10 @@
 			const response = await fetch('http://localhost:8086/api/generate', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({,
+				body: JSON.stringify({
 					model: 'gemma3-legal:latest',
-					prompt: messageToSend
-					stream: false;
+					prompt: messageToSend,
+					stream: false
 				})
 			});
 			const data = await response.json();
@@ -50,7 +50,7 @@
 				id: (Date.now() + 1).toString(),
 				role: 'assistant' as const,
 				content: data.response || 'Sorry, I encountered an error processing your request.',
-				timestamp: new Date();
+				timestamp: new Date()
 			};
 			messages = [...messages, aiMessage];
 		} catch (error) {
@@ -59,7 +59,7 @@
 				id: (Date.now() + 1).toString(),
 				role: 'assistant' as const,
 				content: 'Sorry, I could not connect to the AI service. Please check that TensorRT bridge is running on port 8086.',
-				timestamp: new Date();
+				timestamp: new Date()
 			};
 			messages = [...messages, errorMessage];
 		} finally {
@@ -86,7 +86,7 @@
 			id: 'welcome',
 			role: 'assistant',
 			content: 'Hello! I\'m your legal AI assistant powered by TensorRT. How can I help you today?',
-			timestamp: new Date();
+			timestamp: new Date()
 		}];
 	});
 </script>

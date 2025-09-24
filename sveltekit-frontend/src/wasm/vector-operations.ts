@@ -118,11 +118,11 @@ export function zScoreNormalize(vectorPtr: usize, length: i32): void {
  * Algorithm: 0=cosine, 1=euclidean, 2=dot, 3=manhattan
  */
 export function computeBatchSimilarity(
-  queryPtr: usize
-  vectorsPtr: usize
-  resultsPtr: usize
-  vectorDim: i32
-  vectorCount: i32
+  queryPtr: usize,
+  vectorsPtr: usize,
+  resultsPtr: usize,
+  vectorDim: i32,
+  vectorCount: i32,
   algorithm: i32
 ): void {
   for (let i = 0; i < vectorCount; i++) {
@@ -163,9 +163,9 @@ export function batchNormalizeVectors(vectorsPtr: usize, numVectors: i32, vector
  * Useful for quick similarity search on legal document text
  */
 export function hashEmbedding(
-  textPtr: usize
-  textLen: i32
-  embeddingPtr: usize
+  textPtr: usize,
+  textLen: i32,
+  embeddingPtr: usize,
   embeddingDim: i32
 ): void {
   if (textLen <= 0 || embeddingDim <= 0) return;
@@ -294,9 +294,9 @@ export function processServerResponse(responsePtr: usize, resultPtr: usize, leng
  * Hybrid processing: attempt local SIMD, fallback to server
  */
 export function hybridCosineSimilarity(
-  aPtr: usize
-  bPtr: usize
-  length: i32
+  aPtr: usize,
+  bPtr: usize,
+  length: i32,
   useServer: bool
 ): f32 {
   if (useServer || length > 10000) { // Use server for large vectors
@@ -310,10 +310,10 @@ export function hybridCosineSimilarity(
  * Batch vector processing with chunking for server optimization
  */
 export function batchVectorChunking(
-  vectorsPtr: usize
-  numVectors: i32
-  vectorLength: i32
-  chunkSize: i32
+  vectorsPtr: usize,
+  numVectors: i32,
+  vectorLength: i32,
+  chunkSize: i32,
   resultsPtr: usize
 ): i32 {
   if (chunkSize <= 0 || chunkSize > numVectors) {
@@ -337,9 +337,9 @@ export function batchVectorChunking(
  * Memory-optimized tensor preparation for CUDA transfer
  */
 export function prepareTensorForCUDA(
-  tensorPtr: usize
-  dimensions: i32[]
-  dimCount: i32
+  tensorPtr: usize,
+  dimensions: i32[],
+  dimCount: i32,
   outputPtr: usize
 ): void {
   let totalElements = 1;
@@ -361,8 +361,8 @@ export function prepareTensorForCUDA(
  * Optimized memory transfer for large embeddings
  */
 export function optimizedEmbeddingTransfer(
-  embeddingPtr: usize
-  length: i32
+  embeddingPtr: usize,
+  length: i32,
   compressionLevel: i32
 ): usize {
   if (compressionLevel == 0) {
@@ -400,7 +400,7 @@ export function optimizedEmbeddingTransfer(
  */
 export function shouldUseServer(
   operationType: i32, // 0=similarity, 1=matrix, 2=embedding, 3=search
-  dataSize: i32
+  dataSize: i32,
   complexityScore: i32
 ): bool {
   // Use server for:
@@ -451,16 +451,14 @@ export function getMemoryStats(): i32 {
  * Performance benchmark for routing decisions
  */
 export function benchmarkOperation(
-  operation: i32
-  dataSize: i32
+  operation: i32,
+  dataSize: i32,
   iterations: i32
-): f32 {
-  const startTime = Date.now();
+): i32 {
   // Simple benchmark based on operation type
-  let ops = 0;
+  let ops: i32 = 0;
   for (let i = 0; i < iterations; i++) {
     ops += dataSize * operation; // Simulate work
   }
-  const endTime = Date.now();
-  return f32(endTime - startTime);
+  return ops; // Return simulated operation count
 }

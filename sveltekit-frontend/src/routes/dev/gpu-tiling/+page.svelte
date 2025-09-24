@@ -35,7 +35,7 @@ https://svelte.dev/e/js_parse_error -->
       if (!resp.ok) throw new Error(data?.error || 'OCR failed');
       text = data?.text || '';
     } catch (e: unknown) {
-      alert(e?.message || String(e);
+      alert(e?.message || String(e));
     } finally {
       ocrBusy = false;
     }

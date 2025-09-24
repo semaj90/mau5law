@@ -28,9 +28,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { title, content, filePath, mimeType, fileSize, metadata } = params
         if (!title || !content) {
           return json({
-              success: false
+              success: false,
               error: 'Missing required fields: title, content'
-            },)
+            },
             { status: 400 }
           )
         }

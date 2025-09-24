@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
         body: JSON.stringify({
           model: 'gemma3-legal:latest',
           prompt,
-          stream: false
+          stream: false,
           options: {
             temperature: 0.2,
             top_p: 0.9,
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const requestId = createHash('sha256').update(`${Date.now()}-${JSON.stringify(body)}`).digest('hex').slice(0, 8)
     const result = {
       requestId,
-      analysis: aiContent
+      analysis: aiContent,
       metadata: {
         documentType: body.documentType ?? 'legal_document',
         analysisType: body.analysisType ?? 'classification',
@@ -84,17 +84,17 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Analysis endpoint error:', error)
     return json(
-      { error: 'Internal server error', details: error instanceof Error ? error.message: 'Unknown error' },)
+      { error: 'Internal server error', details: error instanceof Error ? error.message: 'Unknown error' },
       { status: 500 }
     )
   }
 }
 function buildEnhancedAnalysisPrompt(
-  documentText: string
-  analysisType: string
-  documentType: string
-  useThinkingStyle: boolean
-  contextualInfo: string
+  documentText: string,
+  analysisType: string,
+  documentType: string,
+  useThinkingStyle: boolean,
+  contextualInfo: string,
   documentMetadata: any
 ): string {
   const basePrompt = `Analyze this ${documentType} document for ${analysisType}.

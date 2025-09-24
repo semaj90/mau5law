@@ -54,7 +54,7 @@ https://svelte.dev/e/expected_token -->
   function handleShare() {
     if (navigator.share) {
       navigator.share({
-        title: documentTitle
+        title: documentTitle,
         text: editorValue
       });
     } else {

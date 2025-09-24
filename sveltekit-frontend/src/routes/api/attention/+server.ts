@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { jobId, text, type = 'attention', useCache = true, userId, context, options = {} } = body
     if (!jobId || !text) {
       return json({
-        success: false
+        success: false,
         error: 'jobId and text are required'
       }, { status: 400 })
     }
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       } catch (error: any) {
         return json({
-          success: false
+          success: false,
           jobId,
           status: 'error',
           error: error instanceof Error ? error.message: String(error),

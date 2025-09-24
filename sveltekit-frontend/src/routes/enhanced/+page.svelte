@@ -55,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify(body),
-  				signal: controller.signal;
+  				signal: controller.signal
   			});
   			if (!res.ok) {
   				errorMsg = `Request failed (${res.status})`;
@@ -64,7 +64,7 @@ https://svelte.dev/e/js_parse_error -->
   				results = data.results || [];
   				responseMeta = data;
   			}
-  		} catch (e: unknown) {
+  		} catch (e) {
   			if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
   		} finally {
   			loading = false;
@@ -91,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
   				while ((idx = buffer.indexOf('\n\n')) !== -1) {
   					const raw = buffer.slice(0, idx).trim();
   					buffer = buffer.slice(idx + 2);
-  					if (!raw) continu;
+  					if (!raw) continue;
   					const lines = raw.split('\n');
   let event = 'message';
   let dataStr = '';
@@ -106,8 +106,9 @@ https://svelte.dev/e/js_parse_error -->
   							console.error('Failed to parse stream data:', e);
   						}
   					}
+  				}
   			}
-  		} catch (e: unknown) {
+  		} catch (e) {
   			if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
   		} finally {
   			streaming = false;

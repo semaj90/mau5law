@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		return json({
 				error: 'GPU service unavailable',
 				details: error instanceof Error ? error.message: 'Unknown error'
-			},)
+			},
 			{ status: 503 }
 		)
 	}
